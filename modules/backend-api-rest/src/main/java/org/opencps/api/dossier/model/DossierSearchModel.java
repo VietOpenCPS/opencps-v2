@@ -111,7 +111,9 @@ import javax.xml.bind.annotation.XmlType;
     "toStatisticDate",
     "origin",
     "originDossierId",
-    "time"
+    "time",
+    "register",
+    "day"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -227,7 +229,11 @@ public class DossierSearchModel {
     protected Integer originDossierId;
     @QueryParam(value = "time")
     protected String time;
-
+    @QueryParam(value = "register")
+    protected String register;
+	@QueryParam(value = "day")
+    protected int day;
+	
     public Integer getAssigned() {
 		return assigned;
 	}
@@ -1019,5 +1025,17 @@ public class DossierSearchModel {
 	public void setTime(String time) {
 		this.time = time;
 	}
+	public String getRegister() {
+		return register;
+	}
 
+	public void setRegister(String value) {
+		this.register = value;
+	}
+	public int getDay() {
+		return day;
+	}
+	public void setDay(int value) {
+		this.day = value;
+	}
 }

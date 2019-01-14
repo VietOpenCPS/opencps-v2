@@ -321,6 +321,11 @@ public class HolidayLocalServiceUtil {
 		return getService().getHolidayByGroupId(groupId);
 	}
 
+	public static java.util.List<org.opencps.datamgt.model.Holiday> getHolidayByGroupIdAndType(
+		long groupId, int holidayType) {
+		return getService().getHolidayByGroupIdAndType(groupId, holidayType);
+	}
+
 	/**
 	* Returns the holiday matching the UUID and group.
 	*
@@ -385,6 +390,15 @@ public class HolidayLocalServiceUtil {
 		return getService()
 				   .updateHoliday(userId, holidayId, holidayDate, description,
 			serviceContext);
+	}
+
+	public static org.opencps.datamgt.model.Holiday updateHolidayDB(
+		long userId, long groupId, java.util.Date holidayDate,
+		String description, int holidayType)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return getService()
+				   .updateHolidayDB(userId, groupId, holidayDate, description,
+			holidayType);
 	}
 
 	public static HolidayLocalService getService() {

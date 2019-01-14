@@ -1,16 +1,24 @@
 package org.opencps.dossiermgt.rest.utils;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +38,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.OpencpsDossierStatistic;
+import org.opencps.dossiermgt.model.OpencpsVotingStatistic;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
@@ -43,6 +52,7 @@ import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import backend.utils.APIDateTimeUtils;
@@ -994,7 +1004,6 @@ public class OpenCPSConverter {
 			model.setPassword(dossier.getPassword());
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
-		
 		return model;
 	}
 	
@@ -1235,6 +1244,7 @@ public class OpenCPSConverter {
 		}
 		else {
 			result.put("IsReturned", false);
+			result.put("ReturnedDate", convertToUTCDate(new Date(model.getDueDate())));
 		}
 		result.put("ReturnNote", StringPool.BLANK);
 		if (model.getViaPostal().equals("0")) {
@@ -1262,10 +1272,26 @@ public class OpenCPSConverter {
 		
 		for (DossierFile df : lstFiles) {
 			JSONObject attachmentObj = JSONFactoryUtil.createJSONObject();
-			attachmentObj.put("Attachmentld", df.getDossierFileId());
+			attachmentObj.put("AttachmentId", df.getDossierFileId());
 			attachmentObj.put("AttachmentName", df.getDisplayName());
 			attachmentObj.put("IsDeleted", df.getRemoved());
 			attachmentObj.put("IsVerified", true);
+			if (df.getFileEntryId() > 0) {
+				FileEntry fileEntry;
+				try {
+					fileEntry = DLAppLocalServiceUtil.getFileEntry(df.getFileEntryId());
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					byte[] bytes = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
+					attachmentObj.put("Base64", new String(bytes));
+				} catch (PortalException e) {
+					_log.error(e);
+				} catch (IOException e) {
+					_log.error(e);
+				}
+
+			}
+			attachmentsArr.put(attachmentObj);
 		}
 		
 		result.put("Attachments", attachmentsArr);
@@ -1283,11 +1309,15 @@ public class OpenCPSConverter {
 				if (Validator.isNotNull(paymentFile.getPaymentAmount())) {
 					docFeeObj.put("Price", paymentFile.getPaymentAmount());				
 				}
+				
+				docFeesArr.put(docFeeObj);
 			}
 		}
 		catch (Exception e) {
 		}
 		result.put("DocFees", docFeesArr);
+		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());
+		result.put("OrganInchargeName", model.getGovAgencyName());
 		return result;
 	}
 	
@@ -1417,15 +1447,45 @@ public class OpenCPSConverter {
 		obj.put("TotalSolved", statistic.getDoneCount());
 		obj.put("SolvedInTime", statistic.getOntimeCount());
 		obj.put("SolvedInTimePercent", statistic.getOntimePercentage());
+		obj.put("SolvedLatePercent", 1.0 * statistic.getOvertimeCount() / statistic.getReleaseCount());
 		obj.put("SolvedLate", statistic.getOverdueCount());
-		obj.put("Pending", statistic.getProcessCount());
+		obj.put("TotalPending", statistic.getWaitingCount());
+		obj.put("Pending", statistic.getUndueCount());
 		obj.put("PendingLate", statistic.getOverdueCount());
-		obj.put("PendingLatePercent", 0.0);
-		obj.put("PendingPercent", 0.0);
+		obj.put("PendingLatePercent", 1.0 * statistic.getOverdueCount() / statistic.getProcessingCount());
+		obj.put("PendingPercent", 1.0 * statistic.getUndueCount() / statistic.getProcessingCount());
 		obj.put("Note", StringPool.BLANK);
 		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		
 		return obj;
 	}
+
+	public static JSONObject convertVotingStatisticsToLGSPJSON(OpencpsVotingStatistic statistic) {
+		JSONObject obj = JSONFactoryUtil.createJSONObject();
+		obj.put("DateCreated", convertToUTCDate(new Date()));
+		obj.put("TotalVoted", statistic.getTotalVoted());
+		obj.put("PercentVeryGood", Double.valueOf(statistic.getPercentVeryGood()));
+		obj.put("PercentGood", Double.valueOf(statistic.getPercentGood()));
+		obj.put("PercentBad", Double.valueOf(statistic.getPercentBad()));
+		List<OpencpsVotingStatistic> lstVotings = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D(statistic.getGroupId(), statistic.getMonth(), statistic.getYear(), StringPool.BLANK, StringPool.BLANK);
+		JSONArray questions = JSONFactoryUtil.createJSONArray();
+		for (OpencpsVotingStatistic vt : lstVotings) {
+			if (Validator.isNotNull(vt.getVotingCode())) {
+				JSONObject question = JSONFactoryUtil.createJSONObject();
+				question.put("DocTypeCode", StringPool.BLANK);
+				question.put("Content", vt.getVotingSubject());
+				question.put("PercentVeryGood", Double.valueOf(vt.getPercentVeryGood()));
+				question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
+				question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
+				
+				questions.put(question);				
+			}
+		}
+		obj.put("Questions", questions);
+		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
+		obj.put("OrganizationInchargeName", StringPool.BLANK);
+		
+		return obj;
+	}	
 }

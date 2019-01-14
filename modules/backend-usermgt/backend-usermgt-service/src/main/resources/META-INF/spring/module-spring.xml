@@ -27,6 +27,8 @@
 	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceRolePersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.ResourceUserLocalServiceImpl" id="org.opencps.usermgt.service.ResourceUserLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceUserPersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.UserLoginLocalServiceImpl" id="org.opencps.usermgt.service.UserLoginLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.UserLoginPersistenceImpl" id="org.opencps.usermgt.service.persistence.UserLoginPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.VisibilityLocalServiceImpl" id="org.opencps.usermgt.service.VisibilityLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.VisibilityPersistenceImpl" id="org.opencps.usermgt.service.persistence.VisibilityPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl" id="org.opencps.usermgt.service.WorkingUnitLocalService" />

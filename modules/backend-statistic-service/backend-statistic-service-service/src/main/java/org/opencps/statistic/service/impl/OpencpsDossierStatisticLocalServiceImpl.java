@@ -47,9 +47,8 @@ import com.liferay.portal.kernel.util.Validator;
  * @see org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil
  */
 public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStatisticLocalServiceBaseImpl {
-	public OpencpsDossierStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain,
-			boolean reporting) {
-		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency, reporting);
+	public OpencpsDossierStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain) {
+		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency);
 	}
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
@@ -143,7 +142,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 		}
 
-		int ontimePercent = 0;
+		int ontimePercent = 100;
 		if (releaseCount > 0) {
 			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
 		}
@@ -171,18 +170,18 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	}
 
 	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId, int month, int year, String domain,
-			String govAgencyCode, String groupAgenvyCode, boolean reporting, int start, int end)
+			String govAgencyCode, String groupAgenvyCode, int start, int end)
 			throws PortalException, SystemException {
 		return opencpsDossierStatisticFinder.searchDossierStatistic(groupId, year, domain, govAgencyCode,
-				groupAgenvyCode, reporting, start, end);
+				groupAgenvyCode, start, end);
 	}
 
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int month, int year, String domain,
-			String govAgencyCode, String groupAgenvyCode, boolean reporting, int start, int end)
+			String govAgencyCode, String groupAgenvyCode, int start, int end)
 			throws PortalException, SystemException {
-		
-		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroupAndReporting(groupId, month, year, domain,
-				govAgencyCode, groupAgenvyCode, reporting, start, end);
+
+		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroup(groupId, month, year, domain,
+				govAgencyCode, groupAgenvyCode, start, end);
 	}
 	
 	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
@@ -199,6 +198,19 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
 		return opencpsDossierStatisticPersistence.findByG_M_Y(groupId, month, year);
+	}
+
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, boolean reporting) {
+		return opencpsDossierStatisticPersistence.findByGID_M_Y_RP(groupId, month, year, reporting);
+	}
+
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode,
+			String domainCode) throws NoSuchOpencpsDossierStatisticException {
+		return opencpsDossierStatisticPersistence.removeByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
+
+	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
+		return opencpsDossierStatisticPersistence.findByCID_GID_Y(companyId, groupId, month, year);
 	}
 
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);

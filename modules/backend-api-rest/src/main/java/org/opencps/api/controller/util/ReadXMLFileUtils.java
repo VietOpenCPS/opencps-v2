@@ -17,18 +17,22 @@ import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
+import org.opencps.api.v21.model.ApplicantList;
+import org.opencps.api.v21.model.BusinessList;
+import org.opencps.api.v21.model.CitizenList;
 import org.opencps.api.v21.model.DeliverableTypeList;
 import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DossierTemplate;
 import org.opencps.api.v21.model.DynamicReportList;
+import org.opencps.api.v21.model.HolidayList;
 import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.api.v21.model.ObjectFactory;
@@ -38,7 +42,6 @@ import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
-import org.xml.sax.SAXException;
 
 public class ReadXMLFileUtils {
 
@@ -269,6 +272,26 @@ public class ReadXMLFileUtils {
 					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
 				} else {
 					strError = ConstantUtils.XML_DYNAMIC_REPORT;
+				}
+				break;
+			case ConstantUtils.XML_HOLIDAY:
+				HolidayList holidayList = convertXMLToHoliday(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateHoliday(holidayList, folderPath, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_HOLIDAY;
+				}
+				break;
+			case ConstantUtils.XML_APPLICANT:
+				ApplicantList applicantList = convertXMLToApplicant(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateApplicant(applicantList, folderPath, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_HOLIDAY;
 				}
 				break;
 			default:
@@ -513,6 +536,30 @@ public class ReadXMLFileUtils {
 			return objectElement;
 	}
 
+	// LamTV_ Process convert xml to Object DynamicReport
+	private static HolidayList convertXMLToHoliday(String xmlString) throws JAXBException {
+
+			JAXBContext jaxbContext = null;
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			HolidayList objectElement = (HolidayList) jaxbUnmarshaller.unmarshal(reader);
+
+			return objectElement;
+	}
+
+	// LamTV_ Process convert xml to Object Applicant
+	private static ApplicantList convertXMLToApplicant(String xmlString) throws JAXBException {
+
+			JAXBContext jaxbContext = null;
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			ApplicantList objectElement = (ApplicantList) jaxbUnmarshaller.unmarshal(reader);
+
+			return objectElement;
+	}
+
 	// LamTV_ Process convert xml to Object ServiceInfo
 	private static ServiceInfo convertXMLToServiceInfo(String xmlString) throws JAXBException {
 		JAXBContext jaxbContext = null;
@@ -557,10 +604,79 @@ public class ReadXMLFileUtils {
 		return objectElement;
 
 	}
-	/** Process convert xml to Object - END 
-	 * @throws SAXException 
-	 * @throws IOException 
-	 * @throws ParserConfigurationException */
+	/** Process convert xml to Object - END  */
+
+	/** Process Convert Object to xml - START **/
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertCitizenToXML(CitizenList citizenList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(CitizenList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("Citizen.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(citizenList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertBusinessToXML(BusinessList businessList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(BusinessList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("Business.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(businessList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static File convertDictCollectionToXML(DictCollection dictCollection, String collectionCode) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(DictCollection.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File(collectionCode + ConstantUtils.EXTENTION_XML);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(dictCollection, file);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object ServiceProcess
+	public static void convertServiceInfoToXML(ServiceInfo serviceInfo, String serviceCode, String pathFolder)
+			throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(ServiceInfo.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File(pathFolder + StringPool.FORWARD_SLASH + serviceCode + ConstantUtils.EXTENTION_XML);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(serviceInfo, file);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+	}
+
+	/** Process Convert Object to xml - END **/
 
 	//Process validate xml
 	public static String validateXML(File xmlFile, boolean flagList) {

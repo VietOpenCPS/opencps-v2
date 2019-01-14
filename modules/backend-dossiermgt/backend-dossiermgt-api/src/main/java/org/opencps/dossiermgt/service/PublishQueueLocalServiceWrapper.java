@@ -211,6 +211,20 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByG_DID_SN_NST(
+		long groupId, long dossierId, String serverNo, int status) {
+		return _publishQueueLocalService.getByG_DID_SN_NST(groupId, dossierId,
+			serverNo, status);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByG_DID_SN_ST(
+		long groupId, long dossierId, String serverNo, int[] status) {
+		return _publishQueueLocalService.getByG_DID_SN_ST(groupId, dossierId,
+			serverNo, status);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatus(
 		int status, int start, int end) {
 		return _publishQueueLocalService.getByStatus(status, start, end);
@@ -300,6 +314,18 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 		long publishQueueId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _publishQueueLocalService.removePublishQueue(publishQueueId);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.PublishQueue updatePublishQueue(
+		long groupId, long publishQueueId, int publishType, long dossierId,
+		String serverNo, String publishData, int status, int retry,
+		String messageText, String acknowlegement,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _publishQueueLocalService.updatePublishQueue(groupId,
+			publishQueueId, publishType, dossierId, serverNo, publishData,
+			status, retry, messageText, acknowlegement, context);
 	}
 
 	@Override

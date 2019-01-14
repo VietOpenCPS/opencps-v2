@@ -893,7 +893,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String allowAssignUser = HtmlUtil.escape(String.valueOf(input.getAllowAssignUser()));
 			String assignUserId = HtmlUtil.escape(String.valueOf(input.getAssignUserId()));
 			String requestPayment = HtmlUtil.escape(String.valueOf(input.getRequestPayment()));
-			String paymentFee = HtmlUtil.escape(input.getPaymentFee());
+//			String paymentFee = HtmlUtil.escape(input.getPaymentFee());
+			String paymentFee = input.getPaymentFee();
 			String createDossierFiles = HtmlUtil.escape(input.getCreateDossierFiles());
 			String returnDossierFiles = HtmlUtil.escape(input.getReturnDossierFiles());
 			String makeBriefNote = HtmlUtil.escape(input.getMakeBriefNote());

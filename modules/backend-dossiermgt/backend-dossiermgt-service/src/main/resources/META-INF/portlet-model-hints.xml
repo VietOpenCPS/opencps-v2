@@ -168,7 +168,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="referenceUid" type="String" />
 		<field name="counter" type="int" />
-		<field name="registerBookCode" type="String" />
+		<field name="registerBookCode" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 		<field name="registerBookName" type="String" />
 		<field name="dossierRegister" type="String" />
 		<field name="processNo" type="String" />
@@ -780,6 +782,46 @@
 		<field name="outsideCount" type="int" />
 		<field name="insideCount" type="int" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.OpencpsVotingStatistic">
+		<field name="uuid" type="String" />
+		<field name="votingStatisticId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="month" type="int" />
+		<field name="year" type="int" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
+		<field name="domainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="domainName" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
+		<field name="votingCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="votingSubject" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
+		<field name="totalVoted" type="int" />
+		<field name="veryGoodCount" type="int" />
+		<field name="goodCount" type="int" />
+		<field name="badCount" type="int" />
+		<field name="percentVeryGood" type="int" />
+		<field name="percentGood" type="int" />
+		<field name="percentBad" type="int" />
+		<field name="totalCount" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.PaymentConfig">
 		<field name="uuid" type="String" />
 		<field name="paymentConfigId" type="long" />
@@ -969,6 +1011,9 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="sampleCount" type="long" />
+		<field name="registerBookCode" type="String">
+			<hint name="max-length">100</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
 		<field name="uuid" type="String" />
@@ -1093,6 +1138,16 @@
 		</field>
 		<field name="status" type="int" />
 		<field name="retry" type="int" />
+		<field name="publishType" type="int" />
+		<field name="publishData" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="messageText" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="acknowlegement" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.Registration">
 		<field name="uuid" type="String" />

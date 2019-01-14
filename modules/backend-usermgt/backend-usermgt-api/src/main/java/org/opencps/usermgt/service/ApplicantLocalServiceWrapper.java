@@ -265,6 +265,13 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		return _applicantLocalService.getApplicant(applicantId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Applicant> getApplicantByType(
+		long groupId, String applicantIdType) {
+		return _applicantLocalService.getApplicantByType(groupId,
+			applicantIdType);
+	}
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*
@@ -462,6 +469,19 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 			applicantIdDate, address, cityCode, cityName, districtCode,
 			districtName, wardCode, wardName, contactName, contactTelNo,
 			contactEmail, profile, password);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Applicant updateApplicationDB(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _applicantLocalService.updateApplicationDB(groupId, userId,
+			applicantId, applicantIdNo, applicantName, applicantIdType,
+			applicantIdDate, contactEmail, contactTelNo, context);
 	}
 
 	@Override

@@ -71,6 +71,7 @@ public class DossierTerm {
 	public static final String SERVER_NO = "serverNo";
 	public static final String YEAR_DOSSIER = "yearDossier";
 	public static final String MONTH_DOSSIER = "monthDossier";
+	public static final String DAY_DOSSIER = "dayDossier";
 	public static final String LAST_ACTION_DATE = "lastActionDate";
 	public static final String LAST_ACTION_CODE = "lastActionCode";
 	public static final String LAST_ACTION_NAME = "lastActionName";
@@ -90,6 +91,7 @@ public class DossierTerm {
 	public static final String TEMPLATE = "template";
 	public static final String YEAR = "year";
 	public static final String MONTH = "month";
+	public static final String DAY = "day";
 	public static final String OWNER = "owner";
 	public static final String FOLLOW = "follow";
 	public static final String STEP = "step";
@@ -233,7 +235,7 @@ public class DossierTerm {
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
-	public static final String ON_TIME = "onetime";
+	public static final String ON_TIME = "ontime";
 	public static final String TIME = "time";
 	public static final String PAUSE_STATE = "PAUSE";
 	public static final String OVERTIME_STATE = "OVERTIME";
@@ -242,4 +244,6 @@ public class DossierTerm {
 	public static final String VALUE_COMPARE_FINISH = "compareFinish";
 
 	public static final String PROCESS_NO = "processNo";
+	public static final String REGISTER = "register";
+	public static final int ORIGINALITY_HSLT = 4;
 }

@@ -291,6 +291,10 @@ public interface HolidayLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Holiday> getHolidayByGroupId(long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Holiday> getHolidayByGroupIdAndType(long groupId,
+		int holidayType);
+
 	/**
 	* Returns the holiday matching the UUID and group.
 	*
@@ -336,4 +340,8 @@ public interface HolidayLocalService extends BaseLocalService,
 		String description, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NotFoundException, NoSuchUserException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate,
+		String description, int holidayType) throws NoSuchUserException;
 }

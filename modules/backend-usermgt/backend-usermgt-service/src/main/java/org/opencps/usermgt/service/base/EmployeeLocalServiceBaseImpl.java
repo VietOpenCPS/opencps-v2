@@ -61,6 +61,7 @@ import org.opencps.usermgt.service.persistence.OfficeSitePersistence;
 import org.opencps.usermgt.service.persistence.PreferencesPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
+import org.opencps.usermgt.service.persistence.UserLoginPersistence;
 import org.opencps.usermgt.service.persistence.VisibilityPersistence;
 import org.opencps.usermgt.service.persistence.WorkingUnitPersistence;
 
@@ -816,6 +817,44 @@ public abstract class EmployeeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the user login local service.
+	 *
+	 * @return the user login local service
+	 */
+	public org.opencps.usermgt.service.UserLoginLocalService getUserLoginLocalService() {
+		return userLoginLocalService;
+	}
+
+	/**
+	 * Sets the user login local service.
+	 *
+	 * @param userLoginLocalService the user login local service
+	 */
+	public void setUserLoginLocalService(
+		org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService) {
+		this.userLoginLocalService = userLoginLocalService;
+	}
+
+	/**
+	 * Returns the user login persistence.
+	 *
+	 * @return the user login persistence
+	 */
+	public UserLoginPersistence getUserLoginPersistence() {
+		return userLoginPersistence;
+	}
+
+	/**
+	 * Sets the user login persistence.
+	 *
+	 * @param userLoginPersistence the user login persistence
+	 */
+	public void setUserLoginPersistence(
+		UserLoginPersistence userLoginPersistence) {
+		this.userLoginPersistence = userLoginPersistence;
+	}
+
+	/**
 	 * Returns the visibility local service.
 	 *
 	 * @return the visibility local service
@@ -1096,6 +1135,10 @@ public abstract class EmployeeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.ResourceUserLocalService resourceUserLocalService;
 	@BeanReference(type = ResourceUserPersistence.class)
 	protected ResourceUserPersistence resourceUserPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.UserLoginLocalService.class)
+	protected org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService;
+	@BeanReference(type = UserLoginPersistence.class)
+	protected UserLoginPersistence userLoginPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.VisibilityLocalService.class)
 	protected org.opencps.usermgt.service.VisibilityLocalService visibilityLocalService;
 	@BeanReference(type = VisibilityPersistence.class)

@@ -69,6 +69,7 @@ public class HolidayWrapper implements Holiday, ModelWrapper<Holiday> {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("holidayDate", getHolidayDate());
 		attributes.put("description", getDescription());
+		attributes.put("holidayType", getHolidayType());
 
 		return attributes;
 	}
@@ -133,6 +134,12 @@ public class HolidayWrapper implements Holiday, ModelWrapper<Holiday> {
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		Integer holidayType = (Integer)attributes.get("holidayType");
+
+		if (holidayType != null) {
+			setHolidayType(holidayType);
 		}
 	}
 
@@ -209,6 +216,16 @@ public class HolidayWrapper implements Holiday, ModelWrapper<Holiday> {
 	@Override
 	public long getHolidayId() {
 		return _holiday.getHolidayId();
+	}
+
+	/**
+	* Returns the holiday type of this holiday.
+	*
+	* @return the holiday type of this holiday
+	*/
+	@Override
+	public int getHolidayType() {
+		return _holiday.getHolidayType();
 	}
 
 	/**
@@ -380,6 +397,16 @@ public class HolidayWrapper implements Holiday, ModelWrapper<Holiday> {
 	@Override
 	public void setHolidayId(long holidayId) {
 		_holiday.setHolidayId(holidayId);
+	}
+
+	/**
+	* Sets the holiday type of this holiday.
+	*
+	* @param holidayType the holiday type of this holiday
+	*/
+	@Override
+	public void setHolidayType(int holidayType) {
+		_holiday.setHolidayType(holidayType);
 	}
 
 	/**

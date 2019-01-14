@@ -288,6 +288,7 @@
 
 		<column name="holidayDate" type="Date" />
 		<column name="description" type="String" />
+		<column name="holidayType" type="int" />
 
 		<!-- Order -->
 		<order by="asc">
@@ -300,6 +301,10 @@
 		</finder>
 		<finder return-type="Collection" name="F_GID">
 			<finder-column name="groupId" />
+		</finder>
+		<finder return-type="Collection" name="F_GID_TYPE">
+			<finder-column name="groupId" />
+			<finder-column name="holidayType" />
 		</finder>
 	</entity>
 	

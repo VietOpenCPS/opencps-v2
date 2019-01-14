@@ -329,6 +329,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (month != 0) {
 				params.put(DossierTerm.MONTH, month);
 			}
+			params.put(DossierTerm.DAY, query.getDay());
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
@@ -374,6 +375,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
+			params.put(DossierTerm.REGISTER, query.getRegister());
+			
 			//Search theo tu tuong moi
 			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
 			if (Validator.isNotNull(originDossierId))
@@ -769,6 +772,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TOP, top);
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
+			params.put(DossierTerm.DAY, query.getDay());
 			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 			if (auth2.isAdmin(serviceContext, "admin")) {
 				
@@ -816,7 +820,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			// Add param original
 //			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
-
+			params.put(DossierTerm.REGISTER, query.getRegister());
+			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
@@ -1000,6 +1005,11 @@ public class DossierManagementImpl implements DossierManagement {
 					password = PwdGenerator.getPinNumber();
 				}
 			}
+			String postalCityName = StringPool.BLANK;
+			
+			if (Validator.isNotNull(input.getPostalCityCode())) {
+				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+			}
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
 //					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
@@ -1008,11 +1018,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = null;
 			
-			if (originality == DossierTerm.ORIGINALITY_DVCTT
-					|| originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				online = true;
 			}
 			boolean flagOldDossier = false;
+			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
+			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
+			
 			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
@@ -1028,7 +1041,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateAddress(input.getDelegateAddress());
 				dossier.setPostalAddress(input.getPostalAddress());
 				dossier.setPostalCityCode(input.getPostalCityCode());
-				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalCityName(postalCityName);
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
@@ -1041,6 +1054,13 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setViaPostal(viaPostal);
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 				
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(registerBookName);
+				dossier.setSampleCount(sampleCount);
+				dossier.setServiceCode(input.getServiceCode());
+				dossier.setGovAgencyCode(input.getGovAgencyCode());
+				dossier.setDossierTemplateNo(input.getDossierTemplateNo());
+				
 				updateDelegateApplicant(dossier, input);
 				
 //				dossier.setDossierNo(input.getDossierNo());
@@ -1052,6 +1072,8 @@ public class DossierManagementImpl implements DossierManagement {
 				if (serviceProcess != null ) {
 					durationCount = serviceProcess.getDurationCount();
 					durationUnit = serviceProcess.getDurationUnit();
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
 				}
 
 				Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
@@ -1060,6 +1082,11 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setOnline(online);
 				if (Validator.isNotNull(input.getDossierName()))
 					dossier.setDossierName(input.getDossierName());
+				if (serviceProcess != null) {
+					dossier.setProcessNo(serviceProcess.getProcessNo());
+				}
+				
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -1067,7 +1094,7 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getApplicantIdNo(), input.getApplicantIdDate(), input.getAddress(), input.getCityCode(),
 						cityName, input.getDistrictCode(), districtName, input.getWardCode(), wardName,
 						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
-						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), StringPool.BLANK,
+						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), postalCityName,
 						input.getPostalTelNo(), online, process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
@@ -1078,7 +1105,7 @@ public class DossierManagementImpl implements DossierManagement {
 				} else {
 					dossier.setDossierName(serviceName);
 				}
-				dossier.setPostalCityName(input.getPostalCityName());
+				dossier.setPostalCityName(postalCityName);
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
@@ -1088,11 +1115,17 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setPostalWardName(input.getPostalWardName());
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(registerBookName);
+				dossier.setSampleCount(sampleCount);
+				
 				updateDelegateApplicant(dossier, input);
 				
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
 				}
+				
+				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 //			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
@@ -1369,7 +1402,7 @@ public class DossierManagementImpl implements DossierManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			if (Validator.isNotNull(input.getPostalCityCode())) {
-				postalCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getPostalCityCode());
+				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 			}
 //			boolean online = true;
 //
@@ -1682,10 +1715,13 @@ public class DossierManagementImpl implements DossierManagement {
 														_log.info("hoursCount: "+hoursCount);
 														//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
 														List<Holiday> holidayList = HolidayLocalServiceUtil
-																.getHolidayByGroupId(groupId);
+																.getHolidayByGroupIdAndType(groupId, 0);
+														List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+																.getHolidayByGroupIdAndType(groupId, 1);
 
 														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-																dossier.getDueDate(), hoursCount, holidayList);
+																dossier.getDueDate(), hoursCount, holidayList,
+																extendWorkDayList);
 														_log.info("dueDateExtend: "+dueDateExtend);
 														if (dueDateExtend != null) {
 															dossier.setDueDate(dueDateExtend);
@@ -1933,6 +1969,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
+	public static final String REGISTER_BOOK = "REGISTER_BOOK";
+	
 //	public static final int LENGHT_DOSSIER_PASSWORD = 4;
 //	public static final String DEFAULT_PATTERN_PASSWORD = "0123";
 
@@ -3399,7 +3438,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier.setDelegateWardName(input.getDelegateWardName());
 				dossier.setDurationCount(input.getDurationCount());
 				dossier.setDurationUnit(input.getDurationUnit());
-				dossier.setSampleCount(input.getSampleCount());
+//				dossier.setSampleCount(input.getSampleCount() != null ? input.getSampleCount() : 0l);
 				dossier.setDossierName(input.getDossierName());
 				dossier.setProcessNo(input.getProcessNo());
 				
@@ -4481,5 +4520,41 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}			
+	}
+
+	@Override
+	public Response reindexDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			Indexer<Dossier> indexer = IndexerRegistryUtil
+					.nullSafeGetIndexer(Dossier.class);
+			indexer.reindex(dossier);
+			
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
 	}
 }

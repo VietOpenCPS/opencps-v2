@@ -117,4 +117,10 @@ public class HolidayActions implements HolidayInterface {
 		return holiday;
 	}
 
+	@Override
+	public void updateHolidayDB(long userId, long groupId, Date holidayDate, String description, int holidayType)
+			throws NoSuchUserException {
+		HolidayLocalServiceUtil.updateHolidayDB(userId, groupId, holidayDate, description, holidayType);
+	}
+
 }

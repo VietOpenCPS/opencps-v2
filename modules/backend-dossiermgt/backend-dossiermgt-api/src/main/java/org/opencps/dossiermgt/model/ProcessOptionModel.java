@@ -340,6 +340,21 @@ public interface ProcessOptionModel extends BaseModel<ProcessOption>,
 	 */
 	public void setSampleCount(long sampleCount);
 
+	/**
+	 * Returns the register book code of this process option.
+	 *
+	 * @return the register book code of this process option
+	 */
+	@AutoEscape
+	public String getRegisterBookCode();
+
+	/**
+	 * Sets the register book code of this process option.
+	 *
+	 * @param registerBookCode the register book code of this process option
+	 */
+	public void setRegisterBookCode(String registerBookCode);
+
 	@Override
 	public boolean isNew();
 

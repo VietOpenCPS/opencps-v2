@@ -556,9 +556,39 @@
 		<finder return-type="Applicant" name="F_MAPPING_ID" unique="true">
 			<finder-column name="mappingUserId"/>
 		</finder>
+
+		<finder return-type="Collection" name="F_GID_TYPE">
+			<finder-column name="groupId" />
+			<finder-column name="applicantIdType" />
+		</finder>
 		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
+	</entity>
+	
+	<entity name="UserLogin" uuid="true" local-service="true"
+		remote-service="false" table="opencps_userlogin">
+
+		<!-- PK fields -->
+
+		<column name="userLoginId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="sessionId" type="String" />
+		<column name="hits" type="int" />
+		<column name="logout" type="Date" />
+		<column name="ipAddress" type="String" />
 	</entity>
 	<exceptions>
 		<exception>NoApplicantName</exception>

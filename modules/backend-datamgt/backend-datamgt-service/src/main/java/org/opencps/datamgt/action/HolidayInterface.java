@@ -1,5 +1,6 @@
 package org.opencps.datamgt.action;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.datamgt.model.Holiday;
@@ -30,4 +31,7 @@ public interface HolidayInterface {
 	public Holiday update(long userId, long groupId, String day, String holidayDate, String description,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
+
+	public void updateHolidayDB(long userId, long groupId, Date time, String description, int holidayType)
+			throws NoSuchUserException;
 }

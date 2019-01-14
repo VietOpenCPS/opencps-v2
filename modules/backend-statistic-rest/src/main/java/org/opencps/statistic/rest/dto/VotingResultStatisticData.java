@@ -19,6 +19,7 @@ public class VotingResultStatisticData {
 	private String domain;
 	private String domainName;
 	private String votingCode;
+	private String votingSubject;
 
 	public int getMonth() {
 		return month;
@@ -115,6 +116,12 @@ public class VotingResultStatisticData {
 	}
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
+	}
+	public String getVotingSubject() {
+		return votingSubject;
+	}
+	public void setVotingSubject(String votingSubject) {
+		this.votingSubject = votingSubject;
 	}
 
 }

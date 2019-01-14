@@ -1,29 +1,23 @@
 package org.opencps.statistic.rest.engine.service;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.opencps.statistic.rest.dto.DomainResponse;
-import org.opencps.statistic.rest.dto.DossierStatisticData;
-import org.opencps.statistic.rest.dto.DossierStatisticRequest;
-import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
-import org.opencps.statistic.rest.dto.ServiceResponse;
+import org.opencps.statistic.rest.dto.VotingResponse;
 import org.opencps.statistic.rest.dto.VotingResultRequest;
 import org.opencps.statistic.rest.dto.VotingResultResponse;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
@@ -76,7 +70,7 @@ public class VotingStatisticSumYearCalcular {
 						VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 						if (votingResultData != null) {
 							updateDetailData(companyId, groupId, 0, year, null, null, null,
-									null, null, votingStatisticList, votingResultData);
+									null, null, null, votingStatisticList, votingResultData);
 						}
 					}
 				}
@@ -91,31 +85,34 @@ public class VotingStatisticSumYearCalcular {
 		if (isVoting && !isDomain && !isAgency) {
 			/* statistic by all */
 
-			String[] votingCodeArr = getVotingCode(groupId);
-			for (String votingCode : votingCodeArr) {
+			List<VotingResponse> votingList = getVotingCode(groupId);
+			if (votingList != null && votingList.size() > 0) {
+				for (VotingResponse voting : votingList) {
 
-				try {
-					votingResultRequest.setVotingCode(votingCode);
-					votingResultRequest.setDomain(DossierStatisticConstants.TOTAL);
-					votingResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
-					
-					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+					try {
+						votingResultRequest.setVotingCode(voting.getItemCode());
+						votingResultRequest.setDomain(DossierStatisticConstants.TOTAL);
+						votingResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
+						
+						//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-					VotingResultResponse votingResultResponse = votingStatisticFinderService
-							.finderVotingStatisticList(votingResultRequest);
+						VotingResultResponse votingResultResponse = votingStatisticFinderService
+								.finderVotingStatisticList(votingResultRequest);
 
-					if (votingResultResponse != null) {
-						List<VotingResultStatisticData> votingStatisticList = votingResultResponse.getData();
-						if (votingStatisticList != null && votingStatisticList.size() > 0) {
-							VotingResultStatisticData votingResultData = votingStatisticList.get(0);
-							if (votingResultData != null) {
-								updateDetailData(companyId, groupId, 0, year, votingCode, null, null,
-										null, null, votingStatisticList, votingResultData);
+						if (votingResultResponse != null) {
+							List<VotingResultStatisticData> votingStatisticList = votingResultResponse.getData();
+							if (votingStatisticList != null && votingStatisticList.size() > 0) {
+								VotingResultStatisticData votingResultData = votingStatisticList.get(0);
+								if (votingResultData != null) {
+									updateDetailData(companyId, groupId, 0, year, voting.getItemCode(),
+											voting.getItemName(), null, null, null, null, votingStatisticList,
+											votingResultData);
+								}
 							}
 						}
+					} catch (Exception e) {
+						_log.error(e);
 					}
-				} catch (Exception e) {
-					_log.error(e);
 				}
 			}
 		}
@@ -142,7 +139,7 @@ public class VotingStatisticSumYearCalcular {
 						if (votingStatisticList != null && votingStatisticList.size() > 0) {
 							VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 							if (votingResultData != null) {
-								updateDetailData(companyId, groupId, 0, year, null, domain.getItemCode(),
+								updateDetailData(companyId, groupId, 0, year, null, null, domain.getItemCode(),
 										domain.getItemName(), null, null, votingStatisticList, votingResultData);
 							}
 						}
@@ -154,16 +151,16 @@ public class VotingStatisticSumYearCalcular {
 		}
 
 		/** case votingCode != null && domain != null && agency == null **/
-		if (!isVoting && isDomain && !isAgency) {
+		if (isVoting && isDomain && !isAgency) {
 			/* statistic by all */
 
 			List<DomainResponse> domainList = getDomain(groupId);
-			String[] votingCodeArr = getVotingCode(groupId);
+			List<VotingResponse> votingList = getVotingCode(groupId);
 			for (DomainResponse domain : domainList) {
 				votingResultRequest.setDomain(domain.getItemCode());
-				if (votingCodeArr != null) {
-					for (String votingCode : votingCodeArr) {
-						votingResultRequest.setVotingCode(votingCode);
+				if (votingList != null && votingList.size() > 0) {
+					for (VotingResponse voting : votingList) {
+						votingResultRequest.setVotingCode(voting.getItemCode());
 
 						try {
 
@@ -179,9 +176,9 @@ public class VotingStatisticSumYearCalcular {
 								if (votingStatisticList != null && votingStatisticList.size() > 0) {
 									VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 									if (votingResultData != null) {
-										updateDetailData(companyId, groupId, 0, year, votingCode, domain.getItemCode(),
-												domain.getItemName(), null, null, votingStatisticList,
-												votingResultData);
+										updateDetailData(companyId, groupId, 0, year, voting.getItemCode(),
+												voting.getItemName(), domain.getItemCode(), domain.getItemName(), null,
+												null, votingStatisticList, votingResultData);
 									}
 								}
 							}
@@ -222,7 +219,7 @@ public class VotingStatisticSumYearCalcular {
 								if (votingStatisticList != null && votingStatisticList.size() > 0) {
 									VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 									if (votingResultData != null) {
-										updateDetailData(companyId, groupId, 0, year, null, null, null,
+										updateDetailData(companyId, groupId, 0, year, null, null, null, null,
 												agency.getItemCode(), agency.getItemName(), votingStatisticList,
 												votingResultData);
 									}
@@ -245,13 +242,13 @@ public class VotingStatisticSumYearCalcular {
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
-				String[] votingCodeArr = getVotingCode(groupId);
+				List<VotingResponse> votingList = getVotingCode(groupId);
 				if (agencyList != null && agencyList.size() > 0) {
 					for (GovAgencyData agency : agencyList) {
 						votingResultRequest.setGovAgencyCode(agency.getItemCode());
-						if (votingCodeArr != null) {
-							for (String votingCode : votingCodeArr) {
-								votingResultRequest.setVotingCode(votingCode);
+						if (votingList != null && votingList.size() > 0) {
+							for (VotingResponse voting : votingList) {
+								votingResultRequest.setVotingCode(voting.getItemCode());
 
 								try {
 									votingResultRequest.setDomain(DossierStatisticConstants.TOTAL);
@@ -265,9 +262,9 @@ public class VotingStatisticSumYearCalcular {
 										if (votingStatisticList != null && votingStatisticList.size() > 0) {
 											VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 											if (votingResultData != null) {
-												updateDetailData(companyId, groupId, 0, year, votingCode, null, null,
-														agency.getItemCode(), agency.getItemName(), votingStatisticList,
-														votingResultData);
+												updateDetailData(companyId, groupId, 0, year, voting.getItemCode(),
+														voting.getItemName(), null, null, agency.getItemCode(),
+														agency.getItemName(), votingStatisticList, votingResultData);
 											}
 										}
 									}
@@ -282,7 +279,7 @@ public class VotingStatisticSumYearCalcular {
 		}
 
 		/** case votingCode == null && domain != null && agency != null **/
-		if (isVoting && !isDomain && isAgency) {
+		if (!isVoting && isDomain && isAgency) {
 			/* statistic by all */
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
@@ -310,7 +307,7 @@ public class VotingStatisticSumYearCalcular {
 										if (votingStatisticList != null && votingStatisticList.size() > 0) {
 											VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 											if (votingResultData != null) {
-												updateDetailData(companyId, groupId, 0, year, null,
+												updateDetailData(companyId, groupId, 0, year, null, null,
 														domain.getItemCode(), domain.getItemName(),
 														agency.getItemCode(), agency.getItemName(), votingStatisticList,
 														votingResultData);
@@ -328,8 +325,9 @@ public class VotingStatisticSumYearCalcular {
 		}
 
 		/** case votingCode != null && domain != null && agency != null **/
-		if (isVoting && !isDomain && isAgency) {
+		if (isVoting && isDomain && isAgency) {
 			/* statistic by all */
+			//System.out.println("STRART");
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
 			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
@@ -337,16 +335,22 @@ public class VotingStatisticSumYearCalcular {
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
 				List<DomainResponse> domainList = getDomain(groupId);
-				String[] votingCodeArr = getVotingCode(groupId);
+				List<VotingResponse> votingList = getVotingCode(groupId);
+				//System.out.println("groupId: "+groupId);
 				if (agencyList != null && agencyList.size() > 0) {
+					//System.out.println("agencyList: "+ agencyList.size());
 					for (GovAgencyData agency : agencyList) {
 						votingResultRequest.setGovAgencyCode(agency.getItemCode());
+						//System.out.println("agency.getItemCode(): "+ agency.getItemCode());
 						if (domainList != null) {
 							for (DomainResponse domain : domainList) {
 								votingResultRequest.setDomain(domain.getItemCode());
-								if (votingCodeArr != null) {
-									for (String votingCode : votingCodeArr) {
-										votingResultRequest.setVotingCode(votingCode);
+								//System.out.println("domain.getItemCode(): "+ domain.getItemCode());
+								//System.out.println("votingList.size(): "+ votingList.size());
+								if (votingList != null && votingList.size() > 0) {
+									for (VotingResponse voting : votingList) {
+										votingResultRequest.setVotingCode(voting.getItemCode());
+										//System.out.println("voting.getItemCode(): "+ voting.getItemCode());
 										try {
 											VotingResultResponse votingResultResponse = votingStatisticFinderService
 													.finderVotingStatisticList(votingResultRequest);
@@ -357,10 +361,11 @@ public class VotingStatisticSumYearCalcular {
 												if (votingStatisticList != null && votingStatisticList.size() > 0) {
 													VotingResultStatisticData votingResultData = votingStatisticList.get(0);
 													if (votingResultData != null) {
-														updateDetailData(companyId, groupId, 0, year, null,
+														updateDetailData(companyId, groupId, 0, year,
+																voting.getItemCode(), voting.getItemName(),
 																domain.getItemCode(), domain.getItemName(),
-																agency.getItemCode(), agency.getItemName(), votingStatisticList,
-																votingResultData);
+																agency.getItemCode(), agency.getItemName(),
+																votingStatisticList, votingResultData);
 													}
 												}
 											}
@@ -423,7 +428,8 @@ public class VotingStatisticSumYearCalcular {
 		return domainList;
 	}
 
-	private String[] getVotingCode(long groupId) {
+	private List<VotingResponse> getVotingCode(long groupId) {
+		List<VotingResponse> votingList = new ArrayList<VotingResponse>();
 
 		VotingResultRequest votingRequest = new VotingResultRequest();
 		votingRequest.setMonth(-1);
@@ -436,24 +442,18 @@ public class VotingStatisticSumYearCalcular {
 			VotingResultResponse votingResponse = votingStatisticFinderService.finderVotingStatistic(votingRequest);
 
 			if (votingResponse != null) {
-				List<VotingResultStatisticData> votingResultList = votingResponse.getData();
-				if (votingResultList != null && votingResultList.size() > 0) {
-					StringBuilder sb = new StringBuilder();
-					for (VotingResultStatisticData votingData : votingResultList) {
-						String strVotingCode = sb.toString();
-						if (Validator.isNotNull(votingData.getVotingCode())) {
-							if (Validator.isNotNull(sb.toString())) {
-								if (!strVotingCode.contains(votingData.getVotingCode())) {
-									sb.append(StringPool.COMMA);
-									sb.append(votingData.getVotingCode());
-								}
-							} else {
-								sb.append(votingData.getVotingCode());
-							}
+				List<VotingResultStatisticData> votingDataList = votingResponse.getData();
+				VotingResponse result = null;
+				if (votingDataList != null && votingDataList.size() > 0) {
+					for (VotingResultStatisticData votingData : votingDataList) {
+						if (Validator.isNotNull(votingData.getVotingCode())
+								&& Validator.isNotNull(votingData.getVotingSubject())) {
+							result = new VotingResponse();
+							result.setItemCode(votingData.getVotingCode());
+							result.setItemName(votingData.getVotingSubject());
+
+							votingList.add(result);
 						}
-					}
-					if (Validator.isNotNull(sb.toString())) {
-						return StringUtil.split(sb.toString());
 					}
 				}
 			}
@@ -461,12 +461,19 @@ public class VotingStatisticSumYearCalcular {
 			_log.error(e);
 		}
 
-		return null;
+		/* remove duplicate */
+		Set<VotingResponse> hs = new HashSet<>();
+		hs.addAll(votingList);
+		votingList.clear();
+		votingList.addAll(hs);
+
+		return votingList;
 	}
 
-	private void updateDetailData(long companyId, long groupId, int month, int year, String votingCode, String domain,
-			String domainName, String govAgencyCode, String govAgencyName, List<VotingResultStatisticData> dataList,
-			VotingResultStatisticData votingResultData) throws SystemException, PortalException {
+	private void updateDetailData(long companyId, long groupId, int month, int year, String votingCode,
+			String votingSubject, String domain, String domainName, String govAgencyCode, String govAgencyName,
+			List<VotingResultStatisticData> dataList, VotingResultStatisticData votingResultData)
+			throws SystemException, PortalException {
 		VotingResultStatisticData votingData = new VotingResultStatisticData();
 
 		int totalVoted = 0;
@@ -495,6 +502,7 @@ public class VotingStatisticSumYearCalcular {
 		votingData.setMonth(month);
 		votingData.setYear(year);
 		votingData.setVotingCode(votingCode);
+		votingData.setVotingSubject(votingSubject);
 		votingData.setDomain(domain);
 		votingData.setDomainName(domainName);
 		votingData.setGovAgencyCode(govAgencyCode);

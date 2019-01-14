@@ -312,6 +312,7 @@
 		<column name="instructionNote" type="String" />
 		<column name="submissionNote" type="String" />
 		<column name="sampleCount" type="long" />
+		<column name="registerBookCode" type="String"></column>
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -2176,7 +2177,11 @@
 		<column name="serverNo" type="String" />
 		<column name="status" type="int" />
 		<column name="retry" type="int" />
-
+		<column name="publishType" type="int" />
+		<column name="publishData" type="String" />
+		<column name="messageText" type="String" />
+		<column name="acknowlegement" type="String" />
+				
 		<order>
 			<order-column name="modifiedDate" />
 		</order>
@@ -2189,6 +2194,20 @@
 			<finder-column name="groupId" />	
 			<finder-column name="dossierId" />	
 			<finder-column name="serverNo" />					
+		</finder>
+
+		<finder return-type="Collection" name="G_DID_SN_NST">
+			<finder-column name="groupId" />	
+			<finder-column name="dossierId" />	
+			<finder-column name="serverNo" />			
+			<finder-column name="status" />		
+		</finder>
+		
+		<finder return-type="Collection" name="G_DID_SN_ST">
+			<finder-column name="groupId" />	
+			<finder-column name="dossierId" />	
+			<finder-column name="serverNo" />			
+			<finder-column name="status" comparator="=" arrayable-operator="OR"/>		
 		</finder>
 	</entity>
 
@@ -2323,6 +2342,61 @@
 		</finder>
 	</entity>
 		
+	<entity local-service="true" name="OpencpsVotingStatistic"
+		remote-service="false" table="opencps_voting_statistic" uuid="true">
+
+		<column name="votingStatisticId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="month" type="int" />
+		<column name="year" type="int" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
+		<column name="votingCode" type="String" />
+		<column name="votingSubject" type="String" />
+		<column name="totalVoted" type="int" />
+		<column name="veryGoodCount" type="int" />
+		<column name="goodCount" type="int" />
+		<column name="badCount" type="int" />
+		<column name="percentVeryGood" type="int" />
+		<column name="percentGood" type="int" />
+		<column name="percentBad" type="int" />
+		<column name="totalCount" type="int" />
+		
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_UID_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+		
+		<finder return-type="OpencpsVotingStatistic" name="M_Y_DM_G_VC">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="votingCode"/>
+		</finder>
+		
+		<finder return-type="Collection" name="M_Y_DM_G">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+		</finder>
+	</entity>
+			
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

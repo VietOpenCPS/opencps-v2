@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -60,6 +61,8 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
 		jsonData.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
 		jsonData.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
+		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		//
 		Date dueDate = dossier.getDueDate();
 		if (dueDate != null) {
@@ -77,6 +80,7 @@ public class DossierDocumentUtils {
 						//_log.info("jsonDueDate: " + jsonDueDate);
 						if (jsonDueDate != null) {
 							JSONObject hours = jsonDueDate.getJSONObject("hour");
+							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
 							//_log.info("hours: " + hours);
 							if (hours != null && hours.has("AM") && hours.has("PM")) {
 								//_log.info("AM-PM: ");
@@ -104,14 +108,53 @@ public class DossierDocumentUtils {
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
-											dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
-											dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
-											dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											if (Integer.valueOf(splitAfter[0]) < 12) {
+												dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											} else {
+												//dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											}
 										}
 									}
 								}
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
+							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+								//_log.info("STRART check new: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(dossier.getReceiveDate());
+								//
+								String receiveHour = processHours.getString("startHour");
+								//_log.info("receiveHour: " + receiveHour);
+
+								if (Validator.isNotNull(receiveHour)) {
+									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
+									if (splitHour != null) {
+										int hourStart = GetterUtil.getInteger(splitHour[0]);
+										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
+											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+													StringPool.COLON);
+											Calendar dueCalendar = Calendar.getInstance();
+											if (splitdueHour != null) {
+												dueCalendar.set(Calendar.HOUR_OF_DAY,
+														GetterUtil.getInteger(splitdueHour[0]));
+												dueCalendar.set(Calendar.MINUTE,
+														GetterUtil.getInteger(splitdueHour[1]));
+											} else {
+												jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+														dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+											}
+											jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+													dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
+										} else {
+											jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+													dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+										}
+									}
+								}
 							} else {
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));

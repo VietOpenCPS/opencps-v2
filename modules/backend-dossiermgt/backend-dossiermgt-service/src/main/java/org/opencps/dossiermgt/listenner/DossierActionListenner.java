@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -98,7 +99,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							: StringPool.BLANK;
 				}
 
-				String content = model.getActionNote();
+				String content = Validator.isNotNull(model.getActionNote()) ? HtmlUtil.escape(model.getActionNote()) : StringPool.BLANK;
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 

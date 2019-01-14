@@ -188,7 +188,7 @@ create index IX_85322B32 on opencps_processsteprole (processStepId);
 create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255$]);
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_F5FF8328 on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$]);
+create index IX_3EBC1A0E on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$], status);
 create index IX_E385792A on opencps_publish_queue (status);
 create unique index IX_6E7DABBA on opencps_publish_queue (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -260,3 +260,9 @@ create unique index IX_BB01B90D on opencps_stepconfig (uuid_[$COLUMN_LENGTH:75$]
 
 create index IX_9BD8108 on opencps_userinfolog (userId);
 create index IX_24F4AF26 on opencps_userinfolog (uuid_[$COLUMN_LENGTH:75$]);
+
+create index IX_4CB1A625 on opencps_voting_statistic (groupId, month, year, govAgencyCode[$COLUMN_LENGTH:255$], domainCode[$COLUMN_LENGTH:255$], votingCode[$COLUMN_LENGTH:255$]);
+create index IX_5F08E820 on opencps_voting_statistic (groupId, month, year, votingCode[$COLUMN_LENGTH:255$]);
+create index IX_BFA3D3B4 on opencps_voting_statistic (groupId, userId, year);
+create index IX_DCEE9FB5 on opencps_voting_statistic (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_25958F77 on opencps_voting_statistic (uuid_[$COLUMN_LENGTH:75$], groupId);

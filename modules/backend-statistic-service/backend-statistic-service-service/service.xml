@@ -105,6 +105,12 @@
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 		</finder>
+		<finder return-type="Collection" name="GID_M_Y_RP">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="reporting"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"
@@ -152,5 +158,91 @@
 			<finder-column name="domainCode"/>
 		</finder>
 		
+		<finder return-type="Collection" name="G_D_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+
+		<finder return-type="Collection" name="G_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+
+		<finder return-type="Collection" name="CID_GID_Y">
+			<finder-column name="companyId"/>
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
 	</entity>
+
+	<entity local-service="true" name="OpencpsPersonStatistic"
+		remote-service="false" table="opencps_person_statistic" uuid="true">
+
+		<column name="personStatisticId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="month" type="int" />
+		<column name="year" type="int" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="employeeId" type="long" />
+<!-- 		<column name="domainName" type="String" /> -->
+		<column name="votingCode" type="String" />
+		<column name="votingSubject" type="String" />
+		<column name="totalVoted" type="int" />
+		<column name="veryGoodCount" type="int" />
+		<column name="goodCount" type="int" />
+		<column name="badCount" type="int" />
+		<column name="percentVeryGood" type="int" />
+		<column name="percentGood" type="int" />
+		<column name="percentBad" type="int" />
+		<column name="totalCount" type="int" />
+
+		<!-- Filter -->
+		<finder return-type="Collection" name="G_UID_Y">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>
+
+		<finder return-type="OpencpsVotingStatistic" name="M_Y_GOV_EMP">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="employeeId"/>
+		</finder>
+
+		<finder return-type="Collection" name="G_D_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="employeeId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+
+		<finder return-type="Collection" name="G_M_Y">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+
+		<finder return-type="Collection" name="CID_GID_Y">
+			<finder-column name="companyId"/>
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
+	</entity>
+
 </service-builder>

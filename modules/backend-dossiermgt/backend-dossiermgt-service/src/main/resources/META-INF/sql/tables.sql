@@ -120,7 +120,7 @@ create table opencps_dossier (
 	modifiedDate DATE null,
 	referenceUid VARCHAR(75) null,
 	counter INTEGER,
-	registerBookCode VARCHAR(75) null,
+	registerBookCode VARCHAR(100) null,
 	registerBookName VARCHAR(75) null,
 	dossierRegister VARCHAR(75) null,
 	processNo VARCHAR(75) null,
@@ -643,7 +643,8 @@ create table opencps_processoption (
 	serviceProcessId LONG,
 	instructionNote TEXT null,
 	submissionNote TEXT null,
-	sampleCount LONG
+	sampleCount LONG,
+	registerBookCode VARCHAR(100) null
 );
 
 create table opencps_processsequence (
@@ -710,7 +711,11 @@ create table opencps_publish_queue (
 	dossierId LONG,
 	serverNo VARCHAR(255) null,
 	status INTEGER,
-	retry INTEGER
+	retry INTEGER,
+	publishType INTEGER,
+	publishData TEXT null,
+	messageText TEXT null,
+	acknowlegement TEXT null
 );
 
 create table opencps_registration (
@@ -962,4 +967,31 @@ create table opencps_userinfolog (
 	userId LONG,
 	createDate DATE null,
 	payload VARCHAR(75) null
+);
+
+create table opencps_voting_statistic (
+	uuid_ VARCHAR(75) null,
+	votingStatisticId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	month INTEGER,
+	year INTEGER,
+	govAgencyCode VARCHAR(255) null,
+	govAgencyName STRING null,
+	domainCode VARCHAR(255) null,
+	domainName STRING null,
+	votingCode VARCHAR(255) null,
+	votingSubject STRING null,
+	totalVoted INTEGER,
+	veryGoodCount INTEGER,
+	goodCount INTEGER,
+	badCount INTEGER,
+	percentVeryGood INTEGER,
+	percentGood INTEGER,
+	percentBad INTEGER,
+	totalCount INTEGER
 );

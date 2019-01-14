@@ -181,6 +181,21 @@ create table opencps_resourceuser (
 	readonly BOOLEAN
 );
 
+create table opencps_userlogin (
+	uuid_ VARCHAR(75) null,
+	userLoginId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	sessionId VARCHAR(255) null,
+	hits INTEGER,
+	logout DATE null,
+	ipAddress VARCHAR(255) null
+);
+
 create table opencps_visibility (
 	uuid_ VARCHAR(75) null,
 	visibilityId LONG not null primary key,

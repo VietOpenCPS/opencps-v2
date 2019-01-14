@@ -1,5 +1,7 @@
 package org.opencps.dossiermgt.scheduler;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -13,6 +15,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -82,7 +85,9 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 	private boolean processPublish(PublishQueue pq) {
 		long dossierId = pq.getDossierId();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		
+		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
+			return true;
+		}
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
 		
@@ -91,6 +96,13 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 				if (dossier != null && dossier.getOriginality() > 0) {
 					OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+					if (client.isWriteLog()) {
+						String messageText = DossierMgtUtils.convertDossierToJSON(dossier).toJSONString();
+						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+						pq.setMessageText(messageText);
+						pq.setAcknowlegement(acknowlegement);
+						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+					}
 					if (result.getDossierId() != null) {
 						return true;
 					}
@@ -113,11 +125,35 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 					if (Validator.isNotNull(token.getAccessToken())) {
 						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier);
 						MResult result = client.publishDossier(token.getAccessToken(), OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+						if (client.isWriteLog()) {
+							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
+							messageObj.put("token", token.getAccessToken());
+							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
+							String messageText = messageObj.toJSONString();
+							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+							pq.setMessageText(messageText);
+							pq.setAcknowlegement(acknowlegement);
+							pq.setPublishType(1);
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);							
+						}
 						if (result.getStatus() != 200) {
 							return false;
 						}
 						else {
+							ServiceContext context = new ServiceContext();
 							MResult result2 = client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));	
+							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
+							messageObj.put("token", token.getAccessToken());
+							JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
+							messageObj.put("MDocumentTraces", lgspObj.toJSONString());
+							String messageText = messageObj.toJSONString();
+							String acknowlegement = JSONFactoryUtil.looseSerialize(result2);
+							PublishQueueLocalServiceUtil.updatePublishQueue(
+									sc.getGroupId(), 0l, 2, 0l, 
+									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+									messageText, acknowlegement,
+									context);	
+							
 							if (result2.getStatus() != 200) {
 								return false;
 							}
@@ -134,6 +170,8 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 					return true;
 				}
 			} catch (JSONException e) {
+				_log.error(e);
+			} catch (PortalException e) {
 				_log.error(e);
 			}					
 		}

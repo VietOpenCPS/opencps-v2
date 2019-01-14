@@ -188,6 +188,14 @@ public interface PublishQueueLocalService extends BaseLocalService,
 		String serverNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PublishQueue> getByG_DID_SN_NST(long groupId, long dossierId,
+		String serverNo, int status);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PublishQueue> getByG_DID_SN_ST(long groupId, long dossierId,
+		String serverNo, int[] status);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PublishQueue> getByStatus(int status, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -253,6 +261,12 @@ public interface PublishQueueLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public PublishQueue removePublishQueue(long publishQueueId)
 		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PublishQueue updatePublishQueue(long groupId, long publishQueueId,
+		int publishType, long dossierId, String serverNo, String publishData,
+		int status, int retry, String messageText, String acknowlegement,
+		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PublishQueue updatePublishQueue(long groupId, long publishQueueId,

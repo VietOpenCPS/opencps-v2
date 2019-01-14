@@ -39,14 +39,27 @@ public class HolidayUtils {
 		long hoursCount = processHoursCount(durationCount, durationUnit);
 //		_log.info("hoursCount: "+hoursCount);
 
-		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupId(groupId);
+		List<Holiday> holidayList = HolidayLocalServiceUtil.getHolidayByGroupIdAndType(groupId, 0);
+		List<Holiday> extendWorkDayList = HolidayLocalServiceUtil.getHolidayByGroupIdAndType(groupId, 1);
 
-		Date dueDate = getEndDate(groupId, startDate, hoursCount, holidayList);
+		Date dueDateCal = getEndDate(groupId, startDate, hoursCount, holidayList, extendWorkDayList);
 //		_log.info("dueDate: "+dueDate);
-//		Calendar cal = Calendar.getInstance();
-//		cal.setTime(startDate);
-//		int day = cal.get(Calendar.DAY_OF_WEEK);
-		return dueDate;
+		if (dueDateCal != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dueDateCal);
+			// minute / 15 == 0
+			int minute = cal.get(Calendar.MINUTE) < 15 ? 15
+					: cal.get(Calendar.MINUTE) < 30 ? 30 : cal.get(Calendar.MINUTE) < 45 ? 45 : 0;
+			if (minute == 0) {
+				cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + 1);
+			}
+			cal.set(Calendar.MINUTE, minute);
+
+			return cal.getTime();			
+		}
+		else {
+			return null;
+		}
 	}
 
 	private static long processHoursCount(double durationCount, int durationUnit) {
@@ -174,7 +187,8 @@ public class HolidayUtils {
 		}
 	}
 
-	public static Date getEndDate(long groupId, Date startDate, long hoursCount, List<Holiday> holidayList) {
+	public static Date getEndDate(long groupId, Date startDate, long hoursCount, List<Holiday> holidayList,
+			List<Holiday> extendWorkDayList) {
 
 		/* format pattern = "3 10:30" */
 		if (startDate == null) {
@@ -215,10 +229,10 @@ public class HolidayUtils {
 //			int count = 0;
 			if (countDay > 0 && countDay == 1) {
 				baseDateCal.add(Calendar.DATE, 1);
-				boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+				boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList, extendWorkDayList);
 				while(flagCheckDay) {
 					baseDateCal.add(Calendar.DATE, 1);
-					flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+					flagCheckDay = checkDay(baseDateCal, startDate, holidayList, extendWorkDayList);
 				}
 			} else if (countDay > 1) {
 //				for (int i = 0; i < countDay; i++) {
@@ -235,7 +249,7 @@ public class HolidayUtils {
 				int i = 0;
 				while(i < countDay) {
 					baseDateCal.add(Calendar.DATE, 1);
-					boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList);
+					boolean flagCheckDay = checkDay(baseDateCal, startDate, holidayList, extendWorkDayList);
 					if(!flagCheckDay) {
 						i++;
 					}
@@ -444,7 +458,8 @@ public class HolidayUtils {
 	}
 
 	//LamTV_ Process checkDay
-	private static boolean checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList) {
+	private static boolean checkDay(Calendar baseDateCal, Date startDate, List<Holiday> holidayList,
+			List<Holiday> extendWorkDayList) {
 
 		boolean flagCheckDay = false;
 		try {
@@ -456,7 +471,8 @@ public class HolidayUtils {
 			//Check day is Day off
 			boolean isDayOff = false;
 //			_log.info("baseDateCal.get(Calendar.DAY_OF_WEEK): "+baseDateCal.get(Calendar.DAY_OF_WEEK));
-			if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))) {
+			if (strDayOff.contains(String.valueOf(baseDateCal.get(Calendar.DAY_OF_WEEK)))
+					&& !isHoliday(baseDateCal, extendWorkDayList)) {
 				isDayOff = true;
 			}
 

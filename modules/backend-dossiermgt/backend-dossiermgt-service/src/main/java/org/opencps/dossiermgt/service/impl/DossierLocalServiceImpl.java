@@ -1860,6 +1860,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String submitting = GetterUtil.getString(params.get(DossierTerm.SUBMITTING));
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
+		int day = GetterUtil.getInteger(params.get(DossierTerm.DAY));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 
@@ -1902,7 +1903,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
 				: null;
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
-
+		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -1932,7 +1933,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, booleanCommon);
+				originDossierId, time, register, day, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -1966,6 +1967,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		int year = GetterUtil.getInteger(params.get(DossierTerm.YEAR));
 		int month = GetterUtil.getInteger(params.get(DossierTerm.MONTH));
+		int day = GetterUtil.getInteger(params.get(DossierTerm.DAY));
 
 		String strDossierActionId = GetterUtil.getString(params.get(DossierTerm.DOSSIER_ACTION_ID));
 		String fromReceiveDate = GetterUtil.getString(params.get(DossierTerm.FROM_RECEIVEDATE));
@@ -2006,7 +2008,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.ORIGIN_DOSSIER_ID))
 				: null);
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
-
+		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2033,7 +2036,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, booleanCommon);
+				originDossierId, time, register, day, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2138,7 +2141,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
-			String toStatisticDate, Integer originDossierId, String time, BooleanQuery booleanQuery)
+			String toStatisticDate, Integer originDossierId, String time, String register, int day, BooleanQuery booleanQuery)
 			throws ParseException {
 
 
@@ -2337,89 +2340,97 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
 			}
 		} else {
-			if (year > 0) {
-//				_log.info("year: "+year);
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
-				//MultiMatchQuery queryYearTwo = new MultiMatchQuery(String.valueOf(year));
+			if (year > 0 || month > 0) {
+				if (year > 0) {
+//					_log.info("year: "+year);
+					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(year));
+					//MultiMatchQuery queryYearTwo = new MultiMatchQuery(String.valueOf(year));
 
-//				if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-//					MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
-//					MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
-//					BooleanQuery subQueryOne = new BooleanQueryImpl();
-//					BooleanQuery subQueryTwo = new BooleanQueryImpl();
-//					BooleanQuery subQueryThree = new BooleanQueryImpl();
-//					
-//					//Check receiveDate != null
-//					queryReceive.addField(DossierTerm.YEAR_DOSSIER);
-//					subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
-//					//Check receiveDate
-//					queryYearTwo.addFields(DossierTerm.YEAR_DOSSIER);
-//					subQueryOne.add(queryYearTwo, BooleanClauseOccur.SHOULD);
-//					/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
-//					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.YEAR_DOSSIER,
-//							String.valueOf(0), String.valueOf(month), false, false);
-//					subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
-//					
-//					queryRelease.addField(DossierTerm.YEAR_RELEASE);
-//					subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
-//					
-//					subQueryThree.add(queryYearTwo, BooleanClauseOccur.SHOULD);
-//					
-//					queryYearTwo.addFields(DossierTerm.YEAR_RELEASE);
-//					subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
-//					//
-//					subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-//					//
-//					booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
-//				} else {
-					query.addFields(DossierTerm.YEAR_DOSSIER);
-					booleanQuery.add(query, BooleanClauseOccur.MUST);
-//				}
-			}
+//					if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+//						MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
+//						MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+//						BooleanQuery subQueryOne = new BooleanQueryImpl();
+//						BooleanQuery subQueryTwo = new BooleanQueryImpl();
+//						BooleanQuery subQueryThree = new BooleanQueryImpl();
+//						
+//						//Check receiveDate != null
+//						queryReceive.addField(DossierTerm.YEAR_DOSSIER);
+//						subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+//						//Check receiveDate
+//						queryYearTwo.addFields(DossierTerm.YEAR_DOSSIER);
+//						subQueryOne.add(queryYearTwo, BooleanClauseOccur.SHOULD);
+//						/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
+//						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.YEAR_DOSSIER,
+//								String.valueOf(0), String.valueOf(month), false, false);
+//						subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+//						
+//						queryRelease.addField(DossierTerm.YEAR_RELEASE);
+//						subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
+//						
+//						subQueryThree.add(queryYearTwo, BooleanClauseOccur.SHOULD);
+//						
+//						queryYearTwo.addFields(DossierTerm.YEAR_RELEASE);
+//						subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+//						//
+//						subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+//						//
+//						booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+//					} else {
+						query.addFields(DossierTerm.YEAR_DOSSIER);
+						booleanQuery.add(query, BooleanClauseOccur.MUST);
+//					}
+				}
 
-			if (month > 0) {
-//				_log.info("month: "+month);
-				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
-				//MultiMatchQuery queryMonthTwo = new MultiMatchQuery(String.valueOf(month));
-				
-//				if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-//					MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
-//					MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
-//					BooleanQuery subQueryOne = new BooleanQueryImpl();
-//					BooleanQuery subQueryTwo = new BooleanQueryImpl();
-//					BooleanQuery subQueryThree = new BooleanQueryImpl();
-//					
-//					//Check receiveDate != null
-//					queryReceive.addField(DossierTerm.MONTH_DOSSIER);
-//					subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
-//					//Check receiveDate
-//					queryMonthTwo.addFields(DossierTerm.MONTH_DOSSIER);
-//					subQueryOne.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
-//					/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
-//					// Check receiveDate < now
-////					Calendar calDate = Calendar.getInstance();
-////					calDate.setTime(new Date());
-////					int monthCurrent = calDate.get(Calendar.MONTH) + 1;
-//					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
-//							String.valueOf(0), String.valueOf(month), false, false);
-//					subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
-//					
-//					queryRelease.addField(DossierTerm.MONTH_RELEASE);
-//					subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
-//					
-//					subQueryThree.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
-//					
-//					queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
-//					subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
-////					//
-//					subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-//					//
-//					booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
-//				} else {
-					query.addFields(DossierTerm.MONTH_DOSSIER);
-					booleanQuery.add(query, BooleanClauseOccur.MUST);
-//				}
-			}
+				if (month > 0) {
+//					_log.info("month: "+month);
+					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(month));
+					//MultiMatchQuery queryMonthTwo = new MultiMatchQuery(String.valueOf(month));
+					
+//					if (Validator.isNotNull(top) && DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+//						MultiMatchQuery queryReceive = new MultiMatchQuery(String.valueOf(0));
+//						MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+//						BooleanQuery subQueryOne = new BooleanQueryImpl();
+//						BooleanQuery subQueryTwo = new BooleanQueryImpl();
+//						BooleanQuery subQueryThree = new BooleanQueryImpl();
+//						
+//						//Check receiveDate != null
+//						queryReceive.addField(DossierTerm.MONTH_DOSSIER);
+//						subQueryOne.add(queryReceive, BooleanClauseOccur.MUST_NOT);
+//						//Check receiveDate
+//						queryMonthTwo.addFields(DossierTerm.MONTH_DOSSIER);
+//						subQueryOne.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
+//						/**Check receiveDate < now && releaseDate = null or releaseDate = now**/
+//						// Check receiveDate < now
+////						Calendar calDate = Calendar.getInstance();
+////						calDate.setTime(new Date());
+////						int monthCurrent = calDate.get(Calendar.MONTH) + 1;
+//						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.MONTH_DOSSIER,
+//								String.valueOf(0), String.valueOf(month), false, false);
+//						subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+//						
+//						queryRelease.addField(DossierTerm.MONTH_RELEASE);
+//						subQueryTwo.add(queryRelease, BooleanClauseOccur.SHOULD);
+//						
+//						subQueryThree.add(queryMonthTwo, BooleanClauseOccur.SHOULD);
+//						
+//						queryMonthTwo.addFields(DossierTerm.MONTH_RELEASE);
+//						subQueryTwo.add(subQueryThree, BooleanClauseOccur.MUST);
+////						//
+//						subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+//						//
+//						booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+//					} else {
+						query.addFields(DossierTerm.MONTH_DOSSIER);
+						booleanQuery.add(query, BooleanClauseOccur.MUST);
+//					}
+				}
+			} 
+			//Temporatory comment for dossier has not received
+//			else {
+//				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+//				query.addField(DossierTerm.RECEIVE_DATE_TIMESTAMP);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+//			}
 		}
 
 		if (Validator.isNotNull(top)) {
@@ -2437,18 +2448,60 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				subQuery.add(queryRelease, BooleanClauseOccur.MUST);
 				// Dossier is delay
 				if (top.toLowerCase().equals(DossierTerm.DELAY)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+
 					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
 					query.addFields(DossierTerm.COMPARE_DELAY_DATE);
 					subQuery.add(query, BooleanClauseOccur.MUST);
 				// Dossier is overDue
 				} else if (top.toLowerCase().equals(DossierTerm.OVER_DUE)) {
+					BooleanQuery subQueryOne = new BooleanQueryImpl();
+					BooleanQuery subQueryTwo = new BooleanQueryImpl();
+					BooleanQuery subQueryThree = new BooleanQueryImpl();
+
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryWaiting = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_WAITING);
+					queryWaiting.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(queryWaiting, BooleanClauseOccur.MUST_NOT);
+
+					/** Check condition status != receiving **/
+					MultiMatchQuery queryReceiving = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_RECEIVING);
+					queryReceiving.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(queryReceiving, BooleanClauseOccur.MUST_NOT);
+
+					/** Check condition releaseDate > dueDate **/
+					MultiMatchQuery queryCompareRelease = new MultiMatchQuery(String.valueOf(1));
+					queryCompareRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+					subQueryOne.add(queryCompareRelease, BooleanClauseOccur.MUST);
+					
+					/** Check condition nowDate >= dueDate **/
 					Date date = new Date();
 					long nowTime = date.getTime();
 					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
 							String.valueOf(0), String.valueOf(nowTime), false, false);
-					subQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
+
+					/** Check condition (releaseDate > dueDate || nowDate >= dueDate) **/
+					subQueryThree.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+					subQueryThree.add(subQueryOne, BooleanClauseOccur.SHOULD);
+					
+					/** Check condition dueDate!=null && (releaseDate>=dueDate || now>=dueDate) **/
+					subQuery.add(subQueryThree, BooleanClauseOccur.MUST);
 				// Dossier is coming
 				} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
+					querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDateNull, BooleanClauseOccur.MUST_NOT);
+
 					//Check dossier is not dueDate
 					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
 					query.addFields(DossierTerm.DUE_DATE_COMING);
@@ -2676,7 +2729,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 //			_log.info("START originality: "+originality);
 			TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.ORIGINALLITY,
-					String.valueOf(DossierTerm.ORIGINALITY_PUBLISH), String.valueOf(DossierTerm.ORIGINALITY_MOTCUA), true,
+					String.valueOf(DossierTerm.ORIGINALITY_PUBLISH), String.valueOf(DossierTerm.ORIGINALITY_HSLT), true,
 					true);
 			booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 		}
@@ -3013,117 +3066,276 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		// Check statistic with key "time"
 		if (Validator.isNotNull(time)) {
-			// Check list dossier is betimes
-			if (time.equals(DossierTerm.BE_TIME)) {
-				BooleanQuery subQueryOne = new BooleanQueryImpl();
-				BooleanQuery subQueryTwo = new BooleanQueryImpl();
-				BooleanQuery subQueryThree = new BooleanQueryImpl();
-
-				/** Check condition dueDate != null **/
-				MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
-				queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryOne.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
-				/** Check condition extendDate != null and releaseDate < dueDate **/
-				//Check extendDate != null
-				MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
-				queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-				subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);
-				// Check releaseDate < dueDate
-				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
-						null, String.valueOf(0), true, false);
-				subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
-				/** Check condition finishDate < dueDate **/
-				TermRangeQueryImpl termRangeFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
-						null, String.valueOf(0), true, false);
-				subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
-				/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
-				subQueryTwo.add(subQueryThree, BooleanClauseOccur.SHOULD);
-				/** Check condition dueDate != null &&  subQueryTwo **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
-				/** Add search all **/
-				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
-			} else if (time.equals(DossierTerm.OVER_TIME)) { // Check list dossier is overtime
-				BooleanQuery subQueryOne = new BooleanQueryImpl();
-				BooleanQuery subQueryTwo = new BooleanQueryImpl();
-
-				/** Check condition dueDate != null **/
-				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
-				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryOne.add(querydueDate, BooleanClauseOccur.MUST_NOT);
-				/** Check condition releaseDate > dueDate **/
-				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
-						String.valueOf(0), null, false, false);
-				subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
-				/** Check condition dueDate != null &&  subQueryTwo **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
-				/** Add search all **/
-				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
-			} else if (time.equals(DossierTerm.ON_TIME)) { // Check list dossier is ontime
-				BooleanQuery subQueryOne = new BooleanQueryImpl();
-				BooleanQuery subQueryTwo = new BooleanQueryImpl();
-
-				/** Check condition dueDate == null **/
-				MultiMatchQuery queryDueDateEmpty = new MultiMatchQuery(String.valueOf(0));
-				queryDueDateEmpty.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryOne.add(queryDueDateEmpty, BooleanClauseOccur.MUST);
-				/** Check condition extendDate != null and releaseDate < dueDate **/
-				//Check extendDate != null
-				MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
-				queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
-				subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST);
-				//Check releaseDate != null
-				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
-				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
-				subQueryTwo.add(queryRelease, BooleanClauseOccur.MUST_NOT);
-				//Check dueDate != null
-				MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
-				queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryTwo.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
-				// Check releaseDate = dueDate
-				MultiMatchQuery queryCompareRelease = new MultiMatchQuery(String.valueOf(0));
-				queryCompareRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
-				subQueryTwo.add(queryCompareRelease, BooleanClauseOccur.MUST);
-				/** Check condition (dueDate==null) || (extendDate!=null && releaseDate <= dueDate) **/
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
-				/** Add search all **/
-				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
-			} else if (time.equals(DossierTerm.OVER_DUE)) {
-				/** Check condition dueDate != null **/
-				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
-				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				booleanQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
-				/** Check condition dueDate < now **/
-				Date date = new Date();
-				long nowTime = date.getTime();
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
-						String.valueOf(0), String.valueOf(nowTime), false, false);
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			} else if (time.equals(DossierTerm.UN_DUE)){
-				BooleanQuery subQueryOne = new BooleanQueryImpl();
-				BooleanQuery subQueryTwo = new BooleanQueryImpl();
-				/** Check condition dueDate == null **/
-				MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
-				querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryOne.add(querydueDateNull, BooleanClauseOccur.MUST);
-				/** Check condition dueDate != null **/
-				MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
-				querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
-				subQueryTwo.add(querydueDate, BooleanClauseOccur.MUST_NOT);
-				/** Check condition dueDate < now **/
-				Date date = new Date();
-				long nowTime = date.getTime();
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
-						String.valueOf(nowTime), null, true, false);
-				subQueryTwo.add(termRangeQuery, BooleanClauseOccur.MUST);
-				//
-				subQueryOne.add(subQueryTwo, BooleanClauseOccur.SHOULD);
-				//
-				booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+			String[] lstTimes = StringUtil.split(time);
+			if (lstTimes != null && lstTimes.length > 1) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstTimes.length; i++) {
+					BooleanQuery query = processStatisticDossier(lstTimes[i]);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				booleanQuery.add(processStatisticDossier(time), BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(register)) {
+			MultiMatchQuery query = new MultiMatchQuery(register);
+
+			query.addFields(DossierTerm.REGISTER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}		
+		if (day > 0) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(day));
+			query.addFields(DossierTerm.DAY_DOSSIER);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
+		return booleanQuery;
+	}
+
+	private BooleanQuery processStatisticDossier(String subTime) throws ParseException {
+		BooleanQuery booleanQuery = new BooleanQueryImpl();
+		// Check list dossier is betimes
+		if (subTime.equals(DossierTerm.BE_TIME)) {
+			BooleanQuery subQueryOne = new BooleanQueryImpl();
+			BooleanQuery subQueryTwo = new BooleanQueryImpl();
+			BooleanQuery subQueryThree = new BooleanQueryImpl();
+			BooleanQuery subQueryFour = new BooleanQueryImpl();
+
+			/** Check condition dueDate != null **/
+			MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
+			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryOne.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+			/** Check condition extendDate != null and releaseDate < dueDate **/
+			//Check extendDate != null
+			MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
+			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
+			subQueryTwo.add(queryExtend, BooleanClauseOccur.MUST_NOT);
+			// Check releaseDate < dueDate
+			//TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+			//		null, String.valueOf(0), true, false);
+			//subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+			MultiMatchQuery termRangeRelease = new MultiMatchQuery(String.valueOf(3));
+			termRangeRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+			subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+			/** Check condition finishDate < dueDate **/
+			//TermRangeQueryImpl termRangeFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
+			//		null, String.valueOf(0), true, false);
+			MultiMatchQuery termRangeFinish = new MultiMatchQuery(String.valueOf(3));
+			termRangeFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
+			subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
+			/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
+			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
+			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+			/** Check condition dueDate != null &&  subQueryTwo **/
+			subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
+			/** Add search all **/
+			booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+		} else if (subTime.equals(DossierTerm.OVER_TIME)) { // Check list dossier is overtime
+			BooleanQuery subQueryOne = new BooleanQueryImpl();
+			BooleanQuery subQueryTwo = new BooleanQueryImpl();
+
+			/** Check condition releaseDate != null **/
+			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			subQueryOne.add(queryRelease, BooleanClauseOccur.MUST_NOT);
+			/** Check condition dueDate != null **/
+			MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+			querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryOne.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+			/** Check condition releaseDate > dueDate **/
+			MultiMatchQuery termRangeRelease = new MultiMatchQuery(String.valueOf(1));
+			termRangeRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+			subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+			//TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+			//		String.valueOf(0), null, false, false);
+			//subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
+			/** Check condition releaseDate != null && dueDate != null &&  subQueryTwo **/
+			subQueryOne.add(subQueryTwo, BooleanClauseOccur.MUST);
+			/** Add search all **/
+			booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+		} else if (subTime.equals(DossierTerm.ON_TIME)) { // Check list dossier is ontime
+			BooleanQuery subQueryOne = new BooleanQueryImpl();
+			BooleanQuery subQueryTwo = new BooleanQueryImpl();
+			BooleanQuery subQueryThree = new BooleanQueryImpl();
+			BooleanQuery subQueryFour = new BooleanQueryImpl();
+			BooleanQuery subQueryFive = new BooleanQueryImpl();
+			BooleanQuery subQuerySix = new BooleanQueryImpl();
+			BooleanQuery subQuerySeven = new BooleanQueryImpl();
+
+			/** Check condition releaseDate!=null && (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))) - START **/
+			/** Check condition releaseDate != null **/
+			MultiMatchQuery queryReleaseEmpty = new MultiMatchQuery(String.valueOf(0));
+			queryReleaseEmpty.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			subQueryOne.add(queryReleaseEmpty, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate)) - START **/
+			/** Check condition dueDate == null **/
+			MultiMatchQuery queryDueDateEmpty = new MultiMatchQuery(String.valueOf(0));
+			queryDueDateEmpty.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryTwo.add(queryDueDateEmpty, BooleanClauseOccur.MUST);
+
+			/** Check condition (extendDate == null and releaseDate < dueDate && (finishDate==null||finishDate>=dueDate))- START **/
+			/** Check condition extendDate == null and releaseDate < dueDate **/
+			//Check extendDate == null
+			MultiMatchQuery queryExtend = new MultiMatchQuery(String.valueOf(0));
+			queryExtend.addField(DossierTerm.EXTEND_DATE_TIMESTAMP);
+			subQueryThree.add(queryExtend, BooleanClauseOccur.MUST);
+			//Check dueDate != null
+			MultiMatchQuery queryDueDate = new MultiMatchQuery(String.valueOf(0));
+			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryThree.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
+			// Check releaseDate < dueDate
+			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+					String.valueOf(2), String.valueOf(3), true, true);
+			subQueryThree.add(queryCompareRelease, BooleanClauseOccur.MUST);
+
+			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - START **/
+			/** Check condition (finishDate == null) **/
+			MultiMatchQuery queryFinishDateEmpty = new MultiMatchQuery(String.valueOf(0));
+			queryFinishDateEmpty.addField(DossierTerm.FINISH_DATE_TIMESTAMP);
+			subQueryFour.add(queryFinishDateEmpty, BooleanClauseOccur.MUST);
+
+			/** Check condition (finishDate != null && finishDate >= dueDate) **/
+			//Check finishDate != null
+			MultiMatchQuery queryFinishDate = new MultiMatchQuery(String.valueOf(0));
+			queryFinishDate.addField(DossierTerm.FINISH_DATE_TIMESTAMP);
+			subQueryFive.add(queryFinishDate, BooleanClauseOccur.MUST_NOT);
+			//Check finishDate >= dueDate
+			TermRangeQueryImpl queryCompareFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
+					String.valueOf(1), String.valueOf(2), true, true);
+			subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
+			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
+			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
+
+			/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/
+			subQueryThree.add(subQuerySix, BooleanClauseOccur.MUST);
+
+			/** Check condition (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate)) - END **/
+			subQuerySeven.add(subQueryThree, BooleanClauseOccur.SHOULD);
+			subQuerySeven.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+			/** Check condition releaseDate!=null && (dueDate==null || (releaseDate<dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))) - END **/
+			subQueryOne.add(subQuerySeven, BooleanClauseOccur.MUST);
+			/** Add search all **/
+			booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+		} else if (subTime.equals(DossierTerm.OVER_DUE)) {// List dossier is processing overdue
+			/** Check condition releaseDate == null **/
+			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			booleanQuery.add(queryRelease, BooleanClauseOccur.MUST);
+
+			/** Check condition dueDate != null **/
+			MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+			querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			booleanQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition status != waiting **/
+			MultiMatchQuery queryWaiting = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_WAITING);
+			queryWaiting.addField(DossierTerm.DOSSIER_STATUS);
+			booleanQuery.add(queryWaiting, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition status != receiving **/
+			MultiMatchQuery queryReceiving = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_RECEIVING);
+			queryReceiving.addField(DossierTerm.DOSSIER_STATUS);
+			booleanQuery.add(queryReceiving, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition lockState != PAUSE **/
+			//MultiMatchQuery queryLockState = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_WAITING);
+			//queryWaiting.addField(DossierTerm.DOSSIER_STATUS);
+			//booleanQuery.add(queryWaiting, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition dueDate < now **/
+			Date date = new Date();
+			long nowTime = date.getTime();
+			TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+					String.valueOf(0), String.valueOf(nowTime), false, false);
+			booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+
+		} else if (subTime.equals(DossierTerm.UN_DUE)){// List dossier is processing undue
+			BooleanQuery subQueryOne = new BooleanQueryImpl();
+			BooleanQuery subQueryTwo = new BooleanQueryImpl();
+			BooleanQuery subQueryThree = new BooleanQueryImpl();
+			BooleanQuery subQueryFour = new BooleanQueryImpl();
+
+			/** Check condition releaseDate == null **/
+			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			subQueryOne.add(queryRelease, BooleanClauseOccur.MUST);
+
+			/** Check condition dueDate == null **/
+			MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
+			querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryTwo.add(querydueDateNull, BooleanClauseOccur.MUST);
+
+			/** Check condition (dueDate != null && now < dueDate) - START **/
+			// Check dueDate != null
+			MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+			querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			subQueryThree.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+			// Check condition dueDate < now
+			Date date = new Date();
+			long nowTime = date.getTime();
+			TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+					String.valueOf(nowTime), null, true, false);
+			subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+			/** Check condition (dueDate != null && now < dueDate) - END **/
+
+			/** Check condition (dueDate==null || (dueDate!=null && now<dueDate)) **/
+			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
+			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+
+			/** Check condition releaseDate==null && (dueDate==null || (dueDate!=null && now<dueDate)) **/
+			subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
+			//
+			booleanQuery.add(subQueryOne, BooleanClauseOccur.MUST);
+		} else if (subTime.equals(DossierTerm.COMING)){// List dossier is processing comming
+
+			/** Check condition releaseDate == null **/
+			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			booleanQuery.add(queryRelease, BooleanClauseOccur.MUST);
+
+			/** Check condition dueDate != null **/
+			MultiMatchQuery querydueDateNull = new MultiMatchQuery(String.valueOf(0));
+			querydueDateNull.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			booleanQuery.add(querydueDateNull, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition (dueDate-duration/5) < now **/
+			Date date = new Date();
+			long nowTime = date.getTime();
+			TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_COMING,
+					String.valueOf(0), String.valueOf(nowTime), false, true);
+			booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+
+			/** Check conditionnowDate < dueDate **/
+			TermRangeQueryImpl termRangeQueryNow = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+					String.valueOf(nowTime), null, true, true);
+			booleanQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
+
+		} else if (subTime.equals(DossierTerm.DELAY)){// List dossier is processing delay
+
+			/** Check condition releaseDate == null **/
+			MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
+			queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+			booleanQuery.add(queryRelease, BooleanClauseOccur.MUST);
+
+			/** Check condition dueDate != null **/
+			MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
+			querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+			booleanQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+
+			/** Check condition extendDate > dueDate **/
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
+			query.addFields(DossierTerm.COMPARE_DELAY_DATE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
 		}
 
 		return booleanQuery;
 	}
+
 	private String getDossierTemplateName(long groupId, String dossierTemplateCode) {
 		String name = StringPool.BLANK;
 

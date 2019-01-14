@@ -365,4 +365,51 @@ public class DLFolderUtil {
 		}
 	}
 
+	public static void removeGuestPermissions(FileEntry fileEntry)
+			throws Exception {
+
+			ResourcePermission resourcePermission = null;
+			final Role guestMemberRole = RoleLocalServiceUtil.getRole(
+				fileEntry.getCompanyId(), RoleConstants.GUEST);
+			ResourceAction resourceAction =
+				ResourceActionLocalServiceUtil.getResourceAction(
+					DLFileEntry.class.getName(), ActionKeys.VIEW);
+			String[] actionIdsGuest = new String[] {
+			};
+			try {
+//				resourcePermission =
+					ResourcePermissionLocalServiceUtil.getResourcePermission(
+						fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(fileEntry.getPrimaryKey()),
+						guestMemberRole.getRoleId());
+
+				ResourcePermissionLocalServiceUtil.setResourcePermissions(
+					fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(fileEntry.getPrimaryKey()),
+					guestMemberRole.getRoleId(), actionIdsGuest);
+
+				// if (Validator.isNotNull(resourcePermission)){
+				// resourcePermission.setActionIds(resourceAction.getBitwiseValue());
+				// ResourcePermissionLocalServiceUtil.updateResourcePermission(resourcePermission);
+				// }
+			}
+			catch (NoSuchResourcePermissionException e) {
+				_log.debug(e);
+				//_log.error(e);
+				resourcePermission =
+					ResourcePermissionLocalServiceUtil.createResourcePermission(
+						CounterLocalServiceUtil.increment());
+				resourcePermission.setCompanyId(fileEntry.getCompanyId());
+				resourcePermission.setName(DLFileEntry.class.getName());
+				resourcePermission.setScope(ResourceConstants.SCOPE_INDIVIDUAL);
+				resourcePermission.setPrimKey(
+					String.valueOf(fileEntry.getPrimaryKey()));
+				resourcePermission.setRoleId(guestMemberRole.getRoleId());
+				resourcePermission.setActionIds(resourceAction.getBitwiseValue());// (ActionKeys.VIEW);
+				ResourcePermissionLocalServiceUtil.addResourcePermission(
+					resourcePermission);
+			}
+		}
 }

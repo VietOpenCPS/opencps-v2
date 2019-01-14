@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.engine;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
+import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
@@ -93,28 +95,30 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			payload.setGroupId(site.getGroupId());
 			int monthCurrent = LocalDate.now().getMonthValue();
+			int yearCurrent = LocalDate.now().getYear();
 			for (int month = 1; month <= monthCurrent; month ++) {
-				boolean flagStatistic = false;
+				boolean flagStatistic = true;
 				if (month < monthCurrent) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-							.getDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
+							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-						for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
-							boolean reporting = dossierStatistic.getReporting();
-							if (!reporting) {
-								flagStatistic = true;
-								break;
-							}
-						}
+						//for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
+							//boolean reporting = dossierStatistic.getReporting();
+							//if (!reporting) {
+						flagStatistic = false;
+								//break;
+							//}
+						//}
 					}
 					if (flagStatistic) {
-						processUpdateStatistic(site.getGroupId(), month, LocalDate.now().getYear(), payload,
+						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse);
 					}
 				} else {
-					processUpdateStatistic(site.getGroupId(), month, LocalDate.now().getYear(), payload,
+					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 							engineUpdateAction, serviceDomainResponse);
 				}
+			}
 				/////////////////////////////////
 //				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
 //				
@@ -216,7 +220,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 //				else {
 //					engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());					
 //				}
-			}
 //			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
 //			
 //			dossierData.ifPresent(source -> {
@@ -237,14 +240,33 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 //				}
 //				
 //			});
-			
+			//TODO: Calculator again year ago
+			int lastYear = LocalDate.now().getYear() - 1;
+			boolean flagLastYear = true;
+			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
+						.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
+				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
+					flagLastYear = false;
+				}
+				if (flagLastYear) {
+					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+							engineUpdateAction, serviceDomainResponse);
+				}
+			}
+
 			/* Update summary */
 			//Delete record
 			engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
 			//
 			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 			
-			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId());
+			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+			//TODO: Calculator again last year
+			//Delete record
+			engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+			//
+			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 
 		}
 
@@ -317,7 +339,9 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, month, false);
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
 					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 					
 					statisticEngineUpdate.updateStatisticData(statisticData);														
@@ -327,13 +351,13 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 					if (serviceDomainData != null) {
 						for (ServiceDomainData sdd : serviceDomainData) {
 							try {
-								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, LocalDate.now().getYear());
+								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 							} catch (NoSuchOpencpsDossierStatisticException e) {
 									
 							}
 						}
 					}	
-					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, LocalDate.now().getYear());
+					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 				}
 			}
 			else {
@@ -341,17 +365,17 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				if (serviceDomainData != null) {
 					for (ServiceDomainData sdd : serviceDomainData) {
 						try {
-							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, LocalDate.now().getYear());
+							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 						} catch (NoSuchOpencpsDossierStatisticException e) {
 								
 						}
 					}
 				}
-				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, LocalDate.now().getYear());
+				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 			}
 		}
 		else {
-			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, LocalDate.now().getYear());
+			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		}
 	}
 

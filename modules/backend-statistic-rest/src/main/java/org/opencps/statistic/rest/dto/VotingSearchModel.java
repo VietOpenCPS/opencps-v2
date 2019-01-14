@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlType;
 	"domain",
 	"votingCode",
 	"fromStatisticDate",
-	"toStatisticDate"
+	"toStatisticDate",
+	"employeeId"
 })
 @XmlRootElement(name = "VotingSearchModel")
 public class VotingSearchModel {
@@ -58,6 +59,9 @@ public class VotingSearchModel {
 	protected String fromStatisticDate;
 	@QueryParam(value = "toStatisticDate")
 	protected String toStatisticDate;
+	@QueryParam(value = "employeeId")
+	protected String employeeId;
+
 	public String getKeyword() {
 		return keyword;
 	}
@@ -129,6 +133,12 @@ public class VotingSearchModel {
 	}
 	public void setDomain(String domain) {
 		this.domain = domain;
+	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 
 }

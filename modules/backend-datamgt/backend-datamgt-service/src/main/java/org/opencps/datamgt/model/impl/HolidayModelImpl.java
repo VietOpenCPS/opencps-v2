@@ -78,7 +78,8 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "holidayDate", Types.TIMESTAMP },
-			{ "description", Types.VARCHAR }
+			{ "description", Types.VARCHAR },
+			{ "holidayType", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -93,9 +94,10 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("holidayDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("holidayType", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_holiday (uuid_ VARCHAR(75) null,holidayId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,holidayDate DATE null,description TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_holiday (uuid_ VARCHAR(75) null,holidayId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,holidayDate DATE null,description TEXT null,holidayType INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_holiday";
 	public static final String ORDER_BY_JPQL = " ORDER BY holiday.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_holiday.createDate ASC";
@@ -114,8 +116,9 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
 	public static final long HOLIDAYDATE_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
+	public static final long HOLIDAYTYPE_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.datamgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.datamgt.model.Holiday"));
 
@@ -166,6 +169,7 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("holidayDate", getHolidayDate());
 		attributes.put("description", getDescription());
+		attributes.put("holidayType", getHolidayType());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -233,6 +237,12 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		Integer holidayType = (Integer)attributes.get("holidayType");
+
+		if (holidayType != null) {
+			setHolidayType(holidayType);
 		}
 	}
 
@@ -418,6 +428,28 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 	}
 
 	@Override
+	public int getHolidayType() {
+		return _holidayType;
+	}
+
+	@Override
+	public void setHolidayType(int holidayType) {
+		_columnBitmask |= HOLIDAYTYPE_COLUMN_BITMASK;
+
+		if (!_setOriginalHolidayType) {
+			_setOriginalHolidayType = true;
+
+			_originalHolidayType = _holidayType;
+		}
+
+		_holidayType = holidayType;
+	}
+
+	public int getOriginalHolidayType() {
+		return _originalHolidayType;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Holiday.class.getName()));
@@ -464,6 +496,7 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		holidayImpl.setModifiedDate(getModifiedDate());
 		holidayImpl.setHolidayDate(getHolidayDate());
 		holidayImpl.setDescription(getDescription());
+		holidayImpl.setHolidayType(getHolidayType());
 
 		holidayImpl.resetOriginalValues();
 
@@ -538,6 +571,10 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 
 		holidayModelImpl._originalHolidayDate = holidayModelImpl._holidayDate;
 
+		holidayModelImpl._originalHolidayType = holidayModelImpl._holidayType;
+
+		holidayModelImpl._setOriginalHolidayType = false;
+
 		holidayModelImpl._columnBitmask = 0;
 	}
 
@@ -604,12 +641,14 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 			holidayCacheModel.description = null;
 		}
 
+		holidayCacheModel.holidayType = getHolidayType();
+
 		return holidayCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -631,6 +670,8 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 		sb.append(getHolidayDate());
 		sb.append(", description=");
 		sb.append(getDescription());
+		sb.append(", holidayType=");
+		sb.append(getHolidayType());
 		sb.append("}");
 
 		return sb.toString();
@@ -638,7 +679,7 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(34);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.datamgt.model.Holiday");
@@ -684,6 +725,10 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 			"<column><column-name>description</column-name><column-value><![CDATA[");
 		sb.append(getDescription());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>holidayType</column-name><column-value><![CDATA[");
+		sb.append(getHolidayType());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -711,6 +756,9 @@ public class HolidayModelImpl extends BaseModelImpl<Holiday>
 	private Date _holidayDate;
 	private Date _originalHolidayDate;
 	private String _description;
+	private int _holidayType;
+	private int _originalHolidayType;
+	private boolean _setOriginalHolidayType;
 	private long _columnBitmask;
 	private Holiday _escapedModel;
 }

@@ -149,52 +149,82 @@ public class DossierUtils {
 //			}
 			//Process OverDue
 			String lockState = doc.get(DossierTerm.LOCK_STATE);
+			String dossierStatus = doc.get(DossierTerm.DOSSIER_STATUS);
 			Date now = new Date();
 			long dateNowTimeStamp = now.getTime();
-			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			Long releaseDateTimeStamp = Long.valueOf(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
+			Long dueDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
+			Long releaseDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
+			Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
+			Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
 //			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
 //			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
+			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
-			if (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState)) {
+			if (!checkWaiting(lockState,dossierStatus)) {
 				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-						long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
-						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-								dueDateTimeStamp, groupId, false);
-						if (Validator.isNotNull(strOverDue)) {
-							if (subTimeStamp > 0) {
-	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-	//									dueDateTimeStamp, groupId, true);
-								//model.setDossierOverdue("Quá hạn " + strOverDue);
-								model.setDossierOverdue("Quá hạn");
-							} else if (subTimeStamp == 0) {
-								model.setDossierOverdue("Đúng hạn ");
-							} else {
-								model.setDossierOverdue("Sớm hạn ");
-							}
+//					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+//						long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
+//						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
+//								dueDateTimeStamp, groupId, false);
+//						if (Validator.isNotNull(strOverDue)) {
+//							if (subTimeStamp > 0) {
+//	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
+//	//									dueDateTimeStamp, groupId, true);
+//								//model.setDossierOverdue("Quá hạn " + strOverDue);
+//								model.setDossierOverdue("Quá hạn");
+//							} else if (subTimeStamp == 0) {
+//								model.setDossierOverdue("Đúng hạn ");
+//							} else {
+//								if (extendDateTimeStamp > 0) {
+//									model.setDossierOverdue("Sớm hạn ");
+//								} else {
+//									model.setDossierOverdue("Đúng hạn ");
+//								}
+//							}
+//						} else {
+//							//model.setDossierOverdue(StringPool.BLANK);
+//							model.setDossierOverdue("Đúng hạn ");
+//						}
+//						//Check finishDate < dueDate
+//						if (finishDateTimeStamp > 0) {
+//							long subFinishTimeStamp = finishDateTimeStamp - dueDateTimeStamp;
+//							if (subFinishTimeStamp < 0) {
+//								model.setDossierOverdue("Sớm hạn ");
+//							}
+//						}
+					//System.out.println("finishDateTimeStamp: "+finishDateTimeStamp);
+					//System.out.println("dueDateTimeStamp: "+dueDateTimeStamp);
+					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+							extendDateTimeStamp)) {
+						model.setDossierOverdue("Sớm hạn");
+					} 
+					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+							extendDateTimeStamp)){
+						if (dueDateTimeStamp!=0) {
+							model.setDossierOverdue("Đúng hạn");
 						} else {
-							//model.setDossierOverdue(StringPool.BLANK);
-							model.setDossierOverdue("Đúng hạn ");
+							model.setDossierOverdue(StringPool.BLANK);
 						}
-					} else {
-						//model.setDossierOverdue(StringPool.BLANK);
-						model.setDossierOverdue("Đúng hạn ");
 					}
+					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+							extendDateTimeStamp)) {
+						model.setDossierOverdue("Quá hạn");
+					}
+					
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 						long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
 	//					_log.info("subTimeStamp: "+subTimeStamp);
-						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId, false);
 						if (Validator.isNotNull(strOverDue)) {
 							if (subTimeStamp > 0) {
 	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 	//									dueDateTimeStamp, groupId, true);
-								model.setDossierOverdue("Quá hạn " + strOverDue);
+								model.setDossierOverdue("Quá " + strOverDue);
 							} else {
 								model.setDossierOverdue("Còn " + strOverDue);
 							}
@@ -221,7 +251,7 @@ public class DossierUtils {
 						if (state > 0) {
 							int actionOverDue = dAction.getActionOverdue();
 							if (actionOverDue > 0) {
-								model.setStepOverdue("Quá hạn "+actionOverDue + " ngày");
+								model.setStepOverdue("Quá "+actionOverDue + " ngày");
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
 							}
@@ -232,13 +262,13 @@ public class DossierUtils {
 								long dueDateActionTimeStamp = dueDate.getTime();
 								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
 //								_log.info("START STEP OVERDUE");
-								String stepOverDue = calculatorOverDue(durationUnit, subTimeStamp, dateNowTimeStamp,
+								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 										dueDateActionTimeStamp, groupId, true);
 								if (Validator.isNotNull(stepOverDue)) {
 									if (subTimeStamp > 0) {
 //										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 //												dueDateTimeStamp, groupId, true);
-										model.setStepOverdue("Quá hạn " + stepOverDue);
+										model.setStepOverdue("Quá " + stepOverDue);
 									} else {
 										model.setStepOverdue("Còn " + stepOverDue);
 									}
@@ -398,7 +428,7 @@ public class DossierUtils {
 		return ouputs;
 	}
 
-	public static String calculatorOverDue(int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
+	public static String calculatorOverDue(double durationCount, int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
 			long dueDateTimeStamp, long groupId, boolean flagStepDue) {
 
 		//Process count day off work
@@ -467,10 +497,14 @@ public class DossierUtils {
 				return StringPool.BLANK;
 			}
 			if (!flagCeil) {
-//				_log.info("flagCeil: "+flagCeil);
-//				_log.info("overDue: "+overDue);
-//				_log.info("strOverDue: "+strOverDue);
-				return overDue + strOverDue;
+				//_log.info("flagCeil: "+flagCeil);
+				//_log.info("overDue: "+overDue);
+				//_log.info("durationCount: "+durationCount);
+				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+					return durationCount + strOverDue;
+				} else {
+					return overDue + strOverDue;
+				}
 			}
 		} else {
 			strOverDue = " giờ";
@@ -489,11 +523,15 @@ public class DossierUtils {
 
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
-		return (int)overDue + strOverDue;
+		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+			return (int)durationCount + strOverDue;
+		} else {
+			return (int)overDue + strOverDue;
+		}
 	}
 
 	public static void main(String []args) {
-		if (Double.compare(0.5, 0.0) == 0) {
+		if (Double.compare(20.25, 20.0) > 0) {
 			System.out.println(true);
 		} else {
 			System.out.println(false);
@@ -693,6 +731,9 @@ public class DossierUtils {
 
 		DossierDetailModel model = new DossierDetailModel();
 		
+		if (Validator.isNull(input)) {
+			return model;
+		}
 		try {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
 			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
@@ -1134,5 +1175,29 @@ public class DossierUtils {
 		}
 
 		return ouputs;
+	}
+
+	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+		return (releaseDate!=0 && dueDate!=0 && 
+				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
+	}
+
+	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+		return (releaseDate != 0 && (dueDate == 0
+				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
+	}
+
+	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
+	}
+
+	private static boolean checkWaiting(String dossierStatus, String lockState) {
+		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
+				|| (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState))
+				|| DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
+		//
+		//return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus) ?
+		//		true: (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState) ?
+		//		true: DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus) ? true : false));
 	}
 }

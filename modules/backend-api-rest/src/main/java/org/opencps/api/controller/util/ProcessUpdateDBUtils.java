@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.constants.ConstantUtils;
@@ -17,6 +19,8 @@ import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ActionConfigList.ActionConfig;
 import org.opencps.api.v21.model.Actions;
 import org.opencps.api.v21.model.Actions.ProcessAction;
+import org.opencps.api.v21.model.ApplicantList;
+import org.opencps.api.v21.model.ApplicantList.Applicant;
 import org.opencps.api.v21.model.Configs;
 import org.opencps.api.v21.model.Configs.ServiceConfig;
 import org.opencps.api.v21.model.DeliverableTypeList;
@@ -31,6 +35,8 @@ import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
 import org.opencps.api.v21.model.Groups;
 import org.opencps.api.v21.model.Groups.DictGroup;
+import org.opencps.api.v21.model.HolidayList;
+import org.opencps.api.v21.model.HolidayList.Holiday;
 import org.opencps.api.v21.model.Items;
 import org.opencps.api.v21.model.Items.DictItem;
 import org.opencps.api.v21.model.MenuConfigList;
@@ -59,11 +65,14 @@ import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.api.v21.model.UserManagement;
 import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
 import org.opencps.api.v21.model.UserManagement.Users.Employee;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
+import org.opencps.datamgt.action.HolidayInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -87,8 +96,10 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 
@@ -539,6 +550,80 @@ public class ProcessUpdateDBUtils {
 						// Check record exits DB
 						actions.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
 								tableConfig, userConfig);
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	//LamTV_Update DynamicReport to DB
+	@SuppressWarnings("unused")
+	public static boolean processUpdateHoliday(HolidayList holidayList, String folderPath, long groupId,
+			long userId, ServiceContext serviceContext) {
+		try {
+			HolidayInterface actions = new HolidayActions();
+			//Create table ActionConfig
+			List<Holiday> lstHoliday = holidayList.getHoliday();
+			if (lstHoliday != null && lstHoliday.size() > 0) {
+				for (Holiday holiday : lstHoliday) {
+					String strHolidayDate = holiday.getHolidayDate();
+					String description = holiday.getDescription();
+					Integer holidayType = holiday.getHolidayType();
+					if (holidayType == null) {
+						holidayType = 0;
+					}
+
+					if (Validator.isNotNull(strHolidayDate)) {
+						Date holidayDate = APIDateTimeUtils.convertStringToDate(strHolidayDate,
+								APIDateTimeUtils._NORMAL_DATE);
+						if (holidayDate != null) {
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(holidayDate);
+							cal.set(Calendar.HOUR_OF_DAY, 0);
+							cal.set(Calendar.MINUTE, 0);
+							cal.set(Calendar.SECOND, 0);
+							// Check record exits DB
+							actions.updateHolidayDB(userId, groupId, cal.getTime(), description, holidayType);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	//LamTV_Update DynamicReport to DB
+	public static boolean processUpdateApplicant(ApplicantList applicantList, String folderPath, long groupId,
+			long userId, ServiceContext serviceContext) {
+		try {
+			ApplicantActions actions = new ApplicantActionsImpl();
+			//Create applicant
+			List<Applicant> appList = applicantList.getApplicant();
+			if (appList != null && appList.size() > 0) {
+				for (Applicant applicant : appList) {
+					String applicantIdNo = applicant.getApplicantIdNo();
+					String appliantName = applicant.getApplicantName();
+					String applicantIdType = applicant.getApplicantIdType();
+					String strApplicantIdDate = applicant.getApplicantIdDate();
+					Date applicantIdDate = null;
+					if (Validator.isNotNull(applicantIdDate)) {
+						applicantIdDate = APIDateTimeUtils.convertStringToDate(strApplicantIdDate,
+								APIDateTimeUtils._NORMAL_DATE);
+					}
+					String contactEmail = applicant.getContactEmail();
+					String contactTelNo = applicant.getContactTelNo();
+
+					if (Validator.isNotNull(applicantIdNo)) {
+						// Check record exits DB
+						actions.updateApplicantDB(userId, groupId, applicantIdNo, appliantName, applicantIdType,
+								applicantIdDate, contactEmail, contactTelNo, serviceContext);
 					}
 				}
 			}

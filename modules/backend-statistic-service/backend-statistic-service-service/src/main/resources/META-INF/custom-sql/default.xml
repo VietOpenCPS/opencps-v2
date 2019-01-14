@@ -10,7 +10,6 @@
 				(opencps_statistic.domainCode = ?) AND
 				(opencps_statistic.govAgencyCode = ?) AND 
 				(opencps_statistic.groupAgencyCode = ?) AND 
-				(opencps_statistic.reporting = ?) AND
 				(opencps_statistic.groupId = ?)
 			ORDER BY month DESC
 		]]>
@@ -61,7 +60,7 @@
 				(opencps_voting_statistic.month = ?) AND
 				(opencps_voting_statistic.year = ?) AND
 				(opencps_voting_statistic.votingCode = ?) AND
-				(opencps_voting_statistic.serviceCode = ?) AND
+				(opencps_voting_statistic.domainCode = ?) AND
 				(opencps_voting_statistic.govAgencyCode = ?) AND 
 				(opencps_voting_statistic.groupId = ?)
 			ORDER BY month DESC

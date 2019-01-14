@@ -15,6 +15,7 @@
 package org.opencps.usermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -44,8 +45,6 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -114,6 +113,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 	public Applicant fetchByAppId(String appId) {
 		return applicantPersistence.fetchByF_APLC_ID(appId);
+	}
+
+	public List<Applicant> getApplicantByType(long groupId, String applicantIdType) {
+		return applicantPersistence.findByF_GID_TYPE(groupId, applicantIdType);
 	}
 
 	/**
@@ -807,7 +810,126 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
 		return applicant;
 	}
-	
+
+	@Indexable(type=IndexableType.REINDEX)
+	public Applicant updateApplicationDB(long groupId, long userId, long applicantId, String applicantIdNo,
+			String applicantName, String applicantIdType, Date applicantIdDate, String contactEmail,
+			String contactTelNo, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Applicant applicant = null;
+		String password = "12345";
+
+		if (applicantId == 0) {
+			//validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
+			//validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
+
+			applicantId = counterLocalService.increment(Applicant.class.getName());
+			applicant = applicantPersistence.create(applicantId);
+
+			Role roleDefault = RoleLocalServiceUtil.getRole(auditUser.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+
+			//String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			String activationCode = StringPool.BLANK;
+
+			boolean autoPassword = false;
+			boolean autoScreenName = true;
+			boolean sendEmail = false;
+
+			long[] groupIds = new long [] {groupId};
+			long[] organizationIds = null;
+			long[] roleIds = null;
+			long[] userGroupIds = null;
+
+			String screenName = null;
+			if (Validator.isNull(password)) {
+				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			}
+
+			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà" : ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+			String lastName = applicantName;
+			
+			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
+
+			// add default role
+			if (Validator.isNotNull(roleDefault)) {
+				roleIds = new long[] { roleDefault.getRoleId() };
+			}
+
+			Role adminRole = RoleLocalServiceUtil.getRole(auditUser.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+			List<User> adminUsers = userLocalService.getRoleUsers(adminRole.getRoleId());
+			long creatorUserId = 0;
+			if (adminUsers.size() != 0) {
+				creatorUserId = adminUsers.get(0).getUserId();
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
+
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+			_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
+			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, auditUser.getCompanyId(), autoPassword,
+					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
+					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
+					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+					userGroupIds, sendEmail, context);
+			_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+			//mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
+			userLocalService.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
+			//
+
+			long mappingUserId = mappingUser.getUserId();
+
+			// Add audit field
+			applicant.setCreateDate(now);
+			applicant.setModifiedDate(now);
+			applicant.setCompanyId(context.getCompanyId());
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+			applicant.setGroupId(groupId);
+
+			applicant.setApplicantName(applicantName);
+			applicant.setApplicantIdType(applicantIdType);
+			applicant.setApplicantIdNo(applicantIdNo);
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+			applicant.setContactTelNo(contactTelNo);
+			applicant.setContactEmail(contactEmail);
+			applicant.setMappingUserId(mappingUserId);
+			applicant.setActivationCode(activationCode);
+			applicant.setTmpPass(password);
+
+		} else {
+			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+			applicant.setModifiedDate(now);
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+
+			if (Validator.isNotNull(applicantName))
+				applicant.setApplicantName(applicantName);
+
+			if (Validator.isNotNull(applicantIdType))
+				applicant.setApplicantIdType(applicantIdType);
+
+			if (Validator.isNotNull(applicantIdNo))
+				applicant.setApplicantIdNo(applicantIdNo);
+
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+
+			if (Validator.isNotNull(contactTelNo))
+				applicant.setContactTelNo(contactTelNo);
+
+			if (Validator.isNotNull(contactEmail))
+				applicant.setContactEmail(contactEmail);
+		}
+
+		return applicantPersistence.update(applicant);
+	}
+
 	private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }

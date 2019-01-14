@@ -820,7 +820,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 	@Override
 	public Response getGuide(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String id, ServiceConfigSearchModel search) {
+			ServiceContext serviceContext, String id, ServiceConfigSearchModel search, String reportType) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -942,7 +942,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			Message message = new Message();
 			message.put("formReport", documentScript);
 			message.put("formData", jsonGuide.toJSONString());
-
+			if (Validator.isNotNull(reportType)) {
+				message.put("reportType", reportType);
+			}
 			try {
 				String previewResponse = (String) MessageBusUtil
 						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
@@ -955,7 +957,12 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "application/pdf");
+				if ("word".equals(reportType)) {
+					responseBuilder.header("Content-Type", "application/msword");
+				}
+				else {
+					responseBuilder.header("Content-Type", "application/pdf");					
+				}
 
 				return responseBuilder.build();
 

@@ -358,6 +358,10 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		return holidayPersistence.findByF_GID(groupId);
 	}
 
+	public List<Holiday> getHolidayByGroupIdAndType(long groupId, int holidayType) {
+		return holidayPersistence.findByF_GID_TYPE(groupId, holidayType);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Holiday adminProcessDelete(Long id) {
@@ -404,6 +408,45 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		holidayPersistence.update(object);
 
 		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Holiday updateHolidayDB(long userId, long groupId, Date holidayDate, String description, int holidayType)
+			throws NoSuchUserException {
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+		Holiday holiday = holidayPersistence.fetchByF_holidayDate(groupId, holidayDate);
+
+		if (holiday == null) {
+			long holidayId = counterLocalService.increment(Holiday.class.getName());
+			holiday = holidayPersistence.create(holidayId);
+
+			// Group instance
+			holiday.setGroupId(groupId);
+			// Audit fields
+			holiday.setCompanyId(user.getCompanyId());
+			holiday.setUserId(user.getUserId());
+			holiday.setUserName(user.getFullName());
+			holiday.setCreateDate(now);
+			holiday.setModifiedDate(now);
+
+			// Other fields
+			holiday.setHolidayDate(holidayDate);
+			holiday.setDescription(description);
+			holiday.setHolidayType(holidayType);
+		} else {
+			holiday.setModifiedDate(now);
+			if (Validator.isNotNull(holidayDate))
+				holiday.setHolidayDate(holidayDate);
+			if (Validator.isNotNull(description))
+				holiday.setDescription(description);
+			if (Validator.isNotNull(holidayType)) {
+				holiday.setHolidayType(holidayType);
+			}
+		}
+
+		return holidayPersistence.update(holiday);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(HolidayLocalServiceImpl.class);

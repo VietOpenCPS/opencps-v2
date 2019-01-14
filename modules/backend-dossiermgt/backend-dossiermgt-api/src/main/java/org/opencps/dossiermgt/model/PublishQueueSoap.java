@@ -43,6 +43,10 @@ public class PublishQueueSoap implements Serializable {
 		soapModel.setServerNo(model.getServerNo());
 		soapModel.setStatus(model.getStatus());
 		soapModel.setRetry(model.getRetry());
+		soapModel.setPublishType(model.getPublishType());
+		soapModel.setPublishData(model.getPublishData());
+		soapModel.setMessageText(model.getMessageText());
+		soapModel.setAcknowlegement(model.getAcknowlegement());
 
 		return soapModel;
 	}
@@ -175,6 +179,38 @@ public class PublishQueueSoap implements Serializable {
 		_retry = retry;
 	}
 
+	public int getPublishType() {
+		return _publishType;
+	}
+
+	public void setPublishType(int publishType) {
+		_publishType = publishType;
+	}
+
+	public String getPublishData() {
+		return _publishData;
+	}
+
+	public void setPublishData(String publishData) {
+		_publishData = publishData;
+	}
+
+	public String getMessageText() {
+		return _messageText;
+	}
+
+	public void setMessageText(String messageText) {
+		_messageText = messageText;
+	}
+
+	public String getAcknowlegement() {
+		return _acknowlegement;
+	}
+
+	public void setAcknowlegement(String acknowlegement) {
+		_acknowlegement = acknowlegement;
+	}
+
 	private String _uuid;
 	private long _publishQueueId;
 	private long _groupId;
@@ -185,4 +221,8 @@ public class PublishQueueSoap implements Serializable {
 	private String _serverNo;
 	private int _status;
 	private int _retry;
+	private int _publishType;
+	private String _publishData;
+	private String _messageText;
+	private String _acknowlegement;
 }

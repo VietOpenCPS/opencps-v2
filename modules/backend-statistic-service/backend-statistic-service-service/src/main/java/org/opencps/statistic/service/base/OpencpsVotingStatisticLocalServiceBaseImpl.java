@@ -53,6 +53,8 @@ import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalService;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence;
+import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
+import org.opencps.statistic.service.persistence.OpencpsPersonStatisticPersistence;
 import org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsVotingStatisticPersistence;
 
@@ -501,6 +503,63 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps person statistic local service.
+	 *
+	 * @return the opencps person statistic local service
+	 */
+	public org.opencps.statistic.service.OpencpsPersonStatisticLocalService getOpencpsPersonStatisticLocalService() {
+		return opencpsPersonStatisticLocalService;
+	}
+
+	/**
+	 * Sets the opencps person statistic local service.
+	 *
+	 * @param opencpsPersonStatisticLocalService the opencps person statistic local service
+	 */
+	public void setOpencpsPersonStatisticLocalService(
+		org.opencps.statistic.service.OpencpsPersonStatisticLocalService opencpsPersonStatisticLocalService) {
+		this.opencpsPersonStatisticLocalService = opencpsPersonStatisticLocalService;
+	}
+
+	/**
+	 * Returns the opencps person statistic persistence.
+	 *
+	 * @return the opencps person statistic persistence
+	 */
+	public OpencpsPersonStatisticPersistence getOpencpsPersonStatisticPersistence() {
+		return opencpsPersonStatisticPersistence;
+	}
+
+	/**
+	 * Sets the opencps person statistic persistence.
+	 *
+	 * @param opencpsPersonStatisticPersistence the opencps person statistic persistence
+	 */
+	public void setOpencpsPersonStatisticPersistence(
+		OpencpsPersonStatisticPersistence opencpsPersonStatisticPersistence) {
+		this.opencpsPersonStatisticPersistence = opencpsPersonStatisticPersistence;
+	}
+
+	/**
+	 * Returns the opencps person statistic finder.
+	 *
+	 * @return the opencps person statistic finder
+	 */
+	public OpencpsPersonStatisticFinder getOpencpsPersonStatisticFinder() {
+		return opencpsPersonStatisticFinder;
+	}
+
+	/**
+	 * Sets the opencps person statistic finder.
+	 *
+	 * @param opencpsPersonStatisticFinder the opencps person statistic finder
+	 */
+	public void setOpencpsPersonStatisticFinder(
+		OpencpsPersonStatisticFinder opencpsPersonStatisticFinder) {
+		this.opencpsPersonStatisticFinder = opencpsPersonStatisticFinder;
+	}
+
+	/**
 	 * Returns the opencps voting statistic local service.
 	 *
 	 * @return the opencps voting statistic local service
@@ -728,6 +787,12 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	protected OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence;
 	@BeanReference(type = OpencpsDossierStatisticFinder.class)
 	protected OpencpsDossierStatisticFinder opencpsDossierStatisticFinder;
+	@BeanReference(type = org.opencps.statistic.service.OpencpsPersonStatisticLocalService.class)
+	protected org.opencps.statistic.service.OpencpsPersonStatisticLocalService opencpsPersonStatisticLocalService;
+	@BeanReference(type = OpencpsPersonStatisticPersistence.class)
+	protected OpencpsPersonStatisticPersistence opencpsPersonStatisticPersistence;
+	@BeanReference(type = OpencpsPersonStatisticFinder.class)
+	protected OpencpsPersonStatisticFinder opencpsPersonStatisticFinder;
 	@BeanReference(type = OpencpsVotingStatisticLocalService.class)
 	protected OpencpsVotingStatisticLocalService opencpsVotingStatisticLocalService;
 	@BeanReference(type = OpencpsVotingStatisticPersistence.class)

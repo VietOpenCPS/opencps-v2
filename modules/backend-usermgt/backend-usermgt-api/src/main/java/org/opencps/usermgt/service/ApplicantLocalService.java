@@ -230,6 +230,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant getApplicant(long applicantId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Applicant> getApplicantByType(long groupId,
+		String applicantIdType);
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*
@@ -373,4 +377,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 		String contactName, String contactTelNo, String contactEmail,
 		String profile, String password)
 		throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplicationDB(long groupId, long userId,
+		long applicantId, String applicantIdNo, String applicantName,
+		String applicantIdType, Date applicantIdDate, String contactEmail,
+		String contactTelNo, ServiceContext context) throws PortalException;
 }

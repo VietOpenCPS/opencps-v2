@@ -147,13 +147,14 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.Applicant"),
 			true);
 	public static final long APPLICANTIDNO_COLUMN_BITMASK = 1L;
-	public static final long COMPANYID_COLUMN_BITMASK = 2L;
-	public static final long CONTACTEMAIL_COLUMN_BITMASK = 4L;
-	public static final long CONTACTTELNO_COLUMN_BITMASK = 8L;
-	public static final long GROUPID_COLUMN_BITMASK = 16L;
-	public static final long MAPPINGUSERID_COLUMN_BITMASK = 32L;
-	public static final long UUID_COLUMN_BITMASK = 64L;
-	public static final long APPLICANTNAME_COLUMN_BITMASK = 128L;
+	public static final long APPLICANTIDTYPE_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 4L;
+	public static final long CONTACTEMAIL_COLUMN_BITMASK = 8L;
+	public static final long CONTACTTELNO_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 32L;
+	public static final long MAPPINGUSERID_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long APPLICANTNAME_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Applicant"));
 
@@ -574,7 +575,17 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 	@Override
 	public void setApplicantIdType(String applicantIdType) {
+		_columnBitmask |= APPLICANTIDTYPE_COLUMN_BITMASK;
+
+		if (_originalApplicantIdType == null) {
+			_originalApplicantIdType = _applicantIdType;
+		}
+
 		_applicantIdType = applicantIdType;
+	}
+
+	public String getOriginalApplicantIdType() {
+		return GetterUtil.getString(_originalApplicantIdType);
 	}
 
 	@Override
@@ -1032,6 +1043,8 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 		applicantModelImpl._setModifiedDate = false;
 
+		applicantModelImpl._originalApplicantIdType = applicantModelImpl._applicantIdType;
+
 		applicantModelImpl._originalApplicantIdNo = applicantModelImpl._applicantIdNo;
 
 		applicantModelImpl._originalContactTelNo = applicantModelImpl._contactTelNo;
@@ -1455,6 +1468,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	private boolean _setModifiedDate;
 	private String _applicantName;
 	private String _applicantIdType;
+	private String _originalApplicantIdType;
 	private String _applicantIdNo;
 	private String _originalApplicantIdNo;
 	private Date _applicantIdDate;

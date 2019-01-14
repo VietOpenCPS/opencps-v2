@@ -462,11 +462,12 @@ public class VotingUtils {
 			ett.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED), 0));
 			ett.setClassName(doc.get(VotingTerm.CLASS_NAME));
 			ett.setClassPK(doc.get(VotingTerm.CLASS_PK));
-			ett.setGovAgencyCode(doc.get("govAgencyCode"));
-			ett.setGovAgencyName(doc.get("govAgencyName"));
-			ett.setDomain(doc.get("domain"));
-			ett.setDomainName(doc.get("domainName"));
-
+			ett.setGovAgencyCode(doc.get(VotingTerm.GOV_AGENCY_CODE));
+			ett.setGovAgencyName(doc.get(VotingTerm.GOV_AGENCY_NAME));
+			ett.setDomain(doc.get(VotingTerm.DOMAIN_CODE));
+			ett.setDomainName(doc.get(VotingTerm.DOMAIN_NAME));
+			ett.setVotingCode(doc.get(VotingTerm.VOTING_CODE));
+			ett.setVotingSubject(doc.get(VotingTerm.VOTING_SUBJECT));
 
 			results.add(ett);
 		}

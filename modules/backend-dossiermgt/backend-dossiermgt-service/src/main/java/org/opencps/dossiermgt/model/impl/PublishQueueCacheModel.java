@@ -65,7 +65,7 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -87,6 +87,14 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 		sb.append(status);
 		sb.append(", retry=");
 		sb.append(retry);
+		sb.append(", publishType=");
+		sb.append(publishType);
+		sb.append(", publishData=");
+		sb.append(publishData);
+		sb.append(", messageText=");
+		sb.append(messageText);
+		sb.append(", acknowlegement=");
+		sb.append(acknowlegement);
 		sb.append("}");
 
 		return sb.toString();
@@ -132,6 +140,28 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 
 		publishQueueImpl.setStatus(status);
 		publishQueueImpl.setRetry(retry);
+		publishQueueImpl.setPublishType(publishType);
+
+		if (publishData == null) {
+			publishQueueImpl.setPublishData("");
+		}
+		else {
+			publishQueueImpl.setPublishData(publishData);
+		}
+
+		if (messageText == null) {
+			publishQueueImpl.setMessageText("");
+		}
+		else {
+			publishQueueImpl.setMessageText(messageText);
+		}
+
+		if (acknowlegement == null) {
+			publishQueueImpl.setAcknowlegement("");
+		}
+		else {
+			publishQueueImpl.setAcknowlegement(acknowlegement);
+		}
 
 		publishQueueImpl.resetOriginalValues();
 
@@ -156,6 +186,11 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 		status = objectInput.readInt();
 
 		retry = objectInput.readInt();
+
+		publishType = objectInput.readInt();
+		publishData = objectInput.readUTF();
+		messageText = objectInput.readUTF();
+		acknowlegement = objectInput.readUTF();
 	}
 
 	@Override
@@ -188,6 +223,29 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 		objectOutput.writeInt(status);
 
 		objectOutput.writeInt(retry);
+
+		objectOutput.writeInt(publishType);
+
+		if (publishData == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(publishData);
+		}
+
+		if (messageText == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(messageText);
+		}
+
+		if (acknowlegement == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(acknowlegement);
+		}
 	}
 
 	public String uuid;
@@ -200,4 +258,8 @@ public class PublishQueueCacheModel implements CacheModel<PublishQueue>,
 	public String serverNo;
 	public int status;
 	public int retry;
+	public int publishType;
+	public String publishData;
+	public String messageText;
+	public String acknowlegement;
 }

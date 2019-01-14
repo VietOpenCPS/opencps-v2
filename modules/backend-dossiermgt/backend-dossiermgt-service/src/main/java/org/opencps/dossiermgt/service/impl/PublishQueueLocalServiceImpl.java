@@ -107,4 +107,67 @@ public class PublishQueueLocalServiceImpl
 	public PublishQueue getByG_DID_SN(long groupId, long dossierId, String serverNo) {
 		return publishQueuePersistence.fetchByG_DID_SN(groupId, dossierId, serverNo);
 	}
+	
+	public List<PublishQueue> getByG_DID_SN_NST(long groupId, long dossierId, String serverNo, int status) {
+		return publishQueuePersistence.findByG_DID_SN_NST(groupId, dossierId, serverNo, status);
+	}
+
+	public List<PublishQueue> getByG_DID_SN_ST(long groupId, long dossierId, String serverNo, int[] status) {
+		return publishQueuePersistence.findByG_DID_SN_ST(groupId, dossierId, serverNo, status);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public PublishQueue updatePublishQueue(long groupId, long publishQueueId, 
+			int publishType,
+			long dossierId, String serverNo, String publishData, int status, int retry,
+			String messageText, String acknowlegement,
+			ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+
+		PublishQueue object = null;
+
+		if (publishQueueId == 0) {
+
+			publishQueueId = counterLocalService.increment(PublishQueue.class.getName());
+
+			object = publishQueuePersistence.create(publishQueueId);
+
+			// Add audit fields
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(0l);
+
+			// Add other fields
+
+			object.setPublishType(publishType);
+			object.setDossierId(dossierId);
+			object.setServerNo(serverNo);
+			object.setPublishData(publishData);
+			object.setStatus(status);
+			object.setRetry(retry);
+			object.setMessageText(messageText);
+			object.setAcknowlegement(acknowlegement);
+		} else {
+			object = publishQueuePersistence.findByPrimaryKey(publishQueueId);
+
+			// Add audit fields
+			object.setModifiedDate(now);
+			object.setUserId(0l);
+
+			// Add other fields
+			object.setPublishType(publishType);
+			object.setDossierId(dossierId);
+			object.setServerNo(serverNo);
+			object.setPublishData(publishData);
+			object.setStatus(status);
+			object.setRetry(retry);
+			object.setMessageText(messageText);
+			object.setAcknowlegement(acknowlegement);
+		}
+
+		return publishQueuePersistence.update(object);
+	}
+	
 }

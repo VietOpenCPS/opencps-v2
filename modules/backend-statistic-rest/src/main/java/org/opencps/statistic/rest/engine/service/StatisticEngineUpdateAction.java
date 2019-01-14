@@ -6,13 +6,14 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.model.OpencpsPersonStatistic;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
@@ -35,7 +36,7 @@ public class StatisticEngineUpdateAction {
 		try {
 			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
 					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
-					payload.getDomainCode(), false);
+					payload.getDomainCode());
 			if (Validator.isNotNull(dossierStatistic)) {
 				dossierStatisticId = dossierStatistic.getDossierStatisticId();
 			}
@@ -81,6 +82,22 @@ public class StatisticEngineUpdateAction {
 		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYear(groupId, month, year);
 	}
 
+	//Get list dossierStatistic by groupId, month, year and reporting
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, boolean reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYearAndReport(groupId, month, year, reporting);
+	}
+
+	//Remove record by domain and govAgencyCode
+	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
+			throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
+	}
+
+	//Get list statistic by year
+	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
+		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByYear(companyId, groupId, month, year);
+	}
+
 	//Process Voting
 	public OpencpsVotingStatistic updateVotingStatistic(VotingResultStatisticData payload) {
 
@@ -112,13 +129,69 @@ public class StatisticEngineUpdateAction {
 		try {
 			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
 					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
-					payload.getTotalVoted(), payload.getPercentVeryGood(), payload.getPercentGood(),
-					payload.getPercentBad(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-					payload.getDomain(), payload.getDomainName(), payload.getVotingCode(), 0);
+					payload.getVotingSubject(), payload.getTotalVoted(), payload.getPercentVeryGood(),
+					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
+					payload.getGovAgencyName(), payload.getDomain(), payload.getDomainName(), payload.getVotingCode(),
+					0);
 		} catch (SystemException e) {
 			_log.error(e);
 			System.out.println(e);
 			return null;
 		}
+	}
+
+	public void removeVotingStatisticByD_M_Y(long groupId, String domainCode, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public void removeVotingStatisticByMonthYear(long groupId, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByMonthYear(groupId, month, year);
+	}
+
+	public void removeVotingStatisticByYear(long companyId, long groupId, int month, int year) {
+		OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByYear(companyId, groupId, month, year);
+	}
+
+	//Process Person Voting
+	public OpencpsPersonStatistic updatePersonStatistic(PersonStatisticData payload) {
+
+		if (Validator.isNull(payload.getGovAgencyCode())) {
+			payload.setGovAgencyCode((String) null);
+		}
+		if (Validator.isNull(payload.getEmployeeId()) && payload.getEmployeeId() > 0) {
+			payload.setEmployeeId(0);
+		}
+		if (Validator.isNull(payload.getVotingCode())) {
+			payload.setVotingCode((String) null);
+		}
+
+		long votingStatisticId = 0L;
+
+//		try {
+//			OpencpsVotingStatistic votingStatistic = OpencpsVotingStatisticLocalServiceUtil.checkExsit(
+//					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
+//					payload.getEmployeeId(), payload.getVotingCode());
+//			//System.out.println("votingStatistic: "+votingStatistic);
+//			if (Validator.isNotNull(votingStatistic)) {
+//				votingStatisticId = votingStatistic.getVotingStatisticId();
+//			}
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+
+		//System.out.println("votingStatisticId: "+votingStatisticId);
+//		try {
+//			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
+//					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
+//					payload.getVotingSubject(), payload.getTotalVoted(), payload.getPercentVeryGood(),
+//					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
+//					payload.getGovAgencyName(), payload.getDomain(), payload.getDomainName(), payload.getVotingCode(),
+//					0);
+//		} catch (SystemException e) {
+//			_log.error(e);
+//			System.out.println(e);
+//			return null;
+//		}
+		return null;
 	}
 }

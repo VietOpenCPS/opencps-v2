@@ -256,6 +256,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().getApplicant(applicantId);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Applicant> getApplicantByType(
+		long groupId, String applicantIdType) {
+		return getService().getApplicantByType(groupId, applicantIdType);
+	}
+
 	/**
 	* Returns the applicant matching the UUID and group.
 	*
@@ -439,6 +444,19 @@ public class ApplicantLocalServiceUtil {
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail, profile, password);
+	}
+
+	public static org.opencps.usermgt.model.Applicant updateApplicationDB(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateApplicationDB(groupId, userId, applicantId,
+			applicantIdNo, applicantName, applicantIdType, applicantIdDate,
+			contactEmail, contactTelNo, context);
 	}
 
 	public static ApplicantLocalService getService() {
