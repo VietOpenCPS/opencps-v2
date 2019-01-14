@@ -440,7 +440,8 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		object.setInstructionNote(objectData.getString("instructionNote"));
 		object.setSubmissionNote(objectData.getString("submissionNote"));
 		object.setSampleCount(objectData.getLong("sampleCount"));
-
+		object.setRegisterBookCode(objectData.getString("registerBookCode"));
+		
 		processOptionPersistence.update(object);
 
 		return object;

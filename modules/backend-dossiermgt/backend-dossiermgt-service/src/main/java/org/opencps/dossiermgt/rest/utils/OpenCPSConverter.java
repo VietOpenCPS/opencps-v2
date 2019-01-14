@@ -1232,8 +1232,11 @@ public class OpenCPSConverter {
 			result.put("DateAppointed", convertToUTCDate(new Date(model.getDueDate())));
 		}		
 		result.put("IsSuccess", isSuccess(model));
-		if (Validator.isNotNull(model.getFinishDate())) {
-			result.put("SuccessDate", convertToUTCDate(new Date(model.getFinishDate())));
+		if (Validator.isNotNull(model.getReleaseDate())) {
+			result.put("SuccessDate", convertToUTCDate(new Date(model.getReleaseDate())));
+		}
+		else {
+			result.put("SuccessDate", "0000-00-00T00:00:00.000+0700");
 		}
 		result.put("ApproverName", StringPool.BLANK);
 		result.put("ApproverPosition", StringPool.BLANK);
@@ -1318,18 +1321,19 @@ public class OpenCPSConverter {
 		result.put("DocFees", docFeesArr);
 		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());
 		result.put("OrganInchargeName", model.getGovAgencyName());
+		System.out.println("LGSP SYNC DOCUMENT");
 		return result;
 	}
 	
 	public static Boolean isSuccess(DossierPublishModel model) {
-		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())) {
+		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(model.getDossierStatus())) {
 			return Boolean.TRUE;
 		}
 		else if (DossierTerm.DOSSIER_STATUS_DENIED.equals(model.getDossierStatus())) {
 			return Boolean.FALSE;
 		}
 		else {
-			return null;
+			return Boolean.FALSE;
 		}
 	}
 	

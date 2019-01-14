@@ -47,7 +47,9 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-context-name=",
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
-		"url-pattern=/o/v1/opencps/users/*"
+		"url-pattern=/o/v1/opencps/users/*",
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -108,7 +110,6 @@ public class RestAuthFilter implements Filter {
 			        String userpassEncoded = strBasic.substring(6);  
 			        String decodetoken = new String(Base64.decode(userpassEncoded),
 			                StringPool.UTF8);
-
 			        String account[] = decodetoken.split(":");
 			        
 			        String email = account[0];
