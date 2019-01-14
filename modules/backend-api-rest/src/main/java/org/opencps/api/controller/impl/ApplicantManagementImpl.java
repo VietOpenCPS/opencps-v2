@@ -17,15 +17,24 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.octo.captcha.service.CaptchaServiceException;
+import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.NGSPRestClient;
@@ -696,6 +705,124 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 				return Response.status(200).entity(returnObj.toJSONString()).build();							
 			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getJCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		try {
+			ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
+		    String captchaId = request.getSession().getId();
+			File destDir = new File("jcaptcha");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("jcaptcha/" + captchaId  + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+	
+			if (file.exists()) {
+			    BufferedImage challengeImage = instance.getImageChallengeForID(
+			    captchaId, Locale.US );
+			    try {
+					ImageIO.write( challengeImage, "png", file );
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+					responseBuilder.header("Content-Disposition",
+							"attachment; filename=\"" + file.getName() + "\"");
+					responseBuilder.header("Content-Type", "image/png");
+
+					return responseBuilder.build();
+				    
+				} catch (IOException e) {
+				}
+			}
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response registerWithCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, ApplicantInputModel input, String jCaptchaResponse) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+
+		ApplicantModel result = new ApplicantModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+
+
+		try {
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
+			
+			if (!auth2.checkToken(request, header)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (isAdmin) {
+				
+			}
+			else {
+				ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
+				String captchaId = request.getSession().getId();
+		        try {
+		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+		        			jCaptchaResponse);
+		        	if (!isResponseCorrect) 
+		        		throw new UnauthenticationException("Captcha incorrect");
+		        } catch (CaptchaServiceException e) {
+		        	return BusinessExceptionImpl.processException(e);
+		        }
+			}
+			String applicantName = HtmlUtil.escape(input.getApplicantName());
+			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
+			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
+			String address = HtmlUtil.escape(input.getAddress());
+			String cityCode = HtmlUtil.escape(input.getCityCode());
+			String districtCode = HtmlUtil.escape(input.getDistrictCode());
+			String wardCode = HtmlUtil.escape(input.getWardCode());
+			String contactName = HtmlUtil.escape(input.getContactName());
+			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
+			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+			
+			if (Validator.isNotNull(input.getCityCode())) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				
+			}
+			if (Validator.isNotNull(input.getDistrictCode())) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				
+			}
+			if (Validator.isNotNull(input.getWardCode())) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				
+			}
+			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
+					cityCode, cityName, districtCode, districtName,
+					wardCode, wardName, contactName, contactTelNo,
+					input.getPassword());
+			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+			result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(200).entity(result).build();
+
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
