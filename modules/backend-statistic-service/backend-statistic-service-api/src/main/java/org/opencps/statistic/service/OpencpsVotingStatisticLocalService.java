@@ -317,7 +317,8 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 	public OpencpsVotingStatistic updateVotingStatistic(
 		long votingStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, String votingSubject,
-		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
+		int totalVoted, int veryGoodCount, int goodCount, int badCount,
+		int percentVeryGood, int percentGood, int percentBad,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, String votingCode, int totalCount);
 }

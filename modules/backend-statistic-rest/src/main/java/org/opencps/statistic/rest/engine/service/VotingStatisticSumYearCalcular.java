@@ -3,15 +3,16 @@ package org.opencps.statistic.rest.engine.service;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.opencps.statistic.rest.dto.DomainResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
@@ -32,7 +33,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 public class VotingStatisticSumYearCalcular {
 	
-	private static Log _log = LogFactoryUtil.getLog(StatisticSumYearCalcular.class);
+	private static Log _log = LogFactoryUtil.getLog(VotingStatisticSumYearCalcular.class);
 	
 	private VotingStatisticFinderService votingStatisticFinderService = new VotingStatisticFinderServiceImpl();
 	private VotingStatisticUpdateService<VotingResultStatisticData> updateGovService = new VotingStatisticUpdateServiceImpl();
@@ -84,8 +85,9 @@ public class VotingStatisticSumYearCalcular {
 		/** case votingCode != null && domain == null && agency == null **/
 		if (isVoting && !isDomain && !isAgency) {
 			/* statistic by all */
+			System.out.println("MAY CHAY KHONG EM: "+year);
 
-			List<VotingResponse> votingList = getVotingCode(groupId);
+			List<VotingResponse> votingList = getVotingCode(groupId, year);
 			if (votingList != null && votingList.size() > 0) {
 				for (VotingResponse voting : votingList) {
 
@@ -155,7 +157,7 @@ public class VotingStatisticSumYearCalcular {
 			/* statistic by all */
 
 			List<DomainResponse> domainList = getDomain(groupId);
-			List<VotingResponse> votingList = getVotingCode(groupId);
+			List<VotingResponse> votingList = getVotingCode(groupId, year);
 			for (DomainResponse domain : domainList) {
 				votingResultRequest.setDomain(domain.getItemCode());
 				if (votingList != null && votingList.size() > 0) {
@@ -242,7 +244,7 @@ public class VotingStatisticSumYearCalcular {
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
-				List<VotingResponse> votingList = getVotingCode(groupId);
+				List<VotingResponse> votingList = getVotingCode(groupId, year);
 				if (agencyList != null && agencyList.size() > 0) {
 					for (GovAgencyData agency : agencyList) {
 						votingResultRequest.setGovAgencyCode(agency.getItemCode());
@@ -335,7 +337,7 @@ public class VotingStatisticSumYearCalcular {
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
 				List<DomainResponse> domainList = getDomain(groupId);
-				List<VotingResponse> votingList = getVotingCode(groupId);
+				List<VotingResponse> votingList = getVotingCode(groupId, year);
 				//System.out.println("groupId: "+groupId);
 				if (agencyList != null && agencyList.size() > 0) {
 					//System.out.println("agencyList: "+ agencyList.size());
@@ -401,6 +403,7 @@ public class VotingStatisticSumYearCalcular {
 			if (votingResponse != null) {
 				List<VotingResultStatisticData> votingDataList = votingResponse.getData();
 				DomainResponse domainResponse = null;
+				Map<String, DomainResponse> map = new HashMap<>();
 				if (votingDataList != null && votingDataList.size() > 0) {
 					for (VotingResultStatisticData votingData : votingDataList) {
 						if (Validator.isNotNull(votingData.getDomain())
@@ -408,9 +411,15 @@ public class VotingStatisticSumYearCalcular {
 							domainResponse = new DomainResponse();
 							domainResponse.setItemCode(votingData.getDomain());
 							domainResponse.setItemName(votingData.getDomainName());
-
-							domainList.add(domainResponse);
+							//
+							map.put(votingData.getDomain(), domainResponse);
 						}
+					}
+				}
+				//
+				if (map != null && !map.isEmpty()) {
+					for (Map.Entry<String, DomainResponse> entry : map.entrySet()) {
+						domainList.add(entry.getValue());
 					}
 				}
 			}
@@ -419,31 +428,25 @@ public class VotingStatisticSumYearCalcular {
 			_log.error(e);
 		}
 
-		/* remove duplicate */
-		Set<DomainResponse> hs = new HashSet<>();
-		hs.addAll(domainList);
-		domainList.clear();
-		domainList.addAll(hs);
-
 		return domainList;
 	}
 
-	private List<VotingResponse> getVotingCode(long groupId) {
+	private List<VotingResponse> getVotingCode(long groupId, int year) {
 		List<VotingResponse> votingList = new ArrayList<VotingResponse>();
 
 		VotingResultRequest votingRequest = new VotingResultRequest();
 		votingRequest.setMonth(-1);
-		votingRequest.setYear(LocalDate.now().getYear());
+		votingRequest.setYear(year);
 		votingRequest.setGroupId(groupId);
 		votingRequest.setStart(QueryUtil.ALL_POS);
 		votingRequest.setEnd(QueryUtil.ALL_POS);
 
 		try {
 			VotingResultResponse votingResponse = votingStatisticFinderService.finderVotingStatistic(votingRequest);
-
 			if (votingResponse != null) {
 				List<VotingResultStatisticData> votingDataList = votingResponse.getData();
 				VotingResponse result = null;
+				Map<String, VotingResponse> map = new HashMap<>();
 				if (votingDataList != null && votingDataList.size() > 0) {
 					for (VotingResultStatisticData votingData : votingDataList) {
 						if (Validator.isNotNull(votingData.getVotingCode())
@@ -451,21 +454,21 @@ public class VotingStatisticSumYearCalcular {
 							result = new VotingResponse();
 							result.setItemCode(votingData.getVotingCode());
 							result.setItemName(votingData.getVotingSubject());
-
-							votingList.add(result);
+							//
+							map.put(votingData.getVotingCode(), result);
 						}
+					}
+				}
+				//
+				if (map != null && !map.isEmpty()) {
+					for (Map.Entry<String, VotingResponse> entry : map.entrySet()) {
+						votingList.add(entry.getValue());
 					}
 				}
 			}
 		} catch (PortalException e) {
 			_log.error(e);
 		}
-
-		/* remove duplicate */
-		Set<VotingResponse> hs = new HashSet<>();
-		hs.addAll(votingList);
-		votingList.clear();
-		votingList.addAll(hs);
 
 		return votingList;
 	}
@@ -498,7 +501,9 @@ public class VotingStatisticSumYearCalcular {
 		votingData.setPercentGood(percentGood);
 		votingData.setPercentBad(percentBad);
 		votingData.setTotalVoted(totalVoted);
-		//votingData.setTotalCount(totalCount);
+		votingData.setVeryGoodCount(veryGoodCount);
+		votingData.setGoodCount(goodCount);
+		votingData.setBadCount(totalVoted - (veryGoodCount + goodCount));
 		votingData.setMonth(month);
 		votingData.setYear(year);
 		votingData.setVotingCode(votingCode);

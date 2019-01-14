@@ -30,7 +30,9 @@ public class VotingStatisticConverter {
 				votingData.setMonth(votingStatistic.getMonth());
 				votingData.setYear(votingStatistic.getYear());
 				votingData.setTotalVoted(votingStatistic.getTotalVoted());
-				//votingData.setTotalCount(votingStatistic.getTotalCount());
+				votingData.setVeryGoodCount(votingStatistic.getVeryGoodCount());
+				votingData.setGoodCount(votingStatistic.getGoodCount());
+				votingData.setBadCount(votingStatistic.getBadCount());
 				votingData.setPercentVeryGood(votingStatistic.getPercentVeryGood());
 				votingData.setPercentGood(votingStatistic.getPercentGood());
 				votingData.setPercentBad(votingStatistic.getPercentBad());
@@ -40,6 +42,7 @@ public class VotingStatisticConverter {
 				votingData.setDomain(votingStatistic.getDomainCode());
 				votingData.setDomainName(votingStatistic.getDomainName());
 				votingData.setVotingCode(votingStatistic.getVotingCode());
+				votingData.setVotingSubject(votingStatistic.getVotingSubject());
 
 				votingStatisticList.add(votingData);
 			}

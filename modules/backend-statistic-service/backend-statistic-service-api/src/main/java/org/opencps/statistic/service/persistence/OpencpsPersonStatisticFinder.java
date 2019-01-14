@@ -23,14 +23,14 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public interface OpencpsPersonStatisticFinder {
 	public org.opencps.statistic.model.OpencpsPersonStatistic checkContains(
-		long groupId, int month, int year, String govAgency, long employeeId,
+		long groupId, int month, int year, String govAgency, Long employeeId,
 		String votingCode);
 
-	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchPersonStatistic(
-		long groupId, int year, String votingCode, long employeeId,
+	public java.util.List<org.opencps.statistic.model.OpencpsPersonStatistic> searchPersonStatistic(
+		long groupId, int year, String votingCode, Long employeeId,
 		String govAgency, int start, int end);
 
-	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchByVotingServiceGovAgencyGroup(
-		long groupId, int month, int year, String votingCode, String domain,
+	public java.util.List<org.opencps.statistic.model.OpencpsPersonStatistic> searchByPersonServiceGovAgencyGroup(
+		long groupId, int month, int year, String votingCode, Long employeeId,
 		String govAgency, int start, int end);
 }

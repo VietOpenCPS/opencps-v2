@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.statistic.model.OpencpsPersonStatistic;
-import org.opencps.statistic.model.OpencpsVotingStatistic;
 
 import java.io.Serializable;
 
@@ -76,7 +75,7 @@ public interface OpencpsPersonStatisticLocalService extends BaseLocalService,
 		OpencpsPersonStatistic opencpsPersonStatistic);
 
 	public OpencpsPersonStatistic checkExsit(long groupId, int month, int year,
-		String govAgency, String domain, String votingCode);
+		String govAgency, Long employeeId, String votingCode);
 
 	/**
 	* Creates a new opencps person statistic with the primary key. Does not add the opencps person statistic to the database.
@@ -191,6 +190,12 @@ public interface OpencpsPersonStatisticLocalService extends BaseLocalService,
 		String uuid, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsPersonStatistic> fetchPersonStatistic(long groupId,
+		int month, int year, String votingCode, Long employeeId,
+		String govAgencyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -284,6 +289,18 @@ public interface OpencpsPersonStatisticLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void removePersonStatisticByMonthYear(long groupId, int month,
+		int year);
+
+	public void removePersonStatisticByYear(long companyId, long groupId,
+		int month, int year);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsPersonStatistic> searchPersonStatistic(long groupId,
+		int month, int year, String votingCode, Long employeeId,
+		String govAgencyCode, int start, int end)
+		throws PortalException, SystemException;
+
 	/**
 	* Updates the opencps person statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -294,10 +311,11 @@ public interface OpencpsPersonStatisticLocalService extends BaseLocalService,
 	public OpencpsPersonStatistic updateOpencpsPersonStatistic(
 		OpencpsPersonStatistic opencpsPersonStatistic);
 
-	public OpencpsVotingStatistic updateVotingStatistic(
-		long votingStatisticId, long companyId, long groupId, long userId,
+	public OpencpsPersonStatistic updatePersonStatistic(
+		long personStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, String votingSubject,
-		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
-		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, String votingCode, int totalCount);
+		int totalVoted, int veryGoodCount, int goodCount, int badCount,
+		int percentVeryGood, int percentGood, int percentBad,
+		String govAgencyCode, String govAgencyName, long employeeId,
+		String votingCode, int totalCount);
 }
