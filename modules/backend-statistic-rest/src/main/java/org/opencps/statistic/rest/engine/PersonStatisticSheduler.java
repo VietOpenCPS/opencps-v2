@@ -84,31 +84,14 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 			int monthCurrent = LocalDate.now().getMonthValue();
 			int yearCurrent = LocalDate.now().getYear();
 			for (int month = 1; month <= monthCurrent; month ++) {
-				//
 				processUpdatePersonStatistic(site.getGroupId(), month, yearCurrent, payload,
 						engineUpdateAction);
 			}
 			//TODO: Calculator again year ago
 			int lastYear = LocalDate.now().getYear() - 1;
-			boolean flagLastYear = false;
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-						.getDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
-				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-					for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
-						boolean reporting = dossierStatistic.getReporting();
-						if (!reporting) {
-							flagLastYear = true;
-							break;
-						}
-					}
-				} else {
-					flagLastYear = true;
-				}
-				if (flagLastYear) {
-//					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-//							engineUpdateAction, serviceDomainResponse);
-				}
+				processUpdatePersonStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+						engineUpdateAction);
 			}
 
 			/* Update summary */
@@ -130,7 +113,8 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 
 	private void processUpdatePersonStatistic(long groupId, int month, int year, GetPersonRequest payload,
 			StatisticEngineUpdateAction engineUpdateAction) throws Exception {
-		//engineUpdateAction.removePersonStatisticByMonthYear(groupId, month, year);
+		//
+		engineUpdateAction.removePersonStatisticByMonthYear(groupId, month, year);
 		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
@@ -151,21 +135,10 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 				Map<String, PersonStatisticData> statisticData = engineFetch.getStatisticPersonData(
 						groupId, personDataList, firstDay, lastDay);
 				
-				//engineFetch.fecthStatisticData(groupId, statisticData, personDataList, firstDay, lastDay, false);
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-				//statisticEngineUpdate.updateStatisticData(statisticData);														
+				statisticEngineUpdate.updatePersonStatisticData(statisticData);														
 			}
 			else {
-//				List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-//				if (serviceDomainData != null) {
-//					for (ServiceDomainData sdd : serviceDomainData) {
-//						try {
-//							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//						} catch (NoSuchOpencpsDossierStatisticException e) {
-//								
-//						}
-//					}
-//				}
 				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 			}
 		}
@@ -178,7 +151,7 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 3, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

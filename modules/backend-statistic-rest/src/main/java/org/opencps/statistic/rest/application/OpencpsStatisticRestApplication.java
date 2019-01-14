@@ -304,23 +304,85 @@ public class OpencpsStatisticRestApplication extends Application {
 		String domain = query.getDomain();
 		String votingCode = query.getVotingCode();
 		//boolean reCalculate = query.isReCalculate();
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
 
 		if (end == 0)
 			end = QueryUtil.ALL_POS;
-		
-		boolean calculate = false;
-		if (month > 0 || year > 0) {
-			calculate = true;
+
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
 		}
 
-		if (calculate) {
+		if (!calculate) {
+			//
+			OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingRestService = new OpencpsCallVotingRestFacadeImpl();
+
 			try {
-//				if (reCalculate) {
-//					processUpdateDB(groupId, month, year);
-//				}
+				GetVotingResultRequest payload = new GetVotingResultRequest();
+				if ("all".equals(govAgencyCode)) {
+					payload.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					payload.setGovAgencyCode(govAgencyCode);
+				}
+				payload.setGroupId(groupId);
+				payload.setStart(start);
+				payload.setEnd(end);
+				payload.setFromVotingDate(fromStatisticDate);
+				payload.setToVotingDate(toStatisticDate);
+				payload.setCalculate(calculate);
+				//
+				Date fromCalDate = null;
+				Date toCalDate = null;
+				if (Validator.isNotNull(fromStatisticDate)) {
+					Date fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+					fromCalDate = StatisticUtils.getStartDay(fromDate);
+				}
+				if (Validator.isNotNull(toStatisticDate)) {
+					Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+					toCalDate = StatisticUtils.getEndDay(toDate);
+				}
+
+				GetVotingResultResponse votingResponse = callVotingRestService.callRestService(payload);
+				if (votingResponse != null && fromCalDate != null && toCalDate != null) {
+					List<GetVotingResultData> votingDataList = votingResponse.getData();
+					List<VotingResultStatisticData> statisticDataList = new ArrayList<>();
+					if (votingDataList != null && votingDataList.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						//Map<String, VotingResultData> statisticData = new HashMap<String, VotingResultData>();
+						Map<String, VotingResultStatisticData> statisticData = engineFetch
+								.getStatisticVotingData(groupId, votingDataList, fromCalDate, toCalDate);
+						//
+						statisticData.forEach((k, v) -> 
+						statisticDataList.add(v));
+					}
+					//
+					VotingResultResponse statisticResponse = new VotingResultResponse();
+					statisticResponse.setTotal(statisticDataList.size());
+					statisticResponse.setData(statisticDataList);
+					if (statisticResponse != null) {
+						statisticResponse.setAgency(govAgencyCode);
+					}
+
+					return statisticResponse;
+				}
+
+			} catch (Exception e) {
+				
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		} else {
+			try {
 
 				validInput(month, year, start, end);
 				//
@@ -355,74 +417,6 @@ public class OpencpsStatisticRestApplication extends Application {
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
 			}
 			
-		} else {
-
-			String fromVotingDate = query.getFromStatisticDate();
-			String toVotingDate = query.getToStatisticDate();
-			//
-			OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingRestService = new OpencpsCallVotingRestFacadeImpl();
-
-			try {
-				GetVotingResultRequest payload = new GetVotingResultRequest();
-				if ("all".equals(govAgencyCode)) {
-					payload.setGovAgencyCode(StringPool.BLANK);
-				} else {
-					payload.setGovAgencyCode(govAgencyCode);
-				}
-				payload.setGroupId(groupId);
-				payload.setStart(start);
-				payload.setEnd(end);
-				payload.setFromVotingDate(fromVotingDate);
-				payload.setToVotingDate(toVotingDate);
-				payload.setCalculate(calculate);
-				//
-				int monthStatistic = 0;
-				//Get month statistic
-				if (Validator.isNotNull(fromVotingDate)) {
-					String[] splitD = fromVotingDate.split("/");
-					if (splitD.length == 3 ||
-							splitD[1].length() <= 2 ||
-							splitD[0].length() <= 2) {
-						monthStatistic = Integer.valueOf((splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1]);
-					}
-				}
-
-				GetVotingResultResponse votingResponse = callVotingRestService.callRestService(payload);
-				if (votingResponse != null) {
-					List<GetVotingResultData> votingDataList = votingResponse.getData();
-					List<VotingResultStatisticData> statisticDataList = new ArrayList<>();
-					if (votingDataList != null && votingDataList.size() > 0) {
-						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-						//Map<String, VotingResultData> statisticData = new HashMap<String, VotingResultData>();
-						Map<String, VotingResultStatisticData> statisticData = engineFetch
-								.getStatisticVotingData(groupId, votingDataList, monthStatistic);
-						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-						//statisticEngineUpdate.updateStatisticData(statisticData);
-						//
-						statisticData.forEach((k, v) -> 
-						statisticDataList.add(v));
-					}
-					//
-					VotingResultResponse statisticResponse = new VotingResultResponse();
-					statisticResponse.setTotal(statisticDataList.size());
-					statisticResponse.setData(statisticDataList);
-					if (statisticResponse != null) {
-						statisticResponse.setAgency(govAgencyCode);
-					}
-
-					return statisticResponse;
-				}
-
-			} catch (Exception e) {
-				
-				LOG.error("error", e);
-				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
-
-				serviceExceptionDetails.setFaultCode("500");
-				serviceExceptionDetails.setFaultMessage(e.getMessage());
-
-				throwException(new OpencpsServiceException(serviceExceptionDetails));
-			}
 		}
 
 		return null;

@@ -16,6 +16,7 @@ import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.opencps.statistic.service.OpencpsPersonStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 
 public class StatisticEngineUpdateAction {
@@ -129,13 +130,13 @@ public class StatisticEngineUpdateAction {
 		try {
 			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
 					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
-					payload.getVotingSubject(), payload.getTotalVoted(), payload.getPercentVeryGood(),
+					payload.getVotingSubject(), payload.getTotalVoted(), payload.getVeryGoodCount(),
+					payload.getGoodCount(), payload.getBadCount(), payload.getPercentVeryGood(),
 					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
 					payload.getGovAgencyName(), payload.getDomain(), payload.getDomainName(), payload.getVotingCode(),
 					0);
 		} catch (SystemException e) {
 			_log.error(e);
-			System.out.println(e);
 			return null;
 		}
 	}
@@ -158,40 +159,52 @@ public class StatisticEngineUpdateAction {
 		if (Validator.isNull(payload.getGovAgencyCode())) {
 			payload.setGovAgencyCode((String) null);
 		}
-		if (Validator.isNull(payload.getEmployeeId()) && payload.getEmployeeId() > 0) {
+		if (Validator.isNull(payload.getEmployeeId())) {
 			payload.setEmployeeId(0);
 		}
 		if (Validator.isNull(payload.getVotingCode())) {
 			payload.setVotingCode((String) null);
 		}
 
-		long votingStatisticId = 0L;
+		long personStatisticId = 0L;
 
-//		try {
-//			OpencpsVotingStatistic votingStatistic = OpencpsVotingStatisticLocalServiceUtil.checkExsit(
-//					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
-//					payload.getEmployeeId(), payload.getVotingCode());
-//			//System.out.println("votingStatistic: "+votingStatistic);
-//			if (Validator.isNotNull(votingStatistic)) {
-//				votingStatisticId = votingStatistic.getVotingStatisticId();
-//			}
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
+		try {
+			OpencpsPersonStatistic personStatistic = OpencpsPersonStatisticLocalServiceUtil.checkExsit(
+					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
+					payload.getEmployeeId(), payload.getVotingCode());
+			//System.out.println("votingStatistic: "+votingStatistic);
+			if (Validator.isNotNull(personStatistic)) {
+				personStatisticId = personStatistic.getPersonStatisticId();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
 
 		//System.out.println("votingStatisticId: "+votingStatisticId);
-//		try {
-//			return OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(votingStatisticId,
-//					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
-//					payload.getVotingSubject(), payload.getTotalVoted(), payload.getPercentVeryGood(),
-//					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
-//					payload.getGovAgencyName(), payload.getDomain(), payload.getDomainName(), payload.getVotingCode(),
-//					0);
-//		} catch (SystemException e) {
-//			_log.error(e);
-//			System.out.println(e);
-//			return null;
-//		}
+		try {
+			return OpencpsPersonStatisticLocalServiceUtil.updatePersonStatistic(personStatisticId,
+					payload.getCompanyId(), payload.getGroupId(), -1L, "VDM", payload.getMonth(), payload.getYear(),
+					payload.getVotingSubject(), payload.getTotalVoted(),
+					payload.getVeryGoodCount(), payload.getGoodCount(), payload.getBadCount(),
+					payload.getPercentVeryGood(),
+					payload.getPercentGood(), payload.getPercentBad(), payload.getGovAgencyCode(),
+					payload.getGovAgencyName(), payload.getEmployeeId(), payload.getVotingCode(), 0);
+		} catch (SystemException e) {
+			_log.error(e);
+		}
+
 		return null;
+	}
+
+//	public void removePersonStatisticByD_M_Y(long groupId, String domainCode, int month, int year) {
+//		OpencpsPersonStatisticLocalServiceUtil.removeVotingStatisticByD_M_Y(groupId, domainCode, month, year);
+//	}
+
+	public void removePersonStatisticByMonthYear(long groupId, int month, int year) {
+		OpencpsPersonStatisticLocalServiceUtil.removePersonStatisticByMonthYear(groupId, month, year);
+	}
+
+	public void removePersonStatisticByYear(long companyId, long groupId, int month, int year) {
+		OpencpsPersonStatisticLocalServiceUtil.removePersonStatisticByYear(companyId, groupId, month, year);
 	}
 }

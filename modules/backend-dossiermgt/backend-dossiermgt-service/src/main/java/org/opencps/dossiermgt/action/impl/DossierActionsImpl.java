@@ -3482,6 +3482,8 @@ public class DossierActionsImpl implements DossierActions {
 			
 			//Put dossier note
 			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+			//Put dossier note
+			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
 			
 //			_log.info("Flag changed: " + flagChanged);
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);

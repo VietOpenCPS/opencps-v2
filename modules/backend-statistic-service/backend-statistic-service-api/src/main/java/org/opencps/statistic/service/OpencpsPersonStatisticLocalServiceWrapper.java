@@ -48,10 +48,10 @@ public class OpencpsPersonStatisticLocalServiceWrapper
 
 	@Override
 	public org.opencps.statistic.model.OpencpsPersonStatistic checkExsit(
-		long groupId, int month, int year, String govAgency, String domain,
+		long groupId, int month, int year, String govAgency, Long employeeId,
 		String votingCode) {
 		return _opencpsPersonStatisticLocalService.checkExsit(groupId, month,
-			year, govAgency, domain, votingCode);
+			year, govAgency, employeeId, votingCode);
 	}
 
 	/**
@@ -209,6 +209,16 @@ public class OpencpsPersonStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsPersonStatistic> fetchPersonStatistic(
+		long groupId, int month, int year, String votingCode, Long employeeId,
+		String govAgencyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsPersonStatisticLocalService.fetchPersonStatistic(groupId,
+			month, year, votingCode, employeeId, govAgencyCode, start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _opencpsPersonStatisticLocalService.getActionableDynamicQuery();
 	}
@@ -331,6 +341,30 @@ public class OpencpsPersonStatisticLocalServiceWrapper
 		return _opencpsPersonStatisticLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public void removePersonStatisticByMonthYear(long groupId, int month,
+		int year) {
+		_opencpsPersonStatisticLocalService.removePersonStatisticByMonthYear(groupId,
+			month, year);
+	}
+
+	@Override
+	public void removePersonStatisticByYear(long companyId, long groupId,
+		int month, int year) {
+		_opencpsPersonStatisticLocalService.removePersonStatisticByYear(companyId,
+			groupId, month, year);
+	}
+
+	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsPersonStatistic> searchPersonStatistic(
+		long groupId, int month, int year, String votingCode, Long employeeId,
+		String govAgencyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsPersonStatisticLocalService.searchPersonStatistic(groupId,
+			month, year, votingCode, employeeId, govAgencyCode, start, end);
+	}
+
 	/**
 	* Updates the opencps person statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -344,17 +378,18 @@ public class OpencpsPersonStatisticLocalServiceWrapper
 	}
 
 	@Override
-	public org.opencps.statistic.model.OpencpsVotingStatistic updateVotingStatistic(
-		long votingStatisticId, long companyId, long groupId, long userId,
+	public org.opencps.statistic.model.OpencpsPersonStatistic updatePersonStatistic(
+		long personStatisticId, long companyId, long groupId, long userId,
 		String userName, int month, int year, String votingSubject,
-		int totalVoted, int percentVeryGood, int percentGood, int percentBad,
-		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, String votingCode, int totalCount) {
-		return _opencpsPersonStatisticLocalService.updateVotingStatistic(votingStatisticId,
+		int totalVoted, int veryGoodCount, int goodCount, int badCount,
+		int percentVeryGood, int percentGood, int percentBad,
+		String govAgencyCode, String govAgencyName, long employeeId,
+		String votingCode, int totalCount) {
+		return _opencpsPersonStatisticLocalService.updatePersonStatistic(personStatisticId,
 			companyId, groupId, userId, userName, month, year, votingSubject,
-			totalVoted, percentVeryGood, percentGood, percentBad,
-			govAgencyCode, govAgencyName, domainCode, domainName, votingCode,
-			totalCount);
+			totalVoted, veryGoodCount, goodCount, badCount, percentVeryGood,
+			percentGood, percentBad, govAgencyCode, govAgencyName, employeeId,
+			votingCode, totalCount);
 	}
 
 	@Override

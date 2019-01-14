@@ -120,7 +120,7 @@ public class StatisticEngineFetch {
 	private static final String MSG_ALL = "all";
 
 	public Map<String, VotingResultStatisticData> getStatisticVotingData(long groupId,
-			List<GetVotingResultData> votingDataList, int month) {
+			List<GetVotingResultData> votingDataList, Date fromCalDate, Date toCalDate) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		Map<String, VotingResultStatisticData> statisticData = new HashMap<String, VotingResultStatisticData>();
@@ -143,7 +143,7 @@ public class StatisticEngineFetch {
 			}
 
 			//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
-			engineFetchEntry.calculateVotingStatisticData(dataType1, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType1, votingData, fromCalDate, toCalDate);
 			dataType1.setGovAgencyCode(StringPool.BLANK);
 			dataType1.setGovAgencyName(StringPool.BLANK);
 			dataType1.setDomain(StringPool.BLANK);
@@ -172,7 +172,7 @@ public class StatisticEngineFetch {
 				dataType2 = statisticData.get(type2);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType2, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType2, votingData, fromCalDate, toCalDate);
 			//dataType2 = processOnTimePercent(dataType2);
 
 			statisticData.put(type2, dataType2);
@@ -194,7 +194,7 @@ public class StatisticEngineFetch {
 				dataType3 = statisticData.get(type3);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType3, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType3, votingData, fromCalDate, toCalDate);
 			//dataType3 = processOnTimePercent(dataType3);
 
 			statisticData.put(type3, dataType3);
@@ -216,7 +216,7 @@ public class StatisticEngineFetch {
 				dataType4 = statisticData.get(type4);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType4, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType4, votingData, fromCalDate, toCalDate);
 			//dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type4, dataType4);
@@ -237,7 +237,7 @@ public class StatisticEngineFetch {
 				dataType5 = statisticData.get(type5);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType5, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType5, votingData, fromCalDate, toCalDate);
 			//dataType4 = processOnTimePercent(dataType4);
 
 			statisticData.put(type5, dataType5);
@@ -258,7 +258,7 @@ public class StatisticEngineFetch {
 				dataType6 = statisticData.get(type6);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType6, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType6, votingData, fromCalDate, toCalDate);
 			statisticData.put(type6, dataType6);
 
 			// each site each domain
@@ -277,7 +277,7 @@ public class StatisticEngineFetch {
 				dataType7 = statisticData.get(type7);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType7, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType7, votingData, fromCalDate, toCalDate);
 			statisticData.put(type7, dataType7);
 
 			// each site each domain
@@ -296,7 +296,7 @@ public class StatisticEngineFetch {
 				dataType8 = statisticData.get(type8);
 			}
 
-			engineFetchEntry.calculateVotingStatisticData(dataType8, votingData, month);
+			engineFetchEntry.calculateVotingStatisticData(dataType8, votingData, fromCalDate, toCalDate);
 			statisticData.put(type8, dataType8);
 		}
 		//
@@ -338,7 +338,6 @@ public class StatisticEngineFetch {
 			dataType1.setVotingSubject(StringPool.BLANK);
 
 			if (statisticData.containsKey(MSG_ALL_SITE_ALL_DOMAIN)) {
-				//System.out.println("type1: "+MSG_ALL_SITE_ALL_DOMAIN);
 				dataType1 = statisticData.get(MSG_ALL_SITE_ALL_DOMAIN);
 			}
 

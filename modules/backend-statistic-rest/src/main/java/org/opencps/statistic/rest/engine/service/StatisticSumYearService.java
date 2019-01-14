@@ -1,8 +1,8 @@
 package org.opencps.statistic.rest.engine.service;
 
-import java.time.LocalDate;
-
 import com.liferay.portal.kernel.exception.PortalException;
+
+import java.time.LocalDate;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
@@ -37,15 +37,10 @@ public class StatisticSumYearService {
 
 	}
 
-	public void votingCalculateSumYear(long companyId, long groupId)
+	public void votingCalculateSumYear(long companyId, long groupId, int year)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
-		int year = LocalDate.now().getYear();
-		
 		VotingStatisticSumYearCalcular calcular = new VotingStatisticSumYearCalcular();
-//		VotingStatisticSumYearCalcular calcular2 = new VotingStatisticSumYearCalcular();
-//		VotingStatisticSumYearCalcular calcular3 = new VotingStatisticSumYearCalcular();
-//		VotingStatisticSumYearCalcular calcular4 = new VotingStatisticSumYearCalcular();
 		
 		//LOG.info("RUN#1" + groupId + "year" + year);
 		/* filter all */
@@ -74,6 +69,44 @@ public class StatisticSumYearService {
 		
 		/* filter votingCode != null, domain != null, agency != null */
 		calcular.filterVotingSumYear(companyId, groupId, year, true, true, true);
+
+	}
+
+	public void personCalculateSumYear(long companyId, long groupId, int year)
+			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+
+		PersonStatisticSumYearCalcular calcular = new PersonStatisticSumYearCalcular();
+//		VotingStatisticSumYearCalcular calcular2 = new VotingStatisticSumYearCalcular();
+//		VotingStatisticSumYearCalcular calcular3 = new VotingStatisticSumYearCalcular();
+//		VotingStatisticSumYearCalcular calcular4 = new VotingStatisticSumYearCalcular();
+		
+		//LOG.info("RUN#1" + groupId + "year" + year);
+		/* filter all */
+		calcular.filterPersonSumYear(companyId, groupId, year, false, false, false);
+
+		//LOG.info("RUN#2" + groupId + "year" + year);
+		/* filter votingCode != null, domain == null, agency = null */
+		calcular.filterPersonSumYear(companyId, groupId, year, false, false, true);
+		
+		//LOG.info("RUN#3" + groupId + "year" + year);
+		/* filter votingCode != null , domain = null, agency = null */
+		calcular.filterPersonSumYear(companyId, groupId, year, false, true, false);
+		
+		//LOG.info("RUN#4" + groupId + "year" + year);
+		/* filter votingCode = null, domain != null, agency = null */
+		calcular.filterPersonSumYear(companyId, groupId, year, false, true, true);
+		
+		/* filter votingCode = null, domain == null, agency != null */
+		calcular.filterPersonSumYear(companyId, groupId, year, true, false, false);
+		
+		/* filter votingCode != null, domain = null, agency != null */
+		calcular.filterPersonSumYear(companyId, groupId, year, true, false, true);
+		
+		/* filter votingCode = null , domain != null, agency != null */
+		calcular.filterPersonSumYear(companyId, groupId, year, true, true , false);
+		
+		/* filter votingCode != null, domain != null, agency != null */
+		calcular.filterPersonSumYear(companyId, groupId, year, true, true, true);
 
 	}
 

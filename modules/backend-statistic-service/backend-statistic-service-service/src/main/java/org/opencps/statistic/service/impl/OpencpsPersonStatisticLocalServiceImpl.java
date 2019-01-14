@@ -14,7 +14,11 @@
 
 package org.opencps.statistic.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.statistic.model.OpencpsPersonStatistic;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
@@ -42,59 +46,88 @@ public class OpencpsPersonStatisticLocalServiceImpl
 	 * Never reference this class directly. Always use {@link org.opencps.statistic.service.OpencpsPersonStatisticLocalServiceUtil} to access the opencps person statistic local service.
 	 */
 
-	public OpencpsPersonStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain,
+	public OpencpsPersonStatistic checkExsit(long groupId, int month, int year, String govAgency, Long employeeId,
 			String votingCode) {
-		//return opencpsVotingStatisticFinder.checkContains(groupId, month, year, govAgency, domain, votingCode);
-		return null;
+		return opencpsPersonStatisticFinder.checkContains(groupId, month, year, govAgency, employeeId, votingCode);
 	}
 
-	public OpencpsVotingStatistic updateVotingStatistic(long votingStatisticId, long companyId, long groupId,
-			long userId, String userName, int month, int year, String votingSubject, int totalVoted,
-			int percentVeryGood, int percentGood, int percentBad, String govAgencyCode, String govAgencyName,
-			String domainCode, String domainName, String votingCode, int totalCount) {
+	public OpencpsPersonStatistic updatePersonStatistic(long personStatisticId, long companyId, long groupId,
+			long userId, String userName, int month, int year, String votingSubject, int totalVoted, int veryGoodCount,
+			int goodCount, int badCount, int percentVeryGood, int percentGood, int percentBad, String govAgencyCode,
+			String govAgencyName, long employeeId, String votingCode, int totalCount) {
 
-		OpencpsVotingStatistic votingStatistic = null;
+		OpencpsPersonStatistic personStatistic = null;
 		Date now = new Date();
-		if (votingStatisticId == 0L) {
-			votingStatisticId = counterLocalService.increment(OpencpsVotingStatistic.class.getName());
-			votingStatistic = opencpsVotingStatisticPersistence.create(votingStatisticId);
-			votingStatistic.setCreateDate(now);
-			votingStatistic.setModifiedDate(now);
-			votingStatistic.setCompanyId(companyId);
-			votingStatistic.setGroupId(groupId);
-			votingStatistic.setUserId(userId);
-			votingStatistic.setUserName(userName);
-			votingStatistic.setMonth(month);
-			votingStatistic.setYear(year);
-			votingStatistic.setVotingSubject(votingSubject);
-			votingStatistic.setGovAgencyCode(govAgencyCode);
-			votingStatistic.setGovAgencyName(govAgencyName);
-			votingStatistic.setDomainCode(domainCode);
-			votingStatistic.setDomainName(domainName);
-			votingStatistic.setVotingCode(votingCode);
-			votingStatistic.setTotalVoted(totalVoted);
-			votingStatistic.setPercentVeryGood(percentVeryGood);
-			votingStatistic.setPercentGood(percentGood);
-			votingStatistic.setPercentBad(percentBad);
-			votingStatistic.setTotalCount(totalCount);
+		if (personStatisticId == 0L) {
+			personStatisticId = counterLocalService.increment(OpencpsPersonStatistic.class.getName());
+			personStatistic = opencpsPersonStatisticPersistence.create(personStatisticId);
+			personStatistic.setCreateDate(now);
+			personStatistic.setModifiedDate(now);
+			personStatistic.setCompanyId(companyId);
+			personStatistic.setGroupId(groupId);
+			personStatistic.setUserId(userId);
+			personStatistic.setUserName(userName);
+			personStatistic.setMonth(month);
+			personStatistic.setYear(year);
+			personStatistic.setVotingSubject(votingSubject);
+			personStatistic.setGovAgencyCode(govAgencyCode);
+			personStatistic.setGovAgencyName(govAgencyName);
+			personStatistic.setEmployeeId(employeeId);
+			personStatistic.setVotingCode(votingCode);
+			personStatistic.setTotalVoted(totalVoted);
+			personStatistic.setVeryGoodCount(veryGoodCount);
+			personStatistic.setGoodCount(goodCount);
+			personStatistic.setBadCount(badCount);
+			personStatistic.setPercentVeryGood(percentVeryGood);
+			personStatistic.setPercentGood(percentGood);
+			personStatistic.setPercentBad(percentBad);
+			personStatistic.setTotalCount(totalCount);
 		} else {
-			votingStatistic = opencpsVotingStatisticPersistence.fetchByPrimaryKey(votingStatisticId);
-			votingStatistic.setModifiedDate(now);
-			votingStatistic.setMonth(month);
-			votingStatistic.setYear(year);
-			votingStatistic.setVotingSubject(votingSubject);
-			votingStatistic.setGovAgencyCode(govAgencyCode);
-			votingStatistic.setGovAgencyName(govAgencyName);
-			votingStatistic.setDomainCode(domainCode);
-			votingStatistic.setDomainName(domainName);
-			votingStatistic.setVotingCode(votingCode);
-			votingStatistic.setTotalVoted(totalVoted);
-			votingStatistic.setPercentVeryGood(percentVeryGood);
-			votingStatistic.setPercentGood(percentGood);
-			votingStatistic.setPercentBad(percentBad);
-			votingStatistic.setTotalCount(totalCount);
+			personStatistic = opencpsPersonStatisticPersistence.fetchByPrimaryKey(personStatisticId);
+			personStatistic.setModifiedDate(now);
+			personStatistic.setMonth(month);
+			personStatistic.setYear(year);
+			personStatistic.setVotingSubject(votingSubject);
+			personStatistic.setGovAgencyCode(govAgencyCode);
+			personStatistic.setGovAgencyName(govAgencyName);
+			personStatistic.setEmployeeId(employeeId);
+			personStatistic.setVotingCode(votingCode);
+			personStatistic.setTotalVoted(totalVoted);
+			personStatistic.setVeryGoodCount(veryGoodCount);
+			personStatistic.setGoodCount(goodCount);
+			personStatistic.setBadCount(badCount);
+			personStatistic.setPercentVeryGood(percentVeryGood);
+			personStatistic.setPercentGood(percentGood);
+			personStatistic.setPercentBad(percentBad);
+			personStatistic.setTotalCount(totalCount);
 		}
 
-		return opencpsVotingStatisticPersistence.update(votingStatistic);
+		return opencpsPersonStatisticPersistence.update(personStatistic);
+	}
+
+	public List<OpencpsPersonStatistic> fetchPersonStatistic(long groupId, int month, int year, String votingCode,
+			Long employeeId, String govAgencyCode, int start, int end) throws PortalException, SystemException {
+
+		return opencpsPersonStatisticFinder.searchPersonStatistic(groupId, year, votingCode, employeeId,
+				govAgencyCode, start, end);
+	}
+
+	public List<OpencpsPersonStatistic> searchPersonStatistic(long groupId, int month, int year, String votingCode,
+			Long employeeId, String govAgencyCode, int start, int end) throws PortalException, SystemException {
+
+		return opencpsPersonStatisticFinder.searchByPersonServiceGovAgencyGroup(groupId, month, year, votingCode,
+				employeeId, govAgencyCode, start, end);
+	}
+
+//	public void removePersonStatisticByD_M_Y(long groupId, String domainCode, int month, int year) {
+//		opencpsPersonStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
+//	}
+
+	public void removePersonStatisticByMonthYear(long groupId, int month, int year) {
+		opencpsPersonStatisticPersistence.removeByG_M_Y(groupId, month, year);
+	}
+
+	public void removePersonStatisticByYear(long companyId, long groupId, int month, int year) {
+		opencpsPersonStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
 	}
 }

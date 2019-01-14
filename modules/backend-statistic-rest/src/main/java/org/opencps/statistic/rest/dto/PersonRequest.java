@@ -8,7 +8,7 @@ public class PersonRequest extends CommonRequest{
 	private String fromStatisticDate;
 	private String toStatisticDate;
 	private String votingCode;
-	private long employeeId;
+	private Long employeeId;
 	private String govAgencyCode;
 
 	public int getMonth() {
@@ -53,10 +53,10 @@ public class PersonRequest extends CommonRequest{
 	public void setToStatisticDate(String toStatisticDate) {
 		this.toStatisticDate = toStatisticDate;
 	}
-	public long getEmployeeId() {
+	public Long getEmployeeId() {
 		return employeeId;
 	}
-	public void setEmployeeId(long employeeId) {
+	public void setEmployeeId(Long employeeId) {
 		this.employeeId = employeeId;
 	}
 
