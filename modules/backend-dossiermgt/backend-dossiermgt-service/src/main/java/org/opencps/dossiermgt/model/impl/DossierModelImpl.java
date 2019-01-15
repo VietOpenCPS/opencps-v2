@@ -283,11 +283,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long GROUPID_COLUMN_BITMASK = 256L;
 	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 512L;
 	public static final long ORIGINALITY_COLUMN_BITMASK = 1024L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 2048L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 4096L;
-	public static final long USERID_COLUMN_BITMASK = 8192L;
-	public static final long UUID_COLUMN_BITMASK = 16384L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 32768L;
+	public static final long PROCESSNO_COLUMN_BITMASK = 2048L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 4096L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 8192L;
+	public static final long USERID_COLUMN_BITMASK = 16384L;
+	public static final long UUID_COLUMN_BITMASK = 32768L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 65536L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -1239,7 +1240,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setProcessNo(String processNo) {
+		_columnBitmask |= PROCESSNO_COLUMN_BITMASK;
+
+		if (_originalProcessNo == null) {
+			_originalProcessNo = _processNo;
+		}
+
 		_processNo = processNo;
+	}
+
+	public String getOriginalProcessNo() {
+		return GetterUtil.getString(_originalProcessNo);
 	}
 
 	@Override
@@ -2622,6 +2633,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		dossierModelImpl._originalReferenceUid = dossierModelImpl._referenceUid;
 
+		dossierModelImpl._originalProcessNo = dossierModelImpl._processNo;
+
 		dossierModelImpl._originalServiceCode = dossierModelImpl._serviceCode;
 
 		dossierModelImpl._originalGovAgencyCode = dossierModelImpl._govAgencyCode;
@@ -3901,6 +3914,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _registerBookName;
 	private String _dossierRegister;
 	private String _processNo;
+	private String _originalProcessNo;
 	private String _serviceCode;
 	private String _originalServiceCode;
 	private String _serviceName;
