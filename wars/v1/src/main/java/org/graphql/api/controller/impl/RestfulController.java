@@ -279,9 +279,9 @@ public class RestfulController {
 		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 		        			jCaptchaResponse);
 		        	if (!isResponseCorrect) 
-		        		throw new UnauthenticationException("Captcha incorrect");
+		        		return "/captcha";
 		        } catch (CaptchaServiceException e) {
-		        	throw new UnauthenticationException("Captcha incorrect");
+		        	return "/captcha";
 		        }				
 			}
 			if (userId > 0 && userId != 20103) {
