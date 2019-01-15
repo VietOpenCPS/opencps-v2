@@ -34,6 +34,9 @@ import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.octo.captcha.service.CaptchaServiceException;
+import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +58,7 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
+import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -88,6 +92,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import backend.admin.config.whiteboard.BundleLoader;
+import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.deliverable.action.impl.DeliverableTypeActions;
 import backend.utils.FileUploadUtils;
 import io.swagger.annotations.ApiParam;
@@ -265,6 +270,20 @@ public class RestfulController {
 			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 					CompanyConstants.AUTH_TYPE_EA);
 
+			User checkUser = UserLocalServiceUtil.fetchUser(userId);
+			if (checkUser.getFailedLoginAttempts() >= 5) {
+				ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
+				String jCaptchaResponse = request.getParameter("j_captcha_response");
+				String captchaId = request.getSession().getId();
+		        try {
+		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+		        			jCaptchaResponse);
+		        	if (!isResponseCorrect) 
+		        		throw new UnauthenticationException("Captcha incorrect");
+		        } catch (CaptchaServiceException e) {
+		        	throw new UnauthenticationException("Captcha incorrect");
+		        }				
+			}
 			if (userId > 0 && userId != 20103) {
 
 //				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
