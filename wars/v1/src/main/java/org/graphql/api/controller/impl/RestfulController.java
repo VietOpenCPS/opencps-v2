@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -25,34 +26,45 @@ import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.octo.captcha.service.CaptchaServiceException;
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
+import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
 import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
@@ -78,6 +90,9 @@ import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -240,7 +255,9 @@ public class RestfulController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
-
+		long checkUserId = -1;
+		String emailAddress = StringPool.BLANK;
+		
 		try {
 
 			Enumeration<String> headerNames = request.getHeaderNames();
@@ -266,31 +283,18 @@ public class RestfulController {
 
 			String email = account[0];
 			String password = account[1];
-
+			emailAddress = email;
+			
 			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 					CompanyConstants.AUTH_TYPE_EA);
-
-			User checkUser = UserLocalServiceUtil.fetchUser(userId);
-			if (checkUser.getFailedLoginAttempts() >= 5) {
-				ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
-				String jCaptchaResponse = request.getParameter("j_captcha_response");
-				String captchaId = request.getSession().getId();
-		        try {
-		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-		        			jCaptchaResponse);
-		        	if (!isResponseCorrect) 
-		        		return "/captcha";
-		        } catch (CaptchaServiceException e) {
-		        	return "/captcha";
-		        }				
-			}
 			if (userId > 0 && userId != 20103) {
-
+				checkUserId = userId;
 //				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
 //						CompanyConstants.AUTH_TYPE_EA);
 				//Remember me false
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
+
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
@@ -326,7 +330,76 @@ public class RestfulController {
 				}
 			}
 
-		} catch (Exception e) {
+		} 
+		catch (AuthException ae) {
+			System.out.println("AUTH EXCEPTION: " + checkUserId);
+			if (checkUserId != -1) {
+				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
+				
+				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String jCaptchaResponse = request.getParameter("j_captcha_response");
+					String captchaId = request.getSession().getId();
+			        try {
+			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+			        			jCaptchaResponse);
+			        	if (!isResponseCorrect) 
+			        		return "captcha";
+			        } catch (CaptchaServiceException e) {
+			        	return "captcha";
+			        }				
+				}
+				else {
+					return "captcha";
+				}
+			}
+			else {
+				try {
+					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
+					
+					if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+						String jCaptchaResponse = request.getParameter("j_captcha_response");
+						String captchaId = request.getSession().getId();
+				        try {
+				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+				        			jCaptchaResponse);
+				        	if (!isResponseCorrect) 
+				        		return "captcha";
+				        } catch (CaptchaServiceException e) {
+				        	return "captcha";
+				        }				
+					}		
+				} catch (PortalException e) {
+				}				
+			}
+		}
+		catch (PortalException pe) {
+			System.out.println("PORTAL EXCEPTION: " + emailAddress);
+			try {
+				Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+				User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
+				
+				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String jCaptchaResponse = request.getParameter("j_captcha_response");
+					String captchaId = request.getSession().getId();
+			        try {
+			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+			        			jCaptchaResponse);
+			        	if (!isResponseCorrect) 
+			        		return "captcha";
+			        } catch (CaptchaServiceException e) {
+			        	return "captcha";
+			        }				
+				}		
+			} catch (PortalException e) {
+			}
+			
+		}		
+		catch (Exception e) {
+			System.out.println("EXCEPTION");
 			e.printStackTrace();
 		}
 
@@ -1103,4 +1176,45 @@ public class RestfulController {
 		return result.toUpperCase();
 
 	}
+	
+	@RequestMapping(value = "/users/login/jcaptcha", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resource> getJCaptcha(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+			
+		    String captchaId = request.getSession().getId();
+			File destDir = new File("jcaptcha");
+			if (!destDir.exists()) {
+				destDir.mkdir();
+			}
+			File file = new File("jcaptcha/" + captchaId  + ".png");
+			if (!file.exists()) {
+				file.createNewFile();				
+			}
+	
+			if (file.exists()) {
+			    BufferedImage challengeImage = instance.getImageChallengeForID(
+			    captchaId, Locale.US );
+			    try {
+					ImageIO.write( challengeImage, "png", file );
+				    
+				} catch (IOException e) {
+				}
+			}
+		
+			Path path = Paths.get(file.getAbsolutePath());
+		    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+		    return ResponseEntity.ok()
+		            .headers(new HttpHeaders())
+		            .contentLength(file.length())
+		            .contentType(MediaType.parseMediaType("application/octet-stream"))
+		            .body(resource);
+		}
+		catch (Exception e) {
+			return null;
+		}
+		
+	}	
 }

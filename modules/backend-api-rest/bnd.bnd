@@ -29,5 +29,4 @@ Export-Package: \
 	com.fasterxml.jackson.databind,\
 	javax.validation.constraints,\
 	vn.gov.ngsp.DKDN.GTVT.*,\
-	com.google.gson.*,\
-	com.octo.captcha.*
+	com.google.gson.*
