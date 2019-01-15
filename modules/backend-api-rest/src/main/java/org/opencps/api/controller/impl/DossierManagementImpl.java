@@ -86,6 +86,7 @@ import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
@@ -3872,6 +3873,11 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 				
 				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr);
+				//Reindex dossier
+				Indexer<Dossier> indexer = IndexerRegistryUtil
+						.nullSafeGetIndexer(Dossier.class);
+				indexer.reindex(dossier);
+				
 				return Response.status(200).entity(StringPool.BLANK).build();
 			}
 			else {
