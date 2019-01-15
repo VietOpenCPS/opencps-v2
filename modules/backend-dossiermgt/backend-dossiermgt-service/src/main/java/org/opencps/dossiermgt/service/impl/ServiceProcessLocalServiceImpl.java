@@ -56,15 +56,23 @@ import org.opencps.dossiermgt.exception.RequiredDossierNoPatternException;
 import org.opencps.dossiermgt.exception.RequiredDueDatePatternException;
 import org.opencps.dossiermgt.exception.RequiredProcessNameException;
 import org.opencps.dossiermgt.exception.RequiredProcessNoException;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.ServiceProcessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
@@ -851,15 +859,30 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceProcess adminProcessDelete(Long id) {
 
-		ServiceProcess object = serviceProcessPersistence.fetchByPrimaryKey(id);
+		ServiceProcess process = serviceProcessPersistence.fetchByPrimaryKey(id);
+		if (process != null) {
+			String processNo = process.getProcessNo();
+			long groupId = process.getGroupId();
+			if (Validator.isNotNull(processNo)) {
+				List<Dossier> dossierList = dossierPersistence.findByGID_PNO(groupId, processNo);
+				if (dossierList == null) {
+					boolean flagProRole = deleteAllProcessRole(id);
+					boolean flagStep = deleteAllProcessStep(id);
+					boolean flagProAction = deleteAllProcessAction(id);
+					boolean flagSequence = deleteAllProcessSequence(process.getGroupId(), id);
 
-		if (Validator.isNull(object)) {
-			return null;
-		} else {
-			serviceProcessPersistence.remove(object);
+					if (flagProRole && flagStep && flagProAction && flagSequence) {
+						try {
+							return ServiceProcessLocalServiceUtil.removeServiceProcess(id, groupId);
+						} catch (Exception e) {
+							return null;
+						}
+					}
+				}
+			}
 		}
 
-		return object;
+		return null;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -908,6 +931,113 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		serviceProcessPersistence.update(object);
 
 		return object;
+	}
+
+	private boolean deleteAllProcessAction(long serviceProcessId) {
+		boolean flag = false;
+		try {
+			List<ProcessAction> actList = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcessId);
+			if (actList != null && actList.size() > 0) {
+				for (ProcessAction act : actList) {
+					ProcessActionLocalServiceUtil.deleteProcessAction(act);
+					flag = true;
+				}
+			} else {
+				flag = true;
+			}
+		}catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			return false;
+		}
+
+		return flag;
+	}
+
+	private boolean deleteAllProcessRole(long serviceProcessId) {
+		boolean flag = false;
+		try {
+			List<ServiceProcessRole> roleList = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+			if (roleList != null && roleList.size() > 0) {
+				for (ServiceProcessRole role : roleList) {
+					ServiceProcessRoleLocalServiceUtil.deleteServiceProcessRole(role);
+					flag = true;
+				}
+			} else {
+				flag = true;
+			}
+		}catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			return false;
+		}
+
+		return flag;
+	}
+
+	private boolean deleteAllProcessStep(long serviceProcessId) {
+		boolean flag = false;
+		try {
+			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
+			if (stepList != null && stepList.size() > 0) {
+//				_log.info("stepList: "+stepList.size());
+				long stepId = 0;
+				for (ProcessStep step : stepList) {
+					stepId = step.getProcessStepId();
+//					_log.info("stepId: "+stepId);
+					if (stepId > 0) {
+						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
+								.findByP_S_ID(stepId);
+//						_log.info("stepRoleList: "+stepRoleList.size());
+						if (stepRoleList != null && stepRoleList.size() > 0) {
+							for (ProcessStepRole stepRole : stepRoleList) {
+								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
+								flag = true;
+							}
+						} else {
+							flag = true;
+						}
+					}
+					if (flag) {
+//						_log.info("STARTTT: ");
+						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
+						if (processStep == null) {
+							flag = false;
+						}
+					}
+				}
+			} else {
+				flag = true;
+			}
+		}catch (Exception e) {
+//			e.printStackTrace();
+			_log.debug(e);
+			//_log.error(e);
+			return false;
+		}
+
+		return flag;
+	}
+
+	private boolean deleteAllProcessSequence(long groupId, long serviceProcessId) {
+		boolean flag = false;
+		try {
+			List<ProcessSequence> seqList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcessId);
+			if (seqList != null && seqList.size() > 0) {
+				for (ProcessSequence seq : seqList) {
+					ProcessSequenceLocalServiceUtil.deleteProcessSequence(seq);
+					flag = true;
+				}
+			} else {
+				flag = true;
+			}
+		}catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			return false;
+		}
+
+		return flag;
 	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceProcessLocalServiceImpl.class);

@@ -493,15 +493,81 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	@Indexable(type = IndexableType.DELETE)
 	public EmployeeJobPos adminProcessDelete(Long id) {
 
-		EmployeeJobPos object = employeeJobPosPersistence.fetchByPrimaryKey(id);
+		EmployeeJobPos employeeJobPos = null;
 
-		if (Validator.isNull(object)) {
-			return null;
-		} else {
-			employeeJobPosPersistence.remove(object);
+		try {
+
+			employeeJobPos = employeeJobPosPersistence.remove(id);
+			Indexer<EmployeeJobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EmployeeJobPos.class);
+			indexer.delete(employeeJobPos);
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
-		return object;
+		try {
+			// role
+			if (employeeJobPos != null) {
+				Employee mEmployee = employeePersistence.fetchByPrimaryKey(employeeJobPos.getEmployeeId());
+				List<Role> roleIds = null;
+				User newUser = null;
+				if (mEmployee != null) {
+					newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
+					if (newUser != null) {
+						List<Role> roles = RoleLocalServiceUtil.getUserRoles(newUser.getUserId());
+						if (roles != null && roles.size() > 0) {
+							roleIds = new ArrayList<Role>();
+							for (Role role : roles) {
+								roleIds.add(role);
+							}
+						}
+					}
+				}
+
+				JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
+				Role roleMapping = null;
+				if (jobPos != null) {
+					roleMapping = RoleLocalServiceUtil.fetchRole(jobPos.getMappingRoleId());
+				}
+				if (Validator.isNotNull(roleMapping)) {
+					if (roleIds != null && roleIds.size() > 0) {
+						roleIds.remove(roleMapping);
+					}
+				}
+
+				if (mEmployee != null) {
+					List<EmployeeJobPos> listEmJobPos = employeeJobPosPersistence
+							.findByF_EmployeeId(mEmployee.getEmployeeId());
+					if (listEmJobPos != null && listEmJobPos.size() > 0) {
+						if (roleIds == null) {
+							roleIds = new ArrayList<>();
+						}
+						for (EmployeeJobPos ett : listEmJobPos) {
+							roleIds.add(RoleLocalServiceUtil.fetchRole(
+									JobPosLocalServiceUtil.fetchJobPos(ett.getJobPostId()).getMappingRoleId()));
+						}
+					}
+				}
+
+				if (newUser != null) {
+					if (roleIds != null && roleIds.size() > 0) {
+						RoleLocalServiceUtil.deleteUserRoles(newUser.getUserId(), roleIds);
+						RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+						// add Role
+						for (Role role : roleIds) {
+							RoleLocalServiceUtil.addUserRole(newUser.getUserId(), role.getRoleId());
+						}
+					}
+					// Indexer
+					Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+					indexer.reindex(newUser);
+				}
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		return employeeJobPos;
+
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

@@ -544,6 +544,10 @@
 		<finder return-type="Collection" name="O">
 			<finder-column name="originality" />
 		</finder>
+		<finder return-type="Collection" name="GID_PNO">
+			<finder-column name="groupId" />
+			<finder-column name="processNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
