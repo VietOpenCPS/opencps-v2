@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -166,7 +167,7 @@ public interface UserManagement {
 	public Response getForgot(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
-			@PathParam("screenname_email") String screenname_email);
+			@PathParam("screenname_email") String screenname_email, @QueryParam("j_captcha_response") String jCaptchaResponse);
 
 	@GET
 	@Path("/{screenname_email}/forgot/confirm/{code}")
@@ -175,7 +176,7 @@ public interface UserManagement {
 	public Response getForgotConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
-			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code);
+			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code, @QueryParam("j_captcha_response") String jCaptchaResponse);
 	
 	@GET
 	@Path("/{id}/checkpass/{password}")

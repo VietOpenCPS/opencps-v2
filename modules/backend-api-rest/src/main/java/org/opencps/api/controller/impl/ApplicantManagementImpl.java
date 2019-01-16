@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
@@ -37,6 +36,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
+import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.NGSPRestClient;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
@@ -63,6 +63,7 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 import vn.gov.ngsp.DKDN.GTVT.IDoanhNghiep;
 import vn.gov.ngsp.DKDN.GTVT.IToken;
 import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
@@ -714,7 +715,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response getJCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
 		try {
-			ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
+			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+			
 		    String captchaId = request.getSession().getId();
 			File destDir = new File("jcaptcha");
 			if (!destDir.exists()) {
@@ -779,15 +781,28 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 			}
 			else {
-				ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 				String captchaId = request.getSession().getId();
 		        try {
+		        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
 		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 		        			jCaptchaResponse);
-		        	if (!isResponseCorrect) 
-		        		throw new UnauthenticationException("Captcha incorrect");
+		        	_log.info("Check captcha result: " + isResponseCorrect);
+		        	if (!isResponseCorrect) {
+		        		ErrorMsgModel error = new ErrorMsgModel();
+		        		error.setMessage("Captcha incorrect");
+		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+		    			error.setDescription("Captcha incorrect");
+
+		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		        	}
 		        } catch (CaptchaServiceException e) {
-		        	return BusinessExceptionImpl.processException(e);
+	        		ErrorMsgModel error = new ErrorMsgModel();
+	        		error.setMessage("Captcha incorrect");
+	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+	    			error.setDescription("Captcha incorrect");
+
+	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        }
 			}
 			String applicantName = HtmlUtil.escape(input.getApplicantName());

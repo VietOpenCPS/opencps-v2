@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.octo.captcha.service.CaptchaServiceException;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -31,8 +33,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.UserManagement;
+import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.user.model.UserAccountModel;
@@ -49,6 +53,7 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 
 public class UserManagementImpl implements UserManagement {
 
@@ -293,12 +298,35 @@ public class UserManagementImpl implements UserManagement {
 
 	@Override
 	public Response getForgot(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
-			ServiceContext serviceContext, String screenname_email) {
+			ServiceContext serviceContext, String screenname_email, String jCaptchaResponse) {
 		UserInterface actions = new UserActions();
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+			String captchaId = request.getSession().getId();
+	        try {
+	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+	        			jCaptchaResponse);
+	        	_log.info("Check captcha result: " + isResponseCorrect);
+	        	if (!isResponseCorrect) {
+	        		ErrorMsgModel error = new ErrorMsgModel();
+	        		error.setMessage("Captcha incorrect");
+	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+	    			error.setDescription("Captcha incorrect");
 
+	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+	        	}
+	        } catch (CaptchaServiceException e) {
+        		ErrorMsgModel error = new ErrorMsgModel();
+        		error.setMessage("Captcha incorrect");
+    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+    			error.setDescription("Captcha incorrect");
+
+    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+	        }
+			
 			Document document = actions.getForgot(groupId, company.getCompanyId(), screenname_email, serviceContext);
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
@@ -312,12 +340,34 @@ public class UserManagementImpl implements UserManagement {
 
 	@Override
 	public Response getForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String screenname_email, String code) {
+			User user, ServiceContext serviceContext, String screenname_email, String code, String jCaptchaResponse) {
 		UserInterface actions = new UserActions();
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+			String captchaId = request.getSession().getId();
+	        try {
+	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+	        			jCaptchaResponse);
+	        	_log.info("Check captcha result: " + isResponseCorrect);
+	        	if (!isResponseCorrect) {
+	        		ErrorMsgModel error = new ErrorMsgModel();
+	        		error.setMessage("Captcha incorrect");
+	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+	    			error.setDescription("Captcha incorrect");
 
+	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+	        	}
+	        } catch (CaptchaServiceException e) {
+        		ErrorMsgModel error = new ErrorMsgModel();
+        		error.setMessage("Captcha incorrect");
+    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+    			error.setDescription("Captcha incorrect");
+
+    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+	        }
 			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
 					serviceContext);
 
