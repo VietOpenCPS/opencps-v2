@@ -443,7 +443,13 @@ public class UserActions implements UserInterface {
 		String userName = Validator.isNotNull(user) ? user.getFullName() : StringPool.BLANK;
 
 		// changePassWord
-		String secretKey = PwdGenerator.getPassword();
+		String secretKey1 = PwdGenerator.getPassword(2 , new String[] { "0123456789" });
+		String secretKey2 = PwdGenerator.getPassword(2 , new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
+		String secretKey3 = PwdGenerator.getPassword(2 , new String[] { "abcdefghijklmnopqrstuvwxyz" });
+		String secretKey4 = PwdGenerator.getPassword(2 , new String[] { "~!@#$%^&*" });
+		String secretKey5 = PwdGenerator.getPassword(4 , new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+		String secretKey = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
+		
 		_log.info("secretKey:"+secretKey);
 
 		try {
