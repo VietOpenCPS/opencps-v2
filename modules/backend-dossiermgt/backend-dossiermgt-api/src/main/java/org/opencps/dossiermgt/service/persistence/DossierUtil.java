@@ -27,6 +27,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -3744,6 +3745,281 @@ public class DossierUtil {
 	*/
 	public static int countByGID_PNO(long groupId, String processNo) {
 		return getPersistence().countByGID_PNO(groupId, processNo);
+	}
+
+	/**
+	* Returns all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @return the matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate) {
+		return getPersistence().findByNOT_ST_GT_MD(dossierStatus, modifiedDate);
+	}
+
+	/**
+	* Returns a range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatus, modifiedDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatus, modifiedDate, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatus, modifiedDate, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByNOT_ST_GT_MD_First(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD_First(dossierStatus, modifiedDate,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByNOT_ST_GT_MD_First(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByNOT_ST_GT_MD_First(dossierStatus, modifiedDate,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByNOT_ST_GT_MD_Last(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD_Last(dossierStatus, modifiedDate,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByNOT_ST_GT_MD_Last(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByNOT_ST_GT_MD_Last(dossierStatus, modifiedDate,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public static Dossier[] findByNOT_ST_GT_MD_PrevAndNext(long dossierId,
+		String dossierStatus, Date modifiedDate,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD_PrevAndNext(dossierId, dossierStatus,
+			modifiedDate, orderByComparator);
+	}
+
+	/**
+	* Returns all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatuses the dossier statuses
+	* @param modifiedDate the modified date
+	* @return the matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate) {
+		return getPersistence().findByNOT_ST_GT_MD(dossierStatuses, modifiedDate);
+	}
+
+	/**
+	* Returns a range of all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatuses the dossier statuses
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatuses, modifiedDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatuses the dossier statuses
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatuses, modifiedDate, start,
+			end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByNOT_ST_GT_MD(dossierStatuses, modifiedDate, start,
+			end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63; from the database.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	*/
+	public static void removeByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate) {
+		getPersistence().removeByNOT_ST_GT_MD(dossierStatus, modifiedDate);
+	}
+
+	/**
+	* Returns the number of dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatus the dossier status
+	* @param modifiedDate the modified date
+	* @return the number of matching dossiers
+	*/
+	public static int countByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate) {
+		return getPersistence().countByNOT_ST_GT_MD(dossierStatus, modifiedDate);
+	}
+
+	/**
+	* Returns the number of dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param dossierStatuses the dossier statuses
+	* @param modifiedDate the modified date
+	* @return the number of matching dossiers
+	*/
+	public static int countByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate) {
+		return getPersistence()
+				   .countByNOT_ST_GT_MD(dossierStatuses, modifiedDate);
 	}
 
 	/**

@@ -170,4 +170,7 @@ public class PublishQueueLocalServiceImpl
 		return publishQueuePersistence.update(object);
 	}
 	
+	public List<PublishQueue> findByST_LT_MD(int[] statuses, Date d, int start, int end) {
+		return publishQueuePersistence.findByST_LT_MD(statuses, d, start, end);
+	}
 }
