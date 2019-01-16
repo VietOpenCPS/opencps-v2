@@ -48,9 +48,9 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
 		"url-pattern=/o/v1/opencps/users/*"
-//		,
-//		"url-pattern=/o/rest/v2/*",
-//		"url-pattern=/o/rest/v2_1/*"
+		,
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -58,11 +58,10 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	
+	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+" };
 	@Override
 	public void destroy() {
 	}
-
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
@@ -70,14 +69,21 @@ public class RestAuthFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(P_AUTH);
-		
+		String path = httpRequest.getRequestURI();
+		boolean exclude = false;
+		for (String pattern : IGNORE_PATTERN) {
+			if (path.matches(pattern)) {
+				exclude = true;
+				break;
+			}
+		}
 		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
 			pAuth = httpRequest.getParameter("Token");
 		}
-		if (AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
+		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 			System.out.println("RestAuthFilter.doFilter()" + userObj);
-			if (Validator.isNotNull(userObj)) {
+			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
 			} else {
