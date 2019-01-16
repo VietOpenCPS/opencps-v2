@@ -376,6 +376,7 @@ public class UserManagementImpl implements UserManagement {
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 
 		}
