@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -34,7 +35,9 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -52,6 +55,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -427,11 +431,12 @@ public class RestfulController {
 
 			try {
 
-				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
-
-				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId()
-						+ StringPool.FORWARD_SLASH + file.getTitle() + StringPool.FORWARD_SLASH + file.getUuid();
-
+//				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
+				
+//				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId()
+//						+ StringPool.FORWARD_SLASH + HtmlUtil.escape(file.getTitle()) + StringPool.FORWARD_SLASH + file.getUuid();
+				result = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -517,11 +522,18 @@ public class RestfulController {
 					System.out.println("RestfulController.uploadAttachment()" + Long.valueOf(pk));
 					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
 					System.out.println("RestfulController.uploadAttachment(className)" + className);
-
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
 					if (className.equals("org.opencps.usermgt.model.ApplicantEsign")) {
+						String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+						File targetFile = new File(buildFileName);
 						employee.setFileSignId(fileAttach.getFileEntryId());
+						Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					} else {
+						String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+						File targetFile = new File(buildFileName);
 						employee.setFileCertId(fileAttach.getFileEntryId());
+						Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					}
 
 					EmployeeLocalServiceUtil.updateEmployee(employee);
