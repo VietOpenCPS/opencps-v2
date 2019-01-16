@@ -3892,7 +3892,7 @@ public class DossierActionsImpl implements DossierActions {
         	}
         }
         catch (Exception e) {
-        	_log.debug(e);
+        	_log.error(e);
         }
 
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
@@ -3936,7 +3936,7 @@ public class DossierActionsImpl implements DossierActions {
 									context);
 						} catch (NoSuchUserException e) {
 //							e.printStackTrace();
-							_log.debug(e);
+							_log.error(e);
 							//_log.error(e);
 //							e.printStackTrace();
 						}
@@ -3983,6 +3983,8 @@ public class DossierActionsImpl implements DossierActions {
 						for (DossierActionUser dau : lstDaus) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
 								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+								_log.info("dau.getUserId():"+dau.getUserId());
+								_log.info("employee:"+JSONFactoryUtil.looseSerialize(employee));
 								String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
 								String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
@@ -4003,7 +4005,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 				} catch (NoSuchUserException e) {
-					_log.debug(e);
+					_log.error(e);
 					//_log.error(e);
 	//				e.printStackTrace();
 				}

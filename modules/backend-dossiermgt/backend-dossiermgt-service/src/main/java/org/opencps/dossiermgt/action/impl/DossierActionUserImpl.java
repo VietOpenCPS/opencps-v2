@@ -34,6 +34,8 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class DossierActionUserImpl implements DossierActionUser {
 
@@ -339,107 +341,112 @@ public class DossierActionUserImpl implements DossierActionUser {
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
 //		_log.info("Allow assign user: " + allowAssignUser);
-		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
-		
-		org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-		
-		if (allowAssignUser == ProcessActionTerm.NOT_ASSIGNED) {
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			if (moderator == 1) {
-				model.setAssigned(1);
-			} else {
+		//Check employee is exits and wokingStatus
+		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+		if (employee != null && employee.getWorkingStatus() == 1) {
+
+			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
+			
+			org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+			
+			if (allowAssignUser == ProcessActionTerm.NOT_ASSIGNED) {
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				if (moderator == 1) {
+					model.setAssigned(1);
+				} else {
+					model.setAssigned(assigned);
+				}
+				// Add User
+	//			_log.info("Add assigned user by step role: " + model);
+				if (dau == null) {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+				}
+				else {
+					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+					}
+				}
+			}
+			else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				assigned = DossierActionUserTerm.ASSIGNED_TH;
 				model.setAssigned(assigned);
+				// Add User
+				if (dau == null) {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+				}
+				else {
+					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+					}
+				}
 			}
-			// Add User
-//			_log.info("Add assigned user by step role: " + model);
-			if (dau == null) {
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+			else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH) {
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				assigned = DossierActionUserTerm.ASSIGNED_TH;
+				model.setAssigned(assigned);
+				// Add User
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
+	
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				model.setVisited(true);
+				assigned = DossierActionUserTerm.ASSIGNED_PH;
+				model.setAssigned(assigned);
+				// Add User
+				if (dau == null) {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+				}
+				else {
+					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+					}
+				}
 			}
-			else {
-				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+			else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH_TD) {
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				assigned = DossierActionUserTerm.ASSIGNED_TH;
+				model.setAssigned(assigned);
+				// Add User
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
+	
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				assigned = DossierActionUserTerm.ASSIGNED_PH;
+				model.setAssigned(assigned);
+				// Add User
+				DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
+	
+				model.setUserId(userId);
+				model.setDossierActionId(dossierActionId);
+				model.setModerator(moderator);
+				assigned = DossierActionUserTerm.ASSIGNED_TD;
+				model.setAssigned(assigned);
+				// Add User
+				if (dau == null) {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+				}
+				else {
+					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
+							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
+					}
 				}
 			}
 		}
-		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			assigned = DossierActionUserTerm.ASSIGNED_TH;
-			model.setAssigned(assigned);
-			// Add User
-			if (dau == null) {
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
-			}
-			else {
-				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
-				}
-			}
-		}
-		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH) {
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			assigned = DossierActionUserTerm.ASSIGNED_TH;
-			model.setAssigned(assigned);
-			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
-
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			model.setVisited(true);
-			assigned = DossierActionUserTerm.ASSIGNED_PH;
-			model.setAssigned(assigned);
-			// Add User
-			if (dau == null) {
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
-			}
-			else {
-				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
-				}
-			}
-		}
-		else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH_PH_TD) {
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			assigned = DossierActionUserTerm.ASSIGNED_TH;
-			model.setAssigned(assigned);
-			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
-
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			assigned = DossierActionUserTerm.ASSIGNED_PH;
-			model.setAssigned(assigned);
-			// Add User
-			DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
-
-			model.setUserId(userId);
-			model.setDossierActionId(dossierActionId);
-			model.setModerator(moderator);
-			assigned = DossierActionUserTerm.ASSIGNED_TD;
-			model.setAssigned(assigned);
-			// Add User
-			if (dau == null) {
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
-			}
-			else {
-				if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
-						&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-					DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
-				}
-			}
-		}		
 	}
 
 	@Override

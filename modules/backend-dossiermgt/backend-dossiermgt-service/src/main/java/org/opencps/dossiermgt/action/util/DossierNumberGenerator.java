@@ -38,6 +38,7 @@ import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 public class DossierNumberGenerator {
 
+	private static final String CONSTANT_ICREMENT = "opencps.dossier#";
 	public static String generateReferenceUID(long groupId) {
 
 		return UUID.randomUUID().toString();
@@ -51,8 +52,11 @@ public class DossierNumberGenerator {
 		String dossierNumber = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
 		if (dossier != null) {
-			String codePattern = "\\{(n+|N+)\\}";
 			String codePatternGov = "\\{(a+|A+)\\}";
+			String codePatternDate = "\\{(n+|N+)\\}";
+			String codePatternMonth = "\\{(p+|P+)\\}";
+			String codePatternYear = "\\{(q+|Q+)\\}";
+			String codePatternService = "\\{(r+|R+)\\}";
 			String dayPattern = "\\{(d{2}|D{2})\\}";
 			String monthPattern = "\\{(m{2}|M{2})\\}";
 			String yearPattern = "\\{(y+|Y+)\\}";
@@ -60,8 +64,8 @@ public class DossierNumberGenerator {
 			String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
 			String extractValuePattern = "\\[\\$(.*?)\\$\\]";
 			String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
-			String[] patterns = new String[] { codePattern, codePatternGov, dayPattern, monthPattern, yearPattern,
-					dynamicVariablePattern, datetimePattern };
+			String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
+					codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
 
 			Date now = new Date();
 
@@ -74,7 +78,7 @@ public class DossierNumberGenerator {
 			String serviceProcessCode = StringPool.BLANK;
 			String govAgencyCode = StringPool.BLANK;
 			try {
-				ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId); 
+				ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId);
 				
 				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
 				
@@ -101,15 +105,18 @@ public class DossierNumberGenerator {
 
 				while (m.find()) {
 					String tmp = m.group(1);
+					_log.info("tmp11: "+tmp);
 
 					// Pattern follow serviceProcess
-					if (r.toString().equals(codePattern)) {
+					if (r.toString().equals(codePatternDate)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-						
-						String number = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
+						String number = countByNumber(key, tmp);
 
-						_log.info("//////////////////////////////////////////////////////////// " + number
-								+ "|processOtionId= " + number);
+						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+						_log.info("//////////////////////////////////////////////////////////// "
+								+ "|certNumber= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
 
@@ -120,7 +127,64 @@ public class DossierNumberGenerator {
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
 
 						// Pattern follow GovAgencyCode
-					} if (r.toString().equals(codePatternGov)) {
+					} else if (r.toString().equals(codePatternMonth)) {
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
+						String number = countByNumber(key, tmp);
+
+						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+						_log.info("//////////////////////////////////////////////////////////// "
+								+ "|certNumber= " + number);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					} else if (r.toString().equals(codePatternYear)) {
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
+						String number = countByNumber(key, tmp);
+
+						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+						_log.info("//////////////////////////////////////////////////////////// "
+								+ "|certNumber= " + number);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					} else if (r.toString().equals(codePatternService)) {
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + dossier.getServiceCode();
+						String number = countByNumber(key, tmp);
+
+						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+						_log.info("//////////////////////////////////////////////////////////// "
+								+ "|certNumber= " + number);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					} else if (r.toString().equals(codePatternGov)) {
 //						_log.info("codePatternGov: "+ true);
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 
@@ -392,7 +456,16 @@ public class DossierNumberGenerator {
 		return certNumber;
 
 	}
-	
+
+	private static String countByNumber(String pattern, String tmp) {
+
+		long counter = CounterLocalServiceUtil.increment(pattern);
+		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+		String format = "%0" + lengthPatern + "d";
+
+		return String.format(format, counter); 
+	}
+
 	public static String generatePassword(String pattern, int length) {
 
 		String password = PwdGenerator.getPassword(pattern, length);
