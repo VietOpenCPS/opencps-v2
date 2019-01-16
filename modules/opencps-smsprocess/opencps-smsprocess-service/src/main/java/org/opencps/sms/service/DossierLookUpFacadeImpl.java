@@ -3,6 +3,8 @@ package org.opencps.sms.service;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 
@@ -11,6 +13,7 @@ import org.opencps.sms.service.dto.DossierRequest;
 import org.opencps.sms.service.dto.DossierResponse;
 import org.opencps.sms.service.util.Constants;
 import org.opencps.sms.service.util.DossierServiceProps;
+import org.opencps.sms.service.util.ServerConfigContants;
 import org.opencps.sms.service.util.ServiceProps;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -50,11 +53,15 @@ public class DossierLookUpFacadeImpl extends OpencpsRestFacade<DossierRequest, D
         String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-
-        httpHeaders = setHttpHeadersAuthorization(
-            httpHeaders, DossierServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
-            DossierServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
-
+		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
+				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
+			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));
+		}
+		else {
+	        httpHeaders = setHttpHeadersAuthorization(
+	            httpHeaders, DossierServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
+	            DossierServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
+		}
         httpHeaders.add(Constants.GROUP_ID, DossierServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
         
         return (DossierResponse) this.executeGenericRestCall(

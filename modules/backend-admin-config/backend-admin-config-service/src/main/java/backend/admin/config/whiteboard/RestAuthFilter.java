@@ -47,9 +47,10 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-context-name=",
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
-		"url-pattern=/o/v1/opencps/users/*",
-		"url-pattern=/o/rest/v2/*",
-		"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/o/v1/opencps/users/*"
+//		,
+//		"url-pattern=/o/rest/v2/*",
+//		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
