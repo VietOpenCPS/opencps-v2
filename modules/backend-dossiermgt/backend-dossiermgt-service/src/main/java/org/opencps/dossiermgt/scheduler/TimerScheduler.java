@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -66,12 +68,18 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 		// Get all dossier
 		List<Dossier> allDossierTimer;
-
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.DATE, -2);
+		Date twoDayAgo = cal.getTime();
+		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		// This is TEMPORARY code for auto = timer, it need to optimize later
-		allDossierTimer = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
+//		allDossierTimer = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		allDossierTimer = DossierLocalServiceUtil.findByNOT_ST_GT_MD(new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, twoDayAgo, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		
 		DossierActions dossierActions = new DossierActionsImpl();
 
 		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(),

@@ -37,6 +37,7 @@ import org.opencps.dossiermgt.model.PublishQueue;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -179,6 +180,9 @@ public interface PublishQueueLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PublishQueue fetchPublishQueueByUuidAndGroupId(String uuid,
 		long groupId);
+
+	public List<PublishQueue> findByST_LT_MD(int[] statuses, Date d, int start,
+		int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.sql.Timestamp;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -12384,6 +12388,973 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	private static final String _FINDER_COLUMN_GID_PNO_PROCESSNO_1 = "dossier.processNo IS NULL";
 	private static final String _FINDER_COLUMN_GID_PNO_PROCESSNO_2 = "dossier.processNo = ?";
 	private static final String _FINDER_COLUMN_GID_PNO_PROCESSNO_3 = "(dossier.processNo IS NULL OR dossier.processNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_ST_GT_MD =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByNOT_ST_GT_MD",
+			new String[] {
+				String.class.getName(), Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_ST_GT_MD =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByNOT_ST_GT_MD",
+			new String[] { String.class.getName(), Date.class.getName() });
+
+	/**
+	 * Returns all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate) {
+		return findByNOT_ST_GT_MD(dossierStatus, modifiedDate,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end) {
+		return findByNOT_ST_GT_MD(dossierStatus, modifiedDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByNOT_ST_GT_MD(dossierStatus, modifiedDate, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String dossierStatus,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_ST_GT_MD;
+		finderArgs = new Object[] {
+				dossierStatus, _getTime(modifiedDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if (Objects.equals(dossierStatus, dossier.getDossierStatus()) ||
+							(modifiedDate.getTime() > dossier.getModifiedDate()
+																 .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByNOT_ST_GT_MD_First(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByNOT_ST_GT_MD_First(dossierStatus,
+				modifiedDate, orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierStatus=");
+		msg.append(dossierStatus);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByNOT_ST_GT_MD_First(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByNOT_ST_GT_MD(dossierStatus, modifiedDate, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByNOT_ST_GT_MD_Last(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByNOT_ST_GT_MD_Last(dossierStatus, modifiedDate,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierStatus=");
+		msg.append(dossierStatus);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByNOT_ST_GT_MD_Last(String dossierStatus,
+		Date modifiedDate, OrderByComparator<Dossier> orderByComparator) {
+		int count = countByNOT_ST_GT_MD(dossierStatus, modifiedDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByNOT_ST_GT_MD(dossierStatus, modifiedDate,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossiers before and after the current dossier in the ordered set where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierId the primary key of the current dossier
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier
+	 * @throws NoSuchDossierException if a dossier with the primary key could not be found
+	 */
+	@Override
+	public Dossier[] findByNOT_ST_GT_MD_PrevAndNext(long dossierId,
+		String dossierStatus, Date modifiedDate,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = findByPrimaryKey(dossierId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Dossier[] array = new DossierImpl[3];
+
+			array[0] = getByNOT_ST_GT_MD_PrevAndNext(session, dossier,
+					dossierStatus, modifiedDate, orderByComparator, true);
+
+			array[1] = dossier;
+
+			array[2] = getByNOT_ST_GT_MD_PrevAndNext(session, dossier,
+					dossierStatus, modifiedDate, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Dossier getByNOT_ST_GT_MD_PrevAndNext(Session session,
+		Dossier dossier, String dossierStatus, Date modifiedDate,
+		OrderByComparator<Dossier> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+		boolean bindDossierStatus = false;
+
+		if (dossierStatus == null) {
+			query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_1);
+		}
+		else if (dossierStatus.equals("")) {
+			query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3);
+		}
+		else {
+			bindDossierStatus = true;
+
+			query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_2);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindDossierStatus) {
+			qPos.add(dossierStatus);
+		}
+
+		if (bindModifiedDate) {
+			qPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Dossier> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatuses the dossier statuses
+	 * @param modifiedDate the modified date
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate) {
+		return findByNOT_ST_GT_MD(dossierStatuses, modifiedDate,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatuses the dossier statuses
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end) {
+		return findByNOT_ST_GT_MD(dossierStatuses, modifiedDate, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatuses the dossier statuses
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByNOT_ST_GT_MD(dossierStatuses, modifiedDate, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByNOT_ST_GT_MD(String[] dossierStatuses,
+		Date modifiedDate, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		if (dossierStatuses == null) {
+			dossierStatuses = new String[0];
+		}
+		else if (dossierStatuses.length > 1) {
+			dossierStatuses = ArrayUtil.distinct(dossierStatuses,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(dossierStatuses, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (dossierStatuses.length == 1) {
+			return findByNOT_ST_GT_MD(dossierStatuses[0], modifiedDate, start,
+				end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					StringUtil.merge(dossierStatuses), _getTime(modifiedDate)
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					StringUtil.merge(dossierStatuses), _getTime(modifiedDate),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_ST_GT_MD,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if (!ArrayUtil.contains(dossierStatuses,
+								dossier.getDossierStatus()) ||
+							(modifiedDate.getTime() > dossier.getModifiedDate()
+																 .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			if (dossierStatuses.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < dossierStatuses.length; i++) {
+					String dossierStatus = dossierStatuses[i];
+
+					if (dossierStatus == null) {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_4);
+					}
+					else if (dossierStatus.equals("")) {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_5);
+					}
+
+					if ((i + 1) < dossierStatuses.length) {
+						query.append(WHERE_AND);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				for (String dossierStatus : dossierStatuses) {
+					if ((dossierStatus != null) && !dossierStatus.isEmpty()) {
+						qPos.add(dossierStatus);
+					}
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_ST_GT_MD,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_ST_GT_MD,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63; from the database.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 */
+	@Override
+	public void removeByNOT_ST_GT_MD(String dossierStatus, Date modifiedDate) {
+		for (Dossier dossier : findByNOT_ST_GT_MD(dossierStatus, modifiedDate,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where dossierStatus &ne; &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatus the dossier status
+	 * @param modifiedDate the modified date
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByNOT_ST_GT_MD(String dossierStatus, Date modifiedDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_ST_GT_MD;
+
+		Object[] finderArgs = new Object[] { dossierStatus, _getTime(modifiedDate) };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of dossiers where dossierStatus &ne; all &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param dossierStatuses the dossier statuses
+	 * @param modifiedDate the modified date
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByNOT_ST_GT_MD(String[] dossierStatuses, Date modifiedDate) {
+		if (dossierStatuses == null) {
+			dossierStatuses = new String[0];
+		}
+		else if (dossierStatuses.length > 1) {
+			dossierStatuses = ArrayUtil.distinct(dossierStatuses,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(dossierStatuses, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				StringUtil.merge(dossierStatuses), _getTime(modifiedDate)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_ST_GT_MD,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			if (dossierStatuses.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < dossierStatuses.length; i++) {
+					String dossierStatus = dossierStatuses[i];
+
+					if (dossierStatus == null) {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_4);
+					}
+					else if (dossierStatus.equals("")) {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_5);
+					}
+
+					if ((i + 1) < dossierStatuses.length) {
+						query.append(WHERE_AND);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				for (String dossierStatus : dossierStatuses) {
+					if ((dossierStatus != null) && !dossierStatus.isEmpty()) {
+						qPos.add(dossierStatus);
+					}
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_ST_GT_MD,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_ST_GT_MD,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_1 = "dossier.dossierStatus IS NOT NULL AND ";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_2 = "dossier.dossierStatus != ? AND ";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3 = "(dossier.dossierStatus IS NULL OR dossier.dossierStatus != '') AND ";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_4 = "(" +
+		removeConjunction(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_1) + ")";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_5 = "(" +
+		removeConjunction(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_2) + ")";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_6 = "(" +
+		removeConjunction(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3) + ")";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1 = "dossier.modifiedDate IS NULL";
+	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2 = "dossier.modifiedDate >= ?";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -13729,6 +14700,15 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_DOSSIER = "SELECT dossier FROM Dossier dossier";
 	private static final String _SQL_SELECT_DOSSIER_WHERE_PKS_IN = "SELECT dossier FROM Dossier dossier WHERE dossierId IN (";
 	private static final String _SQL_SELECT_DOSSIER_WHERE = "SELECT dossier FROM Dossier dossier WHERE ";

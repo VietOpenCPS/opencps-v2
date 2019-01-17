@@ -193,6 +193,11 @@ public class PublishQueueLocalServiceUtil {
 		return getService().fetchPublishQueueByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> findByST_LT_MD(
+		int[] statuses, java.util.Date d, int start, int end) {
+		return getService().findByST_LT_MD(statuses, d, start, end);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

@@ -548,6 +548,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="processNo" />
 		</finder>
+		<finder return-type="Collection" name="NOT_ST_GT_MD">
+			<finder-column name="dossierStatus" comparator="!=" arrayable-operator="AND"/>
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -2212,6 +2216,11 @@
 			<finder-column name="dossierId" />	
 			<finder-column name="serverNo" />			
 			<finder-column name="status" comparator="=" arrayable-operator="OR"/>		
+		</finder>
+		
+		<finder return-type="Collection" name="ST_LT_MD">	
+			<finder-column name="status" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="modifiedDate" comparator="&lt;="/>		
 		</finder>
 	</entity>
 
