@@ -333,7 +333,7 @@ public class StatisticEngineFetch {
 			dataType1.setGovAgencyCode(StringPool.BLANK);
 			dataType1.setGovAgencyName(StringPool.BLANK);
 			dataType1.setEmployeeId(0);
-			//dataType1.setEmployeeIdName(StringPool.BLANK);
+			dataType1.setEmployeeName(StringPool.BLANK);
 			dataType1.setVotingCode(StringPool.BLANK);
 			dataType1.setVotingSubject(StringPool.BLANK);
 
@@ -357,7 +357,7 @@ public class StatisticEngineFetch {
 			dataType2.setGovAgencyCode(StringPool.BLANK);
 			dataType2.setGovAgencyName(StringPool.BLANK);
 			dataType2.setEmployeeId(0);
-			//dataType2.setEmployeeIdName(StringPool.BLANK);
+			dataType2.setEmployeeName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type2)) {
 				dataType2 = statisticData.get(type2);
@@ -373,7 +373,7 @@ public class StatisticEngineFetch {
 
 			PersonStatisticData dataType3 = new PersonStatisticData();
 			dataType3.setEmployeeId(personData.getEmployeeId());
-			//dataType3.setEmployeeIdName(personData.getDomainName());
+			dataType3.setEmployeeName(personData.getEmployeeName());
 			dataType3.setVotingCode(personData.getVotingCode());
 			dataType3.setVotingSubject(personData.getVotingSubject());
 			dataType3.setGovAgencyCode(StringPool.BLANK);
@@ -397,7 +397,7 @@ public class StatisticEngineFetch {
 			dataType4.setVotingCode(personData.getVotingCode());
 			dataType4.setVotingSubject(personData.getVotingSubject());
 			dataType4.setEmployeeId(0);
-			//dataType4.setEmployeeIdName(StringPool.BLANK);
+			dataType4.setEmployeeName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type4)) {
 				dataType4 = statisticData.get(type4);
@@ -414,7 +414,7 @@ public class StatisticEngineFetch {
 			dataType5.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType5.setGovAgencyName(personData.getGovAgencyName());
 			dataType5.setEmployeeId(personData.getEmployeeId());
-			//dataType5.setEmployeeIdName(personData.getDomainName());
+			dataType5.setEmployeeName(personData.getEmployeeName());
 			dataType5.setVotingCode(personData.getVotingCode());
 			dataType5.setVotingSubject(personData.getVotingSubject());
 
@@ -431,7 +431,7 @@ public class StatisticEngineFetch {
 			
 			PersonStatisticData dataType6 = new PersonStatisticData();
 			dataType6.setEmployeeId(personData.getEmployeeId());
-			//dataType6.setEmployeeIdName(personData.getDomainName());
+			dataType6.setEmployeeName(personData.getEmployeeName());
 			dataType6.setVotingCode(StringPool.BLANK);
 			dataType6.setVotingSubject(StringPool.BLANK);
 			dataType6.setGovAgencyCode(StringPool.BLANK);
@@ -454,7 +454,7 @@ public class StatisticEngineFetch {
 			dataType7.setVotingCode(StringPool.BLANK);
 			dataType7.setVotingSubject(StringPool.BLANK);
 			dataType7.setEmployeeId(0);
-			//dataType7.setEmployeeIdName(StringPool.BLANK);
+			dataType7.setEmployeeName(StringPool.BLANK);
 
 			if (statisticData.containsKey(type7)) {
 				dataType7 = statisticData.get(type7);
@@ -471,7 +471,7 @@ public class StatisticEngineFetch {
 			dataType8.setGovAgencyCode(personData.getGovAgencyCode());
 			dataType8.setGovAgencyName(personData.getGovAgencyName());
 			dataType8.setEmployeeId(personData.getEmployeeId());
-			//dataType8.setEmployeeIdName(personData.getDomainName());
+			dataType8.setEmployeeName(personData.getEmployeeName());
 			dataType8.setVotingCode(StringPool.BLANK);
 			dataType8.setVotingSubject(StringPool.BLANK);
 

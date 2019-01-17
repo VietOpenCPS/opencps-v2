@@ -59,7 +59,9 @@ import javax.xml.bind.annotation.XmlType;
     "domainName",
     "govAgencyCode",
     "govAgencyName",
-    "votingSubject"
+    "votingSubject",
+    "employeeId",
+    "employeeName"
 })
 @XmlRootElement(name = "VotingStatisticsModel")
 public class VotingStatisticsModel {
@@ -83,6 +85,8 @@ public class VotingStatisticsModel {
     protected String govAgencyCode;
     protected String govAgencyName;
     protected String votingSubject;
+    protected Long employeeId;
+    protected String employeeName;
 
 	public Long getVotingResultId() {
 		return votingResultId;
@@ -197,6 +201,18 @@ public class VotingStatisticsModel {
 	}
 	public void setVotingSubject(String votingSubject) {
 		this.votingSubject = votingSubject;
+	}
+	public Long getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 }

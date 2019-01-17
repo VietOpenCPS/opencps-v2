@@ -3983,24 +3983,24 @@ public class DossierActionsImpl implements DossierActions {
 						for (DossierActionUser dau : lstDaus) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
 								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-								_log.info("dau.getUserId():"+dau.getUserId());
-								_log.info("employee:"+JSONFactoryUtil.looseSerialize(employee));
-								String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-								String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
-								NotificationQueueLocalServiceUtil.addNotificationQueue(
-										userId, groupId, 
-										"EMPL-01", 
-										Dossier.class.getName(), 
-										String.valueOf(dossier.getDossierId()), 
-										payloadObj.toJSONString(), 
-										u.getFullName(), 
-										fullName, 
-										dau.getUserId(), 
-										employee.getEmail(), 
-										telNo, 
-										now, 
-										expired, 
-										context);																		
+								if (employee != null) {
+									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+									String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+									NotificationQueueLocalServiceUtil.addNotificationQueue(
+											userId, groupId, 
+											"EMPL-01", 
+											Dossier.class.getName(), 
+											String.valueOf(dossier.getDossierId()), 
+											payloadObj.toJSONString(), 
+											u.getFullName(), 
+											fullName, 
+											dau.getUserId(), 
+											employee.getEmail(), 
+											telNo, 
+											now, 
+											expired, 
+											context);
+								}
 							}
 						}
 					}

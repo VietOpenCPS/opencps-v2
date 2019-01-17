@@ -163,7 +163,7 @@ public class DossierUtils {
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
-			if (!checkWaiting(lockState,dossierStatus)) {
+			if (!checkWaiting(lockState, dossierStatus) || !checkReceiving(dossierStatus)) {
 				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
 //					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 //						long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
@@ -283,9 +283,12 @@ public class DossierUtils {
 						model.setStepOverdue(StringPool.BLANK);
 					}
 				}
-			} else {
+			} else if (checkWaiting(lockState, dossierStatus)){
 				model.setDossierOverdue("Tạm dừng xử lý");
 				model.setStepOverdue("Tạm dừng xử lý");
+			} else if (checkReceiving(dossierStatus)){
+				model.setDossierOverdue(StringPool.BLANK);
+				model.setStepOverdue(StringPool.BLANK);
 			}
 
 			//LamTV: Process Assigned dossier
@@ -1191,13 +1194,12 @@ public class DossierUtils {
 		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
 	}
 
-	private static boolean checkWaiting(String dossierStatus, String lockState) {
+	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
-				|| (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState))
-				|| DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
-		//
-		//return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus) ?
-		//		true: (Validator.isNull(lockState) && !DossierTerm.PAUSE_STATE.equals(lockState) ?
-		//		true: DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus) ? true : false));
+				 && Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState));
+	}
+
+	private static boolean checkReceiving(String dossierStatus) {
+		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
 }
