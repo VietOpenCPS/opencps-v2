@@ -256,7 +256,7 @@ public class RestfulController {
 		return dataUser.toJSONString();
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
 		long checkUserId = -1;

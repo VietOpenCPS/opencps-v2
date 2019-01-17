@@ -6,10 +6,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -121,4 +123,15 @@ public class ImportZipFileUtils {
 		}
 	}
 
+	public static String compress(String str) throws IOException {
+	    if (str == null || str.length() == 0) {
+	        return str;
+	    }
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    GZIPOutputStream gzip = new GZIPOutputStream(out);
+	    gzip.write(str.getBytes());
+	    gzip.close();
+	    String outStr = out.toString();
+	    return outStr;
+	 }	
 }
