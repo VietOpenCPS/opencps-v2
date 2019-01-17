@@ -23,6 +23,8 @@ import org.opencps.api.voting.model.VotingResultModel;
 import org.opencps.api.voting.model.VotingStatisticsModel;
 import org.opencps.api.voting.model.VotingTopModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
@@ -462,6 +464,14 @@ public class VotingUtils {
 			ett.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED), 0));
 			ett.setClassName(doc.get(VotingTerm.CLASS_NAME));
 			ett.setClassPK(doc.get(VotingTerm.CLASS_PK));
+			Long employeeId = GetterUtil.getLong(doc.get(VotingTerm.CLASS_PK));
+			if (employeeId > 0) {
+				Employee employee = EmployeeLocalServiceUtil.fetchEmployee(employeeId);
+				if (employee != null) {
+					ett.setEmployeeId(employee.getEmployeeId());
+					ett.setEmployeeName(employee.getFullName());
+				}
+			}
 			ett.setGovAgencyCode(doc.get(VotingTerm.GOV_AGENCY_CODE));
 			ett.setGovAgencyName(doc.get(VotingTerm.GOV_AGENCY_NAME));
 			ett.setDomain(doc.get(VotingTerm.DOMAIN_CODE));
