@@ -48,9 +48,9 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
 		"url-pattern=/o/v1/opencps/users/*"
-		,
-		"url-pattern=/o/rest/v2/*",
-		"url-pattern=/o/rest/v2_1/*"
+//		,
+//		"url-pattern=/o/rest/v2/*",
+//		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -65,7 +65,7 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-		System.out.println("RestAuthFilter.doFilter()");
+//		System.out.println("RestAuthFilter.doFilter()");
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(P_AUTH);
@@ -82,7 +82,7 @@ public class RestAuthFilter implements Filter {
 		}
 		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
-			System.out.println("RestAuthFilter.doFilter()" + userObj);
+//			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
 				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
@@ -141,12 +141,23 @@ public class RestAuthFilter implements Filter {
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-		HttpServletResponse response = (HttpServletResponse) servletResponse;
 //		response.addHeader("Access-Control-Allow-Origin", "*");
 //		response.addHeader("Access-Control-Allow-Headers", "*");
 //		response.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
-		
-		filterChain.doFilter(servletRequest, response);
+	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
+	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+//	    if ( acceptsGZipEncoding(httpRequest) 
+//	    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
+//	        httpResponse.addHeader("Content-Encoding", "gzip");
+//	        GZipServletResponseWrapper gzipResponse =
+//	          new GZipServletResponseWrapper(httpResponse);
+//	        filterChain.doFilter(servletRequest, gzipResponse);
+//	        gzipResponse.close();
+//	    } else {
+//	    	filterChain.doFilter(servletRequest, servletResponse);
+//	    }
+	    
+		filterChain.doFilter(servletRequest, httpResponse);
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {
@@ -173,4 +184,10 @@ public class RestAuthFilter implements Filter {
 	public void init(FilterConfig filterConfig) {
 	}
 
+	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
+		String acceptEncoding = httpRequest.getHeader("Accept-Encoding");
+
+	    return acceptEncoding != null && 
+	             acceptEncoding.indexOf("gzip") != -1;
+	}	
 }
