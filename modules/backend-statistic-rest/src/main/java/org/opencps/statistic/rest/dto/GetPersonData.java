@@ -11,7 +11,7 @@ public class GetPersonData {
 	private String classPK;
 	private String votingCode;
 	private long employeeId;
-	//private String domainName;
+	private String employeeName;
 	private String govAgencyCode;
 	private String govAgencyName;
 	private String votingSubject;
@@ -87,6 +87,12 @@ public class GetPersonData {
 	}
 	public void setEmployeeId(long employeeId) {
 		this.employeeId = employeeId;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 }

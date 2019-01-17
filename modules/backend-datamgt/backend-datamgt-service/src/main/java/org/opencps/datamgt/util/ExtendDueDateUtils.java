@@ -1,6 +1,7 @@
 package org.opencps.datamgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -319,6 +320,7 @@ public class ExtendDueDateUtils {
 //				}
 //			}
 			//
+			_log.info("workingArr.get(0)111: "+JSONFactoryUtil.looseSerialize(workingArr));
 			String[] hourArrStart = workingArr.get(0);
 			String[] hourArrEnd = workingArr.get(1);
 			if (hourArrStart != null && hourArrEnd != null) {
@@ -348,28 +350,18 @@ public class ExtendDueDateUtils {
 
 			// Then encrease startDate + 1
 			startDateCal.add(Calendar.DATE, 1);
-
 			int dayOfWeek111 = startDateCal.get(Calendar.DAY_OF_WEEK);
-			//
+			for (int i = 0; i < 2; i++) {
+				if (strDayOff.contains(String.valueOf(dayOfWeek111))) {
+					startDateCal.add(Calendar.DATE, 1);
+					dayOfWeek111 = startDateCal.get(Calendar.DAY_OF_WEEK);
+				} else {
+					break;
+				}
+			}
+			
 			List<String[]> workingEndArr = processPartWorking(dayOfWeek111, groupId);
-//			if (Validator.isNotNull(dayOfWeek111)) {
-//				WorkTime workTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, dayOfWeek111);
-//				if (workTime != null) {
-//					String strHours = workTime.getHours();
-//					String[] hoursList = StringUtil.split(strHours);
-//
-//					if (hoursList != null && hoursList.length > 0) {
-//						for (int i = 0; i < hoursList.length; i++) {
-//							String hour = hoursList[i];
-//							if (i == 0) {
-//								hourArr1 = hour.split(StringPool.DASH);
-//							} else {
-//								hourArr2 = hour.split(StringPool.DASH);
-//							}
-//						}
-//					}
-//				}
-//			}
+			_log.info("workingEndArr: "+JSONFactoryUtil.looseSerialize(workingEndArr));
 			//
 			String[] hourArr1 = workingEndArr.get(0);
 			String[] hourArr2 = workingEndArr.get(1);

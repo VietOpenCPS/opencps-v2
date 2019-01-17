@@ -1696,10 +1696,12 @@ public class DossierManagementImpl implements DossierManagement {
 									ActionConfig actConfigResult = ActionConfigLocalServiceUtil.getByCode(groupId, actionCodeResult);
 									int dateOption = actConfigResult.getDateOption();
 									_log.info("dateOption: "+dateOption);
+									_log.info("dossierResult.getDossierActionId(): "+dossierResult.getDossierActionId());
 									if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 										DossierAction dActEnd = DossierActionLocalServiceUtil
 												.fetchDossierAction(dossierResult.getDossierActionId());
 										if (dActEnd != null) {
+											_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
 											DossierAction dActStart = DossierActionLocalServiceUtil
 													.fetchDossierAction(dActEnd.getPreviousActionId());
 											if (dActStart != null) {

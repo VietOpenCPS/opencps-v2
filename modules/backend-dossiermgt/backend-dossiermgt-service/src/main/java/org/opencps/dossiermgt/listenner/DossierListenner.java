@@ -136,7 +136,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 			String contactTelNo = model.getContactTelNo();
 			String contactEmail = model.getContactEmail();
 			
-			ApplicantLocalServiceUtil.updateApplicant(groupId, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+			ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail);
 		}
