@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -47,10 +48,11 @@ import org.osgi.service.component.annotations.Component;
 		"servlet-context-name=",
 		"servlet-filter-name=Rest Auth Filter",
 		"url-pattern=/o/v1/socket/*",
-		"url-pattern=/o/v1/opencps/users/*"
-//		,
-//		"url-pattern=/o/rest/v2/*",
-//		"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/o/v1/opencps/users/*",
+		"url-pattern=/o/v1/opencps/login"
+		,
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -59,6 +61,8 @@ public class RestAuthFilter implements Filter {
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
 	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+" };
+	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
+	
 	@Override
 	public void destroy() {
 	}
@@ -82,10 +86,15 @@ public class RestAuthFilter implements Filter {
 		}
 		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
-//			System.out.println("RestAuthFilter.doFilter()" + userObj);
+			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
-				authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
+				if (!exclude) {
+					authOK(servletRequest, servletResponse, filterChain, (Long) userObj);
+				}
+				else {
+					authOK(servletRequest, servletResponse, filterChain, 0);
+				}
 			} else {
 				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
 				httpRequest.setAttribute(USER_ID, sockId);
@@ -146,18 +155,29 @@ public class RestAuthFilter implements Filter {
 //		response.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
 	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
 	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-//	    if ( acceptsGZipEncoding(httpRequest) 
-//	    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
-//	        httpResponse.addHeader("Content-Encoding", "gzip");
-//	        GZipServletResponseWrapper gzipResponse =
-//	          new GZipServletResponseWrapper(httpResponse);
-//	        filterChain.doFilter(servletRequest, gzipResponse);
-//	        gzipResponse.close();
-//	    } else {
-//	    	filterChain.doFilter(servletRequest, servletResponse);
-//	    }
-	    
-		filterChain.doFilter(servletRequest, httpResponse);
+	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
+	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
+	    if (gzipFilterEnable) {
+		    if ( acceptsGZipEncoding(httpRequest) 
+		    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
+		    	if (!httpResponse.containsHeader("Content-Encoding")
+		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
+		    		httpResponse.addHeader("Content-Encoding", "gzip");
+			        GZipServletResponseWrapper gzipResponse =
+			        		new GZipServletResponseWrapper(httpResponse);
+			        filterChain.doFilter(servletRequest, gzipResponse);
+			        gzipResponse.close();
+		    	}
+		    	else {
+		    		filterChain.doFilter(servletRequest, httpResponse);
+		    	}
+		    } else {
+		    	filterChain.doFilter(servletRequest, httpResponse);
+		    }
+	    }
+	    else {
+	    	filterChain.doFilter(servletRequest, httpResponse);
+	    }
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {
