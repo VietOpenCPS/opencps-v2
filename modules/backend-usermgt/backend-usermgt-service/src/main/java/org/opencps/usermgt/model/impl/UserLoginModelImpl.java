@@ -116,8 +116,10 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long USERLOGINID_COLUMN_BITMASK = 8L;
+	public static final long SESSIONID_COLUMN_BITMASK = 4L;
+	public static final long USERID_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long USERLOGINID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.UserLogin"));
 
@@ -336,6 +338,14 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 	@Override
 	public void setUserId(long userId) {
+		_columnBitmask |= USERID_COLUMN_BITMASK;
+
+		if (!_setOriginalUserId) {
+			_setOriginalUserId = true;
+
+			_originalUserId = _userId;
+		}
+
 		_userId = userId;
 	}
 
@@ -353,6 +363,10 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 	@Override
 	public void setUserUuid(String userUuid) {
+	}
+
+	public long getOriginalUserId() {
+		return _originalUserId;
 	}
 
 	@Override
@@ -408,7 +422,17 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 	@Override
 	public void setSessionId(String sessionId) {
+		_columnBitmask |= SESSIONID_COLUMN_BITMASK;
+
+		if (_originalSessionId == null) {
+			_originalSessionId = _sessionId;
+		}
+
 		_sessionId = sessionId;
+	}
+
+	public String getOriginalSessionId() {
+		return GetterUtil.getString(_originalSessionId);
 	}
 
 	@Override
@@ -567,7 +591,13 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 		userLoginModelImpl._setOriginalCompanyId = false;
 
+		userLoginModelImpl._originalUserId = userLoginModelImpl._userId;
+
+		userLoginModelImpl._setOriginalUserId = false;
+
 		userLoginModelImpl._setModifiedDate = false;
+
+		userLoginModelImpl._originalSessionId = userLoginModelImpl._sessionId;
 
 		userLoginModelImpl._columnBitmask = 0;
 	}
@@ -757,11 +787,14 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;
 	private long _userId;
+	private long _originalUserId;
+	private boolean _setOriginalUserId;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _sessionId;
+	private String _originalSessionId;
 	private int _hits;
 	private Date _logout;
 	private String _ipAddress;

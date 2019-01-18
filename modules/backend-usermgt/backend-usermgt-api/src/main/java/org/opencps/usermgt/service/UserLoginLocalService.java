@@ -170,6 +170,9 @@ public interface UserLoginLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public UserLogin fetchByU_S(long userId, String sessionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public UserLogin fetchUserLogin(long userLoginId);
 
 	/**

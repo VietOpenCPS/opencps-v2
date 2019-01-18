@@ -589,6 +589,10 @@
 		<column name="hits" type="int" />
 		<column name="logout" type="Date" />
 		<column name="ipAddress" type="String" />
+        <finder name="U_S" return-type="UserLogin">
+            <finder-column name="userId"></finder-column>
+            <finder-column name="sessionId"></finder-column>
+        </finder>
 	</entity>
 	<exceptions>
 		<exception>NoApplicantName</exception>

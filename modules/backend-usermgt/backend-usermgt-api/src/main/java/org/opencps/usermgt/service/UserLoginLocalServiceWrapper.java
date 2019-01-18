@@ -176,6 +176,12 @@ public class UserLoginLocalServiceWrapper implements UserLoginLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.UserLogin fetchByU_S(long userId,
+		String sessionId) {
+		return _userLoginLocalService.fetchByU_S(userId, sessionId);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.UserLogin fetchUserLogin(long userLoginId) {
 		return _userLoginLocalService.fetchUserLogin(userLoginId);
 	}

@@ -302,9 +302,9 @@ public class RestfulController {
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
-				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-				
-				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
+//				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
+//				
+//				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
 //				String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
 //				ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
 //				UserTrackerLocalServiceUtil.addUserTracker(

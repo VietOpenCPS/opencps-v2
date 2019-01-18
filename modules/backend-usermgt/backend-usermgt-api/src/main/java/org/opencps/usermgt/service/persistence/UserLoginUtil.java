@@ -498,6 +498,66 @@ public class UserLoginUtil {
 	}
 
 	/**
+	* Returns the user login where userId = &#63; and sessionId = &#63; or throws a {@link NoSuchUserLoginException} if it could not be found.
+	*
+	* @param userId the user ID
+	* @param sessionId the session ID
+	* @return the matching user login
+	* @throws NoSuchUserLoginException if a matching user login could not be found
+	*/
+	public static UserLogin findByU_S(long userId, String sessionId)
+		throws org.opencps.usermgt.exception.NoSuchUserLoginException {
+		return getPersistence().findByU_S(userId, sessionId);
+	}
+
+	/**
+	* Returns the user login where userId = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param userId the user ID
+	* @param sessionId the session ID
+	* @return the matching user login, or <code>null</code> if a matching user login could not be found
+	*/
+	public static UserLogin fetchByU_S(long userId, String sessionId) {
+		return getPersistence().fetchByU_S(userId, sessionId);
+	}
+
+	/**
+	* Returns the user login where userId = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param userId the user ID
+	* @param sessionId the session ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching user login, or <code>null</code> if a matching user login could not be found
+	*/
+	public static UserLogin fetchByU_S(long userId, String sessionId,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByU_S(userId, sessionId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the user login where userId = &#63; and sessionId = &#63; from the database.
+	*
+	* @param userId the user ID
+	* @param sessionId the session ID
+	* @return the user login that was removed
+	*/
+	public static UserLogin removeByU_S(long userId, String sessionId)
+		throws org.opencps.usermgt.exception.NoSuchUserLoginException {
+		return getPersistence().removeByU_S(userId, sessionId);
+	}
+
+	/**
+	* Returns the number of user logins where userId = &#63; and sessionId = &#63;.
+	*
+	* @param userId the user ID
+	* @param sessionId the session ID
+	* @return the number of matching user logins
+	*/
+	public static int countByU_S(long userId, String sessionId) {
+		return getPersistence().countByU_S(userId, sessionId);
+	}
+
+	/**
 	* Caches the user login in the entity cache if it is enabled.
 	*
 	* @param userLogin the user login
