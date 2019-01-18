@@ -277,10 +277,17 @@ public interface UserLoginLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserLoginsCount();
 
+	public UserLogin traceLogout(long userId, String sessionId);
+
 	public UserLogin updateUserLogin(long companyId, long groupId, long userId,
 		String userName, Date createDate, Date modifiedDate, long userLoginId,
 		String sessionId, int hits, Date logout, String ipAddress)
 		throws PortalException, SystemException;
+
+	public UserLogin updateUserLogin(long companyId, long groupId, long userId,
+		String userName, Date createDate, Date modifiedDate, long userLoginId,
+		String sessionId, int hits, Date logout, String ipAddress,
+		boolean online) throws PortalException, SystemException;
 
 	/**
 	* Updates the user login in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

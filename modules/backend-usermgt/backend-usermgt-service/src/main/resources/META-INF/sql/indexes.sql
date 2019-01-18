@@ -54,6 +54,8 @@ create index IX_BFD53D86 on opencps_userlogin (userId, sessionId[$COLUMN_LENGTH:
 create index IX_26EF75D5 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_10156D97 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_F0FE0BDC on opencps_usertrackpath (uuid_[$COLUMN_LENGTH:75$], companyId);
+
 create index IX_13DBB3CF on opencps_visibility (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_5D0CE211 on opencps_visibility (uuid_[$COLUMN_LENGTH:75$], groupId);
 

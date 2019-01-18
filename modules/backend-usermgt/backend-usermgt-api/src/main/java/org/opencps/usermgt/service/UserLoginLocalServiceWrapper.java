@@ -321,6 +321,12 @@ public class UserLoginLocalServiceWrapper implements UserLoginLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.UserLogin traceLogout(long userId,
+		String sessionId) {
+		return _userLoginLocalService.traceLogout(userId, sessionId);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.UserLogin updateUserLogin(long companyId,
 		long groupId, long userId, String userName, java.util.Date createDate,
 		java.util.Date modifiedDate, long userLoginId, String sessionId,
@@ -330,6 +336,18 @@ public class UserLoginLocalServiceWrapper implements UserLoginLocalService,
 		return _userLoginLocalService.updateUserLogin(companyId, groupId,
 			userId, userName, createDate, modifiedDate, userLoginId, sessionId,
 			hits, logout, ipAddress);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.UserLogin updateUserLogin(long companyId,
+		long groupId, long userId, String userName, java.util.Date createDate,
+		java.util.Date modifiedDate, long userLoginId, String sessionId,
+		int hits, java.util.Date logout, String ipAddress, boolean online)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _userLoginLocalService.updateUserLogin(companyId, groupId,
+			userId, userName, createDate, modifiedDate, userLoginId, sessionId,
+			hits, logout, ipAddress, online);
 	}
 
 	/**

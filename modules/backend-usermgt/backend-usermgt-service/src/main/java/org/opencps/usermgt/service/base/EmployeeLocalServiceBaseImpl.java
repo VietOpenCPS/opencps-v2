@@ -62,6 +62,7 @@ import org.opencps.usermgt.service.persistence.PreferencesPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
 import org.opencps.usermgt.service.persistence.UserLoginPersistence;
+import org.opencps.usermgt.service.persistence.UserTrackPathPersistence;
 import org.opencps.usermgt.service.persistence.VisibilityPersistence;
 import org.opencps.usermgt.service.persistence.WorkingUnitPersistence;
 
@@ -855,6 +856,44 @@ public abstract class EmployeeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the user track path local service.
+	 *
+	 * @return the user track path local service
+	 */
+	public org.opencps.usermgt.service.UserTrackPathLocalService getUserTrackPathLocalService() {
+		return userTrackPathLocalService;
+	}
+
+	/**
+	 * Sets the user track path local service.
+	 *
+	 * @param userTrackPathLocalService the user track path local service
+	 */
+	public void setUserTrackPathLocalService(
+		org.opencps.usermgt.service.UserTrackPathLocalService userTrackPathLocalService) {
+		this.userTrackPathLocalService = userTrackPathLocalService;
+	}
+
+	/**
+	 * Returns the user track path persistence.
+	 *
+	 * @return the user track path persistence
+	 */
+	public UserTrackPathPersistence getUserTrackPathPersistence() {
+		return userTrackPathPersistence;
+	}
+
+	/**
+	 * Sets the user track path persistence.
+	 *
+	 * @param userTrackPathPersistence the user track path persistence
+	 */
+	public void setUserTrackPathPersistence(
+		UserTrackPathPersistence userTrackPathPersistence) {
+		this.userTrackPathPersistence = userTrackPathPersistence;
+	}
+
+	/**
 	 * Returns the visibility local service.
 	 *
 	 * @return the visibility local service
@@ -1139,6 +1178,10 @@ public abstract class EmployeeLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService;
 	@BeanReference(type = UserLoginPersistence.class)
 	protected UserLoginPersistence userLoginPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.UserTrackPathLocalService.class)
+	protected org.opencps.usermgt.service.UserTrackPathLocalService userTrackPathLocalService;
+	@BeanReference(type = UserTrackPathPersistence.class)
+	protected UserTrackPathPersistence userTrackPathPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.VisibilityLocalService.class)
 	protected org.opencps.usermgt.service.VisibilityLocalService visibilityLocalService;
 	@BeanReference(type = VisibilityPersistence.class)

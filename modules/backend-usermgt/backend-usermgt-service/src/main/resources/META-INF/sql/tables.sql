@@ -193,7 +193,18 @@ create table opencps_userlogin (
 	sessionId VARCHAR(255) null,
 	hits INTEGER,
 	logout DATE null,
-	ipAddress VARCHAR(255) null
+	ipAddress VARCHAR(255) null,
+	online_ BOOLEAN
+);
+
+create table opencps_usertrackpath (
+	uuid_ VARCHAR(75) null,
+	userTrackPathId LONG not null primary key,
+	companyId LONG,
+	modifiedDate DATE null,
+	userLoginId LONG,
+	path_ VARCHAR(512) null,
+	pathDate DATE null
 );
 
 create table opencps_visibility (

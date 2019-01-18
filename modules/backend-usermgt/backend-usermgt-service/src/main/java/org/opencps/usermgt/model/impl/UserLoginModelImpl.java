@@ -79,7 +79,8 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 			{ "sessionId", Types.VARCHAR },
 			{ "hits", Types.INTEGER },
 			{ "logout", Types.TIMESTAMP },
-			{ "ipAddress", Types.VARCHAR }
+			{ "ipAddress", Types.VARCHAR },
+			{ "online_", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,9 +97,10 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 		TABLE_COLUMNS_MAP.put("hits", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("logout", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("ipAddress", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("online_", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_userlogin (uuid_ VARCHAR(75) null,userLoginId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(255) null,hits INTEGER,logout DATE null,ipAddress VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_userlogin (uuid_ VARCHAR(75) null,userLoginId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(255) null,hits INTEGER,logout DATE null,ipAddress VARCHAR(255) null,online_ BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_userlogin";
 	public static final String ORDER_BY_JPQL = " ORDER BY userLogin.userLoginId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_userlogin.userLoginId ASC";
@@ -172,6 +174,7 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 		attributes.put("hits", getHits());
 		attributes.put("logout", getLogout());
 		attributes.put("ipAddress", getIpAddress());
+		attributes.put("online", isOnline());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -251,6 +254,12 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 		if (ipAddress != null) {
 			setIpAddress(ipAddress);
+		}
+
+		Boolean online = (Boolean)attributes.get("online");
+
+		if (online != null) {
+			setOnline(online);
 		}
 	}
 
@@ -471,6 +480,21 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 	}
 
 	@Override
+	public boolean getOnline() {
+		return _online;
+	}
+
+	@Override
+	public boolean isOnline() {
+		return _online;
+	}
+
+	@Override
+	public void setOnline(boolean online) {
+		_online = online;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				UserLogin.class.getName()));
@@ -519,6 +543,7 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 		userLoginImpl.setHits(getHits());
 		userLoginImpl.setLogout(getLogout());
 		userLoginImpl.setIpAddress(getIpAddress());
+		userLoginImpl.setOnline(isOnline());
 
 		userLoginImpl.resetOriginalValues();
 
@@ -675,12 +700,14 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 			userLoginCacheModel.ipAddress = null;
 		}
 
+		userLoginCacheModel.online = isOnline();
+
 		return userLoginCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -706,6 +733,8 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 		sb.append(getLogout());
 		sb.append(", ipAddress=");
 		sb.append(getIpAddress());
+		sb.append(", online=");
+		sb.append(isOnline());
 		sb.append("}");
 
 		return sb.toString();
@@ -713,7 +742,7 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.UserLogin");
@@ -767,6 +796,10 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 			"<column><column-name>ipAddress</column-name><column-value><![CDATA[");
 		sb.append(getIpAddress());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>online</column-name><column-value><![CDATA[");
+		sb.append(isOnline());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -798,6 +831,7 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 	private int _hits;
 	private Date _logout;
 	private String _ipAddress;
+	private boolean _online;
 	private long _columnBitmask;
 	private UserLogin _escapedModel;
 }
