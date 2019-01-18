@@ -78,4 +78,8 @@ public class UserLoginLocalServiceImpl extends UserLoginLocalServiceBaseImpl {
 		
 		return userLoginPersistence.update(userLogin);
 	}
+	
+	public UserLogin fetchByU_S(long userId, String sessionId) {
+		return userLoginPersistence.fetchByU_S(userId, sessionId);
+	}
 }

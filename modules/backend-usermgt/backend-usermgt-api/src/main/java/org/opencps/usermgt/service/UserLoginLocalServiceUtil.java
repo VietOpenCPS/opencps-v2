@@ -176,6 +176,11 @@ public class UserLoginLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.usermgt.model.UserLogin fetchByU_S(long userId,
+		String sessionId) {
+		return getService().fetchByU_S(userId, sessionId);
+	}
+
 	public static org.opencps.usermgt.model.UserLogin fetchUserLogin(
 		long userLoginId) {
 		return getService().fetchUserLogin(userLoginId);

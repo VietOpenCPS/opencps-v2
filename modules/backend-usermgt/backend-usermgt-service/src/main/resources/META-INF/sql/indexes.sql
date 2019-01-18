@@ -50,6 +50,7 @@ create index IX_EA37248D on opencps_resourceuser (groupId, className[$COLUMN_LEN
 create index IX_7B404B56 on opencps_resourceuser (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_71EFAF58 on opencps_resourceuser (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_BFD53D86 on opencps_userlogin (userId, sessionId[$COLUMN_LENGTH:255$]);
 create index IX_26EF75D5 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_10156D97 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], groupId);
 

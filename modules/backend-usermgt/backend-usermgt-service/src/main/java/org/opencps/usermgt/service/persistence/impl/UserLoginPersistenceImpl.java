@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1468,6 +1469,264 @@ public class UserLoginPersistenceImpl extends BasePersistenceImpl<UserLogin>
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "userLogin.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(userLogin.uuid IS NULL OR userLogin.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "userLogin.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_U_S = new FinderPath(UserLoginModelImpl.ENTITY_CACHE_ENABLED,
+			UserLoginModelImpl.FINDER_CACHE_ENABLED, UserLoginImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByU_S",
+			new String[] { Long.class.getName(), String.class.getName() },
+			UserLoginModelImpl.USERID_COLUMN_BITMASK |
+			UserLoginModelImpl.SESSIONID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_U_S = new FinderPath(UserLoginModelImpl.ENTITY_CACHE_ENABLED,
+			UserLoginModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_S",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the user login where userId = &#63; and sessionId = &#63; or throws a {@link NoSuchUserLoginException} if it could not be found.
+	 *
+	 * @param userId the user ID
+	 * @param sessionId the session ID
+	 * @return the matching user login
+	 * @throws NoSuchUserLoginException if a matching user login could not be found
+	 */
+	@Override
+	public UserLogin findByU_S(long userId, String sessionId)
+		throws NoSuchUserLoginException {
+		UserLogin userLogin = fetchByU_S(userId, sessionId);
+
+		if (userLogin == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("userId=");
+			msg.append(userId);
+
+			msg.append(", sessionId=");
+			msg.append(sessionId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchUserLoginException(msg.toString());
+		}
+
+		return userLogin;
+	}
+
+	/**
+	 * Returns the user login where userId = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param sessionId the session ID
+	 * @return the matching user login, or <code>null</code> if a matching user login could not be found
+	 */
+	@Override
+	public UserLogin fetchByU_S(long userId, String sessionId) {
+		return fetchByU_S(userId, sessionId, true);
+	}
+
+	/**
+	 * Returns the user login where userId = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param sessionId the session ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching user login, or <code>null</code> if a matching user login could not be found
+	 */
+	@Override
+	public UserLogin fetchByU_S(long userId, String sessionId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { userId, sessionId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_U_S,
+					finderArgs, this);
+		}
+
+		if (result instanceof UserLogin) {
+			UserLogin userLogin = (UserLogin)result;
+
+			if ((userId != userLogin.getUserId()) ||
+					!Objects.equals(sessionId, userLogin.getSessionId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_USERLOGIN_WHERE);
+
+			query.append(_FINDER_COLUMN_U_S_USERID_2);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(userId);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				List<UserLogin> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_U_S, finderArgs,
+						list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"UserLoginPersistenceImpl.fetchByU_S(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					UserLogin userLogin = list.get(0);
+
+					result = userLogin;
+
+					cacheResult(userLogin);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_U_S, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (UserLogin)result;
+		}
+	}
+
+	/**
+	 * Removes the user login where userId = &#63; and sessionId = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @param sessionId the session ID
+	 * @return the user login that was removed
+	 */
+	@Override
+	public UserLogin removeByU_S(long userId, String sessionId)
+		throws NoSuchUserLoginException {
+		UserLogin userLogin = findByU_S(userId, sessionId);
+
+		return remove(userLogin);
+	}
+
+	/**
+	 * Returns the number of user logins where userId = &#63; and sessionId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param sessionId the session ID
+	 * @return the number of matching user logins
+	 */
+	@Override
+	public int countByU_S(long userId, String sessionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_U_S;
+
+		Object[] finderArgs = new Object[] { userId, sessionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_USERLOGIN_WHERE);
+
+			query.append(_FINDER_COLUMN_U_S_USERID_2);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_U_S_SESSIONID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(userId);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_U_S_USERID_2 = "userLogin.userId = ? AND ";
+	private static final String _FINDER_COLUMN_U_S_SESSIONID_1 = "userLogin.sessionId IS NULL";
+	private static final String _FINDER_COLUMN_U_S_SESSIONID_2 = "userLogin.sessionId = ?";
+	private static final String _FINDER_COLUMN_U_S_SESSIONID_3 = "(userLogin.sessionId IS NULL OR userLogin.sessionId = '')";
 
 	public UserLoginPersistenceImpl() {
 		setModelClass(UserLogin.class);
@@ -1503,6 +1762,10 @@ public class UserLoginPersistenceImpl extends BasePersistenceImpl<UserLogin>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { userLogin.getUuid(), userLogin.getGroupId() },
+			userLogin);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_S,
+			new Object[] { userLogin.getUserId(), userLogin.getSessionId() },
 			userLogin);
 
 		userLogin.resetOriginalValues();
@@ -1583,6 +1846,16 @@ public class UserLoginPersistenceImpl extends BasePersistenceImpl<UserLogin>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			userLoginModelImpl, false);
+
+		args = new Object[] {
+				userLoginModelImpl.getUserId(),
+				userLoginModelImpl.getSessionId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_U_S, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_S, args,
+			userLoginModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1606,6 +1879,27 @@ public class UserLoginPersistenceImpl extends BasePersistenceImpl<UserLogin>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					userLoginModelImpl.getUserId(),
+					userLoginModelImpl.getSessionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_S, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_S, args);
+		}
+
+		if ((userLoginModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_U_S.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					userLoginModelImpl.getOriginalUserId(),
+					userLoginModelImpl.getOriginalSessionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_S, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_S, args);
 		}
 	}
 
