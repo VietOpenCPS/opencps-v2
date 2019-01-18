@@ -259,6 +259,18 @@
 		<field name="ipAddress" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="online" type="boolean" />
+	</model>
+	<model name="org.opencps.usermgt.model.UserTrackPath">
+		<field name="uuid" type="String" />
+		<field name="userTrackPathId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="modifiedDate" type="Date" />
+		<field name="userLoginId" type="long" />
+		<field name="path" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="pathDate" type="Date" />
 	</model>
 	<model name="org.opencps.usermgt.model.Visibility">
 		<field name="uuid" type="String" />

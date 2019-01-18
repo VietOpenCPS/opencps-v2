@@ -65,7 +65,7 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -91,6 +91,8 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 		sb.append(logout);
 		sb.append(", ipAddress=");
 		sb.append(ipAddress);
+		sb.append(", online=");
+		sb.append(online);
 		sb.append("}");
 
 		return sb.toString();
@@ -156,6 +158,8 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 			userLoginImpl.setIpAddress(ipAddress);
 		}
 
+		userLoginImpl.setOnline(online);
+
 		userLoginImpl.resetOriginalValues();
 
 		return userLoginImpl;
@@ -180,6 +184,8 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 		hits = objectInput.readInt();
 		logout = objectInput.readLong();
 		ipAddress = objectInput.readUTF();
+
+		online = objectInput.readBoolean();
 	}
 
 	@Override
@@ -226,6 +232,8 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 		else {
 			objectOutput.writeUTF(ipAddress);
 		}
+
+		objectOutput.writeBoolean(online);
 	}
 
 	public String uuid;
@@ -240,4 +248,5 @@ public class UserLoginCacheModel implements CacheModel<UserLogin>,
 	public int hits;
 	public long logout;
 	public String ipAddress;
+	public boolean online;
 }

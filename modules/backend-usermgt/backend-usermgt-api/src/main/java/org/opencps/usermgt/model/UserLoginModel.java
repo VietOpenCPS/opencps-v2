@@ -268,6 +268,27 @@ public interface UserLoginModel extends BaseModel<UserLogin>, GroupedModel,
 	 */
 	public void setIpAddress(String ipAddress);
 
+	/**
+	 * Returns the online of this user login.
+	 *
+	 * @return the online of this user login
+	 */
+	public boolean getOnline();
+
+	/**
+	 * Returns <code>true</code> if this user login is online.
+	 *
+	 * @return <code>true</code> if this user login is online; <code>false</code> otherwise
+	 */
+	public boolean isOnline();
+
+	/**
+	 * Sets whether this user login is online.
+	 *
+	 * @param online the online of this user login
+	 */
+	public void setOnline(boolean online);
+
 	@Override
 	public boolean isNew();
 

@@ -589,11 +589,30 @@
 		<column name="hits" type="int" />
 		<column name="logout" type="Date" />
 		<column name="ipAddress" type="String" />
+		<column name="online" type="boolean" />
+		
         <finder name="U_S" return-type="UserLogin">
             <finder-column name="userId"></finder-column>
             <finder-column name="sessionId"></finder-column>
         </finder>
 	</entity>
+	<entity name="UserTrackPath" uuid="true" local-service="true"
+		remote-service="false" table="opencps_usertrackpath">
+
+		<!-- PK fields -->
+
+		<column name="userTrackPathId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="modifiedDate" type="Date" />
+		
+		<column name="userLoginId" type="long" />
+
+		<column name="path" type="String" />
+		<column name="pathDate" type="Date" />
+	</entity>	
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

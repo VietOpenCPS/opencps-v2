@@ -35,7 +35,8 @@ public class OpenCPSLogoutAction extends Action {
 			if (userLogin != null) {
 				userLogin.setLogout(new Date());
 				userLogin.setModifiedDate(new Date());
-				UserLoginLocalServiceUtil.updateUserLogin(userLogin);
+				userLogin = UserLoginLocalServiceUtil.updateUserLogin(userLogin);
+				UserLoginLocalServiceUtil.traceLogout(userId, sessionId);
 			}
 		} catch (SystemException e) {
 		} 

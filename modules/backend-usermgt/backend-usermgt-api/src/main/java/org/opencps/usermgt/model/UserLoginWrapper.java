@@ -71,6 +71,7 @@ public class UserLoginWrapper implements UserLogin, ModelWrapper<UserLogin> {
 		attributes.put("hits", getHits());
 		attributes.put("logout", getLogout());
 		attributes.put("ipAddress", getIpAddress());
+		attributes.put("online", isOnline());
 
 		return attributes;
 	}
@@ -147,6 +148,12 @@ public class UserLoginWrapper implements UserLogin, ModelWrapper<UserLogin> {
 
 		if (ipAddress != null) {
 			setIpAddress(ipAddress);
+		}
+
+		Boolean online = (Boolean)attributes.get("online");
+
+		if (online != null) {
+			setOnline(online);
 		}
 	}
 
@@ -233,6 +240,16 @@ public class UserLoginWrapper implements UserLogin, ModelWrapper<UserLogin> {
 	@Override
 	public Date getModifiedDate() {
 		return _userLogin.getModifiedDate();
+	}
+
+	/**
+	* Returns the online of this user login.
+	*
+	* @return the online of this user login
+	*/
+	@Override
+	public boolean getOnline() {
+		return _userLogin.getOnline();
 	}
 
 	/**
@@ -328,6 +345,16 @@ public class UserLoginWrapper implements UserLogin, ModelWrapper<UserLogin> {
 	@Override
 	public boolean isNew() {
 		return _userLogin.isNew();
+	}
+
+	/**
+	* Returns <code>true</code> if this user login is online.
+	*
+	* @return <code>true</code> if this user login is online; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isOnline() {
+		return _userLogin.isOnline();
 	}
 
 	@Override
@@ -429,6 +456,16 @@ public class UserLoginWrapper implements UserLogin, ModelWrapper<UserLogin> {
 	@Override
 	public void setNew(boolean n) {
 		_userLogin.setNew(n);
+	}
+
+	/**
+	* Sets whether this user login is online.
+	*
+	* @param online the online of this user login
+	*/
+	@Override
+	public void setOnline(boolean online) {
+		_userLogin.setOnline(online);
 	}
 
 	/**

@@ -308,6 +308,11 @@ public class UserLoginLocalServiceUtil {
 		return getService().getUserLoginsCount();
 	}
 
+	public static org.opencps.usermgt.model.UserLogin traceLogout(long userId,
+		String sessionId) {
+		return getService().traceLogout(userId, sessionId);
+	}
+
 	public static org.opencps.usermgt.model.UserLogin updateUserLogin(
 		long companyId, long groupId, long userId, String userName,
 		java.util.Date createDate, java.util.Date modifiedDate,
@@ -319,6 +324,19 @@ public class UserLoginLocalServiceUtil {
 				   .updateUserLogin(companyId, groupId, userId, userName,
 			createDate, modifiedDate, userLoginId, sessionId, hits, logout,
 			ipAddress);
+	}
+
+	public static org.opencps.usermgt.model.UserLogin updateUserLogin(
+		long companyId, long groupId, long userId, String userName,
+		java.util.Date createDate, java.util.Date modifiedDate,
+		long userLoginId, String sessionId, int hits, java.util.Date logout,
+		String ipAddress, boolean online)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateUserLogin(companyId, groupId, userId, userName,
+			createDate, modifiedDate, userLoginId, sessionId, hits, logout,
+			ipAddress, online);
 	}
 
 	/**

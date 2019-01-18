@@ -45,6 +45,7 @@ public class UserLoginSoap implements Serializable {
 		soapModel.setHits(model.getHits());
 		soapModel.setLogout(model.getLogout());
 		soapModel.setIpAddress(model.getIpAddress());
+		soapModel.setOnline(model.isOnline());
 
 		return soapModel;
 	}
@@ -193,6 +194,18 @@ public class UserLoginSoap implements Serializable {
 		_ipAddress = ipAddress;
 	}
 
+	public boolean getOnline() {
+		return _online;
+	}
+
+	public boolean isOnline() {
+		return _online;
+	}
+
+	public void setOnline(boolean online) {
+		_online = online;
+	}
+
 	private String _uuid;
 	private long _userLoginId;
 	private long _groupId;
@@ -205,4 +218,5 @@ public class UserLoginSoap implements Serializable {
 	private int _hits;
 	private Date _logout;
 	private String _ipAddress;
+	private boolean _online;
 }

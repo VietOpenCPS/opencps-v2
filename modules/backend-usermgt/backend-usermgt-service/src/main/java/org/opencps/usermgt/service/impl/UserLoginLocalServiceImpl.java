@@ -65,6 +65,7 @@ public class UserLoginLocalServiceImpl extends UserLoginLocalServiceBaseImpl {
 			userLogin.setHits(hits);
 			userLogin.setLogout(logout);
 			userLogin.setIpAddress(ipAddress);
+			userLogin.setOnline(true);
 		}
 		else {
 			userLogin = userLoginPersistence.fetchByPrimaryKey(userLoginId);
@@ -74,9 +75,62 @@ public class UserLoginLocalServiceImpl extends UserLoginLocalServiceBaseImpl {
 			userLogin.setHits(hits);
 			userLogin.setLogout(logout);
 			userLogin.setIpAddress(ipAddress);
+			
+			userLogin.setOnline(true);
 		}
 		
 		return userLoginPersistence.update(userLogin);
+	}
+	
+	public UserLogin updateUserLogin(long companyId, long groupId, long userId, String userName, 
+			Date createDate, Date modifiedDate,
+			long userLoginId,
+			String sessionId,
+			int hits, Date logout, String ipAddress,
+			boolean online)
+			throws PortalException, SystemException {
+		UserLogin userLogin = null;
+		
+		if (userLoginId == 0) {
+			userLoginId = counterLocalService.increment(UserLogin.class.getName());
+			userLogin = userLoginPersistence.create(userLoginId);
+			
+			userLogin.setCompanyId(companyId);
+			userLogin.setGroupId(groupId);
+			userLogin.setUserId(userId);
+			userLogin.setUserName(userName);
+			userLogin.setCreateDate(createDate);
+			userLogin.setModifiedDate(modifiedDate);
+			
+			userLogin.setSessionId(sessionId);
+			userLogin.setHits(hits);
+			userLogin.setLogout(logout);
+			userLogin.setIpAddress(ipAddress);
+			userLogin.setOnline(online);
+		}
+		else {
+			userLogin = userLoginPersistence.fetchByPrimaryKey(userLoginId);
+			userLogin.setModifiedDate(modifiedDate);
+			
+			userLogin.setSessionId(sessionId);
+			userLogin.setHits(hits);
+			userLogin.setLogout(logout);
+			userLogin.setIpAddress(ipAddress);
+			userLogin.setOnline(false);
+		}
+		
+		return userLoginPersistence.update(userLogin);
+	}
+	
+	public UserLogin traceLogout(long userId, String sessionId) {
+		UserLogin userLogin = userLoginPersistence.fetchByU_S(userId, sessionId);
+		if (userLogin != null) {
+			if (userLogin.getLogout() != null) {
+				userLogin.setLogout(new Date());
+			}
+			userLogin.setOnline(false);
+		}
+		return userLogin;
 	}
 	
 	public UserLogin fetchByU_S(long userId, String sessionId) {
