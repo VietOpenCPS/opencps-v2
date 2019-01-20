@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -42,6 +43,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import javax.ws.rs.NotFoundException;
+
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
@@ -196,6 +200,9 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
 		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
 		String className =  (String) params.get(VotingTerm.CLASS_NAME);
+		String govAgencyCode = GetterUtil.getString(params.get(VotingTerm.GOV_AGENCY_CODE));
+		String fromVotingDate = GetterUtil.getString(params.get(VotingResultTerm.FROM_VOTING_DATE));
+		String toVotingDate = GetterUtil.getString(params.get(VotingResultTerm.TO_VOTING_DATE));
 
 		BooleanQuery booleanQuery = null;
 
@@ -265,6 +272,37 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(govAgencyCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(govAgencyCode);
+			query.addFields(VotingTerm.GOV_AGENCY_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		String fromVotingDateFilter = fromVotingDate + ConstantsTerm.HOUR_START;
+		String toVotingDateFilter = toVotingDate + ConstantsTerm.HOUR_END;
+
+		if (Validator.isNotNull(fromVotingDate)) {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(VotingResultTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		} else {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, VotingResult.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -292,6 +330,10 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
 		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
 		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
+		String className =  (String) params.get(VotingTerm.CLASS_NAME);
+		String govAgencyCode = GetterUtil.getString(params.get(VotingTerm.GOV_AGENCY_CODE));
+		String fromVotingDate = GetterUtil.getString(params.get(VotingResultTerm.FROM_VOTING_DATE));
+		String toVotingDate = GetterUtil.getString(params.get(VotingResultTerm.TO_VOTING_DATE));
 
 		BooleanQuery booleanQuery = null;
 
@@ -352,6 +394,44 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 			query.addFields(VotingResultTerm.YEAR_VOTING);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+			MultiMatchQuery query = new MultiMatchQuery(className);
+			query.addFields(VotingTerm.CLASS_NAME);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(govAgencyCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(govAgencyCode);
+			query.addFields(VotingTerm.GOV_AGENCY_CODE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		String fromVotingDateFilter = fromVotingDate + ConstantsTerm.HOUR_START;
+		String toVotingDateFilter = toVotingDate + ConstantsTerm.HOUR_END;
+
+		if (Validator.isNotNull(fromVotingDate)) {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(VotingResultTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		} else {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.CREATE_DATE,
+						fromVotingDateFilter, toVotingDateFilter, false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, VotingResult.class.getName());

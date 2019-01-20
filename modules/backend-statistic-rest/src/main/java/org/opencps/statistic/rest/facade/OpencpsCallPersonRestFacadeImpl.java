@@ -50,15 +50,16 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 				urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
 			}
 		} else {
-//			if (Validator.isNotNull(payload.getGovAgencyCode())) {
-//				urlQueryParams.add("agency", payload.getGovAgencyCode());
-//			}
 			if (Validator.isNotNull(payload.getFromStatisticDate())) {
 				urlQueryParams.add("fromVotingDate", payload.getFromStatisticDate());
 			}
 			if (Validator.isNotNull(payload.getToStatisticDate())) {
 				urlQueryParams.add("toVotingDate", payload.getToStatisticDate());
 			}
+		}
+
+		if (Validator.isNotNull(payload.getGovAgencyCode())) {
+			urlQueryParams.add("agency", payload.getGovAgencyCode());
 		}
 
 		urlQueryParams.add("className", "employee");

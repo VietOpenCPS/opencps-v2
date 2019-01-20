@@ -13,4 +13,6 @@ public class VotingResultTerm {
 	public static final String CREATE_DATE = "createDate";
 	public static final String YEAR_VOTING = "year";
 	public static final String MONTH_VOTING = "month";
+	public static final String FROM_VOTING_DATE = "fromVotingDate";
+	public static final String TO_VOTING_DATE = "toVotingDate";
 }
