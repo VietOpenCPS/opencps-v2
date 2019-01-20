@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Component(immediate = true, service = PersonStatisticSheduler.class)
+@Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 
 	private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);

@@ -4266,6 +4266,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> findByNOT_ST_GT_MD(String[] statuses, Date d, int start, int end) {
 		return dossierPersistence.findByNOT_ST_GT_MD(statuses, d, start, end);
 	}
+
+	public List<Dossier> findByGID(long groupId, int start, int end) {
+		return dossierPersistence.findByG(groupId, start, end);
+	}
+
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

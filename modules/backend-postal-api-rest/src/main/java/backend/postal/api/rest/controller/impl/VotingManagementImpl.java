@@ -32,10 +32,12 @@ import org.opencps.api.voting.model.VotingResultSearchModel;
 import org.opencps.api.voting.model.VotingResults;
 import org.opencps.api.voting.model.VotingSearchModel;
 import org.opencps.api.voting.model.VotingStatisticsResults;
+import org.opencps.auth.utils.APIDateTimeUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.feedback.action.VotingActions;
 import backend.feedback.action.impl.VotingActionsImpl;
+import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
@@ -278,10 +280,11 @@ public class VotingManagementImpl implements VotingManagement {
 			params.put("month", String.valueOf(search.getMonth()));
 			params.put("year", String.valueOf(search.getYear()));
 			params.put(VotingTerm.CLASS_NAME, search.getClassName());
-			//System.out.println("groupId: "+groupId);
-			//System.out.println("month: "+search.getMonth());
-			//System.out.println("year: "+search.getYear());
-			//System.out.println("VotingTerm.CLASS_NAME: "+ search.getClassName());
+			params.put(VotingTerm.GOV_AGENCY_CODE, search.getAgency());
+			String fromVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getFromVotingDate());
+			String toVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getToVotingDate());
+			params.put(VotingResultTerm.FROM_VOTING_DATE, fromVotingDate);
+			params.put(VotingResultTerm.TO_VOTING_DATE, toVotingDate);
 			
 			//params.put("votingId", String.valueOf(votingId));
 

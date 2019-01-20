@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -30,6 +31,8 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
@@ -102,23 +105,41 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 		if (votingId > 0) {
 			Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
 			if (voting != null) {
-				document.addTextSortable(VotingTerm.CLASS_NAME, voting.getClassName());
+				String className = voting.getClassName();
+				document.addTextSortable(VotingTerm.CLASS_NAME, className);
 				document.addTextSortable(VotingTerm.CLASS_PK, voting.getClassPK());
 				document.addTextSortable(VotingTerm.VOTING_CODE, voting.getVotingCode());
 				document.addTextSortable(VotingTerm.VOTING_SUBJECT, voting.getSubject());
 				//Process index dossier
 				long classPK = GetterUtil.getLong(voting.getClassPK());
 				if (classPK > 0) {
-					Dossier dossier = DossierLocalServiceUtil.fetchDossier(classPK);
-					if (dossier != null) {
-						document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-						document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
-						//
-						ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(),
-								dossier.getServiceCode());
-						if (serviceInfo != null) {
-							document.addTextSortable(DossierTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
-							document.addTextSortable(DossierTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+					_log.info("classPK: "+classPK);
+					_log.info("className: "+className);
+					if ("employee".equals(className)) {
+						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(classPK);
+						if (employee != null) {
+							List<Dossier> dossierList = DossierLocalServiceUtil.findByGID(employee.getGroupId(), 0, 2);
+							if (dossierList != null && dossierList.size() > 0) {
+								Dossier dossier = dossierList.get(0);
+								if (dossier != null) {
+									document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+									document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+								}
+							}
+							
+						}
+					} else if ("dossier".equals(className)) {
+						Dossier dossier = DossierLocalServiceUtil.fetchDossier(classPK);
+						if (dossier != null) {
+							document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+							document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+							//
+							ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(),
+									dossier.getServiceCode());
+							if (serviceInfo != null) {
+								document.addTextSortable(DossierTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
+								document.addTextSortable(DossierTerm.DOMAIN_NAME, serviceInfo.getDomainName());
+							}
 						}
 					}
 				}

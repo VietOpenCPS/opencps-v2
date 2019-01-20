@@ -239,6 +239,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
+	public List<Dossier> findByGID(long groupId, int start, int end);
+
 	public List<Dossier> findByNOT_ST_GT_MD(String[] statuses, Date d,
 		int start, int end);
 
