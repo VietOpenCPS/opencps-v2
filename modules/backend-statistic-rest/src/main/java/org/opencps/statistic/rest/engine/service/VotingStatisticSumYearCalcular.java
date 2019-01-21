@@ -85,7 +85,6 @@ public class VotingStatisticSumYearCalcular {
 		/** case votingCode != null && domain == null && agency == null **/
 		if (isVoting && !isDomain && !isAgency) {
 			/* statistic by all */
-			System.out.println("MAY CHAY KHONG EM: "+year);
 
 			List<VotingResponse> votingList = getVotingCode(groupId, year);
 			if (votingList != null && votingList.size() > 0) {

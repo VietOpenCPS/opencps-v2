@@ -1,6 +1,7 @@
 package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -442,6 +443,8 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculatePersonStatisticData(dataType6, personData, fromStatisticDate, toStatisticDate);
+			System.out.println("personData.getEmployeeName(): "+personData.getEmployeeName());
+			System.out.println("dataType6: "+JSONFactoryUtil.looseSerialize(dataType6));
 			statisticData.put(type6, dataType6);
 
 			// each site each domain
