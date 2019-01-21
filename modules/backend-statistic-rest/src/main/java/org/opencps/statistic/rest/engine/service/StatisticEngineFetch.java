@@ -443,8 +443,6 @@ public class StatisticEngineFetch {
 			}
 
 			engineFetchEntry.calculatePersonStatisticData(dataType6, personData, fromStatisticDate, toStatisticDate);
-			System.out.println("personData.getEmployeeName(): "+personData.getEmployeeName());
-			System.out.println("dataType6: "+JSONFactoryUtil.looseSerialize(dataType6));
 			statisticData.put(type6, dataType6);
 
 			// each site each domain
