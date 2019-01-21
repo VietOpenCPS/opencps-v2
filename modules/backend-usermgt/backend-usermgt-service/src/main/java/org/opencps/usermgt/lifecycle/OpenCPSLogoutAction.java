@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
 public class OpenCPSLogoutAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        System.out.println("### Start Post Logout Action ######################");
+//        System.out.println("### Start Post Logout Action ######################");
         
         Long userId = request.getAttribute("USER_ID") != null ? (Long)request.getAttribute("USER_ID") : 0;
         
@@ -41,6 +41,6 @@ public class OpenCPSLogoutAction extends Action {
 		} catch (SystemException e) {
 		} 
          
-        System.out.println("### End Post Logout Action ######################");
+//        System.out.println("### End Post Logout Action ######################");
     }
 }

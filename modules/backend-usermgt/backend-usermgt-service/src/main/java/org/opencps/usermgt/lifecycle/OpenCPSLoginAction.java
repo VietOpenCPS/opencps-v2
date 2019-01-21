@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
 public class OpenCPSLoginAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        System.out.println("### Start Post Login Action ######################");
+//        System.out.println("### Start Post Login Action ######################");
         Long userId = request.getAttribute("USER_ID") != null ? (Long)request.getAttribute("USER_ID") : 0;
         
 		User user = UserLocalServiceUtil.fetchUser(userId);
@@ -39,6 +39,6 @@ public class OpenCPSLoginAction extends Action {
 		} catch (PortalException e) {
 		}
          
-        System.out.println("### End Post Login Action ######################");
+//        System.out.println("### End Post Login Action ######################");
     }
 }

@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
 public class OpenCPSTraceAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        System.out.println("### Start Post Trace Action ######################");
+//        System.out.println("### Start Post Trace Action ######################");
       
         Long userId = request.getAttribute("USER_ID") != null ? (Long)request.getAttribute("USER_ID") : 0;
         
@@ -46,6 +46,6 @@ public class OpenCPSTraceAction extends Action {
 		} catch (SystemException e) {
 		} 
 		
-        System.out.println("### End Post Trace Action ######################");
+//        System.out.println("### End Post Trace Action ######################");
     }
 }
