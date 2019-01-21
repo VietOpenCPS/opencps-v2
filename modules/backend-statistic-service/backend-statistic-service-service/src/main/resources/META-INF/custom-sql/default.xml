@@ -74,8 +74,8 @@
 			WHERE 
 				(opencps_person_statistic.month = ?) AND
 				(opencps_person_statistic.year = ?) AND
-				(opencps_voting_statistic.votingCode = ?) AND
-				(opencps_voting_statistic.employeeId = ?) AND
+				(opencps_person_statistic.votingCode = ?) AND
+				(opencps_person_statistic.employeeId = ?) AND
 				(opencps_person_statistic.govAgencyCode = ?) AND 
 				(opencps_person_statistic.groupId = ?)
 			ORDER BY month DESC

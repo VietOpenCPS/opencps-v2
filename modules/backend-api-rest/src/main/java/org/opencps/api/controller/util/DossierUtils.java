@@ -504,7 +504,7 @@ public class DossierUtils {
 				//_log.info("overDue: "+overDue);
 				//_log.info("durationCount: "+durationCount);
 				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-					return durationCount + strOverDue;
+					return (int)durationCount + strOverDue;
 				} else {
 					return overDue + strOverDue;
 				}
@@ -533,14 +533,6 @@ public class DossierUtils {
 		}
 	}
 
-	public static void main(String []args) {
-		if (Double.compare(20.25, 20.0) > 0) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-	
 	//TODO: Process get list Paging
 	public static List<DossierDataModel> mappingForGetListPaging(List<Document> docs, int start, int end, long userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
