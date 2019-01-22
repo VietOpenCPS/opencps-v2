@@ -18,8 +18,7 @@ import org.osgi.service.component.annotations.Component;
 @Component (
 	    immediate = true,
 	    property = {
-	        "key=logout.events.pre",
-	        "key=servlet.session.destroy.events"
+	        "key=logout.events.pre"
 	    },
 	    service = LifecycleAction.class
 	)
