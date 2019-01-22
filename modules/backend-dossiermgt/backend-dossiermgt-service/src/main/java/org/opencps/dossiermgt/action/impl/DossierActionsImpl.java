@@ -64,8 +64,11 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -3263,9 +3266,10 @@ public class DossierActionsImpl implements DossierActions {
 					if (Validator.isNotNull(assignUsers)) {
 //						_log.info("LamTV_PROCESS assignUsers != null");
 						JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
-					dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
+						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction, userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
+						createNotificationSMS(userId, groupId, dossier, assignedUsersArray, context);						
 					} else {
 //						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
@@ -4013,6 +4017,93 @@ public class DossierActionsImpl implements DossierActions {
         }
 	}
 
+	private void createNotificationSMS(long userId, long groupId, Dossier dossier, JSONArray assignedUsers, ServiceContext context) {
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		User u = UserLocalServiceUtil.fetchUser(userId);
+        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        try {		
+        	payloadObj.put(
+					"Dossier", JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(dossier)));
+        	
+        	if (dossierAction != null) {
+        		payloadObj.put("actionCode", dossierAction.getActionCode());
+        		payloadObj.put("actionUser", dossierAction.getActionUser());
+        		payloadObj.put("actionName", dossierAction.getActionName());
+        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        	}
+        }
+        catch (Exception e) {
+        	_log.error(e);
+        }
+
+		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-03");
+		Date now = new Date();
+        Calendar calEmpl = Calendar.getInstance();
+        calEmpl.setTime(now);
+        
+        if (emplTemplate != null) {
+			if ("minutely".equals(emplTemplate.getInterval())) {
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
+			}
+			else if ("hourly".equals(emplTemplate.getInterval())) {
+				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
+			}
+			else {
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());										
+			}
+			Date expired = calEmpl.getTime();
+	
+			if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+					|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+				try {
+					String stepCode = dossierAction.getStepCode();
+					StringBuilder buildX = new StringBuilder(stepCode);
+					if (stepCode.length() > 0) {
+						buildX.setCharAt(stepCode.length() - 1, 'x');					
+					}
+					String stepCodeX = buildX.toString();
+					
+					StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
+					StepConfig stepConfigX = StepConfigLocalServiceUtil.getByCode(groupId, stepCodeX);
+					if ((stepConfig != null && stepConfig.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)
+							|| (stepConfigX != null && stepConfigX.getStepType() == StepConfigTerm.STEP_TYPE_DISPLAY_MENU_BY_PROCESSED)) {
+						for (int n = 0; n < assignedUsers.length(); n++) {
+							JSONObject subUser = assignedUsers.getJSONObject(n);
+							if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
+									&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
+								long userIdAssigned = subUser.getLong("userId");
+								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userIdAssigned);
+								if (employee != null) {
+									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+									String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+									NotificationQueueLocalServiceUtil.addNotificationQueue(
+											userId, groupId, 
+											"EMPL-03", 
+											Dossier.class.getName(), 
+											String.valueOf(dossier.getDossierId()), 
+											payloadObj.toJSONString(), 
+											u.getFullName(), 
+											fullName, 
+											userIdAssigned, 
+											employee.getEmail(), 
+											telNo, 
+											now, 
+											expired, 
+											context);
+								}								
+							}
+						}
+					}
+				} catch (NoSuchUserException e) {
+					_log.error(e);
+					//_log.error(e);
+	//				e.printStackTrace();
+				}
+			}	
+        }
+	}
+	
 	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
@@ -4244,6 +4335,67 @@ public class DossierActionsImpl implements DossierActions {
 		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG
 				&& Validator.isNotNull(dossier.getReceiveDate())) {
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
+		}
+		
+		int dateOption = actionConfig.getDateOption();
+		_log.info("dateOption: "+dateOption);
+		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
+			DossierAction dActEnd = DossierActionLocalServiceUtil
+					.fetchDossierAction(dossierAction.getDossierActionId());
+			if (dActEnd != null) {
+				_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
+				DossierAction dActStart = DossierActionLocalServiceUtil
+						.fetchDossierAction(dActEnd.getPreviousActionId());
+				if (dActStart != null) {
+					long createEnd = dActEnd.getCreateDate().getTime();
+					long createStart = dActStart.getCreateDate().getTime();
+					_log.info("createStart: "+createStart);
+					_log.info("createEnd: "+createEnd);
+					if (createEnd > createStart) {
+						long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, dossier.getGroupId());
+						_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
+						if (extendDateTimeStamp > 0) {
+							long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
+							_log.info("hoursCount: "+hoursCount);
+							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
+							List<Holiday> holidayList = HolidayLocalServiceUtil
+									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
+							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
+
+							Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
+									dossier.getDueDate(), hoursCount, holidayList,
+									extendWorkDayList);
+							_log.info("dueDateExtend: "+dueDateExtend);
+							if (dueDateExtend != null) {
+								dossier.setDueDate(dueDateExtend);
+								//dossier.setCorrecttingDate(null);
+								bResult.put(DossierTerm.DUE_DATE, true);
+							}
+						}
+					}
+				}
+			}
+		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
+			if (dossier.getDueDate() != null) {
+				//dossier.setCorrecttingDate(dossier.getDueDate());
+				//dossier.setDueDate(null);
+				dossier.setLockState(DossierTerm.PAUSE_STATE);
+			}
+		} 
+		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+			if (dossier.getDueDate() != null) {
+				if (serviceProcess != null) {
+					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+							serviceProcess.getDurationCount(),
+							serviceProcess.getDurationUnit(), dossier.getGroupId());
+					if (newDueDate != null) {
+						dossier.setDueDate(newDueDate);
+						bResult.put(DossierTerm.DUE_DATE, true);
+					}
+				}
+
+			}
 		}
 		
 		//Calculate step due date
