@@ -1188,7 +1188,7 @@ public class DossierUtils {
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
-				 && Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState));
+				 || Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState));
 	}
 
 	private static boolean checkReceiving(String dossierStatus) {

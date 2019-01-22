@@ -1,6 +1,7 @@
 package org.opencps.datamgt.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -266,6 +267,7 @@ public class HolidayUtils {
 				int dayOfWeek = baseDateCal.get(Calendar.DAY_OF_WEEK);
 				if (Validator.isNotNull(dayOfWeek)) {
 					WorkTime workTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, dayOfWeek);
+					_log.info("workTime: "+JSONFactoryUtil.looseSerialize(workTime));
 					if (workTime != null) {
 						String strHours = workTime.getHours();
 						String[] hoursList = StringUtil.split(strHours);
@@ -281,17 +283,21 @@ public class HolidayUtils {
 									hourArr2 = hour.split(StringPool.DASH);
 								}
 							}
-							
+							_log.info("hoursList: "+JSONFactoryUtil.looseSerialize(hoursList));
 							_log.info("START!!!!!: ");
 							int hoursOverdue = 0;
 							if (hourArr1 != null && hourArr2 != null) {
 								_log.info("START!!!!!: ");
 								processTimeWorking(hourArr1, hourArr2);
-								_log.info("startHourMorning: "+startHourMorning);
-								_log.info("endHourMorning: "+endHourMorning);
-								_log.info("endHourAfterNoon: "+endHourAfterNoon);
-								_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
-								if (startHourMorning < hours && hours < endHourMorning) {
+								//_log.info("startHourMorning: "+startHourMorning);
+								//_log.info("startMinuteMorning: "+startMinuteMorning);
+								//_log.info("endHourMorning: "+endHourMorning);
+								//_log.info("endMinuteMorning: "+endMinuteMorning);
+								//_log.info("startHourAfterNoon: "+startHourAfterNoon);
+								//_log.info("startMinuteAfterNoon: "+startMinuteAfterNoon);
+								//_log.info("endHourAfterNoon: "+endHourAfterNoon);
+								//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
+								if (startHourMorning <= hours && hours < endHourMorning) {
 									hoursOverdue = hours + countHours;
 									_log.info("hoursOverdue: "+hoursOverdue);
 									if (hoursOverdue == endHourMorning && minutes > endMinuteMorning) {
@@ -347,7 +353,7 @@ public class HolidayUtils {
 									return baseDateCal.getTime();
 								}
 
-								if (startHourAfterNoon < hours && hours < endHourAfterNoon) {
+								if (startHourAfterNoon <= hours && hours < endHourAfterNoon) {
 									hoursOverdue = hours + countHours;
 //									_log.info("hoursOverdue: "+hoursOverdue);
 									if (hoursOverdue == endHourAfterNoon && minutes > endMinuteAfterNoon) {

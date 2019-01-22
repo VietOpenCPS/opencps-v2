@@ -475,7 +475,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			try {
 				GetPersonRequest payload = new GetPersonRequest();
-				if ("total".equals(govAgencyCode)) {
+				if ("all".equals(govAgencyCode)) {
 					payload.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					payload.setGovAgencyCode(govAgencyCode);
