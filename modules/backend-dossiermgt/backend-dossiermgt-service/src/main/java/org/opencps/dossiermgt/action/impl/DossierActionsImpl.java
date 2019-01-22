@@ -4077,11 +4077,11 @@ public class DossierActionsImpl implements DossierActions {
 //			e.printStackTrace();
 		}		
 		
-		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
-				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
-				|| ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
-						|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
-			
+//		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+//				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
+		if ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+
 			try {
 				if (Validator.isNotNull(option)) {
 					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
