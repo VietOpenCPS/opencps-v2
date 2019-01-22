@@ -32,9 +32,13 @@ public class OpenCPSLoginAction extends Action {
         
 		User user = UserLocalServiceUtil.fetchUser(userId);
 		String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-		
+		String clientIP = request.getHeader("X-FORWARDED-FOR");
+		if (clientIP == null) {
+			clientIP = request.getRemoteAddr();
+		}
+		  
 		try {
-			UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
+			UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, clientIP);
 		} catch (SystemException e) {
 		} catch (PortalException e) {
 		}
