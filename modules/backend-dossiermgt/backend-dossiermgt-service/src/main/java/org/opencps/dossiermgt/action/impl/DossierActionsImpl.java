@@ -64,8 +64,11 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -4332,6 +4335,67 @@ public class DossierActionsImpl implements DossierActions {
 		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG
 				&& Validator.isNotNull(dossier.getReceiveDate())) {
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
+		}
+		
+		int dateOption = actionConfig.getDateOption();
+		_log.info("dateOption: "+dateOption);
+		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
+			DossierAction dActEnd = DossierActionLocalServiceUtil
+					.fetchDossierAction(dossierAction.getDossierActionId());
+			if (dActEnd != null) {
+				_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
+				DossierAction dActStart = DossierActionLocalServiceUtil
+						.fetchDossierAction(dActEnd.getPreviousActionId());
+				if (dActStart != null) {
+					long createEnd = dActEnd.getCreateDate().getTime();
+					long createStart = dActStart.getCreateDate().getTime();
+					_log.info("createStart: "+createStart);
+					_log.info("createEnd: "+createEnd);
+					if (createEnd > createStart) {
+						long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, dossier.getGroupId());
+						_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
+						if (extendDateTimeStamp > 0) {
+							long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
+							_log.info("hoursCount: "+hoursCount);
+							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
+							List<Holiday> holidayList = HolidayLocalServiceUtil
+									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
+							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
+
+							Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
+									dossier.getDueDate(), hoursCount, holidayList,
+									extendWorkDayList);
+							_log.info("dueDateExtend: "+dueDateExtend);
+							if (dueDateExtend != null) {
+								dossier.setDueDate(dueDateExtend);
+								//dossier.setCorrecttingDate(null);
+								bResult.put(DossierTerm.DUE_DATE, true);
+							}
+						}
+					}
+				}
+			}
+		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
+			if (dossier.getDueDate() != null) {
+				//dossier.setCorrecttingDate(dossier.getDueDate());
+				//dossier.setDueDate(null);
+				dossier.setLockState(DossierTerm.PAUSE_STATE);
+			}
+		} 
+		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+			if (dossier.getDueDate() != null) {
+				if (serviceProcess != null) {
+					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+							serviceProcess.getDurationCount(),
+							serviceProcess.getDurationUnit(), dossier.getGroupId());
+					if (newDueDate != null) {
+						dossier.setDueDate(newDueDate);
+						bResult.put(DossierTerm.DUE_DATE, true);
+					}
+				}
+
+			}
 		}
 		
 		//Calculate step due date
