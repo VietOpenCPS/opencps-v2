@@ -339,10 +339,10 @@ public class ExtendDueDateUtils {
 				_log.info("endHourMorning: "+endHourMorning);
 				_log.info("endHourAfterNoon: "+endHourAfterNoon);
 				_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
-				if (startHourMorning < hoursStart && hoursStart <= endHourMorning) {
+				if (startHourMorning <= hoursStart && hoursStart <= endHourMorning) {
 					extendHour = timeStampEnd - timeStampStart - countTimeOffNoon();
 					_log.info("extendHour11: "+extendHour);
-				} else if (startHourAfterNoon < hoursStart && hoursStart <= endHourAfterNoon) {
+				} else if (startHourAfterNoon <= hoursStart && hoursStart <= endHourAfterNoon) {
 					extendHour = timeStampEnd - timeStampStart;
 					_log.info("extendHour11: "+extendHour);
 				}
@@ -383,10 +383,10 @@ public class ExtendDueDateUtils {
 				_log.info("endHourMorning: "+endHourMorning);
 				_log.info("endHourAfterNoon: "+endHourAfterNoon);
 				_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
-				if (startHourMorning < hoursEnd && hoursEnd <= endHourMorning) {
+				if (startHourMorning <= hoursEnd && hoursEnd <= endHourMorning) {
 					extendHour += timeStampEnd - timeStampStart;
 					_log.info("extendHour22: "+extendHour);
-				} else if (startHourAfterNoon < hoursEnd && hoursEnd <= endHourAfterNoon) {
+				} else if (startHourAfterNoon <= hoursEnd && hoursEnd <= endHourAfterNoon) {
 					extendHour += timeStampEnd - timeStampStart - countTimeOffNoon();
 					_log.info("extendHour22: "+extendHour);
 				}

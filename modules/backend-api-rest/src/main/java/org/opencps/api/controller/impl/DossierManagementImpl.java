@@ -4565,4 +4565,286 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}		
 	}
+
+	@Override
+	public Response fixDueDateDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String strReceiveDate) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+
+			long dossierId = GetterUtil.getLong(id);
+			Dossier dossier = null;
+			if (dossierId > 0) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			} else {
+				dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+			}
+			if (dossier != null) {
+				Date receiveDate = dossier.getReceiveDate();
+				Date dueDate = null;
+				if (receiveDate != null) {
+					String processNo = StringPool.BLANK;
+					ServiceProcess process = null;
+					//Process DueDate of dossier
+					if (Validator.isNotNull(processNo)) {
+						process = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, processNo);
+						if (process != null) {
+							dueDate = HolidayUtils.getDueDate(receiveDate, process.getDurationCount(),
+									process.getDurationUnit(), groupId);
+							if (dueDate != null) {
+								dossier.setDueDate(dueDate);
+								//
+								DossierLocalServiceUtil.updateDossier(dossier);
+							}
+						}
+						//Process dueDate of dossierAction
+						long dossierActionId = dossier.getDossierActionId();
+						if (dossierActionId > 0) {
+							DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+							if (dAction != null) {
+								String stepCode = dAction.getStepCode();
+								if (Validator.isNotNull(stepCode)) {
+									ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+											process.getServiceProcessId());
+									if (step != null) {
+										double durationCountStep = step.getDurationCount();
+										int durationUnit = process.getDurationUnit();
+										long durationHour = 0;
+										boolean checkDueDate = true;
+										if (durationCountStep > 0) {
+											if (durationUnit == 0) {
+												durationHour = (long) durationCountStep * 8;
+											} else {
+												durationHour = (long) durationCountStep;
+											}
+											
+											long createDateTimeStamp = dAction.getCreateDate().getTime();
+											long dueDateActionTimeStamp = dAction.getDueDate() != null ? dAction.getDueDate().getTime() : 0;
+											if (dueDateActionTimeStamp > 0) {
+												checkDueDate = (dueDateActionTimeStamp - createDateTimeStamp
+														- durationHour * VALUE_CONVERT_HOUR_TIMESTAMP) < 0 ? true
+																: false;
+											}
+										} else {
+											checkDueDate = false;
+										}
+										if (checkDueDate) {
+											Date dueDateAction = HolidayUtils.getDueDate(dAction.getCreateDate(), step.getDurationCount(),
+													process.getDurationUnit(), groupId);
+											if (dueDateAction != null) {
+												dAction.setDueDate(dueDateAction);
+												//
+												DossierActionLocalServiceUtil.updateDossierAction(dAction);
+											}
+										}
+									}
+								}
+							}
+						}
+					} else {
+						long dossierActionId = dossier.getDossierActionId();
+						if (dossierActionId > 0) {
+							DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+							if (dAction != null) {
+								process = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
+								if (process != null) {
+									dueDate = HolidayUtils.getDueDate(receiveDate, process.getDurationCount(),
+											process.getDurationUnit(), groupId);
+									if (dueDate != null) {
+										dossier.setDueDate(dueDate);
+										//
+										DossierLocalServiceUtil.updateDossier(dossier);
+									}
+								}
+								//Update DueDate Action
+								String stepCode = dAction.getStepCode();
+								if (Validator.isNotNull(stepCode)) {
+									ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+											process.getServiceProcessId());
+									if (step != null) {
+										double durationCountStep = step.getDurationCount();
+										int durationUnit = process.getDurationUnit();
+										long durationHour = 0;
+										boolean checkDueDate = true;
+										if (durationCountStep > 0) {
+											if (durationUnit == 0) {
+												durationHour = (long) durationCountStep * 8;
+											} else {
+												durationHour = (long) durationCountStep;
+											}
+											
+											long createDateTimeStamp = dAction.getCreateDate().getTime();
+											long dueDateActionTimeStamp = dAction.getDueDate() != null ? dAction.getDueDate().getTime() : 0;
+											if (dueDateActionTimeStamp > 0) {
+												checkDueDate = (dueDateActionTimeStamp - createDateTimeStamp
+														- durationHour * VALUE_CONVERT_HOUR_TIMESTAMP) < 0 ? true
+																: false;
+											}
+										} else {
+											checkDueDate = false;
+										}
+										if (checkDueDate) {
+											Date dueDateAction = HolidayUtils.getDueDate(dAction.getCreateDate(), step.getDurationCount(),
+													process.getDurationUnit(), groupId);
+											if (dueDateAction != null) {
+												dAction.setDueDate(dueDateAction);
+												//
+												DossierActionLocalServiceUtil.updateDossierAction(dAction);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {
+					receiveDate = APIDateTimeUtils.convertStringToDate(strReceiveDate, APIDateTimeUtils._NORMAL_PARTTERN);
+					if (receiveDate != null) {
+						String processNo = StringPool.BLANK;
+						ServiceProcess process = null;
+						//Process DueDate of dossier
+						if (Validator.isNotNull(processNo)) {
+							process = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, processNo);
+							if (process != null) {
+								dueDate = HolidayUtils.getDueDate(receiveDate, process.getDurationCount(),
+										process.getDurationUnit(), groupId);
+								if (dueDate != null) {
+									dossier.setDueDate(dueDate);
+									//
+									DossierLocalServiceUtil.updateDossier(dossier);
+								}
+							}
+							//Process dueDate of dossierAction
+							long dossierActionId = dossier.getDossierActionId();
+							if (dossierActionId > 0) {
+								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+								if (dAction != null) {
+									String stepCode = dAction.getStepCode();
+									if (Validator.isNotNull(stepCode)) {
+										ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+												process.getServiceProcessId());
+										if (step != null) {
+											double durationCountStep = step.getDurationCount();
+											int durationUnit = process.getDurationUnit();
+											long durationHour = 0;
+											boolean checkDueDate = true;
+											if (durationCountStep > 0) {
+												if (durationUnit == 0) {
+													durationHour = (long) durationCountStep * 8;
+												} else {
+													durationHour = (long) durationCountStep;
+												}
+												
+												long createDateTimeStamp = dAction.getCreateDate().getTime();
+												long dueDateActionTimeStamp = dAction.getDueDate() != null ? dAction.getDueDate().getTime() : 0;
+												if (dueDateActionTimeStamp > 0) {
+													checkDueDate = (dueDateActionTimeStamp - createDateTimeStamp
+															- durationHour * VALUE_CONVERT_HOUR_TIMESTAMP) < 0 ? true
+																	: false;
+												}
+											} else {
+												checkDueDate = false;
+											}
+											if (checkDueDate) {
+												Date dueDateAction = HolidayUtils.getDueDate(dAction.getCreateDate(), step.getDurationCount(),
+														process.getDurationUnit(), groupId);
+												if (dueDateAction != null) {
+													dAction.setDueDate(dueDateAction);
+													//
+													DossierActionLocalServiceUtil.updateDossierAction(dAction);
+												}
+											}
+										}
+									}
+								}
+							}
+						} else {
+							long dossierActionId = dossier.getDossierActionId();
+							if (dossierActionId > 0) {
+								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+								if (dAction != null) {
+									process = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
+									if (process != null) {
+										dueDate = HolidayUtils.getDueDate(receiveDate, process.getDurationCount(),
+												process.getDurationUnit(), groupId);
+										if (dueDate != null) {
+											dossier.setDueDate(dueDate);
+											//
+											DossierLocalServiceUtil.updateDossier(dossier);
+										}
+									}
+									//Update DueDate Action
+									String stepCode = dAction.getStepCode();
+									if (Validator.isNotNull(stepCode)) {
+										ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+												process.getServiceProcessId());
+										if (step != null) {
+											double durationCountStep = step.getDurationCount();
+											int durationUnit = process.getDurationUnit();
+											long durationHour = 0;
+											boolean checkDueDate = true;
+											if (durationCountStep > 0) {
+												if (durationUnit == 0) {
+													durationHour = (long) durationCountStep * 8;
+												} else {
+													durationHour = (long) durationCountStep;
+												}
+												
+												long createDateTimeStamp = dAction.getCreateDate().getTime();
+												long dueDateActionTimeStamp = dAction.getDueDate() != null ? dAction.getDueDate().getTime() : 0;
+												if (dueDateActionTimeStamp > 0) {
+													checkDueDate = (dueDateActionTimeStamp - createDateTimeStamp
+															- durationHour * VALUE_CONVERT_HOUR_TIMESTAMP) < 0 ? true
+																	: false;
+												}
+											} else {
+												checkDueDate = false;
+											}
+											if (checkDueDate) {
+												Date dueDateAction = HolidayUtils.getDueDate(dAction.getCreateDate(), step.getDurationCount(),
+														process.getDurationUnit(), groupId);
+												if (dueDateAction != null) {
+													dAction.setDueDate(dueDateAction);
+													//
+													DossierActionLocalServiceUtil.updateDossierAction(dAction);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				//
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+				return Response.status(200).entity(result).build();
+			} else {
+				return Response.status(500).entity("Không update được dueDate của hồ sơ").build();
+			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+
 }

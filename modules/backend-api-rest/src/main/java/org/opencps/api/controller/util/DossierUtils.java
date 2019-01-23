@@ -156,47 +156,19 @@ public class DossierUtils {
 			Long releaseDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
 			Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
 			Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
-//			_log.info("dueDateTimeStamp: "+dueDateTimeStamp);
-//			_log.info("releaseDateTimeStamp: "+releaseDateTimeStamp);
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
-			if (!checkWaiting(lockState, dossierStatus) || !checkReceiving(dossierStatus)) {
+			if (checkWaiting(lockState, dossierStatus)){
+				model.setDossierOverdue("Tạm dừng xử lý");
+				model.setStepOverdue("Tạm dừng xử lý");
+			} else if (checkReceiving(dossierStatus)){
+				model.setDossierOverdue(StringPool.BLANK);
+				model.setStepOverdue(StringPool.BLANK);
+			} else if (!checkWaiting(lockState, dossierStatus) || !checkReceiving(dossierStatus)) {
 				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-//					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-//						long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
-//						String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-//								dueDateTimeStamp, groupId, false);
-//						if (Validator.isNotNull(strOverDue)) {
-//							if (subTimeStamp > 0) {
-//	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-//	//									dueDateTimeStamp, groupId, true);
-//								//model.setDossierOverdue("Quá hạn " + strOverDue);
-//								model.setDossierOverdue("Quá hạn");
-//							} else if (subTimeStamp == 0) {
-//								model.setDossierOverdue("Đúng hạn ");
-//							} else {
-//								if (extendDateTimeStamp > 0) {
-//									model.setDossierOverdue("Sớm hạn ");
-//								} else {
-//									model.setDossierOverdue("Đúng hạn ");
-//								}
-//							}
-//						} else {
-//							//model.setDossierOverdue(StringPool.BLANK);
-//							model.setDossierOverdue("Đúng hạn ");
-//						}
-//						//Check finishDate < dueDate
-//						if (finishDateTimeStamp > 0) {
-//							long subFinishTimeStamp = finishDateTimeStamp - dueDateTimeStamp;
-//							if (subFinishTimeStamp < 0) {
-//								model.setDossierOverdue("Sớm hạn ");
-//							}
-//						}
-					//System.out.println("finishDateTimeStamp: "+finishDateTimeStamp);
-					//System.out.println("dueDateTimeStamp: "+dueDateTimeStamp);
 					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
 							extendDateTimeStamp)) {
 						model.setDossierOverdue("Sớm hạn");
@@ -283,12 +255,6 @@ public class DossierUtils {
 						model.setStepOverdue(StringPool.BLANK);
 					}
 				}
-			} else if (checkWaiting(lockState, dossierStatus)){
-				model.setDossierOverdue("Tạm dừng xử lý");
-				model.setStepOverdue("Tạm dừng xử lý");
-			} else if (checkReceiving(dossierStatus)){
-				model.setDossierOverdue(StringPool.BLANK);
-				model.setStepOverdue(StringPool.BLANK);
 			}
 
 			//LamTV: Process Assigned dossier
@@ -1188,7 +1154,7 @@ public class DossierUtils {
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
-				 && Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState));
+				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState)));
 	}
 
 	private static boolean checkReceiving(String dossierStatus) {

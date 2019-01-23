@@ -4168,11 +4168,11 @@ public class DossierActionsImpl implements DossierActions {
 //			e.printStackTrace();
 		}		
 		
-		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
-				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
-				|| ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
-						|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
-			
+//		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+//				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
+		if ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
+				|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+
 			try {
 				if (Validator.isNotNull(option)) {
 					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
@@ -4383,20 +4383,20 @@ public class DossierActionsImpl implements DossierActions {
 				dossier.setLockState(DossierTerm.PAUSE_STATE);
 			}
 		} 
-		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-			if (dossier.getDueDate() != null) {
-				if (serviceProcess != null) {
-					Date newDueDate = HolidayUtils.getDueDate(new Date(),
-							serviceProcess.getDurationCount(),
-							serviceProcess.getDurationUnit(), dossier.getGroupId());
-					if (newDueDate != null) {
-						dossier.setDueDate(newDueDate);
-						bResult.put(DossierTerm.DUE_DATE, true);
-					}
-				}
-
-			}
-		}
+//		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+//			if (dossier.getDueDate() != null) {
+//				if (serviceProcess != null) {
+//					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+//							serviceProcess.getDurationCount(),
+//							serviceProcess.getDurationUnit(), dossier.getGroupId());
+//					if (newDueDate != null) {
+//						dossier.setReceiveDate(new Date());
+//						dossier.setDueDate(newDueDate);
+//						bResult.put(DossierTerm.DUE_DATE, true);
+//					}
+//				}
+//			}
+//		}
 		
 		//Calculate step due date
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
