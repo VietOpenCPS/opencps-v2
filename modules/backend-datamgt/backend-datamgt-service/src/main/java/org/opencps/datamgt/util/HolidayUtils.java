@@ -55,6 +55,7 @@ public class HolidayUtils {
 				cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + 1);
 			}
 			cal.set(Calendar.MINUTE, minute);
+			cal.set(Calendar.SECOND, 0);
 
 			return cal.getTime();			
 		}

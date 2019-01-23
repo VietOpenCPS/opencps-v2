@@ -226,9 +226,9 @@ public class DossierTerm {
 	public static final int DATE_OPTION_CAL_WAITING = 3;
 	public static final int DATE_OPTION_FOUR = 4;
 	public static final int DATE_OPTION_FIVE = 5;
-	public static final int DATE_OPTION_SIX = 6;
+	public static final int DATE_OPTION_RESET_DUE_DATE = 6;
 	public static final int DATE_OPTION_SEVEN = 7;
-	public static final int DATE_OPTION_RESET_DUE_DATE = 8;
+	//public static final int DATE_OPTION_RESET_DUE_DATE = 8;
 
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";

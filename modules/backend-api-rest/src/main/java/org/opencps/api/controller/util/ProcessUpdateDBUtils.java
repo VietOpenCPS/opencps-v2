@@ -470,7 +470,7 @@ public class ProcessUpdateDBUtils {
 				String birthdate;
 				String telNo;
 				String email;
-				Integer workingStatus = 0;
+				Integer workingStatus = 1;
 				String jobTitle;
 				String roles;
 				for (Employee employee : employeeList) {
