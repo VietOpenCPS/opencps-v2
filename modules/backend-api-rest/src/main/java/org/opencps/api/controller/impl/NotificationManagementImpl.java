@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.NotificationManagement;
 import org.opencps.api.notification.model.NotificationSearchModel;
+import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -24,8 +25,10 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
@@ -92,6 +95,20 @@ public class NotificationManagementImpl implements NotificationManagement{
 				String profilePath = "/image/user_" + ((finduser != null) && finduser.isFemale() ? "female" : "male") + "_portrait?img_id=" + portraitId + "&t=" + tokenId;
 				record.put("avatar", profilePath);
 				record.put("userName", finduser.getFullName());
+				
+				try {
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString("data")).getJSONObject("Dossier");
+					if (dataObj.has(DossierTerm.GROUP_ID) && dataObj.has(DossierTerm.DOSSIER_ID)) {
+						long groupId = dataObj.getLong(DossierTerm.GROUP_ID);
+						Group site = GroupLocalServiceUtil.fetchGroup(groupId);
+						if (site.isActive() && site.isSite()) {
+							record.put("viewRootURI", "/web" + site.getFriendlyURL());
+						}
+					}
+				}
+				catch (Exception e) {
+					
+				}
 				
 				data.put(record);
 			}
