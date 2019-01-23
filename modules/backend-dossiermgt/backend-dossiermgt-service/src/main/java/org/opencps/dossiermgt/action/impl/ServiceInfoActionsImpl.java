@@ -56,7 +56,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		searchContext.setCompanyId(companyId);
 
 		try {
-
+			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 			hits = ServiceInfoLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put("data", hits.toList());
@@ -231,6 +231,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			long admCount = 0;
 
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
@@ -286,6 +287,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			long admCount = 0;
 
 			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
@@ -329,6 +331,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			long levelCount = 0;
 
 			params.put(ServiceInfoTerm.MAX_LEVEL, i);
+			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			levelCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
@@ -475,6 +478,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, administration);
+			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
