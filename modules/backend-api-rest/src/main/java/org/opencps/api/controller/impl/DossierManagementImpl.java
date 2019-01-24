@@ -1077,9 +1077,11 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setDurationUnit(durationUnit);
 				}
 
-				Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+				if (durationCount > 0) {
+					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					dossier.setDueDate(dueDate);
+				}
 
-				dossier.setDueDate(dueDate);
 				dossier.setOnline(online);
 				if (Validator.isNotNull(input.getDossierName()))
 					dossier.setDossierName(input.getDossierName());

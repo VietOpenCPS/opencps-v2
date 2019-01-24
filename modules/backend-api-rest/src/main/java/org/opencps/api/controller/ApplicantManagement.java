@@ -24,6 +24,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
@@ -230,4 +231,13 @@ public interface ApplicantManagement {
 	public Response registerWithCaptcha(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@BeanParam ApplicantInputModel input, @FormParam("j_captcha_response") String jCaptchaResponse);	
+
+	@POST
+	@Path("/{id}/account")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response createApplicantAccount(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@BeanParam EmployeeAccountInputModel input);
 }

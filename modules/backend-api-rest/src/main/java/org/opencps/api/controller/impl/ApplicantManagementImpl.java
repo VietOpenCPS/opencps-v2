@@ -37,7 +37,10 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
+import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.controller.util.NGSPRestClient;
+import org.opencps.api.employee.model.EmployeeAccountInputModel;
+import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
 import org.opencps.api.usermgt.model.ApplicantModel;
@@ -57,7 +60,9 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -837,6 +842,38 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response createApplicantAccount(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, EmployeeAccountInputModel input) {
+
+		ApplicantActions actions = new ApplicantActionsImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
+		
+		try {
+
+			JSONObject jsonObject = actions.createApplicantAccount(user.getUserId(), company.getCompanyId(), groupId, id,
+					input.getScreenName(), input.getEmail(), input.isExist(), serviceContext);
+
+			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
+
+			if (Validator.isNotNull(jsonObject.getString("duplicate"))
+					&& jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())) {
+
+				return Response.status(409).entity(employeeAccountModel).build();
+
+			} else {
+
+				return Response.status(200).entity(employeeAccountModel).build();
+
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
