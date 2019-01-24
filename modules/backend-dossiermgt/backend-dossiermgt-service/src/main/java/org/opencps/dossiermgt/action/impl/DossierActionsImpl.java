@@ -1447,8 +1447,16 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				} else {
 					results = JSONFactoryUtil.createJSONArray();
-					ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-							dossier.getDossierTemplateNo(), groupId);
+					ProcessOption option = null;
+					if (dossierAction != null) {
+						DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossier.getDossierTemplateNo());
+						option = getProcessOption(dossierAction.getServiceProcessId(), dossierTemplate.getDossierTemplateId());
+					}
+					else {
+						option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+								dossier.getDossierTemplateNo(), groupId);
+					}
+					
 					if (option != null) {
 						serviceProcessId = option.getServiceProcessId();
 					}
@@ -3252,7 +3260,7 @@ public class DossierActionsImpl implements DossierActions {
 						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, context);
+				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, context);
 			}
 
 				// update reference dossier
@@ -4143,13 +4151,10 @@ public class DossierActionsImpl implements DossierActions {
 	
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
 			ActionConfig actionConfig,
+			ProcessOption option,
 			ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
-		String serviceCode = dossier.getServiceCode();
-		String govAgencyCode = dossier.getGovAgencyCode();
-		String dossierTemplateNo = dossier.getDossierTemplateNo();
-		ProcessOption option = null;
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -4157,16 +4162,8 @@ public class DossierActionsImpl implements DossierActions {
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 		ServiceProcess serviceProcess =  null;
 		
-		try {
-			option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, dossier.getGroupId());
-			long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
-			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
-			
-		} catch (PortalException e) {
-			_log.debug(e);
-			//_log.error(e);
-//			e.printStackTrace();
-		}		
+		long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
+		serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 		
 //		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
 //				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
@@ -4174,7 +4171,7 @@ public class DossierActionsImpl implements DossierActions {
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 
 			try {
-				if (Validator.isNotNull(option)) {
+				if (Validator.isNotNull(option) && Validator.isNull(dossier.getDossierNo())) {
 					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
 							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
@@ -6557,5 +6554,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 		
 		return lstUser;
+	}
+
+	@Override
+	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId) {
+		return ProcessOptionLocalServiceUtil.fetchBySP_DT(serviceProcessId, dossierTemplateId);
 	}	
 }

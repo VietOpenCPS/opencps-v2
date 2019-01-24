@@ -328,6 +328,10 @@
 			<finder-column name="dossierTemplateId" />
 		</finder>
 
+		<finder return-type="ProcessOption" name="SP_DT">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="dossierTemplateId" />
+		</finder>
 	</entity>
 
 	<entity name="Dossier" table="opencps_dossier" local-service="true"

@@ -151,4 +151,5 @@ public interface DossierActions {
 			Date processDate, ServiceContext context) throws PortalException;
 	
 	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps);
+	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);
 }

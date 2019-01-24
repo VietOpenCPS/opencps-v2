@@ -194,6 +194,11 @@ public class ProcessOptionLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessOption fetchBySP_DT(
+		long serviceProcessId, long dossierTemplateId) {
+		return getService().fetchBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
 	public static org.opencps.dossiermgt.model.ProcessOption fetchProcessOption(
 		long processOptionId) {
 		return getService().fetchProcessOption(processOptionId);
