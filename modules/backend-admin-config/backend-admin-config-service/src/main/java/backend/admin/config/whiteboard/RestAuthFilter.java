@@ -60,7 +60,7 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+" };
+	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	
 	@Override
