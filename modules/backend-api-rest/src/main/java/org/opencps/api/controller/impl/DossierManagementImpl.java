@@ -1676,11 +1676,15 @@ public class DossierManagementImpl implements DossierManagement {
 								DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 								if (dossierAction != null) {
 									long serviceProcessId = dossierAction.getServiceProcessId();
+									DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+									
+									ProcessOption oldOption = ProcessOptionLocalServiceUtil.fetchBySP_DT(serviceProcessId, dossierTemplate.getDossierTemplateId());
+									
 									ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
 										_log.info("DO ACTION: " + proAction.getActionCode());
-										dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
+										dossierResult = actions.doAction(groupId, userId, dossier, oldOption, proAction,
 												actionCode, actionUser, input.getActionNote(),
 												input.getPayload(), input.getAssignUsers(), input.getPayment(),
 												actConfig.getSyncType(), serviceContext, errorModel);

@@ -200,6 +200,13 @@ public class ProcessOptionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessOption fetchBySP_DT(
+		long serviceProcessId, long dossierTemplateId) {
+		return _processOptionLocalService.fetchBySP_DT(serviceProcessId,
+			dossierTemplateId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ProcessOption fetchProcessOption(
 		long processOptionId) {
 		return _processOptionLocalService.fetchProcessOption(processOptionId);

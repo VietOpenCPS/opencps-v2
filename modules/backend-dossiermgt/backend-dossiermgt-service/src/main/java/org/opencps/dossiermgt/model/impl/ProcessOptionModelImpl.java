@@ -131,8 +131,9 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
 	public static final long OPTIONORDER_COLUMN_BITMASK = 8L;
 	public static final long SERVICECONFIGID_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long PROCESSOPTIONID_COLUMN_BITMASK = 64L;
+	public static final long SERVICEPROCESSID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long PROCESSOPTIONID_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ProcessOption"));
 
@@ -556,7 +557,19 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 	@Override
 	public void setServiceProcessId(long serviceProcessId) {
+		_columnBitmask |= SERVICEPROCESSID_COLUMN_BITMASK;
+
+		if (!_setOriginalServiceProcessId) {
+			_setOriginalServiceProcessId = true;
+
+			_originalServiceProcessId = _serviceProcessId;
+		}
+
 		_serviceProcessId = serviceProcessId;
+	}
+
+	public long getOriginalServiceProcessId() {
+		return _originalServiceProcessId;
 	}
 
 	@Override
@@ -754,6 +767,10 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		processOptionModelImpl._originalDossierTemplateId = processOptionModelImpl._dossierTemplateId;
 
 		processOptionModelImpl._setOriginalDossierTemplateId = false;
+
+		processOptionModelImpl._originalServiceProcessId = processOptionModelImpl._serviceProcessId;
+
+		processOptionModelImpl._setOriginalServiceProcessId = false;
 
 		processOptionModelImpl._columnBitmask = 0;
 	}
@@ -1018,6 +1035,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	private long _originalDossierTemplateId;
 	private boolean _setOriginalDossierTemplateId;
 	private long _serviceProcessId;
+	private long _originalServiceProcessId;
+	private boolean _setOriginalServiceProcessId;
 	private String _instructionNote;
 	private String _submissionNote;
 	private long _sampleCount;

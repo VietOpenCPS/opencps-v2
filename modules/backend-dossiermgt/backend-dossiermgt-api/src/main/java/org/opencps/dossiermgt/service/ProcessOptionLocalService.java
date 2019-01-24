@@ -186,6 +186,10 @@ public interface ProcessOptionLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessOption fetchProcessOption(long processOptionId);
 
 	/**

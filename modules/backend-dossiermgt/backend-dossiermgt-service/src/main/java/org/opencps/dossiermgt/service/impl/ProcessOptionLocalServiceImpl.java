@@ -446,4 +446,8 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		return object;
 	}
+	
+	public ProcessOption fetchBySP_DT(long serviceProcessId, long dossierTemplateId) {
+		return processOptionPersistence.fetchBySP_DT(serviceProcessId, dossierTemplateId);
+	}
 }

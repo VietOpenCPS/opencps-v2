@@ -601,6 +601,57 @@ public interface ProcessOptionPersistence extends BasePersistence<ProcessOption>
 	public int countBySC_DT(long serviceConfigId, long dossierTemplateId);
 
 	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or throws a {@link NoSuchProcessOptionException} if it could not be found.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the matching process option
+	* @throws NoSuchProcessOptionException if a matching process option could not be found
+	*/
+	public ProcessOption findBySP_DT(long serviceProcessId,
+		long dossierTemplateId) throws NoSuchProcessOptionException;
+
+	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the matching process option, or <code>null</code> if a matching process option could not be found
+	*/
+	public ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId);
+
+	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process option, or <code>null</code> if a matching process option could not be found
+	*/
+	public ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId, boolean retrieveFromCache);
+
+	/**
+	* Removes the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; from the database.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the process option that was removed
+	*/
+	public ProcessOption removeBySP_DT(long serviceProcessId,
+		long dossierTemplateId) throws NoSuchProcessOptionException;
+
+	/**
+	* Returns the number of process options where serviceProcessId = &#63; and dossierTemplateId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the number of matching process options
+	*/
+	public int countBySP_DT(long serviceProcessId, long dossierTemplateId);
+
+	/**
 	* Caches the process option in the entity cache if it is enabled.
 	*
 	* @param processOption the process option

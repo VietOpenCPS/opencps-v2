@@ -170,6 +170,7 @@ create unique index IX_39594E3E on opencps_processaction (uuid_[$COLUMN_LENGTH:7
 
 create index IX_28B30015 on opencps_processoption (serviceConfigId, dossierTemplateId);
 create index IX_5B82BB8E on opencps_processoption (serviceConfigId, optionOrder);
+create index IX_9D238C20 on opencps_processoption (serviceProcessId, dossierTemplateId);
 create index IX_DF143D7B on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C5F3E6BD on opencps_processoption (uuid_[$COLUMN_LENGTH:75$], groupId);
 

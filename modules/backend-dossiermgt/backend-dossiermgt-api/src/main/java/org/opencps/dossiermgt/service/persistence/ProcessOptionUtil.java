@@ -790,6 +790,72 @@ public class ProcessOptionUtil {
 	}
 
 	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or throws a {@link NoSuchProcessOptionException} if it could not be found.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the matching process option
+	* @throws NoSuchProcessOptionException if a matching process option could not be found
+	*/
+	public static ProcessOption findBySP_DT(long serviceProcessId,
+		long dossierTemplateId)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessOptionException {
+		return getPersistence().findBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
+	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the matching process option, or <code>null</code> if a matching process option could not be found
+	*/
+	public static ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId) {
+		return getPersistence().fetchBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
+	/**
+	* Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process option, or <code>null</code> if a matching process option could not be found
+	*/
+	public static ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchBySP_DT(serviceProcessId, dossierTemplateId,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; from the database.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the process option that was removed
+	*/
+	public static ProcessOption removeBySP_DT(long serviceProcessId,
+		long dossierTemplateId)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessOptionException {
+		return getPersistence()
+				   .removeBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
+	/**
+	* Returns the number of process options where serviceProcessId = &#63; and dossierTemplateId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param dossierTemplateId the dossier template ID
+	* @return the number of matching process options
+	*/
+	public static int countBySP_DT(long serviceProcessId, long dossierTemplateId) {
+		return getPersistence().countBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
+	/**
 	* Caches the process option in the entity cache if it is enabled.
 	*
 	* @param processOption the process option

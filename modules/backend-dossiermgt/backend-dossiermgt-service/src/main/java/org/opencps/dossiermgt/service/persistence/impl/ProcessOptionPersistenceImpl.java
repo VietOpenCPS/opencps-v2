@@ -2447,6 +2447,237 @@ public class ProcessOptionPersistenceImpl extends BasePersistenceImpl<ProcessOpt
 
 	private static final String _FINDER_COLUMN_SC_DT_SERVICECONFIGID_2 = "processOption.serviceConfigId = ? AND ";
 	private static final String _FINDER_COLUMN_SC_DT_DOSSIERTEMPLATEID_2 = "processOption.dossierTemplateId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_SP_DT = new FinderPath(ProcessOptionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessOptionModelImpl.FINDER_CACHE_ENABLED,
+			ProcessOptionImpl.class, FINDER_CLASS_NAME_ENTITY, "fetchBySP_DT",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			ProcessOptionModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessOptionModelImpl.DOSSIERTEMPLATEID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_SP_DT = new FinderPath(ProcessOptionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessOptionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySP_DT",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or throws a {@link NoSuchProcessOptionException} if it could not be found.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param dossierTemplateId the dossier template ID
+	 * @return the matching process option
+	 * @throws NoSuchProcessOptionException if a matching process option could not be found
+	 */
+	@Override
+	public ProcessOption findBySP_DT(long serviceProcessId,
+		long dossierTemplateId) throws NoSuchProcessOptionException {
+		ProcessOption processOption = fetchBySP_DT(serviceProcessId,
+				dossierTemplateId);
+
+		if (processOption == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("serviceProcessId=");
+			msg.append(serviceProcessId);
+
+			msg.append(", dossierTemplateId=");
+			msg.append(dossierTemplateId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchProcessOptionException(msg.toString());
+		}
+
+		return processOption;
+	}
+
+	/**
+	 * Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param dossierTemplateId the dossier template ID
+	 * @return the matching process option, or <code>null</code> if a matching process option could not be found
+	 */
+	@Override
+	public ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId) {
+		return fetchBySP_DT(serviceProcessId, dossierTemplateId, true);
+	}
+
+	/**
+	 * Returns the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param dossierTemplateId the dossier template ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching process option, or <code>null</code> if a matching process option could not be found
+	 */
+	@Override
+	public ProcessOption fetchBySP_DT(long serviceProcessId,
+		long dossierTemplateId, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { serviceProcessId, dossierTemplateId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_SP_DT,
+					finderArgs, this);
+		}
+
+		if (result instanceof ProcessOption) {
+			ProcessOption processOption = (ProcessOption)result;
+
+			if ((serviceProcessId != processOption.getServiceProcessId()) ||
+					(dossierTemplateId != processOption.getDossierTemplateId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_PROCESSOPTION_WHERE);
+
+			query.append(_FINDER_COLUMN_SP_DT_SERVICEPROCESSID_2);
+
+			query.append(_FINDER_COLUMN_SP_DT_DOSSIERTEMPLATEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceProcessId);
+
+				qPos.add(dossierTemplateId);
+
+				List<ProcessOption> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_SP_DT,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ProcessOptionPersistenceImpl.fetchBySP_DT(long, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ProcessOption processOption = list.get(0);
+
+					result = processOption;
+
+					cacheResult(processOption);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_SP_DT, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ProcessOption)result;
+		}
+	}
+
+	/**
+	 * Removes the process option where serviceProcessId = &#63; and dossierTemplateId = &#63; from the database.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param dossierTemplateId the dossier template ID
+	 * @return the process option that was removed
+	 */
+	@Override
+	public ProcessOption removeBySP_DT(long serviceProcessId,
+		long dossierTemplateId) throws NoSuchProcessOptionException {
+		ProcessOption processOption = findBySP_DT(serviceProcessId,
+				dossierTemplateId);
+
+		return remove(processOption);
+	}
+
+	/**
+	 * Returns the number of process options where serviceProcessId = &#63; and dossierTemplateId = &#63;.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param dossierTemplateId the dossier template ID
+	 * @return the number of matching process options
+	 */
+	@Override
+	public int countBySP_DT(long serviceProcessId, long dossierTemplateId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_SP_DT;
+
+		Object[] finderArgs = new Object[] { serviceProcessId, dossierTemplateId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_PROCESSOPTION_WHERE);
+
+			query.append(_FINDER_COLUMN_SP_DT_SERVICEPROCESSID_2);
+
+			query.append(_FINDER_COLUMN_SP_DT_DOSSIERTEMPLATEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceProcessId);
+
+				qPos.add(dossierTemplateId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_SP_DT_SERVICEPROCESSID_2 = "processOption.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_SP_DT_DOSSIERTEMPLATEID_2 = "processOption.dossierTemplateId = ?";
 
 	public ProcessOptionPersistenceImpl() {
 		setModelClass(ProcessOption.class);
@@ -2494,6 +2725,12 @@ public class ProcessOptionPersistenceImpl extends BasePersistenceImpl<ProcessOpt
 		finderCache.putResult(FINDER_PATH_FETCH_BY_SC_DT,
 			new Object[] {
 				processOption.getServiceConfigId(),
+				processOption.getDossierTemplateId()
+			}, processOption);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_SP_DT,
+			new Object[] {
+				processOption.getServiceProcessId(),
 				processOption.getDossierTemplateId()
 			}, processOption);
 
@@ -2597,6 +2834,16 @@ public class ProcessOptionPersistenceImpl extends BasePersistenceImpl<ProcessOpt
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_SC_DT, args,
 			processOptionModelImpl, false);
+
+		args = new Object[] {
+				processOptionModelImpl.getServiceProcessId(),
+				processOptionModelImpl.getDossierTemplateId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_SP_DT, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_SP_DT, args,
+			processOptionModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -2662,6 +2909,27 @@ public class ProcessOptionPersistenceImpl extends BasePersistenceImpl<ProcessOpt
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_SC_DT, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_SC_DT, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					processOptionModelImpl.getServiceProcessId(),
+					processOptionModelImpl.getDossierTemplateId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SP_DT, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_SP_DT, args);
+		}
+
+		if ((processOptionModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_SP_DT.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					processOptionModelImpl.getOriginalServiceProcessId(),
+					processOptionModelImpl.getOriginalDossierTemplateId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SP_DT, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_SP_DT, args);
 		}
 	}
 
