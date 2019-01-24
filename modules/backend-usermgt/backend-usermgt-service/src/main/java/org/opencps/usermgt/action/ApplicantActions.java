@@ -55,4 +55,7 @@ public interface ApplicantActions {
 			String applicantIdType, Date applicantIdDate, String contactEmail, String contactTelNo,
 			ServiceContext serviceContext) throws PortalException;
 
+	public JSONObject createApplicantAccount(long userId, long companyId, long groupId, long id, String screenName,
+			String email, boolean exist, ServiceContext serviceContext) throws PortalException;
+
 }
