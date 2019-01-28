@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.systemmgt.model.SchedulerRecord">
+		<field name="schedulerId" type="long" />
+		<field name="schedulerType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="onTime" type="Date" />
+		<field name="nextTime" type="Date" />
+		<field name="expiredTime" type="Date" />
+		<field name="minDuration" type="long" />
+		<field name="maxDuration" type="long" />
+	</model>
+</model-hints>

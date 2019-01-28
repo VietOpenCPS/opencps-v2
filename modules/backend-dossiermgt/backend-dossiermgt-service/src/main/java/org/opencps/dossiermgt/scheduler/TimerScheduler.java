@@ -59,10 +59,17 @@ import backend.auth.api.exception.ErrorMsgModel;
 
 @Component(immediate = true, service = TimerScheduler.class)
 public class TimerScheduler extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		// TODO Auto-generated method stub
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		_log.info("Invoke Timer****");
 		// get all actions that has preCondition is "timer"
 
@@ -256,6 +263,7 @@ public class TimerScheduler extends BaseSchedulerEntryMessageListener {
 
 		}
 
+		isRunning = false;
 	}
 
 	private String _getUserActionName(String perConditionStr, long groupId, long dossierId, String defaultName) {

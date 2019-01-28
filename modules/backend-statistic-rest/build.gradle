@@ -22,4 +22,6 @@ dependencies {
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")
 	compileOnly project(":modules:backend-statistic-common")
 	
+	compileOnly project(":modules:backend-systemmgt:backend-systemmgt-service")
+	compileOnly project(":modules:backend-systemmgt:backend-systemmgt-api")	
 }

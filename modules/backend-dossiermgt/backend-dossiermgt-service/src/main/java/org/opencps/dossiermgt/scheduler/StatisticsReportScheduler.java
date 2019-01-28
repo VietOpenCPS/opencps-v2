@@ -45,8 +45,15 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = StatisticsReportScheduler.class)
 public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener {
+	private static volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		_log.info("OpenCPS PUBLISH STATISTICS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		Date now = new Date();
@@ -104,7 +111,8 @@ public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener
 				_log.debug(e);
 			}
 		}
-		_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
+		isRunning = false;
 	}
 	
 	@Activate

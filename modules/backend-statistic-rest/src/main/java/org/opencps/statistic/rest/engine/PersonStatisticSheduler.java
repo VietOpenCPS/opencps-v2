@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
 	private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
@@ -58,7 +58,12 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		//OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -108,7 +113,7 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 
 		}
-
+		isRunning = false;
 	}
 
 	private void processUpdatePersonStatistic(long groupId, int month, int year, GetPersonRequest payload,

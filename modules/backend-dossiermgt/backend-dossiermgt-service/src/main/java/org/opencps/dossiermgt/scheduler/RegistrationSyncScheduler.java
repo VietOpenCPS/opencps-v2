@@ -48,10 +48,15 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = RegistrationSyncScheduler.class)
 public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
-
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 //		_log.info("OpenCPS SYNC Registration IS STARTING : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -197,7 +202,7 @@ public class RegistrationSyncScheduler extends BaseSchedulerEntryMessageListener
 		}
 		
 //		_log.info("OpenCPS SYNC Registration HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
-
+		isRunning = false;
 	}
 	
 	private List<String> getListServerNo(JSONObject response) {

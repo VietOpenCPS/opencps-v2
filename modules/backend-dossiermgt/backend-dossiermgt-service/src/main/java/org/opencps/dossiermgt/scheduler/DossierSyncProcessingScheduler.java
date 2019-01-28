@@ -29,8 +29,15 @@ import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseSchedulerEntryMessageListener {
+	private static volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByState(DossierSyncTerm.STATE_WAITING_SYNC, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -47,6 +54,7 @@ public class DossierSyncProcessingScheduler extends BaseSchedulerEntryMessageLis
 		}
 		
 		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		isRunning = false;
 	}
 	
 	@Activate

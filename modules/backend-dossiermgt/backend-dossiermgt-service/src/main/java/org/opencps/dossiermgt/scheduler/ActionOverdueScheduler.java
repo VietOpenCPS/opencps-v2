@@ -42,8 +42,16 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = ActionOverdueScheduler.class)
 public class ActionOverdueScheduler extends BaseSchedulerEntryMessageListener {
+	private static volatile boolean isRunning = false;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			isRunning = false;
+		}
 		_log.info("OpenCPS Check Action Overdue IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		Date now = new Date();		
@@ -106,7 +114,8 @@ public class ActionOverdueScheduler extends BaseSchedulerEntryMessageListener {
 				}
 			}
 		}
-		_log.info("OpenCPS Check Action Overdue HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		_log.info("OpenCPS Check Action Overdue HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
+		isRunning = false;
 	}
 	
 	@Activate
