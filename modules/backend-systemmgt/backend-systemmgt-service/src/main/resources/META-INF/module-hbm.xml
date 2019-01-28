@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping auto-import="false" default-lazy="false">
+	<import class="org.opencps.systemmgt.model.SchedulerRecord" />
+	<class name="org.opencps.systemmgt.model.impl.SchedulerRecordImpl" table="opencps_scheduler">
+		<id name="schedulerId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="schedulerType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="onTime" type="org.hibernate.type.TimestampType" />
+		<property name="nextTime" type="org.hibernate.type.TimestampType" />
+		<property name="expiredTime" type="org.hibernate.type.TimestampType" />
+		<property name="minDuration" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="maxDuration" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+</hibernate-mapping>

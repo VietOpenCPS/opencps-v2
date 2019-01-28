@@ -2736,8 +2736,8 @@ public class DossierActionsImpl implements DossierActions {
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
 			if(!"new".equals(dossierStatus)) {
-				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-				dossier.setApplicantNote(applicantNote);
+//				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//				dossier.setApplicantNote(applicantNote);
 			} else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 				dossier.setSubmitDate(new Date());
 			}
@@ -3577,10 +3577,10 @@ public class DossierActionsImpl implements DossierActions {
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
-			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-			_log.info("applicantNote: "+applicantNote);
-
-			dossier.setApplicantNote(applicantNote);
+//			String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+//			_log.info("applicantNote: "+applicantNote);
+//
+//			dossier.setApplicantNote(applicantNote);
 
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 		}

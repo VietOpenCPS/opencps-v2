@@ -1,15 +1,30 @@
 package org.opencps.dossiermgt.listenner;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
 
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.usermgt.action.impl.EmployeeActions;
+import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
@@ -140,6 +155,65 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail);
 		}
+		
+		_log.info("UPDATE DOSSIER LOG.....");
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		EmployeeActions employeeActions = new EmployeeActions();
+
+		JobposActions jobposActions = new JobposActions();
+
+		try {
+
+			long userId = model.getUserId();
+
+			Employee employee = employeeActions.getEmployeeByMappingUserId(model.getGroupId(), userId);
+
+			long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
+
+			String jobPosName = StringPool.BLANK;
+
+			if (mainJobposId > 0) {
+
+				JobPos jobPos = jobposActions.getJobPos(mainJobposId);
+
+				jobPosName = (jobPos != null && Validator.isNotNull(jobPos.getTitle())) ? jobPos.getTitle()
+						: StringPool.BLANK;
+			}
+
+			String content = "";
+
+			// JSONArray payloads = JSONFactoryUtil.createJSONArray();
+
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+
+			payload.put("jobPosName", jobPosName);
+			payload.put("stepName", StringPool.BLANK);
+			payload.put("stepInstruction", StringPool.BLANK);
+			payload.put("old", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(modelBeforeUpdate)));
+			payload.put("new", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(model)));
+			JSONObject diff = JSONFactoryUtil.createJSONObject();
+			if (model.getDossierNo() != null && !model.getDossierNo().equals(modelBeforeUpdate.getDossierNo())) {
+				diff.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+			}
+			if (model.getReceiveDate() != null && !model.getReceiveDate().equals(modelBeforeUpdate.getReceiveDate())) {
+				diff.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate().getTime());
+			}
+			if (model.getFinishDate() != null && !model.getFinishDate().equals(modelBeforeUpdate.getFinishDate())) {
+				diff.put(DossierTerm.FINISH_DATE, model.getFinishDate().getTime());
+			}
+			payload.put("diff", diff);
+			
+			serviceContext.setCompanyId(model.getCompanyId());
+			serviceContext.setUserId(userId);
+
+			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+					model.getApplicantName(), content, "DOSSIER_CHANGE", payload.toString(), serviceContext);
+
+		} catch (SystemException | PortalException e) {
+			_log.error(e);
+		}		
 	}
 
 	@Override

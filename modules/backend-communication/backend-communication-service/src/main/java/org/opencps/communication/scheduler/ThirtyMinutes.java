@@ -34,11 +34,18 @@ import com.liferay.portal.kernel.util.StringPool;
 
 @Component(immediate = true, service = ThirtyMinutes.class)
 public class ThirtyMinutes extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
+	
 	@Override
 	protected void doReceive(Message message) {
-
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		doProcessNotification(message);
+		isRunning = false;
 	}
 
 	private void doProcessNotification(Message message) {

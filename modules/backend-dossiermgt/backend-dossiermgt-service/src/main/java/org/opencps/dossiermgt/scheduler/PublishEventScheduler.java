@@ -46,8 +46,16 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = PublishEventScheduler.class)
 public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
+	private static volatile boolean isRunning = false;
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
 		List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0, 10);
@@ -80,6 +88,7 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 			}
 		}
 		_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		isRunning = false;
 	}
 	
 	private boolean processPublish(PublishQueue pq) {

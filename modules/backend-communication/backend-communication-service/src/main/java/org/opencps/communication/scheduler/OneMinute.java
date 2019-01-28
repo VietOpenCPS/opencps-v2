@@ -44,12 +44,18 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
+	
 	@Override
 	protected void doReceive(Message message) {
-
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		doProcessNotification(message);
-
+		isRunning = false;
 	}
 
 	private void doProcessNotification(Message message) {

@@ -1,0 +1,9 @@
+Bundle-Name: backend-systemmgt-api
+Bundle-SymbolicName: org.opencps.systemmgt.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.systemmgt.exception,\
+	org.opencps.systemmgt.model,\
+	org.opencps.systemmgt.service,\
+	org.opencps.systemmgt.service.persistence
+-includeresource: META-INF/service.xml=../backend-systemmgt-service/service.xml

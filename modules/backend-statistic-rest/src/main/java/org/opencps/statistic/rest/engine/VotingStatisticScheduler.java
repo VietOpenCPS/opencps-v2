@@ -50,7 +50,7 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutExce
 
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener {
-
+	private static volatile boolean isRunning = false;
 	private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
@@ -60,7 +60,12 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		//System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		
 		OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
@@ -123,6 +128,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 				statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 			}
 		}
+		isRunning = false;
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetVotingResultRequest payload,
