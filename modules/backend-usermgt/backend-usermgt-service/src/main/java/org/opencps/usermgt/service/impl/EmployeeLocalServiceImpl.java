@@ -784,6 +784,15 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			return null;
 		} else {
 			employeePersistence.remove(object);
+			// delete user
+			long userId = object.getMappingUserId();
+			if (userId > 0) {
+				try {
+					userPersistence.remove(userId);
+				} catch (NoSuchUserException e) {
+					_log.error(e);
+				}
+			}
 		}
 
 		return object;
