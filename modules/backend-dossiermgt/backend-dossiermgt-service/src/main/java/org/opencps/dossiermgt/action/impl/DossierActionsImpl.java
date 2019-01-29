@@ -3653,6 +3653,8 @@ public class DossierActionsImpl implements DossierActions {
 			publishEvent(dossier, context);			
 		}
 		
+		createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+		
 		return dossierAction;
 	}
 
@@ -4023,6 +4025,81 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}	
         }
+	}
+
+	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		User u = UserLocalServiceUtil.fetchUser(userId);
+        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        try {		
+        	payloadObj.put(
+					"Dossier", JSONFactoryUtil.createJSONObject(
+						JSONFactoryUtil.looseSerialize(dossier)));
+        	
+        	if (dossierAction != null) {
+        		payloadObj.put("actionCode", dossierAction.getActionCode());
+        		payloadObj.put("actionUser", dossierAction.getActionUser());
+        		payloadObj.put("actionName", dossierAction.getActionName());
+        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        	}
+        }
+        catch (Exception e) {
+        	_log.error(e);
+        }
+
+		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			Date now = new Date();
+	        Calendar cal = Calendar.getInstance();
+	        cal.setTime(now);
+	        	  
+			if (notiTemplate != null) {
+				if ("minutely".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+				}
+				else if ("hourly".equals(notiTemplate.getInterval())) {
+			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+				}
+				else {
+			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+				}
+				Date expired = cal.getTime();
+
+				if (actionConfig.getNotificationType().startsWith("APLC")) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+						try {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
+							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+							
+							NotificationQueueLocalServiceUtil.addNotificationQueue(
+									userId, groupId, 
+									actionConfig.getNotificationType(), 
+									Dossier.class.getName(), 
+									String.valueOf(dossier.getDossierId()), 
+									payloadObj.toJSONString(), 
+									u.getFullName(), 
+									dossier.getApplicantName(), 
+									toUserId, 
+									dossier.getContactEmail(), 
+									dossier.getContactTelNo(), 
+									now, 
+									expired, 
+									context);
+						} catch (NoSuchUserException e) {
+//							e.printStackTrace();
+							_log.error(e);
+							//_log.error(e);
+//							e.printStackTrace();
+						}
+					}
+				}
+				else if (actionConfig.getNotificationType().startsWith("USER")) {
+					
+				}				
+			}
+		}	
+		
 	}
 
 	private void createNotificationSMS(long userId, long groupId, Dossier dossier, JSONArray assignedUsers, ServiceContext context) {

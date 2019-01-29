@@ -2984,15 +2984,16 @@ public class DossierManagementImpl implements DossierManagement {
 			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 				for (DossierActionUser dau : lstDus) {
 					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-					
-					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-						lstUsers.add(dau.getUserId());
-						assignUserObj.put("userId", dau.getUserId());
-						assignUserObj.put("userName", u.getFullName());
-						
-						assignUserArr.put(assignUserObj);					
-					}					
+					if (u != null) {
+						if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+							JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+							lstUsers.add(dau.getUserId());
+							assignUserObj.put("userId", dau.getUserId());
+							assignUserObj.put("userName", u.getFullName());
+							
+							assignUserArr.put(assignUserObj);
+						}
+					}
 				}
 			}
 			for (DossierAction da : lstDossierActions) {
@@ -4851,6 +4852,91 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}		
+	}
+
+	@Override
+	public Response fixReAssignedDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String fromEmailUser, String toEmailUser) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		org.opencps.dossiermgt.action.DossierActionUser actions = new DossierActionUserImpl();
+
+		try {
+
+			long dossierId = GetterUtil.getLong(id);
+			Dossier dossier = null;
+			if (dossierId > 0) {
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			} else {
+				dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
+			}
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+
+			if (dossier != null && dossier.getDossierActionId() != 0) {
+				User fromUser = UserLocalServiceUtil.fetchUserByEmailAddress(dossier.getCompanyId(), fromEmailUser);
+				if (fromUser != null) {
+					List<DossierActionUser> fromActionUserList = DossierActionUserLocalServiceUtil.getByDOSSIER_UID(dossier.getDossierId(),
+							fromUser.getUserId());
+					if (fromActionUserList != null && fromActionUserList.size() > 0) {
+						DossierActionUser fromActUser = fromActionUserList.get(0);
+						if (fromActUser != null) {
+							User toUser = UserLocalServiceUtil.fetchUserByEmailAddress(dossier.getCompanyId(), toEmailUser);
+							if (toUser != null) {
+								//CreateDossierActionUser
+								DossierActionUser toActUser = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+								toActUser.setDossierActionId(fromActUser.getDossierActionId());
+								toActUser.setUserId(toUser.getUserId());
+								toActUser.setModerator(fromActUser.getModerator());
+								toActUser.setAssigned(fromActUser.getAssigned());
+								toActUser.setVisited(fromActUser.getVisited());
+								toActUser.setDossierId(dossier.getDossierId());
+								toActUser.setStepCode(fromActUser.getStepCode());
+								//
+								actions.updateDossierActionUser(toActUser);
+								//Create DossierUser
+								DossierUser fromDossierUser = DossierUserLocalServiceUtil.findByDID_UD(dossierId, fromUser.getUserId());
+								if (fromDossierUser != null) {
+									DossierUser dUser = new org.opencps.dossiermgt.model.impl.DossierUserImpl();
+									dUser.setDossierId(dossier.getDossierId());
+									dUser.setUserId(toUser.getUserId());
+									dUser.setModerator(fromDossierUser.getModerator());
+									dUser.setVisited(fromDossierUser.getVisited());
+									//
+									DossierUserLocalServiceUtil.updateDossierUser(dUser);
+								}
+							}
+						}
+					}
+				}
+				//Reindex dossier
+				Indexer<Dossier> indexer = IndexerRegistryUtil
+						.nullSafeGetIndexer(Dossier.class);
+				indexer.reindex(dossier);
+				
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize("Phân Quyền thành công!!!")).build();
+			}
+			else {
+				return Response.status(200).entity(StringPool.BLANK).build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }
