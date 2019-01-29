@@ -4395,6 +4395,17 @@ public class DossierActionsImpl implements DossierActions {
 //			}
 //		}
 		
+		//Check if dossier is done
+		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
+			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+			for (DossierFile df : lstFiles) {
+				if (!df.getRemoved()) {
+					df.setOriginal(true);
+				}
+				DossierFileLocalServiceUtil.updateDossierFile(df);
+			}
+		}
+		
 		//Calculate step due date
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		_log.info("dossierAction: "+dossierAction);

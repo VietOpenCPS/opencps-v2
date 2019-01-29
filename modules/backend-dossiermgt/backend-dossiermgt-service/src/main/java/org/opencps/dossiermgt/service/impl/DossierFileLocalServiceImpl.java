@@ -200,7 +200,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		_log.info("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
-		object.setOriginal(true);
+		object.setOriginal(false);
 		
 		if (Boolean.parseBoolean(isSync)) {
 			object.setIsNew(true);
@@ -331,7 +331,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		_log.info("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
-		object.setOriginal(true);
+		object.setOriginal(false);
 		
 		if (Boolean.parseBoolean(isSync)) {
 			object.setIsNew(true);
@@ -738,7 +738,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		}
 
 		dossierFile.setDisplayName(displayName);
-		dossierFile.setOriginal(true);
+		dossierFile.setOriginal(false);
 		dossierFile.setIsNew(true);
 
 		return dossierFilePersistence.update(dossierFile);
@@ -1294,5 +1294,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 	public List<DossierFile> getByG_DID_FTN_R(long groupId, long[] dossierIds, String fileTemplateNo, boolean removed) {
 		return dossierFilePersistence.findByG_DID_FTN_R(groupId, dossierIds, fileTemplateNo, removed);
 	}
+	public List<DossierFile> getByG_DID_FTN_R_O(long groupId, long[] dossierIds, String fileTemplateNo, boolean removed, boolean original) {
+		return dossierFilePersistence.findByG_DID_FTN_R_O(groupId, dossierIds, fileTemplateNo, removed, original);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

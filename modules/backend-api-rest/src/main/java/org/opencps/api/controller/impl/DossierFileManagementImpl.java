@@ -1112,7 +1112,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					String[] ftns = StringUtil.split(fileTemplateNo);
 					
 					for (String ftn : ftns) {
-						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R(groupId, dossierIds, ftn, false);
+						List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getByG_DID_FTN_R_O(groupId, dossierIds, ftn, false, true);
 						resultFiles.addAll(dossierFiles);
 					}
 				}
@@ -1125,6 +1125,33 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response useOriginalDossierFile(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, DossierFileCopyInputModel input) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileActions action = new DossierFileActionsImpl();
+		
+			DossierFile dossierFile = action.cloneDossierFile(groupId, id, input.getDossierFileId(),
+					input.getDossierTemplateNo(), input.getDossierPartNo(), serviceContext);
+
+			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}	
 	}
 
 }
