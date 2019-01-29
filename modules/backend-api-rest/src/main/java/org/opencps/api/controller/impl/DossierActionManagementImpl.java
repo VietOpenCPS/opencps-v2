@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -74,6 +73,8 @@ import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -272,7 +273,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 								}
 	
 								modelUser.setUserId(userId);
-								modelUser.setUserName(u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+								//TODO: Not update user
+								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+								if (emp != null) {
+									modelUser.setUserName(emp.getFullName() != null ? emp.getFullName().toUpperCase()
+											: StringPool.BLANK);
+								} else {
+									modelUser.setUserName(
+											u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+								}
 								modelUser.setModerator(moderator);
 								modelUser.setAssigned(assigned);
 								boolean flag = true;

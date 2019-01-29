@@ -2989,7 +2989,13 @@ public class DossierManagementImpl implements DossierManagement {
 							JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 							lstUsers.add(dau.getUserId());
 							assignUserObj.put("userId", dau.getUserId());
-							assignUserObj.put("userName", u.getFullName());
+							//TODO: Not update user
+							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+							if (emp != null) {
+								assignUserObj.put("userName", emp.getFullName());
+							} else {
+								assignUserObj.put("userName", u.getFullName());
+							}
 							
 							assignUserArr.put(assignUserObj);
 						}
@@ -3001,7 +3007,13 @@ public class DossierManagementImpl implements DossierManagement {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
 					assignUserObj.put("userId", da.getUserId());
-					assignUserObj.put("userName", da.getUserName());
+					//TODO: Not update user
+					Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
+					if (emp != null) {
+						assignUserObj.put("userName", emp.getFullName());
+					} else {
+						assignUserObj.put("userName", da.getUserName());
+					}
 					
 					assignUserArr.put(assignUserObj);					
 				}
