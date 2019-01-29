@@ -241,8 +241,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
 									&& dau.getModerator() == 1) {
 								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-								if (!u.isLockout() && u.isActive()) {
-									lstUser.add(u);									
+								if (u != null) {
+									if (!u.isLockout() && u.isActive()) {
+										lstUser.add(u);
+									}
 								}
 							}
 						}
