@@ -213,6 +213,12 @@ public class DossierActionUserLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID(
+		long dossierActionId) {
+		return _dossierActionUserLocalService.getByDID(dossierActionId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID_DAI_SC_AS(
 		long dossierId, long dossierActionId, String stepCode, int[] asArr) {
 		return _dossierActionUserLocalService.getByDID_DAI_SC_AS(dossierId,
@@ -237,6 +243,12 @@ public class DossierActionUserLocalServiceWrapper
 		long dossierActionId, long userId) {
 		return _dossierActionUserLocalService.getByDossierAndUser(dossierActionId,
 			userId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDossierId(
+		long dossierId) {
+		return _dossierActionUserLocalService.getByDossierId(dossierId);
 	}
 
 	/**

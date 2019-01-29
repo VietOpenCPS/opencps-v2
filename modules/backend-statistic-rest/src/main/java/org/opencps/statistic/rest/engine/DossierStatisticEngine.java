@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-@Component(immediate = true, service = DossierStatisticEngine.class)
+//@Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
@@ -159,12 +159,15 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						//}
 					}
 					if (flagStatistic) {
-						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-								engineUpdateAction, serviceDomainResponse);
+						System.out.println("CAL STATISTICS START: " + System.currentTimeMillis());
+						long start = System.currentTimeMillis();
+//						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
+//								engineUpdateAction, serviceDomainResponse);
+						System.out.println("CAL STATISTICS END: " + System.currentTimeMillis() + ", LONG: " + (System.currentTimeMillis() - start));
 					}
 				} else {
-					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-							engineUpdateAction, serviceDomainResponse);
+//					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
+//							engineUpdateAction, serviceDomainResponse);
 				}
 			}
 				/////////////////////////////////
@@ -298,8 +301,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 					flagLastYear = false;
 				}
 				if (flagLastYear) {
-					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-							engineUpdateAction, serviceDomainResponse);
+//					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+//							engineUpdateAction, serviceDomainResponse);
 				}
 			}
 

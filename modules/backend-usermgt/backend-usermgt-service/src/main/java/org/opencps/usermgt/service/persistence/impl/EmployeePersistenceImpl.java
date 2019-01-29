@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -4384,6 +4386,683 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 	private static final String _FINDER_COLUMN_G_UID_GROUPID_2 = "employee.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_UID_USERID_2 = "employee.userId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_EMPID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_EMPID",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_EMPID",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			EmployeeModelImpl.GROUPID_COLUMN_BITMASK |
+			EmployeeModelImpl.EMPLOYEEID_COLUMN_BITMASK |
+			EmployeeModelImpl.EMPLOYEENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_EMPID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_EMPID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_EMPID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_EMPID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns all the employees where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @return the matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long employeeId) {
+		return findByG_EMPID(groupId, employeeId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employees where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long employeeId,
+		int start, int end) {
+		return findByG_EMPID(groupId, employeeId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long employeeId,
+		int start, int end, OrderByComparator<Employee> orderByComparator) {
+		return findByG_EMPID(groupId, employeeId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long employeeId,
+		int start, int end, OrderByComparator<Employee> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID;
+			finderArgs = new Object[] { groupId, employeeId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_EMPID;
+			finderArgs = new Object[] {
+					groupId, employeeId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Employee> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Employee>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((groupId != employee.getGroupId()) ||
+							(employeeId != employee.getEmployeeId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_EMPID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_EMPID_EMPLOYEEID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(employeeId);
+
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByG_EMPID_First(long groupId, long employeeId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByG_EMPID_First(groupId, employeeId,
+				orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", employeeId=");
+		msg.append(employeeId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByG_EMPID_First(long groupId, long employeeId,
+		OrderByComparator<Employee> orderByComparator) {
+		List<Employee> list = findByG_EMPID(groupId, employeeId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByG_EMPID_Last(long groupId, long employeeId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByG_EMPID_Last(groupId, employeeId,
+				orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", employeeId=");
+		msg.append(employeeId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByG_EMPID_Last(long groupId, long employeeId,
+		OrderByComparator<Employee> orderByComparator) {
+		int count = countByG_EMPID(groupId, employeeId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Employee> list = findByG_EMPID(groupId, employeeId, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns all the employees where groupId = &#63; and employeeId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeIds the employee IDs
+	 * @return the matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds) {
+		return findByG_EMPID(groupId, employeeIds, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employees where groupId = &#63; and employeeId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeIds the employee IDs
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds,
+		int start, int end) {
+		return findByG_EMPID(groupId, employeeIds, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and employeeId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeIds the employee IDs
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds,
+		int start, int end, OrderByComparator<Employee> orderByComparator) {
+		return findByG_EMPID(groupId, employeeIds, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and employeeId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds,
+		int start, int end, OrderByComparator<Employee> orderByComparator,
+		boolean retrieveFromCache) {
+		if (employeeIds == null) {
+			employeeIds = new long[0];
+		}
+		else if (employeeIds.length > 1) {
+			employeeIds = ArrayUtil.unique(employeeIds);
+
+			Arrays.sort(employeeIds);
+		}
+
+		if (employeeIds.length == 1) {
+			return findByG_EMPID(groupId, employeeIds[0], start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { groupId, StringUtil.merge(employeeIds) };
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(employeeIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Employee> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Employee>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_EMPID,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((groupId != employee.getGroupId()) ||
+							!ArrayUtil.contains(employeeIds,
+								employee.getEmployeeId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_EMPID_GROUPID_2);
+
+			if (employeeIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_EMPID_EMPLOYEEID_7);
+
+				query.append(StringUtil.merge(employeeIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_EMPID,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_EMPID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the employees where groupId = &#63; and employeeId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 */
+	@Override
+	public void removeByG_EMPID(long groupId, long employeeId) {
+		for (Employee employee : findByG_EMPID(groupId, employeeId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(employee);
+		}
+	}
+
+	/**
+	 * Returns the number of employees where groupId = &#63; and employeeId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeId the employee ID
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByG_EMPID(long groupId, long employeeId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_EMPID;
+
+		Object[] finderArgs = new Object[] { groupId, employeeId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_EMPID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_EMPID_EMPLOYEEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(employeeId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of employees where groupId = &#63; and employeeId = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param employeeIds the employee IDs
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByG_EMPID(long groupId, long[] employeeIds) {
+		if (employeeIds == null) {
+			employeeIds = new long[0];
+		}
+		else if (employeeIds.length > 1) {
+			employeeIds = ArrayUtil.unique(employeeIds);
+
+			Arrays.sort(employeeIds);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(employeeIds)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_EMPID,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_EMPID_GROUPID_2);
+
+			if (employeeIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_EMPID_EMPLOYEEID_7);
+
+				query.append(StringUtil.merge(employeeIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_EMPID,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_EMPID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_EMPID_GROUPID_2 = "employee.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_EMPID_EMPLOYEEID_2 = "employee.employeeId = ?";
+	private static final String _FINDER_COLUMN_G_EMPID_EMPLOYEEID_7 = "employee.employeeId IN (";
 
 	public EmployeePersistenceImpl() {
 		setModelClass(Employee.class);
@@ -4848,6 +5527,15 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UID,
 				args);
 
+			args = new Object[] {
+					employeeModelImpl.getGroupId(),
+					employeeModelImpl.getEmployeeId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_EMPID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -4967,6 +5655,27 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_UID, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UID,
+					args);
+			}
+
+			if ((employeeModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						employeeModelImpl.getOriginalGroupId(),
+						employeeModelImpl.getOriginalEmployeeId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_EMPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID,
+					args);
+
+				args = new Object[] {
+						employeeModelImpl.getGroupId(),
+						employeeModelImpl.getEmployeeId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_EMPID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID,
 					args);
 			}
 		}

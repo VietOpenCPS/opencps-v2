@@ -82,6 +82,10 @@ public class EmployeeLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static long countByG_EMPID(long groupId, long[] employeeIds) {
+		return getService().countByG_EMPID(groupId, employeeIds);
+	}
+
 	public static long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
@@ -246,6 +250,11 @@ public class EmployeeLocalServiceUtil {
 	public static org.opencps.usermgt.model.Employee fetchEmployeeByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchEmployeeByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.Employee> findByG_EMPID(
+		long groupId, long[] employeeIds) {
+		return getService().findByG_EMPID(groupId, employeeIds);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

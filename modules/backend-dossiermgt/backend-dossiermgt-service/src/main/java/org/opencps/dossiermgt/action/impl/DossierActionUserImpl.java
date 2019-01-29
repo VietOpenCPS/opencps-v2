@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierActionUser;
@@ -255,29 +256,42 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		model.setVisited(false);
 		// Add User
 //		DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+		List<DossierUser> lstDus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+		HashMap<Long, DossierUser> mapDus = new HashMap<>();
+		for (DossierUser du : lstDus) {
+			mapDus.put(du.getUserId(), du);
+		}
+		List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierId(dossier.getDossierId());
+		
+		HashMap<Long, org.opencps.dossiermgt.model.DossierActionUser> mapDaus = new HashMap<>();
+		for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {
+			mapDaus.put(dau.getUserId(), dau);
+		}
 		for (int n = 0; n < assignedUsers.length(); n++) {
 			JSONObject subUser = assignedUsers.getJSONObject(n);
 			if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
 	//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-				DossierActionUserPK pk = new DossierActionUserPK();
+//				DossierActionUserPK pk = new DossierActionUserPK();
 				long userIdAssigned = subUser.getLong("userId");
 				
-				pk.setDossierActionId(dossierAction.getDossierActionId());
+//				pk.setDossierActionId(dossierAction.getDossierActionId());
 //				_log.info("userIdAssign: "+subUser.getLong("userId"));
 				
-				pk.setUserId(subUser.getLong("userId"));
+//				pk.setUserId(subUser.getLong("userId"));
 	
-				DossierUserPK duPk = new DossierUserPK();
+//				DossierUserPK duPk = new DossierUserPK();
 	//			if (dossierActionId > 0) {
 	//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 	//				if (dAction != null) {
 	//					model.setStepCode(dAction.getStepCode());
 	//				}
 	//			}
-				duPk.setDossierId(dossier.getDossierId());
-				duPk.setUserId(subUser.getLong("userId"));
-				DossierUser dossierUser = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+//				duPk.setDossierId(dossier.getDossierId());
+//				duPk.setUserId(subUser.getLong("userId"));
+//				DossierUser dossierUser = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+				DossierUser dossierUser = null;
+				dossierUser = mapDus.get(subUser.getLong("userId"));
 				
 				if (dossierUser != null) {
 					//Update dossier user if assigned
@@ -297,7 +311,10 @@ public class DossierActionUserImpl implements DossierActionUser {
 					}					
 				}
 				
-				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+//				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				org.opencps.dossiermgt.model.DossierActionUser dau = null;
+				dau = mapDaus.get(userIdAssigned);
+
 				if (Validator.isNull(dau)) {
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					if (dAction != null) {

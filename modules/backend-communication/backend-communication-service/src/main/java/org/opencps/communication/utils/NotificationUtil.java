@@ -257,13 +257,18 @@ public class NotificationUtil {
 //						}
 //					}
 					if (template != null) {
-						sendEmail = template.getSendEmail();
+//						sendEmail = template.getSendEmail();
 						sendNotify = template.getSendNotification();
-						sendSMS = template.getSendSMS();
+//						sendSMS = template.getSendSMS();
 					}
 				}
 				else {
 					sendNotify = false;
+				}
+
+				if (template != null) {
+					sendEmail = template.getSendEmail();
+					sendSMS = template.getSendSMS();
 				}
 
 				messageEntry.setSendEmail(sendEmail);

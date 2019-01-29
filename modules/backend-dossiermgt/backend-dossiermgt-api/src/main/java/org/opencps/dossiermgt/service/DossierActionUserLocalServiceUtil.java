@@ -203,6 +203,11 @@ public class DossierActionUserLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID(
+		long dossierActionId) {
+		return getService().getByDID(dossierActionId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID_DAI_SC_AS(
 		long dossierId, long dossierActionId, String stepCode, int[] asArr) {
 		return getService()
@@ -223,6 +228,11 @@ public class DossierActionUserLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.DossierActionUser getByDossierAndUser(
 		long dossierActionId, long userId) {
 		return getService().getByDossierAndUser(dossierActionId, userId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDossierId(
+		long dossierId) {
+		return getService().getByDossierId(dossierId);
 	}
 
 	/**

@@ -172,6 +172,11 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="userId"></finder-column>
 		</finder>
+
+		<finder return-type="Collection" name="G_EMPID">
+			<finder-column name="groupId"></finder-column>
+            <finder-column name="employeeId" comparator="=" arrayable-operator="OR"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"
