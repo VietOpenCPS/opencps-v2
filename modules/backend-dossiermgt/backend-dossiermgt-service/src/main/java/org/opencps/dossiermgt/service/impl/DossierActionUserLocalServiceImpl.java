@@ -65,6 +65,10 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDossierAndStepCode(long dossierId, String stepCode) {
 		return dossierActionUserPersistence.findByDID_SC(dossierId, stepCode);
 	}
+
+	public List<DossierActionUser> getByDOSSIER_UID(long dossierId, long userId) {
+		return dossierActionUserPersistence.findByDOSSIER_UID(dossierId, userId);
+	}
 	
 //	@Indexable(type = IndexableType.REINDEX)
 	public void deleteByDossierAndStepCode(long dossierId, String stepCode) {
@@ -113,4 +117,5 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDID_DAI_SC_AS(long dossierId, long dossierActionId, String stepCode, int[] asArr) {
 		return dossierActionUserPersistence.findByDID__DAI_SC_AS(dossierId, dossierActionId, stepCode, asArr);
 	}
+
 }

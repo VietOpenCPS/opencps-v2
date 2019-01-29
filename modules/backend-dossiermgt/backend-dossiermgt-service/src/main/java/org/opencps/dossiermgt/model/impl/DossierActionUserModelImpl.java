@@ -85,8 +85,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,primary key (dossierActionId, userId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionuser";
-	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.id.dossierActionId ASC, dossierActionUser.id.userId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId ASC, opencps_dossieractionuser.userId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.id.dossierActionId DESC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -242,7 +242,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public void setDossierActionId(long dossierActionId) {
-		_columnBitmask |= DOSSIERACTIONID_COLUMN_BITMASK;
+		_columnBitmask = -1L;
 
 		if (!_setOriginalDossierActionId) {
 			_setOriginalDossierActionId = true;
@@ -423,9 +423,25 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public int compareTo(DossierActionUser dossierActionUser) {
-		DossierActionUserPK primaryKey = dossierActionUser.getPrimaryKey();
+		int value = 0;
 
-		return getPrimaryKey().compareTo(primaryKey);
+		if (getDossierActionId() < dossierActionUser.getDossierActionId()) {
+			value = -1;
+		}
+		else if (getDossierActionId() > dossierActionUser.getDossierActionId()) {
+			value = 1;
+		}
+		else {
+			value = 0;
+		}
+
+		value = value * -1;
+
+		if (value != 0) {
+			return value;
+		}
+
+		return 0;
 	}
 
 	@Override

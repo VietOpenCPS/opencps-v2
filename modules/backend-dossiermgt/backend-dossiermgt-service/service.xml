@@ -1389,7 +1389,13 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="int" />
 		<column name="visited" type="boolean" />
-
+	
+		<!-- Filter -->
+		<order by="desc">
+			<order-column name="dossierActionId" order-by="desc" />
+		</order>
+	
+		<!-- Order -->
 		<finder return-type="Collection" name="DID">
 			<finder-column name="dossierActionId" />
 		</finder>
@@ -1410,6 +1416,10 @@
             <finder-column name="stepCode"></finder-column>
             <finder-column name="assigned" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
+        <finder return-type="Collection" name = "DOSSIER_UID">
+			<finder-column name="dossierId" />
+			<finder-column name="userId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
