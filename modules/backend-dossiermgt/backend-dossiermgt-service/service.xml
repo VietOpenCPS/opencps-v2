@@ -694,7 +694,14 @@
 			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="fileTemplateNo" />
 			<finder-column name="removed" />
-		</finder>        
+		</finder>
+		<finder return-type="Collection" name="G_DID_FTN_R_O">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+			<finder-column name="fileTemplateNo" />
+			<finder-column name="removed" />
+			<finder-column name="original" />
+		</finder>		        
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"

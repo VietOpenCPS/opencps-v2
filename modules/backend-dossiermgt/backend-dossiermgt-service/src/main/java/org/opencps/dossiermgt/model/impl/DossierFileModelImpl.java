@@ -155,10 +155,11 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 	public static final long FILETEMPLATENO_COLUMN_BITMASK = 128L;
 	public static final long GROUPID_COLUMN_BITMASK = 256L;
 	public static final long ISNEW_COLUMN_BITMASK = 512L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 1024L;
-	public static final long REMOVED_COLUMN_BITMASK = 2048L;
-	public static final long UUID_COLUMN_BITMASK = 4096L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8192L;
+	public static final long ORIGINAL_COLUMN_BITMASK = 1024L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 2048L;
+	public static final long REMOVED_COLUMN_BITMASK = 4096L;
+	public static final long UUID_COLUMN_BITMASK = 8192L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 16384L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierFile"));
 
@@ -752,7 +753,19 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 
 	@Override
 	public void setOriginal(boolean original) {
+		_columnBitmask |= ORIGINAL_COLUMN_BITMASK;
+
+		if (!_setOriginalOriginal) {
+			_setOriginalOriginal = true;
+
+			_originalOriginal = _original;
+		}
+
 		_original = original;
+	}
+
+	public boolean getOriginalOriginal() {
+		return _originalOriginal;
 	}
 
 	@Override
@@ -1083,6 +1096,10 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 		dossierFileModelImpl._originalFileEntryId = dossierFileModelImpl._fileEntryId;
 
 		dossierFileModelImpl._setOriginalFileEntryId = false;
+
+		dossierFileModelImpl._originalOriginal = dossierFileModelImpl._original;
+
+		dossierFileModelImpl._setOriginalOriginal = false;
 
 		dossierFileModelImpl._originalIsNew = dossierFileModelImpl._isNew;
 
@@ -1473,6 +1490,8 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 	private long _originalFileEntryId;
 	private boolean _setOriginalFileEntryId;
 	private boolean _original;
+	private boolean _originalOriginal;
+	private boolean _setOriginalOriginal;
 	private boolean _eForm;
 	private boolean _isNew;
 	private boolean _originalIsNew;
