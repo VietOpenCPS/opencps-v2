@@ -15,8 +15,10 @@
 package org.opencps.usermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,7 +42,7 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -55,12 +57,9 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
-import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
-import backend.auth.api.keys.ActionKeys;
-import backend.auth.api.keys.ModelNameKeys;
 
 /**
  * The implementation of the employee local service.
@@ -821,8 +820,20 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		long mappingUserId = objectData.getLong("mappingUserId");
+		_log.info("mappingUserId: "+mappingUserId);
+		//User user = null;
+		if (mappingUserId > 0) {
+			object.setMappingUserId(objectData.getLong("mappingUserId"));
+			//Get info User
+			//user = UserLocalServiceUtil.fetchUser(mappingUserId);
+			//_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
+			//user = UserLocalServiceUtil.fetchUser(20139);
+			//_log.info("userHe Thong: "+JSONFactoryUtil.looseSerialize(user));
+			//User
+		}
 
+		object.setUserId(objectData.getLong("userId"));
 		object.setEmployeeNo(objectData.getString("employeeNo"));
 		object.setFullName(objectData.getString("fullName"));
 		object.setTitle(objectData.getString("title"));
@@ -832,7 +843,6 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setMobile(objectData.getString("mobile"));
 		object.setEmail(objectData.getString("email"));
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
-		object.setMappingUserId(objectData.getLong("mappingUserId"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
 		object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
@@ -841,10 +851,28 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		// object.setFileSignId(fileSignId);
 		// object.setFileCertPath(fileCertPath);
 		// object.setFileSignPath(fileSignPath);
+//		if (user != null) {
+//			_log.info("EMAIL: "+user.getEmailAddress());
+//			String fullName = objectData.getString("fullName");
+//			_log.info("fullName: "+fullName);
+//			if (Validator.isNotNull(fullName)) {
+//				int indexFisrt = fullName.indexOf(" ");
+//				_log.info("indexFisrt: "+indexFisrt);
+//				if (indexFisrt > 0) {
+//					_log.info("fullName.substring(0, indexFisrt - 1): "+fullName.substring(0, indexFisrt));
+//					user.setModifiedDate(new Date());
+//					user.setFirstName(fullName.substring(0, indexFisrt));
+//					user.setMiddleName(StringPool.BLANK);
+//					user.setLastName(fullName.substring(indexFisrt + 1));
+//					//Update user
+//					UserLocalServiceUtil.updateUser(user);
+//				}
+//			}
+//		}
+		//_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
 
-		employeePersistence.update(object);
+		return employeePersistence.update(object);
 
-		return object;
 	}
 
 }
