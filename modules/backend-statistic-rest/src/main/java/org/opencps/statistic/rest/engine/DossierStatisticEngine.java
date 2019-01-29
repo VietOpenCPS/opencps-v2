@@ -25,9 +25,9 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
-import org.opencps.systemmgt.constants.SchedulerRecordTerm;
-import org.opencps.systemmgt.model.SchedulerRecord;
-import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
+//import org.opencps.systemmgt.constants.SchedulerRecordTerm;
+//import org.opencps.systemmgt.model.SchedulerRecord;
+//import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-//@Component(immediate = true, service = DossierStatisticEngine.class)
+@Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
@@ -74,46 +74,46 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			return;
 		}
 		//LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-		SchedulerRecord schedulerRecord = SchedulerRecordLocalServiceUtil.fetchByST(SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE);
-		Date now = new Date();
-		
-		if (schedulerRecord == null) {
-			Date onTime = new Date();
-			Calendar c = Calendar.getInstance();
-			c.setTime(onTime);
-			
-			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
-			
-			Date nextTime = c.getTime();
-			c.setTime(onTime);
-			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-			Date expiredTime = c.getTime();
-			
-			schedulerRecord = SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
-					0l, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE, onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-		}
-		else {
-			if ((schedulerRecord.getOnTime() != null || (schedulerRecord.getNextTime() != null && now.getTime() < schedulerRecord.getNextTime().getTime()))
-					&& (schedulerRecord.getOnTime() == null || now.getTime() < schedulerRecord.getExpiredTime().getTime())) {
-				return;
-			}
-			else {
-				Date onTime = new Date();
-				Calendar c = Calendar.getInstance();
-				c.setTime(onTime);
-				
-				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
-				
-				Date nextTime = c.getTime();
-				c.setTime(onTime);
-				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-				Date expiredTime = c.getTime();
-	
-				SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
-						schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
-						onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-			}
-		}
+//		SchedulerRecord schedulerRecord = SchedulerRecordLocalServiceUtil.fetchByST(SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE);
+//		Date now = new Date();
+//		
+//		if (schedulerRecord == null) {
+//			Date onTime = new Date();
+//			Calendar c = Calendar.getInstance();
+//			c.setTime(onTime);
+//			
+//			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
+//			
+//			Date nextTime = c.getTime();
+//			c.setTime(onTime);
+//			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
+//			Date expiredTime = c.getTime();
+//			
+//			schedulerRecord = SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
+//					0l, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE, onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
+//		}
+//		else {
+//			if ((schedulerRecord.getOnTime() != null || (schedulerRecord.getNextTime() != null && now.getTime() < schedulerRecord.getNextTime().getTime()))
+//					&& (schedulerRecord.getOnTime() == null || now.getTime() < schedulerRecord.getExpiredTime().getTime())) {
+//				return;
+//			}
+//			else {
+//				Date onTime = new Date();
+//				Calendar c = Calendar.getInstance();
+//				c.setTime(onTime);
+//				
+//				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
+//				
+//				Date nextTime = c.getTime();
+//				c.setTime(onTime);
+//				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
+//				Date expiredTime = c.getTime();
+//	
+//				SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
+//						schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
+//						onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
+//			}
+//		}
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
@@ -318,11 +318,11 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		}
 
-		if (schedulerRecord != null) {
-			SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
-					schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
-					null, null, null, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-		}
+//		if (schedulerRecord != null) {
+//			SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
+//					schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
+//					null, null, null, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
+//		}
 		isRunning = false;
 	}
 
