@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-//@Component(immediate = true, service = DossierStatisticEngine.class)
+@Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
@@ -147,24 +147,24 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			for (int month = 1; month <= monthCurrent; month ++) {
 				boolean flagStatistic = true;
 				if (month < monthCurrent) {
-					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
-					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
+//					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
+//							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
+//					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 						//for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
 							//boolean reporting = dossierStatistic.getReporting();
 							//if (!reporting) {
-						flagStatistic = false;
+//						flagStatistic = false;
 								//break;
 							//}
 						//}
-					}
-					if (flagStatistic) {
-						System.out.println("CAL STATISTICS START: " + System.currentTimeMillis());
-						long start = System.currentTimeMillis();
+//					}
+//					if (flagStatistic) {
+//						System.out.println("CAL STATISTICS START: " + System.currentTimeMillis());
+//						long start = System.currentTimeMillis();
 //						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 //								engineUpdateAction, serviceDomainResponse);
-						System.out.println("CAL STATISTICS END: " + System.currentTimeMillis() + ", LONG: " + (System.currentTimeMillis() - start));
-					}
+//						System.out.println("CAL STATISTICS END: " + System.currentTimeMillis() + ", LONG: " + (System.currentTimeMillis() - start));
+//					}
 				} else {
 //					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 //							engineUpdateAction, serviceDomainResponse);
@@ -295,15 +295,15 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			int lastYear = LocalDate.now().getYear() - 1;
 			boolean flagLastYear = true;
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-						.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
-				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
-					flagLastYear = false;
-				}
-				if (flagLastYear) {
+//				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
+//						.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
+//				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
+//					flagLastYear = false;
+//				}
+//				if (flagLastYear) {
 //					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 //							engineUpdateAction, serviceDomainResponse);
-				}
+//				}
 			}
 
 			/* Update summary */
@@ -321,6 +321,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		}
 
+		
 //		if (schedulerRecord != null) {
 //			SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
 //					schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
