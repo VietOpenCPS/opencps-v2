@@ -159,8 +159,11 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						//}
 					}
 					if (flagStatistic) {
+						System.out.println("CAL STATISTICS START: " + System.currentTimeMillis());
+						long start = System.currentTimeMillis();
 						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse);
+						System.out.println("CAL STATISTICS END: " + System.currentTimeMillis() + ", LONG: " + (System.currentTimeMillis() - start));
 					}
 				} else {
 					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
@@ -318,6 +321,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 
 		}
 
+		
 //		if (schedulerRecord != null) {
 //			SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
 //					schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 

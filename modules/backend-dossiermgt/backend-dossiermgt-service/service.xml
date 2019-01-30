@@ -1427,6 +1427,9 @@
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
 		</finder>
+        <finder return-type="Collection" name = "DSID">
+			<finder-column name="dossierId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"

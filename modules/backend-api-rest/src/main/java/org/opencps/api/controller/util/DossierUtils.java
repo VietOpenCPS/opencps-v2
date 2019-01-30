@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
@@ -1061,23 +1062,45 @@ public class DossierUtils {
 			
 			if (jp != null) {
 				List<EmployeeJobPos> lstEJPs = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId, jp.getJobPosId());
-				List<Employee> lstEmployees = new ArrayList<>();
+				long[] employeeIds = new long[lstEJPs.size()];
+				int countEmp = 0;
 				for (EmployeeJobPos ejp : lstEJPs) {
-					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(ejp.getEmployeeId());
-					if (employee != null) {
-						lstEmployees.add(employee);
-					}
+					employeeIds[countEmp++] = ejp.getEmployeeId();
 				}
-				
+				List<Employee> lstEmpls = EmployeeLocalServiceUtil.findByG_EMPID(groupId, employeeIds);
+				HashMap<Long, Employee> mapEmpls = new HashMap<>();
+				for (Employee e : lstEmpls) {
+					mapEmpls.put(e.getEmployeeId(), e);
+				}
+				List<Employee> lstEmployees = new ArrayList<>();
+//				for (EmployeeJobPos ejp : lstEJPs) {
+//					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(ejp.getEmployeeId());
+//					if (employee != null) {
+//						lstEmployees.add(employee);
+//					}
+//				}
+				for (EmployeeJobPos ejp : lstEJPs) {
+					if (mapEmpls.get(ejp.getEmployeeId()) != null) {
+						lstEmployees.add(mapEmpls.get(ejp.getEmployeeId()));
+					}
+				}		
+				List<DossierUser> lstDaus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+				HashMap<Long, DossierUser> mapDaus = new HashMap<>();
+				for (DossierUser du : lstDaus) {
+					mapDaus.put(du.getUserId(), du);
+				}
 				for (Employee e : lstEmployees) {
-					DossierUserPK pk = new DossierUserPK();
-					pk.setDossierId(dossier.getDossierId());
-					pk.setUserId(e.getMappingUserId());
-					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
-					if (ds == null) {
+//					DossierUserPK pk = new DossierUserPK();
+//					pk.setDossierId(dossier.getDossierId());
+//					pk.setUserId(e.getMappingUserId());
+//					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
+					if (mapDaus.get(e.getMappingUserId()) == null) {
+//					if (ds == null) {
 						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
 					}
 					else {
+						DossierUser ds = mapDaus.get(e.getMappingUserId());
+						
 						if (moderator == 1 && ds.getModerator() == 0) {
 							ds.setModerator(1);
 							DossierUserLocalServiceUtil.updateDossierUser(ds);

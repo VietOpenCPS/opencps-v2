@@ -105,6 +105,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public Employee adminProcessDelete(Long id);
 
+	public long countByG_EMPID(long groupId, long[] employeeIds);
+
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
 
@@ -226,6 +228,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchEmployeeByUuidAndGroupId(String uuid, long groupId);
+
+	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

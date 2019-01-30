@@ -118,4 +118,12 @@ public class DossierActionUserLocalServiceImpl
 		return dossierActionUserPersistence.findByDID__DAI_SC_AS(dossierId, dossierActionId, stepCode, asArr);
 	}
 
+	public List<DossierActionUser> getByDossierId(long dossierId) {
+		return dossierActionUserPersistence.findByDSID(dossierId);
+	}
+	
+	public List<DossierActionUser> getByDID(long dossierActionId) {
+		return dossierActionUserPersistence.findByDID(dossierActionId);
+	}
+	
 }

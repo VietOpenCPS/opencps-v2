@@ -11,6 +11,19 @@ create table m_jobposwork (
 	checklistCat VARCHAR(500) null
 );
 
+create table opencps_answer (
+	answerId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	questionId LONG,
+	content TEXT null,
+	publish INTEGER
+);
+
 create table opencps_applicant (
 	uuid_ VARCHAR(75) null,
 	applicantId LONG not null primary key,
@@ -147,6 +160,18 @@ create table opencps_preferences (
 	createDate DATE null,
 	modifiedDate DATE null,
 	preferences TEXT null
+);
+
+create table opencps_question (
+	questionId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	fullname VARCHAR(512) null,
+	email VARCHAR(255) null,
+	content TEXT null,
+	publish INTEGER
 );
 
 create table opencps_resourcerole (

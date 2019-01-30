@@ -77,6 +77,11 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public long countByG_EMPID(long groupId, long[] employeeIds) {
+		return _employeeLocalService.countByG_EMPID(groupId, employeeIds);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
@@ -253,6 +258,12 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	public org.opencps.usermgt.model.Employee fetchEmployeeByUuidAndGroupId(
 		String uuid, long groupId) {
 		return _employeeLocalService.fetchEmployeeByUuidAndGroupId(uuid, groupId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Employee> findByG_EMPID(
+		long groupId, long[] employeeIds) {
+		return _employeeLocalService.findByG_EMPID(groupId, employeeIds);
 	}
 
 	@Override

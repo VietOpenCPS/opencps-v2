@@ -144,11 +144,12 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long EMAIL_COLUMN_BITMASK = 2L;
-	public static final long EMPLOYEENO_COLUMN_BITMASK = 4L;
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long MAPPINGUSERID_COLUMN_BITMASK = 16L;
-	public static final long USERID_COLUMN_BITMASK = 32L;
-	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long EMPLOYEEID_COLUMN_BITMASK = 4L;
+	public static final long EMPLOYEENO_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long MAPPINGUSERID_COLUMN_BITMASK = 32L;
+	public static final long USERID_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Employee"));
 
@@ -411,7 +412,19 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 	@Override
 	public void setEmployeeId(long employeeId) {
+		_columnBitmask |= EMPLOYEEID_COLUMN_BITMASK;
+
+		if (!_setOriginalEmployeeId) {
+			_setOriginalEmployeeId = true;
+
+			_originalEmployeeId = _employeeId;
+		}
+
 		_employeeId = employeeId;
+	}
+
+	public long getOriginalEmployeeId() {
+		return _originalEmployeeId;
 	}
 
 	@Override
@@ -930,6 +943,10 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 		employeeModelImpl._originalUuid = employeeModelImpl._uuid;
 
+		employeeModelImpl._originalEmployeeId = employeeModelImpl._employeeId;
+
+		employeeModelImpl._setOriginalEmployeeId = false;
+
 		employeeModelImpl._originalCompanyId = employeeModelImpl._companyId;
 
 		employeeModelImpl._setOriginalCompanyId = false;
@@ -1295,6 +1312,8 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	private String _uuid;
 	private String _originalUuid;
 	private long _employeeId;
+	private long _originalEmployeeId;
+	private boolean _setOriginalEmployeeId;
 	private long _companyId;
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;

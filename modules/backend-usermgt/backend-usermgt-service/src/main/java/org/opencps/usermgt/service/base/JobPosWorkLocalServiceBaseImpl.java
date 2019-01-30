@@ -51,6 +51,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.usermgt.model.JobPosWork;
 import org.opencps.usermgt.service.JobPosWorkLocalService;
+import org.opencps.usermgt.service.persistence.AnswerPersistence;
 import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.persistence.EmployeeJobPosPersistence;
 import org.opencps.usermgt.service.persistence.EmployeePersistence;
@@ -59,6 +60,7 @@ import org.opencps.usermgt.service.persistence.JobPosPersistence;
 import org.opencps.usermgt.service.persistence.JobPosWorkPersistence;
 import org.opencps.usermgt.service.persistence.OfficeSitePersistence;
 import org.opencps.usermgt.service.persistence.PreferencesPersistence;
+import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
 import org.opencps.usermgt.service.persistence.UserLoginPersistence;
@@ -445,6 +447,43 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the answer local service.
+	 *
+	 * @return the answer local service
+	 */
+	public org.opencps.usermgt.service.AnswerLocalService getAnswerLocalService() {
+		return answerLocalService;
+	}
+
+	/**
+	 * Sets the answer local service.
+	 *
+	 * @param answerLocalService the answer local service
+	 */
+	public void setAnswerLocalService(
+		org.opencps.usermgt.service.AnswerLocalService answerLocalService) {
+		this.answerLocalService = answerLocalService;
+	}
+
+	/**
+	 * Returns the answer persistence.
+	 *
+	 * @return the answer persistence
+	 */
+	public AnswerPersistence getAnswerPersistence() {
+		return answerPersistence;
+	}
+
+	/**
+	 * Sets the answer persistence.
+	 *
+	 * @param answerPersistence the answer persistence
+	 */
+	public void setAnswerPersistence(AnswerPersistence answerPersistence) {
+		this.answerPersistence = answerPersistence;
+	}
+
+	/**
 	 * Returns the applicant local service.
 	 *
 	 * @return the applicant local service
@@ -744,6 +783,43 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 	public void setPreferencesPersistence(
 		PreferencesPersistence preferencesPersistence) {
 		this.preferencesPersistence = preferencesPersistence;
+	}
+
+	/**
+	 * Returns the question local service.
+	 *
+	 * @return the question local service
+	 */
+	public org.opencps.usermgt.service.QuestionLocalService getQuestionLocalService() {
+		return questionLocalService;
+	}
+
+	/**
+	 * Sets the question local service.
+	 *
+	 * @param questionLocalService the question local service
+	 */
+	public void setQuestionLocalService(
+		org.opencps.usermgt.service.QuestionLocalService questionLocalService) {
+		this.questionLocalService = questionLocalService;
+	}
+
+	/**
+	 * Returns the question persistence.
+	 *
+	 * @return the question persistence
+	 */
+	public QuestionPersistence getQuestionPersistence() {
+		return questionPersistence;
+	}
+
+	/**
+	 * Sets the question persistence.
+	 *
+	 * @param questionPersistence the question persistence
+	 */
+	public void setQuestionPersistence(QuestionPersistence questionPersistence) {
+		this.questionPersistence = questionPersistence;
 	}
 
 	/**
@@ -1139,6 +1215,10 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.usermgt.service.AnswerLocalService.class)
+	protected org.opencps.usermgt.service.AnswerLocalService answerLocalService;
+	@BeanReference(type = AnswerPersistence.class)
+	protected AnswerPersistence answerPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.ApplicantLocalService.class)
 	protected org.opencps.usermgt.service.ApplicantLocalService applicantLocalService;
 	@BeanReference(type = ApplicantPersistence.class)
@@ -1171,6 +1251,10 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.PreferencesLocalService preferencesLocalService;
 	@BeanReference(type = PreferencesPersistence.class)
 	protected PreferencesPersistence preferencesPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.QuestionLocalService.class)
+	protected org.opencps.usermgt.service.QuestionLocalService questionLocalService;
+	@BeanReference(type = QuestionPersistence.class)
+	protected QuestionPersistence questionPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.ResourceRoleLocalService.class)
 	protected org.opencps.usermgt.service.ResourceRoleLocalService resourceRoleLocalService;
 	@BeanReference(type = ResourceRolePersistence.class)

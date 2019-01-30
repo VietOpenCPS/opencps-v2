@@ -1,6 +1,22 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<model name="org.opencps.usermgt.model.Answer">
+		<field name="answerId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="questionId" type="long" />
+		<field name="content" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
+		<field name="publish" type="int" />
+	</model>
 	<model name="org.opencps.usermgt.model.Applicant">
 		<field name="uuid" type="String" />
 		<field name="applicantId" type="long" />
@@ -209,6 +225,23 @@
 		<field name="preferences" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+	</model>
+	<model name="org.opencps.usermgt.model.Question">
+		<field name="questionId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="fullname" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="email" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="content" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
+		<field name="publish" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />
