@@ -2,6 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
+	<import class="org.opencps.usermgt.model.Answer" />
 	<import class="org.opencps.usermgt.model.Applicant" />
 	<import class="org.opencps.usermgt.model.Employee" />
 	<import class="org.opencps.usermgt.model.EmployeeJobPos" />
@@ -10,12 +11,27 @@
 	<import class="org.opencps.usermgt.model.JobPosWork" />
 	<import class="org.opencps.usermgt.model.OfficeSite" />
 	<import class="org.opencps.usermgt.model.Preferences" />
+	<import class="org.opencps.usermgt.model.Question" />
 	<import class="org.opencps.usermgt.model.ResourceRole" />
 	<import class="org.opencps.usermgt.model.ResourceUser" />
 	<import class="org.opencps.usermgt.model.UserLogin" />
 	<import class="org.opencps.usermgt.model.UserTrackPath" />
 	<import class="org.opencps.usermgt.model.Visibility" />
 	<import class="org.opencps.usermgt.model.WorkingUnit" />
+	<class name="org.opencps.usermgt.model.impl.AnswerImpl" table="opencps_answer">
+		<id name="answerId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="questionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="publish" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
 	<class name="org.opencps.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
 		<id name="applicantId" type="long">
 			<generator class="assigned" />
@@ -174,6 +190,19 @@
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.usermgt.model.impl.QuestionImpl" table="opencps_question">
+		<id name="questionId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="fullname" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="publish" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ResourceRoleImpl" table="opencps_resourcerole">
 		<id name="resourceRoleId" type="long">

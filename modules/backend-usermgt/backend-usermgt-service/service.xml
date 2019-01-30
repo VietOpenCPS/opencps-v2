@@ -617,7 +617,69 @@
 
 		<column name="path" type="String" />
 		<column name="pathDate" type="Date" />
-	</entity>	
+	</entity>
+	<entity name="Question" uuid="false" local-service="true"
+		remote-service="false" table="opencps_question">
+
+		<!-- PK fields -->
+		<column name="questionId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="fullname" type="String" />
+		<column name="email" type="String" />
+		<column name="content" type="String" />		
+		<column name="publish" type="int" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+        <finder name="G_PL" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+		
+	</entity>
+	
+	<entity name="Answer" uuid="false" local-service="true"
+		remote-service="false" table="opencps_answer">
+
+		<!-- PK fields -->
+		<column name="answerId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="questionId" type="long" />
+
+		<column name="content" type="String" />		
+		<column name="publish" type="int" />
+
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+        <finder name="G_Q_PL" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="questionId"></finder-column>
+            <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+		
+	</entity>			
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

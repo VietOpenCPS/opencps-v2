@@ -68,6 +68,7 @@ import org.opencps.api.controller.impl.DossierManagementImpl;
 import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
+import org.opencps.api.controller.impl.FaqManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
@@ -198,7 +199,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new BackupDataManagementImpl());
 		
 		singletons.add(new NotificationManagementImpl());
-
+		singletons.add(new FaqManagementImpl());
+		
 		singletons.add(this);
 		
 		// add service provider

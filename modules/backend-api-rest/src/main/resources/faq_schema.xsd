@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="QuestionDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="questionId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+					
+				<xsd:element name="fullname" type="xsd:string" />
+				<xsd:element name="email" type="xsd:string" />
+				<xsd:element name="content" type="xsd:string" />
+				<xsd:element name="publish" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="QuestionModel">
+		<xsd:sequence>
+			<xsd:element name="questionId" type="xsd:long" />
+			<xsd:element name="createDate" type="xsd:string" />
+				
+			<xsd:element name="fullname" type="xsd:string" />
+			<xsd:element name="email" type="xsd:string" />
+			<xsd:element name="content" type="xsd:string" />
+			<xsd:element name="publish" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="QuestionInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fullname" type="xsd:string" />
+				<xsd:element name="email" type="xsd:string" />
+				<xsd:element name="content" type="xsd:string" />
+				<xsd:element name="publish" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="QuestionResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="QuestionModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="AnswerDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="answerId" type="xsd:long" />
+				<xsd:element name="questionId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+				<xsd:element name="modifiedDate" type="xsd:string" />
+					
+				<xsd:element name="userName" type="xsd:string" />
+				<xsd:element name="content" type="xsd:string" />
+				<xsd:element name="publish" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="AnswerModel">
+		<xsd:sequence>
+				<xsd:element name="answerId" type="xsd:long" />
+				<xsd:element name="questionId" type="xsd:long" />
+				<xsd:element name="createDate" type="xsd:string" />
+				<xsd:element name="modifiedDate" type="xsd:string" />
+					
+				<xsd:element name="userName" type="xsd:string" />
+				<xsd:element name="content" type="xsd:string" />
+				<xsd:element name="publish" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="AnswerInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="content" type="xsd:string" />
+				<xsd:element name="publish" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>		
+	
+	<xsd:element name="AnswerResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="AnswerModel" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+</xsd:schema>
+
