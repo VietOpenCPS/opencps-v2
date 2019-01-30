@@ -64,7 +64,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 			SQLQuery q = session.createSQLQuery(sql);
 
-			q.setCacheable(false);
+			q.setCacheable(true);
 			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
@@ -139,7 +139,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 			SQLQuery q = session.createSQLQuery(sql);
 
-			q.setCacheable(false);
+			q.setCacheable(true);
 			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
@@ -225,7 +225,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 			SQLQuery q = session.createSQLQuery(sql);
 
-			q.setCacheable(false);
+			q.setCacheable(true);
 			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
