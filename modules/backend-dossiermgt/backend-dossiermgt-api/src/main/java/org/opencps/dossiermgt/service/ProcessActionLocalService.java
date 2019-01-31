@@ -183,6 +183,11 @@ public interface ProcessActionLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ProcessAction fetchByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId,
 		String preStepCode, String autoEvent);
 

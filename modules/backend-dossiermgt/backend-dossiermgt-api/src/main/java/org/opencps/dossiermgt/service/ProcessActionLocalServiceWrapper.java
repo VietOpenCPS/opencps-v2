@@ -192,6 +192,14 @@ public class ProcessActionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessAction fetchByF_GID_SID_AC_PRE_POST(
+		long groupId, long serviceProcessId, String actionCode,
+		String preStepCode, String postStepCode) {
+		return _processActionLocalService.fetchByF_GID_SID_AC_PRE_POST(groupId,
+			serviceProcessId, actionCode, preStepCode, postStepCode);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AEV(
 		long serviceProcessId, String preStepCode, String autoEvent) {
 		return _processActionLocalService.fetchBySPI_PRESC_AEV(serviceProcessId,

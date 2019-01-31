@@ -267,7 +267,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		try {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 			//_log.info("SONDT SYNC PAYMENT FILE dossierAction =========== " + JSONFactoryUtil.looseSerialize(dossierAction));
-			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+//			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
 			//_log.info("SONDT SYNC PAYMENT FILE processAction =========== " + JSONFactoryUtil.looseSerialize(processAction));
 			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
 				_log.info("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
@@ -815,7 +816,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 		//_log.info("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
 //		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(dossierAction.getDossierActionId());
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+//		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
 		//_log.info("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
 		//_log.info("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
 		_log.info("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));

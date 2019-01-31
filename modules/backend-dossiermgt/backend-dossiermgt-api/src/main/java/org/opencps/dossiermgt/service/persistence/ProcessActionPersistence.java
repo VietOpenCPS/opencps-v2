@@ -1867,6 +1867,78 @@ public interface ProcessActionPersistence extends BasePersistence<ProcessAction>
 		String preStepCode);
 
 	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; and preStepCode = &#63; and postStepCode = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param actionCode the action code
+	* @param preStepCode the pre step code
+	* @param postStepCode the post step code
+	* @return the matching process action
+	* @throws NoSuchProcessActionException if a matching process action could not be found
+	*/
+	public ProcessAction findByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode) throws NoSuchProcessActionException;
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; and preStepCode = &#63; and postStepCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param actionCode the action code
+	* @param preStepCode the pre step code
+	* @param postStepCode the post step code
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public ProcessAction fetchByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode);
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; and preStepCode = &#63; and postStepCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param actionCode the action code
+	* @param preStepCode the pre step code
+	* @param postStepCode the post step code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public ProcessAction fetchByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode, boolean retrieveFromCache);
+
+	/**
+	* Removes the process action where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; and preStepCode = &#63; and postStepCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param actionCode the action code
+	* @param preStepCode the pre step code
+	* @param postStepCode the post step code
+	* @return the process action that was removed
+	*/
+	public ProcessAction removeByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode) throws NoSuchProcessActionException;
+
+	/**
+	* Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; and preStepCode = &#63; and postStepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param actionCode the action code
+	* @param preStepCode the pre step code
+	* @param postStepCode the post step code
+	* @return the number of matching process actions
+	*/
+	public int countByF_GID_SID_AC_PRE_POST(long groupId,
+		long serviceProcessId, String actionCode, String preStepCode,
+		String postStepCode);
+
+	/**
 	* Caches the process action in the entity cache if it is enabled.
 	*
 	* @param processAction the process action
