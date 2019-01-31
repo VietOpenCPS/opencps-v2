@@ -1239,6 +1239,13 @@
 			<finder-column name="serviceProcessId" />
             <finder-column name="preStepCode" />
 		</finder>
+		<finder return-type="ProcessAction" name="F_GID_SID_AC_PRE_POST" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+			<finder-column name="actionCode" />
+            <finder-column name="preStepCode" />
+            <finder-column name="postStepCode" />
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="DossierAction"

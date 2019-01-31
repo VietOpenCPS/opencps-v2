@@ -186,6 +186,14 @@ public class ProcessActionLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessAction fetchByF_GID_SID_AC_PRE_POST(
+		long groupId, long serviceProcessId, String actionCode,
+		String preStepCode, String postStepCode) {
+		return getService()
+				   .fetchByF_GID_SID_AC_PRE_POST(groupId, serviceProcessId,
+			actionCode, preStepCode, postStepCode);
+	}
+
 	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AEV(
 		long serviceProcessId, String preStepCode, String autoEvent) {
 		return getService()

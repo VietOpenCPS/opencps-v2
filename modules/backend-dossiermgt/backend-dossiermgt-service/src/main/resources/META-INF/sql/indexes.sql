@@ -161,7 +161,8 @@ create unique index IX_BA68EE42 on opencps_process_plugin (uuid_[$COLUMN_LENGTH:
 create index IX_E0EDED53 on opencps_processaction (autoEvent[$COLUMN_LENGTH:4000$]);
 create index IX_17F0C502 on opencps_processaction (groupId, actionCode[$COLUMN_LENGTH:255$], serviceProcessId);
 create index IX_84A534F9 on opencps_processaction (groupId, autoEvent[$COLUMN_LENGTH:4000$]);
-create index IX_B3115CE1 on opencps_processaction (groupId, serviceProcessId, preStepCode[$COLUMN_LENGTH:4000$]);
+create unique index IX_6689E997 on opencps_processaction (groupId, serviceProcessId, actionCode[$COLUMN_LENGTH:255$], preStepCode[$COLUMN_LENGTH:4000$], postStepCode[$COLUMN_LENGTH:4000$]);
+create unique index IX_A432E66E on opencps_processaction (groupId, serviceProcessId, preStepCode[$COLUMN_LENGTH:4000$], postStepCode[$COLUMN_LENGTH:4000$]);
 create index IX_3F5FEA35 on opencps_processaction (postStepCode[$COLUMN_LENGTH:4000$], groupId);
 create index IX_C791AD26 on opencps_processaction (preStepCode[$COLUMN_LENGTH:4000$], groupId);
 create index IX_10C9A8BD on opencps_processaction (serviceProcessId, actionCode[$COLUMN_LENGTH:255$], actionName[$COLUMN_LENGTH:500$]);
