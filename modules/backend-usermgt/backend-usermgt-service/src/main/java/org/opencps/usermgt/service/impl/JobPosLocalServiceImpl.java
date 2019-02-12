@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -570,4 +571,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		return object;
 	}
 
+	public List<JobPos> findByF_mappingRoleIds(long groupId, long[] mappingRoleIds) {
+		return jobPosPersistence.findByF_mappingRoleIds(groupId, mappingRoleIds);
+	}
 }

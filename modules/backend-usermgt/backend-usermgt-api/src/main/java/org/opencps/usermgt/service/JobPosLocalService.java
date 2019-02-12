@@ -221,6 +221,9 @@ public interface JobPosLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public JobPos fetchJobPosByUuidAndGroupId(String uuid, long groupId);
 
+	public List<JobPos> findByF_mappingRoleIds(long groupId,
+		long[] mappingRoleIds);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

@@ -216,6 +216,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="jobPosCode" />
 		</finder>
+		<finder return-type="Collection" name="F_mappingRoleIds">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="mappingRoleId" comparator="=" arrayable-operator="OR"></finder-column>
+		</finder>
 		
 	</entity>
 	
@@ -305,6 +309,10 @@
         <finder name="F_G_jobPostId" return-type="Collection">
             <finder-column name="groupId"></finder-column>
             <finder-column name="jobPostId"></finder-column>
+        </finder>
+        <finder name="F_G_jobPostIds" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="jobPostId" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
 	</entity>
 	

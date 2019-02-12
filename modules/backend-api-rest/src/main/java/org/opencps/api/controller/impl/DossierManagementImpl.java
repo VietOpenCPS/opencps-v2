@@ -2876,6 +2876,7 @@ public class DossierManagementImpl implements DossierManagement {
 					try {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
 						DossierLocalServiceUtil.rollback(dossier, previousAction);
+						DossierActionLocalServiceUtil.removeAction(dossierAction.getDossierActionId());
 					} catch (PortalException e) {
 						return BusinessExceptionImpl.processException(e);
 					}
@@ -2890,6 +2891,7 @@ public class DossierManagementImpl implements DossierManagement {
 					try {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
 						DossierLocalServiceUtil.rollback(dossier, previousAction);
+						DossierActionLocalServiceUtil.removeAction(dossierAction.getDossierActionId());
 					} catch (PortalException e) {
 						return BusinessExceptionImpl.processException(e);
 					}

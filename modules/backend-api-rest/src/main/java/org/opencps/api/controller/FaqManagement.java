@@ -65,7 +65,7 @@ public interface FaqManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@QueryParam("start") Integer start,
 			@QueryParam("end") Integer end,
-			@QueryParam("publish") int publish,
+			@QueryParam("publish") Integer publish,
 			@Context ServiceContext serviceContext);	
 	
 	@POST
@@ -96,6 +96,6 @@ public interface FaqManagement {
 			@PathParam("id") long questionId,
 			@QueryParam("start") Integer start,
 			@QueryParam("end") Integer end,
-			@QueryParam("publish") int publish,
+			@QueryParam("publish") Integer publish,
 			@Context ServiceContext serviceContext);		
 }

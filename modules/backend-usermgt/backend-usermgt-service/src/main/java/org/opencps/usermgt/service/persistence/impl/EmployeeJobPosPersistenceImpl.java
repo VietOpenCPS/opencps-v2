@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -3841,6 +3843,843 @@ public class EmployeeJobPosPersistenceImpl extends BasePersistenceImpl<EmployeeJ
 
 	private static final String _FINDER_COLUMN_F_G_JOBPOSTID_GROUPID_2 = "employeeJobPos.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_F_G_JOBPOSTID_JOBPOSTID_2 = "employeeJobPos.jobPostId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_G_JOBPOSTIDS =
+		new FinderPath(EmployeeJobPosModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeJobPosModelImpl.FINDER_CACHE_ENABLED,
+			EmployeeJobPosImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_G_jobPostIds",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS =
+		new FinderPath(EmployeeJobPosModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeJobPosModelImpl.FINDER_CACHE_ENABLED,
+			EmployeeJobPosImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_G_jobPostIds",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			EmployeeJobPosModelImpl.GROUPID_COLUMN_BITMASK |
+			EmployeeJobPosModelImpl.JOBPOSTID_COLUMN_BITMASK |
+			EmployeeJobPosModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_G_JOBPOSTIDS = new FinderPath(EmployeeJobPosModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeJobPosModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_G_jobPostIds",
+			new String[] { Long.class.getName(), Long.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_G_JOBPOSTIDS =
+		new FinderPath(EmployeeJobPosModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeJobPosModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_G_jobPostIds",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns all the employee job poses where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @return the matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long jobPostId) {
+		return findByF_G_jobPostIds(groupId, jobPostId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employee job poses where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @return the range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long jobPostId, int start, int end) {
+		return findByF_G_jobPostIds(groupId, jobPostId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employee job poses where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long jobPostId, int start, int end,
+		OrderByComparator<EmployeeJobPos> orderByComparator) {
+		return findByF_G_jobPostIds(groupId, jobPostId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employee job poses where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long jobPostId, int start, int end,
+		OrderByComparator<EmployeeJobPos> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS;
+			finderArgs = new Object[] { groupId, jobPostId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_G_JOBPOSTIDS;
+			finderArgs = new Object[] {
+					groupId, jobPostId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<EmployeeJobPos> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<EmployeeJobPos>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (EmployeeJobPos employeeJobPos : list) {
+					if ((groupId != employeeJobPos.getGroupId()) ||
+							(jobPostId != employeeJobPos.getJobPostId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_EMPLOYEEJOBPOS_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeJobPosModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(jobPostId);
+
+				if (!pagination) {
+					list = (List<EmployeeJobPos>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<EmployeeJobPos>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first employee job pos in the ordered set where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee job pos
+	 * @throws NoSuchEmployeeJobPosException if a matching employee job pos could not be found
+	 */
+	@Override
+	public EmployeeJobPos findByF_G_jobPostIds_First(long groupId,
+		long jobPostId, OrderByComparator<EmployeeJobPos> orderByComparator)
+		throws NoSuchEmployeeJobPosException {
+		EmployeeJobPos employeeJobPos = fetchByF_G_jobPostIds_First(groupId,
+				jobPostId, orderByComparator);
+
+		if (employeeJobPos != null) {
+			return employeeJobPos;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", jobPostId=");
+		msg.append(jobPostId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeJobPosException(msg.toString());
+	}
+
+	/**
+	 * Returns the first employee job pos in the ordered set where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee job pos, or <code>null</code> if a matching employee job pos could not be found
+	 */
+	@Override
+	public EmployeeJobPos fetchByF_G_jobPostIds_First(long groupId,
+		long jobPostId, OrderByComparator<EmployeeJobPos> orderByComparator) {
+		List<EmployeeJobPos> list = findByF_G_jobPostIds(groupId, jobPostId, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last employee job pos in the ordered set where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee job pos
+	 * @throws NoSuchEmployeeJobPosException if a matching employee job pos could not be found
+	 */
+	@Override
+	public EmployeeJobPos findByF_G_jobPostIds_Last(long groupId,
+		long jobPostId, OrderByComparator<EmployeeJobPos> orderByComparator)
+		throws NoSuchEmployeeJobPosException {
+		EmployeeJobPos employeeJobPos = fetchByF_G_jobPostIds_Last(groupId,
+				jobPostId, orderByComparator);
+
+		if (employeeJobPos != null) {
+			return employeeJobPos;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", jobPostId=");
+		msg.append(jobPostId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeJobPosException(msg.toString());
+	}
+
+	/**
+	 * Returns the last employee job pos in the ordered set where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee job pos, or <code>null</code> if a matching employee job pos could not be found
+	 */
+	@Override
+	public EmployeeJobPos fetchByF_G_jobPostIds_Last(long groupId,
+		long jobPostId, OrderByComparator<EmployeeJobPos> orderByComparator) {
+		int count = countByF_G_jobPostIds(groupId, jobPostId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<EmployeeJobPos> list = findByF_G_jobPostIds(groupId, jobPostId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the employee job poses before and after the current employee job pos in the ordered set where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param employeeJobPosId the primary key of the current employee job pos
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next employee job pos
+	 * @throws NoSuchEmployeeJobPosException if a employee job pos with the primary key could not be found
+	 */
+	@Override
+	public EmployeeJobPos[] findByF_G_jobPostIds_PrevAndNext(
+		long employeeJobPosId, long groupId, long jobPostId,
+		OrderByComparator<EmployeeJobPos> orderByComparator)
+		throws NoSuchEmployeeJobPosException {
+		EmployeeJobPos employeeJobPos = findByPrimaryKey(employeeJobPosId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			EmployeeJobPos[] array = new EmployeeJobPosImpl[3];
+
+			array[0] = getByF_G_jobPostIds_PrevAndNext(session, employeeJobPos,
+					groupId, jobPostId, orderByComparator, true);
+
+			array[1] = employeeJobPos;
+
+			array[2] = getByF_G_jobPostIds_PrevAndNext(session, employeeJobPos,
+					groupId, jobPostId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected EmployeeJobPos getByF_G_jobPostIds_PrevAndNext(Session session,
+		EmployeeJobPos employeeJobPos, long groupId, long jobPostId,
+		OrderByComparator<EmployeeJobPos> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_EMPLOYEEJOBPOS_WHERE);
+
+		query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(EmployeeJobPosModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(jobPostId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(employeeJobPos);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<EmployeeJobPos> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the employee job poses where groupId = &#63; and jobPostId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostIds the job post IDs
+	 * @return the matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long[] jobPostIds) {
+		return findByF_G_jobPostIds(groupId, jobPostIds, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employee job poses where groupId = &#63; and jobPostId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostIds the job post IDs
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @return the range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long[] jobPostIds, int start, int end) {
+		return findByF_G_jobPostIds(groupId, jobPostIds, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employee job poses where groupId = &#63; and jobPostId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostIds the job post IDs
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long[] jobPostIds, int start, int end,
+		OrderByComparator<EmployeeJobPos> orderByComparator) {
+		return findByF_G_jobPostIds(groupId, jobPostIds, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employee job poses where groupId = &#63; and jobPostId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeJobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @param start the lower bound of the range of employee job poses
+	 * @param end the upper bound of the range of employee job poses (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employee job poses
+	 */
+	@Override
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long[] jobPostIds, int start, int end,
+		OrderByComparator<EmployeeJobPos> orderByComparator,
+		boolean retrieveFromCache) {
+		if (jobPostIds == null) {
+			jobPostIds = new long[0];
+		}
+		else if (jobPostIds.length > 1) {
+			jobPostIds = ArrayUtil.unique(jobPostIds);
+
+			Arrays.sort(jobPostIds);
+		}
+
+		if (jobPostIds.length == 1) {
+			return findByF_G_jobPostIds(groupId, jobPostIds[0], start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { groupId, StringUtil.merge(jobPostIds) };
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(jobPostIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<EmployeeJobPos> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<EmployeeJobPos>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (EmployeeJobPos employeeJobPos : list) {
+					if ((groupId != employeeJobPos.getGroupId()) ||
+							!ArrayUtil.contains(jobPostIds,
+								employeeJobPos.getJobPostId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_EMPLOYEEJOBPOS_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2);
+
+			if (jobPostIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_7);
+
+				query.append(StringUtil.merge(jobPostIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeJobPosModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<EmployeeJobPos>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<EmployeeJobPos>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the employee job poses where groupId = &#63; and jobPostId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 */
+	@Override
+	public void removeByF_G_jobPostIds(long groupId, long jobPostId) {
+		for (EmployeeJobPos employeeJobPos : findByF_G_jobPostIds(groupId,
+				jobPostId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(employeeJobPos);
+		}
+	}
+
+	/**
+	 * Returns the number of employee job poses where groupId = &#63; and jobPostId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostId the job post ID
+	 * @return the number of matching employee job poses
+	 */
+	@Override
+	public int countByF_G_jobPostIds(long groupId, long jobPostId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_G_JOBPOSTIDS;
+
+		Object[] finderArgs = new Object[] { groupId, jobPostId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_EMPLOYEEJOBPOS_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(jobPostId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of employee job poses where groupId = &#63; and jobPostId = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param jobPostIds the job post IDs
+	 * @return the number of matching employee job poses
+	 */
+	@Override
+	public int countByF_G_jobPostIds(long groupId, long[] jobPostIds) {
+		if (jobPostIds == null) {
+			jobPostIds = new long[0];
+		}
+		else if (jobPostIds.length > 1) {
+			jobPostIds = ArrayUtil.unique(jobPostIds);
+
+			Arrays.sort(jobPostIds);
+		}
+
+		Object[] finderArgs = new Object[] { groupId, StringUtil.merge(jobPostIds) };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_G_JOBPOSTIDS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_EMPLOYEEJOBPOS_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2);
+
+			if (jobPostIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_7);
+
+				query.append(StringUtil.merge(jobPostIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_G_JOBPOSTIDS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_G_JOBPOSTIDS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_G_JOBPOSTIDS_GROUPID_2 = "employeeJobPos.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_2 = "employeeJobPos.jobPostId = ?";
+	private static final String _FINDER_COLUMN_F_G_JOBPOSTIDS_JOBPOSTID_7 = "employeeJobPos.jobPostId IN (";
 
 	public EmployeeJobPosPersistenceImpl() {
 		setModelClass(EmployeeJobPos.class);
@@ -4333,6 +5172,15 @@ public class EmployeeJobPosPersistenceImpl extends BasePersistenceImpl<EmployeeJ
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTID,
 				args);
 
+			args = new Object[] {
+					employeeJobPosModelImpl.getGroupId(),
+					employeeJobPosModelImpl.getJobPostId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_JOBPOSTIDS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -4433,6 +5281,29 @@ public class EmployeeJobPosPersistenceImpl extends BasePersistenceImpl<EmployeeJ
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_JOBPOSTID,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTID,
+					args);
+			}
+
+			if ((employeeJobPosModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						employeeJobPosModelImpl.getOriginalGroupId(),
+						employeeJobPosModelImpl.getOriginalJobPostId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_JOBPOSTIDS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
+					args);
+
+				args = new Object[] {
+						employeeJobPosModelImpl.getGroupId(),
+						employeeJobPosModelImpl.getJobPostId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_JOBPOSTIDS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_G_JOBPOSTIDS,
 					args);
 			}
 		}
