@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
@@ -1055,13 +1056,42 @@ public class DossierUtils {
 	}
 	
 	public static void createDossierUsers(long groupId, Dossier dossier, ServiceProcess process, List<ServiceProcessRole> lstProcessRoles) {
+		List<DossierUser> lstDaus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+		int count = 0;
+		long[] roleIds = new long[lstProcessRoles.size()];
+		for (ServiceProcessRole spr : lstProcessRoles) {
+			long roleId = spr.getRoleId();
+			roleIds[count++] = roleId;
+		}
+		List<JobPos> lstJobPoses = JobPosLocalServiceUtil.findByF_mappingRoleIds(groupId, roleIds);
+		Map<Long, JobPos> mapJobPoses = new HashMap<>();
+		long[] jobPosIds = new long[lstJobPoses.size()];
+		count = 0;
+		for (JobPos jp : lstJobPoses) {
+			mapJobPoses.put(jp.getJobPosId(), jp);
+			jobPosIds[count++] = jp.getJobPosId();
+		}
+		List<EmployeeJobPos> lstTemp = EmployeeJobPosLocalServiceUtil.findByF_G_jobPostIds(groupId, jobPosIds);
+		Map<Long, List<EmployeeJobPos>> mapEJPS = new HashMap<>();
+		for (EmployeeJobPos ejp : lstTemp) {
+			if (mapEJPS.get(ejp.getJobPostId()) != null) {
+				mapEJPS.get(ejp.getJobPostId()).add(ejp);
+			}
+			else {
+				List<EmployeeJobPos> lstEJPs = new ArrayList<>();
+				lstEJPs.add(ejp);
+				mapEJPS.put(ejp.getJobPostId(), lstEJPs);
+			}
+		}
 		for (ServiceProcessRole spr : lstProcessRoles) {
 			long roleId = spr.getRoleId();
 			int moderator = spr.getModerator() ? 1 : 0;
-			JobPos jp = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, roleId);
+//			JobPos jp = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, roleId);
+			JobPos jp = mapJobPoses.get(roleId);
 			
 			if (jp != null) {
-				List<EmployeeJobPos> lstEJPs = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId, jp.getJobPosId());
+//				List<EmployeeJobPos> lstEJPs = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId, jp.getJobPosId());
+				List<EmployeeJobPos> lstEJPs = mapEJPS.get(jp.getJobPosId());
 				long[] employeeIds = new long[lstEJPs.size()];
 				int countEmp = 0;
 				for (EmployeeJobPos ejp : lstEJPs) {
@@ -1084,7 +1114,6 @@ public class DossierUtils {
 						lstEmployees.add(mapEmpls.get(ejp.getEmployeeId()));
 					}
 				}		
-				List<DossierUser> lstDaus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
 				HashMap<Long, DossierUser> mapDaus = new HashMap<>();
 				for (DossierUser du : lstDaus) {
 					mapDaus.put(du.getUserId(), du);

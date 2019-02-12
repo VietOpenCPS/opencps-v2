@@ -246,6 +246,13 @@ public class JobPosLocalServiceWrapper implements JobPosLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.JobPos> findByF_mappingRoleIds(
+		long groupId, long[] mappingRoleIds) {
+		return _jobPosLocalService.findByF_mappingRoleIds(groupId,
+			mappingRoleIds);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _jobPosLocalService.getActionableDynamicQuery();
 	}

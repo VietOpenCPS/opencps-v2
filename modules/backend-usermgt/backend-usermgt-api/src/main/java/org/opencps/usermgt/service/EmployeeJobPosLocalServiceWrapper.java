@@ -259,6 +259,13 @@ public class EmployeeJobPosLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.EmployeeJobPos> findByF_G_jobPostIds(
+		long groupId, long[] jobPosIds) {
+		return _employeeJobPosLocalService.findByF_G_jobPostIds(groupId,
+			jobPosIds);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _employeeJobPosLocalService.getActionableDynamicQuery();
 	}

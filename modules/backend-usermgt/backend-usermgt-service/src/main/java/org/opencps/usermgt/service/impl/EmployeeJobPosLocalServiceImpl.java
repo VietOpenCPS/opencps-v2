@@ -655,5 +655,9 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		return object;
 	}
 
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId, long[] jobPosIds) {
+		return employeeJobPosPersistence.findByF_G_jobPostIds(groupId, jobPosIds);
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(EmployeeJobPosLocalServiceImpl.class.getName());
 }

@@ -225,6 +225,9 @@ public interface EmployeeJobPosLocalService extends BaseLocalService,
 
 	public List<EmployeeJobPos> findByF_EmployeeId(long employeeId);
 
+	public List<EmployeeJobPos> findByF_G_jobPostIds(long groupId,
+		long[] jobPosIds);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
