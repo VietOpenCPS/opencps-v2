@@ -70,6 +70,8 @@ public interface AnswerLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Answer addAnswer(Answer answer);
 
+	public int countByG_Q_PL(long groupId, long questionId, int[] publishs);
+
 	/**
 	* Creates a new answer with the primary key. Does not add the answer to the database.
 	*

@@ -70,6 +70,8 @@ public interface QuestionLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Question addQuestion(Question question);
 
+	public int countByG_PL(long groupId, int[] publishs);
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*

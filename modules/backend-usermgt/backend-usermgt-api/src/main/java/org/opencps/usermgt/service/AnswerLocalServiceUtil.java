@@ -54,6 +54,11 @@ public class AnswerLocalServiceUtil {
 		return getService().addAnswer(answer);
 	}
 
+	public static int countByG_Q_PL(long groupId, long questionId,
+		int[] publishs) {
+		return getService().countByG_Q_PL(groupId, questionId, publishs);
+	}
+
 	/**
 	* Creates a new answer with the primary key. Does not add the answer to the database.
 	*

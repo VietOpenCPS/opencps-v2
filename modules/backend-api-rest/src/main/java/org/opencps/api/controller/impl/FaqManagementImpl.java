@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -88,12 +89,20 @@ public class FaqManagementImpl implements FaqManagement {
 
 	@Override
 	public Response getQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, 
+			Integer start,
+			Integer end,
+			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			List<Question> lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0,  1 }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			if (Validator.isNull(start)) {
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
+			}
+			List<Question> lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0,  1 }, start, end);
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(lstQuestions.size());
+			result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { 0,  1 }));
+			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			for (Question q : lstQuestions) {
 				QuestionModel model = new QuestionModel();
@@ -144,13 +153,21 @@ public class FaqManagementImpl implements FaqManagement {
 
 	@Override
 	public Response getAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, long questionId, ServiceContext serviceContext) {
+			User user, long questionId, 
+			Integer start,
+			Integer end,
+			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			List<Answer> lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { 0, 1 }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			if (Validator.isNull(start)) {
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
+			}
+			List<Answer> lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { 0, 1 }, start, end);
 			AnswerResultsModel result = new AnswerResultsModel();
 			
-			result.setTotal(lstAnswers.size());
+			result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { 0, 1 }));
+			
 			List<AnswerModel> lstModels = new ArrayList<>();
 			for (Answer q : lstAnswers) {
 				AnswerModel model = new AnswerModel();

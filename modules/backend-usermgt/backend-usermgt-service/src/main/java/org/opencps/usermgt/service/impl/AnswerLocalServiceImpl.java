@@ -83,4 +83,9 @@ public class AnswerLocalServiceImpl extends AnswerLocalServiceBaseImpl {
 	public List<Answer> findByG_Q_PL(long groupId, long questionId, int[] publishs, int start, int end) {
 		return answerPersistence.findByG_Q_PL(groupId, questionId, publishs, start, end);
 	}
+	
+	public int countByG_Q_PL(long groupId, long questionId, int[] publishs) {
+		return answerPersistence.countByG_Q_PL(groupId, questionId, publishs);
+	}
+	
 }

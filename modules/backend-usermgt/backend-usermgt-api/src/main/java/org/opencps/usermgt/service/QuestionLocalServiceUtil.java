@@ -54,6 +54,10 @@ public class QuestionLocalServiceUtil {
 		return getService().addQuestion(question);
 	}
 
+	public static int countByG_PL(long groupId, int[] publishs) {
+		return getService().countByG_PL(groupId, publishs);
+	}
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*

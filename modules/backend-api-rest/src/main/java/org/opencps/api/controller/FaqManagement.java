@@ -63,6 +63,8 @@ public interface FaqManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getQuestions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
+			@QueryParam("start") Integer start,
+			@QueryParam("end") Integer end,
 			@Context ServiceContext serviceContext);	
 	
 	@POST
@@ -91,5 +93,7 @@ public interface FaqManagement {
 	public Response getAnswers(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@PathParam("id") long questionId,
+			@QueryParam("start") Integer start,
+			@QueryParam("end") Integer end,
 			@Context ServiceContext serviceContext);		
 }

@@ -44,6 +44,11 @@ public class AnswerLocalServiceWrapper implements AnswerLocalService,
 		return _answerLocalService.addAnswer(answer);
 	}
 
+	@Override
+	public int countByG_Q_PL(long groupId, long questionId, int[] publishs) {
+		return _answerLocalService.countByG_Q_PL(groupId, questionId, publishs);
+	}
+
 	/**
 	* Creates a new answer with the primary key. Does not add the answer to the database.
 	*
