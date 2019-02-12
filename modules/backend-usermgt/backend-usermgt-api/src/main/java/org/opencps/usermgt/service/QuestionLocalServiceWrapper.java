@@ -45,6 +45,11 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 		return _questionLocalService.addQuestion(question);
 	}
 
+	@Override
+	public int countByG_PL(long groupId, int[] publishs) {
+		return _questionLocalService.countByG_PL(groupId, publishs);
+	}
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*

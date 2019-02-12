@@ -72,4 +72,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	public List<Question> findByG_PL(long groupId, int[] publishs, int start, int end) {
 		return questionPersistence.findByG_PL(groupId, publishs, start, end);
 	}
+
+	public int countByG_PL(long groupId, int[] publishs) {
+		return questionPersistence.countByG_PL(groupId, publishs);
+	}
 }
