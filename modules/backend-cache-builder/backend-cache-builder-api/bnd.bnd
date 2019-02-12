@@ -1,0 +1,9 @@
+Bundle-Name: backend-cache-builder-api
+Bundle-SymbolicName: org.opencps.cache.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.opencps.cache.exception,\
+	org.opencps.cache.model,\
+	org.opencps.cache.service,\
+	org.opencps.cache.service.persistence
+-includeresource: META-INF/service.xml=../backend-cache-builder-service/service.xml
