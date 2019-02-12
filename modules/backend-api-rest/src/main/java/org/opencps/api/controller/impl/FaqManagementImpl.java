@@ -92,6 +92,7 @@ public class FaqManagementImpl implements FaqManagement {
 			User user, 
 			Integer start,
 			Integer end,
+			int publish,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -99,9 +100,9 @@ public class FaqManagementImpl implements FaqManagement {
 				start = QueryUtil.ALL_POS;
 				end = QueryUtil.ALL_POS;
 			}
-			List<Question> lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0,  1 }, start, end);
+			List<Question> lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { 0,  1 }));
+			result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { publish }));
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			for (Question q : lstQuestions) {
@@ -156,6 +157,7 @@ public class FaqManagementImpl implements FaqManagement {
 			User user, long questionId, 
 			Integer start,
 			Integer end,
+			int publish,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -163,10 +165,10 @@ public class FaqManagementImpl implements FaqManagement {
 				start = QueryUtil.ALL_POS;
 				end = QueryUtil.ALL_POS;
 			}
-			List<Answer> lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { 0, 1 }, start, end);
+			List<Answer> lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { publish }, start, end);
 			AnswerResultsModel result = new AnswerResultsModel();
 			
-			result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { 0, 1 }));
+			result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { publish }));
 			
 			List<AnswerModel> lstModels = new ArrayList<>();
 			for (Answer q : lstAnswers) {
