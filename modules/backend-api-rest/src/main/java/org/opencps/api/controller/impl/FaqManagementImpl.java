@@ -92,7 +92,7 @@ public class FaqManagementImpl implements FaqManagement {
 			User user, 
 			Integer start,
 			Integer end,
-			int publish,
+			Integer publish,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -100,9 +100,21 @@ public class FaqManagementImpl implements FaqManagement {
 				start = QueryUtil.ALL_POS;
 				end = QueryUtil.ALL_POS;
 			}
-			List<Question> lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
+			List<Question> lstQuestions = null;
+			if (publish == null) {
+				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0, 1 }, start, end);
+			}
+			else {
+				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
+			}
+			
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { publish }));
+			if (publish == null) {
+				result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { 0, 1 }));
+			}
+			else {
+				result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { publish }));
+			}
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			for (Question q : lstQuestions) {
@@ -157,7 +169,7 @@ public class FaqManagementImpl implements FaqManagement {
 			User user, long questionId, 
 			Integer start,
 			Integer end,
-			int publish,
+			Integer publish,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -165,10 +177,21 @@ public class FaqManagementImpl implements FaqManagement {
 				start = QueryUtil.ALL_POS;
 				end = QueryUtil.ALL_POS;
 			}
-			List<Answer> lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { publish }, start, end);
+			List<Answer> lstAnswers = null; 
+			if (publish == null) {
+				lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { 0, 1 }, start, end);
+			}
+			else {
+				lstAnswers = AnswerLocalServiceUtil.findByG_Q_PL(groupId, questionId, new int[] { publish }, start, end);
+			}
 			AnswerResultsModel result = new AnswerResultsModel();
 			
-			result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { publish }));
+			if (publish == null) {
+				result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { 0, 1 }));
+			}
+			else {
+				result.setTotal(AnswerLocalServiceUtil.countByG_Q_PL(groupId, questionId, new int[] { publish }));
+			}
 			
 			List<AnswerModel> lstModels = new ArrayList<>();
 			for (Answer q : lstAnswers) {
