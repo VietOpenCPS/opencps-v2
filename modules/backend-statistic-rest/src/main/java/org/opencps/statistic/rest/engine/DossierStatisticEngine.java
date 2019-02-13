@@ -136,12 +136,17 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 			sdPayload.setGroupId(site.getGroupId());
+			sdPayload.setStart(QueryUtil.ALL_POS);
+			sdPayload.setEnd(QueryUtil.ALL_POS);
 			
 			ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
 			
 			GetDossierRequest payload = new GetDossierRequest();
 			
 			payload.setGroupId(site.getGroupId());
+			payload.setStart(QueryUtil.ALL_POS);
+			payload.setEnd(QueryUtil.ALL_POS);
+			
 			int monthCurrent = LocalDate.now().getMonthValue();
 			int yearCurrent = LocalDate.now().getYear();
 			for (int month = 1; month <= monthCurrent; month ++) {
@@ -338,6 +343,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setCalculate(true);
+		payload.setStart(QueryUtil.ALL_POS);
+		payload.setEnd(QueryUtil.ALL_POS);
 		
 		GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
 		if (dossierResponse != null) {

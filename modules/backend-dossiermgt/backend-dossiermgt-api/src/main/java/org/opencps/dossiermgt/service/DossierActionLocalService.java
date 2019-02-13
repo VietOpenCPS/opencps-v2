@@ -82,10 +82,8 @@ public interface DossierActionLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction addDossierAction(DossierAction dossierAction);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction adminProcessData(JSONObject objectData);
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierAction adminProcessDelete(Long id);
 
 	public long countLucene(LinkedHashMap<String, Object> params,

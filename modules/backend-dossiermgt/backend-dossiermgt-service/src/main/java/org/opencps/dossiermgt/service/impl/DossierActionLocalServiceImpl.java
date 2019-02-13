@@ -146,19 +146,17 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			// Add DossierActionId to Dossier
 
-			// TODO add Indexer for Dossier after update DossierAction
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
 
-			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
-
-			try {
-				indexer.reindex(dossier);
-			} catch (SearchException e) {
-				// e.printStackTrace();
-				_log.error(e);
-			}
+//			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+//
+//			try {
+//				indexer.reindex(dossier);
+//			} catch (SearchException e) {
+//				_log.debug(e);
+//			}
 
 		} else {
 
@@ -225,19 +223,17 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			// Add DossierActionId to Dossier
 
-			// TODO add Indexer for Dossier after update DossierAction
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
 
-			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
-
-			try {
-				indexer.reindex(dossier);
-			} catch (SearchException e) {
-				// e.printStackTrace();
-				_log.error(e);
-			}
+//			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
+//
+//			try {
+//				indexer.reindex(dossier);
+//			} catch (SearchException e) {
+//				_log.debug(e);
+//			}
 
 		} else {
 
@@ -339,7 +335,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		// String secetKey = GetterUtil.getString(params.get("secetKey"));
 
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
@@ -374,8 +369,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			}
 		}
-		// if (!(Validator.isNotNull(secetKey) &&
-		// secetKey.contentEquals("OPENCPSV2"))) {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -384,7 +377,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// }
 
 		String dossierId = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
 
@@ -496,7 +488,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	}
 
 	// super_admin Generators
-	@Indexable(type = IndexableType.DELETE)
+//	@Indexable(type = IndexableType.DELETE)
 	public DossierAction adminProcessDelete(Long id) {
 
 		DossierAction object = dossierActionPersistence.fetchByPrimaryKey(id);
@@ -510,7 +502,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+//	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction adminProcessData(JSONObject objectData) {
 
 		DossierAction object = null;
