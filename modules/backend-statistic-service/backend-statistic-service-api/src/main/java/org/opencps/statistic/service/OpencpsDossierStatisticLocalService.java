@@ -213,6 +213,10 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		boolean reporting);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
+		long groupId, int[] month, int year, boolean reporting);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(
 		long groupId, int month, int year);
 

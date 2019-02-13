@@ -128,6 +128,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			}
 		}
 
+		Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 		for (Group site : sites) {
 			
 //			LOG.info("START getDossierStatistic(): " + site.getGroupId());
@@ -149,6 +150,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			
 			int monthCurrent = LocalDate.now().getMonthValue();
 			int yearCurrent = LocalDate.now().getYear();
+			Map<Integer, Boolean> mapFlag = new HashMap<>();
 			for (int month = 1; month <= monthCurrent; month ++) {
 				boolean flagStatistic = true;
 				if (month < monthCurrent) {
@@ -164,17 +166,28 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						//}
 					}
 					if (flagStatistic) {
-						System.out.println("CAL STATISTICS START: " + System.currentTimeMillis());
-						long start = System.currentTimeMillis();
 						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-								engineUpdateAction, serviceDomainResponse);
-						System.out.println("CAL STATISTICS END: " + System.currentTimeMillis() + ", LONG: " + (System.currentTimeMillis() - start));
+								engineUpdateAction, serviceDomainResponse, calculateData);
 					}
 				} else {
 					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-							engineUpdateAction, serviceDomainResponse);
+							engineUpdateAction, serviceDomainResponse, calculateData);
 				}
+				mapFlag.put(month, flagStatistic);
 			}
+			//Recalculate data
+			for (int month = 1; month <= monthCurrent; month ++) {
+				if (mapFlag.get(month)) {
+					engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+					if (calculateData.get(month) != null) {
+						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+						
+						statisticEngineUpdate.updateStatisticData(calculateData.get(month));
+					}
+				}
+			}			
+			
+			
 				/////////////////////////////////
 //				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
 //				
@@ -299,6 +312,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 			//TODO: Calculator again year ago
 			int lastYear = LocalDate.now().getYear() - 1;
 			boolean flagLastYear = true;
+			calculateData = new HashMap<>();
+			mapFlag = new HashMap<>();
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 				List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 						.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
@@ -307,9 +322,19 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				}
 				if (flagLastYear) {
 					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-							engineUpdateAction, serviceDomainResponse);
+							engineUpdateAction, serviceDomainResponse, calculateData);
 				}
+				mapFlag.put(lastMonth, flagLastYear);
 			}
+			StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+				if (mapFlag.get(lastMonth)) {
+					engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
+					if (calculateData.get(lastMonth) != null) {
+						statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
+					}
+				}
+			}			
 
 			/* Update summary */
 			//Delete record
@@ -336,9 +361,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
-			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse)
+			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
+			Map<Integer, Map<String, DossierStatisticData>> calculateData)
 			throws Exception {
-		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
@@ -407,9 +433,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
 					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
-					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-					
-					statisticEngineUpdate.updateStatisticData(statisticData);														
+//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//					
+//					statisticEngineUpdate.updateStatisticData(statisticData);	
+					calculateData.put(month, statisticData);
 				}
 				else {
 					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
