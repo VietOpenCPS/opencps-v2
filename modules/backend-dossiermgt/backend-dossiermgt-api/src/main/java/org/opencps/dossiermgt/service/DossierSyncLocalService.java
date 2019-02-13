@@ -215,6 +215,10 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierSync getByDID_DAD(long groupId, long dossierId,
+		long dossierActionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierSync getByDID_DAD_AC(long groupId, long dossierId,
 		long dossierActionId, String actionCode);
 

@@ -282,6 +282,13 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierSync getByDID_DAD(long groupId,
+		long dossierId, long dossierActionId) {
+		return _dossierSyncLocalService.getByDID_DAD(groupId, dossierId,
+			dossierActionId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierSync getByDID_DAD_AC(
 		long groupId, long dossierId, long dossierActionId, String actionCode) {
 		return _dossierSyncLocalService.getByDID_DAD_AC(groupId, dossierId,
