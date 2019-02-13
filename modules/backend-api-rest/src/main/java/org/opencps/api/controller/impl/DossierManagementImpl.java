@@ -2880,10 +2880,15 @@ public class DossierManagementImpl implements DossierManagement {
 					try {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
 						DossierLocalServiceUtil.rollback(dossier, previousAction);
-						DossierActionLocalServiceUtil.removeAction(dossierAction.getDossierActionId());
 					} catch (PortalException e) {
 						return BusinessExceptionImpl.processException(e);
 					}
+				}
+				
+				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(groupId, dossier.getDossierId(), dossierAction.getDossierActionId());
+				if ((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+						|| (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT)) {
+					DossierMgtUtils.processSyncRollbackDossier(dossier);					
 				}
 			}
 			else if (dossierAction != null && isAdmin) {
@@ -2895,11 +2900,16 @@ public class DossierManagementImpl implements DossierManagement {
 					try {
 						DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
 						DossierLocalServiceUtil.rollback(dossier, previousAction);
-						DossierActionLocalServiceUtil.removeAction(dossierAction.getDossierActionId());
 					} catch (PortalException e) {
 						return BusinessExceptionImpl.processException(e);
 					}
-				}				
+				}	
+				
+				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(groupId, dossier.getDossierId(), dossierAction.getDossierActionId());
+				if ((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+						|| (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT)) {
+					DossierMgtUtils.processSyncRollbackDossier(dossier);					
+				}
 			}
 			return Response.status(200).entity(null).build();			
 		}
@@ -4538,6 +4548,8 @@ public class DossierManagementImpl implements DossierManagement {
 							if (dossier.getDossierActionId() != 0) {
 								publishEvent(dossier);
 							}
+							
+							DossierMgtUtils.processSyncGotoDossier(dossier, stepCode);
 							
 							return Response.status(HttpServletResponse.SC_OK).entity(model).build();
 						}

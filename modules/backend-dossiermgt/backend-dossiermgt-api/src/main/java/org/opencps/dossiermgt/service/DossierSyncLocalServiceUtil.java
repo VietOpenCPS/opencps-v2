@@ -266,6 +266,11 @@ public class DossierSyncLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.DossierSync getByDID_DAD(
+		long groupId, long dossierId, long dossierActionId) {
+		return getService().getByDID_DAD(groupId, dossierId, dossierActionId);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierSync getByDID_DAD_AC(
 		long groupId, long dossierId, long dossierActionId, String actionCode) {
 		return getService()

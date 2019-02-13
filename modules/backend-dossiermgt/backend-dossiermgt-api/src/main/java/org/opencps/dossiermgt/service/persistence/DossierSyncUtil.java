@@ -1547,6 +1547,81 @@ public class DossierSyncUtil {
 	}
 
 	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; or throws a {@link NoSuchDossierSyncException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public static DossierSync findByG_DID_DAD(long groupId, long dossierId,
+		long dossierActionId)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierSyncException {
+		return getPersistence()
+				   .findByG_DID_DAD(groupId, dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public static DossierSync fetchByG_DID_DAD(long groupId, long dossierId,
+		long dossierActionId) {
+		return getPersistence()
+				   .fetchByG_DID_DAD(groupId, dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public static DossierSync fetchByG_DID_DAD(long groupId, long dossierId,
+		long dossierActionId, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_DID_DAD(groupId, dossierId, dossierActionId,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier sync where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the dossier sync that was removed
+	*/
+	public static DossierSync removeByG_DID_DAD(long groupId, long dossierId,
+		long dossierActionId)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierSyncException {
+		return getPersistence()
+				   .removeByG_DID_DAD(groupId, dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns the number of dossier syncs where groupId = &#63; and dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the number of matching dossier syncs
+	*/
+	public static int countByG_DID_DAD(long groupId, long dossierId,
+		long dossierActionId) {
+		return getPersistence()
+				   .countByG_DID_DAD(groupId, dossierId, dossierActionId);
+	}
+
+	/**
 	* Caches the dossier sync in the entity cache if it is enabled.
 	*
 	* @param dossierSync the dossier sync
