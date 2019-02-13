@@ -95,6 +95,18 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			buildUrlQueryParams(urlQueryParams, payload);
 		}
 		urlQueryParams.add("top", "statistic");
+		if (payload.getStart() != 0) {
+			urlQueryParams.add("start", String.valueOf(payload.getStart()));			
+		}
+		else {
+			urlQueryParams.add("start", "-1");
+		}
+		if (payload.getEnd() != 0) {
+			urlQueryParams.add("end", String.valueOf(payload.getEnd()));
+		}
+		else {
+			urlQueryParams.add("end", "-1");
+		}
 		//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
 		//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
 		//System.out.println("month: "+urlQueryParams.get("month"));
