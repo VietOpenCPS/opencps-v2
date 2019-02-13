@@ -91,12 +91,16 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 				/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
 				ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 				sdPayload.setGroupId(site.getGroupId());
+				sdPayload.setStart(QueryUtil.ALL_POS);
+				sdPayload.setEnd(QueryUtil.ALL_POS);
 				ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
 				/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
 
 				// Get dossier by groupId - START
 				GetVotingResultRequest payload = new GetVotingResultRequest();
 				payload.setGroupId(site.getGroupId());
+				payload.setStart(QueryUtil.ALL_POS);
+				payload.setEnd(QueryUtil.ALL_POS);
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
 				int yearCurrent = LocalDate.now().getYear();
@@ -140,6 +144,8 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setClassName("dossier");
+		payload.setStart(QueryUtil.ALL_POS);
+		payload.setEnd(QueryUtil.ALL_POS);
 		// Check calculate = true => month
 		payload.setCalculate(true);
 		// System.out.println("payload: "+payload);

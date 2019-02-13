@@ -248,6 +248,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
+		long groupId, int[] month, int year, boolean reporting) {
+		return _opencpsDossierStatisticLocalService.getDossierStatisticByMonthsYearAndReport(groupId,
+			month, year, reporting);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYear(
 		long groupId, int month, int year) {
 		return _opencpsDossierStatisticLocalService.getDossierStatisticByMonthYear(groupId,

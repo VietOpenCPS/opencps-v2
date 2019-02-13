@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -71,6 +73,9 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 	public void onAfterCreate(DossierAction model) throws ModelListenerException {
 
 		_log.info("START Dossier Action");
+		Indexer<DossierLog> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(DossierLog.class);
+		
 		if (true) {
 
 			ServiceContext serviceContext = new ServiceContext();
@@ -120,7 +125,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
 						} catch (Exception e) {
 							_log.debug(e);
-							//_log.error(e);
 						}
 
 						if (dossierFileId != 0) {
@@ -137,10 +141,11 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							}
 						}
 
-						DossierLogLocalServiceUtil.deleteDossierLog(log);
-
+//						DossierLogLocalServiceUtil.deleteDossierLog(log);
+						indexer.delete(log);
 					}
-
+					DossierLogLocalServiceUtil.deleteByDossierAndType(dossierId,
+							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE);
 				}
 
 				List<ProcessStep> lstProcessSteps = ProcessStepLocalServiceUtil.getBySC_SPID(model.getStepCode(), model.getServiceProcessId());
@@ -180,17 +185,13 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					ok = false;
 				}
 
-				//_log.info("content: "+content);
 				if (ok) {
-					//_log.info("START Dossier Action11111");
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
-					//_log.info("dossierLog: "+dossierLog);
 				}
 
 			} catch (SystemException | PortalException e) {
-//				_log.error(e);
 				_log.debug(e);
 			}
 		}
@@ -205,7 +206,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			serviceContext.setUserId(model.getUserId());
 
 			try {
-				//_log.info("START Dossier Action11111");
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
 						content, notificationType, payload, serviceContext);
 			} catch (SystemException | PortalException e) {

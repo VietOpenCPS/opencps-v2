@@ -238,6 +238,13 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			year, domainCode, reporting);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
+		long groupId, int[] month, int year, boolean reporting) {
+		return getService()
+				   .getDossierStatisticByMonthsYearAndReport(groupId, month,
+			year, reporting);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYear(
 		long groupId, int month, int year) {
 		return getService().getDossierStatisticByMonthYear(groupId, month, year);

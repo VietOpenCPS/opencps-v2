@@ -86,6 +86,9 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 			GetPersonRequest payload = new GetPersonRequest();
 			
 			payload.setGroupId(site.getGroupId());
+			payload.setStart(QueryUtil.ALL_POS);
+			payload.setEnd(QueryUtil.ALL_POS);
+			
 			int monthCurrent = LocalDate.now().getMonthValue();
 			int yearCurrent = LocalDate.now().getYear();
 			for (int month = 1; month <= monthCurrent; month ++) {
@@ -126,6 +129,8 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 		payload.setClassName("employee");
 		// Check calculate = true => month
 		payload.setCalculate(true);
+		payload.setStart(QueryUtil.ALL_POS);
+		payload.setEnd(QueryUtil.ALL_POS);
 		
 		GetPersonResponse personResponse = callPersonResultService.callRestService(payload);
 		if (personResponse != null) {

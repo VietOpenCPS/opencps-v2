@@ -698,4 +698,56 @@ public class DossierMgtUtils {
 		}
 	}
 
+	public static void processSyncGotoDossier(Dossier model, String stepCode) {
+		if (model.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA || Math.abs(model.getOriginality()) == DossierTerm.ORIGINALITY_LIENTHONG) {
+			long groupId = model.getGroupId();
+			String serverNo = model.getServerNo();
+			if (Validator.isNotNull(serverNo)) {
+				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+				if (sc != null) {
+					String config = sc.getConfigs();
+					if (Validator.isNotNull(config)) {
+						try {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(config);
+							if (jsonData != null) {
+								OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(jsonData);
+								if (client != null) {
+									client.gotoStep(model.getReferenceUid(), stepCode);
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+						
+					}
+				}
+			}
+		}
+	}	
+	public static void processSyncRollbackDossier(Dossier model) {
+		if (model.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA || Math.abs(model.getOriginality()) == DossierTerm.ORIGINALITY_LIENTHONG) {
+			long groupId = model.getGroupId();
+			String serverNo = model.getServerNo();
+			if (Validator.isNotNull(serverNo)) {
+				ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+				if (sc != null) {
+					String config = sc.getConfigs();
+					if (Validator.isNotNull(config)) {
+						try {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(config);
+							if (jsonData != null) {
+								OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(jsonData);
+								if (client != null) {
+									client.rollback(model.getReferenceUid());
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+						}
+						
+					}
+				}
+			}
+		}
+	}		
 }

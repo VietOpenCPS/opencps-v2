@@ -403,5 +403,10 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		return object;
 	}
 
+	public void deleteByDossierAndType(long dossierId, String type)
+			throws PortalException {
+		dossierLogPersistence.removeByDID_NTYP(type, dossierId);
+	}
+
 	public static final String CLASS_NAME = DossierLog.class.getName();
 }

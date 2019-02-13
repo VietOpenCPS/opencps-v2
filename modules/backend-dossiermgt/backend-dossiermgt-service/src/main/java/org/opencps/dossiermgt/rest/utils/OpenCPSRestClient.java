@@ -388,4 +388,34 @@ public class OpenCPSRestClient {
 
 		return result;
 	}
+	public DossierDetailModel gotoStep(String id, String stepCode) {
+		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		ServiceContext context = new ServiceContext();
+		String endPoint = DOSSIERS_BASE_PATH + "/" + id + "/goto/" + stepCode;
+		Map<String, Object> params = new HashMap<>();
+
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
+				endPoint, username, password, properties, params, context);
+			
+		result = OpenCPSConverter.convertDossierDetail(resultObj);
+
+		return result;
+	}	
+	public DossierDetailModel rollback(String id) {
+		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		ServiceContext context = new ServiceContext();
+		String endPoint = DOSSIERS_BASE_PATH + "/" + id + "/rollback";
+		Map<String, Object> params = new HashMap<>();
+		
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
+				endPoint, username, password, properties, params, context);
+			
+		result = OpenCPSConverter.convertDossierDetail(resultObj);
+
+		return result;
+	}		
 }
