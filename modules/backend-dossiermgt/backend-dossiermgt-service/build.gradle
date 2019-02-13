@@ -20,6 +20,9 @@ dependencies {
 	compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
 	compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
 
+	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
+	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-service")
+
 	testCompile group: "junit", name: "junit", version: "4.12"
 }	
 

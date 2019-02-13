@@ -2,7 +2,17 @@ dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.5.0"
 	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	// https://mvnrepository.com/artifact/commons-lang/commons-lang
+	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
+
+	// https://mvnrepository.com/artifact/redis.clients/jedis
+	//compileInclude group: 'redis.clients', name: 'jedis', version: '2.9.0'
+
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-pool2
+	//compileInclude group: 'org.apache.commons', name: 'commons-pool2', version: '2.5.0'
+	//compileInclude group: 'cglib', name: 'cglib', version: '2.2.2'
 }
 
 buildService {
