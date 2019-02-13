@@ -1365,7 +1365,7 @@ public class DossierActionsImpl implements DossierActions {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
 					// _log.info("User id: " + userId);
-					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
+//					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -1380,12 +1380,12 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					//Check if user if admin
 					User checkAU = UserLocalServiceUtil.fetchUser(userId);
-					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
+//					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
 					if (checkAU != null) {
 						List<Role> userRoles = checkAU.getRoles();
 						boolean isAdmin = false;
 						for (Role r : userRoles) {
-							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
+//							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
 							if ("Administrator".equalsIgnoreCase(r.getName())) {
 								isAdmin = true;
 								break;
@@ -1423,7 +1423,7 @@ public class DossierActionsImpl implements DossierActions {
 							autoEvent = processAction.getAutoEvent();
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
-							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
+//							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (!isAdministratorData) {
 								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 									data.put(ProcessActionTerm.ENABLE, enable);
@@ -3261,7 +3261,7 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("Part 1.1.5: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 				//Update dossier processing date
-				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, context);
+				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, serviceProcess, context);
 			}
 
 			_log.info("Part 1.2: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -3321,7 +3321,8 @@ public class DossierActionsImpl implements DossierActions {
 			}
 						
 			//Check if generate dossier document
-			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+//			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+			ActionConfig ac = actionConfig;
 //			_log.info("ac: " + ac);
 			if (ac != null) {
 				//Only create dossier document if 2 && 3
@@ -4238,6 +4239,7 @@ public class DossierActionsImpl implements DossierActions {
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
 			ActionConfig actionConfig,
 			ProcessOption option,
+			ServiceProcess serviceProcess,
 			ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
@@ -4246,10 +4248,10 @@ public class DossierActionsImpl implements DossierActions {
 		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-		ServiceProcess serviceProcess =  null;
-		
-		long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
-		serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+//		ServiceProcess serviceProcess =  null;
+//		
+//		long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
+//		serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 		
 //		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
 //				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
