@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<!-- Jedis Pool Configuration. Properties read from portal-ext.properties -->
+	<!-- 		<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"> -->
+	<!-- 			<property name="maxTotal" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.connections.max')}" /> -->
+	<!-- 			<property name="maxIdle" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.connections.maxIdle')}" /> -->
+	<!-- 			<property name="minIdle" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.connections.minIdle')}" /> -->
+	<!-- 		</bean> -->
+	<!-- Jedis Pool bean definition. Properties read from portal-ext.properties -->
+	<!-- Pass the reference the Jedis Pool configuration bean created above -->
+	<!-- 		<bean id="jedisPool" class="redis.clients.jedis.JedisPool"> -->
+	<!-- 			<constructor-arg ref="jedisPoolConfig" /> -->
+	<!-- 			<constructor-arg type="java.lang.String" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.hostname')}" /> -->
+	<!-- 			<constructor-arg type="int" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.port')}" /> -->
+	<!-- 			<constructor-arg type="int" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.connections.timeout.millis')}" /> -->
+	<!-- 			<constructor-arg type="boolean" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.redis.usessl')}" /> -->
+	<!-- 		</bean> -->
+	<!-- Create the bean for Redis Cache Manager implemenation -->
+	<!-- 		<bean id="redisCacheManager" class="org.opencps.cache.service.impl.RedisCacheManagerImpl" /> -->
+	<!-- Create the bean for Liferay Cache Manager implemenation -->
+	<!-- 		<bean id="liferayCacheManager" class="org.opencps.cache.service.impl.LiferayCacheManagerImpl" /> -->
+	<!-- Returns the Cache Manager Bean, based on configuration property -->
+	<!-- Used the CacheManagerFactoryBean's create factory method to create the bean -->
+	<!-- 		<bean id="cacheManager" class="org.opencps.cache.service.impl.CacheManagerFactoryBean" factory-method="create"> -->
+	<!-- 			<constructor-arg type="boolean" value="#{T(com.liferay.portal.kernel.util.PropsUtil).get('cache.use.redis')}" /> -->
+	<!-- 			<constructor-arg ref="liferayCacheManager" /> -->
+	<!-- 			<constructor-arg ref="redisCacheManager" /> -->
+	<!-- 		</bean> -->
+	<!-- Create the CacheLocalService bean and pass the reference to the CacheManager bean -->
+	<bean class="org.opencps.cache.service.impl.CacheLocalServiceImpl" id="org.opencps.cache.service.CacheLocalService" />
+</beans>

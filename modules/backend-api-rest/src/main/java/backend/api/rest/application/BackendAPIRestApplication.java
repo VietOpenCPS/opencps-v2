@@ -51,6 +51,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.BackupDataManagementImpl;
+import org.opencps.api.controller.impl.CacheTestManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
@@ -200,6 +201,7 @@ public class BackendAPIRestApplication extends Application {
 		
 		singletons.add(new NotificationManagementImpl());
 		singletons.add(new FaqManagementImpl());
+		singletons.add(new CacheTestManagementImpl());
 		
 		singletons.add(this);
 		

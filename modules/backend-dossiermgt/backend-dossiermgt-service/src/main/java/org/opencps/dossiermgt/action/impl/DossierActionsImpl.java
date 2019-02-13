@@ -31,10 +31,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -57,6 +59,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -3039,6 +3042,29 @@ public class DossierActionsImpl implements DossierActions {
 			
 			int actionOverdue = getActionDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 //			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
+			//
+			
+			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), "SLDTBXH");
+			
+			_log.info("START_ Get list process option1111: "+new Date());
+			Date dateStart122 = new Date();
+			Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
+			List<ProcessOption> lstOptions122 = null;
+			if (serList22 == null) {
+				lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+				if (lstOptions122 != null) {
+					_log.info("START_ Serlist null");
+					CacheLocalServiceUtil.addToCache("ProcessOption",
+							groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				lstOptions122 = (List<ProcessOption>) serList22;
+			}
+			Date dateEnd122 = new Date();
+			_log.info("START_ Get list process option: "+dateEnd122);
+			_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
+			_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
 			
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
@@ -3064,7 +3090,30 @@ public class DossierActionsImpl implements DossierActions {
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
 				
 				if (serviceConfig != null) {
+					_log.info("START_ Get list process option: "+new Date());
+					Date dateStart = new Date();
 					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+					Date dateEnd = new Date();
+					_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
+					_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
+					//
+					_log.info("START_ Get list process option1111: "+new Date());
+					Date dateStart1 = new Date();
+					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
+					List<ProcessOption> lstOptions1 = null;
+					if (serList == null) {
+						lstOptions1 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+					} else {
+						lstOptions1 = (List<ProcessOption>) serList;
+						if (lstOptions1 != null) {
+							CacheLocalServiceUtil.addToCache("ProcessOption",
+									groupId + "_" + serviceConfig.getServiceConfigId(), (Serializable) lstOptions1,
+									(int) Time.MINUTE * 15);
+						}
+					}
+					Date dateEnd1 = new Date();
+					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
+					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions1));
 					ProcessOption foundOption = null;
 					if (createDossiers.contains(StringPool.POUND)) {
 						String[] splitCDs = createDossiers.split(StringPool.POUND);
@@ -3197,6 +3246,19 @@ public class DossierActionsImpl implements DossierActions {
 			else {
 				
 			}
+			
+			if (serviceConfig22 != null) {
+				_log.info("START_ Get list process option: "+new Date());
+				Date dateStart22 = new Date();
+				List<ProcessOption> lstOptions22 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+				Date dateEnd22 = new Date();
+				_log.info("START_ Get list process option: "+dateEnd22);
+				_log.info("END_ Get list process option: "+ (dateEnd22.getTime() - dateStart22.getTime()));
+				_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions22));
+				//
+			}
+			
+			
 			if (curStep != null) {
 				String curStatus = curStep.getDossierStatus();
 				String curSubStatus = curStep.getDossierSubStatus();
