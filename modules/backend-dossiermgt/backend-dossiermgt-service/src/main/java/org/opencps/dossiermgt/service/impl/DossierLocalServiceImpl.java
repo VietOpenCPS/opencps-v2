@@ -1367,7 +1367,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossier;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+//	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateStatus(long groupId, long id, String refId, String status, String statusText, String subStatus,
 			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
 			throws PortalException {

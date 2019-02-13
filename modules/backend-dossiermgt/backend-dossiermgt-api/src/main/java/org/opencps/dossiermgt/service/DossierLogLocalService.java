@@ -104,6 +104,9 @@ public interface DossierLogLocalService extends BaseLocalService,
 	@Transactional(enabled = false)
 	public DossierLog createDossierLog(long dossierLogId);
 
+	public void deleteByDossierAndType(long dossierId, String type)
+		throws PortalException;
+
 	/**
 	* Deletes the dossier log from the database. Also notifies the appropriate model listeners.
 	*

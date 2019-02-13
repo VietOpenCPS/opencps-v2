@@ -94,6 +94,11 @@ public class DossierLogLocalServiceUtil {
 		return getService().createDossierLog(dossierLogId);
 	}
 
+	public static void deleteByDossierAndType(long dossierId, String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteByDossierAndType(dossierId, type);
+	}
+
 	/**
 	* Deletes the dossier log from the database. Also notifies the appropriate model listeners.
 	*

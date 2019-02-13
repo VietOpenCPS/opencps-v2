@@ -576,7 +576,6 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier updateReleaseDate(long groupId, long id, String refId,
 		Date date, ServiceContext context) throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateStatus(long groupId, long id, String refId,
 		String status, String statusText, String subStatus,
 		String subStatusText, String lockState, String stepInstruction,

@@ -87,6 +87,12 @@ public class DossierLogLocalServiceWrapper implements DossierLogLocalService,
 		return _dossierLogLocalService.createDossierLog(dossierLogId);
 	}
 
+	@Override
+	public void deleteByDossierAndType(long dossierId, String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_dossierLogLocalService.deleteByDossierAndType(dossierId, type);
+	}
+
 	/**
 	* Deletes the dossier log from the database. Also notifies the appropriate model listeners.
 	*

@@ -184,8 +184,6 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 
 			String content = "";
 
-			// JSONArray payloads = JSONFactoryUtil.createJSONArray();
-
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
 			payload.put("jobPosName", jobPosName);
@@ -212,7 +210,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 					model.getApplicantName(), content, "DOSSIER_CHANGE", payload.toString(), serviceContext);
 
 		} catch (SystemException | PortalException e) {
-			_log.error(e);
+			_log.debug(e);
 		}		
 	}
 
