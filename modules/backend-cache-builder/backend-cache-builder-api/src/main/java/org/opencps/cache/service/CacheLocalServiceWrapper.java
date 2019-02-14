@@ -51,8 +51,7 @@ public class CacheLocalServiceWrapper implements CacheLocalService,
 
 	@Override
 	public java.io.Serializable getFromCache(String cacheName,
-		java.io.Serializable key)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		java.io.Serializable key) {
 		return _cacheLocalService.getFromCache(cacheName, key);
 	}
 
