@@ -122,6 +122,7 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
@@ -3044,7 +3045,7 @@ public class DossierActionsImpl implements DossierActions {
 //			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			//
 			
-			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), "SLDTBXH");
+			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
 			if (serviceConfig22 != null) {
 				_log.info("START_ Get list process option1111: "+new Date());
 				Date dateStart122 = new Date();
@@ -6796,5 +6797,70 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	@Override
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId) {
 		return ProcessOptionLocalServiceUtil.fetchBySP_DT(serviceProcessId, dossierTemplateId);
+	}
+
+	@Override
+	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, int originality, ServiceInfo service,
+			ServiceProcess serviceProcess, ProcessOption processOption, ServiceContext context) throws PortalException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		Date appIdDate = null;
+
+		try {
+			appIdDate = sdf.parse(applicantIdDate);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			_log.debug(e);
+			//_log.error(e);
+		}
+
+		Dossier dossier = null;
+
+		try {
+
+			//Process
+			dossier = DossierLocalServiceUtil.initDossier(groupId, dossierId, referenceUid, counter, serviceCode,
+					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
+					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
+					postalCityName, postalTelNo, online, notification, applicantNote, originality, 
+					service, serviceProcess, processOption,
+					context);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return dossier;		
+	}
+
+	@Override
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, Long sampleCount, String dossierName, ServiceContext serviceContext) {
+		try {
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+					delegateWardCode, sampleCount, dossierName, serviceContext);
+
+		} catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			return null;
+		}		
 	}	
 }
