@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -558,26 +559,32 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		
 	}
 
+	@ThreadLocalCachable
 	public List<DossierAction> getByDID_U_SC(long dossierId, long userId, String stepCode) {
 		return dossierActionPersistence.findByDID_U_SC(dossierId, userId, stepCode);
 	}	
 	
+	@ThreadLocalCachable
 	public List<DossierAction> getByDID_SC_NOT_DAI(long dossierId, String stepCode, long dossierActionId) {
 		return dossierActionPersistence.findByDID_SC_NOT_DAI(dossierId, stepCode, dossierActionId);
 	}
 
+	@ThreadLocalCachable
 	public List<DossierAction> getByDID_FSC_NOT_DAI(long dossierId, String stepCode, long dossierActionId) {
 		return dossierActionPersistence.findByDID_FSC_NOT_DAI(dossierId, stepCode, dossierActionId);
 	}
 	
+	@ThreadLocalCachable
 	public List<DossierAction> getByDID_U_FSC(long dossierId, long userId, String stepCode) {
 		return dossierActionPersistence.findByDID_U_FSC(dossierId, userId, stepCode);
 	}	
 	
+	@ThreadLocalCachable
 	public List<DossierAction> findByG_DID(long groupId, long dossierId) {
 		return dossierActionPersistence.findByG_DID(groupId, dossierId);
 	}
 	
+	@ThreadLocalCachable
 	public List<DossierAction> findOverdue(Date now) {
 		return dossierActionPersistence.findByDD(now, 0l);
 	}

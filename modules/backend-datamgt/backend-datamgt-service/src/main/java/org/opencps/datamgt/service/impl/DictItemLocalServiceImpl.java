@@ -17,6 +17,7 @@ package org.opencps.datamgt.service.impl;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -782,6 +783,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	}
 
+	@ThreadLocalCachable
 	public DictItem fetchByF_dictItemCode(String itemCode, long dictCollectionId, long groupId) {
 
 		return dictItemPersistence.fetchByIC_DCI(itemCode, dictCollectionId);

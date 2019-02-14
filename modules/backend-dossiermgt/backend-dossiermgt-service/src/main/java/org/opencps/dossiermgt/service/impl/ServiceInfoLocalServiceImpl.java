@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -112,6 +113,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return serviceInfo;
 	}
 
+	@ThreadLocalCachable
 	public ServiceInfo getByCode(long groupId, String serviceCode) throws PortalException {
 		return serviceInfoPersistence.fetchBySC_GI(serviceCode, groupId);
 	}
