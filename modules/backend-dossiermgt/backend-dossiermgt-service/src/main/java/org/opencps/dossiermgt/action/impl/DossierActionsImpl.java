@@ -84,6 +84,7 @@ import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
@@ -1607,10 +1608,10 @@ public class DossierActionsImpl implements DossierActions {
 							if (stepCode.startsWith("!")) {
 								int index = stepCode.indexOf("!");
 								String stepCodePunc = stepCode.substring(index + 1);
-								lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep));
+								lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep, processStepRoleList));
 							}
 							else {
-								lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, serviceProcessId, processStep));								
+								lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, serviceProcessId, processStep, processStepRoleList));								
 							}
 						}
 					}
@@ -3373,7 +3374,9 @@ public class DossierActionsImpl implements DossierActions {
 						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction, userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
-						createNotificationSMS(userId, groupId, dossier, assignedUsersArray, dossierAction, context);						
+						if (OpenCPSConfigUtil.isNotificationEnable()) {
+							createNotificationSMS(userId, groupId, dossier, assignedUsersArray, dossierAction, context);	
+						}
 					} else {
 //						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
@@ -3480,7 +3483,9 @@ public class DossierActionsImpl implements DossierActions {
 		_log.info("Part 2: " + (System.currentTimeMillis() - startTime) + " ms");
 
 		//Create notification
-		createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, context);
+		if (OpenCPSConfigUtil.isNotificationEnable()) {
+			createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, context);
+		}
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
@@ -3511,9 +3516,9 @@ public class DossierActionsImpl implements DossierActions {
 			//Update payload
 			
 			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
+			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
 				if (dossier.getOriginDossierId() == 0) {
-					List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
 					if (lstFiles.size() > 0) {
 						for (DossierFile df : lstFiles) {
 							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
@@ -3523,19 +3528,20 @@ public class DossierActionsImpl implements DossierActions {
 					}					
 				}
 				else {
-					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
-					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+//					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
+//					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 					
-					if (serviceConfig != null) {
-						if (lstOptions.size() > 0) {
-							ProcessOption processOption = lstOptions.get(0);
+//					if (serviceConfig != null) {
+//						if (lstOptions.size() > 0) {
+//							ProcessOption processOption = lstOptions.get(0);
+							ProcessOption processOption = option;
 							
 							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
 							List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
 							
-							List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
-							if (lstFiles.size() > 0) {
-								for (DossierFile df : lstFiles) {
+							List<DossierFile> lstOriginFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
+							if (lstOriginFiles.size() > 0) {
+								for (DossierFile df : lstOriginFiles) {
 									boolean flagHslt = false;
 									for (DossierPart dp : lstParts) {
 										if (dp.getPartNo().equals(df.getDossierPartNo())) {
@@ -3550,8 +3556,8 @@ public class DossierActionsImpl implements DossierActions {
 									}
 								}
 							}										
-						}
-					}
+//						}
+//					}
 					
 				}
 			}
@@ -3564,7 +3570,8 @@ public class DossierActionsImpl implements DossierActions {
 //			_log.info("Payload: " + payloadObject.toJSONString());
 			
 			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
+//				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
+				List<DossierFile> lsDossierFile = lstFiles;
 				dossierFilesArr = JSONFactoryUtil.createJSONArray();
 
 				// check return file
@@ -3761,7 +3768,9 @@ public class DossierActionsImpl implements DossierActions {
 			publishEvent(dossier, context);			
 		}
 		
-		createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+		if (OpenCPSConfigUtil.isNotificationEnable()) {
+			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+		}
 		
 		return dossierAction;
 	}
@@ -6498,13 +6507,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return lstUser;
 	}
 
-	private List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep) {
+	private List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep, 
+			List<ProcessStepRole> processStepRoleList) {
 		List<User> lstUser = null;
 		// Check roles		
 		lstUser = new ArrayList<User>();
 
-		List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-				.findByP_S_ID(processStep.getProcessStepId());
+//		List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+//				.findByP_S_ID(processStep.getProcessStepId());
 		for (ProcessStepRole role : processStepRoleList) {
 			List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 			for (User u : lstUsers) {
@@ -6524,14 +6534,15 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return lstUser;
 	}
 	
-	private List<User> processRoleAsStepDonedListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep) {
+	private List<User> processRoleAsStepDonedListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep,
+			List<ProcessStepRole> processStepRoleList) {
 		List<User> lstUser = null;
 		// Check roles
 		List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCode);
 		
 		lstUser = new ArrayList<User>();
-		List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-				.findByP_S_ID(processStep.getProcessStepId());
+//		List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+//				.findByP_S_ID(processStep.getProcessStepId());
 		
 		for (ProcessStepRole role : processStepRoleList) {
 			List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
@@ -6772,10 +6783,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					if (stepCode.startsWith("!")) {
 						int index = stepCode.indexOf("!");
 						String stepCodePunc = stepCode.substring(index + 1);
-						lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, ps.getServiceProcessId(), ps));
+						lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, ps.getServiceProcessId(), ps, processStepRoleList));
 					}
 					else {
-						lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, ps.getServiceProcessId(), ps));								
+						lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, ps.getServiceProcessId(), ps, processStepRoleList));								
 					}
 				}
 			}
