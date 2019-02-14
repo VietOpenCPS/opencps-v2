@@ -9,6 +9,8 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
 
 import backend.auth.api.exception.ErrorMsgModel;
 
@@ -152,4 +154,17 @@ public interface DossierActions {
 	
 	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps);
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);
+	
+	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			boolean online, boolean notification, String applicantNote, int originality, 
+			ServiceInfo service,
+			ServiceProcess serviceProcess,
+			ProcessOption processOption,
+			ServiceContext context) throws PortalException;
+	
 }
