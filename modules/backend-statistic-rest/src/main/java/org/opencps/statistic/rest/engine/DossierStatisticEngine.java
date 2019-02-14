@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-//@Component(immediate = true, service = DossierStatisticEngine.class)
+@Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
