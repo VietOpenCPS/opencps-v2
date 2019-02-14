@@ -141,6 +141,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.impl.DossierMarkImpl;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -1002,10 +1003,11 @@ public class DossierManagementImpl implements DossierManagement {
 //			String serviceName = getServiceName(input.getServiceCode(), input.getDossierTemplateNo(), groupId);
 
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
-
-			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ADMINISTRATIVE_REGION, groupId);
+			
+			String cityName = getDictItemName(groupId, dc, input.getCityCode());
+			String districtName = getDictItemName(groupId, dc, input.getDistrictCode());
+			String wardName = getDictItemName(groupId, dc, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
 			_log.info("===ADD DOSSIER CITY NAME:" + cityName);
 			String password = StringPool.BLANK;
@@ -1200,12 +1202,26 @@ public class DossierManagementImpl implements DossierManagement {
 //					_log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
 						_log.info("partList.size(): "+partList.size());
+						_log.info("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
+						int count = 0;
 						for (DossierPart dossierPart : partList) {
 							int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
-							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
-									fileMark, 0, StringPool.BLANK, serviceContext);
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							model.setDossierId(dossier.getDossierId());
+							model.setDossierPartNo(dossierPartNo);
+							model.setFileCheck(0);
+							model.setFileMark(fileMark);
+							model.setFileComment(StringPool.BLANK);
+							marks[count++] = model;
+//							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
+//									fileMark, 0, StringPool.BLANK, serviceContext);
 						}
+						
+						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, serviceContext);
+						
+						_log.info("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
 					}
 				}
 			}
@@ -2000,6 +2016,21 @@ public class DossierManagementImpl implements DossierManagement {
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
+
+	protected String getDictItemName(long groupId, DictCollection dc, String itemCode) {
 
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
