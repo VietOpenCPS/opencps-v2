@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
-@Component(immediate = true, service = VotingStatisticScheduler.class)
+//@Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);

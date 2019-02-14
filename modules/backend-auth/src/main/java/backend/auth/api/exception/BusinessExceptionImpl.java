@@ -16,7 +16,7 @@ public class BusinessExceptionImpl {
 
 	public static Response processException(Exception e) {
 //		_log.debug(e);
-		_log.error(e);
+//		_log.error(e);
 
 		ErrorMsgModel error = new ErrorMsgModel();
 
