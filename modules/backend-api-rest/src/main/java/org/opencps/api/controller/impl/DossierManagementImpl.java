@@ -1212,9 +1212,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 			//Create dossier user
 			List<DossierUser> lstDus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			if (lstDus.size() == 0) {
 				DossierUserActions duActions = new DossierUserActionsImpl();
-				duActions.initDossierUser(groupId, dossier);				
+//				duActions.initDossierUser(groupId, dossier);				
+				duActions.initDossierUser(groupId, dossier, process, lstProcessRoles);				
 			}
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
@@ -1267,7 +1269,6 @@ public class DossierManagementImpl implements DossierManagement {
 
 			_log.info("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
-			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -1507,17 +1508,17 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
-					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
+					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), serviceContext);
 			if (Validator.isNotNull(input.getBriefNote())) {
 				dossier.setBriefNote(input.getBriefNote());
 			}
 //			if (Validator.isNotNull(input.getServiceName())) {
 //				dossier.setServiceName(input.getServiceName());
 //			}
-			if (Validator.isNotNull(input.getDossierName())) {
-				dossier.setDossierName(input.getDossierName());
-			}
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//			if (Validator.isNotNull(input.getDossierName())) {
+//				dossier.setDossierName(input.getDossierName());
+//			}
+//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 

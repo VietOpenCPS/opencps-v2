@@ -552,6 +552,32 @@ public class DossierLocalServiceUtil {
 			sampleCount, serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
+		long groupId, long id, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, Integer viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName, String postalTelNo,
+		String applicantNote, boolean isSameAsApplicant, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
+		String dossierName,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .initUpdateDossier(groupId, id, applicantName,
+			applicantIdType, applicantIdNo, applicantIdDate, address, cityCode,
+			cityName, districtCode, districtName, wardCode, wardName,
+			contactName, contactTelNo, contactEmail, dossierTemplateNo,
+			viaPostal, postalAddress, postalCityCode, postalCityName,
+			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
+			delegateCityCode, delegateDistrictCode, delegateWardCode,
+			sampleCount, dossierName, serviceContext);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier postDossier(
 		long groupId, long dossierId, String referenceUid, int counter,
 		String serviceCode, String serviceName, String govAgencyCode,
