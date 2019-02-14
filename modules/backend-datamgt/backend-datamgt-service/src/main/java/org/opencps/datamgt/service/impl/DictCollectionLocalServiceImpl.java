@@ -17,6 +17,7 @@ package org.opencps.datamgt.service.impl;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -314,6 +315,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	 * @param groupId
 	 * @return DictCollection
 	 */
+	@ThreadLocalCachable
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
 		if ("ADMINISTRATIVE_REGION".toLowerCase().equalsIgnoreCase(collectionCode)) {
