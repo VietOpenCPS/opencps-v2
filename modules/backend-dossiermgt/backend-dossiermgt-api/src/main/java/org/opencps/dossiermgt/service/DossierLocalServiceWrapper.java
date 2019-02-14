@@ -940,6 +940,17 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier updateStatus(
+		org.opencps.dossiermgt.model.Dossier dossier, String status,
+		String statusText, String subStatus, String subStatusText,
+		String lockState, String stepInstruction,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.updateStatus(dossier, status, statusText,
+			subStatus, subStatusText, lockState, stepInstruction, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier updateStatus(long groupId,
 		long id, String refId, String status, String statusText,
 		String subStatus, String subStatusText, String lockState,

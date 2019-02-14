@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.dossiermgt.input.model.DossierMarkBatchModel;
 import org.opencps.dossiermgt.model.DossierMark;
@@ -171,7 +172,7 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 		return object;
 	}
 	
-	public void addBatchDossierMark(long groupId, DossierMarkBatchModel[] marks, ServiceContext serviceContext)
+	public void addBatchDossierMark(long groupId, DossierMarkBatchModel[] marks, Map<String, DossierMark> mapMarks, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
@@ -180,8 +181,9 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 		User userAction = userLocalService.getUser(userId);
 		for (int i = 0; i < marks.length; i++) {
-			DossierMark object = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, marks[i].getDossierId(),
-					marks[i].getDossierPartNo());
+//			DossierMark object = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, marks[i].getDossierId(),
+//					marks[i].getDossierPartNo());
+			DossierMark object = mapMarks.get(marks[i].getDossierPartNo());
 			if (object != null) {
 				// Add audit fields
 				object.setModifiedDate(now);

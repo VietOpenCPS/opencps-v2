@@ -4676,6 +4676,34 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByG(groupId, start, end);
 	}
 
+	public Dossier updateStatus(Dossier dossier, String status, String statusText, String subStatus,
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
+
+		Date now = new Date();
+
+		dossier.setModifiedDate(now);
+
+		dossier.setDossierStatus(status);
+		dossier.setDossierStatusText(statusText);
+		dossier.setDossierSubStatus(subStatus);
+		dossier.setDossierSubStatusText(subStatusText);
+		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+			dossier.setReleaseDate(now);
+		}
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+			dossier.setFinishDate(now);
+		}
+
+		dossierPersistence.update(dossier);
+
+		return dossier;
+
+	}	
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

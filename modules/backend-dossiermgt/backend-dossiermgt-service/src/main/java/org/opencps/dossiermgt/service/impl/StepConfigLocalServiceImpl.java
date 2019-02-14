@@ -20,14 +20,19 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.base.StepConfigLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * The implementation of the step config local service.
@@ -148,6 +153,18 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	}
 
 	public StepConfig getByCode(long groupId, String stepCode) {
+		Serializable stepConfigCache = CacheLocalServiceUtil.getFromCache("StepConfig", groupId +"_"+ stepCode);
+		StepConfig stepConfig = null;
+		if (stepConfigCache == null) {
+			stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+			if (stepConfig != null) {
+				CacheLocalServiceUtil.addToCache("StepConfig",
+						groupId +"_"+ stepCode, (Serializable) stepConfig,
+						(int) Time.MINUTE * 15);
+			}
+		} else {
+			stepConfig = (StepConfig) stepConfigCache;
+		}
 
 		return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 

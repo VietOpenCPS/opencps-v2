@@ -2735,7 +2735,19 @@ public class DossierActionsImpl implements DossierActions {
 		User user = UserLocalServiceUtil.fetchUser(userId);
 		Employee employee = null;
 		if (user != null) {
-			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+			Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ userId);
+			if (employeeCache == null) {
+				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null) {
+					CacheLocalServiceUtil.addToCache("Employee",
+							groupId +"_"+ userId, (Serializable) employee,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				employee = (Employee) employeeCache;
+			}
+
+//			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 		}		
 		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
@@ -3047,14 +3059,14 @@ public class DossierActionsImpl implements DossierActions {
 			
 			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
 			if (serviceConfig22 != null) {
-				_log.info("START_ Get list process option1111: "+new Date());
+//				_log.info("START_ Get list process option1111: "+new Date());
 				Date dateStart122 = new Date();
 				Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
 				List<ProcessOption> lstOptions122 = null;
 				if (serList22 == null) {
 					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
 					if (lstOptions122 != null) {
-						_log.info("START_ Serlist null");
+//						_log.info("START_ Serlist null");
 						CacheLocalServiceUtil.addToCache("ProcessOption",
 								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
 								(int) Time.MINUTE * 15);
@@ -3063,9 +3075,9 @@ public class DossierActionsImpl implements DossierActions {
 					lstOptions122 = (List<ProcessOption>) serList22;
 				}
 				Date dateEnd122 = new Date();
-				_log.info("START_ Get list process option: "+dateEnd122);
-				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
-				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
+//				_log.info("START_ Get list process option: "+dateEnd122);
+//				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
+//				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
 			}
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
@@ -3289,6 +3301,8 @@ public class DossierActionsImpl implements DossierActions {
 						null, 0l, payload, stepInstruction, 
 						state, eventStatus,
 						context);
+				dossier.setDossierActionId(dossierAction.getDossierActionId());
+				
 				_log.info("Part 1.1.2: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 				//
@@ -3301,24 +3315,41 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				//Update previous action nextActionId
 				_log.info("Part 1.1.3: " + (System.currentTimeMillis() - startTime) + " ms");
+				Date now = new Date();
 				if (previousAction != null && dossierAction != null) {
-					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
-					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+//					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+//					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+					previousAction.setNextActionId(dossierAction.getDossierActionId());
+					previousAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
+					previousAction.setModifiedDate(now);
+					previousAction = DossierActionLocalServiceUtil.updateDossierAction(previousAction);
 				}
 				
 				if (actionConfig != null) {
 					if (actionConfig.getRollbackable()) {
 						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
 					}
+					else {
+						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
+					}
 				}
 				else {
 					if (proAction.isRollbackable()) {
 						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
 					}
+					else {
+						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
+					}
 				}
 				_log.info("Part 1.1.4: " + (System.currentTimeMillis() - startTime) + " ms");
 				//update dossierStatus
-				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
+//				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
+//						jsonDataStatusText != null ? jsonDataStatusText.getString(curStatus) : StringPool.BLANK, curSubStatus,
+//						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
+//				dossier = DossierLocalServiceUtil.updateStatus(dossier, curStatus,
+//						jsonDataStatusText != null ? jsonDataStatusText.getString(curStatus) : StringPool.BLANK, curSubStatus,
+//						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
+				updateStatus(dossier, curStatus,
 						jsonDataStatusText != null ? jsonDataStatusText.getString(curStatus) : StringPool.BLANK, curSubStatus,
 						jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 				_log.info("Part 1.1.5: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -3342,7 +3373,7 @@ public class DossierActionsImpl implements DossierActions {
 						dossierActionUser.assignDossierActionUser(dossier, allowAssignUser,
 							dossierAction, userId, groupId, proAction.getAssignUserId(),
 							assignedUsersArray);
-						createNotificationSMS(userId, groupId, dossier, assignedUsersArray, context);						
+						createNotificationSMS(userId, groupId, dossier, assignedUsersArray, dossierAction, context);						
 					} else {
 //						_log.info("PROCESS allowAssignUser");
 						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
@@ -3362,6 +3393,7 @@ public class DossierActionsImpl implements DossierActions {
 								proAction.getAssignUserId());						
 					}
 				}
+				_log.info("Part 1.2.1: " + (System.currentTimeMillis() - startTime) + " ms");
 
 				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 				
@@ -3448,13 +3480,16 @@ public class DossierActionsImpl implements DossierActions {
 		_log.info("Part 2: " + (System.currentTimeMillis() - startTime) + " ms");
 
 		//Create notification
-		createNotificationQueue(userId, groupId, dossier, actionConfig, context);
+		createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, context);
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
+		_log.info("Part 2.1: " + (System.currentTimeMillis() - startTime) + " ms");
 		
 		//Create subcription
-		createSubcription(userId, groupId, dossier, actionConfig, context);
+//		createSubcription(userId, groupId, dossier, actionConfig, context);
+		createSubcription(userId, groupId, dossier, actionConfig, dossierAction, context);
+		_log.info("Part 2.2: " + (System.currentTimeMillis() - startTime) + " ms");
 		
 		if (syncType > 0) {
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
@@ -3962,9 +3997,9 @@ public class DossierActionsImpl implements DossierActions {
 		return jsonData;
 	}
 	
-	private void createNotificationQueue(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
-		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		User u = UserLocalServiceUtil.fetchUser(userId);
+	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) {
+//		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+//		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {		
         	payloadObj.put(
@@ -3983,7 +4018,20 @@ public class DossierActionsImpl implements DossierActions {
         }
 
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
-			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+//			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
+			Notificationtemplate notiTemplate = null;
+			if (notiCache == null) {
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+				if (notiTemplate != null) {
+					CacheLocalServiceUtil.addToCache("NotificationTemplate",
+							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				notiTemplate = (Notificationtemplate) notiCache;
+			}
+
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
@@ -4008,12 +4056,12 @@ public class DossierActionsImpl implements DossierActions {
 							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
 							
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
-									userId, groupId, 
+									user.getUserId(), groupId, 
 									actionConfig.getNotificationType(), 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
 									payloadObj.toJSONString(), 
-									u.getFullName(), 
+									user.getFullName(), 
 									dossier.getApplicantName(), 
 									toUserId, 
 									dossier.getContactEmail(), 
@@ -4035,7 +4083,20 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}	
 		
-		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+//		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+		Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
+		Notificationtemplate emplTemplate = null;
+		if (notiCache == null) {
+			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+			if (emplTemplate != null) {
+				CacheLocalServiceUtil.addToCache("NotificationTemplate",
+						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
+						(int) Time.MINUTE * 15);
+			}
+		} else {
+			emplTemplate = (Notificationtemplate) notiCache;
+		}
+
 		Date now = new Date();
         Calendar calEmpl = Calendar.getInstance();
         calEmpl.setTime(now);
@@ -4069,17 +4130,31 @@ public class DossierActionsImpl implements DossierActions {
 						List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
 						for (DossierActionUser dau : lstDaus) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+//								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+								Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ dau.getUserId());
+								Employee employee = null;
+								if (employeeCache == null) {
+									employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+									if (employee != null) {
+										CacheLocalServiceUtil.addToCache("Employee",
+												groupId +"_"+ dau.getUserId(), (Serializable) employee,
+												(int) Time.MINUTE * 15);
+									}
+								} else {
+									employee = (Employee) employeeCache;
+								}
+
 								if (employee != null) {
 									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
 									String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+									long start = System.currentTimeMillis();
 									NotificationQueueLocalServiceUtil.addNotificationQueue(
-											userId, groupId, 
+											user.getUserId(), groupId, 
 											"EMPL-01", 
 											Dossier.class.getName(), 
 											String.valueOf(dossier.getDossierId()), 
 											payloadObj.toJSONString(), 
-											u.getFullName(), 
+											user.getFullName(), 
 											fullName, 
 											dau.getUserId(), 
 											employee.getEmail(), 
@@ -4087,6 +4162,7 @@ public class DossierActionsImpl implements DossierActions {
 											now, 
 											expired, 
 											context);
+									_log.info("ADD NOTI QUEUE: " + (System.currentTimeMillis() - start));
 								}
 							}
 						}
@@ -4175,8 +4251,8 @@ public class DossierActionsImpl implements DossierActions {
 		
 	}
 
-	private void createNotificationSMS(long userId, long groupId, Dossier dossier, JSONArray assignedUsers, ServiceContext context) {
-		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+	private void createNotificationSMS(long userId, long groupId, Dossier dossier, JSONArray assignedUsers, DossierAction dossierAction, ServiceContext context) {
+//		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {		
@@ -4262,9 +4338,9 @@ public class DossierActionsImpl implements DossierActions {
         }
 	}
 	
-	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) {
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+//			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			User u = UserLocalServiceUtil.fetchUser(userId);
 			
 			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
@@ -4426,7 +4502,8 @@ public class DossierActionsImpl implements DossierActions {
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 //			_log.info("========STEP DUE CUR STATUS UPDATING STATE DONE");
 			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
-			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
+			dossierAction.setModifiedDate(new Date());
+//			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
 		}
 		
 //		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -4444,7 +4521,8 @@ public class DossierActionsImpl implements DossierActions {
 					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
 					dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
-					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+					dossierAction.setModifiedDate(new Date());
+//					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -4488,12 +4566,14 @@ public class DossierActionsImpl implements DossierActions {
 		int dateOption = actionConfig.getDateOption();
 		_log.info("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
-			DossierAction dActEnd = DossierActionLocalServiceUtil
-					.fetchDossierAction(dossierAction.getDossierActionId());
+//			DossierAction dActEnd = DossierActionLocalServiceUtil
+//					.fetchDossierAction(dossierAction.getDossierActionId());
+			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null) {
 				_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
-				DossierAction dActStart = DossierActionLocalServiceUtil
-						.fetchDossierAction(dActEnd.getPreviousActionId());
+//				DossierAction dActStart = DossierActionLocalServiceUtil
+//						.fetchDossierAction(dActEnd.getPreviousActionId());
+				DossierAction dActStart = prevAction;
 				if (dActStart != null) {
 					long createEnd = dActEnd.getCreateDate().getTime();
 					long createStart = dActStart.getCreateDate().getTime();
@@ -4584,7 +4664,7 @@ public class DossierActionsImpl implements DossierActions {
 		}		
 	
 //		_log.info("========STEP DUE DATE:" + dueDate);
-		DossierLocalServiceUtil.updateDossier(dossier);
+//		DossierLocalServiceUtil.updateDossier(dossier);
 		
 //		_log.info("dossierAction: " + dossierAction);
 		if (dossierAction != null) {
@@ -4614,8 +4694,12 @@ public class DossierActionsImpl implements DossierActions {
 				dossierAction.setActionOverdue(overdue);
 				dossierAction.setDueDate(dueDate);
 //				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
-				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+//				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 //				_log.info("dActTest: "+dActTest);
+			}
+			else {
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
 			}
 		}
 	
@@ -6863,4 +6947,28 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			return null;
 		}		
 	}	
+	
+	private void updateStatus(Dossier dossier, String status, String statusText, String subStatus,
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
+
+		Date now = new Date();
+
+		dossier.setModifiedDate(now);
+
+		dossier.setDossierStatus(status);
+		dossier.setDossierStatusText(statusText);
+		dossier.setDossierSubStatus(subStatus);
+		dossier.setDossierSubStatusText(subStatusText);
+		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+			dossier.setReleaseDate(now);
+		}
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+			dossier.setFinishDate(now);
+		}
+	}		
 }

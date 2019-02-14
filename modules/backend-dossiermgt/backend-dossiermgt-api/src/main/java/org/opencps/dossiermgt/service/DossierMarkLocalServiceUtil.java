@@ -44,10 +44,12 @@ public class DossierMarkLocalServiceUtil {
 	 */
 	public static void addBatchDossierMark(long groupId,
 		org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks,
+		java.util.Map<String, org.opencps.dossiermgt.model.DossierMark> mapMarks,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		getService().addBatchDossierMark(groupId, marks, serviceContext);
+		getService()
+			.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
 	}
 
 	/**
