@@ -54,7 +54,7 @@ public class CacheLocalServiceImpl extends CacheLocalServiceBaseImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(CacheActionsImpl.class);
 
-	public Serializable getFromCache(String cacheName, Serializable key) throws PortalException {
+	public Serializable getFromCache(String cacheName, Serializable key) {
 		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
 
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
