@@ -888,6 +888,17 @@ public class DossierLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier updateStatus(
+		org.opencps.dossiermgt.model.Dossier dossier, String status,
+		String statusText, String subStatus, String subStatusText,
+		String lockState, String stepInstruction,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateStatus(dossier, status, statusText, subStatus,
+			subStatusText, lockState, stepInstruction, context);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier updateStatus(
 		long groupId, long id, String refId, String status, String statusText,
 		String subStatus, String subStatusText, String lockState,
 		String stepInstruction,

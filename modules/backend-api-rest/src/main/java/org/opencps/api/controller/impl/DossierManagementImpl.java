@@ -39,9 +39,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -1205,6 +1207,11 @@ public class DossierManagementImpl implements DossierManagement {
 						_log.info("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
 						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
 						int count = 0;
+						List<DossierMark> lstMarks = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
+						Map<String, DossierMark> mapMarks = new HashMap<>();
+						for (DossierMark dm : lstMarks) {
+							mapMarks.put(dm.getDossierPartNo(), dm);
+						}
 						for (DossierPart dossierPart : partList) {
 							int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
@@ -1219,7 +1226,7 @@ public class DossierManagementImpl implements DossierManagement {
 //									fileMark, 0, StringPool.BLANK, serviceContext);
 						}
 						
-						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, serviceContext);
+						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
 						
 						_log.info("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
 					}
