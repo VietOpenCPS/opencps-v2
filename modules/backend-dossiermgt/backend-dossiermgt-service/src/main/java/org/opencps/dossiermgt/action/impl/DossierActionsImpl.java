@@ -3046,27 +3046,27 @@ public class DossierActionsImpl implements DossierActions {
 			//
 			
 			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), "SLDTBXH");
-			
-			_log.info("START_ Get list process option1111: "+new Date());
-			Date dateStart122 = new Date();
-			Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
-			List<ProcessOption> lstOptions122 = null;
-			if (serList22 == null) {
-				lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
-				if (lstOptions122 != null) {
-					_log.info("START_ Serlist null");
-					CacheLocalServiceUtil.addToCache("ProcessOption",
-							groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
-							(int) Time.MINUTE * 15);
+			if (serviceConfig22 != null) {
+				_log.info("START_ Get list process option1111: "+new Date());
+				Date dateStart122 = new Date();
+				Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
+				List<ProcessOption> lstOptions122 = null;
+				if (serList22 == null) {
+					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+					if (lstOptions122 != null) {
+						_log.info("START_ Serlist null");
+						CacheLocalServiceUtil.addToCache("ProcessOption",
+								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
+								(int) Time.MINUTE * 15);
+					}
+				} else {
+					lstOptions122 = (List<ProcessOption>) serList22;
 				}
-			} else {
-				lstOptions122 = (List<ProcessOption>) serList22;
+				Date dateEnd122 = new Date();
+				_log.info("START_ Get list process option: "+dateEnd122);
+				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
+				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
 			}
-			Date dateEnd122 = new Date();
-			_log.info("START_ Get list process option: "+dateEnd122);
-			_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
-			_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
-			
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
