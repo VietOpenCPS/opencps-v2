@@ -57,8 +57,7 @@ public class CacheLocalServiceUtil {
 	}
 
 	public static java.io.Serializable getFromCache(String cacheName,
-		java.io.Serializable key)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		java.io.Serializable key) {
 		return getService().getFromCache(cacheName, key);
 	}
 

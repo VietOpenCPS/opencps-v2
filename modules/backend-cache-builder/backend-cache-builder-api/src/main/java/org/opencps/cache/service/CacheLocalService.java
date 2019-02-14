@@ -54,8 +54,7 @@ public interface CacheLocalService extends BaseLocalService {
 	public void closeCachePool();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Serializable getFromCache(String cacheName, Serializable key)
-		throws PortalException;
+	public Serializable getFromCache(String cacheName, Serializable key);
 
 	/**
 	* Returns the OSGi service identifier.
