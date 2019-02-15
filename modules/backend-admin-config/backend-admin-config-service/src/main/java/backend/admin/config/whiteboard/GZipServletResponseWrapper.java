@@ -84,8 +84,10 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 		}
 		if (this.printWriter == null) {
 			this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
+//			this.printWriter = new PrintWriter(
+//					new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()));
 			this.printWriter = new PrintWriter(
-					new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()));
+					new OutputStreamWriter(this.gzipOutputStream, "UTF-8"));
 		}
 		return this.printWriter;
 	}

@@ -29,8 +29,10 @@ import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 
 public class ServiceInfoUtils {
@@ -76,27 +78,41 @@ public class ServiceInfoUtils {
 
 			params.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceInfoTerm.SERVICE_CODE));
 
-			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
+//			Sort[] sorts = new Sort[] {
+//					SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
 
-			JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
-					serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+//			JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
+//					serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
+//					QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
+			List<ServiceConfig> lstScs = ServiceConfigLocalServiceUtil.getByServiceInfo(Long.valueOf(doc.get(Field.GROUP_ID)), Long.valueOf(doc.get(ServiceInfoTerm.SERVICE_INFO_ID)));
+			
+//			List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
 
-			for (Document serviceConfig : serviceConfigs) {
+			for (ServiceConfig sc : lstScs) {
 				ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
 
-				cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-				cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-				cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-				cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-				cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-				cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
+				cf.setGovAgencyCode(sc.getGovAgencyCode());
+				cf.setGovAgencyName(sc.getGovAgencyName());
+				cf.setServiceInstruction(sc.getServiceInstruction());
+				cf.setServiceUr(sc.getServiceUrl());
+				cf.setServiceLevel(sc.getServiceLevel());
+				cf.setServiceConfigId(sc.getServiceConfigId());
 				
 				lsServiceConfig.add(cf);
 			}
+//			for (Document serviceConfig : serviceConfigs) {
+//				ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
+//
+//				cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
+//				cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
+//				cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
+//				cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
+//				cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
+//				cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
+//				
+//				lsServiceConfig.add(cf);
+//			}
 			
 			model.getServiceConfigs().addAll(lsServiceConfig);
 			

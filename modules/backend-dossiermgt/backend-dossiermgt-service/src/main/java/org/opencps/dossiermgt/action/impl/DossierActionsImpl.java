@@ -1513,21 +1513,15 @@ public class DossierActionsImpl implements DossierActions {
 			ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		// TODO filter by Auto
-//		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
-//		_log.info("auto =: " + auto);
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-//		_log.info("dossierId =: " + dossierId);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-//			_log.info("dossier: "+dossier);
 			if (dossier != null) {
 				String dossierTempNo = dossier.getDossierTemplateNo();
 				long processActionId = GetterUtil.getLong(params.get(ProcessActionTerm.PROCESS_ACTION_ID));
 				ProcessAction processAction = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
 
-				//Process PaymentFile
 				JSONObject payment = JSONFactoryUtil.createJSONObject();
 				String postStepCode = StringPool.BLANK;
 				long serviceProcessId = 0;
@@ -1535,7 +1529,6 @@ public class DossierActionsImpl implements DossierActions {
 					postStepCode = processAction.getPostStepCode();
 					serviceProcessId = processAction.getServiceProcessId();
 					payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
-//					_log.info("Payment fee: " + payment);
 					String paymentFeeData = processAction.getPaymentFee();
 					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 					String advanceAmount = StringPool.BLANK;
@@ -1589,9 +1582,6 @@ public class DossierActionsImpl implements DossierActions {
 							payment.put(PaymentFileTerm.EDITABLE, editable);
 						}
 					}
-					
-//					_log.info("Payment fee: " + payment);
-					
 					result.put("payment", payment);
 				}
 
@@ -1638,12 +1628,11 @@ public class DossierActionsImpl implements DossierActions {
 					}
 				}
 
-				//Put receiving to next action
 				if (processAction != null) {
-					_log.info("Service process: " + serviceProcessId);
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 					
-					ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(), groupId, serviceProcessId);
+//					ProcessStep postStep = ProcessStepLocalServiceUtil.fetchBySC_GID(processAction.getPostStepCode(), groupId, serviceProcessId);
+					ProcessStep postStep = processStep;
 					
 					JSONObject receivingObj = JSONFactoryUtil.createJSONObject();
 					Date receiveDate = new Date();
@@ -1656,7 +1645,6 @@ public class DossierActionsImpl implements DossierActions {
 					
 					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
 					receivingObj.put("editable", DossierMgtUtils.isDueDateEditable(serviceProcess.getDueDatePattern()));
-//					_log.info("Receiving object: " + receivingObj.toJSONString());	
 					if (postStep != null) {
 						if (DossierTerm.DOSSIER_STATUS_NEW.equals(postStep.getDossierStatus())
 								|| DossierTerm.DOSSIER_STATUS_PROCESSING.equals(postStep.getDossierStatus())
@@ -1675,23 +1663,21 @@ public class DossierActionsImpl implements DossierActions {
 
 				List<String> createFileTempNoList = ListUtil.toList(StringUtil.split(createDossierFiles));
 				List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(returnDossierFiles));
-//				_log.info("-----RETURN DOSSIER FILE TEMPLATE NOS----" + returnFileTempNoList.size());
+
+				DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
+						dossier.getDossierTemplateNo());
+
+				List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+						dossierTemplate.getTemplateNo());
 
 				if (returnFileTempNoList != null && !returnFileTempNoList.isEmpty()) {
-					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
-							dossier.getDossierTemplateNo());
-
-					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
-							dossierTemplate.getTemplateNo());
-
 					List<DossierFile> returnFiles = new ArrayList<>();
 					if (partList != null && partList.size() > 0) {
 						for (DossierPart dossierPart : partList) {
 							String fileTemplateNo = dossierPart.getFileTemplateNo();
 							int dossierPartType = dossierPart.getPartType();
 							if (returnFileTempNoList.contains(fileTemplateNo)) {
-								List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT(
-										dossierId, fileTemplateNo, dossierPartType, false);
+								List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, dossierPartType, false);
 								if (fileList != null && fileList.size() > 0) {
 										returnFiles.addAll(fileList);
 								}
@@ -1701,13 +1687,12 @@ public class DossierActionsImpl implements DossierActions {
 					result.put("returnFiles", returnFiles);
 				}
 			
-				// TODO DELI
 				JSONArray createFiles = JSONFactoryUtil.createJSONArray();
 				if (createFileTempNoList != null && !createFileTempNoList.isEmpty()) {
-					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
-							dossierTempNo);
+//					DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId,
+//							dossierTempNo);
 
-					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+//					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
 
 					if (partList != null && partList.size() > 0) {
 						long fileEntryId = 0;
@@ -1754,12 +1739,8 @@ public class DossierActionsImpl implements DossierActions {
 
 								String strDeliverableType = dossierPart.getDeliverableType();
 								String sampleData = dossierPart.getSampleData();
-//								_log.info("--------DOSSIER PART NO-------" + dossierPart.getPartName());
-//								_log.info("-------DOSSIER PART SAMPLE DATA------" + dossierPart.getSampleData());
-								String formDataDeliverables = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
+								String formDataDeliverables = AutoFillFormData.sampleDataBinding(sampleData, dossier,
 										context);
-//								_log.info("-------FORM DATA DELIVERABLE---------" + formDataDeliverables);
-
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
@@ -1777,10 +1758,10 @@ public class DossierActionsImpl implements DossierActions {
 									} else {
 										createFile = processEFormByCreateFile(dossierPart, groupId, dossierId,
 												sampleData, fileTemplateNo, dossierTempNo, createFile, serviceContext);
+										dossierFilesResult = DossierFileLocalServiceUtil
+												.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, 2, 0,
+														false);
 									}
-									dossierFilesResult = DossierFileLocalServiceUtil
-											.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, 2, 0,
-													false);
 									_log.info("dossierFilesResult1: "+dossierFilesResult.size());
 
 									counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
@@ -2750,7 +2731,7 @@ public class DossierActionsImpl implements DossierActions {
 
 //			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 		}		
-		String type = StringPool.BLANK;
+//		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
 			if(!"new".equals(dossierStatus)) {
