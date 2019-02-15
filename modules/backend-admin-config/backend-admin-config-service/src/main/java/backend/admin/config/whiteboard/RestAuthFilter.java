@@ -163,6 +163,7 @@ public class RestAuthFilter implements Filter {
 		    	if (!httpResponse.containsHeader("Content-Encoding")
 		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
 		    		httpResponse.addHeader("Content-Encoding", "gzip");
+		    		httpResponse.setCharacterEncoding("UTF-8");
 			        GZipServletResponseWrapper gzipResponse =
 			        		new GZipServletResponseWrapper(httpResponse);
 			        filterChain.doFilter(servletRequest, gzipResponse);
