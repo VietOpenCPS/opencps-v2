@@ -42,24 +42,6 @@ public class CacheLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.cache.service.impl.CacheLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static void addToCache(String cacheName, java.io.Serializable key,
-		java.io.Serializable value, int ttl) {
-		getService().addToCache(cacheName, key, value, ttl);
-	}
-
-	public static void clearCache(String cacheName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().clearCache(cacheName);
-	}
-
-	public static void closeCachePool() {
-		getService().closeCachePool();
-	}
-
-	public static java.io.Serializable getFromCache(String cacheName,
-		java.io.Serializable key) {
-		return getService().getFromCache(cacheName, key);
-	}
 
 	/**
 	* Returns the OSGi service identifier.
@@ -68,17 +50,6 @@ public class CacheLocalServiceUtil {
 	*/
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
-	}
-
-	public static void ping()
-		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().ping();
-	}
-
-	public static void removeFromCache(String cacheName,
-		java.io.Serializable key)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().removeFromCache(cacheName, key);
 	}
 
 	public static CacheLocalService getService() {

@@ -358,23 +358,25 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
 			}
 			// Process get Next sequence Role
-//			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
-//					serviceProcessId);
+			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+					serviceProcessId);
 			//TODO: Using cache
-			List<ProcessSequence> sequenceList = null;
-			Serializable data = CacheLocalServiceUtil.getFromCache("ProcessSequence", groupId +"_"+serviceProcessId);
-			if (data != null) {
-				sequenceList = (List<ProcessSequence>) data;
-			} else {
-				sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
-						serviceProcessId);
-				if (sequenceList != null) {
-					//_log.info("START_ Serlist null");
-					CacheLocalServiceUtil.addToCache("ProcessSequence",
-							groupId +"_"+serviceProcessId, (Serializable) sequenceList,
-							(int) Time.MINUTE * 30);
-				}
-			}
+//			List<ProcessSequence> sequenceList = null;
+//			Serializable data = CacheLocalServiceUtil.getFromCache("ProcessSequence", groupId +"_"+serviceProcessId);
+//			if (data != null) {
+//				sequenceList = (List<ProcessSequence>) data;
+//			} else {
+//				sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+//						serviceProcessId);
+//				if (sequenceList != null) {
+//					//_log.info("START_ Serlist null");
+//					CacheLocalServiceUtil.addToCache("ProcessSequence",
+//							groupId +"_"+serviceProcessId, (Serializable) sequenceList,
+//							(int) Time.MINUTE * 30);
+//				}
+//			}
+			sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+					serviceProcessId);
 			String[] sequenceArr = null;
 			if (sequenceList != null && !sequenceList.isEmpty()) {
 				int lengthSeq = sequenceList.size();

@@ -2716,21 +2716,22 @@ public class DossierActionsImpl implements DossierActions {
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		User user = UserLocalServiceUtil.fetchUser(userId);
 		Employee employee = null;
-		if (user != null) {
-			Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ userId);
-			if (employeeCache == null) {
-				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				if (employee != null) {
-					CacheLocalServiceUtil.addToCache("Employee",
-							groupId +"_"+ userId, (Serializable) employee,
-							(int) Time.MINUTE * 15);
-				}
-			} else {
-				employee = (Employee) employeeCache;
-			}
-
-//			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-		}		
+		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//		if (user != null) {
+//			Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ userId);
+//			if (employeeCache == null) {
+//				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//				if (employee != null) {
+//					CacheLocalServiceUtil.addToCache("Employee",
+//							groupId +"_"+ userId, (Serializable) employee,
+//							(int) Time.MINUTE * 15);
+//				}
+//			} else {
+//				employee = (Employee) employeeCache;
+//			}
+//
+////			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+//		}		
 //		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
@@ -3039,28 +3040,28 @@ public class DossierActionsImpl implements DossierActions {
 //			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			//
 			
-			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
-			if (serviceConfig22 != null) {
-//				_log.info("START_ Get list process option1111: "+new Date());
-				Date dateStart122 = new Date();
-				Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
-				List<ProcessOption> lstOptions122 = null;
-				if (serList22 == null) {
-					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
-					if (lstOptions122 != null) {
-//						_log.info("START_ Serlist null");
-						CacheLocalServiceUtil.addToCache("ProcessOption",
-								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
-								(int) Time.MINUTE * 15);
-					}
-				} else {
-					lstOptions122 = (List<ProcessOption>) serList22;
-				}
-				Date dateEnd122 = new Date();
+//			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
+//			if (serviceConfig22 != null) {
+////				_log.info("START_ Get list process option1111: "+new Date());
+//				Date dateStart122 = new Date();
+//				Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
+//				List<ProcessOption> lstOptions122 = null;
+//				if (serList22 == null) {
+//					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+//					if (lstOptions122 != null) {
+////						_log.info("START_ Serlist null");
+//						CacheLocalServiceUtil.addToCache("ProcessOption",
+//								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
+//								(int) Time.MINUTE * 15);
+//					}
+//				} else {
+//					lstOptions122 = (List<ProcessOption>) serList22;
+//				}
+//				Date dateEnd122 = new Date();
 //				_log.info("START_ Get list process option: "+dateEnd122);
 //				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
 //				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
-			}
+//			}
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
@@ -3089,26 +3090,26 @@ public class DossierActionsImpl implements DossierActions {
 					Date dateStart = new Date();
 					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 					Date dateEnd = new Date();
-					_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
-					_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
-					//
-					_log.info("START_ Get list process option1111: "+new Date());
-					Date dateStart1 = new Date();
-					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
-					List<ProcessOption> lstOptions1 = null;
-					if (serList == null) {
-						lstOptions1 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
-					} else {
-						lstOptions1 = (List<ProcessOption>) serList;
-						if (lstOptions1 != null) {
-							CacheLocalServiceUtil.addToCache("ProcessOption",
-									groupId + "_" + serviceConfig.getServiceConfigId(), (Serializable) lstOptions1,
-									(int) Time.MINUTE * 15);
-						}
-					}
-					Date dateEnd1 = new Date();
-					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
-					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions1));
+//					_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
+//					_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
+//					//
+//					_log.info("START_ Get list process option1111: "+new Date());
+//					Date dateStart1 = new Date();
+//					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
+//					List<ProcessOption> lstOptions1 = null;
+//					if (serList == null) {
+//						lstOptions1 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+//					} else {
+//						lstOptions1 = (List<ProcessOption>) serList;
+//						if (lstOptions1 != null) {
+//							CacheLocalServiceUtil.addToCache("ProcessOption",
+//									groupId + "_" + serviceConfig.getServiceConfigId(), (Serializable) lstOptions1,
+//									(int) Time.MINUTE * 15);
+//						}
+//					}
+//					Date dateEnd1 = new Date();
+//					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
+//					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions1));
 					ProcessOption foundOption = null;
 					if (createDossiers.contains(StringPool.POUND)) {
 						String[] splitCDs = createDossiers.split(StringPool.POUND);
@@ -3242,16 +3243,16 @@ public class DossierActionsImpl implements DossierActions {
 				
 			}
 			
-			if (serviceConfig22 != null) {
-				_log.info("START_ Get list process option: "+new Date());
-				Date dateStart22 = new Date();
-				List<ProcessOption> lstOptions22 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
-				Date dateEnd22 = new Date();
-				_log.info("START_ Get list process option: "+dateEnd22);
-				_log.info("END_ Get list process option: "+ (dateEnd22.getTime() - dateStart22.getTime()));
-				_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions22));
-				//
-			}
+//			if (serviceConfig22 != null) {
+//				_log.info("START_ Get list process option: "+new Date());
+//				Date dateStart22 = new Date();
+//				List<ProcessOption> lstOptions22 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+//				Date dateEnd22 = new Date();
+//				_log.info("START_ Get list process option: "+dateEnd22);
+//				_log.info("END_ Get list process option: "+ (dateEnd22.getTime() - dateStart22.getTime()));
+//				_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions22));
+//				//
+//			}
 			
 			
 			if (curStep != null) {
@@ -4009,18 +4010,19 @@ public class DossierActionsImpl implements DossierActions {
 
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
+//			Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
 			Notificationtemplate notiTemplate = null;
-			if (notiCache == null) {
-				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-				if (notiTemplate != null) {
-					CacheLocalServiceUtil.addToCache("NotificationTemplate",
-							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
-							(int) Time.MINUTE * 15);
-				}
-			} else {
-				notiTemplate = (Notificationtemplate) notiCache;
-			}
+			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+//			if (notiCache == null) {
+//				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+//				if (notiTemplate != null) {
+//					CacheLocalServiceUtil.addToCache("NotificationTemplate",
+//							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+//							(int) Time.MINUTE * 15);
+//				}
+//			} else {
+//				notiTemplate = (Notificationtemplate) notiCache;
+//			}
 
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
@@ -4074,18 +4076,19 @@ public class DossierActionsImpl implements DossierActions {
 		}	
 		
 //		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-		Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
+//		Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
 		Notificationtemplate emplTemplate = null;
-		if (notiCache == null) {
-			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-			if (emplTemplate != null) {
-				CacheLocalServiceUtil.addToCache("NotificationTemplate",
-						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
-						(int) Time.MINUTE * 15);
-			}
-		} else {
-			emplTemplate = (Notificationtemplate) notiCache;
-		}
+		emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+//		if (notiCache == null) {
+//			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+//			if (emplTemplate != null) {
+//				CacheLocalServiceUtil.addToCache("NotificationTemplate",
+//						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
+//						(int) Time.MINUTE * 15);
+//			}
+//		} else {
+//			emplTemplate = (Notificationtemplate) notiCache;
+//		}
 
 		Date now = new Date();
         Calendar calEmpl = Calendar.getInstance();
@@ -4121,18 +4124,19 @@ public class DossierActionsImpl implements DossierActions {
 						for (DossierActionUser dau : lstDaus) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
 //								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-								Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ dau.getUserId());
+//								Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ dau.getUserId());
 								Employee employee = null;
-								if (employeeCache == null) {
-									employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-									if (employee != null) {
-										CacheLocalServiceUtil.addToCache("Employee",
-												groupId +"_"+ dau.getUserId(), (Serializable) employee,
-												(int) Time.MINUTE * 15);
-									}
-								} else {
-									employee = (Employee) employeeCache;
-								}
+								employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+//								if (employeeCache == null) {
+//									employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+//									if (employee != null) {
+//										CacheLocalServiceUtil.addToCache("Employee",
+//												groupId +"_"+ dau.getUserId(), (Serializable) employee,
+//												(int) Time.MINUTE * 15);
+//									}
+//								} else {
+//									employee = (Employee) employeeCache;
+//								}
 
 								if (employee != null) {
 									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;

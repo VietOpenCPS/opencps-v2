@@ -153,19 +153,20 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	}
 
 	public StepConfig getByCode(long groupId, String stepCode) {
-		Serializable stepConfigCache = CacheLocalServiceUtil.getFromCache("StepConfig", groupId +"_"+ stepCode);
-		StepConfig stepConfig = null;
-		if (stepConfigCache == null) {
-			stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
-			if (stepConfig != null) {
-				CacheLocalServiceUtil.addToCache("StepConfig",
-						groupId +"_"+ stepCode, (Serializable) stepConfig,
-						(int) Time.MINUTE * 15);
-			}
-		} else {
-			stepConfig = (StepConfig) stepConfigCache;
-		}
-
+//		if (stepCode != null) {
+//			Serializable stepConfigCache = CacheLocalServiceUtil.getFromCache("StepConfig", groupId +"_"+ stepCode);
+//			StepConfig stepConfig = null;
+//			if (stepConfigCache == null) {
+//				stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+//				if (stepConfig != null) {
+//					CacheLocalServiceUtil.addToCache("StepConfig",
+//							groupId +"_"+ stepCode, (Serializable) stepConfig,
+//							(int) Time.MINUTE * 15);
+//				}
+//			} else {
+//				stepConfig = (StepConfig) stepConfigCache;
+//			}
+//		}
 		return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 
 	}
