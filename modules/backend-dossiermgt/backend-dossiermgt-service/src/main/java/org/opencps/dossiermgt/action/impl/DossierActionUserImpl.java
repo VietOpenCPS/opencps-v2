@@ -276,13 +276,12 @@ public class DossierActionUserImpl implements DossierActionUser {
 			if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
 	//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-//				DossierActionUserPK pk = new DossierActionUserPK();
+				DossierActionUserPK pk = new DossierActionUserPK();
 				long userIdAssigned = subUser.getLong("userId");
 				
-//				pk.setDossierActionId(dossierAction.getDossierActionId());
-//				_log.info("userIdAssign: "+subUser.getLong("userId"));
+				pk.setDossierActionId(dossierAction.getDossierActionId());
 				
-//				pk.setUserId(subUser.getLong("userId"));
+				pk.setUserId(subUser.getLong("userId"));
 	
 //				DossierUserPK duPk = new DossierUserPK();
 	//			if (dossierActionId > 0) {
@@ -315,9 +314,9 @@ public class DossierActionUserImpl implements DossierActionUser {
 					}					
 				}
 				
-//				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-				org.opencps.dossiermgt.model.DossierActionUser dau = null;
-				dau = mapDaus.get(userIdAssigned);
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+//				org.opencps.dossiermgt.model.DossierActionUser dau = null;
+//				dau = mapDaus.get(userIdAssigned);
 
 				if (Validator.isNull(dau)) {
 //					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
@@ -365,6 +364,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		_log.info("Allow assign user: " + allowAssignUser);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+		_log.info("Employee : " + employee);
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
@@ -393,6 +393,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				}
 			}
 			else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
+				_log.info("Assign dau: " + userId);
 				model.setUserId(userId);
 				model.setDossierActionId(dossierActionId);
 				model.setModerator(moderator);
@@ -400,11 +401,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 				// Add User
 				if (dau == null) {
+					_log.info("Assign add dau: " + userId);
 					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
 							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+						_log.info("Assign update dau: " + userId);
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 					}
 				}
