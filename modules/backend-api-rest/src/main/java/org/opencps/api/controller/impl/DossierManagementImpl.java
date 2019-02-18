@@ -1251,27 +1251,27 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (dossier != null) {
 				//
-				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+//				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
-				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+//				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 				//Process add notification queue
 				Date now = new Date();
 
 				Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-				
-				queue.setCreateDate(now);
-				queue.setModifiedDate(now);
-				queue.setGroupId(groupId);
-				queue.setCompanyId(company.getCompanyId());
-				
-				queue.setNotificationType(NotificationType.DOSSIER_01);
-				queue.setClassName(Dossier.class.getName());
-				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
-				queue.setToUsername(dossier.getUserName());
-				queue.setToUserId(dossier.getUserId());
-				queue.setToEmail(dossier.getContactEmail());
-				queue.setToTelNo(dossier.getContactTelNo());
+//				
+//				queue.setCreateDate(now);
+//				queue.setModifiedDate(now);
+//				queue.setGroupId(groupId);
+//				queue.setCompanyId(company.getCompanyId());
+//				
+//				queue.setNotificationType(NotificationType.DOSSIER_01);
+//				queue.setClassName(Dossier.class.getName());
+//				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+//				queue.setToUsername(dossier.getUserName());
+//				queue.setToUserId(dossier.getUserId());
+//				queue.setToEmail(dossier.getContactEmail());
+//				queue.setToTelNo(dossier.getContactTelNo());
 				
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
@@ -1284,10 +1284,21 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.error(parse);
 				}
 //				_log.info("payloadTest: "+payload.toJSONString());
-				queue.setPayload(payload.toJSONString());
-				queue.setExpireDate(cal.getTime());
+//				queue.setPayload(payload.toJSONString());
+//				queue.setExpireDate(cal.getTime());
 
-				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+//				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+				NotificationQueueLocalServiceUtil.addNotificationQueue(userId, 
+						groupId, 
+						NotificationType.DOSSIER_01, 
+						Dossier.class.getName(), 
+						String.valueOf(dossier.getPrimaryKey()), 
+						payload.toJSONString(), 
+						StringPool.BLANK, 
+						dossier.getUserName(), 
+						dossier.getUserId(), dossier.getContactEmail(), dossier.getContactTelNo(), 
+						null, cal.getTime(), serviceContext);
+				
 			}
 
 			_log.info("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
