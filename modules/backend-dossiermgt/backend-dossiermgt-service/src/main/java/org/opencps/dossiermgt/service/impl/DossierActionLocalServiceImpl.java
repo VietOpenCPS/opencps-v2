@@ -147,9 +147,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			// Add DossierActionId to Dossier
 
-			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
-			dossier.setDossierActionId(dossierActionId);
-			dossierPersistence.update(dossier);
+//			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+//			dossier.setDossierActionId(dossierActionId);
+//			dossierPersistence.update(dossier);
 
 //			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 //
@@ -224,9 +224,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			// Add DossierActionId to Dossier
 
-			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
-			dossier.setDossierActionId(dossierActionId);
-			dossierPersistence.update(dossier);
+//			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+//			dossier.setDossierActionId(dossierActionId);
+//			dossierPersistence.update(dossier);
 
 //			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 //

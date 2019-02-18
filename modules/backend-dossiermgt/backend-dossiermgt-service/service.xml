@@ -1380,6 +1380,7 @@
 		<column name="userId" type="long" primary="true" />
 		<column name="moderator" type="int" />
 		<column name="visited" type="boolean" />
+		<column name="roleId" type="long" />
 
 		<finder return-type="Collection" name="DID">
 			<finder-column name="dossierId" />
@@ -1403,6 +1404,7 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="int" />
 		<column name="visited" type="boolean" />
+		<column name="roleId" type="long" />
 	
 		<!-- Filter -->
 		<order by="desc">

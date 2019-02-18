@@ -137,8 +137,9 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						stepCode = dossierAction.getStepCode();
 					}
 
+					ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+
 					if (Validator.isNotNull(stepCode)  && serviceProcessId > 0) {
-						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 						if (processStep != null) {
 							result.setCheckInput(processStep.getCheckInput());
 							result.setStepCode(processStep.getStepCode());
@@ -193,18 +194,18 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						}
 					}
 	
-					ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
-							serviceProcessId);
+//					ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
+//							serviceProcessId);
 					List<User> lstUser = new ArrayList<>();
-
+					
 					if (processStep != null) {	
-						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-								.findByP_S_ID(processStep.getProcessStepId());
-						ProcessAction processAction = null;
-						
-						if (dossierAction != null) {
-							processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
-						}
+//						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+//								.findByP_S_ID(processStep.getProcessStepId());
+//						ProcessAction processAction = null;
+//						
+//						if (dossierAction != null) {
+//							processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
+//						}
 //						if (processAction != null && processAction.getAllowAssignUser() == ProcessActionTerm.NOT_ASSIGNED) {
 //							if (Validator.isNotNull(processStep.getRoleAsStep())) {
 //								String[] steps = StringUtil.split(processStep.getRoleAsStep());
@@ -273,7 +274,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 								}
 	
 								modelUser.setUserId(userId);
-								//TODO: Not update user
 								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 								if (emp != null) {
 									modelUser.setUserName(emp.getFullName() != null ? emp.getFullName().toUpperCase()
