@@ -3,7 +3,6 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -22,11 +21,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.apache.commons.io.comparator.PathFileComparator;
 import org.opencps.api.backupdata.model.DataInputModel;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.BackupDataManagement;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
+import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.BusinessList;
 import org.opencps.api.v21.model.BusinessList.Business;
 import org.opencps.api.v21.model.CitizenList;
@@ -35,7 +34,9 @@ import org.opencps.api.v21.model.Configs;
 import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
 import org.opencps.api.v21.model.Items;
+import org.opencps.api.v21.model.MenuConfigList;
 import org.opencps.api.v21.model.Processes;
+import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -47,20 +48,30 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -421,8 +432,145 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 						return responseBuilder.build();
 					}
 				}
-
 				/** Export ServiceInfo **/
+
+				/** Export ActionConfig - START **/
+				if (dataCode.equals(ConstantUtils.EXPORT_ACTION_CONFIG)) {
+					_log.info("START EXPORT ActionConfig====");
+					List<ActionConfig> actConfigList = ActionConfigLocalServiceUtil.getByGroupId(groupId);
+					if (actConfigList != null && actConfigList.size() > 0) {
+						ActionConfigList configList = new ActionConfigList();
+						for (ActionConfig act : actConfigList) {
+							org.opencps.api.v21.model.ActionConfigList.ActionConfig config = new org.opencps.api.v21.model.ActionConfigList.ActionConfig();
+							if (Validator.isNotNull(act.getActionCode())) {
+								config.setActionCode(act.getActionCode());
+								config.setActionName(act.getActionName());
+								config.setExtraForm(act.getExtraForm());
+								config.setFormConfig(act.getFormConfig());
+								config.setSampleData(act.getSampleData());
+								config.setInsideProcess(act.getInsideProcess());
+								config.setUserNote(act.getUserNote());
+								config.setSyncType(act.getSyncType());
+								config.setEventType(act.getEventType());
+								config.setInfoType(act.getInfoType());
+								config.setRollbackable(act.getRollbackable());
+								config.setNotificationType(act.getNotificationType());
+								config.setDocumentType(act.getDocumentType());
+								config.setMappingAction(act.getMappingAction());
+								config.setDateOption(act.getDateOption());
+								//
+								configList.getActionConfig().add(config);
+							}
+							//Method which uses JAXB to convert object to XML
+							File file = ReadXMLFileUtils.convertActionConfigToXML(configList);
+							//
+							ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+							responseBuilder.header("Content-Disposition",
+									"attachment; filename=\"" + file.getName() + "\"");
+							responseBuilder.header("Content-Type", "application/xml");
+
+							return responseBuilder.build();
+						}
+					}
+				}
+				/** Export ActionConfig - END **/
+
+				/** Export StepConfig - START **/
+				if (dataCode.equals(ConstantUtils.EXPORT_STEP_CONFIG)) {
+					_log.info("START EXPORT StepConfig====");
+					List<StepConfig> stepConfigList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+					if (stepConfigList != null && stepConfigList.size() > 0) {
+						StepConfigList configList = new StepConfigList();
+						for (StepConfig step : stepConfigList) {
+							org.opencps.api.v21.model.StepConfigList.StepConfig config = new org.opencps.api.v21.model.StepConfigList.StepConfig();
+							if (Validator.isNotNull(step.getStepCode())) {
+								config.setStepCode(step.getStepCode());
+								config.setStepName(step.getStepName());
+								config.setStepType(step.getStepType());
+								config.setDossierStatus(step.getDossierStatus());
+								config.setDossierSubStatus(step.getDossierSubStatus());
+								config.setMenuGroup(step.getMenuGroup());
+								config.setMenuStepName(step.getMenuStepName());
+								config.setButtonConfig(step.getButtonConfig());
+								//
+								configList.getStepConfig().add(config);
+							}
+							//Method which uses JAXB to convert object to XML
+							File file = ReadXMLFileUtils.convertStepConfigToXML(configList);
+							//
+							ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+							responseBuilder.header("Content-Disposition",
+									"attachment; filename=\"" + file.getName() + "\"");
+							responseBuilder.header("Content-Type", "application/xml");
+
+							return responseBuilder.build();
+						}
+					}
+				}
+				/** Export StepConfig - END **/
+
+				/** Export MenuConfig - START **/
+				if (dataCode.equals(ConstantUtils.EXPORT_MENU_CONFIG)) {
+					_log.info("START EXPORT MenuConfig====");
+					List<MenuConfig> menuConfigList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+					if (menuConfigList != null && menuConfigList.size() > 0) {
+						MenuConfigList configList = new MenuConfigList();
+						for (MenuConfig menu : menuConfigList) {
+							org.opencps.api.v21.model.MenuConfigList.MenuConfig config = new org.opencps.api.v21.model.MenuConfigList.MenuConfig();
+							if (Validator.isNotNull(menu.getMenuGroup())) {
+								config.setMenuGroup(menu.getMenuGroup());
+								config.setMenuName(menu.getMenuName());
+								config.setOrder(menu.getOrder());
+								config.setMenuType(menu.getMenuType());
+								config.setQueryParams(menu.getQueryParams());
+								config.setTableConfig(menu.getTableConfig());
+								config.setButtonConfig(menu.getButtonConfig());
+								//
+								long menuConfigId = menu.getMenuConfigId();
+								if (menuConfigId > 0) {
+									List<MenuRole> roleList = MenuRoleLocalServiceUtil.getByMenuConfig(menuConfigId);
+									if (roleList != null && roleList.size() > 0) {
+										long[] roleArr = new long[roleList.size()];
+										for (int i = 0; i < roleList.size(); i++) {
+											roleArr[i] = roleList.get(i).getRoleId();
+										}
+										//
+										List<JobPos> jobPosList = JobPosLocalServiceUtil.findByF_mappingRoleIds(groupId, roleArr);
+										StringBuilder sb = new StringBuilder();
+										if (jobPosList != null && jobPosList.size() > 0) {
+											for (int i = 0; i < jobPosList.size(); i++) {
+												if (i == 0) {
+													sb.append(jobPosList.get(i).getJobPosCode());
+												} else {
+													sb.append(StringPool.COMMA);
+													sb.append(jobPosList.get(i).getJobPosCode());
+												}
+											}
+										}
+										config.setRoles(sb.toString());
+									}
+								}
+								
+								//
+								configList.getMenuConfig().add(config);
+							}
+							//Method which uses JAXB to convert object to XML
+							File file = ReadXMLFileUtils.convertMenuConfigToXML(configList);
+							//
+							ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+							responseBuilder.header("Content-Disposition",
+									"attachment; filename=\"" + file.getName() + "\"");
+							responseBuilder.header("Content-Type", "application/xml");
+
+							return responseBuilder.build();
+						}
+					}
+				}
+				/** Export MenuConfig - END **/
+
 			}
 		} catch (Exception e) {
 			_log.error(e);

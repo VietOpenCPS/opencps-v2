@@ -299,6 +299,21 @@ public interface DynamicReportModel extends BaseModel<DynamicReport>,
 	 */
 	public void setUserConfig(String userConfig);
 
+	/**
+	 * Returns the report type of this dynamic report.
+	 *
+	 * @return the report type of this dynamic report
+	 */
+	@AutoEscape
+	public String getReportType();
+
+	/**
+	 * Sets the report type of this dynamic report.
+	 *
+	 * @param reportType the report type of this dynamic report
+	 */
+	public void setReportType(String reportType);
+
 	@Override
 	public boolean isNew();
 

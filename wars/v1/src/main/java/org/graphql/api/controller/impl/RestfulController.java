@@ -1,6 +1,5 @@
 package org.graphql.api.controller.impl;
 
-import com.google.gson.Gson;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -18,12 +17,13 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -34,10 +34,8 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -46,7 +44,6 @@ import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,8 +53,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +62,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
@@ -74,7 +70,6 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
-import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -90,10 +85,8 @@ import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -111,7 +104,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import backend.admin.config.whiteboard.BundleLoader;
-import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.deliverable.action.impl.DeliverableTypeActions;
 import backend.utils.FileUploadUtils;
 import io.swagger.annotations.ApiParam;
@@ -881,11 +873,13 @@ public class RestfulController {
 			List<Object[]> list = (List<Object[]>) method.invoke(model, dynamicQuery, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
+			_log.info("List object: "+JSONFactoryUtil.looseSerialize(list));
 			JSONObject object = null;
 			for (Object[] objects : list) {
 
 				object = JSONFactoryUtil.createJSONObject();
 
+				_log.info("objects[0]: "+objects[0]);
 				object.put("id", objects[0]);
 
 				if (modelName.equals(EmployeeJobPos.class.getName())) {
@@ -897,13 +891,16 @@ public class RestfulController {
 					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
 
 					object.put("name", name);
+					_log.info("name: "+name);
 
 				} else {
 					object.put("name", objects[1]);
+					_log.info("name: "+objects[1]);
 				}
 
 				result.put(object);
 
+				_log.info("result: "+JSONFactoryUtil.looseSerialize(result));
 			}
 
 		} catch (Exception e) {
@@ -1228,4 +1225,6 @@ public class RestfulController {
 		}
 		
 	}	
+
+	public static final Log _log = LogFactoryUtil.getLog(RestfulController.class);
 }

@@ -7,15 +7,18 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierActionUser;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.Dossier;
@@ -96,6 +99,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		List<ProcessStepRole> listProcessStepRole = ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 //		_log.info("Process step role: " + listProcessStepRole + ", step: " + stepCode);
 		ProcessStepRole processStepRole = null;
+		List<DossierAction> lstStepActions = DossierActionLocalServiceUtil.getByDID_FSC_NOT_DAI(dossier.getDossierId(), stepCode, dossierAction.getDossierActionId());
 		if (listProcessStepRole.size() != 0) {
 			for (int i = 0; i < listProcessStepRole.size(); i++) {
 				processStepRole = listProcessStepRole.get(i);
@@ -110,7 +114,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 //				if (i == 0) {
-				List<DossierAction> lstStepActions = DossierActionLocalServiceUtil.getByDID_FSC_NOT_DAI(dossier.getDossierId(), stepCode, dossierAction.getDossierActionId());
 					for (User user : users) {
 //						_log.info("user in assign process step role: "+user.getUserId());
 						List<DossierAction> lstDoneActions = DossierActionLocalServiceUtil.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
@@ -150,7 +153,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 		else {
 			//Get role from service process
-			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierAction.getDossierActionId(), userId, groupId, assignUserId);
+			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierAction, userId, groupId, assignUserId);
 		}
 //		_log.info("END ROLES");
 	}
@@ -176,12 +179,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 	}
 	
-	private void initDossierActionUserByServiceProcessRole(Dossier dossier, int allowAssignUser, long dossierActionId, long userId, long groupId, long assignUserId) {
+	private void initDossierActionUserByServiceProcessRole(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignUserId) {
 		try {
 			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
 			List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
 			
-			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			DossierAction da = dossierAction;
 			
 			for (ServiceProcessRole spr : listSprs) {
 				int mod = 0;
@@ -193,7 +197,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 				for (User user : users) {
 					int assigned = user.getUserId() == assignUserId ? allowAssignUser : ProcessActionTerm.NOT_ASSIGNED;
-					org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, user.getUserId());
+					org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierAction.getDossierActionId(), user.getUserId());
 					if (dau != null) {
 						dau.setModerator(mod);
 //						if (assigned != ProcessActionTerm.NOT_ASSIGNED) {
@@ -206,7 +210,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierActionId, mod, false, da.getStepCode(), dossier.getDossierId());
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId());
 					}
 				}				
 			}
@@ -316,7 +320,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 				dau = mapDaus.get(userIdAssigned);
 
 				if (Validator.isNull(dau)) {
-					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
+//					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
+					DossierAction dAction = dossierAction;
 					if (dAction != null) {
 						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
 								dAction.getStepCode(), dossier.getDossierId());

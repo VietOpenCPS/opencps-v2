@@ -199,6 +199,11 @@ public class MenuRoleLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.MenuRole> getByMenuConfig(
+		long menuConfigId) {
+		return getService().getByMenuConfig(menuConfigId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.MenuRole> getByRoles(
 		long[] roleIds) {
 		return getService().getByRoles(roleIds);

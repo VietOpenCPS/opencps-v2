@@ -26,14 +26,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 	compileOnly group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
 	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
-	
-	// https://mvnrepository.com/artifact/redis.clients/jedis
-	compileInclude group: 'redis.clients', name: 'jedis', version: '2.9.0'
 
-	// https://mvnrepository.com/artifact/org.apache.commons/commons-pool2
-	compileInclude group: 'org.apache.commons', name: 'commons-pool2', version: '2.5.0'
-	compileInclude group: 'cglib', name: 'cglib', version: '2.2.2'
-	
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")

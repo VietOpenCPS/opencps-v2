@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -63,7 +64,8 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 	 * org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil} to access
 	 * the service process role local service.
 	 */
-
+	
+	@ThreadLocalCachable
 	public List<ServiceProcessRole> findByS_P_ID(long serviceProcessId) {
 		return serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 	}

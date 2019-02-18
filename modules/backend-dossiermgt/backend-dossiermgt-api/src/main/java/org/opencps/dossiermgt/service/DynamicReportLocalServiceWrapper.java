@@ -336,11 +336,12 @@ public class DynamicReportLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.DynamicReport updateDynamicReportDB(
 		long userId, long groupId, String reportCode, String reportName,
-		int sharing, String filterConfig, String tableConfig, String userConfig)
+		int sharing, String filterConfig, String tableConfig,
+		String userConfig, String reportType)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException {
 		return _dynamicReportLocalService.updateDynamicReportDB(userId,
 			groupId, reportCode, reportName, sharing, filterConfig,
-			tableConfig, userConfig);
+			tableConfig, userConfig, reportType);
 	}
 
 	@Override

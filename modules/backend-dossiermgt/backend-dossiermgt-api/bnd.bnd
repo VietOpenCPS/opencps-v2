@@ -6,5 +6,6 @@ Export-Package: \
 	org.opencps.dossiermgt.model,\
 	org.opencps.dossiermgt.service,\
 	org.opencps.dossiermgt.service.persistence,\
-	org.opencps.dossiermgt.constants
+	org.opencps.dossiermgt.constants,\
+	org.opencps.dossiermgt.input.model
 -includeresource: META-INF/service.xml=../backend-dossiermgt-service/service.xml 

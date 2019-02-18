@@ -2067,6 +2067,9 @@
 		<finder return-type="MenuRole" name="F_MID">
 			<finder-column name="menuRoleId" />
 		</finder>
+		<finder return-type="Collection" name="F_CONFIG_ID">
+			<finder-column name="menuConfigId" />
+		</finder>
 
 	</entity>
 
@@ -2281,6 +2284,7 @@
 		<column name="filterConfig" type="String" />
 		<column name="tableConfig" type="String" />
 		<column name="userConfig" type="String" />
+		<column name="reportType" type="String" />
 
 		<finder return-type="DynamicReport" name="F_GID_CODE">
 			<finder-column name="groupId" />

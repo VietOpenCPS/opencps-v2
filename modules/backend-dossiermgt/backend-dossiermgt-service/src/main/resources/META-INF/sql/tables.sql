@@ -488,7 +488,8 @@ create table opencps_dynamicreport (
 	sharing INTEGER,
 	filterConfig VARCHAR(75) null,
 	tableConfig VARCHAR(75) null,
-	userConfig VARCHAR(75) null
+	userConfig VARCHAR(75) null,
+	reportType VARCHAR(75) null
 );
 
 create table opencps_menuconfig (

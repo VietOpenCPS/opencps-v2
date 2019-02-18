@@ -74,6 +74,7 @@ public class DynamicReportWrapper implements DynamicReport,
 		attributes.put("filterConfig", getFilterConfig());
 		attributes.put("tableConfig", getTableConfig());
 		attributes.put("userConfig", getUserConfig());
+		attributes.put("reportType", getReportType());
 
 		return attributes;
 	}
@@ -162,6 +163,12 @@ public class DynamicReportWrapper implements DynamicReport,
 
 		if (userConfig != null) {
 			setUserConfig(userConfig);
+		}
+
+		String reportType = (String)attributes.get("reportType");
+
+		if (reportType != null) {
+			setReportType(reportType);
 		}
 	}
 
@@ -273,6 +280,16 @@ public class DynamicReportWrapper implements DynamicReport,
 	@Override
 	public String getReportName() {
 		return _dynamicReport.getReportName();
+	}
+
+	/**
+	* Returns the report type of this dynamic report.
+	*
+	* @return the report type of this dynamic report
+	*/
+	@Override
+	public String getReportType() {
+		return _dynamicReport.getReportType();
 	}
 
 	/**
@@ -489,6 +506,16 @@ public class DynamicReportWrapper implements DynamicReport,
 	@Override
 	public void setReportName(String reportName) {
 		_dynamicReport.setReportName(reportName);
+	}
+
+	/**
+	* Sets the report type of this dynamic report.
+	*
+	* @param reportType the report type of this dynamic report
+	*/
+	@Override
+	public void setReportType(String reportType) {
+		_dynamicReport.setReportType(reportType);
 	}
 
 	/**

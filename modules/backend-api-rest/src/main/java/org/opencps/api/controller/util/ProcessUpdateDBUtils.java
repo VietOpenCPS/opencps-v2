@@ -545,11 +545,12 @@ public class ProcessUpdateDBUtils {
 					String filterConfig = report.getFilterConfig();
 					String tableConfig = report.getTableConfig();
 					String userConfig = report.getUserConfig();
+					String reportType = report.getReportType();
 
 					if (Validator.isNotNull(reportCode)) {
 						// Check record exits DB
 						actions.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
-								tableConfig, userConfig);
+								tableConfig, userConfig, reportType);
 					}
 				}
 			}

@@ -528,6 +528,34 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier initDossier(long groupId,
+		long dossierId, String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		java.util.Date applicantIdDate, String address, String cityCode,
+		String cityName, String districtCode, String districtName,
+		String wardCode, String wardName, String contactName,
+		String contactTelNo, String contactEmail, String dossierTemplateNo,
+		String password, int viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName, String postalTelNo,
+		boolean online, boolean notification, String applicantNote,
+		int originality, org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess serviceProcess,
+		org.opencps.dossiermgt.model.ProcessOption processOption,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.initDossier(groupId, dossierId,
+			referenceUid, counter, serviceCode, serviceName, govAgencyCode,
+			govAgencyName, applicantName, applicantIdType, applicantIdNo,
+			applicantIdDate, address, cityCode, cityName, districtCode,
+			districtName, wardCode, wardName, contactName, contactTelNo,
+			contactEmail, dossierTemplateNo, password, viaPostal,
+			postalAddress, postalCityCode, postalCityName, postalTelNo, online,
+			notification, applicantNote, originality, service, serviceProcess,
+			processOption, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier initUpdateDossier(
 		long groupId, long id, String applicantName, String applicantIdType,
 		String applicantIdNo, String applicantIdDate, String address,
@@ -550,6 +578,32 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateName, delegateIdNo, delegateTelNo, delegateEmail,
 			delegateAddress, delegateCityCode, delegateDistrictCode,
 			delegateWardCode, sampleCount, serviceContext);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier initUpdateDossier(
+		long groupId, long id, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, Integer viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName, String postalTelNo,
+		String applicantNote, boolean isSameAsApplicant, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
+		String dossierName,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return _dossierLocalService.initUpdateDossier(groupId, id,
+			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
+			address, cityCode, cityName, districtCode, districtName, wardCode,
+			wardName, contactName, contactTelNo, contactEmail,
+			dossierTemplateNo, viaPostal, postalAddress, postalCityCode,
+			postalCityName, postalTelNo, applicantNote, isSameAsApplicant,
+			delegateName, delegateIdNo, delegateTelNo, delegateEmail,
+			delegateAddress, delegateCityCode, delegateDistrictCode,
+			delegateWardCode, sampleCount, dossierName, serviceContext);
 	}
 
 	@Override
@@ -883,6 +937,17 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.updateReleaseDate(groupId, id, refId, date,
 			context);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier updateStatus(
+		org.opencps.dossiermgt.model.Dossier dossier, String status,
+		String statusText, String subStatus, String subStatusText,
+		String lockState, String stepInstruction,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.updateStatus(dossier, status, statusText,
+			subStatus, subStatusText, lockState, stepInstruction, context);
 	}
 
 	@Override

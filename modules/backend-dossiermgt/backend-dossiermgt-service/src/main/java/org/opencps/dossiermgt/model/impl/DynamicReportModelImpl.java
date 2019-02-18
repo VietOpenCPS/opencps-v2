@@ -81,7 +81,8 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 			{ "sharing", Types.INTEGER },
 			{ "filterConfig", Types.VARCHAR },
 			{ "tableConfig", Types.VARCHAR },
-			{ "userConfig", Types.VARCHAR }
+			{ "userConfig", Types.VARCHAR },
+			{ "reportType", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -100,9 +101,10 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 		TABLE_COLUMNS_MAP.put("filterConfig", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("tableConfig", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("userConfig", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("reportType", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dynamicreport (uuid_ VARCHAR(75) null,dynamicReportId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,reportCode VARCHAR(75) null,reportName VARCHAR(75) null,sharing INTEGER,filterConfig VARCHAR(75) null,tableConfig VARCHAR(75) null,userConfig VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dynamicreport (uuid_ VARCHAR(75) null,dynamicReportId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,reportCode VARCHAR(75) null,reportName VARCHAR(75) null,sharing INTEGER,filterConfig VARCHAR(75) null,tableConfig VARCHAR(75) null,userConfig VARCHAR(75) null,reportType VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dynamicreport";
 	public static final String ORDER_BY_JPQL = " ORDER BY dynamicReport.dynamicReportId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dynamicreport.dynamicReportId ASC";
@@ -177,6 +179,7 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 		attributes.put("filterConfig", getFilterConfig());
 		attributes.put("tableConfig", getTableConfig());
 		attributes.put("userConfig", getUserConfig());
+		attributes.put("reportType", getReportType());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -268,6 +271,12 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 
 		if (userConfig != null) {
 			setUserConfig(userConfig);
+		}
+
+		String reportType = (String)attributes.get("reportType");
+
+		if (reportType != null) {
+			setReportType(reportType);
 		}
 	}
 
@@ -511,6 +520,21 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 	}
 
 	@Override
+	public String getReportType() {
+		if (_reportType == null) {
+			return "";
+		}
+		else {
+			return _reportType;
+		}
+	}
+
+	@Override
+	public void setReportType(String reportType) {
+		_reportType = reportType;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DynamicReport.class.getName()));
@@ -561,6 +585,7 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 		dynamicReportImpl.setFilterConfig(getFilterConfig());
 		dynamicReportImpl.setTableConfig(getTableConfig());
 		dynamicReportImpl.setUserConfig(getUserConfig());
+		dynamicReportImpl.setReportType(getReportType());
 
 		dynamicReportImpl.resetOriginalValues();
 
@@ -728,12 +753,20 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 			dynamicReportCacheModel.userConfig = null;
 		}
 
+		dynamicReportCacheModel.reportType = getReportType();
+
+		String reportType = dynamicReportCacheModel.reportType;
+
+		if ((reportType != null) && (reportType.length() == 0)) {
+			dynamicReportCacheModel.reportType = null;
+		}
+
 		return dynamicReportCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -763,6 +796,8 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 		sb.append(getTableConfig());
 		sb.append(", userConfig=");
 		sb.append(getUserConfig());
+		sb.append(", reportType=");
+		sb.append(getReportType());
 		sb.append("}");
 
 		return sb.toString();
@@ -770,7 +805,7 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(46);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DynamicReport");
@@ -832,6 +867,10 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 			"<column><column-name>userConfig</column-name><column-value><![CDATA[");
 		sb.append(getUserConfig());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>reportType</column-name><column-value><![CDATA[");
+		sb.append(getReportType());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -863,6 +902,7 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 	private String _filterConfig;
 	private String _tableConfig;
 	private String _userConfig;
+	private String _reportType;
 	private long _columnBitmask;
 	private DynamicReport _escapedModel;
 }

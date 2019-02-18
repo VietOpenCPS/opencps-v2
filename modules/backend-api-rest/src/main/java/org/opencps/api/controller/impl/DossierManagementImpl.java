@@ -39,9 +39,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -141,6 +143,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.model.impl.DossierMarkImpl;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -892,7 +895,8 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierPermission dossierPermission = new DossierPermission();
 
 		DossierActions actions = new DossierActionsImpl();
-
+		long start = System.currentTimeMillis();
+		
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -943,6 +947,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!flag) {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
 			}
+			_log.info("CREATE DOSSIER 1: " + (System.currentTimeMillis() - start) + " ms");
 			// if (!auth.hasResource(serviceContext,
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 			// throw new UnauthorizationException();
@@ -992,13 +997,19 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(200).entity(result).build();
 			}
 			
-			String serviceName = getServiceName(input.getServiceCode(), input.getDossierTemplateNo(), groupId);
+			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, input.getServiceCode());
+			String serviceName = StringPool.BLANK;
+			if (service != null) {
+				serviceName = service.getServiceName();
+			}
+//			String serviceName = getServiceName(input.getServiceCode(), input.getDossierTemplateNo(), groupId);
 
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
-
-			String cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			String districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			String wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ADMINISTRATIVE_REGION, groupId);
+			
+			String cityName = getDictItemName(groupId, dc, input.getCityCode());
+			String districtName = getDictItemName(groupId, dc, input.getDistrictCode());
+			String wardName = getDictItemName(groupId, dc, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
 			_log.info("===ADD DOSSIER CITY NAME:" + cityName);
 			String password = StringPool.BLANK;
@@ -1030,6 +1041,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
 			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
+			_log.info("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
@@ -1070,7 +1082,8 @@ public class DossierManagementImpl implements DossierManagement {
 				
 //				dossier.setDossierNo(input.getDossierNo());
 				dossier.setSubmitDate(new Date());
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+//				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+				ServiceProcess serviceProcess = process;
 				
 				double durationCount = 0;
 				int durationUnit = 0;
@@ -1093,7 +1106,7 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setProcessNo(serviceProcess.getProcessNo());
 				}
 				
-				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			else {
 				dossier = actions.initDossier(groupId, 0l, referenceUid, counter, input.getServiceCode(), serviceName,
@@ -1103,7 +1116,9 @@ public class DossierManagementImpl implements DossierManagement {
 						input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
 						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(), input.getPostalCityCode(), postalCityName,
 						input.getPostalTelNo(), online, process.getDirectNotification(), input.getApplicantNote(),
-						Integer.valueOf(input.getOriginality()), serviceContext);
+						Integer.valueOf(input.getOriginality()), 
+						service, process, option,
+						serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
 				dossier.setDelegateEmail(input.getDelegateEmail());
 				dossier.setDelegateAddress(input.getDelegateAddress());
@@ -1132,14 +1147,30 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setProcessNo(process.getProcessNo());
 				}
 				
-				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
+			_log.info("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
+
 //			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
 				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
 				if (applicant != null) {
-					dossier = DossierLocalServiceUtil.updateApplicantInfo(
-							dossier.getDossierId(), 
+//					dossier = DossierLocalServiceUtil.updateApplicantInfo(
+//							dossier.getDossierId(), 
+//							applicant.getApplicantIdDate(),
+//							applicant.getApplicantIdNo(),
+//							applicant.getApplicantIdType(),
+//							applicant.getApplicantName(),
+//							applicant.getAddress(),
+//							applicant.getCityCode(),
+//							applicant.getCityName(),
+//							applicant.getDistrictCode(),
+//							applicant.getDistrictName(),
+//							applicant.getWardCode(),
+//							applicant.getWardName(),
+//							applicant.getContactEmail(),
+//							applicant.getContactTelNo());
+					updateApplicantInfo(dossier, 
 							applicant.getApplicantIdDate(),
 							applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(),
@@ -1152,13 +1183,15 @@ public class DossierManagementImpl implements DossierManagement {
 							applicant.getWardCode(),
 							applicant.getWardName(),
 							applicant.getContactEmail(),
-							applicant.getContactTelNo());
+							applicant.getContactTelNo()							
+							);
 				}
 			}
 			if (Validator.isNull(dossier)) {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
+			_log.info("CREATE DOSSIER 4: " + (System.currentTimeMillis() - start) + " ms");
 			//Create DossierMark
 			_log.info("flagOldDossier: "+flagOldDossier);
 			_log.info("originality: "+originality);
@@ -1171,28 +1204,50 @@ public class DossierManagementImpl implements DossierManagement {
 //					_log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
 						_log.info("partList.size(): "+partList.size());
+						_log.info("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
+						int count = 0;
+						List<DossierMark> lstMarks = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
+						Map<String, DossierMark> mapMarks = new HashMap<>();
+						for (DossierMark dm : lstMarks) {
+							mapMarks.put(dm.getDossierPartNo(), dm);
+						}
 						for (DossierPart dossierPart : partList) {
 							int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
-							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
-									fileMark, 0, StringPool.BLANK, serviceContext);
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							model.setDossierId(dossier.getDossierId());
+							model.setDossierPartNo(dossierPartNo);
+							model.setFileCheck(0);
+							model.setFileMark(fileMark);
+							model.setFileComment(StringPool.BLANK);
+							marks[count++] = model;
+//							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
+//									fileMark, 0, StringPool.BLANK, serviceContext);
 						}
+						
+						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+						
+						_log.info("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
 					}
 				}
 			}
 
 			//Create dossier user
 			List<DossierUser> lstDus = DossierUserLocalServiceUtil.findByDID(dossier.getDossierId());
+			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			if (lstDus.size() == 0) {
 				DossierUserActions duActions = new DossierUserActionsImpl();
-				duActions.initDossierUser(groupId, dossier);				
+//				duActions.initDossierUser(groupId, dossier);				
+				duActions.initDossierUser(groupId, dossier, process, lstProcessRoles);				
 			}
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
+			_log.info("CREATE DOSSIER 5: " + (System.currentTimeMillis() - start) + " ms");
 
-			DossierLocalServiceUtil.updateDossier(dossier);
+//			DossierLocalServiceUtil.updateDossier(dossier);
 
 			if (dossier != null) {
 				//
@@ -1235,12 +1290,16 @@ public class DossierManagementImpl implements DossierManagement {
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			}
 
+			_log.info("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
-			List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(process.getServiceProcessId());
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
+			_log.info("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
+			DossierLocalServiceUtil.updateDossier(dossier);
+			_log.info("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
+			
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
@@ -1249,6 +1308,45 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
+	private void updateApplicantInfo(Dossier dossier, Date applicantIdDate,
+			String applicantIdNo,
+			String applicantIdType,
+			String applicantName,
+			String address,
+			String cityCode,
+			String cityName,
+			String districtCode,
+			String districtName,
+			String wardCode,
+			String wardName,
+			String contactEmail,
+			String contactTelNo) {
+		dossier.setApplicantIdDate(applicantIdDate);
+		dossier.setApplicantIdNo(applicantIdNo);
+		dossier.setApplicantIdType(applicantIdType);
+		dossier.setApplicantName(applicantName);
+		dossier.setAddress(address);
+		dossier.setCityCode(cityCode);
+		dossier.setCityName(cityName);
+		dossier.setDistrictCode(districtCode);
+		dossier.setDistrictName(districtName);
+		dossier.setWardCode(wardCode);
+		dossier.setWardName(wardName);
+		dossier.setContactEmail(contactEmail);
+		dossier.setContactTelNo(contactTelNo);
+		
+		dossier.setDelegateAddress(address);
+		dossier.setDelegateCityCode(cityCode);
+		dossier.setDelegateCityName(cityName);
+		dossier.setDelegateDistrictCode(districtCode);
+		dossier.setDelegateDistrictName(districtName);
+		dossier.setDelegateEmail(contactEmail);
+		dossier.setDelegateIdNo(applicantIdNo);
+		dossier.setDelegateName(applicantName);
+		dossier.setDelegateTelNo(contactTelNo);
+		dossier.setDelegateWardCode(wardCode);
+		dossier.setDelegateWardName(wardName);		
+	}
 	private void updateDelegateApplicant(Dossier dossier, DossierInputModel input) {
 		if (Validator.isNotNull(input.getDelegateName())) {
 			dossier.setDelegateName(input.getDelegateName());
@@ -1433,17 +1531,17 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
-					input.getDelegateWardCode(), input.getSampleCount(), serviceContext);
+					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), serviceContext);
 			if (Validator.isNotNull(input.getBriefNote())) {
 				dossier.setBriefNote(input.getBriefNote());
 			}
 //			if (Validator.isNotNull(input.getServiceName())) {
 //				dossier.setServiceName(input.getServiceName());
 //			}
-			if (Validator.isNotNull(input.getDossierName())) {
-				dossier.setDossierName(input.getDossierName());
-			}
-			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//			if (Validator.isNotNull(input.getDossierName())) {
+//				dossier.setDossierName(input.getDossierName());
+//			}
+//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
@@ -1925,6 +2023,21 @@ public class DossierManagementImpl implements DossierManagement {
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
+		} else {
+			return StringPool.BLANK;
+		}
+
+	}
+
+	protected String getDictItemName(long groupId, DictCollection dc, String itemCode) {
 
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);

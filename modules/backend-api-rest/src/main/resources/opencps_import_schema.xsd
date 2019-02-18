@@ -356,6 +356,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="reportType">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
