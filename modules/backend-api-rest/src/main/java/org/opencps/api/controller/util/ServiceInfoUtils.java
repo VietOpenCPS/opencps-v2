@@ -85,7 +85,7 @@ public class ServiceInfoUtils {
 //					serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
 //					QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			List<ServiceConfig> lstScs = ServiceConfigLocalServiceUtil.getByServiceInfo(Long.valueOf(doc.get(Field.GROUP_ID)), Long.valueOf(doc.get(ServiceInfoTerm.SERVICE_INFO_ID)));
+			List<ServiceConfig> lstScs = ServiceConfigLocalServiceUtil.getByServiceInfo(Long.valueOf(doc.get(Field.GROUP_ID)), GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 			
 //			List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
 

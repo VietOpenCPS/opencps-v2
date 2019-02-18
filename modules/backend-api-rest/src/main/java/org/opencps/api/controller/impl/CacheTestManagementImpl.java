@@ -20,8 +20,8 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.CacheTestManagement;
 import org.opencps.api.datamgt.model.DataSearchModel;
-import org.opencps.cache.actions.CacheActions;
-import org.opencps.cache.actions.impl.CacheActionsImpl;
+//import org.opencps.cache.actions.CacheActions;
+//import org.opencps.cache.actions.impl.CacheActionsImpl;
 
 public class CacheTestManagementImpl implements CacheTestManagement{
 
@@ -38,12 +38,12 @@ public class CacheTestManagementImpl implements CacheTestManagement{
 			//Serializable ttt = cacheLocalService.getFromCache("getDetailActionConfig", null, null);
 			//cacheLocalService.clearCache("getDetailActionConfig");
 			_log.info("START CLEAR CACHE");
-			CacheActions cache = new CacheActionsImpl();
+//			CacheActions cache = new CacheActionsImpl();
 			_log.info("START CLEAR CACHE111");
 			//cache.clearCache("getActionConfig");
 			_log.info("START CLEAR CACHE2222");
-			Serializable ttt = cache.getFromCache("getActionConfig", "groupId_"+ 53155);
-			_log.info("ttt: "+ttt.toString());
+//			Serializable ttt = cache.getFromCache("getActionConfig", "groupId_"+ 53155);
+//			_log.info("ttt: "+ttt.toString());
 		} catch (Exception e) {
 			_log.error(e);
 		}

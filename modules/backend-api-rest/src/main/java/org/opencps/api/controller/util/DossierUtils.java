@@ -1005,6 +1005,8 @@ public class DossierUtils {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
 
+			_log.info("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
+
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
 			String preStepCode;
