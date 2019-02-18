@@ -42,8 +42,10 @@ public class CacheTestManagementImpl implements CacheTestManagement{
 			_log.info("START CLEAR CACHE111");
 			//cache.clearCache("getActionConfig");
 			_log.info("START CLEAR CACHE2222");
-			Serializable ttt = cache.getFromCache("getActionConfig", "groupId_"+ 53155);
-			_log.info("ttt: "+ttt.toString());
+			Serializable ttt = cache.getFromCache("getActionConfig", "groupId_"+ 35823);
+			if (ttt != null) {
+				_log.info("ttt: "+ttt.toString());
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
