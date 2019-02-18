@@ -157,12 +157,14 @@ public class RestAuthFilter implements Filter {
 	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
 	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
+	    gzipFilterEnable = false;
 	    if (gzipFilterEnable) {
 		    if ( acceptsGZipEncoding(httpRequest) 
 		    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
 		    	if (!httpResponse.containsHeader("Content-Encoding")
 		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
 		    		httpResponse.addHeader("Content-Encoding", "gzip");
+		    		httpResponse.setCharacterEncoding("UTF-8");
 			        GZipServletResponseWrapper gzipResponse =
 			        		new GZipServletResponseWrapper(httpResponse);
 			        filterChain.doFilter(servletRequest, gzipResponse);
