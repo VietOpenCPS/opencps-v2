@@ -54,53 +54,53 @@ public class CacheLocalServiceImpl extends CacheLocalServiceBaseImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(CacheActionsImpl.class);
 
-//	public Serializable getFromCache(String cacheName, Serializable key) {
-//		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
-//
-//		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
-//		if (cache != null) {
-//			return cache.get(key);
-//		}
-//		else return null;
-//	}
+	public Serializable getFromCache(String cacheName, Serializable key) {
+		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
 
-//	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) {
-//		System.out.println("Liferay Cache: Adding to cache. CacheName = " + cacheName + ", Key = " + key + ", TTL : " + ttl);
-//		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
-//		cache.put(key, value, ttl);
-//	}
-//
-//	public void clearCache(String cacheName) throws PortalException {
-//		_log.info("Liferay Cache: Clearing cache. CacheName = " + cacheName);
-//		System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
-//		//CacheLocalServiceUtil.clearCache(cacheName);
-//		if (Validator.isNotNull(cacheName)) {
-//			try {
-//				System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
-//				PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
-//				cache.removeAll();
-//			} catch (Exception ex) {
-//				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
-//			}
-//		} else {
-//			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
-//		}
-//	}
-//
-//	public void removeFromCache(String cacheName, Serializable key) throws PortalException {
-//		_log.info("Liferay Cache: Removing from cache. CacheName = " + cacheName + ", Key = " + key);
-//		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
-//		cache.remove(key);
-//
-//	}
-//
-//	public void closeCachePool() {
-//		MultiVMPoolUtil.clear();
-//	}
-//
-//	public void ping() throws PortalException {
-//		// DO NOTHING.
-//	}
+		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
+		if (cache != null) {
+			return cache.get(key);
+		}
+		else return null;
+	}
+
+	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) {
+		System.out.println("Liferay Cache: Adding to cache. CacheName = " + cacheName + ", Key = " + key + ", TTL : " + ttl);
+		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
+		cache.put(key, value, ttl);
+	}
+
+	public void clearCache(String cacheName) throws PortalException {
+		_log.info("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+		System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+		//CacheLocalServiceUtil.clearCache(cacheName);
+		if (Validator.isNotNull(cacheName)) {
+			try {
+				System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+				PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
+				cache.removeAll();
+			} catch (Exception ex) {
+				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
+			}
+		} else {
+			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
+		}
+	}
+
+	public void removeFromCache(String cacheName, Serializable key) throws PortalException {
+		_log.info("Liferay Cache: Removing from cache. CacheName = " + cacheName + ", Key = " + key);
+		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
+		cache.remove(key);
+
+	}
+
+	public void closeCachePool() {
+		MultiVMPoolUtil.clear();
+	}
+
+	public void ping() throws PortalException {
+		// DO NOTHING.
+	}
 
 }
 

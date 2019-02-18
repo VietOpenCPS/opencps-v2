@@ -59,6 +59,9 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
+import org.opencps.cache.service.CacheLocalServiceUtil;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
@@ -3040,28 +3043,31 @@ public class DossierActionsImpl implements DossierActions {
 //			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			//
 			
-//			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
-//			if (serviceConfig22 != null) {
-////				_log.info("START_ Get list process option1111: "+new Date());
-//				Date dateStart122 = new Date();
-//				Serializable serList22 = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
-//				List<ProcessOption> lstOptions122 = null;
-//				if (serList22 == null) {
-//					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
-//					if (lstOptions122 != null) {
-////						_log.info("START_ Serlist null");
-//						CacheLocalServiceUtil.addToCache("ProcessOption",
-//								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
-//								(int) Time.MINUTE * 15);
-//					}
-//				} else {
-//					lstOptions122 = (List<ProcessOption>) serList22;
-//				}
-//				Date dateEnd122 = new Date();
-//				_log.info("START_ Get list process option: "+dateEnd122);
-//				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
-//				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
-//			}
+			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
+			if (serviceConfig22 != null) {
+//				_log.info("START_ Get list process option1111: "+new Date());
+				Date dateStart122 = new Date();
+				CacheActions cache = new CacheActionsImpl();
+				Serializable serList22 = cache.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
+				List<ProcessOption> lstOptions122 = null;
+				if (serList22 == null) {
+					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+					if (lstOptions122 != null) {
+//						_log.info("START_ Serlist null");
+						cache.addToCache("ProcessOption",
+								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
+								(int) Time.MINUTE * 15);
+					}
+				} else {
+					_log.info("START_ Serlist: "+serList22);
+					_log.info("START_ Serlist22222: "+JSONFactoryUtil.looseSerialize(serList22));
+					lstOptions122 = (List<ProcessOption>) serList22;
+				}
+				Date dateEnd122 = new Date();
+				_log.info("START_ Get list process option: "+dateEnd122);
+				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
+				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
+			}
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
@@ -3088,28 +3094,28 @@ public class DossierActionsImpl implements DossierActions {
 				if (serviceConfig != null) {
 					_log.info("START_ Get list process option: "+new Date());
 					Date dateStart = new Date();
-					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+					//List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 					Date dateEnd = new Date();
-//					_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
-//					_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
-//					//
-//					_log.info("START_ Get list process option1111: "+new Date());
-//					Date dateStart1 = new Date();
-//					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
-//					List<ProcessOption> lstOptions1 = null;
-//					if (serList == null) {
-//						lstOptions1 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
-//					} else {
-//						lstOptions1 = (List<ProcessOption>) serList;
-//						if (lstOptions1 != null) {
-//							CacheLocalServiceUtil.addToCache("ProcessOption",
-//									groupId + "_" + serviceConfig.getServiceConfigId(), (Serializable) lstOptions1,
-//									(int) Time.MINUTE * 15);
-//						}
-//					}
-//					Date dateEnd1 = new Date();
-//					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
-//					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions1));
+					//_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
+					//_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
+					//
+					_log.info("START_ Get list process option1111: "+new Date());
+					Date dateStart1 = new Date();
+					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
+					List<ProcessOption> lstOptions = null;
+					if (serList == null) {
+						lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
+					} else {
+						lstOptions = (List<ProcessOption>) serList;
+						if (lstOptions != null) {
+							CacheLocalServiceUtil.addToCache("ProcessOption",
+									groupId + "_" + serviceConfig.getServiceConfigId(), (Serializable) lstOptions,
+									(int) Time.MINUTE * 15);
+						}
+					}
+					Date dateEnd1 = new Date();
+					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
+					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions));
 					ProcessOption foundOption = null;
 					if (createDossiers.contains(StringPool.POUND)) {
 						String[] splitCDs = createDossiers.split(StringPool.POUND);
