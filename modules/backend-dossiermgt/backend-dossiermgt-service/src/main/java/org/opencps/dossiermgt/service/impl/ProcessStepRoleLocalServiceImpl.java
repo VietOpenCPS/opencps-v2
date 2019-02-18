@@ -21,6 +21,7 @@ import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.ProcessStepRoleLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.ProcessStepRolePK;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
@@ -60,6 +61,7 @@ public class ProcessStepRoleLocalServiceImpl extends ProcessStepRoleLocalService
 	 * the process step role local service.
 	 */
 
+	@ThreadLocalCachable
 	public List<ProcessStepRole> findByP_S_ID(long processStepId) {
 		return processStepRolePersistence.findByP_S_ID(processStepId);
 	}

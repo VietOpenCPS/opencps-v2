@@ -16,6 +16,7 @@ package org.opencps.usermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -302,6 +303,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	}
 
+	@ThreadLocalCachable
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
 		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
 	}

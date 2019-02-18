@@ -25,6 +25,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -51,6 +52,10 @@ public class ActionOverdueScheduler extends BaseSchedulerEntryMessageListener {
 		}
 		else {
 			isRunning = false;
+		}
+		if (!OpenCPSConfigUtil.isNotificationEnable()) {
+			isRunning = false;
+			return;
 		}
 		_log.info("OpenCPS Check Action Overdue IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		

@@ -548,7 +548,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions action = new PaymentFileActionsImpl();
 			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-			if (paymentFile.getConfirmFileEntryId() > 0) {
+			if (paymentFile != null && paymentFile.getConfirmFileEntryId() > 0) {
 
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
 

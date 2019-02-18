@@ -58,8 +58,10 @@ public class CacheLocalServiceImpl extends CacheLocalServiceBaseImpl {
 		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
 
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
-
-		return cache.get(key);
+		if (cache != null) {
+			return cache.get(key);
+		}
+		else return null;
 	}
 
 	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) {

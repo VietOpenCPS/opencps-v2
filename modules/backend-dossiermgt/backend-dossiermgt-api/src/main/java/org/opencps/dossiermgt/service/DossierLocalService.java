@@ -46,6 +46,9 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
 
 import java.io.Serializable;
 
@@ -392,6 +395,22 @@ public interface DossierLocalService extends BaseLocalService,
 		boolean notification, String applicantNote, int originality,
 		ServiceContext context) throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier initDossier(long groupId, long dossierId,
+		String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName, String contactName, String contactTelNo,
+		String contactEmail, String dossierTemplateNo, String password,
+		int viaPostal, String postalAddress, String postalCityCode,
+		String postalCityName, String postalTelNo, boolean online,
+		boolean notification, String applicantNote, int originality,
+		ServiceInfo service, ServiceProcess serviceProcess,
+		ProcessOption processOption, ServiceContext context)
+		throws PortalException;
+
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
@@ -404,6 +423,20 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateTelNo, String delegateEmail, String delegateAddress,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, ServiceContext serviceContext);
+
+	public Dossier initUpdateDossier(long groupId, long id,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		String applicantIdDate, String address, String cityCode,
+		String cityName, String districtCode, String districtName,
+		String wardCode, String wardName, String contactName,
+		String contactTelNo, String contactEmail, String dossierTemplateNo,
+		Integer viaPostal, String postalAddress, String postalCityCode,
+		String postalCityName, String postalTelNo, String applicantNote,
+		boolean isSameAsApplicant, String delegateName, String delegateIdNo,
+		String delegateTelNo, String delegateEmail, String delegateAddress,
+		String delegateCityCode, String delegateDistrictCode,
+		String delegateWardCode, Long sampleCount, String dossierName,
+		ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,
@@ -575,6 +608,11 @@ public interface DossierLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateReleaseDate(long groupId, long id, String refId,
 		Date date, ServiceContext context) throws PortalException;
+
+	public Dossier updateStatus(Dossier dossier, String status,
+		String statusText, String subStatus, String subStatusText,
+		String lockState, String stepInstruction, ServiceContext context)
+		throws PortalException;
 
 	public Dossier updateStatus(long groupId, long id, String refId,
 		String status, String statusText, String subStatus,

@@ -26,7 +26,9 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.opencps.dossiermgt.input.model.DossierMarkBatchModel;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierMarkLocalServiceBaseImpl;
@@ -169,4 +171,57 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 		return object;
 	}
+	
+	public void addBatchDossierMark(long groupId, DossierMarkBatchModel[] marks, Map<String, DossierMark> mapMarks, ServiceContext serviceContext)
+			throws PortalException, SystemException {
+
+		long userId = serviceContext.getUserId();
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+		for (int i = 0; i < marks.length; i++) {
+//			DossierMark object = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, marks[i].getDossierId(),
+//					marks[i].getDossierPartNo());
+			DossierMark object = mapMarks.get(marks[i].getDossierPartNo());
+			if (object != null) {
+				// Add audit fields
+				object.setModifiedDate(now);
+				object.setUserId(userAction.getUserId());
+
+				// Add other fields
+				if (Validator.isNotNull(marks[i].getFileCheck())) {
+					object.setFileCheck(marks[i].getFileCheck());
+				}
+				if (Validator.isNotNull(marks[i].getFileMark())) {
+					object.setFileMark(marks[i].getFileMark());
+				}
+				object.setFileComment(marks[i].getFileComment());
+			} else {
+				long dossierMarkId = counterLocalService.increment(DossierMark.class.getName());
+				object = dossierMarkPersistence.create(dossierMarkId);
+
+				/// Add audit fields
+				object.setCompanyId(serviceContext.getCompanyId());
+				object.setGroupId(groupId);
+				object.setCreateDate(now);
+				object.setModifiedDate(now);
+				object.setUserId(userAction.getUserId());
+
+				// Add other fields
+				object.setDossierId(marks[i].getDossierId());
+				object.setDossierPartNo(marks[i].getDossierPartNo());
+				if (Validator.isNotNull(marks[i].getFileCheck())) {
+					object.setFileCheck(marks[i].getFileCheck());
+				}
+				if (Validator.isNotNull(marks[i].getFileMark())) {
+					object.setFileMark(marks[i].getFileMark());
+				}
+				object.setFileComment(marks[i].getFileComment());
+			}
+			
+			dossierMarkPersistence.update(object);
+		}
+	}
+ 
 }

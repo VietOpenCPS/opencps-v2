@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
@@ -307,6 +308,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
+	@ThreadLocalCachable
 	public ProcessStep fetchBySC_GID(String stepCode, long groupId, long serviceProcessId) {
 		return processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 	}

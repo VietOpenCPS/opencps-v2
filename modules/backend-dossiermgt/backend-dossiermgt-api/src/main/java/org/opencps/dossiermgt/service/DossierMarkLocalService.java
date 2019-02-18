@@ -37,11 +37,13 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.dossiermgt.input.model.DossierMarkBatchModel;
 import org.opencps.dossiermgt.model.DossierMark;
 
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for DossierMark. Methods of this
@@ -65,6 +67,9 @@ public interface DossierMarkLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link DossierMarkLocalServiceUtil} to access the dossier mark local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.DossierMarkLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public void addBatchDossierMark(long groupId,
+		DossierMarkBatchModel[] marks, Map<String, DossierMark> mapMarks,
+		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	/**
 	* Adds the dossier mark to the database. Also notifies the appropriate model listeners.

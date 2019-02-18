@@ -1,8 +1,26 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
+import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,22 +54,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
-import com.liferay.portal.kernel.messaging.DestinationNames;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
-
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
@@ -73,7 +75,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		else {
 			return;
 		}
-		//LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 //		SchedulerRecord schedulerRecord = SchedulerRecordLocalServiceUtil.fetchByST(SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE);
 //		Date now = new Date();
 //		
@@ -311,6 +313,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 //			});
 			//TODO: Calculator again year ago
 			int lastYear = LocalDate.now().getYear() - 1;
+			//LOG.info("START LAST YEAR");
 			boolean flagLastYear = true;
 			calculateData = new HashMap<>();
 			mapFlag = new HashMap<>();
@@ -320,12 +323,14 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 					flagLastYear = false;
 				}
+				//LOG.info("flagLastYear: "+flagLastYear + " |lastMonth: "+lastMonth);
 				if (flagLastYear) {
 					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 							engineUpdateAction, serviceDomainResponse, calculateData);
 				}
 				mapFlag.put(lastMonth, flagLastYear);
 			}
+			//LOG.info("calculateData: "+JSONFactoryUtil.looseSerialize(calculateData));
 			StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 				if (mapFlag.get(lastMonth)) {

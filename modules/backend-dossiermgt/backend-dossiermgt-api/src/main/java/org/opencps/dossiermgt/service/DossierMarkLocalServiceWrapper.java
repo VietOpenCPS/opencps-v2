@@ -33,6 +33,17 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 		_dossierMarkLocalService = dossierMarkLocalService;
 	}
 
+	@Override
+	public void addBatchDossierMark(long groupId,
+		org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks,
+		java.util.Map<String, org.opencps.dossiermgt.model.DossierMark> mapMarks,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks,
+			serviceContext);
+	}
+
 	/**
 	* Adds the dossier mark to the database. Also notifies the appropriate model listeners.
 	*
