@@ -73,17 +73,19 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 	public void onAfterCreate(DossierAction model) throws ModelListenerException {
 
 		_log.info("START Dossier Action");
+		long start = System.currentTimeMillis();
+		
 		Indexer<DossierLog> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(DossierLog.class);
 		
 		if (true) {
-
+			_log.info("START Dossier Action service context: " + (System.currentTimeMillis() - start));
 			ServiceContext serviceContext = new ServiceContext();
 
 			EmployeeActions employeeActions = new EmployeeActions();
 
 			JobposActions jobposActions = new JobposActions();
-
+			_log.info("START Dossier Action service context end: " + (System.currentTimeMillis() - start));
 			try {
 
 				long userId = model.getUserId();
@@ -112,9 +114,11 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 				if (dossierId > 0) {
 
+					_log.info("START Dossier Action get log: " + (System.currentTimeMillis() - start));
 					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
 							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS);
+					_log.info("START Dossier Action end get log: " + (System.currentTimeMillis() - start));
 
 					for (DossierLog log : dossierLogs) {
 						long dossierFileId = 0;
@@ -212,6 +216,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				_log.debug(e);
 			}
 		}
+		_log.info("END Dossier Action: " + (System.currentTimeMillis() - start));
 	}
 
 //	private String getUserName(long userId, long groupId) {
