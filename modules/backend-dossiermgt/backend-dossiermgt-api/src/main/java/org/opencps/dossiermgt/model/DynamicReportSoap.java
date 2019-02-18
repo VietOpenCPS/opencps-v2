@@ -47,6 +47,7 @@ public class DynamicReportSoap implements Serializable {
 		soapModel.setFilterConfig(model.getFilterConfig());
 		soapModel.setTableConfig(model.getTableConfig());
 		soapModel.setUserConfig(model.getUserConfig());
+		soapModel.setReportType(model.getReportType());
 
 		return soapModel;
 	}
@@ -211,6 +212,14 @@ public class DynamicReportSoap implements Serializable {
 		_userConfig = userConfig;
 	}
 
+	public String getReportType() {
+		return _reportType;
+	}
+
+	public void setReportType(String reportType) {
+		_reportType = reportType;
+	}
+
 	private String _uuid;
 	private long _dynamicReportId;
 	private long _companyId;
@@ -225,4 +234,5 @@ public class DynamicReportSoap implements Serializable {
 	private String _filterConfig;
 	private String _tableConfig;
 	private String _userConfig;
+	private String _reportType;
 }

@@ -676,6 +676,57 @@ public class ReadXMLFileUtils {
 		//jaxbMarshaller.marshal(dictCollection, System.out);
 	}
 
+	// LamTV_ Process convert xml to Object ActionConfig
+	public static File convertActionConfigToXML(ActionConfigList actConfigList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(ActionConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("ActionConfig.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(actConfigList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object StepConfig
+	public static File convertStepConfigToXML(StepConfigList stepConfigList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(StepConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("StepConfig.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(stepConfigList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
+	// LamTV_ Process convert xml to Object StepConfig
+	public static File convertMenuConfigToXML(MenuConfigList meuConfigList) throws JAXBException {
+
+		JAXBContext jaxbContext = JAXBContext.newInstance(MenuConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+		File file = new File("MenuConfig.xml");
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(meuConfigList, file);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return file;
+	}
+
 	/** Process Convert Object to xml - END **/
 
 	//Process validate xml

@@ -56,6 +56,10 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 		return menuRolePersistence.findByF_RID(roleIds);
 	}
 
+	public List<MenuRole> getByMenuConfig(long menuConfigId) {
+		return menuRolePersistence.findByF_CONFIG_ID(menuConfigId);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuRole updateMenuRoleDB(long menuConfigId, long roleId) {
 

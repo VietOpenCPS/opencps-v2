@@ -556,6 +556,7 @@
 		<property name="filterConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="reportType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuConfigImpl" table="opencps_menuconfig">
 		<id name="menuConfigId" type="long">

@@ -53,7 +53,7 @@ public class DynamicReportLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public DynamicReport updateDynamicReportDB(long userId, long groupId, String reportCode, String reportName,
 			int sharing, String filterConfig, String tableConfig,
-			String userConfig) throws NoSuchUserException {
+			String userConfig, String reportType) throws NoSuchUserException {
 
 		Date now = new Date();
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -79,6 +79,7 @@ public class DynamicReportLocalServiceImpl
 			dynamicReport.setFilterConfig(filterConfig);
 			dynamicReport.setTableConfig(tableConfig);
 			dynamicReport.setUserConfig(userConfig);
+			dynamicReport.setReportType(reportType);
 		} else {
 			dynamicReport.setModifiedDate(now);
 			if (Validator.isNotNull(reportCode))
@@ -93,6 +94,8 @@ public class DynamicReportLocalServiceImpl
 				dynamicReport.setTableConfig(tableConfig);
 			if (Validator.isNotNull(userConfig))
 				dynamicReport.setUserConfig(userConfig);
+			if (Validator.isNotNull(reportType))
+				dynamicReport.setReportType(reportType);
 		}
 
 		return dynamicReportPersistence.update(dynamicReport);

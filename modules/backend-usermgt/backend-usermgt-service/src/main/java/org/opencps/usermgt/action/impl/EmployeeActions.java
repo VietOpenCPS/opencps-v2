@@ -512,7 +512,16 @@ public class EmployeeActions implements EmployeeInterface {
 						20143
 					};
 
-					String passWord = PwdGenerator.getPassword();
+					//String passWord = PwdGenerator.getPassword();
+					// changePassWord
+					String secretKey1 = PwdGenerator.getPassword(2 , new String[] { "0123456789" });
+					String secretKey2 = PwdGenerator.getPassword(2 , new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
+					String secretKey3 = PwdGenerator.getPassword(2 , new String[] { "abcdefghijklmnopqrstuvwxyz" });
+					String secretKey4 = PwdGenerator.getPassword(2 , new String[] { "~!@#$%^&*" });
+					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+					String passWord = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
+					
+					_log.info("passWord:"+passWord);
 
 					String fullName = employee.getFullName();
 					String[] fml = new String[3];
