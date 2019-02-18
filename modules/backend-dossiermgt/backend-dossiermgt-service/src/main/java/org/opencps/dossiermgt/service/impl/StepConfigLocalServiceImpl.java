@@ -27,6 +27,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.StepConfig;
@@ -153,21 +155,28 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	}
 
 	public StepConfig getByCode(long groupId, String stepCode) {
-//		if (stepCode != null) {
-//			Serializable stepConfigCache = CacheLocalServiceUtil.getFromCache("StepConfig", groupId +"_"+ stepCode);
-//			StepConfig stepConfig = null;
-//			if (stepConfigCache == null) {
-//				stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
-//				if (stepConfig != null) {
-//					CacheLocalServiceUtil.addToCache("StepConfig",
-//							groupId +"_"+ stepCode, (Serializable) stepConfig,
-//							(int) Time.MINUTE * 15);
-//				}
-//			} else {
-//				stepConfig = (StepConfig) stepConfigCache;
-//			}
-//		}
-		return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+		StepConfig stepConfig = null;
+		if (stepCode != null) {
+			try {
+				CacheActions cache = new CacheActionsImpl();
+				Serializable stepConfigCache;
+					stepConfigCache = cache.getFromCache("StepConfig", groupId +"_"+ stepCode);
+				if (stepConfigCache == null) {
+					stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+					if (stepConfig != null) {
+						cache.addToCache("StepConfig",
+								groupId +"_"+ stepCode, (Serializable) stepConfig,
+								(int) Time.MINUTE * 30);
+					}
+				} else {
+					stepConfig = (StepConfig) stepConfigCache;
+				}
+			} catch (PortalException e) {
+				return null;
+			}
+		}
+		//return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+		return stepConfig;
 
 	}
 

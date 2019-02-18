@@ -45,8 +45,7 @@ public class CacheActionsImpl implements CacheActions{
 		if (data != null) {
 			return data;
 		} else {
-			addToCache(cacheName, key, "HAHAHAHAHAHAH", (int)Time.MINUTE * 15);
-			return data;
+			return null;
 		}
 		
 	}
