@@ -64,57 +64,62 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 		else {
 			return;
 		}
-		//OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
-		
-		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-
-		List<Group> groupList = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
-		List<Group> sites = new ArrayList<Group>();
-
-		if (groupList != null && groupList.size() > 0) {
-			for (Group group : groupList) {
-				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
-					sites.add(group);
+		try {
+			//OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
+			
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+	
+			List<Group> groupList = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+			List<Group> sites = new ArrayList<Group>();
+	
+			if (groupList != null && groupList.size() > 0) {
+				for (Group group : groupList) {
+					if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
+						sites.add(group);
+					}
 				}
 			}
+	
+			for (Group site : sites) {
+	
+				GetPersonRequest payload = new GetPersonRequest();
+				
+				payload.setGroupId(site.getGroupId());
+				payload.setStart(QueryUtil.ALL_POS);
+				payload.setEnd(QueryUtil.ALL_POS);
+				
+				int monthCurrent = LocalDate.now().getMonthValue();
+				int yearCurrent = LocalDate.now().getYear();
+				for (int month = 1; month <= monthCurrent; month ++) {
+					processUpdatePersonStatistic(site.getGroupId(), month, yearCurrent, payload,
+							engineUpdateAction);
+				}
+				//TODO: Calculator again year ago
+				int lastYear = LocalDate.now().getYear() - 1;
+				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+					processUpdatePersonStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+							engineUpdateAction);
+				}
+	
+				/* Update summary */
+				//Delete record
+				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+				//
+				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+				
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+				//TODO: Calculator again last year
+				//Delete record
+				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+				//
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
+	
+			}
 		}
-
-		for (Group site : sites) {
-
-			GetPersonRequest payload = new GetPersonRequest();
-			
-			payload.setGroupId(site.getGroupId());
-			payload.setStart(QueryUtil.ALL_POS);
-			payload.setEnd(QueryUtil.ALL_POS);
-			
-			int monthCurrent = LocalDate.now().getMonthValue();
-			int yearCurrent = LocalDate.now().getYear();
-			for (int month = 1; month <= monthCurrent; month ++) {
-				processUpdatePersonStatistic(site.getGroupId(), month, yearCurrent, payload,
-						engineUpdateAction);
-			}
-			//TODO: Calculator again year ago
-			int lastYear = LocalDate.now().getYear() - 1;
-			for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-				processUpdatePersonStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-						engineUpdateAction);
-			}
-
-			/* Update summary */
-			//Delete record
-			engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
-			//
-			StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
-			
-			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
-			//TODO: Calculator again last year
-			//Delete record
-			engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
-			//
-			statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
-
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 		isRunning = false;
 	}
