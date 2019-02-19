@@ -715,7 +715,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 			return Response.noContent().build();
 		}
 		

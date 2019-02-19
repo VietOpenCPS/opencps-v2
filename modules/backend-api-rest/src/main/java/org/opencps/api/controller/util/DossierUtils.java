@@ -74,7 +74,7 @@ public class DossierUtils {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 
-	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
+	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, User user) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
@@ -262,7 +262,7 @@ public class DossierUtils {
 
 			//LamTV: Process Assigned dossier
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-			User user = UserLocalServiceUtil.fetchUser(userId);
+//			User user = UserLocalServiceUtil.fetchUser(userId);
 			boolean isAdministratorData = false;
 			if (user != null) {
 				List<Role> userRoles = user.getRoles();
