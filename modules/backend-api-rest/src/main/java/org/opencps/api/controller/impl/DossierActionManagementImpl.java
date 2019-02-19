@@ -239,19 +239,35 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 //							}
 //						}
 						List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, stepCode);
+						User u = null;
+						List<User> userList = null;
 						for (DossierActionUser dau : assignedUsers) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH
 									&& dau.getModerator() == 1) {
-								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-								if (u != null) {
-									if (!u.isLockout() && u.isActive()) {
-										lstUser.add(u);
+								long userId = dau.getUserId();
+								if (userId > 0) {
+									u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+									if (u != null) {
+										if (!u.isLockout() && u.isActive()) {
+											lstUser.add(u);
+										}
+									}
+								} else {
+									userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
+									if (userList != null) {
+										for (User userInfo : userList) {
+											if (userInfo != null) {
+												if (!userInfo.isLockout() && userInfo.isActive()) {
+													lstUser.add(userInfo);
+												}
+											}
+										}
 									}
 								}
 							}
 						}
 					}
-					
+
 					List<DossierActionNextActiontoUser> outputUsers = new ArrayList<DossierActionNextActiontoUser>();
 					DossierActionNextActiontoUser modelUser = null;
 					if (lstUser != null && lstUser.size() > 0) {
@@ -274,14 +290,18 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 								}
 	
 								modelUser.setUserId(userId);
-								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-								if (emp != null) {
-									modelUser.setUserName(emp.getFullName() != null ? emp.getFullName().toUpperCase()
-											: StringPool.BLANK);
-								} else {
-									modelUser.setUserName(
-											u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
-								}
+								//Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//								if (emp != null) {
+//									modelUser.setUserName(emp.getFullName() != null ? emp.getFullName().toUpperCase()
+//											: StringPool.BLANK);
+//								} else {
+//									modelUser.setUserName(
+//											u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+//								}
+								//TODO
+								modelUser.setUserName(
+										u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+
 								modelUser.setModerator(moderator);
 								modelUser.setAssigned(assigned);
 								boolean flag = true;

@@ -786,7 +786,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (dossierDataList != null && dossierDataList.size() > 0) {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
+						engineFetch.getServiceStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
 								false);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);

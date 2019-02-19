@@ -9,11 +9,13 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -33,7 +35,6 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -358,12 +359,27 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						
 						if (!lstDus.isEmpty()) {
 							for (DossierActionUser dau : lstDus) {
-								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
-								if (employee != null) {
-									if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-										lstUsers.add(dau.getUserId());
-										currentActionUser.append(employee.getFullName());
-									}		
+								if (dau.getUserId() == 0) {
+									List<User> userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
+									if (userList != null) {
+										for (User user : userList) {
+											Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), user.getUserId());
+											if (employee != null) {
+												if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+													lstUsers.add(dau.getUserId());
+													currentActionUser.append(employee.getFullName());
+												}		
+											}
+										}
+									}
+								} else {
+									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
+									if (employee != null) {
+										if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+											lstUsers.add(dau.getUserId());
+											currentActionUser.append(employee.getFullName());
+										}		
+									}
 								}
 							}
 							currentActionUserStr = currentActionUser.toString();
@@ -525,47 +541,48 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			_log.info("Mapping user:" + sb.toString());
 //			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			//
-			StringBundler sb = new StringBundler();
-			StringBundler sbPermission = new StringBundler();
-			if (dossierId > 0) {
-				List<DossierUser> dossierUserList = DossierUserLocalServiceUtil.findByDID(dossierId);
-				if (dossierUserList != null && dossierUserList.size() > 0) {
-					int length = dossierUserList.size();
-					for (int i = 0; i < length; i++) {
-						DossierUser dau = dossierUserList.get(i);
-						long userId = dau.getUserId();
-						if (i == 0) {
-							sb.append(userId);
-							if (dau.getModerator() == 1) {
-								sbPermission.append(userId);
-								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
-							} else {
-								sbPermission.append(userId);
-								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
-							}
-						} else {
-							sb.append(StringPool.SPACE);
-							sb.append(userId);
-							sbPermission.append(StringPool.SPACE);
-							if (dau.getModerator() == 1) {
-								sbPermission.append(userId);
-								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
-							} else {
-								sbPermission.append(userId);
-								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
-							}
+			//StringBundler sb = new StringBundler();
+			//StringBundler sbPermission = new StringBundler();
+//			if (dossierId > 0) {
+//				List<DossierUser> dossierUserList = DossierUserLocalServiceUtil.findByDID(dossierId);
+//				if (dossierUserList != null && dossierUserList.size() > 0) {
+//					int length = dossierUserList.size();
+//					for (int i = 0; i < length; i++) {
+//						DossierUser dau = dossierUserList.get(i);
+//						long userId = dau.getUserId();
+//						if (i == 0) {
+//							sb.append(userId);
+//							if (dau.getModerator() == 1) {
+//								sbPermission.append(userId);
+//								sbPermission.append(StringPool.UNDERLINE);
+//								sbPermission.append("write");
+//							} else {
+//								sbPermission.append(userId);
+//								sbPermission.append(StringPool.UNDERLINE);
+//								sbPermission.append("read");
+//							}
+//						} else {
+//							sb.append(StringPool.SPACE);
+//							sb.append(userId);
+//							sbPermission.append(StringPool.SPACE);
+//							if (dau.getModerator() == 1) {
+//								sbPermission.append(userId);
+//								sbPermission.append(StringPool.UNDERLINE);
+//								sbPermission.append("write");
+//							} else {
+//								sbPermission.append(userId);
+//								sbPermission.append(StringPool.UNDERLINE);
+//								sbPermission.append("read");
+//							}
+//						}
+//					}
+//				}
+//			}
 
-						}
-					}
-				}
-			}
-
-			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
-			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, sbPermission.toString());
+			//Process View dossierUser
+			List<String> userDossierList = processDossierUser(dossierId);
+			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, userDossierList.get(0));
+			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, userDossierList.get(1));
 
 			// Indexing DossierActionUsers
 			List<Long> actionUserIds = new ArrayList<>();
@@ -767,6 +784,104 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 		}
 		return certIndex;
+	}
+
+	private List<String> processDossierUser(long dossierId) {
+		List<String> userDossierList = new ArrayList<>();
+		StringBundler sb = new StringBundler();
+		StringBundler sbPermission = new StringBundler();
+		if (dossierId > 0) {
+			List<DossierUser> dossierUserList = DossierUserLocalServiceUtil.findByDID(dossierId);
+			if (dossierUserList != null && dossierUserList.size() > 0) {
+				int length = dossierUserList.size();
+				for (int i = 0; i < length; i++) {
+					DossierUser dau = dossierUserList.get(i);
+					if (i == 0) {
+						long userId = dau.getUserId();
+						if (userId > 0) {
+							sb.append(userId);
+							if (dau.getModerator() == 1) {
+								sbPermission.append(userId);
+								sbPermission.append(StringPool.UNDERLINE);
+								sbPermission.append("write");
+							} else {
+								sbPermission.append(userId);
+								sbPermission.append(StringPool.UNDERLINE);
+								sbPermission.append("read");
+							}
+						} else {
+							List<User> userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
+							if (userList != null && userList.size() > 0) {
+								for (int j = 0; j < userList.size(); j++) {
+									if (j == 0) {
+										sb.append(userId);
+										if (dau.getModerator() == 1) {
+											sbPermission.append(userId);
+											sbPermission.append(StringPool.UNDERLINE);
+											sbPermission.append("write");
+										} else {
+											sbPermission.append(userId);
+											sbPermission.append(StringPool.UNDERLINE);
+											sbPermission.append("read");
+										}
+									} else {
+										sb.append(StringPool.SPACE);
+										sb.append(userId);
+										sbPermission.append(StringPool.SPACE);
+										if (dau.getModerator() == 1) {
+											sbPermission.append(userId);
+											sbPermission.append(StringPool.UNDERLINE);
+											sbPermission.append("write");
+										} else {
+											sbPermission.append(userId);
+											sbPermission.append(StringPool.UNDERLINE);
+											sbPermission.append("read");
+										}
+									}
+								}
+							}
+						}
+					} else {
+						long userId = dau.getUserId();
+						if (userId > 0) {
+							sb.append(StringPool.SPACE);
+							sb.append(userId);
+							sbPermission.append(StringPool.SPACE);
+							if (dau.getModerator() == 1) {
+								sbPermission.append(userId);
+								sbPermission.append(StringPool.UNDERLINE);
+								sbPermission.append("write");
+							} else {
+								sbPermission.append(userId);
+								sbPermission.append(StringPool.UNDERLINE);
+								sbPermission.append("read");
+							}
+						} else {
+							List<User> userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
+							if (userList != null && userList.size() > 0) {
+								for (int j = 0; j < userList.size(); j++) {
+									sb.append(StringPool.SPACE);
+									sb.append(userId);
+									sbPermission.append(StringPool.SPACE);
+									if (dau.getModerator() == 1) {
+										sbPermission.append(userId);
+										sbPermission.append(StringPool.UNDERLINE);
+										sbPermission.append("write");
+									} else {
+										sbPermission.append(userId);
+										sbPermission.append(StringPool.UNDERLINE);
+										sbPermission.append("read");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			userDossierList.add(sb.toString());
+			userDossierList.add(sbPermission.toString());
+		}
+		return userDossierList;
 	}
 
 	private boolean getDossierOverDue(long dossierId, Date dueDate) {
