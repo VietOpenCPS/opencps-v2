@@ -62,6 +62,7 @@ public class DossierActionUserWrapper implements DossierActionUser,
 		attributes.put("dossierActionId", getDossierActionId());
 		attributes.put("userId", getUserId());
 		attributes.put("dossierId", getDossierId());
+		attributes.put("roleId", getRoleId());
 		attributes.put("stepCode", getStepCode());
 		attributes.put("moderator", getModerator());
 		attributes.put("assigned", getAssigned());
@@ -100,6 +101,12 @@ public class DossierActionUserWrapper implements DossierActionUser,
 
 		if (dossierId != null) {
 			setDossierId(dossierId);
+		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
 		}
 
 		String stepCode = (String)attributes.get("stepCode");
@@ -215,6 +222,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _dossierActionUser.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the role ID of this dossier action user.
+	*
+	* @return the role ID of this dossier action user
+	*/
+	@Override
+	public long getRoleId() {
+		return _dossierActionUser.getRoleId();
 	}
 
 	/**
@@ -401,6 +418,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_dossierActionUser.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the role ID of this dossier action user.
+	*
+	* @param roleId the role ID of this dossier action user
+	*/
+	@Override
+	public void setRoleId(long roleId) {
+		_dossierActionUser.setRoleId(roleId);
 	}
 
 	/**

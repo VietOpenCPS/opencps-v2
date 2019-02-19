@@ -69,6 +69,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 			{ "dossierActionId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "dossierId", Types.BIGINT },
+			{ "roleId", Types.BIGINT },
 			{ "stepCode", Types.VARCHAR },
 			{ "moderator", Types.INTEGER },
 			{ "assigned", Types.INTEGER },
@@ -82,13 +83,14 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		TABLE_COLUMNS_MAP.put("dossierActionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("roleId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("stepCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("moderator", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("assigned", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("visited", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionUserId LONG not null primary key,dossierActionId LONG,userId LONG,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionUserId LONG not null primary key,dossierActionId LONG,userId LONG,dossierId LONG,roleId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionuser";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.dossierActionId DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId DESC";
@@ -155,6 +157,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		attributes.put("dossierActionId", getDossierActionId());
 		attributes.put("userId", getUserId());
 		attributes.put("dossierId", getDossierId());
+		attributes.put("roleId", getRoleId());
 		attributes.put("stepCode", getStepCode());
 		attributes.put("moderator", getModerator());
 		attributes.put("assigned", getAssigned());
@@ -196,6 +199,12 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		if (dossierId != null) {
 			setDossierId(dossierId);
+		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
 		}
 
 		String stepCode = (String)attributes.get("stepCode");
@@ -355,6 +364,16 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	}
 
 	@Override
+	public long getRoleId() {
+		return _roleId;
+	}
+
+	@Override
+	public void setRoleId(long roleId) {
+		_roleId = roleId;
+	}
+
+	@Override
 	public String getStepCode() {
 		if (_stepCode == null) {
 			return "";
@@ -462,6 +481,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		dossierActionUserImpl.setDossierActionId(getDossierActionId());
 		dossierActionUserImpl.setUserId(getUserId());
 		dossierActionUserImpl.setDossierId(getDossierId());
+		dossierActionUserImpl.setRoleId(getRoleId());
 		dossierActionUserImpl.setStepCode(getStepCode());
 		dossierActionUserImpl.setModerator(getModerator());
 		dossierActionUserImpl.setAssigned(getAssigned());
@@ -579,6 +599,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		dossierActionUserCacheModel.dossierId = getDossierId();
 
+		dossierActionUserCacheModel.roleId = getRoleId();
+
 		dossierActionUserCacheModel.stepCode = getStepCode();
 
 		String stepCode = dossierActionUserCacheModel.stepCode;
@@ -598,7 +620,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -610,6 +632,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		sb.append(getUserId());
 		sb.append(", dossierId=");
 		sb.append(getDossierId());
+		sb.append(", roleId=");
+		sb.append(getRoleId());
 		sb.append(", stepCode=");
 		sb.append(getStepCode());
 		sb.append(", moderator=");
@@ -625,7 +649,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierActionUser");
@@ -650,6 +674,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		sb.append(
 			"<column><column-name>dossierId</column-name><column-value><![CDATA[");
 		sb.append(getDossierId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>roleId</column-name><column-value><![CDATA[");
+		sb.append(getRoleId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>stepCode</column-name><column-value><![CDATA[");
@@ -689,6 +717,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	private long _dossierId;
 	private long _originalDossierId;
 	private boolean _setOriginalDossierId;
+	private long _roleId;
 	private String _stepCode;
 	private String _originalStepCode;
 	private int _moderator;

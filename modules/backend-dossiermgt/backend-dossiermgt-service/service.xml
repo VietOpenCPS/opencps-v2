@@ -1379,6 +1379,7 @@
 		<column name="dossierUserId" type="long" primary="true" />
 		<column name="dossierId" type="long" />
 		<column name="userId" type="long" />
+		<column name="roleId" type="long" />
 		<column name="moderator" type="int" />
 		<column name="visited" type="boolean" />
 
@@ -1401,6 +1402,7 @@
 		<column name="dossierActionId" type="long" />
 		<column name="userId" type="long" />
 		<column name="dossierId" type="long" />
+		<column name="roleId" type="long" />
 		<column name="stepCode" type="String" />
 		<column name="moderator" type="int" />
 		<column name="assigned" type="int" />
