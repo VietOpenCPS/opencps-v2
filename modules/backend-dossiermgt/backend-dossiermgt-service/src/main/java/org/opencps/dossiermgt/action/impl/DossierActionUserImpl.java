@@ -108,53 +108,55 @@ public class DossierActionUserImpl implements DossierActionUser {
 				if (moderator) {
 					mod = 1;
 				}
-//				_log.info("3");
-//				_log.info("roleId: "+roleId);
-				// Get list user
-				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
-//				if (i == 0) {
-					for (User user : users) {
-//						_log.info("user in assign process step role: "+user.getUserId());
-						List<DossierAction> lstDoneActions = DossierActionLocalServiceUtil.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
-						if (!lstStepActions.isEmpty()) {
-							if (!lstDoneActions.isEmpty())
-								mod = 1;
-							else
-								mod = 0;
-						}
-						updateDossierUser(dossier, processStepRole, user);
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId());
-					}
-//				} else {
+//				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 //					for (User user : users) {
-////						_log.info("user: "+user.getUserId());
-//						int assigned = user.getUserId() == assignUserId ? processAction.getAllowAssignUser() : ProcessActionTerm.NOT_ASSIGNED;
-//						org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, user.getUserId());
-//						if (dau != null) {
-//							dau.setModerator(mod);
-//							if (assigned != ProcessActionTerm.NOT_ASSIGNED) {
-////								dau.setAssigned(assigned);
-//								
-//							}
-//							DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
-//						} else {						
-//							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierActionId, mod, false, stepCode, dossier.getDossierId());
+//						List<DossierAction> lstDoneActions = DossierActionLocalServiceUtil.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
+//						if (!lstStepActions.isEmpty()) {
+//							if (!lstDoneActions.isEmpty())
+//								mod = 1;
+//							else
+//								mod = 0;
 //						}
-////						model.setModerator(mod);
-////						model.setAssigned(assigned);
-////						model.setVisited(false);
-//						// Add User
-////						DossierActionUserLocalServiceUtil.addDossierActionUser(model);
+//						updateDossierUser(dossier, processStepRole, user);
+//						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId());
 //					}
-//				}
+			
+				org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.findByDID_RID(dossier.getDossierId(), processStepRole.getRoleId());
+				if (du != null) {
+					du.setModerator(mod);
+					du.setVisited(true);
+					
+					DossierUserLocalServiceUtil.updateDossierUser(du);
+				}
+				else {
+					DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), 0, processStepRole.getRoleId(), mod, true);
+				}
+
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.findByDID_RID(dossierAction.getDossierActionId(), processStepRole.getRoleId());
+				
+				int assigned = allowAssignUser;
+				
+				if (dau != null) {
+					dau.setModerator(mod);
+					if (moderator) {
+						dau.setAssigned(1);
+					} else {
+						dau.setAssigned(assigned);
+					}
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				} else {		
+					DossierActionUserLocalServiceUtil.addDossierActionUser(
+							0l, 
+							groupId, 
+							dossierAction.getDossierActionId(), dossier.getDossierId(), processStepRole.getRoleId(), stepCode, 
+							mod, 1, true);
+				}
 				
 			}			
 		}
 		else {
-			//Get role from service process
 			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierAction, userId, groupId, assignUserId);
 		}
-//		_log.info("END ROLES");
 	}
 	
 	private void updateDossierUser(Dossier dossier, ProcessStepRole processStepRole, User user) {
@@ -181,7 +183,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
 			List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
 			
-//			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 			DossierAction da = dossierAction;
 			
 			for (ServiceProcessRole spr : listSprs) {
@@ -191,29 +192,45 @@ public class DossierActionUserImpl implements DossierActionUser {
 				if (moderator) {
 					mod = 1;
 				}
-				List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
-				for (User user : users) {
-					int assigned = user.getUserId() == assignUserId ? allowAssignUser : ProcessActionTerm.NOT_ASSIGNED;
-					org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierAction.getDossierActionId(), user.getUserId());
-					if (dau != null) {
-						dau.setModerator(mod);
-//						if (assigned != ProcessActionTerm.NOT_ASSIGNED) {
-//								
+				
+//				List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
+//				for (User user : users) {
+//					int assigned = user.getUserId() == assignUserId ? allowAssignUser : ProcessActionTerm.NOT_ASSIGNED;
+//					org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierAction.getDossierActionId(), user.getUserId());
+//					if (dau != null) {
+//						dau.setModerator(mod);
+//						if (moderator) {
+//							dau.setAssigned(1);
+//						} else {
+//							dau.setAssigned(assigned);
 //						}
-						if (moderator) {
-							dau.setAssigned(1);
-						} else {
-							dau.setAssigned(assigned);
-						}
-						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
-					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId());
+//						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+//					} else {						
+//						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId());
+//					}
+//				}				
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.findByDID_RID(dossierAction.getDossierActionId(), spr.getRoleId());
+				
+				int assigned = allowAssignUser;
+				
+				if (dau != null) {
+					dau.setModerator(mod);
+					if (moderator) {
+						dau.setAssigned(1);
+					} else {
+						dau.setAssigned(assigned);
 					}
-				}				
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				} else {		
+					DossierActionUserLocalServiceUtil.addDossierActionUser(
+							0l, 
+							groupId, 
+							dossierAction.getDossierActionId(), dossier.getDossierId(), spr.getRoleId(), da.getStepCode(), 
+							mod, 1, true);
+				}
 			}
 		} catch (PortalException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}		
 	}
 	

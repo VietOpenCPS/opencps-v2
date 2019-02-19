@@ -62,6 +62,14 @@ public class DossierUserLocalServiceUtil {
 			visited);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierUser addDossierUser(
+		long groupId, long dossierId, long userId, long roleId, int moderator,
+		boolean visited) {
+		return getService()
+				   .addDossierUser(groupId, dossierId, userId, roleId,
+			moderator, visited);
+	}
+
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*

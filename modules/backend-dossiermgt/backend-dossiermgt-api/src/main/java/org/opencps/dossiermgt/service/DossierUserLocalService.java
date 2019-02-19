@@ -74,6 +74,9 @@ public interface DossierUserLocalService extends BaseLocalService,
 	public DossierUser addDossierUser(long groupId, long dossierId,
 		long userId, int moderator, boolean visited);
 
+	public DossierUser addDossierUser(long groupId, long dossierId,
+		long userId, long roleId, int moderator, boolean visited);
+
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*

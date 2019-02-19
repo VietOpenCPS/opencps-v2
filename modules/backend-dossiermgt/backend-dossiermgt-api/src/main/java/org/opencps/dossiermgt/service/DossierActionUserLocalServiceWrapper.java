@@ -49,6 +49,17 @@ public class DossierActionUserLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
 		long userId, long groupId, long dossierActionId, long dossierId,
+		long roleId, String stepCode, int moderator, int assigned,
+		boolean visited)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionUserLocalService.addDossierActionUser(userId,
+			groupId, dossierActionId, dossierId, roleId, stepCode, moderator,
+			assigned, visited);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
 		String stepCode, int moderator, int assigned, boolean visited)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierActionUserLocalService.addDossierActionUser(userId,

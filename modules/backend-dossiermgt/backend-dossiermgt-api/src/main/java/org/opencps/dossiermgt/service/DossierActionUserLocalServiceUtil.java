@@ -56,6 +56,16 @@ public class DossierActionUserLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
 		long userId, long groupId, long dossierActionId, long dossierId,
+		long roleId, String stepCode, int moderator, int assigned,
+		boolean visited)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addDossierActionUser(userId, groupId, dossierActionId,
+			dossierId, roleId, stepCode, moderator, assigned, visited);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
 		String stepCode, int moderator, int assigned, boolean visited)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
