@@ -208,6 +208,13 @@ public class DossierActionUserLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser findByDID_RID(
+		long dossierActionId, long roleId) {
+		return _dossierActionUserLocalService.findByDID_RID(dossierActionId,
+			roleId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierActionUserLocalService.getActionableDynamicQuery();
 	}

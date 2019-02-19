@@ -49,7 +49,8 @@ import javax.xml.bind.annotation.XmlType;
     "moderator",
     "assigned",
     "visited",
-    "emailAddress"
+    "emailAddress",
+    "roleId"
 })
 public class DossierActionUserModel {
 
@@ -69,6 +70,8 @@ public class DossierActionUserModel {
     protected Boolean visited;
 	@FormParam(value="emailAddress")
     protected String emailAddress;
+	@FormParam(value="roleId")
+    protected Long roleId;
 
     /**
      * Gets the value of the dossierActionId property.
@@ -261,5 +264,13 @@ public class DossierActionUserModel {
     public void setEmailAddress(String value) {
         this.emailAddress = value;
     }
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 
 }

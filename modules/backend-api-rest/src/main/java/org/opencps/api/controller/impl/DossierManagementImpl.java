@@ -2897,12 +2897,11 @@ public class DossierManagementImpl implements DossierManagement {
 									if (assigned > 0) {
 										moderator = 1;
 									}
-									DossierActionUserPK pk = new DossierActionUserPK();
-									pk.setDossierActionId(dossierActionId);
-									pk.setUserId(userId);
-									
-									oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-									
+									//DossierActionUserPK pk = new DossierActionUserPK();
+									//pk.setDossierActionId(dossierActionId);
+									//pk.setUserId(userId);
+									//oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+									oldDau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 									if (oldDau == null) {
 										DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId,
 												dossierActionId, dossierId, stepCode, moderator, assigned, true);										

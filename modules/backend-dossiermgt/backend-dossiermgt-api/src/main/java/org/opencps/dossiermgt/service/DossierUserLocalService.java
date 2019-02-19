@@ -177,6 +177,8 @@ public interface DossierUserLocalService extends BaseLocalService,
 
 	public List<DossierUser> findByDID(long dossierId);
 
+	public DossierUser findByDID_RID(long dossierId, long roleId);
+
 	public DossierUser findByDID_UD(long dossierId, long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

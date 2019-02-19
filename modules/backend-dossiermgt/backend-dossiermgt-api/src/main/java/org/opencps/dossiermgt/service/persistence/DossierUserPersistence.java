@@ -486,6 +486,56 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	public int countByUID(long userId);
 
 	/**
+	* Returns the dossier user where dossierId = &#63; and roleId = &#63; or throws a {@link NoSuchDossierUserException} if it could not be found.
+	*
+	* @param dossierId the dossier ID
+	* @param roleId the role ID
+	* @return the matching dossier user
+	* @throws NoSuchDossierUserException if a matching dossier user could not be found
+	*/
+	public DossierUser findByDID_RID(long dossierId, long roleId)
+		throws NoSuchDossierUserException;
+
+	/**
+	* Returns the dossier user where dossierId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierId the dossier ID
+	* @param roleId the role ID
+	* @return the matching dossier user, or <code>null</code> if a matching dossier user could not be found
+	*/
+	public DossierUser fetchByDID_RID(long dossierId, long roleId);
+
+	/**
+	* Returns the dossier user where dossierId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierId the dossier ID
+	* @param roleId the role ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier user, or <code>null</code> if a matching dossier user could not be found
+	*/
+	public DossierUser fetchByDID_RID(long dossierId, long roleId,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier user where dossierId = &#63; and roleId = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param roleId the role ID
+	* @return the dossier user that was removed
+	*/
+	public DossierUser removeByDID_RID(long dossierId, long roleId)
+		throws NoSuchDossierUserException;
+
+	/**
+	* Returns the number of dossier users where dossierId = &#63; and roleId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param roleId the role ID
+	* @return the number of matching dossier users
+	*/
+	public int countByDID_RID(long dossierId, long roleId);
+
+	/**
 	* Caches the dossier user in the entity cache if it is enabled.
 	*
 	* @param dossierUser the dossier user

@@ -1488,6 +1488,70 @@ public class DossierActionUserUtil {
 	}
 
 	/**
+	* Returns the dossier action user where dossierActionId = &#63; and roleId = &#63; or throws a {@link NoSuchDossierActionUserException} if it could not be found.
+	*
+	* @param dossierActionId the dossier action ID
+	* @param roleId the role ID
+	* @return the matching dossier action user
+	* @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser findByDID_RID(long dossierActionId,
+		long roleId)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
+		return getPersistence().findByDID_RID(dossierActionId, roleId);
+	}
+
+	/**
+	* Returns the dossier action user where dossierActionId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierActionId the dossier action ID
+	* @param roleId the role ID
+	* @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser fetchByDID_RID(long dossierActionId,
+		long roleId) {
+		return getPersistence().fetchByDID_RID(dossierActionId, roleId);
+	}
+
+	/**
+	* Returns the dossier action user where dossierActionId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierActionId the dossier action ID
+	* @param roleId the role ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser fetchByDID_RID(long dossierActionId,
+		long roleId, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByDID_RID(dossierActionId, roleId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier action user where dossierActionId = &#63; and roleId = &#63; from the database.
+	*
+	* @param dossierActionId the dossier action ID
+	* @param roleId the role ID
+	* @return the dossier action user that was removed
+	*/
+	public static DossierActionUser removeByDID_RID(long dossierActionId,
+		long roleId)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
+		return getPersistence().removeByDID_RID(dossierActionId, roleId);
+	}
+
+	/**
+	* Returns the number of dossier action users where dossierActionId = &#63; and roleId = &#63;.
+	*
+	* @param dossierActionId the dossier action ID
+	* @param roleId the role ID
+	* @return the number of matching dossier action users
+	*/
+	public static int countByDID_RID(long dossierActionId, long roleId) {
+		return getPersistence().countByDID_RID(dossierActionId, roleId);
+	}
+
+	/**
 	* Caches the dossier action user in the entity cache if it is enabled.
 	*
 	* @param dossierActionUser the dossier action user

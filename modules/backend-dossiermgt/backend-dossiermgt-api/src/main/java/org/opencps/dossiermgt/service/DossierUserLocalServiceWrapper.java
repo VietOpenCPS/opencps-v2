@@ -206,6 +206,12 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierUser findByDID_RID(
+		long dossierId, long roleId) {
+		return _dossierUserLocalService.findByDID_RID(dossierId, roleId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierUser findByDID_UD(
 		long dossierId, long userId) {
 		return _dossierUserLocalService.findByDID_UD(dossierId, userId);

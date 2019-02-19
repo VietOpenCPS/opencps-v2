@@ -109,9 +109,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	public static final long ASSIGNED_COLUMN_BITMASK = 1L;
 	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 2L;
 	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
-	public static final long STEPCODE_COLUMN_BITMASK = 8L;
-	public static final long USERID_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long ROLEID_COLUMN_BITMASK = 8L;
+	public static final long STEPCODE_COLUMN_BITMASK = 16L;
+	public static final long USERID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierActionUser"));
 
@@ -370,7 +371,19 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public void setRoleId(long roleId) {
+		_columnBitmask |= ROLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalRoleId) {
+			_setOriginalRoleId = true;
+
+			_originalRoleId = _roleId;
+		}
+
 		_roleId = roleId;
+	}
+
+	public long getOriginalRoleId() {
+		return _originalRoleId;
 	}
 
 	@Override
@@ -570,6 +583,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		dossierActionUserModelImpl._setOriginalDossierId = false;
 
+		dossierActionUserModelImpl._originalRoleId = dossierActionUserModelImpl._roleId;
+
+		dossierActionUserModelImpl._setOriginalRoleId = false;
+
 		dossierActionUserModelImpl._originalStepCode = dossierActionUserModelImpl._stepCode;
 
 		dossierActionUserModelImpl._originalAssigned = dossierActionUserModelImpl._assigned;
@@ -718,6 +735,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	private long _originalDossierId;
 	private boolean _setOriginalDossierId;
 	private long _roleId;
+	private long _originalRoleId;
+	private boolean _setOriginalRoleId;
 	private String _stepCode;
 	private String _originalStepCode;
 	private int _moderator;
