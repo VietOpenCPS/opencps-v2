@@ -72,6 +72,10 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 		DossierActionUser dossierActionUser);
 
 	public DossierActionUser addDossierActionUser(long userId, long groupId,
+		long dossierActionId, long dossierId, long roleId, String stepCode,
+		int moderator, int assigned, boolean visited) throws PortalException;
+
+	public DossierActionUser addDossierActionUser(long userId, long groupId,
 		long dossierActionId, long dossierId, String stepCode, int moderator,
 		int assigned, boolean visited) throws PortalException;
 

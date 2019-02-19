@@ -32,6 +32,7 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -219,7 +220,7 @@ public class DossierMgtUtils {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
 						assignUserObj.put("userId", dau.getUserId());
-						assignUserObj.put("userName", u.getFullName());
+						assignUserObj.put("userName", u != null ? u.getFullName() : StringPool.BLANK);
 						
 						assignUserArr.put(assignUserObj);					
 					}					
