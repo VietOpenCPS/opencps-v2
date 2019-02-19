@@ -66,12 +66,12 @@ public class DossierActionUserLocalServiceUtil {
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*
-	* @param dossierActionUserPK the primary key for the new dossier action user
+	* @param dossierActionUserId the primary key for the new dossier action user
 	* @return the new dossier action user
 	*/
 	public static org.opencps.dossiermgt.model.DossierActionUser createDossierActionUser(
-		org.opencps.dossiermgt.service.persistence.DossierActionUserPK dossierActionUserPK) {
-		return getService().createDossierActionUser(dossierActionUserPK);
+		long dossierActionUserId) {
+		return getService().createDossierActionUser(dossierActionUserId);
 	}
 
 	public static void deleteByDossierAction(long dossierActionId) {
@@ -97,14 +97,14 @@ public class DossierActionUserLocalServiceUtil {
 	/**
 	* Deletes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user that was removed
 	* @throws PortalException if a dossier action user with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.DossierActionUser deleteDossierActionUser(
-		org.opencps.dossiermgt.service.persistence.DossierActionUserPK dossierActionUserPK)
+		long dossierActionUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteDossierActionUser(dossierActionUserPK);
+		return getService().deleteDossierActionUser(dossierActionUserId);
 	}
 
 	/**
@@ -195,8 +195,8 @@ public class DossierActionUserLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.DossierActionUser fetchDossierActionUser(
-		org.opencps.dossiermgt.service.persistence.DossierActionUserPK dossierActionUserPK) {
-		return getService().fetchDossierActionUser(dossierActionUserPK);
+		long dossierActionUserId) {
+		return getService().fetchDossierActionUser(dossierActionUserId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -238,14 +238,14 @@ public class DossierActionUserLocalServiceUtil {
 	/**
 	* Returns the dossier action user with the primary key.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user
 	* @throws PortalException if a dossier action user with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.DossierActionUser getDossierActionUser(
-		org.opencps.dossiermgt.service.persistence.DossierActionUserPK dossierActionUserPK)
+		long dossierActionUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getDossierActionUser(dossierActionUserPK);
+		return getService().getDossierActionUser(dossierActionUserId);
 	}
 
 	/**

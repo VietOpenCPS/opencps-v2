@@ -40,7 +40,6 @@ import org.opencps.dossiermgt.exception.NoSuchDossierActionUserException;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.model.impl.DossierActionUserModelImpl;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPersistence;
 
 import java.io.Serializable;
@@ -51,6 +50,8 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -107,7 +108,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			DossierActionUserImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
-			DossierActionUserModelImpl.UUID_COLUMN_BITMASK);
+			DossierActionUserModelImpl.UUID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -401,7 +403,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where uuid = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier action user
@@ -409,10 +411,10 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	 */
 	@Override
 	public DossierActionUser[] findByUuid_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, String uuid,
+		long dossierActionUserId, String uuid,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -942,18 +944,18 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where dossierActionId = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param dossierActionId the dossier action ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier action user
 	 * @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser[] findByDID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierActionId,
+	public DossierActionUser[] findByDID_PrevAndNext(long dossierActionUserId,
+		long dossierActionId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -1150,7 +1152,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_DID_DOSSIERACTIONID_2 = "dossierActionUser.id.dossierActionId = ?";
+	private static final String _FINDER_COLUMN_DID_DOSSIERACTIONID_2 = "dossierActionUser.dossierActionId = ?";
 	public static final FinderPath FINDER_PATH_FETCH_BY_DID_UID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
 			DossierActionUserImpl.class, FINDER_CLASS_NAME_ENTITY,
@@ -1381,8 +1383,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_DID_UID_DOSSIERACTIONID_2 = "dossierActionUser.id.dossierActionId = ? AND ";
-	private static final String _FINDER_COLUMN_DID_UID_USERID_2 = "dossierActionUser.id.userId = ?";
+	private static final String _FINDER_COLUMN_DID_UID_DOSSIERACTIONID_2 = "dossierActionUser.dossierActionId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_UID_USERID_2 = "dossierActionUser.userId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
 			DossierActionUserImpl.class,
@@ -1398,7 +1400,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			DossierActionUserImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUID",
 			new String[] { Long.class.getName() },
-			DossierActionUserModelImpl.USERID_COLUMN_BITMASK);
+			DossierActionUserModelImpl.USERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUID",
@@ -1678,18 +1681,17 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where userId = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier action user
 	 * @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser[] findByUID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long userId,
-		OrderByComparator<DossierActionUser> orderByComparator)
+	public DossierActionUser[] findByUID_PrevAndNext(long dossierActionUserId,
+		long userId, OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -1886,7 +1888,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UID_USERID_2 = "dossierActionUser.id.userId = ?";
+	private static final String _FINDER_COLUMN_UID_USERID_2 = "dossierActionUser.userId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_SC = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
 			DossierActionUserImpl.class,
@@ -1904,7 +1906,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByDID_SC",
 			new String[] { Long.class.getName(), String.class.getName() },
 			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK |
-			DossierActionUserModelImpl.STEPCODE_COLUMN_BITMASK);
+			DossierActionUserModelImpl.STEPCODE_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_DID_SC = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDID_SC",
@@ -2228,7 +2231,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and stepCode = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param dossierId the dossier ID
 	 * @param stepCode the step code
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -2237,10 +2240,10 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	 */
 	@Override
 	public DossierActionUser[] findByDID_SC_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		String stepCode, OrderByComparator<DossierActionUser> orderByComparator)
+		long dossierActionUserId, long dossierId, String stepCode,
+		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -2886,7 +2889,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63; and stepCode = &#63; and assigned = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param dossierId the dossier ID
 	 * @param dossierActionId the dossier action ID
 	 * @param stepCode the step code
@@ -2897,11 +2900,11 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	 */
 	@Override
 	public DossierActionUser[] findByDID__DAI_SC_AS_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		long dossierActionId, String stepCode, int assigned,
+		long dossierActionUserId, long dossierId, long dossierActionId,
+		String stepCode, int assigned,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -3513,7 +3516,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	}
 
 	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_DOSSIERID_2 = "dossierActionUser.dossierId = ? AND ";
-	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_DOSSIERACTIONID_2 = "dossierActionUser.id.dossierActionId = ? AND ";
+	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_DOSSIERACTIONID_2 = "dossierActionUser.dossierActionId = ? AND ";
 	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_STEPCODE_1 = "dossierActionUser.stepCode IS NULL AND ";
 	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_STEPCODE_2 = "dossierActionUser.stepCode = ? AND ";
 	private static final String _FINDER_COLUMN_DID__DAI_SC_AS_STEPCODE_3 = "(dossierActionUser.stepCode IS NULL OR dossierActionUser.stepCode = '') AND ";
@@ -3537,7 +3540,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByDOSSIER_UID",
 			new String[] { Long.class.getName(), Long.class.getName() },
 			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK |
-			DossierActionUserModelImpl.USERID_COLUMN_BITMASK);
+			DossierActionUserModelImpl.USERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_DOSSIER_UID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDOSSIER_UID",
@@ -3846,7 +3850,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and userId = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param dossierId the dossier ID
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -3855,10 +3859,10 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	 */
 	@Override
 	public DossierActionUser[] findByDOSSIER_UID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId, long userId,
+		long dossierActionUserId, long dossierId, long userId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -4066,7 +4070,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	}
 
 	private static final String _FINDER_COLUMN_DOSSIER_UID_DOSSIERID_2 = "dossierActionUser.dossierId = ? AND ";
-	private static final String _FINDER_COLUMN_DOSSIER_UID_USERID_2 = "dossierActionUser.id.userId = ?";
+	private static final String _FINDER_COLUMN_DOSSIER_UID_USERID_2 = "dossierActionUser.userId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DSID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
 			DossierActionUserImpl.class,
@@ -4082,7 +4086,8 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			DossierActionUserImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByDSID",
 			new String[] { Long.class.getName() },
-			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK);
+			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_DSID = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDSID",
@@ -4363,7 +4368,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63;.
 	 *
-	 * @param dossierActionUserPK the primary key of the current dossier action user
+	 * @param dossierActionUserId the primary key of the current dossier action user
 	 * @param dossierId the dossier ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier action user
@@ -4371,10 +4376,10 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	 */
 	@Override
 	public DossierActionUser[] findByDSID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
+		long dossierActionUserId, long dossierId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException {
-		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserPK);
+		DossierActionUser dossierActionUser = findByPrimaryKey(dossierActionUserId);
 
 		Session session = null;
 
@@ -4725,15 +4730,15 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	 *
-	 * @param dossierActionUserPK the primary key for the new dossier action user
+	 * @param dossierActionUserId the primary key for the new dossier action user
 	 * @return the new dossier action user
 	 */
 	@Override
-	public DossierActionUser create(DossierActionUserPK dossierActionUserPK) {
+	public DossierActionUser create(long dossierActionUserId) {
 		DossierActionUser dossierActionUser = new DossierActionUserImpl();
 
 		dossierActionUser.setNew(true);
-		dossierActionUser.setPrimaryKey(dossierActionUserPK);
+		dossierActionUser.setPrimaryKey(dossierActionUserId);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -4745,14 +4750,14 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Removes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dossierActionUserPK the primary key of the dossier action user
+	 * @param dossierActionUserId the primary key of the dossier action user
 	 * @return the dossier action user that was removed
 	 * @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser remove(DossierActionUserPK dossierActionUserPK)
+	public DossierActionUser remove(long dossierActionUserId)
 		throws NoSuchDossierActionUserException {
-		return remove((Serializable)dossierActionUserPK);
+		return remove((Serializable)dossierActionUserId);
 	}
 
 	/**
@@ -5119,15 +5124,14 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action user with the primary key or throws a {@link NoSuchDossierActionUserException} if it could not be found.
 	 *
-	 * @param dossierActionUserPK the primary key of the dossier action user
+	 * @param dossierActionUserId the primary key of the dossier action user
 	 * @return the dossier action user
 	 * @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser findByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK)
+	public DossierActionUser findByPrimaryKey(long dossierActionUserId)
 		throws NoSuchDossierActionUserException {
-		return findByPrimaryKey((Serializable)dossierActionUserPK);
+		return findByPrimaryKey((Serializable)dossierActionUserId);
 	}
 
 	/**
@@ -5181,13 +5185,12 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	/**
 	 * Returns the dossier action user with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param dossierActionUserPK the primary key of the dossier action user
+	 * @param dossierActionUserId the primary key of the dossier action user
 	 * @return the dossier action user, or <code>null</code> if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser fetchByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK) {
-		return fetchByPrimaryKey((Serializable)dossierActionUserPK);
+	public DossierActionUser fetchByPrimaryKey(long dossierActionUserId) {
+		return fetchByPrimaryKey((Serializable)dossierActionUserId);
 	}
 
 	@Override
@@ -5199,12 +5202,86 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 
 		Map<Serializable, DossierActionUser> map = new HashMap<Serializable, DossierActionUser>();
 
-		for (Serializable primaryKey : primaryKeys) {
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
 			DossierActionUser dossierActionUser = fetchByPrimaryKey(primaryKey);
 
 			if (dossierActionUser != null) {
 				map.put(primaryKey, dossierActionUser);
 			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+					DossierActionUserImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DossierActionUser)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
+
+		query.append(_SQL_SELECT_DOSSIERACTIONUSER_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (DossierActionUser dossierActionUser : (List<DossierActionUser>)q.list()) {
+				map.put(dossierActionUser.getPrimaryKeyObj(), dossierActionUser);
+
+				cacheResult(dossierActionUser);
+
+				uncachedPrimaryKeys.remove(dossierActionUser.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+					DossierActionUserImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
 		}
 
 		return map;
@@ -5407,11 +5484,6 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	}
 
 	@Override
-	public Set<String> getCompoundPKColumnNames() {
-		return _compoundPKColumnNames;
-	}
-
-	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return DossierActionUserModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -5434,6 +5506,7 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_DOSSIERACTIONUSER = "SELECT dossierActionUser FROM DossierActionUser dossierActionUser";
+	private static final String _SQL_SELECT_DOSSIERACTIONUSER_WHERE_PKS_IN = "SELECT dossierActionUser FROM DossierActionUser dossierActionUser WHERE dossierActionUserId IN (";
 	private static final String _SQL_SELECT_DOSSIERACTIONUSER_WHERE = "SELECT dossierActionUser FROM DossierActionUser dossierActionUser WHERE ";
 	private static final String _SQL_COUNT_DOSSIERACTIONUSER = "SELECT COUNT(dossierActionUser) FROM DossierActionUser dossierActionUser";
 	private static final String _SQL_COUNT_DOSSIERACTIONUSER_WHERE = "SELECT COUNT(dossierActionUser) FROM DossierActionUser dossierActionUser WHERE ";
@@ -5443,8 +5516,5 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	private static final Log _log = LogFactoryUtil.getLog(DossierActionUserPersistenceImpl.class);
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
-			});
-	private static final Set<String> _compoundPKColumnNames = SetUtil.fromArray(new String[] {
-				"dossierActionId", "userId"
 			});
 }

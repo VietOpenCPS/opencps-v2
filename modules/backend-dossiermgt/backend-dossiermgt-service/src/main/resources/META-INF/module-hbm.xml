@@ -312,11 +312,12 @@
 		<property name="actionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionUserImpl" table="opencps_dossieractionuser">
-		<composite-id class="org.opencps.dossiermgt.service.persistence.DossierActionUserPK" name="primaryKey">
-			<key-property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-			<key-property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		</composite-id>
+		<id name="dossierActionUserId" type="long">
+			<generator class="assigned" />
+		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dossierActionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="stepCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
@@ -531,11 +532,12 @@
 		<property name="templateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierUserImpl" table="opencps_dossieruser">
-		<composite-id class="org.opencps.dossiermgt.service.persistence.DossierUserPK" name="primaryKey">
-			<key-property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-			<key-property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		</composite-id>
+		<id name="dossierUserId" type="long">
+			<generator class="assigned" />
+		</id>
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="visited" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>

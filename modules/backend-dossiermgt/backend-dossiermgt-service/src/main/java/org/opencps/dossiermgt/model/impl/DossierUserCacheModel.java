@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 
 		DossierUserCacheModel dossierUserCacheModel = (DossierUserCacheModel)obj;
 
-		if (dossierUserPK.equals(dossierUserCacheModel.dossierUserPK)) {
+		if (dossierUserId == dossierUserCacheModel.dossierUserId) {
 			return true;
 		}
 
@@ -59,15 +58,17 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 
 	@Override
 	public int hashCode() {
-		return HashUtil.hash(0, dossierUserPK);
+		return HashUtil.hash(0, dossierUserId);
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
+		sb.append(", dossierUserId=");
+		sb.append(dossierUserId);
 		sb.append(", dossierId=");
 		sb.append(dossierId);
 		sb.append(", userId=");
@@ -92,6 +93,7 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 			dossierUserImpl.setUuid(uuid);
 		}
 
+		dossierUserImpl.setDossierUserId(dossierUserId);
 		dossierUserImpl.setDossierId(dossierId);
 		dossierUserImpl.setUserId(userId);
 		dossierUserImpl.setModerator(moderator);
@@ -106,6 +108,8 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 
+		dossierUserId = objectInput.readLong();
+
 		dossierId = objectInput.readLong();
 
 		userId = objectInput.readLong();
@@ -113,8 +117,6 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 		moderator = objectInput.readInt();
 
 		visited = objectInput.readBoolean();
-
-		dossierUserPK = new DossierUserPK(dossierId, userId);
 	}
 
 	@Override
@@ -127,6 +129,8 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 			objectOutput.writeUTF(uuid);
 		}
 
+		objectOutput.writeLong(dossierUserId);
+
 		objectOutput.writeLong(dossierId);
 
 		objectOutput.writeLong(userId);
@@ -137,9 +141,9 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 	}
 
 	public String uuid;
+	public long dossierUserId;
 	public long dossierId;
 	public long userId;
 	public int moderator;
 	public boolean visited;
-	public transient DossierUserPK dossierUserPK;
 }

@@ -147,14 +147,14 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where uuid = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public DossierActionUser[] findByUuid_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, String uuid,
+		long dossierActionUserId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -279,14 +279,14 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierActionId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierActionId the dossier action ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public DossierActionUser[] findByDID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierActionId,
+	public DossierActionUser[] findByDID_PrevAndNext(long dossierActionUserId,
+		long dossierActionId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -461,14 +461,14 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where userId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public DossierActionUser[] findByUID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long userId,
+	public DossierActionUser[] findByUID_PrevAndNext(long dossierActionUserId,
+		long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -605,7 +605,7 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and stepCode = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param stepCode the step code
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -613,8 +613,7 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public DossierActionUser[] findByDID_SC_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		String stepCode,
+		long dossierActionUserId, long dossierId, String stepCode,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -773,7 +772,7 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63; and stepCode = &#63; and assigned = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param dossierActionId the dossier action ID
 	* @param stepCode the step code
@@ -783,8 +782,8 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public DossierActionUser[] findByDID__DAI_SC_AS_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		long dossierActionId, String stepCode, int assigned,
+		long dossierActionUserId, long dossierId, long dossierActionId,
+		String stepCode, int assigned,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -1021,7 +1020,7 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and userId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1029,7 +1028,7 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public DossierActionUser[] findByDOSSIER_UID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId, long userId,
+		long dossierActionUserId, long dossierId, long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -1156,14 +1155,14 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public DossierActionUser[] findByDSID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
+		long dossierActionUserId, long dossierId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierActionUser> orderByComparator)
 		throws NoSuchDossierActionUserException;
 
@@ -1200,19 +1199,19 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*
-	* @param dossierActionUserPK the primary key for the new dossier action user
+	* @param dossierActionUserId the primary key for the new dossier action user
 	* @return the new dossier action user
 	*/
-	public DossierActionUser create(DossierActionUserPK dossierActionUserPK);
+	public DossierActionUser create(long dossierActionUserId);
 
 	/**
 	* Removes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user that was removed
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public DossierActionUser remove(DossierActionUserPK dossierActionUserPK)
+	public DossierActionUser remove(long dossierActionUserId)
 		throws NoSuchDossierActionUserException;
 
 	public DossierActionUser updateImpl(DossierActionUser dossierActionUser);
@@ -1220,22 +1219,20 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	/**
 	* Returns the dossier action user with the primary key or throws a {@link NoSuchDossierActionUserException} if it could not be found.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public DossierActionUser findByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK)
+	public DossierActionUser findByPrimaryKey(long dossierActionUserId)
 		throws NoSuchDossierActionUserException;
 
 	/**
 	* Returns the dossier action user with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user, or <code>null</code> if a dossier action user with the primary key could not be found
 	*/
-	public DossierActionUser fetchByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK);
+	public DossierActionUser fetchByPrimaryKey(long dossierActionUserId);
 
 	@Override
 	public java.util.Map<java.io.Serializable, DossierActionUser> fetchByPrimaryKeys(
@@ -1307,6 +1304,4 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 
 	@Override
 	public java.util.Set<String> getBadColumnNames();
-
-	public java.util.Set<String> getCompoundPKColumnNames();
 }

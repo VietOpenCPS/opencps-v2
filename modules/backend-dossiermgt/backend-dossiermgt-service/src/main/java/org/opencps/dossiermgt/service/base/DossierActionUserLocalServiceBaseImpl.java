@@ -52,7 +52,6 @@ import org.opencps.dossiermgt.service.persistence.DeliverableTypePersistence;
 import org.opencps.dossiermgt.service.persistence.DocumentTypePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionSyncPersistence;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierDocumentPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierFilePersistence;
@@ -139,28 +138,27 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 	/**
 	 * Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	 *
-	 * @param dossierActionUserPK the primary key for the new dossier action user
+	 * @param dossierActionUserId the primary key for the new dossier action user
 	 * @return the new dossier action user
 	 */
 	@Override
 	@Transactional(enabled = false)
-	public DossierActionUser createDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) {
-		return dossierActionUserPersistence.create(dossierActionUserPK);
+	public DossierActionUser createDossierActionUser(long dossierActionUserId) {
+		return dossierActionUserPersistence.create(dossierActionUserId);
 	}
 
 	/**
 	 * Deletes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dossierActionUserPK the primary key of the dossier action user
+	 * @param dossierActionUserId the primary key of the dossier action user
 	 * @return the dossier action user that was removed
 	 * @throws PortalException if a dossier action user with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public DossierActionUser deleteDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) throws PortalException {
-		return dossierActionUserPersistence.remove(dossierActionUserPK);
+	public DossierActionUser deleteDossierActionUser(long dossierActionUserId)
+		throws PortalException {
+		return dossierActionUserPersistence.remove(dossierActionUserId);
 	}
 
 	/**
@@ -260,22 +258,21 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 	}
 
 	@Override
-	public DossierActionUser fetchDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) {
-		return dossierActionUserPersistence.fetchByPrimaryKey(dossierActionUserPK);
+	public DossierActionUser fetchDossierActionUser(long dossierActionUserId) {
+		return dossierActionUserPersistence.fetchByPrimaryKey(dossierActionUserId);
 	}
 
 	/**
 	 * Returns the dossier action user with the primary key.
 	 *
-	 * @param dossierActionUserPK the primary key of the dossier action user
+	 * @param dossierActionUserId the primary key of the dossier action user
 	 * @return the dossier action user
 	 * @throws PortalException if a dossier action user with the primary key could not be found
 	 */
 	@Override
-	public DossierActionUser getDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) throws PortalException {
-		return dossierActionUserPersistence.findByPrimaryKey(dossierActionUserPK);
+	public DossierActionUser getDossierActionUser(long dossierActionUserId)
+		throws PortalException {
+		return dossierActionUserPersistence.findByPrimaryKey(dossierActionUserId);
 	}
 
 	@Override
@@ -286,8 +283,7 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(DossierActionUser.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName(
-			"primaryKey.dossierActionId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("dossierActionUserId");
 
 		return actionableDynamicQuery;
 	}
@@ -301,7 +297,7 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 		indexableActionableDynamicQuery.setModelClass(DossierActionUser.class);
 
 		indexableActionableDynamicQuery.setPrimaryKeyPropertyName(
-			"primaryKey.dossierActionId");
+			"dossierActionUserId");
 
 		return indexableActionableDynamicQuery;
 	}
@@ -312,8 +308,7 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(DossierActionUser.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName(
-			"primaryKey.dossierActionId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("dossierActionUserId");
 	}
 
 	/**

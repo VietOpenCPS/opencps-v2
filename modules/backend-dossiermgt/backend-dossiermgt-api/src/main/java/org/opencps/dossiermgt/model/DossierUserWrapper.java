@@ -58,6 +58,7 @@ public class DossierUserWrapper implements DossierUser,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("dossierUserId", getDossierUserId());
 		attributes.put("dossierId", getDossierId());
 		attributes.put("userId", getUserId());
 		attributes.put("moderator", getModerator());
@@ -72,6 +73,12 @@ public class DossierUserWrapper implements DossierUser,
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		Long dossierUserId = (Long)attributes.get("dossierUserId");
+
+		if (dossierUserId != null) {
+			setDossierUserId(dossierUserId);
 		}
 
 		Long dossierId = (Long)attributes.get("dossierId");
@@ -119,6 +126,26 @@ public class DossierUserWrapper implements DossierUser,
 		return _dossierUser.getDossierId();
 	}
 
+	/**
+	* Returns the dossier user ID of this dossier user.
+	*
+	* @return the dossier user ID of this dossier user
+	*/
+	@Override
+	public long getDossierUserId() {
+		return _dossierUser.getDossierUserId();
+	}
+
+	/**
+	* Returns the dossier user uuid of this dossier user.
+	*
+	* @return the dossier user uuid of this dossier user
+	*/
+	@Override
+	public String getDossierUserUuid() {
+		return _dossierUser.getDossierUserUuid();
+	}
+
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _dossierUser.getExpandoBridge();
@@ -140,7 +167,7 @@ public class DossierUserWrapper implements DossierUser,
 	* @return the primary key of this dossier user
 	*/
 	@Override
-	public org.opencps.dossiermgt.service.persistence.DossierUserPK getPrimaryKey() {
+	public long getPrimaryKey() {
 		return _dossierUser.getPrimaryKey();
 	}
 
@@ -239,6 +266,26 @@ public class DossierUserWrapper implements DossierUser,
 		_dossierUser.setDossierId(dossierId);
 	}
 
+	/**
+	* Sets the dossier user ID of this dossier user.
+	*
+	* @param dossierUserId the dossier user ID of this dossier user
+	*/
+	@Override
+	public void setDossierUserId(long dossierUserId) {
+		_dossierUser.setDossierUserId(dossierUserId);
+	}
+
+	/**
+	* Sets the dossier user uuid of this dossier user.
+	*
+	* @param dossierUserUuid the dossier user uuid of this dossier user
+	*/
+	@Override
+	public void setDossierUserUuid(String dossierUserUuid) {
+		_dossierUser.setDossierUserUuid(dossierUserUuid);
+	}
+
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
@@ -276,8 +323,7 @@ public class DossierUserWrapper implements DossierUser,
 	* @param primaryKey the primary key of this dossier user
 	*/
 	@Override
-	public void setPrimaryKey(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK primaryKey) {
+	public void setPrimaryKey(long primaryKey) {
 		_dossierUser.setPrimaryKey(primaryKey);
 	}
 

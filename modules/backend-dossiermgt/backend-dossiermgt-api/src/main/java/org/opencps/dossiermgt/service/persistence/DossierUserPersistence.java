@@ -147,13 +147,13 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where uuid = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public DossierUser[] findByUuid_PrevAndNext(DossierUserPK dossierUserPK,
+	public DossierUser[] findByUuid_PrevAndNext(long dossierUserId,
 		String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException;
@@ -279,13 +279,13 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where dossierId = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param dossierId the dossier ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public DossierUser[] findByDID_PrevAndNext(DossierUserPK dossierUserPK,
+	public DossierUser[] findByDID_PrevAndNext(long dossierUserId,
 		long dossierId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException;
@@ -460,14 +460,13 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where userId = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public DossierUser[] findByUID_PrevAndNext(DossierUserPK dossierUserPK,
-		long userId,
+	public DossierUser[] findByUID_PrevAndNext(long dossierUserId, long userId,
 		com.liferay.portal.kernel.util.OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException;
 
@@ -503,19 +502,19 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*
-	* @param dossierUserPK the primary key for the new dossier user
+	* @param dossierUserId the primary key for the new dossier user
 	* @return the new dossier user
 	*/
-	public DossierUser create(DossierUserPK dossierUserPK);
+	public DossierUser create(long dossierUserId);
 
 	/**
 	* Removes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user that was removed
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public DossierUser remove(DossierUserPK dossierUserPK)
+	public DossierUser remove(long dossierUserId)
 		throws NoSuchDossierUserException;
 
 	public DossierUser updateImpl(DossierUser dossierUser);
@@ -523,20 +522,20 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 	/**
 	* Returns the dossier user with the primary key or throws a {@link NoSuchDossierUserException} if it could not be found.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public DossierUser findByPrimaryKey(DossierUserPK dossierUserPK)
+	public DossierUser findByPrimaryKey(long dossierUserId)
 		throws NoSuchDossierUserException;
 
 	/**
 	* Returns the dossier user with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user, or <code>null</code> if a dossier user with the primary key could not be found
 	*/
-	public DossierUser fetchByPrimaryKey(DossierUserPK dossierUserPK);
+	public DossierUser fetchByPrimaryKey(long dossierUserId);
 
 	@Override
 	public java.util.Map<java.io.Serializable, DossierUser> fetchByPrimaryKeys(
@@ -608,6 +607,4 @@ public interface DossierUserPersistence extends BasePersistence<DossierUser> {
 
 	@Override
 	public java.util.Set<String> getBadColumnNames();
-
-	public java.util.Set<String> getCompoundPKColumnNames();
 }

@@ -39,7 +39,6 @@ import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.impl.DossierUserImpl;
 import org.opencps.dossiermgt.model.impl.DossierUserModelImpl;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 
 import java.io.Serializable;
@@ -49,6 +48,8 @@ import java.lang.reflect.InvocationHandler;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -393,17 +394,17 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Returns the dossier users before and after the current dossier user in the ordered set where uuid = &#63;.
 	 *
-	 * @param dossierUserPK the primary key of the current dossier user
+	 * @param dossierUserId the primary key of the current dossier user
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier user
 	 * @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser[] findByUuid_PrevAndNext(DossierUserPK dossierUserPK,
+	public DossierUser[] findByUuid_PrevAndNext(long dossierUserId,
 		String uuid, OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException {
-		DossierUser dossierUser = findByPrimaryKey(dossierUserPK);
+		DossierUser dossierUser = findByPrimaryKey(dossierUserId);
 
 		Session session = null;
 
@@ -922,17 +923,17 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Returns the dossier users before and after the current dossier user in the ordered set where dossierId = &#63;.
 	 *
-	 * @param dossierUserPK the primary key of the current dossier user
+	 * @param dossierUserId the primary key of the current dossier user
 	 * @param dossierId the dossier ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier user
 	 * @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser[] findByDID_PrevAndNext(DossierUserPK dossierUserPK,
+	public DossierUser[] findByDID_PrevAndNext(long dossierUserId,
 		long dossierId, OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException {
-		DossierUser dossierUser = findByPrimaryKey(dossierUserPK);
+		DossierUser dossierUser = findByPrimaryKey(dossierUserId);
 
 		Session session = null;
 
@@ -1129,7 +1130,7 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_DID_DOSSIERID_2 = "dossierUser.id.dossierId = ?";
+	private static final String _FINDER_COLUMN_DID_DOSSIERID_2 = "dossierUser.dossierId = ?";
 	public static final FinderPath FINDER_PATH_FETCH_BY_DID_UID = new FinderPath(DossierUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierUserModelImpl.FINDER_CACHE_ENABLED, DossierUserImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByDID_UID",
@@ -1357,8 +1358,8 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_DID_UID_DOSSIERID_2 = "dossierUser.id.dossierId = ? AND ";
-	private static final String _FINDER_COLUMN_DID_UID_USERID_2 = "dossierUser.id.userId = ?";
+	private static final String _FINDER_COLUMN_DID_UID_DOSSIERID_2 = "dossierUser.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_UID_USERID_2 = "dossierUser.userId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UID = new FinderPath(DossierUserModelImpl.ENTITY_CACHE_ENABLED,
 			DossierUserModelImpl.FINDER_CACHE_ENABLED, DossierUserImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUID",
@@ -1650,17 +1651,17 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Returns the dossier users before and after the current dossier user in the ordered set where userId = &#63;.
 	 *
-	 * @param dossierUserPK the primary key of the current dossier user
+	 * @param dossierUserId the primary key of the current dossier user
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next dossier user
 	 * @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser[] findByUID_PrevAndNext(DossierUserPK dossierUserPK,
-		long userId, OrderByComparator<DossierUser> orderByComparator)
+	public DossierUser[] findByUID_PrevAndNext(long dossierUserId, long userId,
+		OrderByComparator<DossierUser> orderByComparator)
 		throws NoSuchDossierUserException {
-		DossierUser dossierUser = findByPrimaryKey(dossierUserPK);
+		DossierUser dossierUser = findByPrimaryKey(dossierUserId);
 
 		Session session = null;
 
@@ -1857,7 +1858,7 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UID_USERID_2 = "dossierUser.id.userId = ?";
+	private static final String _FINDER_COLUMN_UID_USERID_2 = "dossierUser.userId = ?";
 
 	public DossierUserPersistenceImpl() {
 		setModelClass(DossierUser.class);
@@ -2004,15 +2005,15 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	 *
-	 * @param dossierUserPK the primary key for the new dossier user
+	 * @param dossierUserId the primary key for the new dossier user
 	 * @return the new dossier user
 	 */
 	@Override
-	public DossierUser create(DossierUserPK dossierUserPK) {
+	public DossierUser create(long dossierUserId) {
 		DossierUser dossierUser = new DossierUserImpl();
 
 		dossierUser.setNew(true);
-		dossierUser.setPrimaryKey(dossierUserPK);
+		dossierUser.setPrimaryKey(dossierUserId);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -2024,14 +2025,14 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Removes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dossierUserPK the primary key of the dossier user
+	 * @param dossierUserId the primary key of the dossier user
 	 * @return the dossier user that was removed
 	 * @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser remove(DossierUserPK dossierUserPK)
+	public DossierUser remove(long dossierUserId)
 		throws NoSuchDossierUserException {
-		return remove((Serializable)dossierUserPK);
+		return remove((Serializable)dossierUserId);
 	}
 
 	/**
@@ -2275,14 +2276,14 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Returns the dossier user with the primary key or throws a {@link NoSuchDossierUserException} if it could not be found.
 	 *
-	 * @param dossierUserPK the primary key of the dossier user
+	 * @param dossierUserId the primary key of the dossier user
 	 * @return the dossier user
 	 * @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser findByPrimaryKey(DossierUserPK dossierUserPK)
+	public DossierUser findByPrimaryKey(long dossierUserId)
 		throws NoSuchDossierUserException {
-		return findByPrimaryKey((Serializable)dossierUserPK);
+		return findByPrimaryKey((Serializable)dossierUserId);
 	}
 
 	/**
@@ -2336,12 +2337,12 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	/**
 	 * Returns the dossier user with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param dossierUserPK the primary key of the dossier user
+	 * @param dossierUserId the primary key of the dossier user
 	 * @return the dossier user, or <code>null</code> if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser fetchByPrimaryKey(DossierUserPK dossierUserPK) {
-		return fetchByPrimaryKey((Serializable)dossierUserPK);
+	public DossierUser fetchByPrimaryKey(long dossierUserId) {
+		return fetchByPrimaryKey((Serializable)dossierUserId);
 	}
 
 	@Override
@@ -2353,12 +2354,86 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 
 		Map<Serializable, DossierUser> map = new HashMap<Serializable, DossierUser>();
 
-		for (Serializable primaryKey : primaryKeys) {
+		if (primaryKeys.size() == 1) {
+			Iterator<Serializable> iterator = primaryKeys.iterator();
+
+			Serializable primaryKey = iterator.next();
+
 			DossierUser dossierUser = fetchByPrimaryKey(primaryKey);
 
 			if (dossierUser != null) {
 				map.put(primaryKey, dossierUser);
 			}
+
+			return map;
+		}
+
+		Set<Serializable> uncachedPrimaryKeys = null;
+
+		for (Serializable primaryKey : primaryKeys) {
+			Serializable serializable = entityCache.getResult(DossierUserModelImpl.ENTITY_CACHE_ENABLED,
+					DossierUserImpl.class, primaryKey);
+
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
+
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DossierUser)serializable);
+				}
+			}
+		}
+
+		if (uncachedPrimaryKeys == null) {
+			return map;
+		}
+
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
+
+		query.append(_SQL_SELECT_DOSSIERUSER_WHERE_PKS_IN);
+
+		for (Serializable primaryKey : uncachedPrimaryKeys) {
+			query.append((long)primaryKey);
+
+			query.append(",");
+		}
+
+		query.setIndex(query.index() - 1);
+
+		query.append(")");
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = session.createQuery(sql);
+
+			for (DossierUser dossierUser : (List<DossierUser>)q.list()) {
+				map.put(dossierUser.getPrimaryKeyObj(), dossierUser);
+
+				cacheResult(dossierUser);
+
+				uncachedPrimaryKeys.remove(dossierUser.getPrimaryKeyObj());
+			}
+
+			for (Serializable primaryKey : uncachedPrimaryKeys) {
+				entityCache.putResult(DossierUserModelImpl.ENTITY_CACHE_ENABLED,
+					DossierUserImpl.class, primaryKey, nullModel);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
 		}
 
 		return map;
@@ -2561,11 +2636,6 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	}
 
 	@Override
-	public Set<String> getCompoundPKColumnNames() {
-		return _compoundPKColumnNames;
-	}
-
-	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return DossierUserModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -2588,6 +2658,7 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_DOSSIERUSER = "SELECT dossierUser FROM DossierUser dossierUser";
+	private static final String _SQL_SELECT_DOSSIERUSER_WHERE_PKS_IN = "SELECT dossierUser FROM DossierUser dossierUser WHERE dossierUserId IN (";
 	private static final String _SQL_SELECT_DOSSIERUSER_WHERE = "SELECT dossierUser FROM DossierUser dossierUser WHERE ";
 	private static final String _SQL_COUNT_DOSSIERUSER = "SELECT COUNT(dossierUser) FROM DossierUser dossierUser";
 	private static final String _SQL_COUNT_DOSSIERUSER_WHERE = "SELECT COUNT(dossierUser) FROM DossierUser dossierUser WHERE ";
@@ -2597,8 +2668,5 @@ public class DossierUserPersistenceImpl extends BasePersistenceImpl<DossierUser>
 	private static final Log _log = LogFactoryUtil.getLog(DossierUserPersistenceImpl.class);
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
-			});
-	private static final Set<String> _compoundPKColumnNames = SetUtil.fromArray(new String[] {
-				"dossierId", "userId"
 			});
 }

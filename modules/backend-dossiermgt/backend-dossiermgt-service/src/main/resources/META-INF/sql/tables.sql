@@ -257,14 +257,14 @@ create table opencps_dossieractionsync (
 
 create table opencps_dossieractionuser (
 	uuid_ VARCHAR(75) null,
-	dossierActionId LONG not null,
-	userId LONG not null,
+	dossierActionUserId LONG not null primary key,
+	dossierActionId LONG,
+	userId LONG,
 	dossierId LONG,
 	stepCode VARCHAR(255) null,
 	moderator INTEGER,
 	assigned INTEGER,
-	visited BOOLEAN,
-	primary key (dossierActionId, userId)
+	visited BOOLEAN
 );
 
 create table opencps_dossierdocument (
@@ -467,11 +467,11 @@ create table opencps_dossiertemplate (
 
 create table opencps_dossieruser (
 	uuid_ VARCHAR(75) null,
-	dossierId LONG not null,
-	userId LONG not null,
+	dossierUserId LONG not null primary key,
+	dossierId LONG,
+	userId LONG,
 	moderator INTEGER,
-	visited BOOLEAN,
-	primary key (dossierId, userId)
+	visited BOOLEAN
 );
 
 create table opencps_dynamicreport (

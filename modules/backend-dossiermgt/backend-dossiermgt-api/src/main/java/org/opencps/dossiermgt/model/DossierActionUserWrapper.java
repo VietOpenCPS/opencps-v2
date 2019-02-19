@@ -58,6 +58,7 @@ public class DossierActionUserWrapper implements DossierActionUser,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("dossierActionUserId", getDossierActionUserId());
 		attributes.put("dossierActionId", getDossierActionId());
 		attributes.put("userId", getUserId());
 		attributes.put("dossierId", getDossierId());
@@ -75,6 +76,12 @@ public class DossierActionUserWrapper implements DossierActionUser,
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		Long dossierActionUserId = (Long)attributes.get("dossierActionUserId");
+
+		if (dossierActionUserId != null) {
+			setDossierActionUserId(dossierActionUserId);
 		}
 
 		Long dossierActionId = (Long)attributes.get("dossierActionId");
@@ -151,6 +158,26 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	}
 
 	/**
+	* Returns the dossier action user ID of this dossier action user.
+	*
+	* @return the dossier action user ID of this dossier action user
+	*/
+	@Override
+	public long getDossierActionUserId() {
+		return _dossierActionUser.getDossierActionUserId();
+	}
+
+	/**
+	* Returns the dossier action user uuid of this dossier action user.
+	*
+	* @return the dossier action user uuid of this dossier action user
+	*/
+	@Override
+	public String getDossierActionUserUuid() {
+		return _dossierActionUser.getDossierActionUserUuid();
+	}
+
+	/**
 	* Returns the dossier ID of this dossier action user.
 	*
 	* @return the dossier ID of this dossier action user
@@ -181,7 +208,7 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	* @return the primary key of this dossier action user
 	*/
 	@Override
-	public org.opencps.dossiermgt.service.persistence.DossierActionUserPK getPrimaryKey() {
+	public long getPrimaryKey() {
 		return _dossierActionUser.getPrimaryKey();
 	}
 
@@ -301,6 +328,26 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	}
 
 	/**
+	* Sets the dossier action user ID of this dossier action user.
+	*
+	* @param dossierActionUserId the dossier action user ID of this dossier action user
+	*/
+	@Override
+	public void setDossierActionUserId(long dossierActionUserId) {
+		_dossierActionUser.setDossierActionUserId(dossierActionUserId);
+	}
+
+	/**
+	* Sets the dossier action user uuid of this dossier action user.
+	*
+	* @param dossierActionUserUuid the dossier action user uuid of this dossier action user
+	*/
+	@Override
+	public void setDossierActionUserUuid(String dossierActionUserUuid) {
+		_dossierActionUser.setDossierActionUserUuid(dossierActionUserUuid);
+	}
+
+	/**
 	* Sets the dossier ID of this dossier action user.
 	*
 	* @param dossierId the dossier ID of this dossier action user
@@ -347,8 +394,7 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	* @param primaryKey the primary key of this dossier action user
 	*/
 	@Override
-	public void setPrimaryKey(
-		org.opencps.dossiermgt.service.persistence.DossierActionUserPK primaryKey) {
+	public void setPrimaryKey(long primaryKey) {
 		_dossierActionUser.setPrimaryKey(primaryKey);
 	}
 

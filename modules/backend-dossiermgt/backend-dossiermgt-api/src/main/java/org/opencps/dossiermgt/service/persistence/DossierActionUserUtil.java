@@ -234,18 +234,18 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where uuid = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByUuid_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, String uuid,
+		long dossierActionUserId, String uuid,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByUuid_PrevAndNext(dossierActionUserPK, uuid,
+				   .findByUuid_PrevAndNext(dossierActionUserId, uuid,
 			orderByComparator);
 	}
 
@@ -397,18 +397,18 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierActionId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierActionId the dossier action ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByDID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierActionId,
+		long dossierActionUserId, long dossierActionId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByDID_PrevAndNext(dossierActionUserPK, dossierActionId,
+				   .findByDID_PrevAndNext(dossierActionUserId, dossierActionId,
 			orderByComparator);
 	}
 
@@ -617,18 +617,18 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where userId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByUID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long userId,
+		long dossierActionUserId, long userId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByUID_PrevAndNext(dossierActionUserPK, userId,
+				   .findByUID_PrevAndNext(dossierActionUserId, userId,
 			orderByComparator);
 	}
 
@@ -790,7 +790,7 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and stepCode = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param stepCode the step code
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -798,11 +798,11 @@ public class DossierActionUserUtil {
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByDID_SC_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		String stepCode, OrderByComparator<DossierActionUser> orderByComparator)
+		long dossierActionUserId, long dossierId, String stepCode,
+		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByDID_SC_PrevAndNext(dossierActionUserPK, dossierId,
+				   .findByDID_SC_PrevAndNext(dossierActionUserId, dossierId,
 			stepCode, orderByComparator);
 	}
 
@@ -994,7 +994,7 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63; and stepCode = &#63; and assigned = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param dossierActionId the dossier action ID
 	* @param stepCode the step code
@@ -1004,12 +1004,12 @@ public class DossierActionUserUtil {
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByDID__DAI_SC_AS_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
-		long dossierActionId, String stepCode, int assigned,
+		long dossierActionUserId, long dossierId, long dossierActionId,
+		String stepCode, int assigned,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByDID__DAI_SC_AS_PrevAndNext(dossierActionUserPK,
+				   .findByDID__DAI_SC_AS_PrevAndNext(dossierActionUserId,
 			dossierId, dossierActionId, stepCode, assigned, orderByComparator);
 	}
 
@@ -1293,7 +1293,7 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and userId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1301,11 +1301,11 @@ public class DossierActionUserUtil {
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByDOSSIER_UID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId, long userId,
+		long dossierActionUserId, long dossierId, long userId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByDOSSIER_UID_PrevAndNext(dossierActionUserPK,
+				   .findByDOSSIER_UID_PrevAndNext(dossierActionUserId,
 			dossierId, userId, orderByComparator);
 	}
 
@@ -1453,18 +1453,18 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63;.
 	*
-	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierActionUserId the primary key of the current dossier action user
 	* @param dossierId the dossier ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
 	public static DossierActionUser[] findByDSID_PrevAndNext(
-		DossierActionUserPK dossierActionUserPK, long dossierId,
+		long dossierActionUserId, long dossierId,
 		OrderByComparator<DossierActionUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
 		return getPersistence()
-				   .findByDSID_PrevAndNext(dossierActionUserPK, dossierId,
+				   .findByDSID_PrevAndNext(dossierActionUserId, dossierId,
 			orderByComparator);
 	}
 
@@ -1508,25 +1508,23 @@ public class DossierActionUserUtil {
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*
-	* @param dossierActionUserPK the primary key for the new dossier action user
+	* @param dossierActionUserId the primary key for the new dossier action user
 	* @return the new dossier action user
 	*/
-	public static DossierActionUser create(
-		DossierActionUserPK dossierActionUserPK) {
-		return getPersistence().create(dossierActionUserPK);
+	public static DossierActionUser create(long dossierActionUserId) {
+		return getPersistence().create(dossierActionUserId);
 	}
 
 	/**
 	* Removes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user that was removed
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public static DossierActionUser remove(
-		DossierActionUserPK dossierActionUserPK)
+	public static DossierActionUser remove(long dossierActionUserId)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
-		return getPersistence().remove(dossierActionUserPK);
+		return getPersistence().remove(dossierActionUserId);
 	}
 
 	public static DossierActionUser updateImpl(
@@ -1537,25 +1535,23 @@ public class DossierActionUserUtil {
 	/**
 	* Returns the dossier action user with the primary key or throws a {@link NoSuchDossierActionUserException} if it could not be found.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user
 	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
 	*/
-	public static DossierActionUser findByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK)
+	public static DossierActionUser findByPrimaryKey(long dossierActionUserId)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
-		return getPersistence().findByPrimaryKey(dossierActionUserPK);
+		return getPersistence().findByPrimaryKey(dossierActionUserId);
 	}
 
 	/**
 	* Returns the dossier action user with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user, or <code>null</code> if a dossier action user with the primary key could not be found
 	*/
-	public static DossierActionUser fetchByPrimaryKey(
-		DossierActionUserPK dossierActionUserPK) {
-		return getPersistence().fetchByPrimaryKey(dossierActionUserPK);
+	public static DossierActionUser fetchByPrimaryKey(long dossierActionUserId) {
+		return getPersistence().fetchByPrimaryKey(dossierActionUserId);
 	}
 
 	public static java.util.Map<java.io.Serializable, DossierActionUser> fetchByPrimaryKeys(
@@ -1642,10 +1638,6 @@ public class DossierActionUserUtil {
 
 	public static java.util.Set<String> getBadColumnNames() {
 		return getPersistence().getBadColumnNames();
-	}
-
-	public static java.util.Set<String> getCompoundPKColumnNames() {
-		return getPersistence().getCompoundPKColumnNames();
 	}
 
 	public static DossierActionUserPersistence getPersistence() {

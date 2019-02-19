@@ -14,6 +14,8 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.counter.kernel.service.persistence.CounterPersistence;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -47,51 +49,78 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	private static Log _log = LogFactoryUtil.getLog(DossierUserLocalServiceImpl.class);
 //	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser addDossierUser(long groupId, long dossierId, long userId, int moderator, boolean visited) {
-		DossierUserPK pk = new DossierUserPK();
-		pk.setUserId(userId);
-		pk.setDossierId(dossierId);
-		DossierUser oldObject = null;
-		try {
-			oldObject = dossierUserPersistence.findByPrimaryKey(pk);
-		} catch (NoSuchDossierUserException e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
-		DossierUser object = null;
+//		DossierUserPK pk = new DossierUserPK();
+//		pk.setUserId(userId);
+//		pk.setDossierId(dossierId);
+//		DossierUser oldObject = null;
+//		try {
+//			oldObject = dossierUserPersistence.findByPrimaryKey(pk);
+//		} catch (NoSuchDossierUserException e) {
+//			_log.debug(e);
+//			//_log.error(e);
+//		}
+//		DossierUser object = null;
+//		
+//		if (oldObject == null) {
+//			object = dossierUserPersistence.create(pk);
+//		}
+//		else {
+//			object = oldObject;
+//		}
+//			
+//		object.setModerator(moderator);
+//		object.setVisited(visited);
+//		
+//		return dossierUserPersistence.update(object);
 		
-		if (oldObject == null) {
-			object = dossierUserPersistence.create(pk);
+		DossierUser dossierUser = dossierUserPersistence.fetchByDID_UID(dossierId, userId);
+		if (dossierUser == null) {
+			long dossierUserId = counterLocalService.increment(DossierUser.class.getName());
+			dossierUser = dossierUserPersistence.create(dossierUserId);
+			//
+			dossierUser.setDossierId(dossierId);
+			dossierUser.setUserId(userId);
 		}
-		else {
-			object = oldObject;
-		}
-			
-		object.setModerator(moderator);
-		object.setVisited(visited);
-		
-		return dossierUserPersistence.update(object);
+
+		dossierUser.setModerator(moderator);
+		dossierUser.setVisited(visited);
+
+		return dossierUserPersistence.update(dossierUser);
 	}
 	
 //	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser updateDossierUser(long dossierId, long userId, int moderator, boolean visited) throws NoSuchDossierUserException {
-		DossierUserPK pk = new DossierUserPK();
-		pk.setUserId(userId);
-		pk.setDossierId(dossierId);
-		DossierUser object = dossierUserPersistence.findByPrimaryKey(pk);
+//		DossierUserPK pk = new DossierUserPK();
+//		pk.setUserId(userId);
+//		pk.setDossierId(dossierId);
+//		DossierUser object = dossierUserPersistence.findByPrimaryKey(pk);
+//		
+//		object.setModerator(moderator);
+//		object.setVisited(visited);
 		
-		object.setModerator(moderator);
-		object.setVisited(visited);
-		
-		return dossierUserPersistence.update(object);
+		DossierUser dossierUser = dossierUserPersistence.fetchByDID_UID(dossierId, userId);
+		if (dossierUser != null) {
+			dossierUser.setModerator(moderator);
+			dossierUser.setVisited(visited);
+			//
+			return dossierUserPersistence.update(dossierUser);
+		} else {
+			return null;
+		}
 	}
 	
 //	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser deleteDossierUser(long dossierId, long userId) throws NoSuchDossierUserException {
-		DossierUserPK pk = new DossierUserPK();
-		pk.setUserId(userId);
-		pk.setDossierId(dossierId);
-		
-		return dossierUserPersistence.remove(pk);
+		//DossierUserPK pk = new DossierUserPK();
+		//pk.setUserId(userId);
+		//pk.setDossierId(dossierId);
+		//return dossierUserPersistence.remove(pk);
+		DossierUser dossierUser = dossierUserPersistence.fetchByDID_UID(dossierId, userId);
+		if (dossierUser != null) {
+			return dossierUserPersistence.remove(dossierUser);
+		} else {
+			return null;
+		}
 	}
 	
 	public DossierUser getByDossierUser(long dossierId, long userId) {

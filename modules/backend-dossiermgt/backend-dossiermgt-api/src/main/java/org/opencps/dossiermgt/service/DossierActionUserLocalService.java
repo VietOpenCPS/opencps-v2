@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import java.io.Serializable;
 
@@ -79,12 +78,11 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*
-	* @param dossierActionUserPK the primary key for the new dossier action user
+	* @param dossierActionUserId the primary key for the new dossier action user
 	* @return the new dossier action user
 	*/
 	@Transactional(enabled = false)
-	public DossierActionUser createDossierActionUser(
-		DossierActionUserPK dossierActionUserPK);
+	public DossierActionUser createDossierActionUser(long dossierActionUserId);
 
 	public void deleteByDossierAction(long dossierActionId);
 
@@ -103,13 +101,13 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	/**
 	* Deletes the dossier action user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user that was removed
 	* @throws PortalException if a dossier action user with the primary key could not be found
 	*/
 	@Indexable(type = IndexableType.DELETE)
-	public DossierActionUser deleteDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) throws PortalException;
+	public DossierActionUser deleteDossierActionUser(long dossierActionUserId)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -178,8 +176,7 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DossierActionUser fetchDossierActionUser(
-		DossierActionUserPK dossierActionUserPK);
+	public DossierActionUser fetchDossierActionUser(long dossierActionUserId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -208,13 +205,13 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	/**
 	* Returns the dossier action user with the primary key.
 	*
-	* @param dossierActionUserPK the primary key of the dossier action user
+	* @param dossierActionUserId the primary key of the dossier action user
 	* @return the dossier action user
 	* @throws PortalException if a dossier action user with the primary key could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DossierActionUser getDossierActionUser(
-		DossierActionUserPK dossierActionUserPK) throws PortalException;
+	public DossierActionUser getDossierActionUser(long dossierActionUserId)
+		throws PortalException;
 
 	/**
 	* Returns a range of all the dossier action users.

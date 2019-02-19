@@ -394,6 +394,7 @@
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierActionUser">
 		<field name="uuid" type="String" />
+		<field name="dossierActionUserId" type="long" />
 		<field name="dossierActionId" type="long" />
 		<field name="userId" type="long" />
 		<field name="dossierId" type="long" />
@@ -677,6 +678,7 @@
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">
 		<field name="uuid" type="String" />
+		<field name="dossierUserId" type="long" />
 		<field name="dossierId" type="long" />
 		<field name="userId" type="long" />
 		<field name="moderator" type="int" />

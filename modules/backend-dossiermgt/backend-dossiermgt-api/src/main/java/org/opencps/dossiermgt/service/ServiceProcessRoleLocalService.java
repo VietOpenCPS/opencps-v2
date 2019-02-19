@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -174,6 +175,7 @@ public interface ServiceProcessRoleLocalService extends BaseLocalService,
 	public ServiceProcessRole fetchServiceProcessRole(
 		ServiceProcessRolePK serviceProcessRolePK);
 
+	@ThreadLocalCachable
 	public List<ServiceProcessRole> findByS_P_ID(long serviceProcessId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
