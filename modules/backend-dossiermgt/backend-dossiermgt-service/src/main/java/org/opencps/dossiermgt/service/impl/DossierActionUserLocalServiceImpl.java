@@ -14,6 +14,8 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.counter.kernel.service.persistence.CounterPersistence;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 
@@ -80,11 +82,18 @@ public class DossierActionUserLocalServiceImpl
 			long dossierActionId,
 			long dossierId, String stepCode, int moderator, 
 			int assigned, boolean visited) throws PortalException {
-		User user = userLocalService.getUser(userId);
-		
-		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
-		
-		DossierActionUser dau = dossierActionUserPersistence.create(pk);
+		//User user = userLocalService.getUser(userId);
+		//DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+		//DossierActionUser dau = dossierActionUserPersistence.create(pk);
+		DossierActionUser dau = dossierActionUserPersistence.fetchByDID_UID(dossierActionId, userId);
+		if (dau == null) {
+			long dauId = counterLocalService.increment(DossierActionUser.class.getName());
+			dau = dossierActionUserPersistence.create(dauId);
+			//
+			dau.setDossierActionId(dossierActionId);
+			dau.setUserId(userId);
+		}
+
 		dau.setAssigned(assigned);
 		dau.setStepCode(stepCode);
 		dau.setModerator(moderator);

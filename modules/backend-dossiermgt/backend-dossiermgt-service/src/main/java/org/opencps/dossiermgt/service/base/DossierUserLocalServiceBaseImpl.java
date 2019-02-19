@@ -64,7 +64,6 @@ import org.opencps.dossiermgt.service.persistence.DossierStatisticPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
@@ -138,27 +137,27 @@ public abstract class DossierUserLocalServiceBaseImpl
 	/**
 	 * Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	 *
-	 * @param dossierUserPK the primary key for the new dossier user
+	 * @param dossierUserId the primary key for the new dossier user
 	 * @return the new dossier user
 	 */
 	@Override
 	@Transactional(enabled = false)
-	public DossierUser createDossierUser(DossierUserPK dossierUserPK) {
-		return dossierUserPersistence.create(dossierUserPK);
+	public DossierUser createDossierUser(long dossierUserId) {
+		return dossierUserPersistence.create(dossierUserId);
 	}
 
 	/**
 	 * Deletes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dossierUserPK the primary key of the dossier user
+	 * @param dossierUserId the primary key of the dossier user
 	 * @return the dossier user that was removed
 	 * @throws PortalException if a dossier user with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public DossierUser deleteDossierUser(DossierUserPK dossierUserPK)
+	public DossierUser deleteDossierUser(long dossierUserId)
 		throws PortalException {
-		return dossierUserPersistence.remove(dossierUserPK);
+		return dossierUserPersistence.remove(dossierUserId);
 	}
 
 	/**
@@ -257,21 +256,21 @@ public abstract class DossierUserLocalServiceBaseImpl
 	}
 
 	@Override
-	public DossierUser fetchDossierUser(DossierUserPK dossierUserPK) {
-		return dossierUserPersistence.fetchByPrimaryKey(dossierUserPK);
+	public DossierUser fetchDossierUser(long dossierUserId) {
+		return dossierUserPersistence.fetchByPrimaryKey(dossierUserId);
 	}
 
 	/**
 	 * Returns the dossier user with the primary key.
 	 *
-	 * @param dossierUserPK the primary key of the dossier user
+	 * @param dossierUserId the primary key of the dossier user
 	 * @return the dossier user
 	 * @throws PortalException if a dossier user with the primary key could not be found
 	 */
 	@Override
-	public DossierUser getDossierUser(DossierUserPK dossierUserPK)
+	public DossierUser getDossierUser(long dossierUserId)
 		throws PortalException {
-		return dossierUserPersistence.findByPrimaryKey(dossierUserPK);
+		return dossierUserPersistence.findByPrimaryKey(dossierUserId);
 	}
 
 	@Override
@@ -282,7 +281,7 @@ public abstract class DossierUserLocalServiceBaseImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(DossierUser.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("primaryKey.dossierId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("dossierUserId");
 
 		return actionableDynamicQuery;
 	}
@@ -296,7 +295,7 @@ public abstract class DossierUserLocalServiceBaseImpl
 		indexableActionableDynamicQuery.setModelClass(DossierUser.class);
 
 		indexableActionableDynamicQuery.setPrimaryKeyPropertyName(
-			"primaryKey.dossierId");
+			"dossierUserId");
 
 		return indexableActionableDynamicQuery;
 	}
@@ -307,7 +306,7 @@ public abstract class DossierUserLocalServiceBaseImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(DossierUser.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("primaryKey.dossierId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("dossierUserId");
 	}
 
 	/**

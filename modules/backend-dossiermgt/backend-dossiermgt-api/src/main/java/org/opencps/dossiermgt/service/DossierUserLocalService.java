@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import java.io.Serializable;
 
@@ -78,11 +77,11 @@ public interface DossierUserLocalService extends BaseLocalService,
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*
-	* @param dossierUserPK the primary key for the new dossier user
+	* @param dossierUserId the primary key for the new dossier user
 	* @return the new dossier user
 	*/
 	@Transactional(enabled = false)
-	public DossierUser createDossierUser(DossierUserPK dossierUserPK);
+	public DossierUser createDossierUser(long dossierUserId);
 
 	/**
 	* Deletes the dossier user from the database. Also notifies the appropriate model listeners.
@@ -96,12 +95,12 @@ public interface DossierUserLocalService extends BaseLocalService,
 	/**
 	* Deletes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user that was removed
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	@Indexable(type = IndexableType.DELETE)
-	public DossierUser deleteDossierUser(DossierUserPK dossierUserPK)
+	public DossierUser deleteDossierUser(long dossierUserId)
 		throws PortalException;
 
 	public DossierUser deleteDossierUser(long dossierId, long userId)
@@ -174,7 +173,7 @@ public interface DossierUserLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DossierUser fetchDossierUser(DossierUserPK dossierUserPK);
+	public DossierUser fetchDossierUser(long dossierUserId);
 
 	public List<DossierUser> findByDID(long dossierId);
 
@@ -189,12 +188,12 @@ public interface DossierUserLocalService extends BaseLocalService,
 	/**
 	* Returns the dossier user with the primary key.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DossierUser getDossierUser(DossierUserPK dossierUserPK)
+	public DossierUser getDossierUser(long dossierUserId)
 		throws PortalException;
 
 	/**

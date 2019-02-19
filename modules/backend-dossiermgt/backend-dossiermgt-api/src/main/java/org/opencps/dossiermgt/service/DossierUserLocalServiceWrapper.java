@@ -56,13 +56,13 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*
-	* @param dossierUserPK the primary key for the new dossier user
+	* @param dossierUserId the primary key for the new dossier user
 	* @return the new dossier user
 	*/
 	@Override
 	public org.opencps.dossiermgt.model.DossierUser createDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK) {
-		return _dossierUserLocalService.createDossierUser(dossierUserPK);
+		long dossierUserId) {
+		return _dossierUserLocalService.createDossierUser(dossierUserId);
 	}
 
 	/**
@@ -80,15 +80,15 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 	/**
 	* Deletes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user that was removed
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	@Override
 	public org.opencps.dossiermgt.model.DossierUser deleteDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK)
+		long dossierUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _dossierUserLocalService.deleteDossierUser(dossierUserPK);
+		return _dossierUserLocalService.deleteDossierUser(dossierUserId);
 	}
 
 	@Override
@@ -195,8 +195,8 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.DossierUser fetchDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK) {
-		return _dossierUserLocalService.fetchDossierUser(dossierUserPK);
+		long dossierUserId) {
+		return _dossierUserLocalService.fetchDossierUser(dossierUserId);
 	}
 
 	@Override
@@ -225,15 +225,15 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 	/**
 	* Returns the dossier user with the primary key.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	@Override
 	public org.opencps.dossiermgt.model.DossierUser getDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK)
+		long dossierUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _dossierUserLocalService.getDossierUser(dossierUserPK);
+		return _dossierUserLocalService.getDossierUser(dossierUserId);
 	}
 
 	/**

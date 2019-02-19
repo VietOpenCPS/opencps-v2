@@ -65,12 +65,12 @@ public class DossierUserLocalServiceUtil {
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*
-	* @param dossierUserPK the primary key for the new dossier user
+	* @param dossierUserId the primary key for the new dossier user
 	* @return the new dossier user
 	*/
 	public static org.opencps.dossiermgt.model.DossierUser createDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK) {
-		return getService().createDossierUser(dossierUserPK);
+		long dossierUserId) {
+		return getService().createDossierUser(dossierUserId);
 	}
 
 	/**
@@ -87,14 +87,14 @@ public class DossierUserLocalServiceUtil {
 	/**
 	* Deletes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user that was removed
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.DossierUser deleteDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK)
+		long dossierUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteDossierUser(dossierUserPK);
+		return getService().deleteDossierUser(dossierUserId);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierUser deleteDossierUser(
@@ -191,8 +191,8 @@ public class DossierUserLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.DossierUser fetchDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK) {
-		return getService().fetchDossierUser(dossierUserPK);
+		long dossierUserId) {
+		return getService().fetchDossierUser(dossierUserId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.DossierUser> findByDID(
@@ -217,14 +217,14 @@ public class DossierUserLocalServiceUtil {
 	/**
 	* Returns the dossier user with the primary key.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user
 	* @throws PortalException if a dossier user with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.DossierUser getDossierUser(
-		org.opencps.dossiermgt.service.persistence.DossierUserPK dossierUserPK)
+		long dossierUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getDossierUser(dossierUserPK);
+		return getService().getDossierUser(dossierUserId);
 	}
 
 	/**

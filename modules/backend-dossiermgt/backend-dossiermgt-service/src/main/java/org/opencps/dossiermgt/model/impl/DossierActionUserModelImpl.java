@@ -16,12 +16,16 @@ package org.opencps.dossiermgt.model.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -29,7 +33,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierActionUserModel;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import java.io.Serializable;
 
@@ -62,6 +65,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	public static final String TABLE_NAME = "opencps_dossieractionuser";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
+			{ "dossierActionUserId", Types.BIGINT },
 			{ "dossierActionId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "dossierId", Types.BIGINT },
@@ -74,6 +78,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dossierActionUserId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierActionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
@@ -83,9 +88,9 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		TABLE_COLUMNS_MAP.put("visited", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,primary key (dossierActionId, userId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionUserId LONG not null primary key,dossierActionId LONG,userId LONG,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionuser";
-	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.id.dossierActionId DESC";
+	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.dossierActionId DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
@@ -112,24 +117,23 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	}
 
 	@Override
-	public DossierActionUserPK getPrimaryKey() {
-		return new DossierActionUserPK(_dossierActionId, _userId);
+	public long getPrimaryKey() {
+		return _dossierActionUserId;
 	}
 
 	@Override
-	public void setPrimaryKey(DossierActionUserPK primaryKey) {
-		setDossierActionId(primaryKey.dossierActionId);
-		setUserId(primaryKey.userId);
+	public void setPrimaryKey(long primaryKey) {
+		setDossierActionUserId(primaryKey);
 	}
 
 	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new DossierActionUserPK(_dossierActionId, _userId);
+		return _dossierActionUserId;
 	}
 
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
-		setPrimaryKey((DossierActionUserPK)primaryKeyObj);
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
 	@Override
@@ -147,6 +151,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("dossierActionUserId", getDossierActionUserId());
 		attributes.put("dossierActionId", getDossierActionId());
 		attributes.put("userId", getUserId());
 		attributes.put("dossierId", getDossierId());
@@ -167,6 +172,12 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		Long dossierActionUserId = (Long)attributes.get("dossierActionUserId");
+
+		if (dossierActionUserId != null) {
+			setDossierActionUserId(dossierActionUserId);
 		}
 
 		Long dossierActionId = (Long)attributes.get("dossierActionId");
@@ -233,6 +244,32 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	public String getOriginalUuid() {
 		return GetterUtil.getString(_originalUuid);
+	}
+
+	@Override
+	public long getDossierActionUserId() {
+		return _dossierActionUserId;
+	}
+
+	@Override
+	public void setDossierActionUserId(long dossierActionUserId) {
+		_dossierActionUserId = dossierActionUserId;
+	}
+
+	@Override
+	public String getDossierActionUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getDossierActionUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return "";
+		}
+	}
+
+	@Override
+	public void setDossierActionUserUuid(String dossierActionUserUuid) {
 	}
 
 	@Override
@@ -394,6 +431,19 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	}
 
 	@Override
+	public ExpandoBridge getExpandoBridge() {
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			DossierActionUser.class.getName(), getPrimaryKey());
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
 	public DossierActionUser toEscapedModel() {
 		if (_escapedModel == null) {
 			_escapedModel = (DossierActionUser)ProxyUtil.newProxyInstance(_classLoader,
@@ -408,6 +458,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		DossierActionUserImpl dossierActionUserImpl = new DossierActionUserImpl();
 
 		dossierActionUserImpl.setUuid(getUuid());
+		dossierActionUserImpl.setDossierActionUserId(getDossierActionUserId());
 		dossierActionUserImpl.setDossierActionId(getDossierActionId());
 		dossierActionUserImpl.setUserId(getUserId());
 		dossierActionUserImpl.setDossierId(getDossierId());
@@ -456,9 +507,9 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		DossierActionUser dossierActionUser = (DossierActionUser)obj;
 
-		DossierActionUserPK primaryKey = dossierActionUser.getPrimaryKey();
+		long primaryKey = dossierActionUser.getPrimaryKey();
 
-		if (getPrimaryKey().equals(primaryKey)) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -468,7 +519,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public int hashCode() {
-		return getPrimaryKey().hashCode();
+		return (int)getPrimaryKey();
 	}
 
 	@Override
@@ -512,8 +563,6 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	public CacheModel<DossierActionUser> toCacheModel() {
 		DossierActionUserCacheModel dossierActionUserCacheModel = new DossierActionUserCacheModel();
 
-		dossierActionUserCacheModel.dossierActionUserPK = getPrimaryKey();
-
 		dossierActionUserCacheModel.uuid = getUuid();
 
 		String uuid = dossierActionUserCacheModel.uuid;
@@ -521,6 +570,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		if ((uuid != null) && (uuid.length() == 0)) {
 			dossierActionUserCacheModel.uuid = null;
 		}
+
+		dossierActionUserCacheModel.dossierActionUserId = getDossierActionUserId();
 
 		dossierActionUserCacheModel.dossierActionId = getDossierActionId();
 
@@ -547,10 +598,12 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
+		sb.append(", dossierActionUserId=");
+		sb.append(getDossierActionUserId());
 		sb.append(", dossierActionId=");
 		sb.append(getDossierActionId());
 		sb.append(", userId=");
@@ -572,7 +625,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierActionUser");
@@ -581,6 +634,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		sb.append(
 			"<column><column-name>uuid</column-name><column-value><![CDATA[");
 		sb.append(getUuid());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierActionUserId</column-name><column-value><![CDATA[");
+		sb.append(getDossierActionUserId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>dossierActionId</column-name><column-value><![CDATA[");
@@ -622,6 +679,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		};
 	private String _uuid;
 	private String _originalUuid;
+	private long _dossierActionUserId;
 	private long _dossierActionId;
 	private long _originalDossierActionId;
 	private boolean _setOriginalDossierActionId;

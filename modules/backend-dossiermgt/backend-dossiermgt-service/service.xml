@@ -1376,8 +1376,9 @@
 	<entity local-service="true" name="DossierUser"
 		remote-service="false" table="opencps_dossieruser" uuid="true">
 
-		<column name="dossierId" type="long" primary="true" />
-		<column name="userId" type="long" primary="true" />
+		<column name="dossierUserId" type="long" primary="true" />
+		<column name="dossierId" type="long" />
+		<column name="userId" type="long" />
 		<column name="moderator" type="int" />
 		<column name="visited" type="boolean" />
 		<column name="roleId" type="long" />
@@ -1397,8 +1398,9 @@
 	<entity local-service="true" name="DossierActionUser"
 		remote-service="false" table="opencps_dossieractionuser" uuid="true">
 
-		<column name="dossierActionId" type="long" primary="true" />
-		<column name="userId" type="long" primary="true" />
+		<column name="dossierActionUserId" type="long" primary="true" />
+		<column name="dossierActionId" type="long" />
+		<column name="userId" type="long" />
 		<column name="dossierId" type="long" />
 		<column name="stepCode" type="String" />
 		<column name="moderator" type="int" />

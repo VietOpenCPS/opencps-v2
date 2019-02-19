@@ -37,27 +37,10 @@ public interface DossierUser extends DossierUserModel, PersistedModel {
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.opencps.dossiermgt.model.impl.DossierUserImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<DossierUser, Long> DOSSIER_ID_ACCESSOR = new Accessor<DossierUser, Long>() {
+	public static final Accessor<DossierUser, Long> DOSSIER_USER_ID_ACCESSOR = new Accessor<DossierUser, Long>() {
 			@Override
 			public Long get(DossierUser dossierUser) {
-				return dossierUser.getDossierId();
-			}
-
-			@Override
-			public Class<Long> getAttributeClass() {
-				return Long.class;
-			}
-
-			@Override
-			public Class<DossierUser> getTypeClass() {
-				return DossierUser.class;
-			}
-		};
-
-	public static final Accessor<DossierUser, Long> USER_ID_ACCESSOR = new Accessor<DossierUser, Long>() {
-			@Override
-			public Long get(DossierUser dossierUser) {
-				return dossierUser.getUserId();
+				return dossierUser.getDossierUserId();
 			}
 
 			@Override

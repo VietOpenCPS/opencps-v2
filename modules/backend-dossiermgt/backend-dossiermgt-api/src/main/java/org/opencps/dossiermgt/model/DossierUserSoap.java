@@ -16,8 +16,6 @@ package org.opencps.dossiermgt.model;
 
 import aQute.bnd.annotation.ProviderType;
 
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
-
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class DossierUserSoap implements Serializable {
 		DossierUserSoap soapModel = new DossierUserSoap();
 
 		soapModel.setUuid(model.getUuid());
+		soapModel.setDossierUserId(model.getDossierUserId());
 		soapModel.setDossierId(model.getDossierId());
 		soapModel.setUserId(model.getUserId());
 		soapModel.setModerator(model.getModerator());
@@ -83,13 +82,12 @@ public class DossierUserSoap implements Serializable {
 	public DossierUserSoap() {
 	}
 
-	public DossierUserPK getPrimaryKey() {
-		return new DossierUserPK(_dossierId, _userId);
+	public long getPrimaryKey() {
+		return _dossierUserId;
 	}
 
-	public void setPrimaryKey(DossierUserPK pk) {
-		setDossierId(pk.dossierId);
-		setUserId(pk.userId);
+	public void setPrimaryKey(long pk) {
+		setDossierUserId(pk);
 	}
 
 	public String getUuid() {
@@ -98,6 +96,14 @@ public class DossierUserSoap implements Serializable {
 
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+	}
+
+	public long getDossierUserId() {
+		return _dossierUserId;
+	}
+
+	public void setDossierUserId(long dossierUserId) {
+		_dossierUserId = dossierUserId;
 	}
 
 	public long getDossierId() {
@@ -137,6 +143,7 @@ public class DossierUserSoap implements Serializable {
 	}
 
 	private String _uuid;
+	private long _dossierUserId;
 	private long _dossierId;
 	private long _userId;
 	private int _moderator;

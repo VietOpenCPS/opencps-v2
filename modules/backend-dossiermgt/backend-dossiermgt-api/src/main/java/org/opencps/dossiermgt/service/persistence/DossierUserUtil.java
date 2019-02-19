@@ -233,18 +233,17 @@ public class DossierUserUtil {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where uuid = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser[] findByUuid_PrevAndNext(
-		DossierUserPK dossierUserPK, String uuid,
-		OrderByComparator<DossierUser> orderByComparator)
+	public static DossierUser[] findByUuid_PrevAndNext(long dossierUserId,
+		String uuid, OrderByComparator<DossierUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierUserException {
 		return getPersistence()
-				   .findByUuid_PrevAndNext(dossierUserPK, uuid,
+				   .findByUuid_PrevAndNext(dossierUserId, uuid,
 			orderByComparator);
 	}
 
@@ -389,18 +388,17 @@ public class DossierUserUtil {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where dossierId = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param dossierId the dossier ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser[] findByDID_PrevAndNext(
-		DossierUserPK dossierUserPK, long dossierId,
-		OrderByComparator<DossierUser> orderByComparator)
+	public static DossierUser[] findByDID_PrevAndNext(long dossierUserId,
+		long dossierId, OrderByComparator<DossierUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierUserException {
 		return getPersistence()
-				   .findByDID_PrevAndNext(dossierUserPK, dossierId,
+				   .findByDID_PrevAndNext(dossierUserId, dossierId,
 			orderByComparator);
 	}
 
@@ -605,18 +603,17 @@ public class DossierUserUtil {
 	/**
 	* Returns the dossier users before and after the current dossier user in the ordered set where userId = &#63;.
 	*
-	* @param dossierUserPK the primary key of the current dossier user
+	* @param dossierUserId the primary key of the current dossier user
 	* @param userId the user ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser[] findByUID_PrevAndNext(
-		DossierUserPK dossierUserPK, long userId,
-		OrderByComparator<DossierUser> orderByComparator)
+	public static DossierUser[] findByUID_PrevAndNext(long dossierUserId,
+		long userId, OrderByComparator<DossierUser> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierUserException {
 		return getPersistence()
-				   .findByUID_PrevAndNext(dossierUserPK, userId,
+				   .findByUID_PrevAndNext(dossierUserId, userId,
 			orderByComparator);
 	}
 
@@ -660,23 +657,23 @@ public class DossierUserUtil {
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*
-	* @param dossierUserPK the primary key for the new dossier user
+	* @param dossierUserId the primary key for the new dossier user
 	* @return the new dossier user
 	*/
-	public static DossierUser create(DossierUserPK dossierUserPK) {
-		return getPersistence().create(dossierUserPK);
+	public static DossierUser create(long dossierUserId) {
+		return getPersistence().create(dossierUserId);
 	}
 
 	/**
 	* Removes the dossier user with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user that was removed
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser remove(DossierUserPK dossierUserPK)
+	public static DossierUser remove(long dossierUserId)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierUserException {
-		return getPersistence().remove(dossierUserPK);
+		return getPersistence().remove(dossierUserId);
 	}
 
 	public static DossierUser updateImpl(DossierUser dossierUser) {
@@ -686,23 +683,23 @@ public class DossierUserUtil {
 	/**
 	* Returns the dossier user with the primary key or throws a {@link NoSuchDossierUserException} if it could not be found.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user
 	* @throws NoSuchDossierUserException if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser findByPrimaryKey(DossierUserPK dossierUserPK)
+	public static DossierUser findByPrimaryKey(long dossierUserId)
 		throws org.opencps.dossiermgt.exception.NoSuchDossierUserException {
-		return getPersistence().findByPrimaryKey(dossierUserPK);
+		return getPersistence().findByPrimaryKey(dossierUserId);
 	}
 
 	/**
 	* Returns the dossier user with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param dossierUserPK the primary key of the dossier user
+	* @param dossierUserId the primary key of the dossier user
 	* @return the dossier user, or <code>null</code> if a dossier user with the primary key could not be found
 	*/
-	public static DossierUser fetchByPrimaryKey(DossierUserPK dossierUserPK) {
-		return getPersistence().fetchByPrimaryKey(dossierUserPK);
+	public static DossierUser fetchByPrimaryKey(long dossierUserId) {
+		return getPersistence().fetchByPrimaryKey(dossierUserId);
 	}
 
 	public static java.util.Map<java.io.Serializable, DossierUser> fetchByPrimaryKeys(
@@ -789,10 +786,6 @@ public class DossierUserUtil {
 
 	public static java.util.Set<String> getBadColumnNames() {
 		return getPersistence().getBadColumnNames();
-	}
-
-	public static java.util.Set<String> getCompoundPKColumnNames() {
-		return getPersistence().getCompoundPKColumnNames();
 	}
 
 	public static DossierUserPersistence getPersistence() {

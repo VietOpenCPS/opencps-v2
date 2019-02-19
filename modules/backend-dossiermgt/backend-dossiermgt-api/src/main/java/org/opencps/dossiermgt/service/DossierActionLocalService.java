@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -198,6 +199,7 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public DossierAction fetchDossierActionByUuidAndGroupId(String uuid,
 		long groupId);
 
+	@ThreadLocalCachable
 	public List<DossierAction> findByG_DID(long groupId, long dossierId);
 
 	public List<DossierAction> findDossierActionByDID_FSN(long dossierId,
@@ -212,6 +214,7 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public List<DossierAction> findDossierActionByG_DID_SN(long groupId,
 		long dossierId, String sequenceNo);
 
+	@ThreadLocalCachable
 	public List<DossierAction> findOverdue(Date now);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -221,18 +224,22 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public DossierAction getByDID_CODE_First(long dossierId, String actionCode,
 		OrderByComparator<DossierAction> orderByComparator);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDID_FSC_NOT_DAI(long dossierId,
 		String stepCode, long dossierActionId);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDID_SC_NOT_DAI(long dossierId,
 		String stepCode, long dossierActionId);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDID_U_FSC(long dossierId, long userId,
 		String stepCode);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierAction> getByDID_U_SC(long dossierId, long userId,
 		String stepCode);

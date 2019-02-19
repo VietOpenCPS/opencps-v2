@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -50,8 +49,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 
 		DossierActionUserCacheModel dossierActionUserCacheModel = (DossierActionUserCacheModel)obj;
 
-		if (dossierActionUserPK.equals(
-					dossierActionUserCacheModel.dossierActionUserPK)) {
+		if (dossierActionUserId == dossierActionUserCacheModel.dossierActionUserId) {
 			return true;
 		}
 
@@ -60,15 +58,17 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 
 	@Override
 	public int hashCode() {
-		return HashUtil.hash(0, dossierActionUserPK);
+		return HashUtil.hash(0, dossierActionUserId);
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
+		sb.append(", dossierActionUserId=");
+		sb.append(dossierActionUserId);
 		sb.append(", dossierActionId=");
 		sb.append(dossierActionId);
 		sb.append(", userId=");
@@ -99,6 +99,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 			dossierActionUserImpl.setUuid(uuid);
 		}
 
+		dossierActionUserImpl.setDossierActionUserId(dossierActionUserId);
 		dossierActionUserImpl.setDossierActionId(dossierActionId);
 		dossierActionUserImpl.setUserId(userId);
 		dossierActionUserImpl.setDossierId(dossierId);
@@ -123,6 +124,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 
+		dossierActionUserId = objectInput.readLong();
+
 		dossierActionId = objectInput.readLong();
 
 		userId = objectInput.readLong();
@@ -135,8 +138,6 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		assigned = objectInput.readInt();
 
 		visited = objectInput.readBoolean();
-
-		dossierActionUserPK = new DossierActionUserPK(dossierActionId, userId);
 	}
 
 	@Override
@@ -148,6 +149,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		else {
 			objectOutput.writeUTF(uuid);
 		}
+
+		objectOutput.writeLong(dossierActionUserId);
 
 		objectOutput.writeLong(dossierActionId);
 
@@ -170,6 +173,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 	}
 
 	public String uuid;
+	public long dossierActionUserId;
 	public long dossierActionId;
 	public long userId;
 	public long dossierId;
@@ -177,5 +181,4 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 	public int moderator;
 	public int assigned;
 	public boolean visited;
-	public transient DossierActionUserPK dossierActionUserPK;
 }

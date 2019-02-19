@@ -23,8 +23,6 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
-
 import java.io.Serializable;
 
 /**
@@ -53,14 +51,14 @@ public interface DossierActionUserModel extends BaseModel<DossierActionUser> {
 	 *
 	 * @return the primary key of this dossier action user
 	 */
-	public DossierActionUserPK getPrimaryKey();
+	public long getPrimaryKey();
 
 	/**
 	 * Sets the primary key of this dossier action user.
 	 *
 	 * @param primaryKey the primary key of this dossier action user
 	 */
-	public void setPrimaryKey(DossierActionUserPK primaryKey);
+	public void setPrimaryKey(long primaryKey);
 
 	/**
 	 * Returns the uuid of this dossier action user.
@@ -76,6 +74,34 @@ public interface DossierActionUserModel extends BaseModel<DossierActionUser> {
 	 * @param uuid the uuid of this dossier action user
 	 */
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the dossier action user ID of this dossier action user.
+	 *
+	 * @return the dossier action user ID of this dossier action user
+	 */
+	public long getDossierActionUserId();
+
+	/**
+	 * Sets the dossier action user ID of this dossier action user.
+	 *
+	 * @param dossierActionUserId the dossier action user ID of this dossier action user
+	 */
+	public void setDossierActionUserId(long dossierActionUserId);
+
+	/**
+	 * Returns the dossier action user uuid of this dossier action user.
+	 *
+	 * @return the dossier action user uuid of this dossier action user
+	 */
+	public String getDossierActionUserUuid();
+
+	/**
+	 * Sets the dossier action user uuid of this dossier action user.
+	 *
+	 * @param dossierActionUserUuid the dossier action user uuid of this dossier action user
+	 */
+	public void setDossierActionUserUuid(String dossierActionUserUuid);
 
 	/**
 	 * Returns the dossier action ID of this dossier action user.
