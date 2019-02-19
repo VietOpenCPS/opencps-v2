@@ -37,8 +37,6 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -160,9 +158,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 	
 	private void updateDossierUser(Dossier dossier, ProcessStepRole processStepRole, User user) {
-		DossierUserPK pk = new DossierUserPK();
-		pk.setDossierId(dossier.getDossierId());
-		pk.setUserId(user.getUserId());
 //		DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(pk);
 		DossierUser du = DossierUserLocalServiceUtil.findByDID_UD(dossier.getDossierId(), user.getUserId());
 		if (du == null) {
@@ -350,10 +345,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 			else if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.NOT_ASSIGNED) {
 				//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
-				DossierActionUserPK pk = new DossierActionUserPK();
-				
-				pk.setDossierActionId(dossierAction.getDossierActionId());
-				pk.setUserId(subUser.getLong("userId"));
 	
 //				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
 				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierAction.getDossierActionId(), subUser.getLong("userId"));
@@ -508,9 +499,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 								}
 							}
 							if (flagDA) {
-								DossierUserPK duPk = new DossierUserPK();
-								duPk.setDossierId(dossier.getDossierId());
-								duPk.setUserId(dau.getUserId());
 								int moderator = dau.getModerator();
 								
 //								DossierUser duModel = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
@@ -532,9 +520,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 									}					
 								}	
 								
-								DossierActionUserPK dauPk = new DossierActionUserPK();
-								dauPk.setDossierActionId(dossier.getDossierActionId());
-								dauPk.setUserId(dau.getUserId());
 //								org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPk);
 								org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossier.getDossierActionId(), dau.getUserId());
 								int assigned = moderator == 1 ? 1 : 0;
@@ -570,9 +555,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 	//							_log.info("Copy role from role: " + psr.getModerator());
 								List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
 								for (User u : users) {
-									DossierUserPK duPk = new DossierUserPK();
-									duPk.setDossierId(dossier.getDossierId());
-									duPk.setUserId(u.getUserId());
 									int moderator = (psr.getModerator() ? 1 : 0);
 									
 //									DossierUser duModel = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
@@ -594,9 +576,6 @@ public class DossierActionUserImpl implements DossierActionUser {
 										}					
 									}	
 									
-									DossierActionUserPK dauPk = new DossierActionUserPK();
-									dauPk.setDossierActionId(dossier.getDossierActionId());
-									dauPk.setUserId(u.getUserId());
 //									org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPk);
 									org.opencps.dossiermgt.model.DossierActionUser dauModel = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossier.getDossierActionId(), u.getUserId());
 									int assigned = moderator == 1 ? 1 : 0;
