@@ -58,6 +58,7 @@ import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallDossierServiceFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
@@ -694,6 +695,170 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		statisticSumYearService.caculateSumYear(companyId, groupId, year);
 
+	}
+
+	@GET
+	@Path("/service")
+	public DossierStatisticResponse searchByServiceStatistic(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierSearchModel query) {
+
+		//LOG.info("GET DossierStatisticResponse");
+		_log.info("START DossierStatisticResponse: "+query.getAgency());
+		
+		OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierService = new OpencpsCallDossierServiceFacadeImpl();
+
+		int start = query.getStart();
+		int end = query.getEnd();
+		//int month = query.getMonth();
+		//int year = query.getYear();
+		String govAgencyCode = query.getAgency();
+		String domain = query.getDomain();
+		//String groupAgencyCode = query.getGroupAgencyCode();
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
+		//boolean reporting = query.getReporting();
+//		Integer reCalculate = query.getReCalculate();
+//		if (reCalculate == null) {
+//			reCalculate = 0;
+//		}
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
+		}
+
+		if (!calculate) {
+			String status = query.getStatus();
+			String substatus = query.getSubstatus();
+			String service = query.getService();
+			String template = query.getTemplate();
+			String originality = query.getOriginality();
+			String owner = query.getOwner();
+			String step = query.getStep();
+			String dossierIdNo = query.getDossierNo();
+
+			Date fromCalDate = null;
+			Date toCalDate = null;
+			if (Validator.isNotNull(fromStatisticDate)) {
+				Date fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+				fromCalDate = StatisticUtils.getStartDay(fromDate);
+			}
+			if (Validator.isNotNull(toStatisticDate)) {
+				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+				toCalDate = StatisticUtils.getEndDay(toDate);
+			}
+
+			try {
+				GetDossierRequest payload = new GetDossierRequest();
+				if ("all".equals(govAgencyCode)) {
+					payload.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					payload.setGovAgencyCode(govAgencyCode);
+				}
+				payload.setGroupId(groupId);
+				payload.setStart(start);
+				payload.setEnd(end);
+				payload.setFromStatisticDate(fromStatisticDate);
+				payload.setToStatisticDate(toStatisticDate);
+				payload.setCalculate(calculate);
+				payload.setStatus(status);
+				payload.setSubstatus(substatus);
+				payload.setServiceCode(service);
+				payload.setTemplate(template);
+				payload.setOriginality(originality);
+				payload.setOwner(owner);
+				payload.setStep(step);
+				payload.setDossierNo(dossierIdNo);
+				//payload.setOnlineStatistic(query.getOnline());
+				payload.setDomain(query.getDomain());
+				
+				GetDossierResponse dossierResponse = callDossierService.callRestService(payload);
+
+				if (dossierResponse != null && fromCalDate != null && toCalDate != null) {
+					List<GetDossierData> dossierDataList = dossierResponse.getData();
+					List<DossierStatisticData> statisticDataList = new ArrayList<>();
+					if (dossierDataList != null && dossierDataList.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
+								false);
+						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+						//statisticEngineUpdate.updateStatisticData(statisticData);
+						//
+						statisticData.forEach((k, v) -> 
+						statisticDataList.add(v));
+					}
+					//
+					DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+					statisticResponse.setTotal(statisticDataList.size());
+					statisticResponse.setDossierStatisticData(statisticDataList);
+					if (statisticResponse != null) {
+						statisticResponse.setAgency(govAgencyCode);
+					}
+
+					return statisticResponse;
+				}
+
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		} 
+//		else {
+//			try {
+//				if (reCalculate == 1) {
+//					Date firstDay = StatisticUtils.getFirstDay(month, year);
+//					Date lastDay = StatisticUtils.getLastDay(month, year);
+//					processUpdateDB(groupId, firstDay, lastDay, month, year, true);
+//				}
+//
+//				validInput(month, year, start, end);
+//				//
+//				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+//				dossierStatisticRequest.setDomain(domain);
+//				if ("all".equals(govAgencyCode)) {
+//					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+//				} else {
+//					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+//				}
+//				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+//				//dossierStatisticRequest.setReporting(reporting);
+//				dossierStatisticRequest.setGroupId(groupId);
+//				dossierStatisticRequest.setStart(start);
+//				dossierStatisticRequest.setEnd(end);
+//				dossierStatisticRequest.setMonth(month);
+//				dossierStatisticRequest.setYear(year);
+//				//
+//				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
+//						.finderDossierStatistic(dossierStatisticRequest);
+//				if (statisticResponse != null) {
+//					statisticResponse.setAgency(govAgencyCode);
+//				}
+//
+//				return statisticResponse;
+//			} catch (Exception e) {
+//				LOG.error("error", e);
+//				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+//
+//				serviceExceptionDetails.setFaultCode("500");
+//				serviceExceptionDetails.setFaultMessage(e.getMessage());
+//
+//				throwException(new OpencpsServiceException(serviceExceptionDetails));
+//			}
+//		}
+
+		return null;
 	}
 
 }
