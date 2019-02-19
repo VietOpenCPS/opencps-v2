@@ -33,6 +33,14 @@ public class GetDossierData {
 		this.serviceCode = serviceCode;
 	}
 
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 	public long getGroupId() {
 		return groupId;
 	}
@@ -131,6 +139,7 @@ public class GetDossierData {
 	private String releaseDate;
 	private String finishDate;
 	private String serviceCode;
+	private String serviceName;
 	private String govAgencyCode;
 	private String govAgencyName;
 	private long groupId;

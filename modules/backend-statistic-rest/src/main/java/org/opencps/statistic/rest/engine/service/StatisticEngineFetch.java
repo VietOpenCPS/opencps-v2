@@ -562,4 +562,100 @@ public class StatisticEngineFetch {
 		return dataType;
 	}
 
+	public void getServiceStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
+
+		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+		for (GetDossierData dossierData : lsDossierData) {
+			if (Validator.isNotNull(dossierData.getServiceCode())) {
+				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
+				// all site, all domain
+				
+				String type1 = "all@all@" + groupId;
+	
+				DossierStatisticData dataType1 = new DossierStatisticData();
+				dataType1.setGovAgencyCode(StringPool.BLANK);
+				dataType1.setGovAgencyName(StringPool.BLANK);
+				dataType1.setServiceCode(StringPool.BLANK);
+				dataType1.setServiceName(StringPool.BLANK);
+	
+				if (statisticData.containsKey(type1)) {
+					dataType1 = statisticData.get(type1);
+				}
+	
+				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType1 = processOnTimePercent(dataType1);
+	
+				statisticData.put(type1, dataType1);
+				
+	
+				// all site each domain
+				String type2 = "all@" + dossierData.getServiceCode() + "@" + groupId;
+				
+				DossierStatisticData dataType2 = new DossierStatisticData();
+				dataType2.setGovAgencyCode(StringPool.BLANK);
+				dataType2.setGovAgencyName(StringPool.BLANK);
+				dataType2.setServiceCode(dossierData.getServiceCode());
+				dataType2.setServiceName(dossierData.getServiceName());
+	
+				if (statisticData.containsKey(type2)) {
+					dataType2 = statisticData.get(type2);
+				}
+	
+				engineFetchEntry.updateDossierStatisticData(dataType2, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType2 = processOnTimePercent(dataType2);
+	
+				statisticData.put(type2, dataType2);
+	
+				// each site all domain
+				
+				String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
+				//System.out.println("type3: "+type3);
+	
+				DossierStatisticData dataType3 = new DossierStatisticData();
+				dataType3.setGovAgencyCode(dossierData.getGovAgencyCode());
+				dataType3.setGovAgencyName(dossierData.getGovAgencyName());
+				dataType3.setServiceCode(StringPool.BLANK);
+				dataType3.setServiceName(StringPool.BLANK);
+
+				if (statisticData.containsKey(type3)) {
+					//System.out.println("type3_TRUE: "+type3);
+					dataType3 = statisticData.get(type3);
+				}
+	
+				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType3 = processOnTimePercent(dataType3);
+				//System.out.println("dataType3: "+dataType3.getTotalCount());
+	
+				statisticData.put(type3, dataType3);
+				//System.out.println("statisticData: "+statisticData.get(type3).getTotalCount());
+
+			// each site each domain
+			
+				String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getServiceCode() + "@" + groupId;
+				
+				DossierStatisticData dataType4 = new DossierStatisticData();
+				dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());
+				dataType4.setGovAgencyName(dossierData.getGovAgencyName());
+				dataType4.setServiceCode(dossierData.getServiceCode());
+				dataType4.setServiceName(dossierData.getServiceName());
+				
+				if (statisticData.containsKey(type4)) {
+					dataType4 = statisticData.get(type4);
+				}
+
+				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType4 = processOnTimePercent(dataType4);
+
+				statisticData.put(type4, dataType4);
+			}
+			
+			//}
+		}
+	}
 }

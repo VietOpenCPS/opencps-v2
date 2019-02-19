@@ -273,6 +273,22 @@ public class DossierStatisticData {
 		this.insideCount = insideCount;
 	}
 
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 	private int month = 0;
 	private int year = 0;
 	private int totalCount = 0;
@@ -305,6 +321,8 @@ public class DossierStatisticData {
 	private String govAgencyName;
 	private String domainCode;
 	private String domainName;
+	private String serviceCode;
+	private String serviceName;
 	private boolean reporting;
 	private long companyId;
 	private long groupId;
