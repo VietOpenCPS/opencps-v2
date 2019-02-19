@@ -14,8 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.counter.kernel.service.persistence.CounterPersistence;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -24,7 +22,6 @@ import java.util.List;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.base.DossierUserLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 /**
  * The implementation of the dossier user local service.
@@ -124,11 +121,7 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	}
 	
 	public DossierUser getByDossierUser(long dossierId, long userId) {
-		DossierUserPK pk = new DossierUserPK();
-		pk.setUserId(userId);
-		pk.setDossierId(dossierId);
-		
-		return dossierUserPersistence.fetchByPrimaryKey(pk);		
+		return dossierUserPersistence.fetchByDID_UID(dossierId, userId);		
 	}
 	
 	public List<DossierUser> findByDID(long dossierId) {

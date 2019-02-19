@@ -142,7 +142,6 @@ create index IX_EE2AE89E on opencps_menuconfig (uuid_[$COLUMN_LENGTH:75$], compa
 create unique index IX_5FF0FEA0 on opencps_menuconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_864BDC33 on opencps_menurole (menuConfigId, roleId);
-create index IX_63A8D9C2 on opencps_menurole (menuRoleId);
 create index IX_FCA73F43 on opencps_menurole (roleId);
 create index IX_DA361616 on opencps_menurole (uuid_[$COLUMN_LENGTH:75$]);
 
@@ -164,7 +163,7 @@ create index IX_E0EDED53 on opencps_processaction (autoEvent[$COLUMN_LENGTH:4000
 create index IX_17F0C502 on opencps_processaction (groupId, actionCode[$COLUMN_LENGTH:255$], serviceProcessId);
 create index IX_84A534F9 on opencps_processaction (groupId, autoEvent[$COLUMN_LENGTH:4000$]);
 create unique index IX_6689E997 on opencps_processaction (groupId, serviceProcessId, actionCode[$COLUMN_LENGTH:255$], preStepCode[$COLUMN_LENGTH:4000$], postStepCode[$COLUMN_LENGTH:4000$]);
-create unique index IX_A432E66E on opencps_processaction (groupId, serviceProcessId, preStepCode[$COLUMN_LENGTH:4000$], postStepCode[$COLUMN_LENGTH:4000$]);
+create index IX_B3115CE1 on opencps_processaction (groupId, serviceProcessId, preStepCode[$COLUMN_LENGTH:4000$]);
 create index IX_3F5FEA35 on opencps_processaction (postStepCode[$COLUMN_LENGTH:4000$], groupId);
 create index IX_C791AD26 on opencps_processaction (preStepCode[$COLUMN_LENGTH:4000$], groupId);
 create index IX_10C9A8BD on opencps_processaction (serviceProcessId, actionCode[$COLUMN_LENGTH:255$], actionName[$COLUMN_LENGTH:500$]);
@@ -196,7 +195,6 @@ create index IX_30CABA8B on opencps_processsteprole (roleCode[$COLUMN_LENGTH:255
 create index IX_134D7D60 on opencps_processsteprole (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_3EBC1A0E on opencps_publish_queue (groupId, dossierId, serverNo[$COLUMN_LENGTH:255$], status);
-create index IX_B34B1381 on opencps_publish_queue (groupId, dossierId, status, modifiedDate);
 create index IX_62B041F5 on opencps_publish_queue (status, modifiedDate);
 create unique index IX_6E7DABBA on opencps_publish_queue (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -270,7 +268,6 @@ create index IX_9BD8108 on opencps_userinfolog (userId);
 create index IX_24F4AF26 on opencps_userinfolog (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_4CB1A625 on opencps_voting_statistic (groupId, month, year, govAgencyCode[$COLUMN_LENGTH:255$], domainCode[$COLUMN_LENGTH:255$], votingCode[$COLUMN_LENGTH:255$]);
-create index IX_5F08E820 on opencps_voting_statistic (groupId, month, year, votingCode[$COLUMN_LENGTH:255$]);
 create index IX_BFA3D3B4 on opencps_voting_statistic (groupId, userId, year);
 create index IX_DCEE9FB5 on opencps_voting_statistic (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_25958F77 on opencps_voting_statistic (uuid_[$COLUMN_LENGTH:75$], groupId);

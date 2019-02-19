@@ -32,8 +32,6 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 

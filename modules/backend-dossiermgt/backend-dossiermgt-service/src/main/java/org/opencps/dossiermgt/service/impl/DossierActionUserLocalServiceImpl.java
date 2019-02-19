@@ -24,7 +24,6 @@ import java.util.List;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.base.DossierActionUserLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -109,11 +108,11 @@ public class DossierActionUserLocalServiceImpl
 			long dossierActionId,
 			long dossierId, String stepCode, int moderator, 
 			int assigned, boolean visited) throws PortalException {
-		User user = userLocalService.getUser(userId);
+//		User user = userLocalService.getUser(userId);
 		
-		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+//		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
 		
-		DossierActionUser dau = dossierActionUserPersistence.findByPrimaryKey(pk);
+		DossierActionUser dau = dossierActionUserPersistence.fetchByDID_UID(dossierActionId, userId);
 		
 		dau.setAssigned(assigned);
 		dau.setStepCode(stepCode);
