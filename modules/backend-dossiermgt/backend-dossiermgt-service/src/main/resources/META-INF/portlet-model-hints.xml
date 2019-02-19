@@ -398,6 +398,7 @@
 		<field name="dossierActionId" type="long" />
 		<field name="userId" type="long" />
 		<field name="dossierId" type="long" />
+		<field name="roleId" type="long" />
 		<field name="stepCode" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -681,6 +682,7 @@
 		<field name="dossierUserId" type="long" />
 		<field name="dossierId" type="long" />
 		<field name="userId" type="long" />
+		<field name="roleId" type="long" />
 		<field name="moderator" type="int" />
 		<field name="visited" type="boolean" />
 	</model>

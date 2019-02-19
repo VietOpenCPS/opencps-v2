@@ -88,19 +88,24 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					dossier.setDossierStatus(ps.getDossierStatus());
 					dossier.setDossierSubStatus(ps.getDossierSubStatus());
 				}
-				DossierUserPK duPK = new DossierUserPK();
-				if (Validator.isNotNull(input.getUserId())) {
-					duPK.setUserId(input.getUserId());
+				//DossierUserPK duPK = new DossierUserPK();
+				DossierUser du = null;
+				if (Validator.isNotNull(input.getUserId()) && input.getUserId() > 0) {
+					//duPK.setUserId(input.getUserId());
 					userId = input.getUserId();
+					du = DossierUserLocalServiceUtil.findByDID_UD(dossier.getDossierId(), userId);
 				}
 				else if (Validator.isNotNull(input.getEmailAddress())) {
 					User u = UserLocalServiceUtil.fetchUserByEmailAddress(dossier.getCompanyId(), input.getEmailAddress());
 					if (u != null) {
 						userId = u.getUserId();
+						du = DossierUserLocalServiceUtil.findByDID_UD(dossier.getDossierId(), userId);
 					}
+				} else if (Validator.isNotNull(input.getRoleId()) && input.getRoleId() > 0){
+					du = DossierUserLocalServiceUtil.findByDID_RID(dossier.getDossierId(), input.getRoleId());
 				}
-				duPK.setDossierId(dossier.getDossierId());
-				DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
+				//duPK.setDossierId(dossier.getDossierId());
+				//DossierUser du = DossierUserLocalServiceUtil.fetchDossierUser(duPK);
 				if (du == null) {
 					DossierUserLocalServiceUtil.addDossierUser(dossier.getGroupId(), dossier.getDossierId(), userId, 1, true);
 				}
@@ -108,10 +113,19 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					du.setModerator(1);
 					DossierUserLocalServiceUtil.updateDossierUser(du);
 				}
-				DossierActionUserPK dauPK = new DossierActionUserPK();
-				dauPK.setDossierActionId(dossierActionId);
-				dauPK.setUserId(userId);
-				DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
+				//DossierActionUserPK dauPK = new DossierActionUserPK();
+				//dauPK.setDossierActionId(dossierActionId);
+				//dauPK.setUserId(userId);
+				//DossierActionUser oldDau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(dauPK);
+
+				DossierActionUser oldDau = null;
+				if (Validator.isNotNull(input.getUserId()) && input.getUserId() > 0) {
+					//duPK.setUserId(input.getUserId());
+					userId = input.getUserId();
+					oldDau = DossierActionUserLocalServiceUtil.findByDID_RID(dossier.getDossierActionId(), userId);
+				} else if (Validator.isNotNull(input.getRoleId()) && input.getRoleId() > 0){
+					oldDau = DossierActionUserLocalServiceUtil.findByDID_RID(dossier.getDossierActionId(), input.getRoleId());
+				}
 				if (oldDau == null) {
 					DossierActionUser dau = DossierActionUserLocalServiceUtil.addDossierActionUser(userId, groupId, dossierActionId, dossier.getDossierId(), stepCode, input.getModerator(), input.getAssigned(), input.isVisited());
 					DossierActionUserResultModel result = new DossierActionUserResultModel();

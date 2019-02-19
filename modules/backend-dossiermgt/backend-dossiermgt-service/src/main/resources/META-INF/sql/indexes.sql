@@ -57,6 +57,7 @@ create index IX_D7C8B3ED on opencps_dossieractionsync (dossierActionId);
 create index IX_BBC9CE33 on opencps_dossieractionsync (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_4DC64575 on opencps_dossieractionsync (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_A4B20722 on opencps_dossieractionuser (dossierActionId, roleId);
 create index IX_A4B3BFF7 on opencps_dossieractionuser (dossierActionId, userId);
 create index IX_607DAE14 on opencps_dossieractionuser (dossierId, dossierActionId, stepCode[$COLUMN_LENGTH:255$], assigned);
 create index IX_D10B6FB4 on opencps_dossieractionuser (dossierId, stepCode[$COLUMN_LENGTH:255$]);
@@ -126,6 +127,7 @@ create unique index IX_7351EDD1 on opencps_dossiertemplate (groupId, templateNo[
 create index IX_3B70A85C on opencps_dossiertemplate (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_167F95DE on opencps_dossiertemplate (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_B07E18C2 on opencps_dossieruser (dossierId, roleId);
 create index IX_B07FD197 on opencps_dossieruser (dossierId, userId);
 create index IX_CAC462B3 on opencps_dossieruser (userId);
 create index IX_86056C1B on opencps_dossieruser (uuid_[$COLUMN_LENGTH:75$]);

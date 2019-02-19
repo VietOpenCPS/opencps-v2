@@ -178,6 +178,8 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierActionUser fetchDossierActionUser(long dossierActionUserId);
 
+	public DossierActionUser findByDID_RID(long dossierActionId, long roleId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

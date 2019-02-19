@@ -160,6 +160,20 @@ public interface DossierActionUserModel extends BaseModel<DossierActionUser> {
 	public void setDossierId(long dossierId);
 
 	/**
+	 * Returns the role ID of this dossier action user.
+	 *
+	 * @return the role ID of this dossier action user
+	 */
+	public long getRoleId();
+
+	/**
+	 * Sets the role ID of this dossier action user.
+	 *
+	 * @param roleId the role ID of this dossier action user
+	 */
+	public void setRoleId(long roleId);
+
+	/**
 	 * Returns the step code of this dossier action user.
 	 *
 	 * @return the step code of this dossier action user

@@ -146,6 +146,20 @@ public interface DossierUserModel extends BaseModel<DossierUser> {
 	public void setUserUuid(String userUuid);
 
 	/**
+	 * Returns the role ID of this dossier user.
+	 *
+	 * @return the role ID of this dossier user
+	 */
+	public long getRoleId();
+
+	/**
+	 * Sets the role ID of this dossier user.
+	 *
+	 * @param roleId the role ID of this dossier user
+	 */
+	public void setRoleId(long roleId);
+
+	/**
 	 * Returns the moderator of this dossier user.
 	 *
 	 * @return the moderator of this dossier user

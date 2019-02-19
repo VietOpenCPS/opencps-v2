@@ -200,6 +200,11 @@ public class DossierUserLocalServiceUtil {
 		return getService().findByDID(dossierId);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierUser findByDID_RID(
+		long dossierId, long roleId) {
+		return getService().findByDID_RID(dossierId, roleId);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierUser findByDID_UD(
 		long dossierId, long userId) {
 		return getService().findByDID_UD(dossierId, userId);

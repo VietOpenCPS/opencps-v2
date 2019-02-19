@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.User;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.service.base.DossierActionUserLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 
@@ -134,5 +135,8 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDID(long dossierActionId) {
 		return dossierActionUserPersistence.findByDID(dossierActionId);
 	}
-	
+
+	public DossierActionUser findByDID_RID(long dossierActionId, long roleId) {
+		return dossierActionUserPersistence.fetchByDID_RID(dossierActionId, roleId);
+	}
 }

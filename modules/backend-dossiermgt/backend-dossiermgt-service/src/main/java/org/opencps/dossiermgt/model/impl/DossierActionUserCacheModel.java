@@ -63,7 +63,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -75,6 +75,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		sb.append(userId);
 		sb.append(", dossierId=");
 		sb.append(dossierId);
+		sb.append(", roleId=");
+		sb.append(roleId);
 		sb.append(", stepCode=");
 		sb.append(stepCode);
 		sb.append(", moderator=");
@@ -103,6 +105,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		dossierActionUserImpl.setDossierActionId(dossierActionId);
 		dossierActionUserImpl.setUserId(userId);
 		dossierActionUserImpl.setDossierId(dossierId);
+		dossierActionUserImpl.setRoleId(roleId);
 
 		if (stepCode == null) {
 			dossierActionUserImpl.setStepCode("");
@@ -131,6 +134,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		userId = objectInput.readLong();
 
 		dossierId = objectInput.readLong();
+
+		roleId = objectInput.readLong();
 		stepCode = objectInput.readUTF();
 
 		moderator = objectInput.readInt();
@@ -158,6 +163,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 
 		objectOutput.writeLong(dossierId);
 
+		objectOutput.writeLong(roleId);
+
 		if (stepCode == null) {
 			objectOutput.writeUTF("");
 		}
@@ -177,6 +184,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 	public long dossierActionId;
 	public long userId;
 	public long dossierId;
+	public long roleId;
 	public String stepCode;
 	public int moderator;
 	public int assigned;

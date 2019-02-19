@@ -199,6 +199,11 @@ public class DossierActionUserLocalServiceUtil {
 		return getService().fetchDossierActionUser(dossierActionUserId);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierActionUser findByDID_RID(
+		long dossierActionId, long roleId) {
+		return getService().findByDID_RID(dossierActionId, roleId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

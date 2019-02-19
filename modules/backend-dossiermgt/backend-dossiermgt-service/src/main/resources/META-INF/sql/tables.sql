@@ -261,6 +261,7 @@ create table opencps_dossieractionuser (
 	dossierActionId LONG,
 	userId LONG,
 	dossierId LONG,
+	roleId LONG,
 	stepCode VARCHAR(255) null,
 	moderator INTEGER,
 	assigned INTEGER,
@@ -470,6 +471,7 @@ create table opencps_dossieruser (
 	dossierUserId LONG not null primary key,
 	dossierId LONG,
 	userId LONG,
+	roleId LONG,
 	moderator INTEGER,
 	visited BOOLEAN
 );
