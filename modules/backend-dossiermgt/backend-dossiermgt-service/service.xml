@@ -1382,7 +1382,6 @@
 		<column name="roleId" type="long" />
 		<column name="moderator" type="int" />
 		<column name="visited" type="boolean" />
-		<column name="roleId" type="long" />
 
 		<finder return-type="Collection" name="DID">
 			<finder-column name="dossierId" />
@@ -1412,7 +1411,6 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="int" />
 		<column name="visited" type="boolean" />
-		<column name="roleId" type="long" />
 	
 		<!-- Filter -->
 		<order by="desc">
@@ -1450,6 +1448,11 @@
 		 <finder return-type="DossierActionUser" name = "DID_RID">
 			<finder-column name="dossierActionId" />
 			<finder-column name="roleId" />
+		</finder>
+		 <finder return-type="DossierActionUser" name = "DID_UID_D">
+			<finder-column name="dossierActionId" />
+			<finder-column name="userId" />
+			<finder-column name="dossierId" />
 		</finder>
 	</entity>
 

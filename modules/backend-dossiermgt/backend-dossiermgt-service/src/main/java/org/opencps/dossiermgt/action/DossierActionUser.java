@@ -16,8 +16,8 @@ public interface DossierActionUser {
 	public org.opencps.dossiermgt.model.DossierActionUser updateDossierActionUser(
 			org.opencps.dossiermgt.model.DossierActionUser dossierActionUser);
 
-	public org.opencps.dossiermgt.model.DossierActionUser deleteDossierActionUser(
-			DossierActionUserPK dossierActionUserPK) throws PortalException;
+//	public org.opencps.dossiermgt.model.DossierActionUser deleteDossierActionUser(
+//			DossierActionUserPK dossierActionUserPK) throws PortalException;
 
 	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignedUserId) throws PortalException;
 	

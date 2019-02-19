@@ -4809,6 +4809,263 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 
 	private static final String _FINDER_COLUMN_DID_RID_DOSSIERACTIONID_2 = "dossierActionUser.dossierActionId = ? AND ";
 	private static final String _FINDER_COLUMN_DID_RID_ROLEID_2 = "dossierActionUser.roleId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_DID_UID_D = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
+			DossierActionUserImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByDID_UID_D",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName()
+			},
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.USERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_DID_UID_D = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDID_UID_D",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName()
+			});
+
+	/**
+	 * Returns the dossier action user where dossierActionId = &#63; and userId = &#63; and dossierId = &#63; or throws a {@link NoSuchDossierActionUserException} if it could not be found.
+	 *
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param dossierId the dossier ID
+	 * @return the matching dossier action user
+	 * @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser findByDID_UID_D(long dossierActionId, long userId,
+		long dossierId) throws NoSuchDossierActionUserException {
+		DossierActionUser dossierActionUser = fetchByDID_UID_D(dossierActionId,
+				userId, dossierId);
+
+		if (dossierActionUser == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("dossierActionId=");
+			msg.append(dossierActionId);
+
+			msg.append(", userId=");
+			msg.append(userId);
+
+			msg.append(", dossierId=");
+			msg.append(dossierId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierActionUserException(msg.toString());
+		}
+
+		return dossierActionUser;
+	}
+
+	/**
+	 * Returns the dossier action user where dossierActionId = &#63; and userId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param dossierId the dossier ID
+	 * @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser fetchByDID_UID_D(long dossierActionId,
+		long userId, long dossierId) {
+		return fetchByDID_UID_D(dossierActionId, userId, dossierId, true);
+	}
+
+	/**
+	 * Returns the dossier action user where dossierActionId = &#63; and userId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param dossierId the dossier ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser fetchByDID_UID_D(long dossierActionId,
+		long userId, long dossierId, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { dossierActionId, userId, dossierId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_DID_UID_D,
+					finderArgs, this);
+		}
+
+		if (result instanceof DossierActionUser) {
+			DossierActionUser dossierActionUser = (DossierActionUser)result;
+
+			if ((dossierActionId != dossierActionUser.getDossierActionId()) ||
+					(userId != dossierActionUser.getUserId()) ||
+					(dossierId != dossierActionUser.getDossierId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_DOSSIERACTIONUSER_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_DOSSIERACTIONID_2);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_USERID_2);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierActionId);
+
+				qPos.add(userId);
+
+				qPos.add(dossierId);
+
+				List<DossierActionUser> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_DID_UID_D,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierActionUserPersistenceImpl.fetchByDID_UID_D(long, long, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DossierActionUser dossierActionUser = list.get(0);
+
+					result = dossierActionUser;
+
+					cacheResult(dossierActionUser);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_DID_UID_D,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DossierActionUser)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier action user where dossierActionId = &#63; and userId = &#63; and dossierId = &#63; from the database.
+	 *
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param dossierId the dossier ID
+	 * @return the dossier action user that was removed
+	 */
+	@Override
+	public DossierActionUser removeByDID_UID_D(long dossierActionId,
+		long userId, long dossierId) throws NoSuchDossierActionUserException {
+		DossierActionUser dossierActionUser = findByDID_UID_D(dossierActionId,
+				userId, dossierId);
+
+		return remove(dossierActionUser);
+	}
+
+	/**
+	 * Returns the number of dossier action users where dossierActionId = &#63; and userId = &#63; and dossierId = &#63;.
+	 *
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param dossierId the dossier ID
+	 * @return the number of matching dossier action users
+	 */
+	@Override
+	public int countByDID_UID_D(long dossierActionId, long userId,
+		long dossierId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_DID_UID_D;
+
+		Object[] finderArgs = new Object[] { dossierActionId, userId, dossierId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_DOSSIERACTIONUSER_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_DOSSIERACTIONID_2);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_USERID_2);
+
+			query.append(_FINDER_COLUMN_DID_UID_D_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierActionId);
+
+				qPos.add(userId);
+
+				qPos.add(dossierId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DID_UID_D_DOSSIERACTIONID_2 = "dossierActionUser.dossierActionId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_UID_D_USERID_2 = "dossierActionUser.userId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_UID_D_DOSSIERID_2 = "dossierActionUser.dossierId = ?";
 
 	public DossierActionUserPersistenceImpl() {
 		setModelClass(DossierActionUser.class);
@@ -4853,6 +5110,12 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			new Object[] {
 				dossierActionUser.getDossierActionId(),
 				dossierActionUser.getRoleId()
+			}, dossierActionUser);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DID_UID_D,
+			new Object[] {
+				dossierActionUser.getDossierActionId(),
+				dossierActionUser.getUserId(), dossierActionUser.getDossierId()
 			}, dossierActionUser);
 
 		dossierActionUser.resetOriginalValues();
@@ -4948,6 +5211,17 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_DID_RID, args,
 			dossierActionUserModelImpl, false);
+
+		args = new Object[] {
+				dossierActionUserModelImpl.getDossierActionId(),
+				dossierActionUserModelImpl.getUserId(),
+				dossierActionUserModelImpl.getDossierId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_DID_UID_D, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DID_UID_D, args,
+			dossierActionUserModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -4993,6 +5267,29 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_RID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID_RID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierActionUserModelImpl.getDossierActionId(),
+					dossierActionUserModelImpl.getUserId(),
+					dossierActionUserModelImpl.getDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_UID_D, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID_UID_D, args);
+		}
+
+		if ((dossierActionUserModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_DID_UID_D.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierActionUserModelImpl.getOriginalDossierActionId(),
+					dossierActionUserModelImpl.getOriginalUserId(),
+					dossierActionUserModelImpl.getOriginalDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_UID_D, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID_UID_D, args);
 		}
 	}
 
