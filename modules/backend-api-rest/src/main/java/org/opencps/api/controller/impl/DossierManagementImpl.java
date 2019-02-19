@@ -430,7 +430,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, user));
 
 			return Response.status(200).entity(results).build();
 
@@ -608,11 +608,11 @@ public class DossierManagementImpl implements DossierManagement {
 				List<Document> docs = (List<Document>) jsonData.get("data");
 				if (docs != null && docs.size() > 0) {
 					if (Validator.isNotNull(status) || Validator.isNotNull(substatus)) {
-						results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
+						results.getData().addAll(DossierUtils.mappingForGetList(docs, userId, user));
 					} else {
 						// Process paging
 						if (query.getEnd() == -1) {
-							results.getData().addAll(DossierUtils.mappingForGetList(docs, userId));
+							results.getData().addAll(DossierUtils.mappingForGetList(docs, userId, user));
 						} else {
 //							_log.info("669999");
 							results.getData().addAll(
@@ -872,7 +872,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierResultsModel results = new DossierResultsModel();
 			if (jsonData != null && jsonData.getInt("total") > 0) {
 				results.setTotal(jsonData.getInt("total"));
-				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
+				results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, user));
 			} else {
 				results.setTotal(0);
 			}
@@ -2691,7 +2691,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, user));
 
 			return Response.status(200).entity(results).build();
 
@@ -2834,7 +2834,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId));
+			results.getData().addAll(DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, user));
 
 			return Response.status(200).entity(results).build();
 
