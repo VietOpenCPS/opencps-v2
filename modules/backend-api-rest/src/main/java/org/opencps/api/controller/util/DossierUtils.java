@@ -20,10 +20,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.LongStream;
 
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
@@ -275,7 +277,19 @@ public class DossierUtils {
 			if (dau != null) {
 				model.setAssigned(dau.getAssigned());
 			} else {
-				model.setAssigned(ConstantsTerm.NO_ASSINED);
+				List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getByDID(dossierActionId);
+				if (dauList != null) {
+					for (DossierActionUser dAction : dauList) {
+						long roleId = dAction.getRoleId();
+						if (roleId > 0 && LongStream.of(user.getRoleIds()).anyMatch(x -> x == roleId)) {
+							model.setAssigned(dAction.getAssigned());
+						} else {
+							model.setAssigned(ConstantsTerm.NO_ASSINED);
+						}
+					}
+				} else {
+					model.setAssigned(ConstantsTerm.NO_ASSINED);
+				}
 			}
 			
 			if (isAdministratorData) {
