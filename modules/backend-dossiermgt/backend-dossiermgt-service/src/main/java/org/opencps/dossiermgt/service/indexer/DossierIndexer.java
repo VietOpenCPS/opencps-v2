@@ -581,6 +581,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			//Process View dossierUser
 			List<String> userDossierList = processDossierUser(dossierId);
+			//_log.info("userDossierList: "+userDossierList);
 			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, userDossierList.get(0));
 			document.addTextSortable(DossierTerm.MAPPING_PERMISSION, userDossierList.get(1));
 
@@ -787,6 +788,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 	}
 
 	private List<String> processDossierUser(long dossierId) {
+		//_log.info("START READ_USER");
 		List<String> userDossierList = new ArrayList<>();
 		StringBundler sb = new StringBundler();
 		StringBundler sbPermission = new StringBundler();
@@ -811,29 +813,31 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							}
 						} else {
 							List<User> userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
-							if (userList != null && userList.size() > 0) {
-								for (int j = 0; j < userList.size(); j++) {
+							int lengthUser = userList.size();
+							if (userList != null && lengthUser > 0) {
+								for (int j = 0; j < lengthUser; j++) {
+									User userInfo = userList.get(j);
 									if (j == 0) {
-										sb.append(userId);
+										sb.append(userInfo.getUserId());
 										if (dau.getModerator() == 1) {
-											sbPermission.append(userId);
+											sbPermission.append(userInfo.getUserId());
 											sbPermission.append(StringPool.UNDERLINE);
 											sbPermission.append("write");
 										} else {
-											sbPermission.append(userId);
+											sbPermission.append(userInfo.getUserId());
 											sbPermission.append(StringPool.UNDERLINE);
 											sbPermission.append("read");
 										}
 									} else {
 										sb.append(StringPool.SPACE);
-										sb.append(userId);
+										sb.append(userInfo.getUserId());
 										sbPermission.append(StringPool.SPACE);
 										if (dau.getModerator() == 1) {
-											sbPermission.append(userId);
+											sbPermission.append(userInfo.getUserId());
 											sbPermission.append(StringPool.UNDERLINE);
 											sbPermission.append("write");
 										} else {
-											sbPermission.append(userId);
+											sbPermission.append(userInfo.getUserId());
 											sbPermission.append(StringPool.UNDERLINE);
 											sbPermission.append("read");
 										}
@@ -860,15 +864,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							List<User> userList = UserLocalServiceUtil.getRoleUsers(dau.getRoleId());
 							if (userList != null && userList.size() > 0) {
 								for (int j = 0; j < userList.size(); j++) {
+									User userInfo = userList.get(j);
 									sb.append(StringPool.SPACE);
-									sb.append(userId);
+									sb.append(userInfo.getUserId());
 									sbPermission.append(StringPool.SPACE);
 									if (dau.getModerator() == 1) {
-										sbPermission.append(userId);
+										sbPermission.append(userInfo.getUserId());
 										sbPermission.append(StringPool.UNDERLINE);
 										sbPermission.append("write");
 									} else {
-										sbPermission.append(userId);
+										sbPermission.append(userInfo.getUserId());
 										sbPermission.append(StringPool.UNDERLINE);
 										sbPermission.append("read");
 									}
@@ -880,6 +885,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			userDossierList.add(sb.toString());
 			userDossierList.add(sbPermission.toString());
+			//_log.info("sb.toString(): "+sb.toString());
+			//_log.info("sbPermission.toString(): "+sbPermission.toString());
 		}
 		return userDossierList;
 	}
