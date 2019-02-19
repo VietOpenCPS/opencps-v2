@@ -135,4 +135,20 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	public DossierUser findByDID_RID(long dossierId, long roleId) {
 		return dossierUserPersistence.fetchByDID_RID(dossierId, roleId);
 	}
+	
+	public DossierUser addDossierUser(long groupId, long dossierId, long userId, long roleId, int moderator, boolean visited) {
+		DossierUser dossierUser = dossierUserPersistence.fetchByDID_UID(dossierId, userId);
+		if (dossierUser == null) {
+			long dossierUserId = counterLocalService.increment(DossierUser.class.getName());
+			dossierUser = dossierUserPersistence.create(dossierUserId);
+			dossierUser.setDossierId(dossierId);
+			dossierUser.setUserId(userId);
+			dossierUser.setRoleId(roleId);
+		}
+
+		dossierUser.setModerator(moderator);
+		dossierUser.setVisited(visited);
+
+		return dossierUserPersistence.update(dossierUser);
+	}	
 }

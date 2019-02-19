@@ -53,6 +53,14 @@ public class DossierUserLocalServiceWrapper implements DossierUserLocalService,
 			userId, moderator, visited);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DossierUser addDossierUser(
+		long groupId, long dossierId, long userId, long roleId, int moderator,
+		boolean visited) {
+		return _dossierUserLocalService.addDossierUser(groupId, dossierId,
+			userId, roleId, moderator, visited);
+	}
+
 	/**
 	* Creates a new dossier user with the primary key. Does not add the dossier user to the database.
 	*

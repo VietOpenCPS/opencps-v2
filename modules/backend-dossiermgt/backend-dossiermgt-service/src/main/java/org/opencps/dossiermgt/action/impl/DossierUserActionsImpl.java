@@ -163,55 +163,69 @@ public class DossierUserActionsImpl implements DossierUserActions {
 
 	@Override
 	public void initDossierUser(long groupId, Dossier dossier, ServiceProcess serviceProcess, List<ServiceProcessRole> listSprs) {
-		try {
+//		try {
 			if (serviceProcess != null) {
-//				List<ServiceProcessRole> listSprs = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcess.getServiceProcessId());
 				for (ServiceProcessRole spr : listSprs) {
 					int mod = 0;
 					if (Validator.isNull(spr.getCondition())) {
-//						boolean moderator = spr.getModerator();
-//						
-//						if (moderator) {
-//							mod = 1;
+//						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
+//						for (User user : users) {
+//							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
+//							
+//							if (du != null) {
+//								du.setModerator(mod);
+//								du.setVisited(true);
+//								
+//								DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+//							} else {						
+//								DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+//							}
 //						}
-						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
-						for (User user : users) {
-							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
+						org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.findByDID_RID(dossier.getDossierId(), spr.getRoleId());
+						if (du != null) {
+							du.setModerator(mod);
+							du.setVisited(true);
 							
-							if (du != null) {
-								du.setModerator(mod);
-								du.setVisited(true);
-								
-								DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-							} else {						
-								DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
-							}
-						}										
+							DossierUserLocalServiceUtil.updateDossierUser(du);
+						}
+						else {
+							DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), 0, spr.getRoleId(), mod, true);
+						}
 					}
 					else {
 						//Check service process role condition
 						if (checkServiceProcessRoleCondition(dossier, spr)) {
-							List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
-							for (User user : users) {
-								org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
+//							List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
+//							for (User user : users) {
+//								org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
+//								
+//								if (du != null) {
+//									du.setModerator(mod);
+//									du.setVisited(true);
+//									
+//									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
+//								} else {						
+//									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
+//								}
+//							}
+							
+							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.findByDID_RID(dossier.getDossierId(), spr.getRoleId());
+							if (du != null) {
+								du.setModerator(mod);
+								du.setVisited(true);
 								
-								if (du != null) {
-									du.setModerator(mod);
-									du.setVisited(true);
-									
-									DossierUserLocalServiceUtil.updateDossierUser(dossier.getDossierId(), user.getUserId(), mod, du.getVisited());
-								} else {						
-									DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), user.getUserId(), mod, true);
-								}
-							}																	
+								DossierUserLocalServiceUtil.updateDossierUser(du);
+							}
+							else {
+								DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), 0, spr.getRoleId(), mod, true);
+							}
 						}
 					}
 				}				
 			}
 			
-		} catch (PortalException e) {
-			_log.error(e);
-//			e.printStackTrace();
-		}		
+//		} catch (PortalException e) {
+//			_log.error(e);
+//		}		
 	}
 }

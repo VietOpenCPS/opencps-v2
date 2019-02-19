@@ -3379,8 +3379,8 @@ public class DossierActionsImpl implements DossierActions {
 						dossierActionUser.copyRoleAsStep(curStep, dossier);
 					}	
 					else {
-						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
-								proAction.getAssignUserId());						
+//						dossierActionUser.initDossierActionUser(proAction, dossier, allowAssignUser, dossierAction, userId, groupId,
+//								proAction.getAssignUserId());						
 					}
 				}
 				_log.info("Part 1.2.1: " + (System.currentTimeMillis() - startTime) + " ms");
