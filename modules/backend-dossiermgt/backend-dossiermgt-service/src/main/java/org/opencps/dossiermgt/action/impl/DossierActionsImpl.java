@@ -1324,14 +1324,14 @@ public class DossierActionsImpl implements DossierActions {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		User user = UserLocalServiceUtil.fetchUser(userId);
 		
-		List<Role> userRolesAdminCheck = user.getRoles();
-		boolean isAdministratorData = false;
-		for (Role r : userRolesAdminCheck) {
-			if (r.getName().equals("Administrator")) {
-				isAdministratorData = true;
-				break;
-			}
-		}
+//		List<Role> userRolesAdminCheck = user.getRoles();
+//		boolean isAdministratorData = false;
+//		for (Role r : userRolesAdminCheck) {
+//			if (r.getName().equals("Administrator")) {
+//				isAdministratorData = true;
+//				break;
+//			}
+//		}
 		
 //		_log.info("dossier: "+dossier);
 		try {
@@ -1351,25 +1351,25 @@ public class DossierActionsImpl implements DossierActions {
 					pending = dossierAction.getPending();
 				}
 
-				if (isAdministratorData) {
-					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
-					if (ac != null) {
-						if (results == null) {
-							results = JSONFactoryUtil.createJSONArray();							
-						}
-						JSONObject data = JSONFactoryUtil.createJSONObject();
-						data.put(ProcessActionTerm.ENABLE, 1);
-						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
-						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
-						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
-						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
-						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
-						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
-						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
-						//
-						results.put(data);						
-					}
-				}
+//				if (isAdministratorData) {
+//					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
+//					if (ac != null) {
+//						if (results == null) {
+//							results = JSONFactoryUtil.createJSONArray();							
+//						}
+//						JSONObject data = JSONFactoryUtil.createJSONObject();
+//						data.put(ProcessActionTerm.ENABLE, 1);
+//						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
+//						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
+//						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
+//						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
+//						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
+//						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
+//						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
+//						//
+//						results.put(data);						
+//					}
+//				}
 				
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
@@ -1394,6 +1394,7 @@ public class DossierActionsImpl implements DossierActions {
 								long roleId = dAction.getRoleId();
 								if (roleId > 0 && LongStream.of(user.getRoleIds()).anyMatch(x -> x == roleId)) {
 									enable = 1;
+									break;
 								}
 							}
 						}
@@ -1416,9 +1417,9 @@ public class DossierActionsImpl implements DossierActions {
 //							enable = 1;
 //						}
 //					}
-					if (isAdministratorData) {
-						enable = 1;
-					}
+//					if (isAdministratorData) {
+//						enable = 1;
+//					}
 					// _log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
@@ -1448,15 +1449,15 @@ public class DossierActionsImpl implements DossierActions {
 							preCondition = processAction.getPreCondition();
 							// Check permission enable button
 //							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
-							if (!isAdministratorData) {
+//							if (!isAdministratorData) {
 								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
 									data.put(ProcessActionTerm.ENABLE, enable);
 								else
 									data.put(ProcessActionTerm.ENABLE, 0);
-							}
-							else {
-								data.put(ProcessActionTerm.ENABLE, enable);								
-							}
+//							}
+//							else {
+//								data.put(ProcessActionTerm.ENABLE, enable);								
+//							}
 						
 							data.put(ProcessActionTerm.PROCESS_ACTION_ID, processActionId);
 							data.put(ProcessActionTerm.ACTION_CODE, actionCode);
@@ -3320,6 +3321,7 @@ public class DossierActionsImpl implements DossierActions {
 				//Update previous action nextActionId
 				_log.info("Part 1.1.3: " + (System.currentTimeMillis() - startTime) + " ms");
 				Date now = new Date();
+				_log.info("Part 1.1.3.1: " + (System.currentTimeMillis() - startTime) + " ms");
 				if (previousAction != null && dossierAction != null) {
 //					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
 //					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
@@ -3328,6 +3330,7 @@ public class DossierActionsImpl implements DossierActions {
 					previousAction.setModifiedDate(now);
 					previousAction = DossierActionLocalServiceUtil.updateDossierAction(previousAction);
 				}
+				_log.info("Part 1.1.3.2: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 				if (actionConfig != null) {
 					if (actionConfig.getRollbackable()) {
@@ -3336,6 +3339,7 @@ public class DossierActionsImpl implements DossierActions {
 					else {
 						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
 					}
+					_log.info("Part 1.1.3.3: " + (System.currentTimeMillis() - startTime) + " ms");
 				}
 				else {
 					if (proAction.isRollbackable()) {
@@ -3344,6 +3348,7 @@ public class DossierActionsImpl implements DossierActions {
 					else {
 						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
 					}
+					_log.info("Part 1.1.3.4: " + (System.currentTimeMillis() - startTime) + " ms");
 				}
 				_log.info("Part 1.1.4: " + (System.currentTimeMillis() - startTime) + " ms");
 				//update dossierStatus

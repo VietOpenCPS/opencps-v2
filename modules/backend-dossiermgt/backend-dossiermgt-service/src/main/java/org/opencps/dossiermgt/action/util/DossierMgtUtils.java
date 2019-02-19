@@ -374,73 +374,97 @@ public class DossierMgtUtils {
 				default:
 					break;
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("service=")) {
 				String[] splitCodes = preCondition.split("=");
 				if (splitCodes.length == 2) {
 					result = result && checkServiceCode(splitCodes[1], dossier);
 				}			
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("notservicecode=")) {
 				String[] splitCodes = preCondition.split("=");
 				if (splitCodes.length == 2) {
 					result = result && checkNotServiceCode(splitCodes[1], dossier);
 				}			
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("agency=")) {
 				String[] splitAgencies = preCondition.split("=");
 				if (splitAgencies.length == 2) {
 					result = result && checkAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("notagencycode=")) {
 				String[] splitAgencies = preCondition.split("=");
 				if (splitAgencies.length == 2) {
 					result = result && checkNotAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("template=")) {
 				String[] splitTemplates = preCondition.split("=");
 				if (splitTemplates.length == 2) {
 					result = result && checkTemplateCode(splitTemplates[1], dossier);
 				}											
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("originality=")) {
 				String[] splitOriginalities = preCondition.split("=");
 				if (splitOriginalities.length == 2) {
 					result = result && checkOriginality(splitOriginalities[1], dossier);
 				}															
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("stepdone=")) {
 				String[] splitSteps = preCondition.split("=");
 				if (splitSteps.length == 2) {
 					result = result && checkStepDone(splitSteps[1], dossier);
 				}																			
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("stepnotdone=")) {
 				String[] splitSteps = preCondition.split("=");
 				if (splitSteps.length == 2) {
 					result = result && checkStepNotDone(splitSteps[1], dossier);
 				}																			
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("#")) {
 				String[] splitBiens = preCondition.split("=");
 				if (splitBiens.length == 2) {
 					result = result && checkBien(splitBiens[0], splitBiens[1], dossier);
 				}																							
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("viapostal=")) {
 				String[] splitViaPostals = preCondition.split("=");
 				if (splitViaPostals.length == 2) {
 					result = result && checkViaPostal(splitViaPostals[1], dossier);
 				}																							
 			}
+			if (!result) return false;
+
 			if (preCondition.contains("roledone=")) {
 				String[] splitRoles = preCondition.split("=");
 				System.out.println(splitRoles[0] + "," + splitRoles[1]);
 				if (splitRoles.length == 2) {
 					result = result && checkRoleDone(splitRoles[1], dossier);
 				}																			
-			}			
+			}	
+			if (!result) return false;
+
 		}
 
 		return result;
