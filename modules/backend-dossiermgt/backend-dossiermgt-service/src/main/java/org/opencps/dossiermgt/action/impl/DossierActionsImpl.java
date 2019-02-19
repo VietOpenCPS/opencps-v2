@@ -55,6 +55,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.LongStream;
 
 import javax.ws.rs.HttpMethod;
 
@@ -90,6 +91,7 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -1385,23 +1387,37 @@ public class DossierActionsImpl implements DossierActions {
 						int assign = dActionUser.getAssigned();
 						if (assign == 1 && !pending)
 							enable = 1;
-					}
-					//Check if user if admin
-					User checkAU = UserLocalServiceUtil.fetchUser(userId);
-//					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
-					if (checkAU != null) {
-						List<Role> userRoles = checkAU.getRoles();
-						boolean isAdmin = false;
-						for (Role r : userRoles) {
-//							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
-							if ("Administrator".equalsIgnoreCase(r.getName())) {
-								isAdmin = true;
-								break;
+					} else {
+						List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getByDID(dossierActionId);
+						if (dauList != null) {
+							for (DossierActionUser dAction : dauList) {
+								long roleId = dAction.getRoleId();
+								if (roleId > 0 && LongStream.of(user.getRoleIds()).anyMatch(x -> x == roleId)) {
+									enable = 1;
+								}
 							}
 						}
-						if (isAdmin) {
-							enable = 1;
-						}
+					}
+					
+					//Check if user if admin
+					//User checkAU = UserLocalServiceUtil.fetchUser(userId);
+//					_log.info("SONDT checkAU: " + JSONFactoryUtil.looseSerialize(checkAU));
+//					if (user != null) {
+//						List<Role> userRoles = checkAU.getRoles();
+//						boolean isAdmin = false;
+//						for (Role r : userRoles) {
+////							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
+//							if ("Administrator".equalsIgnoreCase(r.getName())) {
+//								isAdmin = true;
+//								break;
+//							}
+//						}
+//						if (isAdmin) {
+//							enable = 1;
+//						}
+//					}
+					if (isAdministratorData) {
+						enable = 1;
 					}
 					// _log.info("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
