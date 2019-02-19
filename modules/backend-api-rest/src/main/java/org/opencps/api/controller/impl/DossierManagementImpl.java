@@ -3010,7 +3010,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				
 				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(groupId, dossier.getDossierId(), dossierAction.getDossierActionId());
-				if ((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+				if (ds != null && (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 						|| (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT)) {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);					
 				}
@@ -3030,7 +3030,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}	
 				
 				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(groupId, dossier.getDossierId(), dossierAction.getDossierActionId());
-				if ((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+				if (ds != null && (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 						|| (ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT)) {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);					
 				}

@@ -186,7 +186,7 @@ public class DossierActionsImpl implements DossierActions {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 	
-	
+	CacheActions cache = new CacheActionsImpl();	
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -2720,21 +2720,21 @@ public class DossierActionsImpl implements DossierActions {
 		User user = UserLocalServiceUtil.fetchUser(userId);
 		Employee employee = null;
 		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-//		if (user != null) {
-//			Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ userId);
-//			if (employeeCache == null) {
-//				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-//				if (employee != null) {
-//					CacheLocalServiceUtil.addToCache("Employee",
-//							groupId +"_"+ userId, (Serializable) employee,
-//							(int) Time.MINUTE * 15);
-//				}
-//			} else {
-//				employee = (Employee) employeeCache;
-//			}
-//
-////			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-//		}		
+		if (user != null) {
+			Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ userId);
+			if (employeeCache == null) {
+				employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null) {
+					cache.addToCache("Employee",
+							groupId +"_"+ userId, (Serializable) employee,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				employee = (Employee) employeeCache;
+			}
+
+//			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+		}		
 //		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
@@ -3047,7 +3047,6 @@ public class DossierActionsImpl implements DossierActions {
 			if (serviceConfig22 != null) {
 //				_log.info("START_ Get list process option1111: "+new Date());
 				Date dateStart122 = new Date();
-				CacheActions cache = new CacheActionsImpl();
 				Serializable serList22 = cache.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
 				List<ProcessOption> lstOptions122 = null;
 				if (serList22 == null) {
@@ -4016,19 +4015,24 @@ public class DossierActionsImpl implements DossierActions {
 
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//			Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
 			Notificationtemplate notiTemplate = null;
-			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//			if (notiCache == null) {
-//				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//				if (notiTemplate != null) {
-//					CacheLocalServiceUtil.addToCache("NotificationTemplate",
-//							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
-//							(int) Time.MINUTE * 15);
-//				}
-//			} else {
-//				notiTemplate = (Notificationtemplate) notiCache;
-//			}
+			Serializable notiCache;
+			try {
+				notiCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
+				if (notiCache == null) {
+					notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+					if (notiTemplate != null) {
+						cache.addToCache("NotificationTemplate",
+								groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+								(int) Time.MINUTE * 15);
+					}
+				} else {
+					notiTemplate = (Notificationtemplate) notiCache;
+				}
+			} catch (PortalException e) {
+				_log.debug(e);
+			}
+//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
@@ -4084,17 +4088,23 @@ public class DossierActionsImpl implements DossierActions {
 //		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 //		Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
 		Notificationtemplate emplTemplate = null;
-		emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-//		if (notiCache == null) {
-//			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-//			if (emplTemplate != null) {
-//				CacheLocalServiceUtil.addToCache("NotificationTemplate",
-//						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
-//						(int) Time.MINUTE * 15);
-//			}
-//		} else {
-//			emplTemplate = (Notificationtemplate) notiCache;
-//		}
+		Serializable notiCache;
+		try {
+			notiCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
+			if (notiCache == null) {
+				emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+				if (emplTemplate != null) {
+					cache.addToCache("NotificationTemplate",
+							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				emplTemplate = (Notificationtemplate) notiCache;
+			}
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+//		emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 
 		Date now = new Date();
         Calendar calEmpl = Calendar.getInstance();
