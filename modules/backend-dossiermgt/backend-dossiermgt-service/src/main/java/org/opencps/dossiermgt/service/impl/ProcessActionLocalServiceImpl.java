@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -558,6 +559,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		return processActionPersistence.findByGI_AC(groupId, actionCode);
 	}
 
+	@ThreadLocalCachable
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode, long serviceProcessId)
 			throws PortalException {
 		return processActionPersistence.findByGI_AC_SP(groupId, actionCode, serviceProcessId);

@@ -2788,7 +2788,19 @@ public class DossierActionsImpl implements DossierActions {
 		
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
-			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+			Serializable serviceProcessCache = cache.getFromCache("ServiceProcess", groupId +"_"+ serviceProcessId);
+			if (serviceProcessCache == null) {
+				serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+				if (serviceProcess != null) {
+					cache.addToCache("ServiceProcess",
+							groupId +"_"+ serviceProcessId, (Serializable) serviceProcess,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				serviceProcess = (ServiceProcess) serviceProcessCache;
+			}
+
+//			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 			// Add paymentFile
 //			String paymentFee = proAction.getPaymentFee();
 			String paymentFee = StringPool.BLANK;
