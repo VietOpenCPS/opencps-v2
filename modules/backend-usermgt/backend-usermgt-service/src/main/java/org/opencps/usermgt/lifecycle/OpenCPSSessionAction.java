@@ -8,13 +8,13 @@ import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component (
-	    immediate = true,
-	    property = {
-	    	"key=servlet.session.destroy.events"
-	    },
-	    service = LifecycleAction.class
-	)
+//@Component (
+//	    immediate = true,
+//	    property = {
+//	    	"key=servlet.session.destroy.events"
+//	    },
+//	    service = LifecycleAction.class
+//	)
 public class OpenCPSSessionAction implements LifecycleAction {
 	@Override
 	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {

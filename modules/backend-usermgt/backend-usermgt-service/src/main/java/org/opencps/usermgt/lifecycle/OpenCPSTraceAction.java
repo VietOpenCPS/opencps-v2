@@ -17,13 +17,13 @@ import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.UserTrackPathLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component (
-	    immediate = true,
-	    property = {
-	        "key=servlet.service.events.post"
-	    },
-	    service = LifecycleAction.class
-	)
+//@Component (
+//	    immediate = true,
+//	    property = {
+//	        "key=servlet.service.events.post"
+//	    },
+//	    service = LifecycleAction.class
+//	)
 public class OpenCPSTraceAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
