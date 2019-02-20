@@ -61,7 +61,7 @@ public class DossierSyncProcessingScheduler extends BaseSchedulerEntryMessageLis
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 45, TimeUnit.SECOND));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

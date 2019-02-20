@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -176,6 +177,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		return actionConfig;
 	}
 
+	@ThreadLocalCachable
 	public ActionConfig getByCode(long groupId, String actionCode) {
 
 		return actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
