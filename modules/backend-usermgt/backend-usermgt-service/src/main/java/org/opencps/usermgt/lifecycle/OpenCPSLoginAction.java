@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component (
-	    immediate = true,
-	    property = {
-	        "key=login.events.post"
-	    },
-	    service = LifecycleAction.class
-	)
+//@Component (
+//	    immediate = true,
+//	    property = {
+//	        "key=login.events.post"
+//	    },
+//	    service = LifecycleAction.class
+//	)
 public class OpenCPSLoginAction extends Action {
     @Override
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
