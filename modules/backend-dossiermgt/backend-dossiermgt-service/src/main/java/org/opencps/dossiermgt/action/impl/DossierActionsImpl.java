@@ -3427,11 +3427,8 @@ public class DossierActionsImpl implements DossierActions {
 			}
 						
 			//Check if generate dossier document
-//			ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 			ActionConfig ac = actionConfig;
-//			_log.info("ac: " + ac);
 			if (ac != null) {
-				//Only create dossier document if 2 && 3
 				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 					if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 						//Generate document
@@ -3474,9 +3471,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				vnpostEvent(dossier);
 			}
-			// sondt end sendvnpost
 			
-			//Generate output
 			try {
 //				generateCreateDossierFiles(groupId, userId, dossier, proAction);
 			}
@@ -3488,164 +3483,23 @@ public class DossierActionsImpl implements DossierActions {
 		else {
 			
 		}
-		_log.info("Part 2: " + (System.currentTimeMillis() - startTime) + " ms");
 
 		//Create notification
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
 			createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, context);
 		}
-		//Create DossierSync
-		String dossierRefUid = dossier.getReferenceUid();
-		String syncRefUid = UUID.randomUUID().toString();
-		_log.info("Part 2.1: " + (System.currentTimeMillis() - startTime) + " ms");
 		
-		//Create subcription
-//		createSubcription(userId, groupId, dossier, actionConfig, context);
-		createSubcription(userId, groupId, dossier, actionConfig, dossierAction, context);
-		_log.info("Part 2.2: " + (System.currentTimeMillis() - startTime) + " ms");
+		createSyncDossier(user, groupId, dossier, actionConfig, dossierAction, payloadObject, syncType, userId, dossierId, option, proAction, actionCode, actionUser, actionNote, serviceProcess, 
+				flagChanged, 
+				context);
 		
-		if (syncType > 0) {
-			int state = DossierActionUtils.getSyncState(syncType, dossier);
-			
-			//If state = 1 set pending dossier
-			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
-				if (dossierAction != null) {
-					dossierAction.setPending(true);
-					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
-				}
-			}
-			else {
-				if (dossierAction != null) {
-					dossierAction.setPending(false);
-					DossierActionLocalServiceUtil.updateDossierAction(dossierAction);				
-				}
-			}
-			
-			//Update payload
-			
-			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
-			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossierId);
-			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
-				if (dossier.getOriginDossierId() == 0) {
-					if (lstFiles.size() > 0) {
-						for (DossierFile df : lstFiles) {
-							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-							dossierFilesArr.put(dossierFileObj);
-						}
-					}					
-				}
-				else {
-//					ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
-//					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
-					
-//					if (serviceConfig != null) {
-//						if (lstOptions.size() > 0) {
-//							ProcessOption processOption = lstOptions.get(0);
-							ProcessOption processOption = option;
-							
-							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
-							List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
-							
-							List<DossierFile> lstOriginFiles = DossierFileLocalServiceUtil.findByDID(dossier.getOriginDossierId());
-							if (lstOriginFiles.size() > 0) {
-								for (DossierFile df : lstOriginFiles) {
-									boolean flagHslt = false;
-									for (DossierPart dp : lstParts) {
-										if (dp.getPartNo().equals(df.getDossierPartNo())) {
-											flagHslt = true;
-											break;
-										}
-									}
-									if (flagHslt) {
-										JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-										dossierFileObj.put(DossierFileTerm.REFERENCE_UID, df.getReferenceUid());
-										dossierFilesArr.put(dossierFileObj);										
-									}
-								}
-							}										
-//						}
-//					}
-					
-				}
-			}
-			else {
-				//Sync result files
-				
-			}
-			
-			payloadObject.put("dossierFiles", dossierFilesArr);
-//			_log.info("Payload: " + payloadObject.toJSONString());
-			
-			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-//				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
-				List<DossierFile> lsDossierFile = lstFiles;
-				dossierFilesArr = JSONFactoryUtil.createJSONArray();
-
-				// check return file
-				List<String> returnDossierFileTemplateNos = ListUtil
-						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
-
-				for (DossierFile dossierFile : lsDossierFile) {
-					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-
-					}
-
-				}
-				payloadObject.put("dossierFiles", dossierFilesArr);				
-			}
-			
-			List<DossierDocument> lstDossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
-
-			for (DossierDocument dossierDocument : lstDossierDocuments) {
-				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
-				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
-				dossierDocumentArr.put(dossierDocumentObj);
-			}
-			payloadObject.put("dossierFiles", dossierFilesArr);				
-			payloadObject.put("dossierDocuments", dossierDocumentArr);
-			
-			//Put dossier note
-			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			//Put dossier note
-			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
-			
-//			_log.info("Flag changed: " + flagChanged);
-			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
-			
-			DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossierRefUid, syncRefUid,
-					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serviceProcess.getServerNo(), state);
-			
-			if (state == DossierSyncTerm.STATE_NOT_SYNC
-					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-				publishEvent(dossier, context);
-			}
-//			if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-//				publishEvent(dossier, context);
-//			}
-		}
-		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
-			publishEvent(dossier, context);			
-		}
-		_log.info("Part 3: " + (System.currentTimeMillis() - startTime) + " ms");
-		
-		//Do action hslt
 		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
-			_log.info("START HSLT");
 			ActionConfig mappingConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionConfig.getMappingAction());
-			_log.info("mappingConfig: "+mappingConfig);
-			_log.info("dossier.getOriginDossierId(): "+dossier.getOriginDossierId());
 			if (dossier.getOriginDossierId() != 0) {
 				Dossier hslt = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
 				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
 						hslt.getDossierTemplateNo(), groupId);
 				ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(), actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
-				_log.info("START HSLT PAyLOAD: "+payload);
 				String actionUserHslt = actionUser;
 				if (employee != null) {
 					actionUserHslt = actionUser;
@@ -3667,28 +3521,62 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			else {
 				Dossier originDossier = DossierLocalServiceUtil.getByOrigin(groupId, dossierId);
-				_log.info("originDossier: "+originDossier);
 				if (originDossier != null) {					
 					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(), originDossier.getGovAgencyCode(),
 							originDossier.getDossierTemplateNo(), groupId);
 					ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(), originDossier.getReferenceUid(), actionConfig.getMappingAction(), optionOrigin.getServiceProcessId());
-					_log.info("START HSLT PAyLOAD: "+payload);
 					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context, errorModel);
 				}
 			}
 		}
-		_log.info("Part 4: " + (System.currentTimeMillis() - startTime) + " ms");
-		
-		//Reindex dossier
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		indexer.reindex(dossier);
-		_log.info("Part 5: " + (System.currentTimeMillis() - startTime) + " ms");
 		
-//		_log.info("dossierActionFINISH: "+dossierAction);
 		return dossierAction;		
 	}
 	
+	private void createSyncDossier(
+			User user, 
+			long groupId, 
+			Dossier dossier, 
+			ActionConfig actionConfig, 
+			DossierAction dossierAction, 
+			JSONObject payloadObject, 
+			int syncType, 
+			long userId,
+			long dossierId,
+			ProcessOption option,
+			ProcessAction proAction,
+			String actionCode,
+			String actionUser,
+			String actionNote,
+			ServiceProcess serviceProcess,
+			Map<String, Boolean> flagChanged,
+			ServiceContext context) throws PortalException {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		message.put("user", user);
+		message.put("groupId", groupId);
+		message.put("dossier", dossier);
+		message.put("actionConfig", actionConfig);
+		message.put("dossierAction", dossierAction);
+		message.put("payloadObject", payloadObject);
+		message.put("syncType", syncType);
+		message.put("userId", userId);
+		message.put("dossierId", dossierId);
+		message.put("option", option);
+		message.put("proAction", proAction);
+		message.put("actionCode", actionCode);
+		message.put("actionUser", actionUser);
+		message.put("actionNote", actionNote);
+		message.put("serviceProcess", serviceProcess);
+		message.put("flagChanged", flagChanged);
+		message.put("context", context);
+		
+		message.put("msgToEngine", msgData);
+		MessageBusUtil.sendMessage("sync/dossier/in/destination", message);
+	}
 	private DossierAction doActionOutsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
