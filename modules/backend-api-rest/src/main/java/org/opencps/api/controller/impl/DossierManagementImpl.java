@@ -911,38 +911,35 @@ public class DossierManagementImpl implements DossierManagement {
 
 			boolean flag = false;
 			long userId = serviceContext.getUserId();
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-			if (employee != null) {
-				long employeeId = employee.getEmployeeId();
-				if (employeeId > 0) {
-					List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
-					if (empJobList != null && empJobList.size() > 0) {
-						for (EmployeeJobPos employeeJobPos : empJobList) {
-							long jobPosId = employeeJobPos.getJobPostId();
-							if (jobPosId > 0) {
-								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
-								if (job != null) {
-									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
-												job.getMappingRoleId());
-									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
-												.fetchServiceProcessRole(pk);
-									if (role != null && role.getModerator()) {
-										flag = true;
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
-			} else {
-				//update application
-//				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-//				if (applicant != null) {
-					flag = true;
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//			if (employee != null) {
+//				long employeeId = employee.getEmployeeId();
+//				if (employeeId > 0) {
+//					List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+//					if (empJobList != null && empJobList.size() > 0) {
+//						for (EmployeeJobPos employeeJobPos : empJobList) {
+//							long jobPosId = employeeJobPos.getJobPostId();
+//							if (jobPosId > 0) {
+//								JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+//								if (job != null) {
+//									ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
+//												job.getMappingRoleId());
+//									ServiceProcessRole role = ServiceProcessRoleLocalServiceUtil
+//												.fetchServiceProcessRole(pk);
+//									if (role != null && role.getModerator()) {
+//										flag = true;
+//										break;
+//									}
+//								}
+//							}
+//						}
+//					}
 //				}
-			}
-	
+//			} else {
+//				flag = true;
+//			}
+			flag = true;
+			
 			if (!flag) {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
 			}
@@ -1508,13 +1505,14 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ADMINISTRATIVE_REGION, groupId);
 			
 			if (Validator.isNotNull(input.getCityCode()))
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				cityName = getDictItemName(groupId, dc, input.getCityCode());
 			if (Validator.isNotNull(input.getDistrictCode()))
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				districtName = getDictItemName(groupId, dc, input.getDistrictCode());
 			if (Validator.isNotNull(input.getWardCode()))
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				wardName = getDictItemName(groupId, dc, input.getWardCode());
 
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());

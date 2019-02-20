@@ -75,147 +75,147 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 		_log.info("START Dossier Action");
 		long start = System.currentTimeMillis();
 		
-		Indexer<DossierLog> indexer = IndexerRegistryUtil
-				.nullSafeGetIndexer(DossierLog.class);
-		
-		if (true) {
-			_log.info("START Dossier Action service context: " + (System.currentTimeMillis() - start));
-			ServiceContext serviceContext = new ServiceContext();
-
-			EmployeeActions employeeActions = new EmployeeActions();
-
-			JobposActions jobposActions = new JobposActions();
-			_log.info("START Dossier Action service context end: " + (System.currentTimeMillis() - start));
-			try {
-
-				long userId = model.getUserId();
-
-				Employee employee = employeeActions.getEmployeeByMappingUserId(model.getGroupId(), userId);
-
-				long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
-
-				long dossierId = model.getDossierId();
-
-				String jobPosName = StringPool.BLANK;
-
-				if (mainJobposId > 0) {
-
-					JobPos jobPos = jobposActions.getJobPos(mainJobposId);
-
-					jobPosName = (jobPos != null && Validator.isNotNull(jobPos.getTitle())) ? jobPos.getTitle()
-							: StringPool.BLANK;
-				}
-
-				String content = Validator.isNotNull(model.getActionNote()) ? HtmlUtil.escape(model.getActionNote()) : StringPool.BLANK;
-
-				JSONObject payload = JSONFactoryUtil.createJSONObject();
-
-				JSONArray files = JSONFactoryUtil.createJSONArray();
-
-				if (dossierId > 0) {
-
-					_log.info("START Dossier Action get log: " + (System.currentTimeMillis() - start));
-					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
-							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS);
-					_log.info("START Dossier Action end get log: " + (System.currentTimeMillis() - start));
-
-					for (DossierLog log : dossierLogs) {
-						long dossierFileId = 0;
-
-						try {
-							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
-
-							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
-						} catch (Exception e) {
-							_log.debug(e);
-						}
-
-						if (dossierFileId != 0) {
-							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
-
-							if (Validator.isNotNull(dossierFile)) {
-								JSONObject file = JSONFactoryUtil.createJSONObject();
-
-								file.put("dossierFileId", dossierFile.getDossierFileId());
-								file.put("fileName", dossierFile.getDisplayName());
-								file.put("createDate", APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
-										APIDateTimeUtils._TIMESTAMP));
-								files.put(file);
-							}
-						}
-
-//						DossierLogLocalServiceUtil.deleteDossierLog(log);
-						indexer.delete(log);
-					}
-					DossierLogLocalServiceUtil.deleteByDossierAndType(dossierId,
-							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE);
-				}
-
-				List<ProcessStep> lstProcessSteps = ProcessStepLocalServiceUtil.getBySC_SPID(model.getStepCode(), model.getServiceProcessId());
-				
-				if (lstProcessSteps.size() > 0) {
-					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
-					payload.put("dossierStatusText", jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
-				}
-				payload.put("jobPosName", jobPosName);
-				payload.put("stepName", model.getActionName());
-				payload.put("stepInstruction", model.getStepInstruction());
-				payload.put("files", files);
-
-				serviceContext.setCompanyId(model.getCompanyId());
-				serviceContext.setUserId(userId);
-
-				ProcessAction processAction = ProcessActionLocalServiceUtil
-						.getByNameActionNo(model.getServiceProcessId(), model.getActionCode(), model.getActionName());
-
-				boolean ok = true;
-
-				if (Validator.isNotNull(processAction)) {
-					if ((processAction.getPreCondition().contains("cancelling")
-							&& processAction.getAutoEvent().contains("timmer"))
-							|| (processAction.getPreCondition().contains("correcting")
-									&& processAction.getAutoEvent().contains("timmer"))
-							|| (processAction.getPreCondition().contains("submitting"))
-									&& processAction.getAutoEvent().contains("timmer")) {
-						ok = false;
-
-					}
-				}
-
-				if (Validator.isNotNull(processAction) && (processAction.getPreCondition().contains("reject_cancelling")
-						|| processAction.getPreCondition().contains("reject_correcting")
-						|| processAction.getPreCondition().contains("reject_submitting"))) {
-					ok = false;
-				}
-
-				if (ok) {
-					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
-							serviceContext);
-				}
-
-			} catch (SystemException | PortalException e) {
-				_log.debug(e);
-			}
-		}
-
-		if (Validator.isNotNull(model.getSyncActionCode()) && model.getSyncActionCode().length() != 0) {
-			String content = "On DossiserAction Created";
-			String notificationType = "";
-			String payload = "";
-
-			ServiceContext serviceContext = new ServiceContext();
-			serviceContext.setCompanyId(model.getCompanyId());
-			serviceContext.setUserId(model.getUserId());
-
-			try {
-				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
-						content, notificationType, payload, serviceContext);
-			} catch (SystemException | PortalException e) {
-				_log.debug(e);
-			}
-		}
+//		Indexer<DossierLog> indexer = IndexerRegistryUtil
+//				.nullSafeGetIndexer(DossierLog.class);
+//		
+//		if (true) {
+//			_log.info("START Dossier Action service context: " + (System.currentTimeMillis() - start));
+//			ServiceContext serviceContext = new ServiceContext();
+//
+//			EmployeeActions employeeActions = new EmployeeActions();
+//
+//			JobposActions jobposActions = new JobposActions();
+//			_log.info("START Dossier Action service context end: " + (System.currentTimeMillis() - start));
+//			try {
+//
+//				long userId = model.getUserId();
+//
+//				Employee employee = employeeActions.getEmployeeByMappingUserId(model.getGroupId(), userId);
+//
+//				long mainJobposId = employee != null ? employee.getMainJobPostId() : 0;
+//
+//				long dossierId = model.getDossierId();
+//
+//				String jobPosName = StringPool.BLANK;
+//
+//				if (mainJobposId > 0) {
+//
+//					JobPos jobPos = jobposActions.getJobPos(mainJobposId);
+//
+//					jobPosName = (jobPos != null && Validator.isNotNull(jobPos.getTitle())) ? jobPos.getTitle()
+//							: StringPool.BLANK;
+//				}
+//
+//				String content = Validator.isNotNull(model.getActionNote()) ? HtmlUtil.escape(model.getActionNote()) : StringPool.BLANK;
+//
+//				JSONObject payload = JSONFactoryUtil.createJSONObject();
+//
+//				JSONArray files = JSONFactoryUtil.createJSONArray();
+//
+//				if (dossierId > 0) {
+//
+//					_log.info("START Dossier Action get log: " + (System.currentTimeMillis() - start));
+//					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
+//							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
+//							QueryUtil.ALL_POS);
+//					_log.info("START Dossier Action end get log: " + (System.currentTimeMillis() - start));
+//
+//					for (DossierLog log : dossierLogs) {
+//						long dossierFileId = 0;
+//
+//						try {
+//							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
+//
+//							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
+//						} catch (Exception e) {
+//							_log.debug(e);
+//						}
+//
+//						if (dossierFileId != 0) {
+//							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+//
+//							if (Validator.isNotNull(dossierFile)) {
+//								JSONObject file = JSONFactoryUtil.createJSONObject();
+//
+//								file.put("dossierFileId", dossierFile.getDossierFileId());
+//								file.put("fileName", dossierFile.getDisplayName());
+//								file.put("createDate", APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
+//										APIDateTimeUtils._TIMESTAMP));
+//								files.put(file);
+//							}
+//						}
+//
+////						DossierLogLocalServiceUtil.deleteDossierLog(log);
+//						indexer.delete(log);
+//					}
+//					DossierLogLocalServiceUtil.deleteByDossierAndType(dossierId,
+//							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE);
+//				}
+//
+//				List<ProcessStep> lstProcessSteps = ProcessStepLocalServiceUtil.getBySC_SPID(model.getStepCode(), model.getServiceProcessId());
+//				
+//				if (lstProcessSteps.size() > 0) {
+//					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
+//					payload.put("dossierStatusText", jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
+//				}
+//				payload.put("jobPosName", jobPosName);
+//				payload.put("stepName", model.getActionName());
+//				payload.put("stepInstruction", model.getStepInstruction());
+//				payload.put("files", files);
+//
+//				serviceContext.setCompanyId(model.getCompanyId());
+//				serviceContext.setUserId(userId);
+//
+//				ProcessAction processAction = ProcessActionLocalServiceUtil
+//						.getByNameActionNo(model.getServiceProcessId(), model.getActionCode(), model.getActionName());
+//
+//				boolean ok = true;
+//
+//				if (Validator.isNotNull(processAction)) {
+//					if ((processAction.getPreCondition().contains("cancelling")
+//							&& processAction.getAutoEvent().contains("timmer"))
+//							|| (processAction.getPreCondition().contains("correcting")
+//									&& processAction.getAutoEvent().contains("timmer"))
+//							|| (processAction.getPreCondition().contains("submitting"))
+//									&& processAction.getAutoEvent().contains("timmer")) {
+//						ok = false;
+//
+//					}
+//				}
+//
+//				if (Validator.isNotNull(processAction) && (processAction.getPreCondition().contains("reject_cancelling")
+//						|| processAction.getPreCondition().contains("reject_correcting")
+//						|| processAction.getPreCondition().contains("reject_submitting"))) {
+//					ok = false;
+//				}
+//
+//				if (ok) {
+//					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
+//							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
+//							serviceContext);
+//				}
+//
+//			} catch (SystemException | PortalException e) {
+//				_log.debug(e);
+//			}
+//		}
+//
+//		if (Validator.isNotNull(model.getSyncActionCode()) && model.getSyncActionCode().length() != 0) {
+//			String content = "On DossiserAction Created";
+//			String notificationType = "";
+//			String payload = "";
+//
+//			ServiceContext serviceContext = new ServiceContext();
+//			serviceContext.setCompanyId(model.getCompanyId());
+//			serviceContext.setUserId(model.getUserId());
+//
+//			try {
+//				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
+//						content, notificationType, payload, serviceContext);
+//			} catch (SystemException | PortalException e) {
+//				_log.debug(e);
+//			}
+//		}
 		_log.info("END Dossier Action: " + (System.currentTimeMillis() - start));
 	}
 

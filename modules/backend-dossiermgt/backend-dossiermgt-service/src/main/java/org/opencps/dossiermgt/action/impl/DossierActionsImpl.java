@@ -3060,30 +3060,30 @@ public class DossierActionsImpl implements DossierActions {
 //			Date dueDate = getDueDate(groupId, dossierId, dossier.getReferenceUid(), proAction.getProcessActionId());
 			//
 			
-			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
-			if (serviceConfig22 != null) {
+//			ServiceConfig serviceConfig22 = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), dossier.getGovAgencyCode());
+//			if (serviceConfig22 != null) {
 //				_log.info("START_ Get list process option1111: "+new Date());
-				Date dateStart122 = new Date();
-				Serializable serList22 = cache.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
-				List<ProcessOption> lstOptions122 = null;
-				if (serList22 == null) {
-					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
-					if (lstOptions122 != null) {
+//				Date dateStart122 = new Date();
+//				Serializable serList22 = cache.getFromCache("ProcessOption", groupId +"_"+ serviceConfig22.getServiceConfigId());
+//				List<ProcessOption> lstOptions122 = null;
+//				if (serList22 == null) {
+//					lstOptions122 = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig22.getServiceConfigId());
+//					if (lstOptions122 != null) {
 //						_log.info("START_ Serlist null");
-						cache.addToCache("ProcessOption",
-								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
-								(int) Time.MINUTE * 15);
-					}
-				} else {
-					_log.info("START_ Serlist: "+serList22);
-					_log.info("START_ Serlist22222: "+JSONFactoryUtil.looseSerialize(serList22));
-					lstOptions122 = (List<ProcessOption>) serList22;
-				}
-				Date dateEnd122 = new Date();
-				_log.info("START_ Get list process option: "+dateEnd122);
-				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
-				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
-			}
+//						cache.addToCache("ProcessOption",
+//								groupId + "_" + serviceConfig22.getServiceConfigId(), (Serializable) lstOptions122,
+//								(int) Time.MINUTE * 15);
+//					}
+//				} else {
+//					_log.info("START_ Serlist: "+serList22);
+//					_log.info("START_ Serlist22222: "+JSONFactoryUtil.looseSerialize(serList22));
+//					lstOptions122 = (List<ProcessOption>) serList22;
+//				}
+//				Date dateEnd122 = new Date();
+//				_log.info("START_ Get list process option: "+dateEnd122);
+//				_log.info("END_ Get list process option11111: "+ (dateEnd122.getTime() - dateStart122.getTime()));
+//				_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions122));
+//			}
 //			_log.info("LamTV_NEXT_ACTION: " + proAction);
 
 			String actionName = proAction.getActionName();
@@ -3108,15 +3108,15 @@ public class DossierActionsImpl implements DossierActions {
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
 				
 				if (serviceConfig != null) {
-					_log.info("START_ Get list process option: "+new Date());
-					Date dateStart = new Date();
+//					_log.info("START_ Get list process option: "+new Date());
+//					Date dateStart = new Date();
 					//List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
-					Date dateEnd = new Date();
+//					Date dateEnd = new Date();
 					//_log.info("END_ Get list process option: "+ (dateEnd.getTime() - dateStart.getTime()));
 					//_log.info("END_ Get list process optionJSON: "+ JSONFactoryUtil.looseSerialize(lstOptions));
 					//
-					_log.info("START_ Get list process option1111: "+new Date());
-					Date dateStart1 = new Date();
+//					_log.info("START_ Get list process option1111: "+new Date());
+//					Date dateStart1 = new Date();
 					Serializable serList = CacheLocalServiceUtil.getFromCache("ProcessOption", groupId +"_"+ serviceConfig.getServiceConfigId());
 					List<ProcessOption> lstOptions = null;
 					if (serList == null) {
@@ -3129,9 +3129,9 @@ public class DossierActionsImpl implements DossierActions {
 									(int) Time.MINUTE * 15);
 						}
 					}
-					Date dateEnd1 = new Date();
-					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
-					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions));
+//					Date dateEnd1 = new Date();
+//					_log.info("END_ Get list process option11111: "+ (dateEnd1.getTime() - dateStart1.getTime()));
+//					_log.info("END_ Get list process optionJSON1111: "+ JSONFactoryUtil.looseSerialize(lstOptions));
 					ProcessOption foundOption = null;
 					if (createDossiers.contains(StringPool.POUND)) {
 						String[] splitCDs = createDossiers.split(StringPool.POUND);
@@ -6890,6 +6890,30 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
 			dossier.setFinishDate(now);
+		}
+	}
+
+	@Override
+	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, Long sampleCount, String dossierName, User user, ServiceContext serviceContext) {
+		try {
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+					delegateWardCode, sampleCount, dossierName, user, serviceContext);
+
+		} catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			return null;
 		}
 	}		
 }
