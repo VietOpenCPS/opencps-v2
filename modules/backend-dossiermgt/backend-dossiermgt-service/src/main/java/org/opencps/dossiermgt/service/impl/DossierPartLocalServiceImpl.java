@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -542,6 +543,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		return dossierPart;
 	}
 
+	@ThreadLocalCachable
 	public DossierPart fetchByTemplatePartNo(long groupId, String templateNo, String partNo) throws PortalException {
 		return dossierPartPersistence.fetchByTP_NO_PART(groupId, templateNo, partNo);
 	}

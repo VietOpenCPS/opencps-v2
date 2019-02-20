@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -90,6 +91,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * deliverable local service.
 	 */
 
+	@ThreadLocalCachable
 	public Deliverable getByCode(String deliverableCode) {
 		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
 	}

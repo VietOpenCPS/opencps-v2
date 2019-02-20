@@ -26,20 +26,19 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 	
 	@Override
 	public void onAfterCreate(PaymentFile model) throws ModelListenerException {
-		String content = "On PaymentFile Created";
-		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(null, model, null);
-		
-		ServiceContext serviceContext = new ServiceContext();
-		serviceContext.setCompanyId(model.getCompanyId());
-		serviceContext.setUserId(model.getUserId());
-		try {
-			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
-					notificationType, payload, serviceContext);
-		} catch (SystemException | PortalException e) {
-//			e.printStackTrace();
-			_log.error(e);
-		}
+//		String content = "On PaymentFile Created";
+//		String notificationType = "";
+//		String payload = DossierLogUtils.createPayload(null, model, null);
+//		
+//		ServiceContext serviceContext = new ServiceContext();
+//		serviceContext.setCompanyId(model.getCompanyId());
+//		serviceContext.setUserId(model.getUserId());
+//		try {
+//			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
+//					notificationType, payload, serviceContext);
+//		} catch (SystemException | PortalException e) {
+//			_log.error(e);
+//		}
 		super.onAfterCreate(model);
 	}
 
