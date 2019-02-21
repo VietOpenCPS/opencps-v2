@@ -204,10 +204,10 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-//				query.setStart(-1);
-//				query.setEnd(-1);
-				query.setStart(0);
-				query.setEnd(15);
+				query.setStart(-1);
+				query.setEnd(-1);
+//				query.setStart(0);
+//				query.setEnd(15);
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -656,10 +656,10 @@ public class DossierManagementImpl implements DossierManagement {
 			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
 			if (query.getEnd() == 0) {
-//				query.setStart(-1);
-//				query.setEnd(-1);
-				query.setStart(0);
-				query.setEnd(15);
+				query.setStart(-1);
+				query.setEnd(-1);
+//				query.setStart(0);
+//				query.setEnd(15);
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -2007,6 +2007,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

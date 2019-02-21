@@ -59,65 +59,70 @@ public class ActionOverdueScheduler extends BaseSchedulerEntryMessageListener {
 		}
 		_log.info("OpenCPS Check Action Overdue IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 		
-		Date now = new Date();		
-		List<DossierAction> lstactions = DossierActionLocalServiceUtil.findOverdue(now);
-		for (DossierAction action : lstactions) {
-			List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getListUser(action.getDossierActionId());
-			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(action.getGroupId(), "EMPL-02");
-	        Calendar cal = Calendar.getInstance();
-	        cal.setTime(now);
-	        	  
-	        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
-	        try {		
-	        	Dossier dossier = DossierLocalServiceUtil.fetchDossier(action.getDossierId());
-	        	if (dossier != null) {
-		        	payloadObj.put(
-							"Dossier", JSONFactoryUtil.createJSONObject(
-								JSONFactoryUtil.looseSerialize(dossier)));
-	        	}
-	        	payloadObj.put("DossierAction", JSONFactoryUtil.looseSerialize(action));
-	        }
-	        catch (Exception e) {
-	        	_log.debug(e);
-	        }
-	        
-			if (notiTemplate != null) {
-				if ("minutely".equals(notiTemplate.getInterval())) {
-			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
-				}
-				else if ("hourly".equals(notiTemplate.getInterval())) {
-			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
-				}
-				else {
-			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
-				}
-				Date expired = cal.getTime();
-				ServiceContext serviceContext = new ServiceContext();
-				
-				for (DossierActionUser dau : lstDaus) {
-					if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
-						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(action.getGroupId(), dau.getUserId());
-						String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
-						String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
-						User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-						
-						NotificationQueueLocalServiceUtil.addNotificationQueue(
-								dau.getUserId(), action.getGroupId(), 
-								"EMPL-02", 
-								Dossier.class.getName(), 
-								String.valueOf(action.getDossierId()), 
-								payloadObj.toJSONString(), 
-								fullName, 
-								fullName, 
-								dau.getUserId(), 
-								u != null ? u.getEmailAddress() : StringPool.BLANK, 
-								telNo, 
-								now, 
-								expired, 
-								serviceContext);																		
-					}	
+		try {
+			Date now = new Date();		
+			List<DossierAction> lstactions = DossierActionLocalServiceUtil.findOverdue(now);
+			for (DossierAction action : lstactions) {
+				List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getListUser(action.getDossierActionId());
+				Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(action.getGroupId(), "EMPL-02");
+		        Calendar cal = Calendar.getInstance();
+		        cal.setTime(now);
+		        	  
+		        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+		        try {		
+		        	Dossier dossier = DossierLocalServiceUtil.fetchDossier(action.getDossierId());
+		        	if (dossier != null) {
+			        	payloadObj.put(
+								"Dossier", JSONFactoryUtil.createJSONObject(
+									JSONFactoryUtil.looseSerialize(dossier)));
+		        	}
+		        	payloadObj.put("DossierAction", JSONFactoryUtil.looseSerialize(action));
+		        }
+		        catch (Exception e) {
+		        	_log.debug(e);
+		        }
+		        
+				if (notiTemplate != null) {
+					if ("minutely".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+					}
+					else if ("hourly".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+					}
+					else {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+					}
+					Date expired = cal.getTime();
+					ServiceContext serviceContext = new ServiceContext();
+					
+					for (DossierActionUser dau : lstDaus) {
+						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(action.getGroupId(), dau.getUserId());
+							String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+							String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+							User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+							
+							NotificationQueueLocalServiceUtil.addNotificationQueue(
+									dau.getUserId(), action.getGroupId(), 
+									"EMPL-02", 
+									Dossier.class.getName(), 
+									String.valueOf(action.getDossierId()), 
+									payloadObj.toJSONString(), 
+									fullName, 
+									fullName, 
+									dau.getUserId(), 
+									u != null ? u.getEmailAddress() : StringPool.BLANK, 
+									telNo, 
+									now, 
+									expired, 
+									serviceContext);																		
+						}	
+					}
 				}
 			}
+		}
+		catch (Exception e) {
+			
 		}
 		_log.info("OpenCPS Check Action Overdue HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		isRunning = false;

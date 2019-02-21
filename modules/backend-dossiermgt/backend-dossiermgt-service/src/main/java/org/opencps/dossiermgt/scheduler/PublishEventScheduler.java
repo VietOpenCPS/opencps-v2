@@ -56,38 +56,43 @@ public class PublishEventScheduler extends BaseSchedulerEntryMessageListener {
 		else {
 			return;
 		}
-		_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-		
-		List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0, 10);
-		for (PublishQueue pq : lstPqs) {
-			try {
-				pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
-				pq = PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-				boolean result = processPublish(pq);
-				if (!result) {
-					int retry = pq.getRetry();
-					if (retry < PublishQueueTerm.MAX_RETRY) {
-						pq.setRetry(pq.getRetry() + 1);
-						pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);					
+		try {
+			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0, 10);
+			for (PublishQueue pq : lstPqs) {
+				try {
+					pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
+					pq = PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+					boolean result = processPublish(pq);
+					if (!result) {
+						int retry = pq.getRetry();
+						if (retry < PublishQueueTerm.MAX_RETRY) {
+							pq.setRetry(pq.getRetry() + 1);
+							pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);					
+						}
+						else {
+							pq.setRetry(0);
+							pq.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+						}				
 					}
 					else {
-						pq.setRetry(0);
-						pq.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-					}				
+						pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
+						PublishQueueLocalServiceUtil.updatePublishQueue(pq);				
+		//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+					}
 				}
-				else {
-					pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
-					PublishQueueLocalServiceUtil.updatePublishQueue(pq);				
-	//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+				catch (Exception e) {
+					_log.debug(e);
 				}
 			}
-			catch (Exception e) {
-				_log.debug(e);
-			}
+			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
-		_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		catch (Exception e) {
+			
+		}
 		isRunning = false;
 	}
 	

@@ -38,22 +38,27 @@ public class DossierSyncProcessingScheduler extends BaseSchedulerEntryMessageLis
 		else {
 			return;
 		}
-		_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-		
-		List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByState(DossierSyncTerm.STATE_WAITING_SYNC, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		
-		for (DossierSync ds : lstSyncs) {
-			IMessageProcessor processor = MessageProcessor.getProcessor(ds);
-			if (processor != null) {
-//				_log.info("Processing: " + ds);
-				processor.process();				
+		try {
+			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByState(DossierSyncTerm.STATE_WAITING_SYNC, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+			for (DossierSync ds : lstSyncs) {
+				IMessageProcessor processor = MessageProcessor.getProcessor(ds);
+				if (processor != null) {
+	//				_log.info("Processing: " + ds);
+					processor.process();				
+				}
+				else {
+					_log.info("Do not config sync server");
+				}
 			}
-			else {
-				_log.info("Do not config sync server");
-			}
+			
+			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		}
-		
-		_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+		catch (Exception e) {
+			
+		}
 		isRunning = false;
 	}
 	

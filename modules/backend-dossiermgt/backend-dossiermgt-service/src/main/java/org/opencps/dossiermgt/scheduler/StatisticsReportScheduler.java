@@ -54,64 +54,69 @@ public class StatisticsReportScheduler extends BaseSchedulerEntryMessageListener
 		else {
 			return;
 		}
-		_log.info("OpenCPS PUBLISH STATISTICS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-		
-		Date now = new Date();
-		Calendar c = Calendar.getInstance();
-		c.setTime(now);
-
-		int month = c.get(Calendar.MONTH) + 1;
-		int year = c.get(Calendar.YEAR);
-		ServiceContext context = new ServiceContext();
-		Dossier dossier = DossierLocalServiceUtil.fetchOnePublicService();
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.LGSP_PROTOCOL);
-		for (ServerConfig sc : lstScs) {
-			try {
-				LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-				Mtoken token = client.getToken();
-				if (Validator.isNotNull(token.getAccessToken())) {
-					MResult result = client.updateStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
-					OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(dossier.getGroupId(), month, year, null, null);
-					if (statistic != null) {
-						JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
-						if (client.isWriteLog()) {
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							messageObj.put("MStatistic", lgspObj.toJSONString());
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
-							PublishQueueLocalServiceUtil.updatePublishQueue(
-									sc.getGroupId(), 0l, 3, 0l, 
-									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-									messageText, acknowlegement,
-									context);	
+		try {
+			_log.info("OpenCPS PUBLISH STATISTICS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+	
+			int month = c.get(Calendar.MONTH) + 1;
+			int year = c.get(Calendar.YEAR);
+			ServiceContext context = new ServiceContext();
+			Dossier dossier = DossierLocalServiceUtil.fetchOnePublicService();
+			List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.LGSP_PROTOCOL);
+			for (ServerConfig sc : lstScs) {
+				try {
+					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
+					Mtoken token = client.getToken();
+					if (Validator.isNotNull(token.getAccessToken())) {
+						MResult result = client.updateStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
+						OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(dossier.getGroupId(), month, year, null, null);
+						if (statistic != null) {
+							JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
+							if (client.isWriteLog()) {
+								JSONObject messageObj = JSONFactoryUtil.createJSONObject();
+								messageObj.put("token", token.getAccessToken());
+								messageObj.put("MStatistic", lgspObj.toJSONString());
+								String messageText = messageObj.toJSONString();
+								String acknowlegement = JSONFactoryUtil.looseSerialize(result);
+								PublishQueueLocalServiceUtil.updatePublishQueue(
+										sc.getGroupId(), 0l, 3, 0l, 
+										sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+										messageText, acknowlegement,
+										context);	
+							}
+						}
+						
+						MResult resultVoting = client.updateVotingStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
+						OpencpsVotingStatistic vtstatistic = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D_VC(sc.getGroupId(), month, year, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
+						if (vtstatistic != null) {
+							JSONObject lgspVotingObj = OpenCPSConverter.convertVotingStatisticsToLGSPJSON(vtstatistic);
+							if (client.isWriteLog()) {
+								JSONObject messageObj = JSONFactoryUtil.createJSONObject();
+								messageObj.put("token", token.getAccessToken());
+								messageObj.put("MVotes", lgspVotingObj.toJSONString());
+								String messageText = messageObj.toJSONString();
+								String acknowlegement = JSONFactoryUtil.looseSerialize(resultVoting);
+								
+								PublishQueueLocalServiceUtil.updatePublishQueue(
+										sc.getGroupId(), 0l, 4, 0l, 
+										sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+										messageText, acknowlegement,
+										context);	
+							}
 						}
 					}
-					
-					MResult resultVoting = client.updateVotingStatisticsMonth(token.getAccessToken(), dossier.getGroupId(), month, year);
-					OpencpsVotingStatistic vtstatistic = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D_VC(sc.getGroupId(), month, year, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
-					if (vtstatistic != null) {
-						JSONObject lgspVotingObj = OpenCPSConverter.convertVotingStatisticsToLGSPJSON(vtstatistic);
-						if (client.isWriteLog()) {
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							messageObj.put("MVotes", lgspVotingObj.toJSONString());
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(resultVoting);
-							
-							PublishQueueLocalServiceUtil.updatePublishQueue(
-									sc.getGroupId(), 0l, 4, 0l, 
-									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-									messageText, acknowlegement,
-									context);	
-						}
-					}
+				} catch (PortalException e) {
+					_log.debug(e);
 				}
-			} catch (PortalException e) {
-				_log.debug(e);
 			}
+			_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
-		_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
+		catch (Exception e) {
+			
+		}
 		isRunning = false;
 	}
 	
