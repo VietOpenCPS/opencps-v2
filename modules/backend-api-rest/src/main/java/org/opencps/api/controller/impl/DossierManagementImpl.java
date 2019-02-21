@@ -2007,6 +2007,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
