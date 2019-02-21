@@ -223,27 +223,13 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 			} else {
 				object.setUserId(user.getUserId());
 				object.setModifiedDate(new Date());
-				if (Validator.isNotNull(stepName)) {
-					object.setStepName(stepName);
-				}
-				if (Validator.isNotNull(stepType)) {
-					object.setStepType(stepType);
-				}
-				if (Validator.isNotNull(dossierStatus)) {
-					object.setDossierStatus(dossierStatus);
-				}
-				if (Validator.isNotNull(dossierSubStatus)) {
-					object.setDossierSubStatus(dossierSubStatus);
-				}
-				if (Validator.isNotNull(menuGroup)) {
-					object.setMenuGroup(menuGroup);
-				}
-				if (Validator.isNotNull(menuStepName)) {
-					object.setMenuStepName(menuStepName);
-				}
-				if (Validator.isNotNull(buttonConfig)) {
-					object.setButtonConfig(buttonConfig);
-				}
+				object.setStepName(stepName);
+				object.setStepType(stepType);
+				object.setDossierStatus(dossierStatus);
+				object.setDossierSubStatus(dossierSubStatus);
+				object.setMenuGroup(menuGroup);
+				object.setMenuStepName(menuStepName);
+				object.setButtonConfig(buttonConfig);
 
 			}
 
