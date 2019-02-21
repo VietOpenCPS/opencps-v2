@@ -66,71 +66,76 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 		else {
 			return;
 		}
-		//System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-		
-		OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
-		
-		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-
-		List<Group> groupList = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
-		List<Group> sites = new ArrayList<Group>();
-
-		if (groupList != null && groupList.size() > 0) {
-			for (Group group : groupList) {
-				if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
-					sites.add(group);
+		try {
+			//System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			
+			OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
+			
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+	
+			List<Group> groupList = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+			List<Group> sites = new ArrayList<Group>();
+	
+			if (groupList != null && groupList.size() > 0) {
+				for (Group group : groupList) {
+					if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
+						sites.add(group);
+					}
+				}
+			}
+	
+			if (sites != null && sites.size() > 0) {
+				for (Group site : sites) {
+	
+					/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
+					ServiceDomainRequest sdPayload = new ServiceDomainRequest();
+					sdPayload.setGroupId(site.getGroupId());
+					sdPayload.setStart(QueryUtil.ALL_POS);
+					sdPayload.setEnd(QueryUtil.ALL_POS);
+					ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+					/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
+	
+					// Get dossier by groupId - START
+					GetVotingResultRequest payload = new GetVotingResultRequest();
+					payload.setGroupId(site.getGroupId());
+					payload.setStart(QueryUtil.ALL_POS);
+					payload.setEnd(QueryUtil.ALL_POS);
+					
+					int monthCurrent = LocalDate.now().getMonthValue();
+					int yearCurrent = LocalDate.now().getYear();
+					for (int month = 1; month <= monthCurrent; month ++) {
+						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
+								engineUpdateAction, serviceDomainResponse);
+					}
+	
+					//TODO: Calculator again year ago
+					int lastYear = LocalDate.now().getYear() - 1;
+					for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+						processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+								engineUpdateAction, serviceDomainResponse);
+					}
+					// System.out.println("END getVotingStatistic(): " +
+					// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+	
+					/* Update summary */
+					// Delete record
+					engineUpdateAction.removeVotingStatisticByYear(site.getCompanyId(), site.getGroupId(), 0,
+							LocalDate.now().getYear());
+					StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+					statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+					//
+					//TODO: Calculator again last year
+					//Delete record
+					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+					
+					statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 				}
 			}
 		}
-
-		if (sites != null && sites.size() > 0) {
-			for (Group site : sites) {
-
-				/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
-				ServiceDomainRequest sdPayload = new ServiceDomainRequest();
-				sdPayload.setGroupId(site.getGroupId());
-				sdPayload.setStart(QueryUtil.ALL_POS);
-				sdPayload.setEnd(QueryUtil.ALL_POS);
-				ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
-				/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
-
-				// Get dossier by groupId - START
-				GetVotingResultRequest payload = new GetVotingResultRequest();
-				payload.setGroupId(site.getGroupId());
-				payload.setStart(QueryUtil.ALL_POS);
-				payload.setEnd(QueryUtil.ALL_POS);
-				
-				int monthCurrent = LocalDate.now().getMonthValue();
-				int yearCurrent = LocalDate.now().getYear();
-				for (int month = 1; month <= monthCurrent; month ++) {
-					processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-							engineUpdateAction, serviceDomainResponse);
-				}
-
-				//TODO: Calculator again year ago
-				int lastYear = LocalDate.now().getYear() - 1;
-				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-					processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-							engineUpdateAction, serviceDomainResponse);
-				}
-				// System.out.println("END getVotingStatistic(): " +
-				// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-				/* Update summary */
-				// Delete record
-				engineUpdateAction.removeVotingStatisticByYear(site.getCompanyId(), site.getGroupId(), 0,
-						LocalDate.now().getYear());
-				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
-				statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
-				//
-				//TODO: Calculator again last year
-				//Delete record
-				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
-				
-				statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
-			}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 		isRunning = false;
 	}
