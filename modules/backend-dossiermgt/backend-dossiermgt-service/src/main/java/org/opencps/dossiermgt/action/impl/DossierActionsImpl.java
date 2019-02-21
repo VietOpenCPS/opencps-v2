@@ -4561,6 +4561,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		} 
 		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+			dossier.setLockState(StringPool.BLANK);
 			if (dossier.getDueDate() != null) {
 				if (serviceProcess != null) {
 					Date newDueDate = HolidayUtils.getDueDate(new Date(),

@@ -198,24 +198,12 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		} else {
 			object.setUserId(user.getUserId());
 			object.setModifiedDate(new Date());
-			if (menuName != null) {
-				object.setMenuName(menuName);
-			}
-			if (order != null) {
-				object.setOrder(order);
-			}
-			if (menuType != null) {
-				object.setMenuType(menuType);
-			}
-			if (queryParams != null) {
-				object.setQueryParams(queryParams);
-			}
-			if (tableConfig != null) {
-				object.setTableConfig(tableConfig);
-			}
-			if (buttonConfig != null) {
-				object.setButtonConfig(buttonConfig);
-			}
+			object.setMenuName(menuName);
+			object.setOrder(order);
+			object.setMenuType(menuType);
+			object.setQueryParams(queryParams);
+			object.setTableConfig(tableConfig);
+			object.setButtonConfig(buttonConfig);
 		}
 
 		return menuConfigPersistence.update(object);

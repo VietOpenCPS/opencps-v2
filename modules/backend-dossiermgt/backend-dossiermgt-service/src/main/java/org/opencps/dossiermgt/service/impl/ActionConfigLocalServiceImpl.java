@@ -235,45 +235,19 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		} else {
 			actionConfig.setUserId(user.getUserId());
 			actionConfig.setModifiedDate(new Date());
-			if (actionName != null) {
-				actionConfig.setActionName(actionName);
-			}
-			if (extraForm != null) {
-				actionConfig.setExtraForm(extraForm);
-			}
-			if (formConfig != null) {
-				actionConfig.setFormConfig(formConfig);
-			}
-			if (sampleData != null) {
-				actionConfig.setSampleData(sampleData);
-			}
-			if (insideProcess != null) {
-				actionConfig.setInsideProcess(insideProcess);
-			}
-			if (syncType != null) {
-				actionConfig.setSyncType(syncType);
-			}
-			if (userNote != null) {
-				actionConfig.setUserNote(userNote);
-			}
-			if (eventType != null) {
-				actionConfig.setEventType(eventType);
-			}
-			if (infoType != null) {
-				actionConfig.setInfoType(infoType);
-			}
-			if (rollbackable != null) {
-				actionConfig.setRollbackable(rollbackable);
-			}
-			if (notificationType != null) {
-				actionConfig.setNotificationType(notificationType);
-			}
-			if (documentType != null) {
-				actionConfig.setDocumentType(documentType);
-			}
-			if (mappingAction != null) {
-				actionConfig.setMappingAction(mappingAction);
-			}
+			actionConfig.setActionName(actionName);
+			actionConfig.setExtraForm(extraForm);
+			actionConfig.setFormConfig(formConfig);
+			actionConfig.setSampleData(sampleData);
+			actionConfig.setInsideProcess(insideProcess);
+			actionConfig.setSyncType(syncType);
+			actionConfig.setUserNote(userNote);
+			actionConfig.setEventType(eventType);
+			actionConfig.setInfoType(infoType);
+			actionConfig.setRollbackable(rollbackable);
+			actionConfig.setNotificationType(notificationType);
+			actionConfig.setDocumentType(documentType);
+			actionConfig.setMappingAction(mappingAction);
 			actionConfig.setDateOption(dateOption);
 		}
 
