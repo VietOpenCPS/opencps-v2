@@ -4637,20 +4637,21 @@ public class DossierActionsImpl implements DossierActions {
 				dossier.setLockState(DossierTerm.PAUSE_STATE);
 			}
 		} 
-//		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-//			if (dossier.getDueDate() != null) {
-//				if (serviceProcess != null) {
-//					Date newDueDate = HolidayUtils.getDueDate(new Date(),
-//							serviceProcess.getDurationCount(),
-//							serviceProcess.getDurationUnit(), dossier.getGroupId());
-//					if (newDueDate != null) {
-//						dossier.setReceiveDate(new Date());
-//						dossier.setDueDate(newDueDate);
-//						bResult.put(DossierTerm.DUE_DATE, true);
-//					}
-//				}
-//			}
-//		}
+		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
+			if (dossier.getDueDate() != null) {
+				if (serviceProcess != null) {
+					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+							serviceProcess.getDurationCount(),
+							serviceProcess.getDurationUnit(), dossier.getGroupId());
+					if (newDueDate != null) {
+						dossier.setReceiveDate(new Date());
+						dossier.setDueDate(newDueDate);
+						dossier.setLockState(StringPool.BLANK);
+						bResult.put(DossierTerm.DUE_DATE, true);
+					}
+				}
+			}
+		}
 		
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {

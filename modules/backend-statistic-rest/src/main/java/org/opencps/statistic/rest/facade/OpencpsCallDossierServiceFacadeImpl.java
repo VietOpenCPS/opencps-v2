@@ -58,6 +58,9 @@ public class OpencpsCallDossierServiceFacadeImpl extends OpencpsRestFacade<GetDo
 			if (Validator.isNotNull(payload.getDomain())) {
 				urlQueryParams.add("domain", payload.getDomain());
 			}
+			if (Validator.isNotNull(payload.getServiceCode())) {
+				urlQueryParams.add("service", payload.getServiceCode());
+			}
 			if (Validator.isNotNull(payload.getFromStatisticDate())) {
 				urlQueryParams.add("fromStatisticDate", payload.getFromStatisticDate());
 			}
