@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -215,6 +216,7 @@ public interface ProcessActionLocalService extends BaseLocalService,
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode)
 		throws PortalException;
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode,
 		long serviceProcessId) throws PortalException;

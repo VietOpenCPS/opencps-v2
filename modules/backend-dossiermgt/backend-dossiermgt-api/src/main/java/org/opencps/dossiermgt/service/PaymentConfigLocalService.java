@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -231,6 +232,7 @@ public interface PaymentConfigLocalService extends BaseLocalService,
 	public PaymentConfig getPaymentConfig(long paymentConfigId)
 		throws PortalException;
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PaymentConfig getPaymentConfigByGovAgencyCode(long groupId,
 		String govAgencyCode);

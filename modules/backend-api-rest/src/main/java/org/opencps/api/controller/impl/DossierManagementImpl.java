@@ -641,7 +641,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-//		_log.info("userId: "+userId);
+		_log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
@@ -674,7 +674,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String step = query.getStep();
-//			_log.info("step: "+step);
+			_log.info("step: "+step);
 			StringBuilder strStatusStep = null;
 			StringBuilder strSubStatusStep = null;
 			if (Validator.isNotNull(step)) {
@@ -738,17 +738,17 @@ public class DossierManagementImpl implements DossierManagement {
 					year = baseDateCal.get(Calendar.YEAR);
 				}
 			}
-//			_log.info("month: "+month);
-//			_log.info("year: "+year);
+			_log.info("month: "+month);
+			_log.info("year: "+year);
 
 			String state = query.getState();
 			String dossierIdNo = query.getDossierNo();
-//			_log.info("dossierIdNo: "+dossierIdNo);
+			_log.info("dossierIdNo: "+dossierIdNo);
 			String dossierNoSearch = StringPool.BLANK;
 			if (Validator.isNotNull(dossierIdNo)) {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
-//			_log.info("dossierNoSearch: "+dossierNoSearch);
+			_log.info("dossierNoSearch: "+dossierNoSearch);
 			String soChungChi = query.getSoChungChi();
 			String certNo = StringPool.BLANK;
 			if (Validator.isNotNull(soChungChi)) {
@@ -869,6 +869,7 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject jsonData = actions.getDossierProcessList(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
+			_log.info("after get to do");
 			DossierResultsModel results = new DossierResultsModel();
 			if (jsonData != null && jsonData.getInt("total") > 0) {
 				results.setTotal(jsonData.getInt("total"));
