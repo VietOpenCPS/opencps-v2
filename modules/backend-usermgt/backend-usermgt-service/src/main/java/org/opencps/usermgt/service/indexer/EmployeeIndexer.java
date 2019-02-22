@@ -116,7 +116,7 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		
 //		long emJobposId = Validator.isNotNull(employeeJobPos)?employeeJobPos.getJobPostId():0;
 		
-		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
+		JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId());
 		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
 		String jobPosCode = Validator.isNotNull(jobPos)?jobPos.getJobPosCode():StringPool.BLANK;
 		
