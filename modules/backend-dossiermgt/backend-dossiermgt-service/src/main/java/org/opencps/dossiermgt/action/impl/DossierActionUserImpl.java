@@ -405,7 +405,17 @@ public class DossierActionUserImpl implements DossierActionUser {
 				// Add User
 	//			_log.info("Add assigned user by step role: " + model);
 				if (dau == null) {
-					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+//					DossierActionUserLocsalServiceUtil.addDossierActionUser(model);	
+					try {
+						DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+								0l, 
+								dossierActionId, dossierId, 
+								0l, stepCode, 
+								moderator, assigned, visited);
+					} catch (PortalException e) {
+						_log.debug(e);
+					}
+					
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
@@ -422,7 +432,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 				// Add User
 				if (dau == null) {
-					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+//					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+					try {
+						DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+								0l, 
+								dossierActionId, dossierId, 
+								0l, stepCode, 
+								moderator, assigned, visited);
+					} catch (PortalException e) {
+						_log.debug(e);
+					}				
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
@@ -438,8 +457,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 				assigned = DossierActionUserTerm.ASSIGNED_TH;
 				model.setAssigned(assigned);
 				// Add User
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
-	
+//				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
+				try {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+							0l, 
+							dossierActionId, dossierId, 
+							0l, stepCode, 
+							moderator, assigned, visited);
+				} catch (PortalException e) {
+					_log.debug(e);
+				}	
 				model.setUserId(userId);
 				model.setDossierActionId(dossierActionId);
 				model.setModerator(moderator);
@@ -448,7 +475,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 				// Add User
 				if (dau == null) {
-					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+//					DossierActionUserLocalServiceUtil.addDossierActionUser(model);	
+					try {
+						DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+								0l, 
+								dossierActionId, dossierId, 
+								0l, stepCode, 
+								moderator, assigned, visited);
+					} catch (PortalException e) {
+						_log.debug(e);
+					}					
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
@@ -464,16 +500,26 @@ public class DossierActionUserImpl implements DossierActionUser {
 				assigned = DossierActionUserTerm.ASSIGNED_TH;
 				model.setAssigned(assigned);
 				// Add User
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
-	
-				model.setUserId(userId);
-				model.setDossierActionId(dossierActionId);
-				model.setModerator(moderator);
-				assigned = DossierActionUserTerm.ASSIGNED_PH;
-				model.setAssigned(assigned);
+//				DossierActionUserLocalServiceUtil.addDossierActionUser(model);										
+				try {
+					DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+							0l, 
+							dossierActionId, dossierId, 
+							0l, stepCode, 
+							moderator, assigned, visited);
+				} catch (PortalException e) {
+					_log.debug(e);
+				}
+				
+//				model.setUserId(userId);
+//				model.setDossierActionId(dossierActionId);
+//				model.setModerator(moderator);
+//				assigned = DossierActionUserTerm.ASSIGNED_PH;
+//				model.setAssigned(assigned);
 				// Add User
-				DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
-	
+//				DossierActionUserLocalServiceUtil.addDossierActionUser(model);														
+
+				
 				model.setUserId(userId);
 				model.setDossierActionId(dossierActionId);
 				model.setModerator(moderator);
@@ -481,7 +527,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 				// Add User
 				if (dau == null) {
-					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
+//					DossierActionUserLocalServiceUtil.addDossierActionUser(model);	
+					try {
+						DossierActionUserLocalServiceUtil.addDossierActionUser(userId, 
+								0l, 
+								dossierActionId, dossierId, 
+								0l, stepCode, 
+								moderator, assigned, visited);
+					} catch (PortalException e) {
+						_log.debug(e);
+					}					
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
@@ -510,7 +565,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 						for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {
 							boolean flagDA = false;
 							for (DossierAction da : lstDossierActions) {
-								if (da.getUserId() == dau.getUserId()) {
+								if (da.getUserId() == dau.getUserId()
+										|| (dau.getUserId() == 0 && dau.getRoleId() != 0)) {
 									flagDA = true;
 									break;
 								}
@@ -546,8 +602,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 	//							else {
 	//								DossierActionUserLocalServiceUtil.updateDossierActionUser(dau.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), stepCodePunc, moderator, assigned, true);
 	//							}						
-								if (dauModel == null) {							
-									DossierActionUserLocalServiceUtil.addDossierActionUser(dau.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), curStep.getStepCode(), moderator, assigned, true);
+								if (dauModel == null) {	
+									if (dau.getUserId() == 0 && dau.getRoleId() != 0) {
+										DossierActionUserLocalServiceUtil.addDossierActionUser(dau.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), dau.getRoleId(), curStep.getStepCode(), moderator, assigned, true);										
+									}
+									else {
+										DossierActionUserLocalServiceUtil.addDossierActionUser(dau.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), curStep.getStepCode(), moderator, assigned, true);										
+									}
 								}
 								else {
 									DossierActionUserLocalServiceUtil.updateDossierActionUser(dau.getUserId(), dossier.getGroupId(), dossier.getDossierActionId(), dossier.getDossierId(), curStep.getStepCode(), moderator, assigned, true);

@@ -145,6 +145,9 @@ public class DossierActionUserLocalServiceImpl
 			int assigned, boolean visited) throws PortalException {
 		DossierActionUser dau = dossierActionUserPersistence.fetchByDID_UID(dossierActionId, userId);
 		if (dau == null) {
+			dau = dossierActionUserPersistence.fetchByDID_RID(dossierActionId, roleId);
+		}
+		if (dau == null) {
 			long dauId = counterLocalService.increment(DossierActionUser.class.getName());
 			dau = dossierActionUserPersistence.create(dauId);
 			dau.setDossierActionId(dossierActionId);
