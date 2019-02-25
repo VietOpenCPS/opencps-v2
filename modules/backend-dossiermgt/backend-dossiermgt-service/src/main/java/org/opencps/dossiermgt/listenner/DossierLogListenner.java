@@ -30,12 +30,11 @@ public class DossierLogListenner extends BaseModelListener<DossierLog> {
 
 	@Override
 	public void onBeforeUpdate(DossierLog model) throws ModelListenerException {
-		try {
-			modelBeforeUpdate = DossierLogLocalServiceUtil.getDossierLog(model.getPrimaryKey());
-		} catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
+//		try {
+//			modelBeforeUpdate = DossierLogLocalServiceUtil.getDossierLog(model.getPrimaryKey());
+//		} catch (Exception e) {
+//			_log.debug(e);
+//		}
 	}
 
 	public DossierLog modelBeforeUpdate;

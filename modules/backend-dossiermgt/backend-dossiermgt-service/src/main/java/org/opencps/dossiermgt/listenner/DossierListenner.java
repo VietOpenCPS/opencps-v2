@@ -41,7 +41,9 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		 * 04/01/2017 ThanhNV: 
 		 * add doossier log use DossierListennerUtils
 		 */
-		DossierListennerUltils.createDossierLog(model, false, false);
+		if (OpenCPSConfigUtil.isDossierLogEnable()) {
+			DossierListennerUltils.createDossierLog(model, false, false);
+		}
 		//Add Applicant
 		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
 			//long groupId = model.getGroupId();
