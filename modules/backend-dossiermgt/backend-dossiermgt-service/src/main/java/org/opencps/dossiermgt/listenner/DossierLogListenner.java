@@ -17,7 +17,7 @@ public class DossierLogListenner extends BaseModelListener<DossierLog> {
 	public void onAfterCreate(DossierLog model) throws ModelListenerException {
 		
 		//TODO: add notification when add
-		DossierListennerUltils.createNotificationQueue(model);
+//		DossierListennerUltils.createNotificationQueue(model);
 	
 	}
 
