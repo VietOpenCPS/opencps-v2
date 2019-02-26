@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -173,6 +174,7 @@ public interface ProcessStepRoleLocalService extends BaseLocalService,
 	public ProcessStepRole fetchProcessStepRole(
 		ProcessStepRolePK processStepRolePK);
 
+	@ThreadLocalCachable
 	public List<ProcessStepRole> findByP_S_ID(long processStepId);
 
 	public ProcessStepRole findByStepAndRole(long processStepId, long roleId);

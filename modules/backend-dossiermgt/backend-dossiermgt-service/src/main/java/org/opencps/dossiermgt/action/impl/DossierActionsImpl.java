@@ -3230,6 +3230,25 @@ public class DossierActionsImpl implements DossierActions {
 				int eventStatus = (actionConfig != null ? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT ? DossierActionTerm.EVENT_STATUS_NOT_CREATED : DossierActionTerm.EVENT_STATUS_WAIT_SENDING) : DossierActionTerm.EVENT_STATUS_NOT_CREATED);
 
 				_log.info("Part 1.1.1: " + (System.currentTimeMillis() - startTime) + " ms");
+				boolean rollbackable = false;
+				if (actionConfig != null) {
+					if (actionConfig.getRollbackable()) {
+						rollbackable = true;
+//						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
+					}
+					else {
+//						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
+					}
+				}
+				else {
+					if (proAction.isRollbackable()) {
+						rollbackable = true;
+//						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
+					}
+					else {
+//						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
+					}
+				}
 				dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossierId,
 						serviceProcessId, dossier.getDossierActionId(), 
 						fromStepCode, fromStepName, fromSequenceNo,
@@ -3237,7 +3256,7 @@ public class DossierActionsImpl implements DossierActions {
 						stepCode, stepName, 
 						sequenceNo,
 						null, 0l, payload, stepInstruction, 
-						state, eventStatus,
+						state, eventStatus, rollbackable,
 						context);
 				dossier.setDossierActionId(dossierAction.getDossierActionId());
 				
@@ -3263,22 +3282,6 @@ public class DossierActionsImpl implements DossierActions {
 					previousAction = DossierActionLocalServiceUtil.updateDossierAction(previousAction);
 				}
 				
-				if (actionConfig != null) {
-					if (actionConfig.getRollbackable()) {
-						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
-					}
-					else {
-						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
-					}
-				}
-				else {
-					if (proAction.isRollbackable()) {
-						dossierAction = DossierActionLocalServiceUtil.updateRollbackable(dossierAction != null ? dossierAction.getDossierActionId() : 0l, true);
-					}
-					else {
-						dossierAction = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);						
-					}
-				}
 				_log.info("Part 1.1.4: " + (System.currentTimeMillis() - startTime) + " ms");
 				//update dossierStatus
 //				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,

@@ -475,6 +475,26 @@ public class DossierActionLocalServiceUtil {
 		int actionOverdue, String stepCode, String stepName, String sequenceNo,
 		java.util.Date dueDate, long nextActionId, String payload,
 		String stepInstruction, int state, int eventStatus,
+		boolean rollbackable,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateDossierAction(groupId, dossierActionId, dossierId,
+			serviceProcessId, previousActionId, fromStepCode, fromStepName,
+			fromSequenceNo, actionCode, actionUser, actionName, actionNote,
+			actionOverdue, stepCode, stepName, sequenceNo, dueDate,
+			nextActionId, payload, stepInstruction, state, eventStatus,
+			rollbackable, context);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierAction updateDossierAction(
+		long groupId, long dossierActionId, long dossierId,
+		long serviceProcessId, long previousActionId, String fromStepCode,
+		String fromStepName, String fromSequenceNo, String actionCode,
+		String actionUser, String actionName, String actionNote,
+		int actionOverdue, String stepCode, String stepName, String sequenceNo,
+		java.util.Date dueDate, long nextActionId, String payload,
+		String stepInstruction, int state, int eventStatus,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
