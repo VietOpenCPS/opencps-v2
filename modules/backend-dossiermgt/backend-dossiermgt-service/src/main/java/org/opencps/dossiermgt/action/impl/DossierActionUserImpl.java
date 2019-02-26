@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.dossiermgt.action.DossierActionUser;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -267,9 +268,17 @@ public class DossierActionUserImpl implements DossierActionUser {
 		}
 		List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierId(dossier.getDossierId());
 		
-		HashMap<Long, org.opencps.dossiermgt.model.DossierActionUser> mapDaus = new HashMap<>();
+		HashMap<Long, Map<Long, org.opencps.dossiermgt.model.DossierActionUser>> mapDaus = new HashMap<>();
 		for (org.opencps.dossiermgt.model.DossierActionUser dau : lstDaus) {
-			mapDaus.put(dau.getUserId(), dau);
+			if (mapDaus.get(dau.getDossierActionId()) != null) {
+				Map<Long, org.opencps.dossiermgt.model.DossierActionUser> temp = mapDaus.get(dau.getDossierActionId());
+				temp.put(dau.getUserId(), dau);
+			}
+			else {
+				Map<Long, org.opencps.dossiermgt.model.DossierActionUser> temp = new HashMap<>();
+				temp.put(dau.getUserId(), dau);
+				mapDaus.put(dau.getDossierActionId(), temp);
+			}
 		}
 		for (int n = 0; n < assignedUsers.length(); n++) {
 			JSONObject subUser = assignedUsers.getJSONObject(n);
@@ -314,10 +323,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 					}					
 				}
 				
-				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-//				org.opencps.dossiermgt.model.DossierActionUser dau = null;
+//				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				org.opencps.dossiermgt.model.DossierActionUser dau = null;
 //				dau = mapDaus.get(userIdAssigned);
-
+				if (mapDaus.get(dossierAction.getDossierActionId()) != null) {
+					dau = mapDaus.get(dossierAction.getDossierActionId()).get(userIdAssigned);
+				}
+				
 				if (Validator.isNull(dau)) {
 //					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					DossierAction dAction = dossierAction;

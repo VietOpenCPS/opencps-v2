@@ -386,6 +386,17 @@ public interface DossierActionLocalService extends BaseLocalService,
 		String actionName, String actionNote, int actionOverdue,
 		String stepCode, String stepName, String sequenceNo, Date dueDate,
 		long nextActionId, String payload, String stepInstruction, int state,
+		int eventStatus, boolean rollbackable, ServiceContext context)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateDossierAction(long groupId,
+		long dossierActionId, long dossierId, long serviceProcessId,
+		long previousActionId, String fromStepCode, String fromStepName,
+		String fromSequenceNo, String actionCode, String actionUser,
+		String actionName, String actionNote, int actionOverdue,
+		String stepCode, String stepName, String sequenceNo, Date dueDate,
+		long nextActionId, String payload, String stepInstruction, int state,
 		int eventStatus, ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)

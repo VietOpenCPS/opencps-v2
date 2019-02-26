@@ -52,7 +52,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-@Component(immediate = true, service = DataPullScheduler.class)
+//@Component(immediate = true, service = DataPullScheduler.class)
 public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
