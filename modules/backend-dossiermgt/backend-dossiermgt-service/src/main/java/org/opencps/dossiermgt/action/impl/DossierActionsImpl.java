@@ -3274,12 +3274,12 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("Part 1.1.3: " + (System.currentTimeMillis() - startTime) + " ms");
 				Date now = new Date();
 				if (previousAction != null && dossierAction != null) {
-//					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
-//					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
-					previousAction.setNextActionId(dossierAction.getDossierActionId());
-					previousAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
-					previousAction.setModifiedDate(now);
-					previousAction = DossierActionLocalServiceUtil.updateDossierAction(previousAction);
+					previousAction = DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), dossierAction.getDossierActionId());					
+					previousAction = DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+//					previousAction.setNextActionId(dossierAction.getDossierActionId());
+//					previousAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
+//					previousAction.setModifiedDate(now);
+//					previousAction = DossierActionLocalServiceUtil.updateDossierAction(previousAction);
 				}
 				
 				_log.info("Part 1.1.4: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -3297,6 +3297,7 @@ public class DossierActionsImpl implements DossierActions {
 				
 				//Update dossier processing date
 				flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, serviceProcess, context);
+				dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			}
 
 			_log.info("Part 1.2: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -4453,9 +4454,9 @@ public class DossierActionsImpl implements DossierActions {
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 //			_log.info("========STEP DUE CUR STATUS UPDATING STATE DONE");
-			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
-			dossierAction.setModifiedDate(new Date());
-//			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
+//			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
+//			dossierAction.setModifiedDate(new Date());
+			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
 		}
 		
 //		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -4472,9 +4473,9 @@ public class DossierActionsImpl implements DossierActions {
 //					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setFinishDate(now);
 					bResult.put(DossierTerm.FINISH_DATE, true);
-					dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
-					dossierAction.setModifiedDate(new Date());
-//					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+//					dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
+//					dossierAction.setModifiedDate(new Date());
+					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -4518,14 +4519,14 @@ public class DossierActionsImpl implements DossierActions {
 		int dateOption = actionConfig.getDateOption();
 		_log.info("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
-//			DossierAction dActEnd = DossierActionLocalServiceUtil
-//					.fetchDossierAction(dossierAction.getDossierActionId());
-			DossierAction dActEnd = dossierAction;
+			DossierAction dActEnd = DossierActionLocalServiceUtil
+					.fetchDossierAction(dossierAction.getDossierActionId());
+//			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null) {
 				_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
-//				DossierAction dActStart = DossierActionLocalServiceUtil
-//						.fetchDossierAction(dActEnd.getPreviousActionId());
-				DossierAction dActStart = prevAction;
+				DossierAction dActStart = DossierActionLocalServiceUtil
+						.fetchDossierAction(dActEnd.getPreviousActionId());
+//				DossierAction dActStart = prevAction;
 				if (dActStart != null) {
 					long createEnd = dActEnd.getCreateDate().getTime();
 					long createStart = dActStart.getCreateDate().getTime();
@@ -4593,6 +4594,7 @@ public class DossierActionsImpl implements DossierActions {
 		//Calculate step due date
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		_log.info("dossierAction: "+dossierAction);
+		dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		Date rootDate = now;
 		Date dueDate = null;
 
