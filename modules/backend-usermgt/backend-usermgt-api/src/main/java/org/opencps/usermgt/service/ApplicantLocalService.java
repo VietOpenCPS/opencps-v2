@@ -217,6 +217,8 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant fetchByTelNo(String telNo);
 
+	public List<Applicant> findByAppIds(String applicantIdNo);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
