@@ -575,6 +575,10 @@
 			<finder-column name="applicantIdType" />
 		</finder>
 		
+		<finder return-type="Collection" name="F_APLC_IDS">
+			<finder-column name="applicantIdNo"/>
+		</finder>
+		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>
