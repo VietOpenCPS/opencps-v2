@@ -239,6 +239,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().fetchByTelNo(telNo);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Applicant> findByAppIds(
+		String applicantIdNo) {
+		return getService().findByAppIds(applicantIdNo);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

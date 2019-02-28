@@ -248,6 +248,12 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.Applicant> findByAppIds(
+		String applicantIdNo) {
+		return _applicantLocalService.findByAppIds(applicantIdNo);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _applicantLocalService.getActionableDynamicQuery();
 	}

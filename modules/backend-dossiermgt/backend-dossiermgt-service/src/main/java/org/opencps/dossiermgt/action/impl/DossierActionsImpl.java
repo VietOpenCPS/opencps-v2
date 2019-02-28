@@ -4003,23 +4003,33 @@ public class DossierActionsImpl implements DossierActions {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
-							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
-							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+//							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
+							List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(dossier.getApplicantIdNo());
+							Applicant foundApplicant = (applicants.isEmpty() ? null : applicants.get(0));
 							
-							NotificationQueueLocalServiceUtil.addNotificationQueue(
-									user.getUserId(), groupId, 
-									actionConfig.getNotificationType(), 
-									Dossier.class.getName(), 
-									String.valueOf(dossier.getDossierId()), 
-									payloadObj.toJSONString(), 
-									user.getFullName(), 
-									dossier.getApplicantName(), 
-									toUserId, 
-									dossier.getContactEmail(), 
-									dossier.getContactTelNo(), 
-									now, 
-									expired, 
-									context);
+							for (Applicant applicant : applicants) {
+								long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+								if (toUserId != 0) {
+									foundApplicant = applicant;
+									break;
+								}
+							}
+							if (foundApplicant != null) {
+								NotificationQueueLocalServiceUtil.addNotificationQueue(
+										user.getUserId(), groupId, 
+										actionConfig.getNotificationType(), 
+										Dossier.class.getName(), 
+										String.valueOf(dossier.getDossierId()), 
+										payloadObj.toJSONString(), 
+										user.getFullName(), 
+										dossier.getApplicantName(), 
+										foundApplicant.getMappingUserId(), 
+										dossier.getContactEmail(), 
+										dossier.getContactTelNo(), 
+										now, 
+										expired, 
+										context);								
+							}
 						} catch (NoSuchUserException e) {
 //							e.printStackTrace();
 							_log.error(e);
