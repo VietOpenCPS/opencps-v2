@@ -77,10 +77,11 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 		DossierUserPK pk = new DossierUserPK();
 		pk.setUserId(userId);
 		pk.setDossierId(dossierId);
-		DossierUser object = dossierUserPersistence.findByPrimaryKey(pk);
+		DossierUser object = dossierUserPersistence.fetchByPrimaryKey(pk);
 		
 		object.setModerator(moderator);
 		object.setVisited(visited);
+		object.setNew(false);
 		
 		return dossierUserPersistence.update(object);
 	}

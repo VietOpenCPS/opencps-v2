@@ -3135,6 +3135,7 @@ public class DossierActionsImpl implements DossierActions {
 								hsltDossier.setDelegateTelNo(delegateTelNo);
 								hsltDossier.setDelegateEmail(delegateEmail);
 								hsltDossier.setDelegateIdNo(delegateIdNo);
+								hsltDossier.setNew(false);
 								hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
 							}							
 						}
@@ -3151,6 +3152,7 @@ public class DossierActionsImpl implements DossierActions {
 									hsltDossier.setDelegateTelNo(delegateTelNo);
 									hsltDossier.setDelegateEmail(delegateEmail);
 									hsltDossier.setDelegateIdNo(delegateIdNo);
+									hsltDossier.setNew(false);
 									hsltDossier = DossierLocalServiceUtil.updateDossier(hsltDossier);
 								}
 							}

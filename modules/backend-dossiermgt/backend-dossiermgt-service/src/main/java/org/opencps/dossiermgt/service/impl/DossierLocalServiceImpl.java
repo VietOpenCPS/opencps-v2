@@ -322,7 +322,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(StringPool.BLANK);
 				}
 				
-				dossierPersistence.update(dossier);
+				dossier = dossierPersistence.update(dossier);
 		} else {
 
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
@@ -379,7 +379,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			// if (Validator.isNotNull(applicantNote))
 			dossier.setApplicantNote(applicantNote);
 
-			dossierPersistence.update(dossier);
+			dossier = dossierPersistence.update(dossier);
 
 		}
 
