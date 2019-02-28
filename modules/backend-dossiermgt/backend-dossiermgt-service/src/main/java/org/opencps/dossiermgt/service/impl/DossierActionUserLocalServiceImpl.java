@@ -103,13 +103,14 @@ public class DossierActionUserLocalServiceImpl
 		
 		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
 		
-		DossierActionUser dau = dossierActionUserPersistence.findByPrimaryKey(pk);
+		DossierActionUser dau = dossierActionUserPersistence.fetchByPrimaryKey(pk);
 		
 		dau.setAssigned(assigned);
 		dau.setStepCode(stepCode);
 		dau.setModerator(moderator);
 		dau.setVisited(visited);
 		dau.setDossierId(dossierId);
+		dau.setNew(false);
 				
 		return dossierActionUserPersistence.update(dau);
 	}
