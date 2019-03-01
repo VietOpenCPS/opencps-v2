@@ -4636,6 +4636,7 @@ public class DossierActionsImpl implements DossierActions {
 //		_log.info("dossierAction: " + dossierAction);
 		if (dossierAction != null) {
 //			_log.info("========STEP DUE DATE ACTION:" + dueDate);
+			dossierAction.setNew(false);
 			if (dueDate != null) {
 				long dateNowTimeStamp = now.getTime();
 				Long dueDateTimeStamp = dueDate.getTime();
