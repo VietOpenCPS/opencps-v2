@@ -59,6 +59,8 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
@@ -186,7 +188,7 @@ public class DossierActionsImpl implements DossierActions {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 	
-	
+	CacheActions cache = new CacheActionsImpl();
 
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,

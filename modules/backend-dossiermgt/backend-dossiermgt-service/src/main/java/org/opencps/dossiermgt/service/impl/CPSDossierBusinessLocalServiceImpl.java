@@ -41,9 +41,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -66,6 +68,8 @@ import java.util.regex.Pattern;
 import javax.ws.rs.HttpMethod;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
@@ -178,6 +182,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
+	CacheActions cache = new CacheActionsImpl();
 	
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
@@ -191,7 +196,17 @@ public class CPSDossierBusinessLocalServiceImpl
 		User user = userLocalService.fetchUser(userId);
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		Employee employee = null;
-		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ userId);
+		if (employeeCache == null) {
+			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (employee != null) {
+				cache.addToCache("Employee",
+						groupId +"_"+ userId, (Serializable) employee,
+						(int) Time.MINUTE * 15);
+			}
+		} else {
+			employee = (Employee) employeeCache;
+		}		
 		try {
 			JSONFactoryUtil.createJSONObject(payload);
 		}
@@ -222,7 +237,17 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
-			serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
+			Serializable serviceProcessCache = cache.getFromCache("ServiceProcess", groupId +"_"+ serviceProcessId);
+			if (serviceProcessCache == null) {
+				serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+				if (serviceProcess != null) {
+					cache.addToCache("ServiceProcess",
+							groupId +"_"+ serviceProcessId, (Serializable) serviceProcess,
+							(int) Time.MINUTE * 15);
+				}
+			} else {
+				serviceProcess = (ServiceProcess) serviceProcessCache;
+			}		
 			String paymentFee = StringPool.BLANK;
 
 			String postStepCode = proAction.getPostStepCode();
