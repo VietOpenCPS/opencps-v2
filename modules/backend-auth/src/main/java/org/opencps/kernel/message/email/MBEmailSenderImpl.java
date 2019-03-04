@@ -20,7 +20,6 @@ public class MBEmailSenderImpl implements MBEmailSender {
 	public void send(
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
-		System.out.println("===========/////////////// Start send mail");
 		if (messageEntry != null && messageEntry.isSendEmail()) {
 			MailMessage mailMessage = new MailMessage();
 			mailMessage.setSubject(messageEntry.getEmailSubject());
@@ -30,9 +29,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 			mailMessage.setFrom(messageEntry.getFrom());
 			//mailService.sendEmail(mailMessage);
 			MailServiceUtil.sendEmail(mailMessage);
-			System.out.println("===========/////////////// Send to " + messageEntry.getToAddress()[0]);
 		}
-		System.out.println("===========/////////////// end send mail");
 	}
 	
 	@BeanReference(type = MailService.class)

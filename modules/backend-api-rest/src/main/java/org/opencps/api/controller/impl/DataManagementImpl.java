@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -129,11 +130,13 @@ public class DataManagementImpl implements DataManagement {
 		DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
 
 		if (Validator.isNotNull(dictCollection)) {
-
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);	
 			// return json object after update
 			DictCollectionModel dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
-			return Response.status(200).entity(dictCollectionModel).build();
+			return Response.status(200).entity(dictCollectionModel).cacheControl(cc).build();
 
 		} else {
 			return null;
@@ -734,8 +737,10 @@ public class DataManagementImpl implements DataManagement {
 			result.setTotal(jsonData.getLong("total"));
 			result.getDictItemModel()
 					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get("data")));
-
-			return Response.status(200).entity(result).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);	
+			return Response.status(200).entity(result).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -846,8 +851,10 @@ public class DataManagementImpl implements DataManagement {
 
 			DictItemModel dictItemModel = DataManagementUtils.mapperDictItemModel(dictItem, dictItemDataUtil,
 					user.getUserId(), company.getCompanyId(), groupId, serviceContext);
-
-			return Response.status(200).entity(dictItemModel).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);	
+			return Response.status(200).entity(dictItemModel).cacheControl(cc).build();
 
 		} else {
 
