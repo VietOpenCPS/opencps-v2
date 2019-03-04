@@ -62,7 +62,7 @@ public class OneGateControllerImpl implements OneGateController {
 
 	@Override
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String domain) {
+			User user, ServiceContext serviceContext, String domain, String public_) {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
@@ -86,10 +86,19 @@ public class OneGateControllerImpl implements OneGateController {
 			
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
-			List<ServiceInfo> lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroup(groupId);
-			for (ServiceInfo serviceInfo : lstServiceInfos) {
-				mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
+			List<ServiceInfo> lstServiceInfos = null;
+			if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
+				lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(groupId,
+						Boolean.parseBoolean(public_));
+			} else {
+				lstServiceInfos = ServiceInfoLocalServiceUtil.findByGroupAndPublic(groupId, true);
 			}
+			if (lstServiceInfos != null && lstServiceInfos.size() > 0) {
+				for (ServiceInfo serviceInfo : lstServiceInfos) {
+					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
+				}
+			}
+			
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			Map<Long, List<ProcessOption>> mapProcessOptions = new HashMap<>();
 			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);

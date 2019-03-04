@@ -215,6 +215,8 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 
 	public List<ServiceInfo> findByGroup(long groupId);
 
+	public List<ServiceInfo> findByGroupAndPublic(long groupId, boolean public_);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
