@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -196,8 +197,10 @@ public class OneGateControllerImpl implements OneGateController {
 			results.put("data", data);
 			
 //			_log.info(results.toJSONString());
-
-			return Response.status(200).entity(results.toJSONString()).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);	
+			return Response.status(200).entity(results.toJSONString()).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
