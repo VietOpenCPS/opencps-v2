@@ -300,8 +300,7 @@ public class PaymentFileLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.PaymentFile getPaymentFileByReferenceUid(
-		long dossierId, String referenceUid)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long dossierId, String referenceUid) {
 		return getService().getPaymentFileByReferenceUid(dossierId, referenceUid);
 	}
 

@@ -268,7 +268,7 @@ public interface PaymentFileLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PaymentFile getPaymentFileByReferenceUid(long dossierId,
-		String referenceUid) throws PortalException;
+		String referenceUid);
 
 	/**
 	* Returns the payment file matching the UUID and group.
