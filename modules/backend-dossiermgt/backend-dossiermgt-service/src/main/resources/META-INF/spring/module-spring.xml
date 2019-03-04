@@ -9,6 +9,7 @@
 >
 	<bean class="org.opencps.dossiermgt.service.impl.ActionConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ActionConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ActionConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ActionConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl" id="org.opencps.dossiermgt.service.CPSDossierBusinessLocalService" />
 	<bean class="org.opencps.dossiermgt.service.impl.DeliverableLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverablePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverablePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableFinderImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableFinder" parent="basePersistence" />

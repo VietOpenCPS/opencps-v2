@@ -450,7 +450,7 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 	@Override
 	public Response updateDossierFilesBySignature(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, DigitalSignatureInputModel input)
-			throws PortalException {
+			throws PortalException, Exception {
 		BackendAuth auth = new BackendAuthImpl();
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
@@ -677,7 +677,7 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 	@Override
 	public Response updateDossierFilesByCaptcha(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, DigitalSignatureInputModel input)
-			throws PortalException {
+			throws PortalException, Exception {
 		BackendAuth auth = new BackendAuthImpl();
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
@@ -844,7 +844,7 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 	@Override
 	public Response updateDossierFilesBySignatureDefault(HttpServletRequest request, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, long id,
-			DigitalSignatureInputModel input) throws PortalException {
+			DigitalSignatureInputModel input) throws PortalException, Exception {
 		BackendAuth auth = new BackendAuthImpl();
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));

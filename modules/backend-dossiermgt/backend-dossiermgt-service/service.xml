@@ -2,7 +2,8 @@
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
 <service-builder auto-namespace-tables="false"
-	package-path="org.opencps.dossiermgt">
+	package-path="org.opencps.dossiermgt"
+	>
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
 	<entity name="ServiceInfo" table="opencps_serviceinfo"
@@ -2449,7 +2450,11 @@
 			<finder-column name="domainCode"/>
 		</finder>
 	</entity>
-			
+	
+	<entity local-service="true" name="CPSDossierBusiness"
+		remote-service="false">
+	</entity>		
+	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

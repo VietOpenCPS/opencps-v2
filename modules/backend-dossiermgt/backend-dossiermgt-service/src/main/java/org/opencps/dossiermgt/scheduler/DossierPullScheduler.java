@@ -135,7 +135,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 		}
 	}
 
-	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException {
+	private void pullDossier(Company company, JSONObject object, User systemUser) throws PortalException, Exception {
 		long dossierId = GetterUtil.getLong(object.get(DossierTerm.DOSSIER_ID));
 
 		ServiceContext serviceContext = new ServiceContext();

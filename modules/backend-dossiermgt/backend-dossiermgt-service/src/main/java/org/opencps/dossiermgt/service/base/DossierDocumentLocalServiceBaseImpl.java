@@ -430,6 +430,25 @@ public abstract class DossierDocumentLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the cps dossier business local service.
+	 *
+	 * @return the cps dossier business local service
+	 */
+	public org.opencps.dossiermgt.service.CPSDossierBusinessLocalService getCPSDossierBusinessLocalService() {
+		return cpsDossierBusinessLocalService;
+	}
+
+	/**
+	 * Sets the cps dossier business local service.
+	 *
+	 * @param cpsDossierBusinessLocalService the cps dossier business local service
+	 */
+	public void setCPSDossierBusinessLocalService(
+		org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService) {
+		this.cpsDossierBusinessLocalService = cpsDossierBusinessLocalService;
+	}
+
+	/**
 	 * Returns the deliverable local service.
 	 *
 	 * @return the deliverable local service
@@ -2284,6 +2303,8 @@ public abstract class DossierDocumentLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ActionConfigLocalService actionConfigLocalService;
 	@BeanReference(type = ActionConfigPersistence.class)
 	protected ActionConfigPersistence actionConfigPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
+	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)
 	protected org.opencps.dossiermgt.service.DeliverableLocalService deliverableLocalService;
 	@BeanReference(type = DeliverablePersistence.class)

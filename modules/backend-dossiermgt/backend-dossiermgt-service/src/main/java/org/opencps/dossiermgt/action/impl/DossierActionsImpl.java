@@ -131,6 +131,8 @@ import org.opencps.dossiermgt.model.impl.ProcessActionImpl;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.CPSDossierBusinessLocalService;
+import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -164,6 +166,7 @@ import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
+import org.osgi.service.component.annotations.Reference;
 
 import backend.auth.api.exception.ErrorMsgModel;
 import backend.auth.api.exception.NotFoundException;
@@ -2708,7 +2711,7 @@ public class DossierActionsImpl implements DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
-			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
+			ServiceContext context, ErrorMsgModel errorModel) throws PortalException, Exception {
 		long startTime = System.currentTimeMillis();
 		
 		context.setUserId(userId);
@@ -3723,22 +3726,8 @@ public class DossierActionsImpl implements DossierActions {
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
 			int syncType,
-			ServiceContext context, ErrorMsgModel errorModel) throws PortalException {
-		_log.info("LamTV_STRART DO ACTION ==========GroupID: "+groupId + "|userId: "+userId);
-		context.setUserId(userId);
-		DossierAction dossierAction = null;
-
-		ActionConfig actionConfig = null;
-		actionConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-		
-		if (actionConfig != null && !actionConfig.getInsideProcess()) {
-			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context, errorModel);			
-		}
-		else {
-			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context, errorModel);
-		}
-				
-		return dossierAction;
+			ServiceContext context, ErrorMsgModel errorModel) throws PortalException, Exception {
+		return CPSDossierBusinessLocalServiceUtil.doAction(groupId, userId, dossier, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 	}
 	
 	private void publishEvent(Dossier dossier, ServiceContext context) {
@@ -6939,5 +6928,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
 			dossier.setFinishDate(now);
 		}
-	}		
+	}	
 }

@@ -118,7 +118,7 @@ public interface DossierActions {
 
 	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option,
 			ProcessAction proAction, String actionCode, String actionUser, String actionNote, String payload,
-			String assignUsers, String payment, int syncType, ServiceContext serviceContext, ErrorMsgModel errorModel) throws PortalException;
+			String assignUsers, String payment, int syncType, ServiceContext serviceContext, ErrorMsgModel errorModel) throws PortalException, Exception;
 
 	public JSONArray getNextActionList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
