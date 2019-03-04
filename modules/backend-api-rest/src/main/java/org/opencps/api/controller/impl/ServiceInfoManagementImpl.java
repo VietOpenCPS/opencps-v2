@@ -29,6 +29,7 @@ import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -97,8 +98,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
-
-			return Response.status(200).entity(results).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);
+			return Response.status(200).entity(results).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -184,8 +187,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, serviceContext);
 			}
-
-			return Response.status(200).entity(results).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);
+			
+			return Response.status(200).entity(results).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -450,8 +456,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
 			
 //			_log.info(results);
-			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -471,8 +479,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByAdministration(serviceContext, groupId);
 			
 //			_log.info(results);
-			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -496,8 +506,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomain(serviceContext, groupId);
 			}
 //			_log.info(results);
-			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

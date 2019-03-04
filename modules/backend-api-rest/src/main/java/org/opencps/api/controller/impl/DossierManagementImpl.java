@@ -3179,7 +3179,7 @@ public class DossierManagementImpl implements DossierManagement {
 				actionObj.put("stepName", da.getStepName());
 				actionObj.put("userId", da.getUserId());				
 				
-				_log.info("Action obj: " + actionObj.toJSONString());
+				_log.debug("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			
 			

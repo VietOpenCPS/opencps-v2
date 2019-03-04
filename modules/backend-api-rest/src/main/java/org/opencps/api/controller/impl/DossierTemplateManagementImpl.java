@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -152,8 +153,10 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-
-			return Response.status(200).entity(result).build();
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(86400);
+			cc.setPrivate(true);
+			return Response.status(200).entity(result).cacheControl(cc).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
