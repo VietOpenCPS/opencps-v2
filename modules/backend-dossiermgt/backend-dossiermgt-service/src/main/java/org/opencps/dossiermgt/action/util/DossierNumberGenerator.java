@@ -105,7 +105,7 @@ public class DossierNumberGenerator {
 
 				while (m.find()) {
 					String tmp = m.group(1);
-					_log.info("tmp11: "+tmp);
+//					_log.info("tmp11: "+tmp);
 
 					// Pattern follow serviceProcess
 					if (r.toString().equals(codePatternDate)) {
@@ -115,7 +115,7 @@ public class DossierNumberGenerator {
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
-						_log.info("//////////////////////////////////////////////////////////// "
+						_log.debug("//////////////////////////////////////////////////////////// "
 								+ "|certNumber= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -134,7 +134,7 @@ public class DossierNumberGenerator {
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
-						_log.info("//////////////////////////////////////////////////////////// "
+						_log.debug("//////////////////////////////////////////////////////////// "
 								+ "|certNumber= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -153,7 +153,7 @@ public class DossierNumberGenerator {
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
-						_log.info("//////////////////////////////////////////////////////////// "
+						_log.debug("//////////////////////////////////////////////////////////// "
 								+ "|certNumber= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -172,7 +172,7 @@ public class DossierNumberGenerator {
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
-						_log.info("//////////////////////////////////////////////////////////// "
+						_log.debug("//////////////////////////////////////////////////////////// "
 								+ "|certNumber= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -190,7 +190,7 @@ public class DossierNumberGenerator {
 
 						String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
-						_log.info("//////////////////////////////////////////////////////////// " + number
+						_log.debug("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);
 
 						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
@@ -278,7 +278,7 @@ public class DossierNumberGenerator {
 							} catch (Exception e) {
 								_log.debug(e);
 								//_log.error(e);
-								_log.error("Can not get data from online form! ");
+//								_log.error("Can not get data from online form! ");
 
 								seriNumberPattern = seriNumberPattern.replace(m.group(0), defaultValue);
 							}
@@ -378,11 +378,11 @@ public class DossierNumberGenerator {
 
 			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 			
-			_log.info("___certConfigId" + certConfigId);
+			_log.debug("___certConfigId" + certConfigId);
 
 			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + groupId;
 			
-			_log.info("___certConfigCurrId" + certConfigCurrId);
+			_log.debug("___certConfigCurrId" + certConfigCurrId);
 
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
@@ -396,7 +396,7 @@ public class DossierNumberGenerator {
 				Counter currCounter = CounterLocalServiceUtil.fetchCounter(certConfigCurrId);
 
 				if (Validator.isNull(currCounter)) {
-					_log.info("COUTER_CURR_CONFIG_IS_NULL");
+					_log.debug("COUTER_CURR_CONFIG_IS_NULL");
 
 					currCounter = CounterLocalServiceUtil.createCounter(certConfigCurrId);
 
@@ -414,18 +414,18 @@ public class DossierNumberGenerator {
 					CounterLocalServiceUtil.updateCounter(elmCounter);
 					
 				} else {
-					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+					_log.debug("COUTER_CURR_CONFIG_IS_NOT_NULL");
 
 					//check counter for element
 					Counter elmCounter = CounterLocalServiceUtil.fetchCounter(elmCertId);
 					
 					if (Validator.isNotNull(elmCounter)) {
-						_log.info("ELM_COUTER_CONFIG_IS_NOT_NULL");
+						_log.debug("ELM_COUTER_CONFIG_IS_NOT_NULL");
 
 						_counterNumber = elmCounter.getCurrentId();
 					} else {
 						//create elm Counter 
-						_log.info("ELM_COUTER_CONFIG_IS_NULL");
+						_log.debug("ELM_COUTER_CONFIG_IS_NULL");
 						elmCounter = CounterLocalServiceUtil.createCounter(elmCertId);
 						
 						//increment CurrentCounter 

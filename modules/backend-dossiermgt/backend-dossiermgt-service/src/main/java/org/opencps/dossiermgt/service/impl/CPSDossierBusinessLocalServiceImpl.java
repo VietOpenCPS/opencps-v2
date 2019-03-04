@@ -959,7 +959,7 @@ public class CPSDossierBusinessLocalServiceImpl
 											now, 
 											expired, 
 											context);
-									_log.info("ADD NOTI QUEUE: " + (System.currentTimeMillis() - start));
+									_log.debug("ADD NOTI QUEUE: " + (System.currentTimeMillis() - start));
 								}
 							}
 						}
@@ -1904,27 +1904,27 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		int dateOption = actionConfig.getDateOption();
-		_log.info("dateOption: "+dateOption);
+		_log.debug("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 			DossierAction dActEnd = DossierActionLocalServiceUtil
 					.fetchDossierAction(dossierAction.getDossierActionId());
 //			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null) {
-				_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
+				_log.debug("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
 				DossierAction dActStart = DossierActionLocalServiceUtil
 						.fetchDossierAction(dActEnd.getPreviousActionId());
 //				DossierAction dActStart = prevAction;
 				if (dActStart != null) {
 					long createEnd = dActEnd.getCreateDate().getTime();
 					long createStart = dActStart.getCreateDate().getTime();
-					_log.info("createStart: "+createStart);
-					_log.info("createEnd: "+createEnd);
+					_log.debug("createStart: "+createStart);
+					_log.debug("createEnd: "+createEnd);
 					if (createEnd > createStart) {
 						long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, dossier.getGroupId());
-						_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
+						_log.debug("extendDateTimeStamp: "+extendDateTimeStamp);
 						if (extendDateTimeStamp > 0) {
 							long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
-							_log.info("hoursCount: "+hoursCount);
+							_log.debug("hoursCount: "+hoursCount);
 							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
 							List<Holiday> holidayList = HolidayLocalServiceUtil
 									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
@@ -1934,7 +1934,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
 									dossier.getDueDate(), hoursCount, holidayList,
 									extendWorkDayList);
-							_log.info("dueDateExtend: "+dueDateExtend);
+							_log.debug("dueDateExtend: "+dueDateExtend);
 							if (dueDateExtend != null) {
 								dossier.setDueDate(dueDateExtend);
 								//dossier.setCorrecttingDate(null);

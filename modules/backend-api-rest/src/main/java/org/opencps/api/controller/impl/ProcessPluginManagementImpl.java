@@ -80,8 +80,8 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					DossierAction dossierAction = DossierActionLocalServiceUtil.getDossierAction(dossierActionId);
 
 					String stepCode = dossierAction.getStepCode();
-					_log.info("STEP CODE: " + stepCode);
-					_log.info("SERVICE PROCESS ID: " + dossierAction.getServiceProcessId());
+					_log.debug("STEP CODE: " + stepCode);
+					_log.debug("SERVICE PROCESS ID: " + dossierAction.getServiceProcessId());
 					List<ProcessPlugin> plugins = ProcessPluginLocalServiceUtil
 							.getProcessPlugins(dossierAction.getServiceProcessId(), stepCode);
 

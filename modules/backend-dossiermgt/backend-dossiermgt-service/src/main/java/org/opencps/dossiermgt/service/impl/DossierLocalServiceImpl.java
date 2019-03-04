@@ -501,12 +501,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 //				ServiceProcess serviceProcess = null;
-				_log.info("option: "+option);
+//				_log.info("option: "+option);
 				if (option != null) {
 					//Process submition note
-					_log.info("option: "+option.getSubmissionNote());
+//					_log.info("option: "+option.getSubmissionNote());
 					dossier.setSubmissionNote(option.getSubmissionNote());
-					_log.info("option: "+true);
+//					_log.info("option: "+true);
 //					long serviceProcessId = option.getServiceProcessId();
 //					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
 
@@ -648,10 +648,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	private String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
-		_log.info("COLLECTION UPDATE DOSSIER: " + dc + "," + collectionCode);
-		_log.info("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
+		_log.debug("COLLECTION UPDATE DOSSIER: " + dc + "," + collectionCode);
+		_log.debug("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
 		DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-		_log.info("ITEM: " + itemCode + "," + it);
+		_log.debug("ITEM: " + itemCode + "," + it);
 		return it.getItemName();
 
 	}

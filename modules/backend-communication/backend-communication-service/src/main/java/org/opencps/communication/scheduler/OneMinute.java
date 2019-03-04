@@ -70,7 +70,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 						notificationQueue.getGroupId(), notificationQueue.getNotificationType(),
 						NotificationTemplateTerm.MINUTELY);
 				if (notificationtemplate != null) {
-					_log.info("Template: "+notificationtemplate.getNotificationType());
+					_log.debug("Template: "+notificationtemplate.getNotificationType());
 					try {
 						ServiceContext serviceContext =
 							MBServiceContextFactoryUtil.create(
@@ -82,11 +82,11 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 							NotificationUtil.createMBMessageEntry(
 								notificationQueue, notificationtemplate,
 								serviceContext);
-						_log.info("messageEntry: "+messageEntry);
+						_log.debug("messageEntry: "+messageEntry);
 						//Process send SMS
 						boolean flagSend = false;
 						if(messageEntry.isSendSMS()){
-							_log.info("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
+							_log.debug("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
 							String results = SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
 									messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 							if (Validator.isNotNull(results)
@@ -96,18 +96,18 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 							//Send viettel
 							ViettelSMSUtils.sendSMS(messageEntry.getTextMessage(), messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 							
-							_log.info("END SEND SMS"+flagSend);
+							_log.debug("END SEND SMS"+flagSend);
 						} else {
 							flagSend = true;
 						}
 
 						if(messageEntry.isSendEmail()){
-							_log.info("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
+							_log.debug("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
 							MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
 						}
 
 						if(messageEntry.isSendNotify()){
-							_log.info("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
+							_log.debug("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
 							MBNotificationSenderFactoryUtil.send(
 								messageEntry, messageEntry.getClassName(),
 								serviceContext);
@@ -120,7 +120,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 						}
 					}
 					catch (Exception e) {
-						_log.warn("Can't send message from queue " + e);
+						_log.error("Can't send message from queue " + e);
 					}
 				}
 			}

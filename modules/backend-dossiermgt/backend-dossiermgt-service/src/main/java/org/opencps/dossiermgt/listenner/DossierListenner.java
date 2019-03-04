@@ -73,7 +73,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 
 	@Override
 	public void onAfterUpdate(Dossier model) throws ModelListenerException {
-		_log.info("Dossiser UpDate.....");
+		_log.debug("Dossiser UpDate.....");
 		
 /*		//case application has request to cancel Dossier
 		if (Validator.isNull(modelBeforeUpdate.getCancellingDate()) && Validator.isNotNull(model.getCancellingDate())) {
@@ -160,7 +160,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		}
 		
 		if (OpenCPSConfigUtil.isDossierLogEnable()) {
-			_log.info("UPDATE DOSSIER LOG.....");
+			_log.debug("UPDATE DOSSIER LOG.....");
 	
 			ServiceContext serviceContext = new ServiceContext();
 	
@@ -230,7 +230,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 
 	@Override
 	public void onAfterRemove(Dossier model) throws ModelListenerException {
-		_log.info("Dossiser Remove.....");
+		_log.debug("Dossiser Remove.....");
 		DossierMgtUtils.processSyncDeleteDossier(model, model.getOriginality());
 	}
 

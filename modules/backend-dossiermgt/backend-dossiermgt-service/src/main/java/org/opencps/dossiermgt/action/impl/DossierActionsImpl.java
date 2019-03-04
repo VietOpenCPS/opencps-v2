@@ -6407,14 +6407,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private List<User> processRoleListUser(List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
 		// Check roles
-		_log.info("processStepRoleList: "+processStepRoleList);
+		_log.debug("processStepRoleList: "+processStepRoleList);
 		if (processStepRoleList != null && processStepRoleList.size() > 0) {
-			_log.info("processStepRoleList.size(): "+processStepRoleList.size());
+			_log.debug("processStepRoleList.size(): "+processStepRoleList.size());
 			lstUser = new ArrayList<User>();
 			for (ProcessStepRole processStepRole : processStepRoleList) {
 				List<User> users = UserLocalServiceUtil.getRoleUsers(processStepRole.getRoleId());
 				if (users != null && users.size() > 0) {
-					_log.info("users.size(): "+users.size());
+					_log.debug("users.size(): "+users.size());
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {

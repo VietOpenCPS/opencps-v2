@@ -376,7 +376,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		_log.info("Allow assign user: " + allowAssignUser);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-		_log.info("Employee : " + employee);
+		_log.debug("Employee : " + employee);
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
@@ -405,7 +405,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				}
 			}
 			else if (allowAssignUser == ProcessActionTerm.ASSIGNED_TH) {
-				_log.info("Assign dau: " + userId);
+				_log.debug("Assign dau: " + userId);
 				model.setUserId(userId);
 				model.setDossierActionId(dossierActionId);
 				model.setModerator(moderator);
@@ -413,13 +413,13 @@ public class DossierActionUserImpl implements DossierActionUser {
 				model.setAssigned(assigned);
 				// Add User
 				if (dau == null) {
-					_log.info("Assign add dau: " + userId);
+					_log.debug("Assign add dau: " + userId);
 					DossierActionUserLocalServiceUtil.addDossierActionUser(model);		
 				}
 				else {
 					if (dau.getModerator() != DossierActionUserTerm.ASSIGNED_TH
 							&& model.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-						_log.info("Assign update dau: " + userId);
+						_log.debug("Assign update dau: " + userId);
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(model);					
 					}
 				}

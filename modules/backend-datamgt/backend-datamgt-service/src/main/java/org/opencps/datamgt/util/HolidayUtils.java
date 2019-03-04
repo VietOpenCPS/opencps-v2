@@ -259,16 +259,16 @@ public class HolidayUtils {
 			}
 
 			if (countHours > 0) {
-				_log.info("countHours: "+countHours);
+				_log.debug("countHours: "+countHours);
 				
 				int hours = baseDateCal.get(Calendar.HOUR_OF_DAY);
-				_log.info("hours: "+hours);
+				_log.debug("hours: "+hours);
 				int minutes = baseDateCal.get(Calendar.MINUTE);
-				_log.info("minutes: "+minutes);
+				_log.debug("minutes: "+minutes);
 				int dayOfWeek = baseDateCal.get(Calendar.DAY_OF_WEEK);
 				if (Validator.isNotNull(dayOfWeek)) {
 					WorkTime workTime = WorkTimeLocalServiceUtil.fetchByF_day(groupId, dayOfWeek);
-					_log.info("workTime: "+JSONFactoryUtil.looseSerialize(workTime));
+					_log.debug("workTime: "+JSONFactoryUtil.looseSerialize(workTime));
 					if (workTime != null) {
 						String strHours = workTime.getHours();
 						String[] hoursList = StringUtil.split(strHours);
@@ -284,11 +284,11 @@ public class HolidayUtils {
 									hourArr2 = hour.split(StringPool.DASH);
 								}
 							}
-							_log.info("hoursList: "+JSONFactoryUtil.looseSerialize(hoursList));
-							_log.info("START!!!!!: ");
+							_log.debug("hoursList: "+JSONFactoryUtil.looseSerialize(hoursList));
+							_log.debug("START!!!!!: ");
 							int hoursOverdue = 0;
 							if (hourArr1 != null && hourArr2 != null) {
-								_log.info("START!!!!!: ");
+								_log.debug("START!!!!!: ");
 								processTimeWorking(hourArr1, hourArr2);
 								//_log.info("startHourMorning: "+startHourMorning);
 								//_log.info("startMinuteMorning: "+startMinuteMorning);
@@ -300,19 +300,19 @@ public class HolidayUtils {
 								//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
 								if (startHourMorning <= hours && hours < endHourMorning) {
 									hoursOverdue = hours + countHours;
-									_log.info("hoursOverdue: "+hoursOverdue);
+									_log.debug("hoursOverdue: "+hoursOverdue);
 									if (hoursOverdue == endHourMorning && minutes > endMinuteMorning) {
 										hoursOverdue = startHourAfterNoon;
 									} else if (hoursOverdue > endHourMorning){
-										_log.info("hoursOverdue1: "+hoursOverdue);
+										_log.debug("hoursOverdue1: "+hoursOverdue);
 										int countTest2 = hoursOverdue - endHourMorning;
-										_log.info("countTest2: "+countTest2);
+										_log.debug("countTest2: "+countTest2);
 										hoursOverdue = startHourAfterNoon + countTest2;
-										_log.info("hoursOverdueAfter: "+hoursOverdue);
+										_log.debug("hoursOverdueAfter: "+hoursOverdue);
 										if (hoursOverdue > endHourAfterNoon) {
-											_log.info("START++: ");
+											_log.debug("START++: ");
 											baseDateCal = processHourCalendar(baseDateCal);
-											_log.info("baseDateCal: "+baseDateCal);
+											_log.debug("baseDateCal: "+baseDateCal);
 											//baseDateCal.add(Calendar.DATE, 1);
 											//int countTest = hoursOverdue - endHourAfterNoon;
 											//dayOfWeek += 1;

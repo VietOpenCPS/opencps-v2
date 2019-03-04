@@ -1740,18 +1740,18 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			_log.info("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-			_log.info("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
+			_log.debug("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
+			_log.debug("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
 
 			if (dossier != null) {
-				_log.info("Dossier: " + dossier + ", action code: " + input.getActionCode());
+				_log.debug("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
 				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-					_log.info("Action config: " + actConfig);
+					_log.debug("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1766,7 +1766,7 @@ public class DossierManagementImpl implements DossierManagement {
 									ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
-										_log.info("DO ACTION: " + proAction.getActionCode());
+										_log.debug("DO ACTION: " + proAction.getActionCode());
 										dossierResult = actions.doAction(groupId, userId, dossier, option, proAction,
 												actionCode, actionUser, input.getActionNote(),
 												input.getPayload(), input.getAssignUsers(), input.getPayment(),
@@ -1787,7 +1787,7 @@ public class DossierManagementImpl implements DossierManagement {
 									ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
-										_log.info("DO ACTION: " + proAction.getActionCode());
+										_log.debug("DO ACTION: " + proAction.getActionCode());
 										dossierResult = actions.doAction(groupId, userId, dossier, oldOption, proAction,
 												actionCode, actionUser, input.getActionNote(),
 												input.getPayload(), input.getAssignUsers(), input.getPayment(),
