@@ -120,7 +120,7 @@ public class OpenCPSRestClient {
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
 				baseUrl,DOSSIERS_BASE_PATH, username,
 				password, properties, params, context);
-		_log.info("Call post API result: " + resultObj.toJSONString());
+		_log.debug("Call post API result: " + resultObj.toJSONString());
 		result = OpenCPSConverter.convertDossierDetail(resultObj);
 		
 		return result;
@@ -139,7 +139,7 @@ public class OpenCPSRestClient {
 			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.POST, "application/json", 
 					 baseUrl, requestURL, username,
 					password, properties, file, model.getDisplayName(), context);
-			_log.info("Post dossier file: " + jsonObj);
+			_log.debug("Post dossier file: " + jsonObj);
 			result = OpenCPSConverter.convertDossierFile(jsonObj);
 			
 			return result;
@@ -215,7 +215,7 @@ public class OpenCPSRestClient {
 			properties.put("Content-Type", "application/x-www-form-urlencoded");
 
 			String path = DOSSIERS_BASE_PATH + "/" + id + "/all/files";
-			_log.info("id: "+id);
+			_log.debug("id: "+id);
 
 			ServiceContext serviceContext = new ServiceContext();
 

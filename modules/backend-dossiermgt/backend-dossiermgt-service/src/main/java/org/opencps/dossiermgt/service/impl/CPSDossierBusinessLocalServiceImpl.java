@@ -695,7 +695,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			String payment,
 			int syncType,
 			ServiceContext context) throws PortalException, SystemException, Exception {
-		long startTime = System.currentTimeMillis();
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		Map<String, Boolean> flagChanged = null;
@@ -827,7 +826,6 @@ public class CPSDossierBusinessLocalServiceImpl
 //				.nullSafeGetIndexer(Dossier.class);
 //		indexer.reindex(dossier);
 
-		_log.info("END DO ACTION TIME: " + (System.currentTimeMillis() - startTime + " ms"));
 		return dossierAction;
 	}
 	

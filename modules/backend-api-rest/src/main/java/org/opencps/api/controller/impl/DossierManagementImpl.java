@@ -947,7 +947,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!flag) {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("No permission create dossier").build();
 			}
-			_log.info("CREATE DOSSIER 1: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 1: " + (System.currentTimeMillis() - start) + " ms");
 			// if (!auth.hasResource(serviceContext,
 			// DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 			// throw new UnauthorizationException();
@@ -1011,7 +1011,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = getDictItemName(groupId, dc, input.getDistrictCode());
 			String wardName = getDictItemName(groupId, dc, input.getWardCode());
 //			_log.info("Service code: " + input.getServiceCode());
-			_log.info("===ADD DOSSIER CITY NAME:" + cityName);
+			_log.debug("===ADD DOSSIER CITY NAME:" + cityName);
 			String password = StringPool.BLANK;
 			if (Validator.isNotNull(input.getPassword())) {
 				password = input.getPassword();
@@ -1041,7 +1041,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
 			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
-			_log.info("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
@@ -1149,7 +1149,7 @@ public class DossierManagementImpl implements DossierManagement {
 				
 //				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
-			_log.info("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 //			_log.info("Dossier created: " + dossier);
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
@@ -1191,20 +1191,20 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new NotFoundException("Cant add DOSSIER");
 			}
 
-			_log.info("CREATE DOSSIER 4: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 4: " + (System.currentTimeMillis() - start) + " ms");
 			//Create DossierMark
-			_log.info("flagOldDossier: "+flagOldDossier);
-			_log.info("originality: "+originality);
+			_log.debug("flagOldDossier: "+flagOldDossier);
+			_log.debug("originality: "+originality);
 			if ((originality == DossierTerm.ORIGINALITY_MOTCUA || originality == DossierTerm.ORIGINALITY_LIENTHONG)
 					&& !flagOldDossier) {
 				String templateNo = dossier.getDossierTemplateNo();
-				_log.info("templateNo: "+templateNo);
+				_log.debug("templateNo: "+templateNo);
 				if (Validator.isNotNull(templateNo)) {
 					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, templateNo);
 //					_log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
-						_log.info("partList.size(): "+partList.size());
-						_log.info("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
+						_log.debug("partList.size(): "+partList.size());
+						_log.debug("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
 						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
 						int count = 0;
 						List<DossierMark> lstMarks = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
@@ -1228,7 +1228,7 @@ public class DossierManagementImpl implements DossierManagement {
 						
 						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
 						
-						_log.info("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
+						_log.debug("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
 					}
 				}
 			}
@@ -1245,7 +1245,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
 			}
-			_log.info("CREATE DOSSIER 5: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 5: " + (System.currentTimeMillis() - start) + " ms");
 
 //			DossierLocalServiceUtil.updateDossier(dossier);
 
@@ -1290,15 +1290,15 @@ public class DossierManagementImpl implements DossierManagement {
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			}
 
-			_log.info("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
 			DossierUtils.createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-			_log.info("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			DossierLocalServiceUtil.updateDossier(dossier);
-			_log.info("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
+			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
 			
 			return Response.status(200).entity(result).build();
 
