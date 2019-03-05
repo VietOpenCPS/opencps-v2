@@ -12,14 +12,14 @@ import org.opencps.rest.application.model.DossierSyncModel;
 
 public class DossierSyncParser {
 
-	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);
+	//private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);
 	public static List<DossierSyncModel> mappingDossierSyncResultModel(List<DossierSync> docList) {
 //		Gson gson = new Gson();
 		if (docList != null && docList.size() > 0) {
 			List<DossierSyncModel> docModelList = new ArrayList<DossierSyncModel>();
 			for (DossierSync doc : docList) {
 				String strDoc = JSONFactoryUtil.looseSerialize(doc);
-				_log.info("strDoc: "+strDoc);
+				//_log.info("strDoc: "+strDoc);
 				DossierSyncModel model = JSONFactoryUtil.looseDeserialize(strDoc, DossierSyncModel.class);
 
 				docModelList.add(model);
@@ -35,7 +35,7 @@ public class DossierSyncParser {
 		
 //		Gson gson = new Gson();
 		String strDoc = JSONFactoryUtil.looseSerialize(doc);
-		_log.info("strDoc: "+strDoc);
+		//_log.info("strDoc: "+strDoc);
 		DossierSyncModel object = JSONFactoryUtil.looseDeserialize(strDoc, DossierSyncModel.class);
 		
 //		ActionConfigItem object = gson.fromJson(gson.toJson(ett), ActionConfigItem.class);

@@ -47,9 +47,9 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItem addMenuConfig(MenuConfigItem body) {
+		_log.info("====START ADD MENU CONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-//		System.out.println("MenuConfigApiImpl.addMenuConfig()" + body);
 		try {
 
 			serviceContext.setUserId(userId);
@@ -59,14 +59,14 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 					body.getButtonConfig(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("====END ADD MENU CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -75,21 +75,21 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public void deleteMenuConfig(String id) {
+		_log.info("====START DELETE MENU CONFIG==== ");
 		try {
 
 			long userId = user.getUserId();
-			
 			serviceContext.setUserId(userId);
 			
 			action.deleteMenuConfig(Long.valueOf(id), serviceContext);
-
+			_log.info("====END DELETE MENU CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			_log.error("====ADD MENU CONFIG - PortalException==== ");
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -107,6 +107,7 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigItem updateMenuConfig(String id, MenuConfigItem body) {
+		_log.info("====START UPDATE MENU CONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -119,14 +120,14 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 					body.getButtonConfig(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("====END UPDATE MENU CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -135,13 +136,11 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 
 	@Override
 	public MenuConfigCountItemResults getMenuConfigsCount(String q) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public MenuConfigItemResult getMenuConfigsElasticsearch(String q) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -64,7 +64,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, CONDITION_GOV_AGENCY_REPLACE);
 			}
 
-			LOG.info(sql);
+			//LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -146,7 +146,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 
 			// sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
 
-			LOG.info(sql);
+			//LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -229,7 +229,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY, CONDITION_GOV_AGENCY_REPLACE);
 			}
 
-			LOG.info(sql);
+			//LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 

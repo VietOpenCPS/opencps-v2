@@ -113,8 +113,8 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 				//Process index dossier
 				long classPK = GetterUtil.getLong(voting.getClassPK());
 				if (classPK > 0) {
-					_log.info("classPK: "+classPK);
-					_log.info("className: "+className);
+					//_log.info("classPK: "+classPK);
+					//_log.info("className: "+className);
 					if ("employee".equals(className)) {
 						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(classPK);
 						if (employee != null) {

@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.osgi.service.component.annotations.Component;
 
@@ -50,5 +49,5 @@ public class ServerConfigTempListener extends BaseModelListener<ServerConfig> {
 	}
 
 
-	private Log _log = LogFactoryUtil.getLog(NotificationTemplateTempListener.class.getName());
+	//private Log _log = LogFactoryUtil.getLog(NotificationTemplateTempListener.class.getName());
 }

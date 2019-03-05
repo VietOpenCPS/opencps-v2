@@ -1,14 +1,16 @@
 
 package org.opencps.kernel.message.email;
 
-import org.opencps.kernel.message.MBMessageEntry;
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.kernel.service.MailServiceUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import org.opencps.kernel.message.MBMessageEntry;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author trungnt
@@ -16,11 +18,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 @Component(immediate = true, service = MBEmailSenderImpl.class)
 public class MBEmailSenderImpl implements MBEmailSender {
 
+	private static final Log _log = LogFactoryUtil.getLog(MBEmailSenderImpl.class);
 	@Override
 	public void send(
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
-		System.out.println("===========/////////////// Start send mail");
+		_log.info("===========/////////////// Start send mail");
 		if (messageEntry != null && messageEntry.isSendEmail()) {
 			MailMessage mailMessage = new MailMessage();
 			mailMessage.setSubject(messageEntry.getEmailSubject());
@@ -30,9 +33,9 @@ public class MBEmailSenderImpl implements MBEmailSender {
 			mailMessage.setFrom(messageEntry.getFrom());
 			//mailService.sendEmail(mailMessage);
 			MailServiceUtil.sendEmail(mailMessage);
-			System.out.println("===========/////////////// Send to " + messageEntry.getToAddress()[0]);
+			_log.info("===========/////////////// Send to " + messageEntry.getToAddress()[0]);
 		}
-		System.out.println("===========/////////////// end send mail");
+		_log.info("===========/////////////// end send mail");
 	}
 	
 	@BeanReference(type = MailService.class)

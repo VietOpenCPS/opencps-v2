@@ -22,8 +22,8 @@ public class DossierDocumentParser {
 		if (docList != null && docList.size() > 0) {
 			List<DossierDocumentModel> docModelList = new ArrayList<DossierDocumentModel>();
 			for (DossierDocument doc : docList) {
-				String strDoc = JSONFactoryUtil.looseSerialize(doc);
-				_log.info("strDoc: "+strDoc);
+				//String strDoc = JSONFactoryUtil.looseSerialize(doc);
+				//_log.info("strDoc: "+strDoc);
 				DossierDocumentModel model = mappingDocumentTypeModel(doc);
 
 				docModelList.add(model);
@@ -39,7 +39,7 @@ public class DossierDocumentParser {
 		
 //		Gson gson = new Gson();
 		String strDoc = JSONFactoryUtil.looseSerialize(doc);
-		_log.info("strDoc: " + strDoc);
+		//_log.info("strDoc: " + strDoc);
 		DossierDocumentModel object = JSONFactoryUtil.looseDeserialize(strDoc, DossierDocumentModel.class);
 		String fileType = StringPool.BLANK;
 		long fileSize = 0;

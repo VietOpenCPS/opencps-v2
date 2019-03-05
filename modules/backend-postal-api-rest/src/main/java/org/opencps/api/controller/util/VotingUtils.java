@@ -44,7 +44,7 @@ public class VotingUtils {
 
 		String[] arrayString = StringUtil.splitLines(answerString);
 
-		_log.info("Array" + ListUtil.toList(arrayString));
+		//_log.info("Array" + ListUtil.toList(arrayString));
 
 		return ListUtil.toList(arrayString);
 	}

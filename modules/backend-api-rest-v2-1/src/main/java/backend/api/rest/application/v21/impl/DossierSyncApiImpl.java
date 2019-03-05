@@ -40,8 +40,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 	@SuppressWarnings("unchecked")
 	@Override
 	public DossierSyncResultModel getDossierSyncList(String action, String top, Integer start, Integer end) {
-		//TODO
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("====START GET LIST DOSSIER SYNC==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierSyncResultModel results = null;
 		try {
@@ -50,7 +49,6 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			_log.info("groupId: "+groupId);
 			if (Validator.isNull(end) || end == 0) {
 				start = -1;
 				end = -1;
@@ -60,7 +58,6 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			results = new DossierSyncResultModel();
 			
 			// get JSON data deliverable
-			_log.info("groupId: "+groupId);
 //			_log.info("serviceContext: "+serviceContext.getCompanyId());
 			JSONObject jsonData = actions.getDossierSyncByAction(groupId, action, start, end, serviceContext);
 
@@ -69,10 +66,10 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			if (jsonData != null && total > 0) {
 				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
 			}
-
+			_log.info("====END GET LIST DOSSIER SYNC==== ");
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====DOSSIER SYNC ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -81,8 +78,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 	@SuppressWarnings("unchecked")
 	@Override
 	public DossierSyncResultModel getSyncByDossierId(Integer info, String id, Integer start, Integer end) {
-		//TODO
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("====START GET DOSSIER SYNC BY ID==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierSyncResultModel results = null;
 		try {
@@ -104,10 +100,10 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			if (jsonData != null && total > 0) {
 				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
 			}
-
+			_log.info("====END GET DOSSIER SYNC BY ID==== ");
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====DOSSIER SYNC ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		

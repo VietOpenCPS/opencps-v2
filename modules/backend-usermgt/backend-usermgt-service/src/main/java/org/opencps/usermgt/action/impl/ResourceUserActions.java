@@ -6,9 +6,7 @@ import java.util.List;
 
 import org.opencps.usermgt.action.ResourceUserInterface;
 import org.opencps.usermgt.constants.ResourceUserTerm;
-import org.opencps.usermgt.model.ResourceRole;
 import org.opencps.usermgt.model.ResourceUser;
-import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 import org.opencps.usermgt.service.ResourceUserLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;

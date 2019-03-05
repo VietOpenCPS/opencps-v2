@@ -1,18 +1,11 @@
 package backend.feedback.service.listener;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.osgi.service.component.annotations.Component;
 
 import backend.feedback.model.VotingResult;
-import backend.feedback.service.VotingResultLocalServiceUtil;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class VotingResultTempListener extends BaseModelListener<VotingResult> {
 
 	@Override
@@ -52,5 +45,5 @@ public class VotingResultTempListener extends BaseModelListener<VotingResult> {
 	}
 
 
-	private Log _log = LogFactoryUtil.getLog(VotingResultTempListener.class.getName());
+	//private Log _log = LogFactoryUtil.getLog(VotingResultTempListener.class.getName());
 }

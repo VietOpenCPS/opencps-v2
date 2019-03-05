@@ -21,13 +21,11 @@ public class ReadFileJSONUtils {
 //	}
 	
 	public String readFileJSON(String className) throws IOException, ParseException {
+		_log.info("====START readFileJSON==== ");
 		String result;
 //		String userDir = System.getProperty("root.dir");
 //		System.out.println("Application plugin running in " + userDir);
 
-		String sssss = PropsUtil.get("liferay.home");
-		_log.info("sssss: "+sssss);
-		
 //		String sourceFile = SOURCE_JSON + className + ".json";
 //		JSONParser parser = new JSONParser();
 //		JSONObject jsonData = (JSONObject) parser.parse(new FileReader(sourceFile));
@@ -37,9 +35,8 @@ public class ReadFileJSONUtils {
 		
 		
 		ClassLoader classLoader = getClass().getClassLoader();
-		_log.info("classLoader: "+classLoader.toString());
 		result = IOUtils.toString(classLoader.getResourceAsStream("Statistic.json"));
-		_log.info("result: "+result);
+		_log.info("====END readFileJSON==== | result: "+result);
 		return result;
 	}
 }

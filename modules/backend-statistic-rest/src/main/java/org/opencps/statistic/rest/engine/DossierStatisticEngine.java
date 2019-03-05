@@ -2,7 +2,6 @@ package org.opencps.statistic.rest.engine;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +32,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
@@ -56,7 +52,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
-	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
+	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	
 	private SchedulerEngineHelper _schedulerEngineHelper;
 

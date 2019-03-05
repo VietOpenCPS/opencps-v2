@@ -1,30 +1,9 @@
 package org.opencps.usermgt.action.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-import org.opencps.usermgt.action.EmployeeInterface;
-import org.opencps.usermgt.constants.CommonTerm;
-import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
-import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -48,11 +27,31 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import java.io.File;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -521,7 +520,7 @@ public class EmployeeActions implements EmployeeInterface {
 					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
 					String passWord = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 					
-					_log.info("passWord:"+passWord);
+					//_log.info("passWord:"+passWord);
 
 					String fullName = employee.getFullName();
 					String[] fml = new String[3];
@@ -829,14 +828,14 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.getMappingUserId(), employee.getTitle(),
 				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
 		}
-		_log.info("Employee Create: "+employee);
+		//_log.info("Employee Create: "+employee);
 
 		//Check exits account and create new account
 		if (isNew) {
 			employee = createNewEmployeeAccount(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
 		}
-		_log.info("Employee UPUP: "+employee);
-		_log.info("roles: "+roles);
+		//_log.info("Employee UPUP: "+employee);
+		//_log.info("roles: "+roles);
 		//Import employee JobPos
 		if (Validator.isNotNull(roles)) {
 			String[] roleArr = StringUtil.split(roles);
@@ -895,7 +894,7 @@ public class EmployeeActions implements EmployeeInterface {
 			}
 		} else {
 			for (int i = 0; i < roleArr.length; i++) {
-				_log.info("roleArr.length: "+roleArr.length);
+				//_log.info("roleArr.length: "+roleArr.length);
 				String jobCode = roleArr[i];
 				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
 				if (job != null) {
@@ -919,7 +918,7 @@ public class EmployeeActions implements EmployeeInterface {
 			if (Validator.isNull(screenName)) {
 				screenName = email.substring(0, email.indexOf(StringPool.AT));
 			}
-			_log.info("companyId: " + serviceContext.getCompanyId());
+			//_log.info("companyId: " + serviceContext.getCompanyId());
 			long companyId = serviceContext.getCompanyId();
 			User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
 			if (user != null) {
@@ -961,9 +960,9 @@ public class EmployeeActions implements EmployeeInterface {
 					fml[2] = screenName;
 				}
 
-				_log.info("/////0" + fml[0]);
-				_log.info("//////1" + fml[1]);
-				_log.info("//////2" + fml[2]);
+				//_log.info("/////0" + fml[0]);
+				//_log.info("//////1" + fml[1]);
+				//_log.info("//////2" + fml[2]);
 
 				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, secret, secret, false,
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
@@ -1001,7 +1000,7 @@ public class EmployeeActions implements EmployeeInterface {
 			}
 			// JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-			_log.info("Employee Update: " + employee);
+			//_log.info("Employee Update: " + employee);
 
 			// jsonObject.put("screenName", newUser.getScreenName());
 			// jsonObject.put("email", newUser.getEmailAddress());

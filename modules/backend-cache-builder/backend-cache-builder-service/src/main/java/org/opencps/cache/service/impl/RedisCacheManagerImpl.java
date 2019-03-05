@@ -1,18 +1,5 @@
 package org.opencps.cache.service.impl;
 
-import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import java.io.Serializable;
-import java.util.Optional;
-
-import org.apache.commons.lang.SerializationUtils;
-import org.opencps.cache.service.CacheLocalService;
-import org.opencps.cache.service.CacheManager;
-
 public class RedisCacheManagerImpl {
 //implements CacheManager{
 //

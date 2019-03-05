@@ -19,8 +19,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -214,13 +212,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int year = calendar.get(Calendar.YEAR);
 			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-			_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
+			//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
-			_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+			//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 
 			long mappingUserId = mappingUser.getUserId();
@@ -336,34 +334,34 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throw new NoApplicantIdDateException("NoApplicantIdDateException");
 	}
 
-	private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo,
-			String email) throws PortalException {
-
-		Applicant applicant = null;
-
-		applicant = fetchByAppId(applicantIdNo);
-
-		if (Validator.isNotNull(applicant))
-			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
-
-		applicant = fetchByEmail(email);
-
-		if (Validator.isNotNull(applicant))
-			throw new DuplicateContactEmailException("DuplicateContactEmailException");
-
-		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
-
-		if (Validator.isNotNull(user))
-			throw new DuplicateContactEmailException("DuplicateContactEmailException");
-
-/*		if (Validator.isNotNull(contactTelNo)) {
-
-			applicant = fetchByTelNo(contactTelNo);
-
-			if (Validator.isNotNull(applicant))
-				throw new DuplicateContactTelNoException("DuplicateContactTelNoException");
-		}*/
-	}
+	//private void validateDuplicate(long companyId, String contactTelNo, String applicantIdNo,
+//			String email) throws PortalException {
+//
+//		Applicant applicant = null;
+//
+//		applicant = fetchByAppId(applicantIdNo);
+//
+//		if (Validator.isNotNull(applicant))
+//			throw new DuplicateApplicantIdException("DuplicateApplicantIdException");
+//
+//		applicant = fetchByEmail(email);
+//
+//		if (Validator.isNotNull(applicant))
+//			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+//
+//		User user = userLocalService.fetchUserByEmailAddress(companyId, email);
+//
+//		if (Validator.isNotNull(user))
+//			throw new DuplicateContactEmailException("DuplicateContactEmailException");
+//
+///*		if (Validator.isNotNull(contactTelNo)) {
+//
+//			applicant = fetchByTelNo(contactTelNo);
+//
+//			if (Validator.isNotNull(applicant))
+//				throw new DuplicateContactTelNoException("DuplicateContactTelNoException");
+//		}*/
+//	}
 
 	//Process validate applicant register
 	private void validateApplicantDuplicate(long groupId, long companyId, String contactTelNo, String applicantIdNo,
@@ -869,13 +867,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int year = calendar.get(Calendar.YEAR);
 			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-			_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
+			//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, auditUser.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
-			_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+			//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 			//mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
 			userLocalService.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
 			//
@@ -930,6 +928,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicantPersistence.update(applicant);
 	}
 
-	private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
+	//private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }

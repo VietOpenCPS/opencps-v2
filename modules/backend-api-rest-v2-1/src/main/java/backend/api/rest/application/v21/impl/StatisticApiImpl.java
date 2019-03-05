@@ -47,7 +47,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 	private static Log _log = LogFactoryUtil.getLog(StatisticApiImpl.class);
 	@Override
 	public DossierStatisticResultModel getDossierTodoTest() {
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("====START GET STATISTIC==== ");
 		StatisticActions actions = new StatisticActionsImpl();
 		DossierStatisticResultModel results = null;
 		try {
@@ -61,13 +61,11 @@ public class StatisticApiImpl implements DossierStatisticApi{
 			long userId = user.getUserId();
 			int stepType = 0;
 
-			_log.info("START");
 			// Get info input
 //			long notStatusReg = query.getNotStatusReg();
 //			String status = query.getDossierStatus();
 //			String substatus = query.getDossierSubStatus();
 			List<StepConfig> stepList = StepConfigLocalServiceUtil.getByStepType(groupId, stepType);
-			_log.info("START");
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -76,14 +74,11 @@ public class StatisticApiImpl implements DossierStatisticApi{
 //			params.put(DossierTerm.NOT_STATUS_REG, notStatusReg);
 			int total = 0;
 			if (stepList != null && stepList.size() > 0) {
-				_log.info("length: "+stepList.size());
 				for (StepConfig step: stepList) {
 					params.put(DossierTerm.STATUS, step.getDossierStatus());
 					params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-					_log.info("START");
 					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 							null, serviceContext);
-					_log.info("START");
 					JSONObject statistic = JSONFactoryUtil.createJSONObject();
 					statistic.put("stepCode", step.getStepCode());
 					statistic.put("stepName", step.getStepName());
@@ -97,9 +92,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 
 //			ReadFileJSONUtils.readFileJSON("Statistic");
 			ClassLoader classLoader = getClass().getClassLoader();
-			_log.info("classLoader: "+classLoader.toString());
 			String test = IOUtils.toString(classLoader.getResourceAsStream("test.json"));
-			_log.info("test: "+test);
 			
 			JSONArray tt1 = JSONFactoryUtil.createJSONArray(test);
 			StringBuilder sb1 = new StringBuilder();
@@ -119,47 +112,20 @@ public class StatisticApiImpl implements DossierStatisticApi{
 					
 				}
 			}
-//			tt1.put("from", 0);
-//			tt1.put("size", 3);
-//			_log.info("tt1: "+tt1.toString());
-			
 			//
-			String test11 = IOUtils.toString(classLoader.getResourceAsStream("Statistic.json"));
-			_log.info("test11: "+test11);
-			
-			JSONObject test1111 = JSONFactoryUtil.createJSONObject(test11);
-//			test1111.put("from", 0);
-//			test1111.put("size", 2);
-			_log.info("test1111: "+test1111.toString());
-			
-//			StringBuilder sb = new StringBuilder();
-//			
-//			sb.append("{}");
-//			sb.append(System.lineSeparator());
-//			sb.append(tt1.toString());
-//			sb.append(System.lineSeparator());
-//			sb.append("{}");
-//			sb.append(System.lineSeparator());
-//			sb.append(test1111.toString());
-//			sb.append(System.lineSeparator());
-			
-			_log.info("sb: "+sb1.toString());
-			//
-//			String test = ReadFileJSONUtils.readFileJSON("Statistic");
-//			_log.info("test: "+test);
-			JSONObject data = ElasticQueryWrapUtil.queryMultiple(sb1.toString(), Dossier.class.getName(), company.getCompanyId());
-			_log.info("data: "+data);
+			//String test11 = IOUtils.toString(classLoader.getResourceAsStream("Statistic.json"));
+			//JSONObject data = ElasticQueryWrapUtil.queryMultiple(sb1.toString(), Dossier.class.getName(), company.getCompanyId());
 //			JSONArray resultData = data.getJSONObject("hits").getJSONArray("hits");
 //			_log.info("resultData: "+resultData);
 			results = new DossierStatisticResultModel();
 
 			results.setTotal(total);
-			_log.info("total: "+total);
 			results.setData(StatisticUtils.mapperStatisticDossierList(statistics));
+			_log.info("====END GET STATISTIC==== ");
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====STATISTIC ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;

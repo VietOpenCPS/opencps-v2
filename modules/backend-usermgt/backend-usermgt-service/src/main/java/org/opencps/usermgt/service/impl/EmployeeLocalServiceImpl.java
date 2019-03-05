@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -43,7 +42,6 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -242,11 +240,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throw new DuplicateEmployeeNoException();
 		}
 
-		_log.info("employeeId:" + employeeId);
+		//_log.info("employeeId:" + employeeId);
 		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
-		_log.info(
-				"employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " + employeeCheck.get(0).getEmployeeId());
-		_log.info("employeeCheck:" + employeeCheck.get(0));
+		//_log.info(
+		//		"employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " + employeeCheck.get(0).getEmployeeId());
+		//_log.info("employeeCheck:" + employeeCheck.get(0));
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
 				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
@@ -823,7 +821,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		}
 
 		long mappingUserId = objectData.getLong("mappingUserId");
-		_log.info("mappingUserId: "+mappingUserId);
+		//_log.info("mappingUserId: "+mappingUserId);
 		//User user = null;
 		if (mappingUserId > 0) {
 			object.setMappingUserId(objectData.getLong("mappingUserId"));

@@ -1,8 +1,6 @@
 package org.opencps.usermgt.listener;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -86,5 +84,5 @@ public class WorkingUnitTempListener extends BaseModelListener<WorkingUnit> {
 	}
 
 
-	private Log _log = LogFactoryUtil.getLog(JobPosTempListener.class.getName());
+	//private Log _log = LogFactoryUtil.getLog(JobPosTempListener.class.getName());
 }

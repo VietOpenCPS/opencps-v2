@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 
 import org.opencps.communication.model.Notificationtemplate;
 
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;

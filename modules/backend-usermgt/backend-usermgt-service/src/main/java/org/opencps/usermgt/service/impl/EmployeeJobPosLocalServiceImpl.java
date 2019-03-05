@@ -16,6 +16,7 @@ package org.opencps.usermgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -41,7 +42,6 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -192,7 +192,6 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				indexer.reindex(newUser);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			_log.error(e);
 
 		}
@@ -389,7 +388,6 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		// TODO Auto-generated method stub
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(EmployeeJobPosTerm.GROUP_ID);
@@ -438,7 +436,6 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	@SuppressWarnings("deprecation")
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		// TODO Auto-generated method stub
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(EmployeeJobPosTerm.GROUP_ID);
@@ -646,7 +643,6 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				indexer.reindex(newUser);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			_log.error(e);
 
 		}
