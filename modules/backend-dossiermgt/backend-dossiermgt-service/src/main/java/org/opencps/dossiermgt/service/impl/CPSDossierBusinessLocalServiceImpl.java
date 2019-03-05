@@ -852,7 +852,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierAction;
 	}
 	
-	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) {
+	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) throws PortalException {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
@@ -874,19 +874,19 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//			Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
+			Serializable notiCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
 			Notificationtemplate notiTemplate = null;
-			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//			if (notiCache == null) {
-//				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-//				if (notiTemplate != null) {
-//					CacheLocalServiceUtil.addToCache("NotificationTemplate",
-//							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
-//							(int) Time.MINUTE * 15);
-//				}
-//			} else {
-//				notiTemplate = (Notificationtemplate) notiCache;
-//			}
+//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (notiCache == null) {
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+				if (notiTemplate != null) {
+					cache.addToCache("NotificationTemplate",
+							groupId +"_"+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+							ttl);
+				}
+			} else {
+				notiTemplate = (Notificationtemplate) notiCache;
+			}
 
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
@@ -950,19 +950,19 @@ public class CPSDossierBusinessLocalServiceImpl
 		}	
 		
 //		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-//		Serializable notiCache = CacheLocalServiceUtil.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
+		Serializable emplCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
 		Notificationtemplate emplTemplate = null;
 		emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-//		if (notiCache == null) {
-//			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
-//			if (emplTemplate != null) {
-//				CacheLocalServiceUtil.addToCache("NotificationTemplate",
-//						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
-//						(int) Time.MINUTE * 15);
-//			}
-//		} else {
-//			emplTemplate = (Notificationtemplate) notiCache;
-//		}
+		if (emplCache == null) {
+			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
+			if (emplTemplate != null) {
+				cache.addToCache("NotificationTemplate",
+						groupId +"_"+ actionConfig.getNotificationType(), (Serializable) emplTemplate,
+						ttl);
+			}
+		} else {
+			emplTemplate = (Notificationtemplate) emplCache;
+		}
 
 		Date now = new Date();
         Calendar calEmpl = Calendar.getInstance();
@@ -998,19 +998,19 @@ public class CPSDossierBusinessLocalServiceImpl
 						for (DossierActionUser dau : lstDaus) {
 							if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
 //								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-//								Serializable employeeCache = CacheLocalServiceUtil.getFromCache("Employee", groupId +"_"+ dau.getUserId());
+								Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ dau.getUserId());
 								Employee employee = null;
-								employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-//								if (employeeCache == null) {
-//									employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
-//									if (employee != null) {
-//										CacheLocalServiceUtil.addToCache("Employee",
-//												groupId +"_"+ dau.getUserId(), (Serializable) employee,
-//												(int) Time.MINUTE * 15);
-//									}
-//								} else {
-//									employee = (Employee) employeeCache;
-//								}
+//								employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+								if (employeeCache == null) {
+									employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+									if (employee != null) {
+										cache.addToCache("Employee",
+												groupId +"_"+ dau.getUserId(), (Serializable) employee,
+												ttl);
+									}
+								} else {
+									employee = (Employee) employeeCache;
+								}
 
 								if (employee != null) {
 									String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
