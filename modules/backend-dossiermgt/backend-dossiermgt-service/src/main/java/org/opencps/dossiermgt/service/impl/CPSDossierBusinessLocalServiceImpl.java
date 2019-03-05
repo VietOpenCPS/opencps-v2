@@ -183,6 +183,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 	CacheActions cache = new CacheActionsImpl();
+	int ttl = OpenCPSConfigUtil.getCacheTTL();
 	
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
@@ -202,7 +203,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (employee != null) {
 				cache.addToCache("Employee",
 						groupId +"_"+ userId, (Serializable) employee,
-						(int) Time.MINUTE * 15);
+						ttl);
 			}
 		} else {
 			employee = (Employee) employeeCache;
@@ -243,7 +244,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (serviceProcess != null) {
 					cache.addToCache("ServiceProcess",
 							groupId +"_"+ serviceProcessId, (Serializable) serviceProcess,
-							(int) Time.MINUTE * 15);
+							ttl);
 				}
 			} else {
 				serviceProcess = (ServiceProcess) serviceProcessCache;

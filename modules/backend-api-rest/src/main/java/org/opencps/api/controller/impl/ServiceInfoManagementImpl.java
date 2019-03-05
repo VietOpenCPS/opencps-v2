@@ -50,6 +50,7 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -98,10 +99,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);
-			return Response.status(200).entity(results).cacheControl(cc).build();
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(results).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(results).build();				
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -187,12 +193,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, serviceContext);
 			}
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);
-			
-			return Response.status(200).entity(results).cacheControl(cc).build();
-
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(results).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(results).build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -456,11 +465,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
 			
 //			_log.info(results);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -479,11 +492,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByAdministration(serviceContext, groupId);
 			
 //			_log.info(results);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -506,11 +523,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomain(serviceContext, groupId);
 			}
 //			_log.info(results);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

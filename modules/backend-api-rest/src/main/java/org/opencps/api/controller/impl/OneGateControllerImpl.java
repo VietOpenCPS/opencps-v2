@@ -39,6 +39,7 @@ import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
 import org.opencps.dossiermgt.model.Dossier;
@@ -197,10 +198,15 @@ public class OneGateControllerImpl implements OneGateController {
 			results.put("data", data);
 			
 //			_log.info(results.toJSONString());
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);	
-			return Response.status(200).entity(results.toJSONString()).cacheControl(cc).build();
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(results.toJSONString()).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(results.toJSONString()).build();				
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

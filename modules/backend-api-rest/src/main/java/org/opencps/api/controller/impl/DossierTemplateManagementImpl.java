@@ -25,7 +25,6 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.api.controller.DossierTemplateManagement;
 import org.opencps.api.controller.util.DossierTemplateUtils;
 import org.opencps.api.dossiertemplate.model.DossierPartContentInputUpdateModel;
@@ -42,6 +41,7 @@ import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -153,11 +153,15 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);
-			return Response.status(200).entity(result).cacheControl(cc).build();
-
+			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(result).cacheControl(cc).build();
+			}
+			else {
+				return Response.status(200).entity(result).build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

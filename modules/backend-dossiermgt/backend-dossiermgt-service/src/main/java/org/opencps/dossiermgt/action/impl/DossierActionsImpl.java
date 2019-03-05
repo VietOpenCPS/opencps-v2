@@ -189,7 +189,8 @@ public class DossierActionsImpl implements DossierActions {
 	private static final String EXTEND_TWO_VALUE = ".00";
 	
 	CacheActions cache = new CacheActionsImpl();
-
+	long ttl = OpenCPSConfigUtil.getCacheTTL();
+	
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) {

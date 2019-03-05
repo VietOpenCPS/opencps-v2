@@ -6,18 +6,21 @@ import com.liferay.portal.kernel.util.Validator;
 public class OpenCPSConfigUtil {
 	public static final String OPENCPS_NOTIFICATION_ENABLE = "org.opencps.notification.enable";
 	public static final String OPENCPS_CACHE_TTL = "cache.default.ttl.seconds";
-	private static final long DEFAULT_TTL = 3600;
+	private static final int DEFAULT_TTL = 3600;
 	public static final String OPENCPS_DOSSIER_LOG_ENABLE = "org.opencps.dossierlog.enable";
 	public static final String OPENCPS_TRACK_USER_ENABLE = "org.opencps.trackuser.enable";
+	public static final String OPENCPS_API_HTTP_CACHE_ENABLE = "org.opencps.api.httpcache.enable";
+	public static final int DEFAULT_HTTP_CACHE_AGE = 86400;
+	public static final String OPENCPS_API_HTTP_CACHE_MAX_AGE = "org.opencps.api.httpcache.maxage";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
 	    return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty) : false;
 	}
 	
-	public static long getCacheTTL() {
+	public static int getCacheTTL() {
 	    String cacheTTLProperty = PropsUtil.get(OPENCPS_CACHE_TTL);
-	    return Validator.isNotNull(cacheTTLProperty) ? Long.parseLong(cacheTTLProperty) : DEFAULT_TTL;
+	    return Validator.isNotNull(cacheTTLProperty) ? Integer.parseInt(cacheTTLProperty) : DEFAULT_TTL;
 		
 	}
 	
@@ -30,4 +33,15 @@ public class OpenCPSConfigUtil {
 		String trackUserEnable = PropsUtil.get(OPENCPS_TRACK_USER_ENABLE);
 		return Validator.isNotNull(trackUserEnable) ? Boolean.parseBoolean(trackUserEnable) : false;
 	}	
+
+	public static boolean isHttpCacheEnable() {
+		String httpCacheEnable = PropsUtil.get(OPENCPS_API_HTTP_CACHE_ENABLE);
+		return Validator.isNotNull(httpCacheEnable) ? Boolean.parseBoolean(httpCacheEnable) : true;
+	}	
+	
+	public static int getHttpCacheMaxAge() {
+	    String httpCacheMaxAgeProperty = PropsUtil.get(OPENCPS_API_HTTP_CACHE_MAX_AGE);
+	    return Validator.isNotNull(httpCacheMaxAgeProperty) ? Integer.parseInt(httpCacheMaxAgeProperty) : DEFAULT_HTTP_CACHE_AGE;
+		
+	}
 }
