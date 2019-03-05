@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.dossiertemplate.model.DossierPartContentInputUpdateModel;
@@ -80,7 +81,7 @@ public interface DossierTemplateManagement {
 
 	public Response getDossierTemplateDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") String id);
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @Context Request requestCC);
 
 	@PUT
 	@Path("/{id}")

@@ -30,7 +30,9 @@ import java.util.Locale;
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -64,7 +66,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getServiceInfos(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
+			User user, ServiceContext serviceContext, ServiceInfoSearchModel query, Request requestCC) {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
@@ -99,11 +101,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+		    
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(results).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(results).cacheControl(cc).build();
 			}
 			else {
 				return Response.status(200).entity(results).build();				
@@ -172,7 +179,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getDetailServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
+			User user, ServiceContext serviceContext, String id, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
@@ -193,11 +200,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, serviceContext);
 			}
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(results).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(results).cacheControl(cc).build();
 			}
 			else {
 				return Response.status(200).entity(results).build();
@@ -453,7 +464,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByLevel(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, Request requestCC) {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
@@ -465,11 +476,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
 			
 //			_log.info(results);
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+		    
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 			}
 			else {
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
@@ -481,7 +497,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByAgency(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -492,11 +508,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByAdministration(serviceContext, groupId);
 			
 //			_log.info(results);
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 			}
 			else {
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
@@ -508,7 +528,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String agency) {
+			User user, ServiceContext serviceContext, String agency, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -523,11 +543,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomain(serviceContext, groupId);
 			}
 //			_log.info(results);
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 			}
 			else {
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();

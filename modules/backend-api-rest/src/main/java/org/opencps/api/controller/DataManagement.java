@@ -18,6 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.datamgt.model.DataSearchModel;
@@ -56,7 +57,7 @@ public interface DataManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDictCollectionDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "code that need to be get detail", required = true) @PathParam("code") String code);
+			@ApiParam(value = "code that need to be get detail", required = true) @PathParam("code") String code, @Context Request requestCC);
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -203,7 +204,7 @@ public interface DataManagement {
 	public Response getDictItems(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code of DictCollection of DictItem that need to be gotten list", required = true) @PathParam("code") String code,
-			@BeanParam DataSearchModel query);
+			@BeanParam DataSearchModel query, @Context Request requestCC);
 
 	@POST
 	@Path("/{code}/dictitems")

@@ -15,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
@@ -35,7 +36,7 @@ public interface OneGateController {
 	public Response getServiceconfigs(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @QueryParam("domain") String domain,
-			@QueryParam("public_") String public_);
+			@QueryParam("public_") String public_, @Context Request requestCC);
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })

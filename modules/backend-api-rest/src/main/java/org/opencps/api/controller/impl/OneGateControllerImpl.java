@@ -23,8 +23,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.util.OneGateUtils;
@@ -64,7 +67,7 @@ public class OneGateControllerImpl implements OneGateController {
 
 	@Override
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String domain, String public_) {
+			User user, ServiceContext serviceContext, String domain, String public_, Request requestCC) {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
@@ -207,15 +210,19 @@ public class OneGateControllerImpl implements OneGateController {
 			results.put("data", data);
 			
 //			_log.info(results.toJSONString());
-			if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
-				return Response.status(200).entity(results.toJSONString()).cacheControl(cc).build();
+				builder.tag(etag);
+				return builder.status(200).entity(results.toJSONString()).build();
 			}
 			else {
-				return Response.status(200).entity(results.toJSONString()).build();				
-			}
+				return Response.status(200).entity(results.toJSONString()).build();
+			}			
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

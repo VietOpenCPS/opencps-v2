@@ -28,8 +28,11 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.api.controller.DataManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
@@ -63,6 +66,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.action.PushDictGroupInterface;
 import org.opencps.synchronization.action.PushDictItemInterface;
@@ -123,20 +127,28 @@ public class DataManagementImpl implements DataManagement {
 
 	@Override
 	public Response getDictCollectionDetail(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String code) {
+			Locale locale, User user, ServiceContext serviceContext, String code, Request requestCC) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
-
+		EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);	
+	    
 		if (Validator.isNotNull(dictCollection)) {
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);	
-			// return json object after update
 			DictCollectionModel dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.status(200);
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				// return json object after update
 
-			return Response.status(200).entity(dictCollectionModel).cacheControl(cc).build();
+				return builder.entity(dictCollectionModel).cacheControl(cc).build();				
+			}
+			else {
+				return builder.entity(dictCollectionModel).build();
+			}
 
 		} else {
 			return null;
@@ -700,7 +712,7 @@ public class DataManagementImpl implements DataManagement {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
+			User user, ServiceContext serviceContext, String code, DataSearchModel query, Request requestCC) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemResults result = new DictItemResults();
 		SearchContext searchContext = new SearchContext();
@@ -737,10 +749,17 @@ public class DataManagementImpl implements DataManagement {
 			result.setTotal(jsonData.getLong("total"));
 			result.getDictItemModel()
 					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get("data")));
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(86400);
-			cc.setPrivate(true);	
-			return Response.status(200).entity(result).cacheControl(cc).build();
+			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+				cc.setPrivate(true);	
+				return Response.status(200).entity(result).cacheControl(cc).build();		    	
+		    }
+		    else {
+		    	return Response.status(200).entity(result).build();
+		    }
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

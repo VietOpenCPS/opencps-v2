@@ -21,6 +21,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -54,7 +55,7 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByLevel(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @Context Request requestCC);
 
 	@GET
 	@Path("/statistics/agencies")
@@ -67,7 +68,7 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByAgency(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext, @Context Request requestCC);
 
 	@GET
 	@Path("/statistics/domains")
@@ -80,7 +81,7 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("agency") String agency);
+			@Context ServiceContext serviceContext, @QueryParam("agency") String agency, @Context Request requestCC);
 
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -94,7 +95,7 @@ public interface ServiceInfoManagement {
 	public Response getServiceInfos(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search);
+			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search, @Context Request requestCC);
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -123,7 +124,7 @@ public interface ServiceInfoManagement {
 	public Response getDetailServiceInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id (or code) of ServiceInfo that need to be get detail", required = true) @PathParam("id") String id);
+			@ApiParam(value = "id (or code) of ServiceInfo that need to be get detail", required = true) @PathParam("id") String id, @Context Request requestCC);
 
 	@PUT
 	@Path("/{id}")

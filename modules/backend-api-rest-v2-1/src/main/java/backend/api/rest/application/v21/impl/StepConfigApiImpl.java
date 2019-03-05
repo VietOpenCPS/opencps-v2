@@ -141,7 +141,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	@Override
 	public StepConfigItemResult getStepConfigByMainStatusAndSubStatus(String mainStatus, String subStatus) {
-		_log.info("====START GET LIST STEP CONFIG==== ");
+		_log.debug("====START GET LIST STEP CONFIG==== ");
 		StepConfigItemResult result = new StepConfigItemResult();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
@@ -170,7 +170,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 			
 			result.getData().addAll(lstItems);
 		}
-		_log.info("====END GET LIST STEP CONFIG==== ");
+		_log.debug("====END GET LIST STEP CONFIG==== ");
 		return result;
 	}
 
