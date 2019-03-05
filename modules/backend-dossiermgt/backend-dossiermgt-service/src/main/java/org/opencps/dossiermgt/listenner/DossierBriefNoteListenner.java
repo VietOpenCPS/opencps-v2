@@ -39,7 +39,7 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		_log.info("Update DossierBriefNote=====-");
+		_log.debug("Update DossierBriefNote=====-");
 		
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());

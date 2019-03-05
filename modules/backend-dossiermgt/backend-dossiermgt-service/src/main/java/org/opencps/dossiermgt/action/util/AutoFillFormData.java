@@ -390,7 +390,7 @@ public class AutoFillFormData {
 //			e.printStackTrace();
 		}
 
-		_log.info("START result: "+result);
+		_log.debug("START result: "+result);
 		return result.toJSONString();
 	}
 

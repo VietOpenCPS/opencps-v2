@@ -114,7 +114,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("In dossier file create");
+		_log.debug("In dossier file create");
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -138,8 +138,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileActions action = new DossierFileActionsImpl();
 
 			//_log.info("dossier:"+dossier);
-			_log.info("OriginDossierId:"+dossier.getOriginDossierId());
-			_log.info("referenceUid: "+referenceUid);
+			_log.debug("OriginDossierId:"+dossier.getOriginDossierId());
+			_log.debug("referenceUid: "+referenceUid);
 //			if (Validator.isNull(referenceUid)) {
 //				referenceUid = UUID.randomUUID().toString();
 //			}
@@ -215,7 +215,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 			
 			if (originDossierId > 0) {
-				_log.info("__Start add file at:" + new Date());
+				_log.debug("__Start add file at:" + new Date());
 				DossierFile dossierFile =  null;
 				DossierFile oldDossierFile = null;
 				if (Validator.isNotNull(referenceUid)) {
@@ -238,27 +238,27 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 									null, serviceContext);
 						}
 						
-						_log.info("__End add file at:" + new Date());
+						_log.debug("__End add file at:" + new Date());
 						
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
 						}
-						_log.info("REMOVED:" + removed);
+						_log.debug("REMOVED:" + removed);
 						if(Validator.isNotNull(removed)) {
 							dossierFile.setRemoved(Boolean.parseBoolean(removed));
 						}
 						if(Validator.isNotNull(eForm)) {
 							dossierFile.setEForm(Boolean.parseBoolean(eForm));
 						}
-						_log.info("__Start update dossier file at:" + new Date());
+						_log.debug("__Start update dossier file at:" + new Date());
 			
 						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			
-						_log.info("__End update dossier file at:" + new Date());
+						_log.debug("__End update dossier file at:" + new Date());
 			
 						DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 						
-						_log.info("__End bind to dossierFile" + new Date());
+						_log.debug("__End bind to dossierFile" + new Date());
 			
 						return Response.status(200).entity(result).build();
 					}
@@ -272,7 +272,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}					
 				}
 				else {
-					_log.info("__Start add file at:" + new Date());
+					_log.debug("__Start add file at:" + new Date());
 					if (dataHandler != null && dataHandler.getInputStream() != null) {
 						dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
 								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
@@ -283,7 +283,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 								serviceContext);
 					}
 					
-					_log.info("__End add file at:" + new Date());
+					_log.debug("__End add file at:" + new Date());
 					
 					if(Validator.isNotNull(formData)) {
 						dossierFile.setFormData(formData);
@@ -294,15 +294,15 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if(Validator.isNotNull(eForm)) {
 						dossierFile.setEForm(Boolean.parseBoolean(eForm));
 					}
-					_log.info("__Start update dossier file at:" + new Date());
+					_log.debug("__Start update dossier file at:" + new Date());
 		
 					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		
-					_log.info("__End update dossier file at:" + new Date());
+					_log.debug("__End update dossier file at:" + new Date());
 		
 					DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 					
-					_log.info("__End bind to dossierFile" + new Date());
+					_log.debug("__End bind to dossierFile" + new Date());
 		
 					return Response.status(200).entity(result).build();					
 				}
@@ -315,7 +315,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				}
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
-						_log.info("__Start add file at:" + new Date());
+						_log.debug("__Start add file at:" + new Date());
 						DossierFile dossierFile =  null;
 						
 						if (dataHandler != null && dataHandler.getInputStream() != null) {
@@ -332,7 +332,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 									null, serviceContext);
 						}
 						
-						_log.info("__End add file at:" + new Date());
+						_log.debug("__End add file at:" + new Date());
 						
 						if(Validator.isNotNull(formData)) {
 							dossierFile.setFormData(formData);
@@ -343,15 +343,15 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						if(Validator.isNotNull(eForm)) {
 							dossierFile.setEForm(Boolean.parseBoolean(eForm));
 						}
-						_log.info("__Start update dossier file at:" + new Date());
+						_log.debug("__Start update dossier file at:" + new Date());
 
 						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-						_log.info("__End update dossier file at:" + new Date());
+						_log.debug("__End update dossier file at:" + new Date());
 
 						DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 						
-						_log.info("__End bind to dossierFile" + new Date());
+						_log.debug("__End bind to dossierFile" + new Date());
 
 						return Response.status(200).entity(result).build();					
 					}
@@ -365,7 +365,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 				}
 				else {
-					_log.info("__Start add file at:" + new Date());
+					_log.debug("__Start add file at:" + new Date());
 					DossierFile dossierFile =  null;
 					
 					if (dataHandler != null && dataHandler.getInputStream() != null) {
@@ -378,7 +378,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 								serviceContext);
 					}
 					
-					_log.info("__End add file at:" + new Date());
+					_log.debug("__End add file at:" + new Date());
 					
 					if(Validator.isNotNull(formData)) {
 						dossierFile.setFormData(formData);
@@ -389,15 +389,15 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if(Validator.isNotNull(eForm)) {
 						dossierFile.setEForm(Boolean.parseBoolean(eForm));
 					}
-					_log.info("__Start update dossier file at:" + new Date());
+					_log.debug("__Start update dossier file at:" + new Date());
 		
 					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		
-					_log.info("__End update dossier file at:" + new Date());
+					_log.debug("__End update dossier file at:" + new Date());
 		
 					DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 					
-					_log.info("__End bind to dossierFile" + new Date());
+					_log.debug("__End bind to dossierFile" + new Date());
 		
 					return Response.status(200).entity(result).build();
 				}

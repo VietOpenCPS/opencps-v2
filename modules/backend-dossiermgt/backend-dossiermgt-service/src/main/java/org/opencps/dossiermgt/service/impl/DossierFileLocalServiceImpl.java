@@ -124,15 +124,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		long userId = serviceContext.getUserId();
 		
-		_log.info("****Start add file at:" + new Date());
+		_log.debug("****Start add file at:" + new Date());
 
 		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
 		
-		_log.info("****End validator file at:" + new Date());
+		_log.debug("****End validator file at:" + new Date());
 
-		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
-		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
 		try {
 			DLValidatorUtil.validateFileName(sourceFileName);
@@ -155,7 +155,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				//_log.error(e);
 			}
 		}
-		_log.info("****End uploadFile file at:" + new Date());
+		_log.debug("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -195,9 +195,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			displayName = sourceFileName;
 		}
 
-		_log.info("****Start autofill file at:" + new Date());
+		_log.debug("****Start autofill file at:" + new Date());
 
-		_log.info("****End autofill file at:" + new Date());
+		_log.debug("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
 		object.setOriginal(false);
@@ -244,15 +244,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 
 		long userId = serviceContext.getUserId();
 		
-		_log.info("****Start add file at:" + new Date());
+		_log.debug("****Start add file at:" + new Date());
 
 		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
 		
-		_log.info("****End validator file at:" + new Date());
+		_log.debug("****End validator file at:" + new Date());
 
-		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
 		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
-		_log.info("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
 		long fileEntryId = 0;
 
 		if (inputStream != null) {
@@ -270,7 +270,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 				//_log.error(e);
 			}
 		}
-		_log.info("****End uploadFile file at:" + new Date());
+		_log.debug("****End uploadFile file at:" + new Date());
 
 		Date now = new Date();
 
@@ -326,9 +326,9 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 			}
 		}
 
-		_log.info("****Start autofill file at:" + new Date());
+		_log.debug("****Start autofill file at:" + new Date());
 
-		_log.info("****End autofill file at:" + new Date());
+		_log.debug("****End autofill file at:" + new Date());
 
 		object.setDisplayName(displayName);
 		object.setOriginal(false);
@@ -782,7 +782,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
-		_log.info("IN DOSSIER FILE UPDATE FORM DATA");
+		_log.debug("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -795,7 +795,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
-		_log.info("SEND TO CREATED FILE MODEL");
+		_log.debug("SEND TO CREATED FILE MODEL");
 		
 		return dossierFilePersistence.update(dossierFile);
 	}

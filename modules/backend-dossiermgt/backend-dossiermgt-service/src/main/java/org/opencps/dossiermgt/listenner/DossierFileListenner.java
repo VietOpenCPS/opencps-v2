@@ -50,12 +50,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onBeforeCreate(DossierFile model) throws ModelListenerException {
-		_log.info("Before Created........... ==> " + model.getDossierId());
+		_log.debug("Before Created........... ==> " + model.getDossierId());
 	}
 
 	@Override
 	public void onAfterCreate(DossierFile model) throws ModelListenerException {
-		_log.info("DossierFileCreate........... ");
+		_log.debug("DossierFileCreate........... ");
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
