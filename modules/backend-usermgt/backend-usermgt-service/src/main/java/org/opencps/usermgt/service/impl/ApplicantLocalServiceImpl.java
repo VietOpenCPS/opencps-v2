@@ -928,6 +928,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicantPersistence.update(applicant);
 	}
 
+	public List<Applicant> findByAppIds(String applicantIdNo) {
+		return applicantPersistence.findByF_APLC_IDS(applicantIdNo);
+	}
+
 	//private Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }

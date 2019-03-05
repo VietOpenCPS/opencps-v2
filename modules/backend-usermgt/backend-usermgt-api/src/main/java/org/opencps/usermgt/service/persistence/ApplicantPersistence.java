@@ -843,6 +843,138 @@ public interface ApplicantPersistence extends BasePersistence<Applicant> {
 	public int countByF_GID_TYPE(long groupId, String applicantIdType);
 
 	/**
+	* Returns all the applicants where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @return the matching applicants
+	*/
+	public java.util.List<Applicant> findByF_APLC_IDS(String applicantIdNo);
+
+	/**
+	* Returns a range of all the applicants where applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @return the range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_APLC_IDS(String applicantIdNo,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the applicants where applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_APLC_IDS(String applicantIdNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the applicants where applicantIdNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching applicants
+	*/
+	public java.util.List<Applicant> findByF_APLC_IDS(String applicantIdNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first applicant in the ordered set where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_APLC_IDS_First(String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the first applicant in the ordered set where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_APLC_IDS_First(String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns the last applicant in the ordered set where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_APLC_IDS_Last(String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the last applicant in the ordered set where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_APLC_IDS_Last(String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator);
+
+	/**
+	* Returns the applicants before and after the current applicant in the ordered set where applicantIdNo = &#63;.
+	*
+	* @param applicantId the primary key of the current applicant
+	* @param applicantIdNo the applicant ID no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next applicant
+	* @throws NoSuchApplicantException if a applicant with the primary key could not be found
+	*/
+	public Applicant[] findByF_APLC_IDS_PrevAndNext(long applicantId,
+		String applicantIdNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException;
+
+	/**
+	* Removes all the applicants where applicantIdNo = &#63; from the database.
+	*
+	* @param applicantIdNo the applicant ID no
+	*/
+	public void removeByF_APLC_IDS(String applicantIdNo);
+
+	/**
+	* Returns the number of applicants where applicantIdNo = &#63;.
+	*
+	* @param applicantIdNo the applicant ID no
+	* @return the number of matching applicants
+	*/
+	public int countByF_APLC_IDS(String applicantIdNo);
+
+	/**
 	* Caches the applicant in the entity cache if it is enabled.
 	*
 	* @param applicant the applicant
