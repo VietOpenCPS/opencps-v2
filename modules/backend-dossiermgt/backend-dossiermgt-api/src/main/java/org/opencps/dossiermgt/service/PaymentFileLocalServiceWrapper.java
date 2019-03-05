@@ -318,8 +318,7 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.PaymentFile getPaymentFileByReferenceUid(
-		long dossierId, String referenceUid)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long dossierId, String referenceUid) {
 		return _paymentFileLocalService.getPaymentFileByReferenceUid(dossierId,
 			referenceUid);
 	}

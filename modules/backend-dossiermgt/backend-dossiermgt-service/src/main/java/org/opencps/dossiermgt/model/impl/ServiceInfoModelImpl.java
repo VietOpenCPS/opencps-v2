@@ -147,9 +147,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DOMAINCODE_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long SERVICEINFOID_COLUMN_BITMASK = 32L;
+	public static final long PUBLIC__COLUMN_BITMASK = 8L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long SERVICEINFOID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ServiceInfo"));
 
@@ -831,7 +832,19 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 	@Override
 	public void setPublic_(boolean public_) {
+		_columnBitmask |= PUBLIC__COLUMN_BITMASK;
+
+		if (!_setOriginalPublic_) {
+			_setOriginalPublic_ = true;
+
+			_originalPublic_ = _public_;
+		}
+
 		_public_ = public_;
+	}
+
+	public boolean getOriginalPublic_() {
+		return _originalPublic_;
 	}
 
 	@Override
@@ -975,6 +988,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		serviceInfoModelImpl._originalServiceCode = serviceInfoModelImpl._serviceCode;
 
 		serviceInfoModelImpl._originalDomainCode = serviceInfoModelImpl._domainCode;
+
+		serviceInfoModelImpl._originalPublic_ = serviceInfoModelImpl._public_;
+
+		serviceInfoModelImpl._setOriginalPublic_ = false;
 
 		serviceInfoModelImpl._columnBitmask = 0;
 	}
@@ -1393,6 +1410,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	private String _domainIndex;
 	private int _maxLevel;
 	private boolean _public_;
+	private boolean _originalPublic_;
+	private boolean _setOriginalPublic_;
 	private long _columnBitmask;
 	private ServiceInfo _escapedModel;
 }

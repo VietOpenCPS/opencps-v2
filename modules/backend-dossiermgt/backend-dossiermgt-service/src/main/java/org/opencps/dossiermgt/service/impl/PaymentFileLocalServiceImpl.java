@@ -673,9 +673,15 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	// 8
 
-	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) throws PortalException {
+	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) {
 
-		return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+		try {
+			return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+		} catch (Exception e) {
+			_log.debug(e);
+			return null;
+		}
+		
 	}
 
 	@Override
@@ -685,8 +691,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		} catch (Exception e) {
 			_log.debug(e);
 			// _log.error(e);
-			return null;
 		}
+		return null;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

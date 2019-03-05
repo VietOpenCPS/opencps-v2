@@ -241,6 +241,11 @@ public class ServiceInfoLocalServiceUtil {
 		return getService().findByGroup(groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGroupAndPublic(
+		long groupId, boolean public_) {
+		return getService().findByGroupAndPublic(groupId, public_);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

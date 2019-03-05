@@ -67,6 +67,10 @@
 			<finder-column name="domainCode" />
 			<finder-column name="groupId" />
 		</finder>
+		<finder name="GI_PUB" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="public_" />
+		</finder>
 
 
 		<!-- References -->

@@ -657,6 +657,10 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return serviceInfoPersistence.findByGroupId(groupId);
 	}
 
+	public List<ServiceInfo> findByGroupAndPublic(long groupId, boolean public_) {
+		return serviceInfoPersistence.findByGI_PUB(groupId, public_);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceInfo adminProcessDelete(Long id) {

@@ -703,6 +703,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ userId);
+//		_log.info("EMPLOYEE CACHE: " + employeeCache);
 		if (employeeCache == null) {
 			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			if (employee != null) {

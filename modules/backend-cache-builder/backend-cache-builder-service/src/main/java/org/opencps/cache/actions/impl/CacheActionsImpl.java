@@ -18,26 +18,26 @@ public class CacheActionsImpl implements CacheActions{
 
 	@Override
 	public void clearCache(String cacheName) throws PortalException {
-		_log.info("Liferay Cache: Clearing cache. CacheName = " + cacheName);
-		System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+//		_log.info("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+//		System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
 		//CacheLocalServiceUtil.clearCache(cacheName);
 		if (Validator.isNotNull(cacheName)) {
 			try {
-				System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
+//				System.out.println("Liferay Cache: Clearing cache. CacheName = " + cacheName);
 				PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 				cache.removeAll();
 			} catch (Exception ex) {
-				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
+//				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
 			}
 		} else {
-			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
+//			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
 		}
 
 	}
 
 	@Override
 	public Serializable getFromCache(String cacheName, Serializable key) throws PortalException {
-		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
+//		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);
 
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 
@@ -45,7 +45,7 @@ public class CacheActionsImpl implements CacheActions{
 		if (data != null) {
 			return data;
 		} else {
-			addToCache(cacheName, key, "HAHAHAHAHAHAH", (int)Time.MINUTE * 15);
+//			addToCache(cacheName, key, "HAHAHAHAHAHAH", (int)Time.MINUTE * 15);
 			return data;
 		}
 		
@@ -53,7 +53,7 @@ public class CacheActionsImpl implements CacheActions{
 
 	@Override
 	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) {
-		System.out.println("Liferay Cache: Adding to cache. CacheName = " + cacheName + ", Key = " + key + ", TTL : " + ttl);
+//		System.out.println("Liferay Cache: Adding to cache. CacheName = " + cacheName + ", Key = " + key + ", TTL : " + ttl);
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 		cache.put(key, value, ttl);
 	}

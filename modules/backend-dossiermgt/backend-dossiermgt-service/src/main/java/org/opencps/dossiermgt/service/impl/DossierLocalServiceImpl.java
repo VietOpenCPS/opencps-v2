@@ -248,12 +248,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 				ServiceProcess serviceProcess = null;
-				_log.info("option: "+option);
+				_log.debug("option: "+option);
 				if (option != null) {
 					//Process submition note
-					_log.info("option: "+option.getSubmissionNote());
+					_log.debug("option: "+option.getSubmissionNote());
 					dossier.setSubmissionNote(option.getSubmissionNote());
-					_log.info("option: "+true);
+					_log.debug("option: "+true);
 					long serviceProcessId = option.getServiceProcessId();
 					serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
 

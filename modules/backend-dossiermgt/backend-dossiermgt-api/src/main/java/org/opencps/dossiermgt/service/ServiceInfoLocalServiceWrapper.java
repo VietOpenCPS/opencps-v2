@@ -252,6 +252,12 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGroupAndPublic(
+		long groupId, boolean public_) {
+		return _serviceInfoLocalService.findByGroupAndPublic(groupId, public_);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _serviceInfoLocalService.getActionableDynamicQuery();
 	}
