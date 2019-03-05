@@ -796,7 +796,7 @@ public class AutoFillFormData {
 //			e.printStackTrace();
 		}
 
-		_log.info("START result: "+result);
+		_log.debug("START result: "+result);
 		return result.toJSONString();
 	}	
 	private static final Log _log = LogFactoryUtil.getLog(AutoFillFormData.class);

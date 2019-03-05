@@ -53,7 +53,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	public void downloadDocByReferenceUid(String id, String referenceUid) {
 
 		// TODO: check user is loged or password for access dossier file
-		_log.info("====START DOWNLOAD DOCUMENT==== ");
+		_log.debug("====START DOWNLOAD DOCUMENT==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 
@@ -100,7 +100,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	@Override
 	public DossierDocumentResultModel getDocumentList(String id, Integer start, Integer end) {
 		// TODO: check user is loged or password for access dossier file
-		_log.info("====START GET LIST DOCUMENT==== ");
+		_log.debug("====START GET LIST DOCUMENT==== ");
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentResultModel results = null;
 		
@@ -124,7 +124,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 				results.getData().addAll(
 						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get("data")));
 			}
-			_log.info("====END GET LIST DOCUMENT==== ");
+			_log.debug("====END GET LIST DOCUMENT==== ");
 		} catch (Exception e) {
 			_log.debug(e);
 			_log.error("====LIST DOCUMENT ERROR==== ");
@@ -137,7 +137,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String referenceUid, String documentType,
 			String documentName, String documentCode) {
 
-		_log.info("====START CREATE DOCUMENT==== ");
+		_log.debug("====START CREATE DOCUMENT==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentModel result = null;
@@ -207,7 +207,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			if (dossierDoc != null) {
 				result = DossierDocumentParser.mappingDocumentTypeModel(dossierDoc);
 			}
-			_log.info("====END CREATE DOCUMENT==== ");
+			_log.debug("====END CREATE DOCUMENT==== ");
 		} catch (Exception e) {
 			_log.debug(e);
 			_log.error("====CREATE DOCUMENT ERROR==== ");

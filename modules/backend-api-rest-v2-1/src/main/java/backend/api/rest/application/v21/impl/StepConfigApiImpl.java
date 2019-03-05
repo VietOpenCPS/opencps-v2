@@ -45,7 +45,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 	private static Log _log = LogFactoryUtil.getLog(StepConfigApiImpl.class);
 	@Override
 	public StepConfigItem addStepConfig(StepConfigItem body) {
-		_log.info("====START ADD STEP CONFIG==== ");
+		_log.debug("====START ADD STEP CONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
@@ -57,7 +57,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 					body.getMenuStepName(), body.getButtonConfig(), serviceContext);
 
 			body = parsing.getModel(ett);
-			_log.info("====START ADD STEP CONFIG==== ");
+			_log.debug("====START ADD STEP CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
 			_log.error("====ADD STEP CONFIG - PortalException==== ");

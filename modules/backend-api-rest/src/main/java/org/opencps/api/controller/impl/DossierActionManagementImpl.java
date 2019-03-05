@@ -379,7 +379,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long dossierId = GetterUtil.getLong(id);
-			_log.info("groupId: "+groupId+ "| dossierId: "+dossierId+ "| actionId: "+actionId);
+			_log.debug("groupId: "+groupId+ "| dossierId: "+dossierId+ "| actionId: "+actionId);
 
 			if (query.getEnd() == 0) {
 				query.setStart(-1);

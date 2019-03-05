@@ -1531,10 +1531,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
-					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), serviceContext);
-			if (Validator.isNotNull(input.getBriefNote())) {
-				dossier.setBriefNote(input.getBriefNote());
-			}
+					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), input.getBriefNote(), serviceContext);
 //			if (Validator.isNotNull(input.getServiceName())) {
 //				dossier.setServiceName(input.getServiceName());
 //			}

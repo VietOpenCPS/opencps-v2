@@ -275,7 +275,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long userId = user.getUserId();
-			_log.info("userId: " + userId);
+			_log.debug("userId: " + userId);
 
 			// Declare params
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -311,7 +311,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 							statistic.put("title", dictItem.getItemName());
 							statistic.put("count", count);
 
-							_log.info("statistic: " + statistic.toJSONString());
+							_log.debug("statistic: " + statistic.toJSONString());
 							statisticArr.put(statistic);
 //						}
 					}
@@ -346,15 +346,15 @@ public class StatisticManagementImpl implements StatisticManagement {
 				jsonTop.put("title", topName);
 				jsonTop.put("count", count);
 				statisticArr.put(jsonTop);
-				_log.info("top: " + top);
-				_log.info("title: " + topName);
-				_log.info("jsonTop: " + jsonTop.toJSONString());
+				_log.debug("top: " + top);
+				_log.debug("title: " + topName);
+				_log.debug("jsonTop: " + jsonTop.toJSONString());
 			}
 
 			StatisticCountResultModel results = new StatisticCountResultModel();
 
-			_log.info("total: " + total);
-			_log.info("statisticArr: " + statisticArr.toJSONString());
+			_log.debug("total: " + total);
+			_log.debug("statisticArr: " + statisticArr.toJSONString());
 			if (total > 0) {
 				results.setTotal(total);
 				results.getData().addAll(StatisticUtils.mapperStatisticDossierCountList(statisticArr));
