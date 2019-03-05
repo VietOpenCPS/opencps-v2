@@ -108,7 +108,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
 			DossierSyncModelImpl.UUID_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -899,7 +899,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByST",
 			new String[] { Integer.class.getName() },
 			DossierSyncModelImpl.STATE_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_ST = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByST",
@@ -1406,7 +1406,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			DossierSyncModelImpl.GROUPID_COLUMN_BITMASK |
 			DossierSyncModelImpl.DOSSIERREFUID_COLUMN_BITMASK |
 			DossierSyncModelImpl.INFOTYPE_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_DRID_IT = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDRID_IT",
@@ -2377,7 +2377,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			DossierSyncModelImpl.ACTIONCODE_COLUMN_BITMASK |
 			DossierSyncModelImpl.SYNCTYPE_COLUMN_BITMASK |
 			DossierSyncModelImpl.INFOTYPE_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_G_AC_ST_IT = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_AC_ST_IT",
@@ -3718,7 +3718,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			DossierSyncModelImpl.GROUPID_COLUMN_BITMASK |
 			DossierSyncModelImpl.DOSSIERID_COLUMN_BITMASK |
 			DossierSyncModelImpl.STATE_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_G_DID_ST = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DID_ST",
@@ -4298,7 +4298,7 @@ public class DossierSyncPersistenceImpl extends BasePersistenceImpl<DossierSync>
 			new String[] { Long.class.getName(), Long.class.getName() },
 			DossierSyncModelImpl.GROUPID_COLUMN_BITMASK |
 			DossierSyncModelImpl.DOSSIERID_COLUMN_BITMASK |
-			DossierSyncModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+			DossierSyncModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_G_DID = new FinderPath(DossierSyncModelImpl.ENTITY_CACHE_ENABLED,
 			DossierSyncModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DID",

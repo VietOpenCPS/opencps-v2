@@ -2136,8 +2136,8 @@
 		<column name="messageText" type="String" />
 		<column name="acknowlegement" type="String" />
 		
-        <order by="desc">
-            <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
+        <order by="asc">
+            <order-column name="createDate" order-by="asc" case-sensitive="true" />
         </order>
         <finder name="ST" return-type="Collection">
             <finder-column name="state"></finder-column>
