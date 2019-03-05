@@ -1,15 +1,14 @@
 package org.opencps.usermgt.listener;
 
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
+
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 
 public class ApplicantListenerUtils {
 	public static JSONObject getPayload(String notiType, JSONObject object, long groupId) {
@@ -17,8 +16,8 @@ public class ApplicantListenerUtils {
 
 		try {
 			
-			_log.info("notiType"+notiType);
-			_log.info("groupId"+groupId);
+			//_log.info("notiType"+notiType);
+			//_log.info("groupId"+groupId);
 			
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 					.fetchByF_NotificationtemplateByType(groupId, notiType);
@@ -29,7 +28,7 @@ public class ApplicantListenerUtils {
 			payload.put("toAddress", object.get("toAddress"));
 			payload.put("subject", subject);
 			payload.put("body", body);
-			_log.info("payload"+payload);
+			//_log.info("payload"+payload);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -67,7 +66,7 @@ public class ApplicantListenerUtils {
 			String key = object.names().getString(i);
 			//String value = (String) object.get(key);
 			sb.append(key);
-			_log.info("APPLICANT notification key =========" + key);
+			//_log.info("APPLICANT notification key =========" + key);
 			sb.append(StringPool.COMMA);
 		}
 
@@ -80,8 +79,8 @@ public class ApplicantListenerUtils {
 		for (int i = 0; i < object.names().length(); i++) {
 			String key = object.names().getString(i);
 			String value = (String) object.get(key);
-			_log.info("APPLICANT notification key =========" + key);
-			_log.info("APPLICANT notification value =========" + value);
+			//_log.info("APPLICANT notification key =========" + key);
+			//_log.info("APPLICANT notification value =========" + value);
 			sb.append(value);
 			sb.append(StringPool.COMMA);
 		}

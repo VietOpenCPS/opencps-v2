@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.statistic.model.OpencpsPersonStatistic;
-import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.rest.dto.PersonResponse;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
-import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.springframework.core.convert.converter.Converter;
 
 public class PersonStatisticConverter {

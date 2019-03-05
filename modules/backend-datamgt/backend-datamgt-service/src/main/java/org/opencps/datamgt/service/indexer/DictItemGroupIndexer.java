@@ -91,7 +91,7 @@ public class DictItemGroupIndexer extends BaseIndexer<DictItemGroup> {
 			document.addTextSortable(DictGroupTerm.DICT_COLLECTION_CODE, collectionCode);
 			document.addTextSortable(DictGroupTerm.GROUP_CODE, dictGroup.getGroupCode());
 			
-			_log.info(dictGroup.getGroupCode());
+			//_log.info(dictGroup.getGroupCode());
 			document.addTextSortable(DictGroupTerm.GROUP_NAME, dictGroup.getGroupName());
 			document.addTextSortable(DictGroupTerm.GROUP_NAME_EN, dictGroup.getGroupNameEN());
 			document.addTextSortable(DictGroupTerm.GROUP_DESCRIPTION, dictGroup.getGroupDescription());

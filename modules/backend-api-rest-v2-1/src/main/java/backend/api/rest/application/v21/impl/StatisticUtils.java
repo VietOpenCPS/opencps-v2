@@ -18,22 +18,17 @@ public class StatisticUtils {
 
 		List<DossierStatisticModel> results = new ArrayList<DossierStatisticModel>();
 
-		try {
-			if (statistics != null && statistics.length() > 0) {
-				for (int i = 0; i < statistics.length(); i++) {
-					JSONObject statistic = statistics.getJSONObject(i);
-					DossierStatisticModel ett = new DossierStatisticModel();
-					ett.setTotalCount(statistic.getLong("totalCount"));
-					ett.setDossierStatus(statistic.getString("dossierStatus"));
-					ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
-					ett.setStepCode(statistic.getString("stepCode"));
-					ett.setStepName(statistic.getString("stepName"));
-					results.add(ett);
-				}
+		if (statistics != null && statistics.length() > 0) {
+			for (int i = 0; i < statistics.length(); i++) {
+				JSONObject statistic = statistics.getJSONObject(i);
+				DossierStatisticModel ett = new DossierStatisticModel();
+				ett.setTotalCount(statistic.getLong("totalCount"));
+				ett.setDossierStatus(statistic.getString("dossierStatus"));
+				ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
+				ett.setStepCode(statistic.getString("stepCode"));
+				ett.setStepName(statistic.getString("stepName"));
+				results.add(ett);
 			}
-
-		} catch (Exception e) {
-			_log.error(e);
 		}
 
 		return results;

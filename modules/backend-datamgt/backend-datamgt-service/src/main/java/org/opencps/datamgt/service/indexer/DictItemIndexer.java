@@ -98,9 +98,10 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			
 			if (Validator.isNotNull(parentItem) && Validator.isNotNull(parentItem.getItemCode())) {
 				parentCode = parentItem.getItemCode();
-			} else {
-				_log.info(parentItem.getItemCode());
 			}
+			//else {
+			//	_log.info(parentItem.getItemCode());
+			//}
 			
 		}  else {
 			parentCode = "0";

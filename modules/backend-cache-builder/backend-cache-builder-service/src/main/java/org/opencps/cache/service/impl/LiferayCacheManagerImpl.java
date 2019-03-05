@@ -1,16 +1,5 @@
 package org.opencps.cache.service.impl;
 
-import com.liferay.portal.kernel.cache.MultiVMPoolUtil;
-import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.cache.SingleVMPoolUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import java.io.Serializable;
-
-import org.opencps.cache.service.CacheManager;
-
 public class LiferayCacheManagerImpl {
 //implements CacheManager{
 //

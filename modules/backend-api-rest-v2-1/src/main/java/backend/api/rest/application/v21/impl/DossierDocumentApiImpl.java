@@ -53,7 +53,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	public void downloadDocByReferenceUid(String id, String referenceUid) {
 
 		// TODO: check user is loged or password for access dossier file
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("====START DOWNLOAD DOCUMENT==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 
@@ -82,13 +82,14 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 				responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
 //				return responseBuilder.build();
+				_log.info("====END DOWNLOAD DOCUMENT==== ");
 			} else {
 //				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 			}
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====DOWNLOAD DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -99,7 +100,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	@Override
 	public DossierDocumentResultModel getDocumentList(String id, Integer start, Integer end) {
 		// TODO: check user is loged or password for access dossier file
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("====START GET LIST DOCUMENT==== ");
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentResultModel results = null;
 		
@@ -123,10 +124,10 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 				results.getData().addAll(
 						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get("data")));
 			}
+			_log.info("====END GET LIST DOCUMENT==== ");
 		} catch (Exception e) {
-			_log.info(e);
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====LIST DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -135,8 +136,8 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 	@Override
 	public DossierDocumentModel createDossierDoc(String id, Attachment upfileDetail, String referenceUid, String documentType,
 			String documentName, String documentCode) {
-//		BackendAuth auth = new BackendAuthImpl();
 
+		_log.info("====START CREATE DOCUMENT==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentModel result = null;
@@ -203,13 +204,13 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 //			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-			_log.info("__End update dossier file at:" + new Date());
 			if (dossierDoc != null) {
 				result = DossierDocumentParser.mappingDocumentTypeModel(dossierDoc);
 			}
+			_log.info("====END CREATE DOCUMENT==== ");
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====CREATE DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return result;

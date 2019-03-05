@@ -108,7 +108,7 @@ public class SendMTConverterUtils {
 	
 					SOAPBody bodyResponse = soapResponse.getSOAPBody();
 					results = bodyResponse.getTextContent();
-					_log.info("results: "+results);
+					//_log.info("results: "+results);
 	
 					// Print the SOAP Response
 	//				_log.info("Response SOAP Message:");

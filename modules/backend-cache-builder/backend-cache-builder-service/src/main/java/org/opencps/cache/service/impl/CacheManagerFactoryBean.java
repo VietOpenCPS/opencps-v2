@@ -1,16 +1,8 @@
 package org.opencps.cache.service.impl;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import org.opencps.cache.service.CacheLocalService;
-import org.opencps.cache.service.CacheManager;
-
 public class CacheManagerFactoryBean {
 
-	private static final Log logger = LogFactoryUtil.getLog(CacheLocalService.class);
+	//private static final Log logger = LogFactoryUtil.getLog(CacheLocalService.class);
 
 //	public static CacheManager create(boolean useRedis, CacheManager liferayCacheManager,
 //			CacheManager redisCacheManager) throws Exception {

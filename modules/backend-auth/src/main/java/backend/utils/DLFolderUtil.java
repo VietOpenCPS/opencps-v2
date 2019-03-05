@@ -84,7 +84,7 @@ public class DLFolderUtil {
 
 		}
 		catch (Exception e) {
-			_log.info(e);
+			_log.error(e);
 		}
 
 		return dlFolder;

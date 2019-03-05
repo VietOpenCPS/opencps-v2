@@ -1,12 +1,9 @@
 package org.opencps.datamgt.model.listener;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.datamgt.model.WorkTime;
 import org.osgi.service.component.annotations.Component;
 
@@ -44,5 +41,5 @@ public class WorkTimeTempListener extends BaseModelListener<WorkTime> {
 	}
 
 
-	private Log _log = LogFactoryUtil.getLog(WorkTimeTempListener.class.getName());
+	//private Log _log = LogFactoryUtil.getLog(WorkTimeTempListener.class.getName());
 }

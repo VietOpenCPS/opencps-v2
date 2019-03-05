@@ -1,6 +1,5 @@
 package org.opencps.statistic.rest.converter;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +8,11 @@ import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.springframework.core.convert.converter.Converter;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 public class DossierStatisticConverter {
 
-	private static Log LOG = LogFactoryUtil.getLog(DossierStatisticConverter.class);
+	//private static Log LOG = LogFactoryUtil.getLog(DossierStatisticConverter.class);
 
-	private static DateTimeFormatter _formartter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+	//private static DateTimeFormatter _formartter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 
 	public static Converter<List<OpencpsDossierStatistic>, DossierStatisticResponse> getDossierStatisticResponse() {

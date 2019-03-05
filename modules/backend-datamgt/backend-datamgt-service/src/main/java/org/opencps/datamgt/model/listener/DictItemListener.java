@@ -2,7 +2,6 @@ package org.opencps.datamgt.model.listener;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
@@ -34,7 +33,7 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 	public void onAfterUpdate(DictItem model) throws ModelListenerException {
 		super.onAfterUpdate(model);
 
-		_log.info("onAfterUpdate DictItem" + model);
+		//_log.info("onAfterUpdate DictItem" + model);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -44,7 +43,7 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 
 		for (DictItem dictItem : listChilds) {
 
-			_log.info("onAfterUpdate DictItem listChilds" + dictItem.getDictItemId());
+			//_log.info("onAfterUpdate DictItem listChilds" + dictItem.getDictItemId());
 
 			try {
 				dictItem = DictItemLocalServiceUtil.updateDictItemListener(dictItem.getUserId(), dictItem.getDictItemId(),
@@ -125,7 +124,7 @@ public class DictItemListener extends BaseModelListener<DictItem> {
 		super.onBeforeRemove(model);
 
 		long id = model.getDictItemId();
-		_log.info("id" + id);
+		//_log.info("id" + id);
 
 		try {
 			DictItemLocalServiceUtil.fetchDictItem(id);

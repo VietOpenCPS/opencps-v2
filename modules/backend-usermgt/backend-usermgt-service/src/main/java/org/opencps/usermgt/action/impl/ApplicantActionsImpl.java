@@ -241,13 +241,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			int year = calendar.get(Calendar.YEAR);
 			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-			_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
+			//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 						password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
 						LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 						dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 						userGroupIds, sendEmail, context);
-			_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+			//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 			//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 			UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
 			UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), "12345", "12345", false, true);
@@ -259,7 +259,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			
 			ApplicantLocalServiceUtil.updateApplicant(applicant);
 			//Send mail
-			_log.info("Applicant Log trigger!");
+			//_log.info("Applicant Log trigger!");
 			if (applicant.getMappingUserId() > 0) {
 				NotificationQueue queue = null;
 				
@@ -302,7 +302,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	//			_log.info("payloadTest1: "+payload1);
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
-					_log.info("START PAYLOAD: ");
+					//_log.info("START PAYLOAD: ");
 					payload.put(
 						"Applicant", JSONFactoryUtil.createJSONObject(
 							JSONFactoryUtil.looseSerialize(applicant)));
@@ -310,7 +310,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				catch (JSONException parse) {
 					_log.error(parse);
 				}
-				_log.info("payloadTest: "+payload.toJSONString());
+				//_log.info("payloadTest: "+payload.toJSONString());
 				queue.setPayload(payload.toJSONString());
 				queue.setExpireDate(cal.getTime());
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);

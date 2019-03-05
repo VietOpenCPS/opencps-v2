@@ -249,14 +249,14 @@ public class ExtendDueDateUtils {
 //		String[] hourArrEnd = null;
 		if (flagCompareDate) {
 			int dayOfWeek = startDateCal.get(Calendar.DAY_OF_WEEK);
-			_log.info("dayOfWeek: "+dayOfWeek);
+			//_log.info("dayOfWeek: "+dayOfWeek);
 			int hoursStart = startDateCal.get(Calendar.HOUR_OF_DAY);
-			_log.info("hoursStart: "+hoursStart);
+			//_log.info("hoursStart: "+hoursStart);
 			//int minuteStart = startDateCal.get(Calendar.MINUTE);
 
 			//int dayOfWeek = startDateCal.get(Calendar.DAY_OF_WEEK);
 			int hoursEnd = endDateCal.get(Calendar.HOUR_OF_DAY);
-			_log.info("hoursEnd: "+hoursEnd);
+			//_log.info("hoursEnd: "+hoursEnd);
 			//int minuteEnd = endDateCal.get(Calendar.MINUTE);
 			//
 			List<String[]> workingArr = processPartWorking(dayOfWeek, groupId);
@@ -320,7 +320,7 @@ public class ExtendDueDateUtils {
 //				}
 //			}
 			//
-			_log.info("workingArr.get(0)111: "+JSONFactoryUtil.looseSerialize(workingArr));
+			//_log.info("workingArr.get(0)111: "+JSONFactoryUtil.looseSerialize(workingArr));
 			if (workingArr != null && workingArr.size() > 0) {
 				String[] hourArrStart = workingArr.get(0);
 				String[] hourArrEnd = workingArr.get(1);
@@ -329,23 +329,23 @@ public class ExtendDueDateUtils {
 					//
 					int hoursStart = startDateCal.get(Calendar.HOUR_OF_DAY);
 					int minuteStart = startDateCal.get(Calendar.MINUTE);
-					_log.info("hoursStart: "+hoursStart);
-					_log.info("minuteStart: "+minuteStart);
+					//_log.info("hoursStart: "+hoursStart);
+					//_log.info("minuteStart: "+minuteStart);
 					long timeStampStart = hoursStart * VALUE_CONVERT_HOUR_TIMESTAMP
 							+ minuteStart * VALUE_CONVERT_MINUTE_TIMESTAMP;
 					long timeStampEnd = endHourAfterNoon * VALUE_CONVERT_HOUR_TIMESTAMP
 							+ endMinuteAfterNoon * VALUE_CONVERT_MINUTE_TIMESTAMP;
 					//long returnTest = 0;
-					_log.info("startHourMorning: "+startHourMorning);
-					_log.info("endHourMorning: "+endHourMorning);
-					_log.info("endHourAfterNoon: "+endHourAfterNoon);
-					_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
+					//_log.info("startHourMorning: "+startHourMorning);
+					//_log.info("endHourMorning: "+endHourMorning);
+					//_log.info("endHourAfterNoon: "+endHourAfterNoon);
+					//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
 					if (startHourMorning <= hoursStart && hoursStart <= endHourMorning) {
 						extendHour = timeStampEnd - timeStampStart - countTimeOffNoon();
-						_log.info("extendHour11: "+extendHour);
+						//_log.info("extendHour11: "+extendHour);
 					} else if (startHourAfterNoon <= hoursStart && hoursStart <= endHourAfterNoon) {
 						extendHour = timeStampEnd - timeStampStart;
-						_log.info("extendHour11: "+extendHour);
+						//_log.info("extendHour11: "+extendHour);
 					}
 				}
 			}
@@ -363,34 +363,34 @@ public class ExtendDueDateUtils {
 			}
 			
 			List<String[]> workingEndArr = processPartWorking(dayOfWeek111, groupId);
-			_log.info("workingEndArr: "+JSONFactoryUtil.looseSerialize(workingEndArr));
+			//_log.info("workingEndArr: "+JSONFactoryUtil.looseSerialize(workingEndArr));
 			if (workingEndArr != null && workingEndArr.size() > 0) {
 				String[] hourArr1 = workingEndArr.get(0);
 				String[] hourArr2 = workingEndArr.get(1);
-				_log.info("hourArr1: "+hourArr1);
-				_log.info("hourArr2: "+hourArr2);
+				//_log.info("hourArr1: "+hourArr1);
+				//_log.info("hourArr2: "+hourArr2);
 				if (hourArr1 != null && hourArr2 != null) {
 					processTimeWorking(hourArr1, hourArr2);
 					//
 					
 					int hoursEnd = endDateCal.get(Calendar.HOUR_OF_DAY);
 					int minuteEnd = endDateCal.get(Calendar.MINUTE);
-					_log.info("hoursEnd: "+hoursEnd);
-					_log.info("minuteEnd: "+minuteEnd);
+					//_log.info("hoursEnd: "+hoursEnd);
+					//_log.info("minuteEnd: "+minuteEnd);
 					long timeStampEnd = hoursEnd * VALUE_CONVERT_HOUR_TIMESTAMP
 							+ minuteEnd * VALUE_CONVERT_MINUTE_TIMESTAMP;
 					long timeStampStart = startHourMorning * VALUE_CONVERT_HOUR_TIMESTAMP
 							+ startMinuteMorning * VALUE_CONVERT_MINUTE_TIMESTAMP;
-					_log.info("startHourMorning: "+startHourMorning);
-					_log.info("endHourMorning: "+endHourMorning);
-					_log.info("endHourAfterNoon: "+endHourAfterNoon);
-					_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
+					//_log.info("startHourMorning: "+startHourMorning);
+					//_log.info("endHourMorning: "+endHourMorning);
+					//_log.info("endHourAfterNoon: "+endHourAfterNoon);
+					//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
 					if (startHourMorning <= hoursEnd && hoursEnd <= endHourMorning) {
 						extendHour += timeStampEnd - timeStampStart;
-						_log.info("extendHour22: "+extendHour);
+						//_log.info("extendHour22: "+extendHour);
 					} else if (startHourAfterNoon <= hoursEnd && hoursEnd <= endHourAfterNoon) {
 						extendHour += timeStampEnd - timeStampStart - countTimeOffNoon();
-						_log.info("extendHour22: "+extendHour);
+						//_log.info("extendHour22: "+extendHour);
 					}
 				}
 			}

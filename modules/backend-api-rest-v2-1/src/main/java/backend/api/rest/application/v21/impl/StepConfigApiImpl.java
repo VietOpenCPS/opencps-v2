@@ -45,9 +45,9 @@ public class StepConfigApiImpl implements StepConfigApi {
 	private static Log _log = LogFactoryUtil.getLog(StepConfigApiImpl.class);
 	@Override
 	public StepConfigItem addStepConfig(StepConfigItem body) {
+		_log.info("====START ADD STEP CONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-//		System.out.println("StepConfigApiImpl.addStepConfig()" + body);
 		try {
 			
 			serviceContext.setUserId(userId);
@@ -57,14 +57,14 @@ public class StepConfigApiImpl implements StepConfigApi {
 					body.getMenuStepName(), body.getButtonConfig(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("====START ADD STEP CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD STEP CONFIG - PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD STEP CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -73,21 +73,21 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	@Override
 	public void deleteStepConfig(String id) {
+		_log.info("====START DELETE STEP CONFIG==== ");
 		try {
 			
 			long userId = user.getUserId();
-			
 			serviceContext.setUserId(userId);
-			
 			action.deleteStepConfig(Long.valueOf(id), serviceContext);
 
+			_log.info("====END DELETE STEP CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			_log.error("====ADD MENU CONFIG - PortalException==== ");
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====ADD MENU CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
@@ -106,6 +106,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	@Override
 	public StepConfigItem updateStepConfig(String id, StepConfigItem body) {
+		_log.info("====START UPDATE STEP CONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -118,14 +119,14 @@ public class StepConfigApiImpl implements StepConfigApi {
 					body.getMenuGroup(), body.getMenuStepName(), body.getButtonConfig(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("====END UPDATE STEP CONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====UPDATE MENU CONFIG - PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.error("====UPDATE MENU CONFIG - AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -140,6 +141,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 
 	@Override
 	public StepConfigItemResult getStepConfigByMainStatusAndSubStatus(String mainStatus, String subStatus) {
+		_log.info("====START GET LIST STEP CONFIG==== ");
 		StepConfigItemResult result = new StepConfigItemResult();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
@@ -168,7 +170,7 @@ public class StepConfigApiImpl implements StepConfigApi {
 			
 			result.getData().addAll(lstItems);
 		}
-		
+		_log.info("====END GET LIST STEP CONFIG==== ");
 		return result;
 	}
 

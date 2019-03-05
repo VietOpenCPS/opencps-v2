@@ -23,6 +23,7 @@ public class ElasticQueryWrapUtil {
 	
 	public static JSONObject query(String q, String className, long conpanyId) {
 
+		_log.info("====START Single Query==== ");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
@@ -74,11 +75,11 @@ public class ElasticQueryWrapUtil {
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
-	        osw.write(q);
-	        osw.flush();
-	        osw.close();
-	        
+			OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
+			osw.write(q);
+			osw.flush();
+			osw.close();
+
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
 			String output;
@@ -90,15 +91,11 @@ public class ElasticQueryWrapUtil {
 			}
 			
 			result = JSONFactoryUtil.createJSONObject(sb.toString());
-			
+			_log.info("====END Single Query==== ");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			_log.error(e);
+			_log.error("JSONException Message: "+e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			_log.error(e);
+			_log.error("IOException Message: "+e);
 		}
 
 		return result;
@@ -106,6 +103,7 @@ public class ElasticQueryWrapUtil {
 
 	public static JSONObject queryMultiple(String q, String className, long conpanyId) {
 
+		_log.info("==== START Multiple Query==== ");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
@@ -175,19 +173,13 @@ public class ElasticQueryWrapUtil {
 			}
 			
 			result = JSONFactoryUtil.createJSONObject(sb.toString());			
-			
+			_log.info("==== END Multiple Query==== ");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			_log.error(e);
+			_log.error("JSONException Message: "+e);
 		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			_log.error(e);
+			_log.error("ProtocolException Message: "+e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			_log.error(e);
+			_log.error("IOException Message: "+e);
 		}
 
 		return result;

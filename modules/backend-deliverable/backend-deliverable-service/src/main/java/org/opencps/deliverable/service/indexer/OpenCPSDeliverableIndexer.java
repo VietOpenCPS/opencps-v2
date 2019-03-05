@@ -49,7 +49,7 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 	protected Document doGetDocument(OpenCPSDeliverable object) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, object);
 		
-		System.out.println("OpenCPSDeliverableIndexer.doGetDocument(abc)" + object);
+		//System.out.println("OpenCPSDeliverableIndexer.doGetDocument(abc)" + object);
 		
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
@@ -87,7 +87,7 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 		
 		try {
 
-			System.out.println("OpenCPSDeliverableIndexer.doGetDocument(object.getFormData())" + object.getFormData());
+			//System.out.println("OpenCPSDeliverableIndexer.doGetDocument(object.getFormData())" + object.getFormData());
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
 
 			Iterator<String> keys = jsonObject.keys();
@@ -97,7 +97,7 @@ public class OpenCPSDeliverableIndexer extends BaseIndexer<OpenCPSDeliverable> {
 			    document.addTextSortable(key, jsonObject.getString(key));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 		
 		return document;

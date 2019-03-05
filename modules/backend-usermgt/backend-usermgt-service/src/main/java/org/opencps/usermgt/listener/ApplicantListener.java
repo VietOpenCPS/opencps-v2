@@ -129,7 +129,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 	//			_log.info("payloadTest1: "+payload1);
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
-					_log.info("START PAYLOAD: ");
+					//_log.info("START PAYLOAD: ");
 					payload.put(
 						"Applicant", JSONFactoryUtil.createJSONObject(
 							JSONFactoryUtil.looseSerialize(model)));
@@ -137,7 +137,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 				catch (JSONException parse) {
 					_log.error(parse);
 				}
-				_log.info("payloadTest: "+payload.toJSONString());
+				//_log.info("payloadTest: "+payload.toJSONString());
 				queue.setPayload(payload.toJSONString());
 				
 				queue.setExpireDate(cal.getTime());

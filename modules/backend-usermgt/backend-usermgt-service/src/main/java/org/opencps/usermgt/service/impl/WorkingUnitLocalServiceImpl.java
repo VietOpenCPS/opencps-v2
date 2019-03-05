@@ -16,6 +16,7 @@ package org.opencps.usermgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -37,7 +38,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -108,7 +108,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (!hasPermission) {
 			throw new UnauthorizationException();
 		}
-		System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()" + parentWorkingUnitId + "//" + groupId);
+		//System.out.println("WorkingUnitLocalServiceImpl.addWorkingUnit()" + parentWorkingUnitId + "//" + groupId);
 		sibling = getSibling(groupId, parentWorkingUnitId, sibling);
 
 		WorkingUnit workingUnitCheck = workingUnitPersistence.fetchByF_govAgencyCode(groupId, govAgencyCode);
@@ -263,7 +263,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		List<EmployeeJobPos> listEmp = employeeJobPosPersistence.findByF_workingUnitId(workingUnitId);
 
 		if (!hasPermission || (Validator.isNotNull(listEmp) && listEmp.size() > 0)) {
-			_log.info("Working unit has employees");
+			//_log.info("Working unit has employees");
 			throw new UnauthorizationException();
 		}
 
@@ -643,7 +643,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			object.setTreeIndex(treeIndex);
 			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		} catch (NotFoundException e) {
-			_log.error(0);
+			_log.error(e);
 			object.setLevel(0);
 			object.setTreeIndex(StringPool.BLANK);
 		}
