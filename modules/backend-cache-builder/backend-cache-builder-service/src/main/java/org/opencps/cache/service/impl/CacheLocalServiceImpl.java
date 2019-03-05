@@ -52,7 +52,7 @@ public class CacheLocalServiceImpl extends CacheLocalServiceBaseImpl {
 	 */
 
 
-	private static final Log _log = LogFactoryUtil.getLog(CacheActionsImpl.class);
+	//private static final Log _log = LogFactoryUtil.getLog(CacheActionsImpl.class);
 
 //	public Serializable getFromCache(String cacheName, Serializable key) {
 //		System.out.println("Liferay Cache: Fetching from cache. CacheName = " + cacheName + ", Key = " + key);

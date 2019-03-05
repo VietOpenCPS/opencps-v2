@@ -12,14 +12,14 @@ import org.opencps.rest.application.model.DocumentTypeModel;
 
 public class DocumentTypeParser {
 
-	private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);
+	//private static Log _log = LogFactoryUtil.getLog(DocumentTypeParser.class);
 	public static List<DocumentTypeModel> mappingDocumentResultModel(List<DocumentType> docList) {
 //		Gson gson = new Gson();
 		if (docList != null && docList.size() > 0) {
 			List<DocumentTypeModel> docModelList = new ArrayList<DocumentTypeModel>();
 			for (DocumentType doc : docList) {
 				String strDoc = JSONFactoryUtil.looseSerialize(doc);
-				_log.info("strDoc: "+strDoc);
+				//_log.info("strDoc: "+strDoc);
 				DocumentTypeModel model = JSONFactoryUtil.looseDeserialize(strDoc, DocumentTypeModel.class);
 
 				docModelList.add(model);
@@ -35,7 +35,7 @@ public class DocumentTypeParser {
 		
 //		Gson gson = new Gson();
 		String strDoc = JSONFactoryUtil.looseSerialize(doc);
-		_log.info("strDoc: "+strDoc);
+		//_log.info("strDoc: "+strDoc);
 		DocumentTypeModel object = JSONFactoryUtil.looseDeserialize(strDoc, DocumentTypeModel.class);
 		
 //		ActionConfigItem object = gson.fromJson(gson.toJson(ett), ActionConfigItem.class);

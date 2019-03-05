@@ -1,11 +1,12 @@
 package backend.auth.api;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class BackendUtils {
 	
@@ -19,7 +20,7 @@ public class BackendUtils {
 
 		try {
 			context = ServiceContextFactory.getInstance(req);
-		} catch (Exception e) {
+		} catch (PortalException e) {
 			_log.error(e);
 		}
 

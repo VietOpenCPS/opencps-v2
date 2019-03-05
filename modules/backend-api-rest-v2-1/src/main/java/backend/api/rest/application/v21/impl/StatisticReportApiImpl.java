@@ -53,22 +53,16 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	@Override
 	public Object statisticReportPrint(User user, Company company, Locale locale, HttpHeaders httpHeaders,
 			ServiceContext serviceContext, String code, String body) {
-		File file = null;
+		_log.info("====START PRINT REPORT==== ");
 
-//		BackendAuth auth = new BackendAuthImpl();
+		File file = null;
 
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-		
 		String siteName = group.getNameCurrentValue();
-		
 		serviceContext.setUserId(userId);
-
-//		if (auth.isAuth(serviceContext)) {
-//			return Response.status(HttpServletResponse.SC_FORBIDDEN).build();
-//		}
 
 		DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, code);
 		String documentScript;
@@ -79,7 +73,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 				reportType = bodyObj.getString("reportType");
 			}
 		} catch (JSONException e) {
-			_log.error(e);
+			_log.debug(e);
+			_log.error("Report Type JSONException");
 		}
 		
 		if (docType != null) {
@@ -130,10 +125,10 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					}
 					return responseBuilder.build();
 				}
-
+				_log.info("====END PRINT REPORT==== ");
 			} catch (MessageBusException e) {
 				_log.debug(e);
-				//_log.error(e);
+				_log.error("====PRINT REPORT ERROR==== ");
 				return Response.status(HttpServletResponse.SC_CONFLICT).build();
 			}
 
@@ -143,44 +138,44 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	}
 
 	private JSONObject doGetFormData(String code, String body, String siteName) {
+		_log.info("====START GET FORM DATA==== ");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
-		switch(code)
-        {
-            case "REPORT_01":
-                result = getFormDataReport01(body, siteName);
-                break;
-            case "REPORT_02":
-            	result = getFormDataReportTongHop(body, siteName);
-                break;
-            case "REPORT_03":
-            	result = getFormDataReportDetail(body, siteName);
-                break;
-            case "REPORT_04":
-            	result = getFormDataReportTongHop(body, siteName);
-                break;
-            case "REPORT_05":
-            	result = getFormDataReportDetail(body, siteName);
-                break;
-            case "REPORT_06":
-            	result = getFormDataReportTongHop(body, siteName);
-                break;
-            case "REPORT_07":
-//            	result = getFormDataReport07(body);
-                break;
-            case "REPORT_08":
-//            	result = getFormDataReport08(body);
-                break;
-            case "REPORT_09":
-            	result = getFormDataReportDetail(body, siteName);
-                break;
-            case "REPORT_10":
-            	result = getFormDataReportDetail(body, siteName);
-                break;
-            default:
-            	result = JSONFactoryUtil.createJSONObject();
-        }
-		
+
+		switch (code) {
+		case "REPORT_01":
+			result = getFormDataReport01(body, siteName);
+			break;
+		case "REPORT_02":
+			result = getFormDataReportTongHop(body, siteName);
+			break;
+		case "REPORT_03":
+			result = getFormDataReportDetail(body, siteName);
+			break;
+		case "REPORT_04":
+			result = getFormDataReportTongHop(body, siteName);
+			break;
+		case "REPORT_05":
+			result = getFormDataReportDetail(body, siteName);
+			break;
+		case "REPORT_06":
+			result = getFormDataReportTongHop(body, siteName);
+			break;
+		case "REPORT_07":
+			// result = getFormDataReport07(body);
+			break;
+		case "REPORT_08":
+			// result = getFormDataReport08(body);
+			break;
+		case "REPORT_09":
+			result = getFormDataReportDetail(body, siteName);
+			break;
+		case "REPORT_10":
+			result = getFormDataReportDetail(body, siteName);
+			break;
+		default:
+			result = JSONFactoryUtil.createJSONObject();
+		}
+		_log.info("====END GET FORM DATA==== ");
 		return result;
 	}
 
@@ -192,96 +187,100 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	}
 
 	private JSONObject getFormDataReportDetail(String body, String siteName) {
+		_log.info("====START GET DATA REPORT DETAIL==== ");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
-			
+
 			result.put("year", resultBody.getInt("year"));
 			result.put("month", resultBody.getInt("month"));
 			result.put("govAgencyName", siteName);
-			
+
 			result.put("fromDate", resultBody.getString("fromDate"));
 			result.put("toDate", resultBody.getString("toDate"));
 			result.put("actionUser", "");
-			  
+
 			JSONArray dossierData = resultBody.getJSONArray("data");
 			JSONObject currentObject = null;
-			
+
 			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
 			JSONObject dossierRaw = JSONFactoryUtil.createJSONObject();
-			
+
 			for (int i = 0; i < dossierData.length(); i++) {
 				currentObject = dossierData.getJSONObject(i);
-				
+
 				JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
-				
+
 				domainRawItem.put("domainName", currentObject.getString("domainName"));
 				domainRawItem.put("services", JSONFactoryUtil.createJSONArray());
-				
+
 				if (Validator.isNull(domainRaw.getJSONObject(currentObject.getString("domainName")))) {
 					domainRaw.put(currentObject.getString("domainName"), domainRawItem);
 				}
-				
+
 				if (Validator.isNotNull(dossierRaw.getJSONObject(currentObject.getString("serviceCode")))) {
-					if (dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getString("serviceCode").equalsIgnoreCase(currentObject.getString("serviceCode"))) {
-						dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers").put(currentObject);
+					if (dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getString("serviceCode")
+							.equalsIgnoreCase(currentObject.getString("serviceCode"))) {
+						dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers")
+								.put(currentObject);
 					}
 				} else {
 					JSONObject dossierRawItem = JSONFactoryUtil.createJSONObject();
-					
+
 					dossierRawItem.put("serviceCode", currentObject.getString("serviceCode"));
 					dossierRawItem.put("serviceName", currentObject.getString("serviceName"));
 					dossierRawItem.put("domainName", currentObject.getString("domainName"));
 					dossierRawItem.put("dossiers", JSONFactoryUtil.createJSONArray());
-					
+
 					dossierRaw.put(currentObject.getString("serviceCode"), dossierRawItem);
-					dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers").put(currentObject);
+					dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers")
+							.put(currentObject);
 				}
-				
+
 			}
-			
+
 			JSONArray keys = dossierRaw.names();
 
-			for (int i = 0; i < keys.length (); ++i) {
+			for (int i = 0; i < keys.length(); ++i) {
 
-			   String key = keys.getString (i);
-			   
-			   JSONObject keyObject = dossierRaw.getJSONObject(key);
-			   if (Validator.isNotNull(keyObject)) {
-				   if (Validator.isNotNull(domainRaw.getString(keyObject.getString("domainName"))) &&
-						   domainRaw.getJSONObject(keyObject.getString("domainName")).getString("domainName").equalsIgnoreCase(keyObject.getString("domainName"))) {
-					   domainRaw.getJSONObject(keyObject.getString("domainName")).getJSONArray("services").put(keyObject);
-				   }
-			   }
-			   
+				String key = keys.getString(i);
+
+				JSONObject keyObject = dossierRaw.getJSONObject(key);
+				if (Validator.isNotNull(keyObject)) {
+					if (Validator.isNotNull(domainRaw.getString(keyObject.getString("domainName")))
+							&& domainRaw.getJSONObject(keyObject.getString("domainName")).getString("domainName")
+									.equalsIgnoreCase(keyObject.getString("domainName"))) {
+						domainRaw.getJSONObject(keyObject.getString("domainName")).getJSONArray("services")
+								.put(keyObject);
+					}
+				}
+
 			}
-			
+
 			JSONArray domains = JSONFactoryUtil.createJSONArray();
-			
+
 			keys = domainRaw.names();
 
-			for (int i = 0; i < keys.length (); ++i) {
+			for (int i = 0; i < keys.length(); ++i) {
 
-			   String key = keys.getString (i);
-			   
-			   JSONObject keyObject = domainRaw.getJSONObject(key);
-			   
-			   if (Validator.isNotNull(key)) {
-				   
-				   JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
-			   
-				   domainRawItem.put("domainName", key);
-				   domainRawItem.put("services", keyObject.getJSONArray("services"));
-				   
-				   domains.put(domainRawItem);
-			   }
-			   
+				String key = keys.getString(i);
+
+				JSONObject keyObject = domainRaw.getJSONObject(key);
+
+				if (Validator.isNotNull(key)) {
+
+					JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
+
+					domainRawItem.put("domainName", key);
+					domainRawItem.put("services", keyObject.getJSONArray("services"));
+
+					domains.put(domainRawItem);
+				}
+
 			}
-			
+			_log.info("====END GET DATA REPORT DETAIL==== ");
 			result.put("domains", domains);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_log.error(e);
 		}
 		
@@ -289,6 +288,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 	}
 
 	private JSONObject getFormDataReport01(String body, String siteName) {
+		_log.info("====START GET DATA REPORT 01==== ");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
@@ -404,13 +404,11 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					}
 				}
 			}
-
+			_log.info("====END GET DATA REPORT 01==== ");
 			result.put("statistics", statisticsData);
-			_log.info("result: "+result);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			_log.error(e);
+			_log.error("JSONException: "+e);
 		}
 		return result;
 	}

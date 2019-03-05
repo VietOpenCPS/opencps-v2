@@ -16,6 +16,7 @@ package org.opencps.usermgt.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -45,7 +46,6 @@ import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -112,7 +112,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 					ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(roleId), roleId, actionIds);
 
 		} catch (PortalException e) {
-			_log.error(e);
+			_log.debug(e);
 			for (int i = 0; i < listPermission.length; i++) {
 
 				String actionId = listPermission[i];
@@ -464,7 +464,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			String role_name = jobPosCode + StringPool.UNDERLINE + jobPosId;
 
 			// add role
-			_log.info("role_name:" + role_name);
+			//_log.info("role_name:" + role_name);
 			// Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(),
 			// counterLocalService.increment(),
 			// role_name, null, null, 1, "", serviceContext);

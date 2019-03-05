@@ -8,7 +8,6 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.constants.OfficeSiteTerm;
-import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.model.OfficeSite;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;

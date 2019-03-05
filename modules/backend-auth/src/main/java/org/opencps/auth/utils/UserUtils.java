@@ -1,5 +1,6 @@
 package org.opencps.auth.utils;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -14,7 +15,7 @@ public class UserUtils {
 
 		try {
 			user = UserLocalServiceUtil.getUser(userId);
-		} catch (Exception e) {
+		} catch (PortalException e) {
 			_log.error(e);
 		}
 

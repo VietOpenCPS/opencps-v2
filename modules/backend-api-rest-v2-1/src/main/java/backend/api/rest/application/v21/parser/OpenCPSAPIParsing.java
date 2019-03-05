@@ -127,27 +127,29 @@ public class OpenCPSAPIParsing {
 				List<MenuConfig> lstMenus = i > 0 ? MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds) : new ArrayList<>();
 				List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 
-				for (MenuConfig menuConfig : lstMenus) {
-					if (menuConfig.getGroupId() == groupId) {
-						MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-						MenuConfigStepsItem menuConfigStepsItem;
-						List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-						
-						for (StepConfig stepConfig : lstSteps) {
-							if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
-								if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
-									menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
-									
-									menuConfigStepsItems.add(menuConfigStepsItem);							
+				if (lstMenus != null && lstMenus.size() > 0) {
+					for (MenuConfig menuConfig : lstMenus) {
+						if (menuConfig.getGroupId() == groupId && menuConfig.getMenuType() > 0) {
+							MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+							MenuConfigStepsItem menuConfigStepsItem;
+							List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+							
+							for (StepConfig stepConfig : lstSteps) {
+								if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+									if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+										menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+										
+										menuConfigStepsItems.add(menuConfigStepsItem);							
+									}
 								}
 							}
+							
+							menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+							
+							data.add(menuConfigItem);
 						}
-						
-						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
-						
-						data.add(menuConfigItem);
 					}
-				}				
+				}
 			}
 			else {
 				List<Role> userRoles = user.getRoles();
@@ -189,24 +191,24 @@ public class OpenCPSAPIParsing {
 			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 
 			for (MenuConfig menuConfig : lstMenus) {
-				MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-				MenuConfigStepsItem menuConfigStepsItem;
-				List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-				
-				for (StepConfig stepConfig : lstSteps) {
-					if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
-							&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
-						if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
-							menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
-							
-							menuConfigStepsItems.add(menuConfigStepsItem);							
+				if (menuConfig.getMenuType() > 0) {
+					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+					MenuConfigStepsItem menuConfigStepsItem;
+					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+					
+					for (StepConfig stepConfig : lstSteps) {
+						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
+								&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
+							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+								
+								menuConfigStepsItems.add(menuConfigStepsItem);							
+							}
 						}
 					}
+					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+					data.add(menuConfigItem);
 				}
-				
-				menuConfigItem.getSteps().addAll(menuConfigStepsItems);
-				
-				data.add(menuConfigItem);
 			}
 		}
 		

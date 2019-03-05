@@ -107,7 +107,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			@BeanParam DossierSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
-		_log.info("START DossierStatisticResponse: "+query.getAgency());
+		//_log.info("START DossierStatisticResponse: "+query.getAgency());
 
 		int start = query.getStart();
 		int end = query.getEnd();
@@ -294,8 +294,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
-		_log.info("START AgencyCode: "+query.getAgency());
-		_log.info("START VotingCode: "+query.getVotingCode());
+		//_log.info("START AgencyCode: "+query.getAgency());
+		//_log.info("START VotingCode: "+query.getVotingCode());
 		VotingStatisticFinderService votingStatisticFinderService = new VotingStatisticFinderServiceImpl();
 
 		int start = query.getStart();
@@ -430,9 +430,9 @@ public class OpencpsStatisticRestApplication extends Application {
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
-		_log.info("START AgencyCode: "+query.getAgency());
-		_log.info("START VotingCode: "+query.getVotingCode());
-		_log.info("START EmployeeId: "+query.getEmployeeId());
+		//_log.info("START AgencyCode: "+query.getAgency());
+		//_log.info("START VotingCode: "+query.getVotingCode());
+		//_log.info("START EmployeeId: "+query.getEmployeeId());
 
 		PersonStatisticFinderService personStatisticFinderService = new PersonStatisticFinderServiceImpl();
 

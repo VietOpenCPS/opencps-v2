@@ -150,9 +150,9 @@ public class OpenCPSDeliverableLocalServiceImpl extends OpenCPSDeliverableLocalS
 		if (Validator.isNotNull(objectData.getString(ModelKeysDeliverable.REVALIDATE))) {
 			object.setRevalidate(new Date(objectData.getLong(ModelKeysDeliverable.REVALIDATE)));
 		}
-		System.out.println("OpenCPSDeliverableLocalServiceImpl.adminProcessData()" + objectData);
+		//System.out.println("OpenCPSDeliverableLocalServiceImpl.adminProcessData()" + objectData);
 		
-		System.out.println("OpenCPSDeliverableLocalServiceImpl.adminProcessData()" + objectData.getInt(ModelKeysDeliverable.DELIVERABLESTATE));
+		//System.out.println("OpenCPSDeliverableLocalServiceImpl.adminProcessData()" + objectData.getInt(ModelKeysDeliverable.DELIVERABLESTATE));
 		object.setDeliverableState(objectData.getInt(ModelKeysDeliverable.DELIVERABLESTATE));
 		object.setFileEntryId(objectData.getLong(ModelKeysDeliverable.FILEENTRYID));
 		object.setDocSync(objectData.getInt(ModelKeysDeliverable.DOCSYNC));

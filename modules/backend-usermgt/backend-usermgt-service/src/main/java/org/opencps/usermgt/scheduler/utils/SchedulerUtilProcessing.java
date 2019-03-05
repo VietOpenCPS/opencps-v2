@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.opencps.communication.exception.NoSuchNotificationQueueException;
 import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 

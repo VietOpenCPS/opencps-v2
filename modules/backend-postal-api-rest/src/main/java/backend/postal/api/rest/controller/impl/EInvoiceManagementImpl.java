@@ -1,17 +1,13 @@
 package backend.postal.api.rest.controller.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.soap.*;
 
 import org.opencps.api.controller.util.InvoiceTerm;
@@ -46,8 +40,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import backend.postal.api.rest.controller.EInvoiceManagement;
 
 public class EInvoiceManagementImpl implements EInvoiceManagement {
@@ -55,7 +47,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 	private static final Log _log = LogFactoryUtil.getLog(EInvoiceManagementImpl.class);
 
 	public InvoiceServerConfigModel fromJSONObject(JSONObject configObj) {
-		_log.info("configObj =============== " + JSONFactoryUtil.looseSerialize(configObj));
+		//_log.info("configObj =============== " + JSONFactoryUtil.looseSerialize(configObj));
 		if (configObj.has(InvoiceTerm.SERVER_ENDPOINTURL) && configObj.has(InvoiceTerm.SERVER_ACTIVE)) {
 			return new InvoiceServerConfigModel(configObj.getString(InvoiceTerm.SERVER_ENDPOINTURL),
 					configObj.getBoolean(InvoiceTerm.SERVER_ACTIVE));
@@ -68,14 +60,14 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		InvoiceServerConfigModel config = null;
 
 		List<ServerConfig> lstsc = ServerConfigLocalServiceUtil.getByProtocol(groupId, protocol);
-		_log.info("lstsc ========= " + JSONFactoryUtil.looseSerialize(lstsc));
+		//_log.info("lstsc ========= " + JSONFactoryUtil.looseSerialize(lstsc));
 		if (lstsc == null) {
 			return null;
 		} else {
 			try {
 				for (ServerConfig sc : lstsc) {
 					InvoiceServerConfigModel check = fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					_log.info("check ============ " + JSONFactoryUtil.looseSerialize(check));
+					//_log.info("check ============ " + JSONFactoryUtil.looseSerialize(check));
 					if (check.getActive()) {
 						config = check;
 					}
@@ -83,7 +75,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				return config;
 			} catch (JSONException e) {
 				// e.printStackTrace();
-				_log.error(e);
+				_log.debug(e);
 				return null;
 			}
 		}
@@ -219,7 +211,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				SOAPMessage soapResponse = soapConnection.call(message, endpoint);
 
 				// Print the SOAP Response
-				_log.info("Response SOAP Message:");
+				//_log.info("Response SOAP Message:");
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				
 				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName("Fs_NH_GTGTResult");
@@ -231,7 +223,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		        abc = node != null ? node.getTextContent() : "";
 		        
 				soapResponse.writeTo(System.out);
-				_log.info("abc ============ " + abc );
+				//_log.info("abc ============ " + abc );
 				results = new String(stream.toByteArray(), "utf-8");
 				
 				soapConnection.close();

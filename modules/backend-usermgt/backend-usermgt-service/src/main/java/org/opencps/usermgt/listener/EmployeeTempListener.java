@@ -1,18 +1,11 @@
 package org.opencps.usermgt.listener;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
 
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class EmployeeTempListener extends BaseModelListener<Employee> {
 
 	@Override
@@ -54,5 +47,5 @@ public class EmployeeTempListener extends BaseModelListener<Employee> {
 	}
 
 
-	private Log _log = LogFactoryUtil.getLog(EmployeeTempListener.class.getName());
+	//private Log _log = LogFactoryUtil.getLog(EmployeeTempListener.class.getName());
 }

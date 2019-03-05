@@ -19,8 +19,6 @@ package org.opencps.communication.action.impl;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -34,13 +32,13 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class SendMailUtils {
 
-	private static Log _log = LogFactoryUtil.getLog(SendMailUtils.class);
+	//private static Log _log = LogFactoryUtil.getLog(SendMailUtils.class);
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
 			String fromName = "He thong dich vu cong truc tuyen";
-			_log.info("payLoad: "+payLoad);
+			//_log.info("payLoad: "+payLoad);
 			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
 			//String fromAddress = "khoavd@fds.vn";
@@ -52,7 +50,7 @@ public class SendMailUtils {
 			String subject = payLoad.getString("subject");
 
 			String body = payLoad.getString("body");
-			_log.info("body: "+body);
+			//_log.info("body: "+body);
 
 			SubscriptionSender subscriptionSender = new SubscriptionSender();
 

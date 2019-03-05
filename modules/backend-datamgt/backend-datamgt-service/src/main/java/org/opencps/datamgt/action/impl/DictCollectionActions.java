@@ -3,17 +3,13 @@ package org.opencps.datamgt.action.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.DictcollectionInterface;
-import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
@@ -552,14 +548,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 		boolean flag = false;
 
-		DictCollection collection = null;
-		try {
-			collection = getDictCollectionDetail(collectionCode, groupId);
-		}
-		catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
+		DictCollection collection = getDictCollectionDetail(collectionCode, groupId);
 		if (collection != null) {
 			DictGroup dictColl = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());
 
@@ -681,7 +670,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 				List<Document> list = hits.toList();
 
-				_log.info(params);
+				//_log.info(params);
 
 				for (Document document : list) {
 
@@ -698,7 +687,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 					}
 
-					_log.info(document);
+					//_log.info(document);
 
 					document.addTextSortable(
 						DictItemGroupTerm.SELECTED, selected);
@@ -1243,17 +1232,17 @@ public class DictCollectionActions implements DictcollectionInterface {
 	public boolean deleteAllDictItem(long userId, long groupId, long dictCollectionId) {
 		boolean flag = false;
 		try {
-			_log.info("STARTTTTT");
+			//_log.info("STARTTTTT");
 			List<DictItem> itemList = DictItemLocalServiceUtil.findByF_dictCollectionId(dictCollectionId);
-			_log.info("itemList: "+itemList);
-			_log.info("STARTTTTT");
+			//_log.info("itemList: "+itemList);
+			//_log.info("STARTTTTT");
 			if (itemList != null && itemList.size() > 0) {
 				for (DictItem item : itemList) {
 					DictItemLocalServiceUtil.deleteDictItem(item);
 					flag = true;
 				}
 			} else {
-				_log.info("STARTTTTT");
+				//_log.info("STARTTTTT");
 				flag = true;
 			}
 		}catch (Exception e) {

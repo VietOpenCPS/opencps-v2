@@ -67,7 +67,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			_log.info("groupId: "+groupId);
+			//_log.info("groupId: "+groupId);
 			params.put("groupId", String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(VotingTerm.CLASS_NAME, className);

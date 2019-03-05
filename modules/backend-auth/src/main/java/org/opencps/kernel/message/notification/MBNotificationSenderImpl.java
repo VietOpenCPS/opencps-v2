@@ -47,7 +47,7 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 						toUserId, payloadJSON.toString(), false,
 						serviceContext[0]);*/
 					
-					_log.info(serviceContext[0].getScopeGroupId());
+					//_log.info(serviceContext[0].getScopeGroupId());
 					
 					UserNotificationEvent event =
 							UserNotificationEventLocalServiceUtil.addUserNotificationEvent(

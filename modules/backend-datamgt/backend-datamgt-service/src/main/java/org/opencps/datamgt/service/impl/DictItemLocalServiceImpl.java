@@ -371,7 +371,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		DictItem dictItem = dictItemPersistence.fetchByF_dictItemCode(itemCode, groupId);
 		if (dictItem != null) {
 			List<DictItemGroup> lsDictItemGroup = dictItemGroupPersistence.findByF_dictItemId(groupId, dictItem.getPrimaryKey());
-			_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItemGroup.size());
+			//_log.info("DictItemGroupSize_" + dictItem.getPrimaryKey() + "_" + groupId + "_" + lsDictItemGroup.size());
 			//
 			dictItemLocalService.deleteDictItem(dictItem);
 			//remove DictItemGroup

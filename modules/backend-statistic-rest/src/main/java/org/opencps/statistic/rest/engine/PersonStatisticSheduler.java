@@ -19,18 +19,13 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
-import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
@@ -43,13 +38,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
-	private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
+	//private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 

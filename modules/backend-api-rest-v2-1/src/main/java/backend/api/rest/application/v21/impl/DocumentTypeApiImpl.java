@@ -46,10 +46,8 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@SuppressWarnings("unchecked")
 	@Override
 	public DocumentTypeResultModel getAllDocumentTypes(String keyword, Integer start, Integer end) {
-		//TODO
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("==== START GET DOCUMENT TYPE==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("groupId: "+groupId);
 		DocumentTypeResultModel results = null;
 		try {
 			
@@ -57,12 +55,10 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			_log.info("groupId: "+groupId);
 			if (Validator.isNull(end) || end == 0) {
 				start = -1;
 				end = -1;
 			}
-			_log.info("end: "+end);
 			// Default sort by modifiedDate
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
@@ -71,36 +67,27 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
 //						GetterUtil.getBoolean(search.getOrder())) };
 //			}
-			_log.info("groupId: "+groupId);
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			_log.info("groupId: "+groupId);
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			_log.info("groupId: "+groupId);
-//			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
 			params.put(Field.KEYWORD_SEARCH, keyword);
-			_log.info("groupId: "+groupId);
 			params.put(DossierTerm.USER_ID, user.getUserId());
-			_log.info("groupId: "+groupId);
-			
+
 			DocumentTypeActions actions = new DocumentTypeActionsImpl();
 			results = new DocumentTypeResultModel();
 			
 			// get JSON data deliverable
-			_log.info("groupId: "+groupId);
-//			_log.info("serviceContext: "+serviceContext.getCompanyId());
 			JSONObject jsonData = actions.getDocumentTypeList(user.getUserId(), params, sorts, start, end,
 					serviceContext);
-			_log.info("groupId: "+groupId);
 			int total = jsonData.getInt("total");
 			results.setTotal(total);
 			if (jsonData != null && total > 0) {
 				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get("data")));
 			}
-			_log.info("groupId: "+groupId);
+			_log.info("==== END GET DOCUMENT TYPE==== ");
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====EXCEPTION - ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return results;
@@ -108,11 +95,9 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 
 	@Override
 	public DocumentTypeModel createDocumentType(DocumentTypeInputModel input) {
+		_log.info("==== START CREATE DOCUMENT TYPE==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("groupId_"+groupId);
 		long userId = user.getUserId();
-		_log.info("groupId_"+groupId);
-//		BackendAuth auth = new BackendAuthImpl();
 		DocumentTypeModel result = null;
 
 		try {
@@ -121,7 +106,6 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //				throw new UnauthenticationException();
 //			}
 
-			_log.info("groupId_"+groupId);
 //			model.setTypeCode(HtmlUtil.escape(model.getTypeCode()));
 //			model.setTemplateClass(Integer.valueOf(HtmlUtil.escape(String.valueOf(model.getTemplateClass()))));
 //			model.setDocumentName(HtmlUtil.escape(model.getDocumentName()));
@@ -135,24 +119,21 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			String codePattern = HtmlUtil.escape(input.getCodePattern());
 			String documentScript = HtmlUtil.escape(input.getDocumentScript());
 			int docSync = input.getDocSync();
-			_log.info("groupId_"+groupId);
 
 			/* Check user is login - END */
 			DocumentTypeActions actions = new DocumentTypeActionsImpl();
-			_log.info("groupId_"+groupId);
 
 			DocumentType docType = actions.createDocType(userId, groupId, typeCode, templateClass, documentName,
 					codePattern, documentScript, docSync, serviceContext);
-			_log.info("groupId_"+groupId);
 
 			if (docType != null) {
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);
 			}
-			_log.info("groupId_"+groupId);
+			_log.info("==== END CREATE DOCUMENT TYPE==== ");
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("==== CREATE ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -161,18 +142,15 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 
 	@Override
 	public DocumentTypeModel getDocById(String id) {
-//		BackendAuth auth = new BackendAuthImpl();
+		_log.info("==== START GET DOCUMENT TYPE BY ID==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("groupId: "+groupId);
 		Long docId = GetterUtil.getLong(id);
-		_log.info("docId: "+docId);
 		DocumentTypeModel result = null;
 		try {
 			// Check user is login
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			_log.info("groupId: "+groupId);
 			// Default sort by modifiedDate
 			DocumentTypeActions actions = new DocumentTypeActionsImpl();
 			DocumentType docType = null;
@@ -185,9 +163,10 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			if (docType != null) {
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);
 			}
+			_log.info("==== END GET DOCUMENT TYPE BY ID==== ");
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====GET DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 		return result;
@@ -195,10 +174,9 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 
 	@Override
 	public DocumentTypeModel removeDocById(String id) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("groupId_"+groupId);
+		_log.info("==== START REMOVE DOCUMENT BY ID==== ");
+		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Long docId = GetterUtil.getLong(id);
-		_log.info("docId: "+docId);
 //		BackendAuth auth = new BackendAuthImpl();
 		DocumentTypeModel result = null;
 
@@ -210,19 +188,17 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 
 			/* Check user is login - END */
 			DocumentTypeActions actions = new DocumentTypeActionsImpl();
-			_log.info("groupId_"+groupId);
 
 			DocumentType docType = actions.removeDocType(docId);
-			_log.info("groupId_"+groupId);
 
 			if (docType != null) {
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);
 			}
-			_log.info("groupId_"+groupId);
+			_log.info("==== END REMOVE DOCUMENT BY ID==== ");
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====REMOVE DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 
@@ -231,10 +207,9 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 
 	@Override
 	public DocumentTypeModel updateDocById(String id, DocumentTypeInputModel input) {
+		_log.info("==== START UPDATE DOCUMENT BY ID==== ");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("groupId_"+groupId);
 		long userId = user.getUserId();
-		_log.info("groupId_"+groupId);
 		Long docId = GetterUtil.getLong(id);
 //		BackendAuth auth = new BackendAuthImpl();
 		DocumentTypeModel result = null;
@@ -245,31 +220,27 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 //				throw new UnauthenticationException();
 //			}
 
-			_log.info("groupId_"+groupId);
 			String typeCode = HtmlUtil.escape(input.getTypeCode());
 			int templateClass = input.getTemplateClass();
 			String documentName = HtmlUtil.escape(input.getDocumentName());
 			String codePattern = HtmlUtil.escape(input.getCodePattern());
 			String documentScript = HtmlUtil.escape(input.getDocumentScript());
 			int docSync = input.getDocSync();
-			_log.info("groupId_"+groupId);
 
 			/* Check user is login - END */
 			DocumentTypeActions actions = new DocumentTypeActionsImpl();
-			_log.info("groupId_"+groupId);
 
 			DocumentType docType = actions.updateDocType(docId, userId, groupId, typeCode, templateClass, documentName,
 					codePattern, documentScript, docSync, serviceContext);
-			_log.info("groupId_"+groupId);
 
 			if (docType != null) {
 				result = DocumentTypeParser.mappingDocumentTypeModel(docType);
 			}
-			_log.info("groupId_"+groupId);
+			_log.info("==== END UPDATE DOCUMENT BY ID==== ");
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("==== UPDATE DOCUMENT ERROR==== ");
 			respones.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 		}
 

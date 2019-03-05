@@ -41,7 +41,7 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 	public void onAfterCreate(OpenCPSDeliverable model) throws ModelListenerException {
 
 		// Binhth add message bus to processing jasper file
-		_log.info("IN DOSSIER FILE UPDATE FORM DATA");
+		//_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -54,7 +54,7 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
-		_log.info("SEND TO CREATED FILE MODEL");
+		//_log.info("SEND TO CREATED FILE MODEL");
 
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
@@ -77,7 +77,7 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 	@Override
 	public void onAfterUpdate(OpenCPSDeliverable model) throws ModelListenerException {
 
-		_log.info("onAfterUpdate OPENCPS" + model);
+		//_log.info("onAfterUpdate OPENCPS" + model);
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
 		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
@@ -201,11 +201,11 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		if (!modelBeforeUpdate.getFormData().equals(model.getFormData()) && isAttact) {
-			_log.info("IN DOSSIER FILE UPDATE FORM DATA");
+			//_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 			Message message = new Message();
 
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -218,7 +218,7 @@ public class OpenCPSDeliverableListener extends BaseModelListener<OpenCPSDeliver
 			message.put("msgToEngine", msgData);
 			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
-			_log.info("SEND TO CREATED FILE MODEL");
+			//_log.info("SEND TO CREATED FILE MODEL");
 		}
 
 	}

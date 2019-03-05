@@ -1,7 +1,6 @@
 package org.opencps.auth.api;
 
-import java.util.List;
-
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -9,6 +8,8 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.List;
 
 public class BackendAuthImpl implements BackendAuth {
 
@@ -24,29 +25,26 @@ public class BackendAuthImpl implements BackendAuth {
 	public boolean hasResource(ServiceContext context, String name, String actionId) {
 
 		boolean hasPermission = false;
-
 		List<Role> roles = RoleLocalServiceUtil.getUserRoles(context.getUserId());
 
 		try {
-			for (Role role : roles) {
+			if (roles != null && roles.size() > 0) {
+				for (Role role : roles) {
+					if ("Administrator".equals(role.getName())) {
+						hasPermission = true;
+						break;
+					}
 
-				if ("Administrator".equals(role.getName())) {
+					hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(context.getCompanyId(),
+							name, ResourceConstants.SCOPE_INDIVIDUAL, Long.toString(role.getRoleId()), role.getRoleId(),
+							actionId);
 
-					hasPermission = true;
-					break;
-
-				}
-
-				hasPermission = ResourcePermissionLocalServiceUtil.hasResourcePermission(context.getCompanyId(), name,
-						ResourceConstants.SCOPE_INDIVIDUAL, Long.toString(role.getRoleId()), role.getRoleId(),
-						actionId);
-
-				if (hasPermission) {
-					break;
+					if (hasPermission) {
+						break;
+					}
 				}
 			}
-
-		} catch (Exception e) {
+		} catch (PortalException e) {
 			_log.error(e);
 		}
 		

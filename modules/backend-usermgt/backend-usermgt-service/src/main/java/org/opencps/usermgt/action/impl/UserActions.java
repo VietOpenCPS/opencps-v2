@@ -361,15 +361,15 @@ public class UserActions implements UserInterface {
 
 		// changePassWord
 		String secretKey = PwdGenerator.getPassword();
-		_log.info("secretKey:"+secretKey);
+		//_log.info("secretKey:"+secretKey);
 
 		try {
 
 			user.setDigest(secretKey);
 			user = UserLocalServiceUtil.updateUser(user);
-			_log.info("secretKey1:"+user.getDigest());
+			//_log.info("secretKey1:"+user.getDigest());
 
-			_log.info("STRART SEND CHANGE PASS!");
+			//_log.info("STRART SEND CHANGE PASS!");
 			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 			NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 			
@@ -399,7 +399,7 @@ public class UserActions implements UserInterface {
 			}
 
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
-			_log.info("START PAYLOAD: ");
+			//_log.info("START PAYLOAD: ");
 			JSONObject subPayload = JSONFactoryUtil.createJSONObject();
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
@@ -415,7 +415,7 @@ public class UserActions implements UserInterface {
 			subPayload.put("secretKey", secretKey);
 			payload.put("User", subPayload);
 
-			_log.info("payloadTest: "+payload.toJSONString());
+			//_log.info("payloadTest: "+payload.toJSONString());
 			queue.setPayload(payload.toJSONString());
 			queue.setExpireDate(cal.getTime());
 
@@ -450,7 +450,7 @@ public class UserActions implements UserInterface {
 		String secretKey5 = PwdGenerator.getPassword(4 , new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
 		String secretKey = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 		
-		_log.info("secretKey:"+secretKey);
+		//_log.info("secretKey:"+secretKey);
 
 		try {
 
@@ -485,7 +485,7 @@ public class UserActions implements UserInterface {
 				}
 			}
 
-			_log.info("STRART SEND CHANGE PASS!");
+			//_log.info("STRART SEND CHANGE PASS!");
 			long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 			NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 
@@ -515,7 +515,7 @@ public class UserActions implements UserInterface {
 			}
 
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
-			_log.info("START PAYLOAD: ");
+			//_log.info("START PAYLOAD: ");
 			JSONObject subPayload = JSONFactoryUtil.createJSONObject();
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
@@ -531,7 +531,7 @@ public class UserActions implements UserInterface {
 			subPayload.put("secretKey", secretKey);
 			payload.put("User", subPayload);
 
-			_log.info("payloadTest: "+payload.toJSONString());
+			//_log.info("payloadTest: "+payload.toJSONString());
 			queue.setPayload(payload.toJSONString());
 			queue.setExpireDate(cal.getTime());
 
@@ -560,43 +560,43 @@ public class UserActions implements UserInterface {
 			ServiceContext serviceContext) {
 		int flagNo = 0;
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-		_log.info("flag: "+flag);
+		//_log.info("flag: "+flag);
 
 		if (flag) {
 			try {
 
 				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
-				_log.info("user: "+user);
+				//_log.info("user: "+user);
 				if (user != null) {
 					String email = StringPool.BLANK;
 					//update employee
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 					if (employee != null) {
 						email = employee.getEmail();
-						_log.info("emailEmployee: "+email);
+						//_log.info("emailEmployee: "+email);
 					} else {
 						//update application
 						Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
 						if (applicant != null) {
 							email = applicant.getContactEmail();
-							_log.info("emailApplicant: "+email);
+							//_log.info("emailApplicant: "+email);
 						}
 					}
 
 				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
-					_log.info("user.getScreenName(): "+user.getScreenName()+"|user.getEmailAddress(): "+user.getEmailAddress());
+					//_log.info("user.getScreenName(): "+user.getScreenName()+"|user.getEmailAddress(): "+user.getEmailAddress());
 				payLoad.put("USERNAME", user.getScreenName());
 				payLoad.put("USEREMAIL", user.getEmailAddress());
 				payLoad.put("PASSWORD", newPassword);
-					_log.info("STRAT addNotificationQueue: ");
+					//_log.info("STRAT addNotificationQueue: ");
 				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
 						User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
 							user.getFullName(), user.getUserId(), email, StringPool.BLANK, new Date(), null,
 						serviceContext);
-					_log.info("END addNotificationQueue: ");
+					//_log.info("END addNotificationQueue: ");
 					flagNo = 2;
 				} else {
-					_log.info("END 1111: ");
+					//_log.info("END 1111: ");
 					flagNo = 1;
 				}
 			} catch (PortalException e) {
@@ -613,13 +613,13 @@ public class UserActions implements UserInterface {
 			ServiceContext serviceContext) {
 			
 		boolean flag = getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-		_log.info("flag: "+flag);
+		//_log.info("flag: "+flag);
 
 		if (flag) {
 			try {
 
 				User user = UserLocalServiceUtil.updatePassword(id, newPassword, newPassword, Boolean.FALSE);
-				_log.info("User: "+user);
+				//_log.info("User: "+user);
 				String email = StringPool.BLANK;
 				
 				if (type == 1) {
@@ -632,7 +632,7 @@ public class UserActions implements UserInterface {
 					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(id);
 				
 					email += applicant.getContactEmail();
-					_log.info("email: "+email);
+					//_log.info("email: "+email);
 				}
 
 				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
@@ -641,12 +641,12 @@ public class UserActions implements UserInterface {
 				payLoad.put("USEREMAIL", user.getEmailAddress());
 				payLoad.put("PASSWORD", newPassword);
 
-				_log.info("STRAT addNotificationQueue: ");
+				//_log.info("STRAT addNotificationQueue: ");
 				NotificationQueueLocalServiceUtil.addNotificationQueue(user.getUserId(), groupId, Constants.USER_04,
 						User.class.getName(), String.valueOf(user.getUserId()), payLoad.toJSONString(), "SYSTEM",
 						user.getFullName(), user.getUserId(), email, StringPool.BLANK, new Date(), null,
 						serviceContext);
-				_log.info("END addNotificationQueue: ");
+				//_log.info("END addNotificationQueue: ");
 
 			} catch (PortalException e) {
 				flag = false;
@@ -716,8 +716,8 @@ public class UserActions implements UserInterface {
 	public String getEsignPath(long userId, Company company, long groupId, ServiceContext serviceContext)
 			throws Exception {
 
-		_log.info("FILE______GROUPID " + groupId);
-		_log.info("FILE______USERID " + userId);
+		//_log.info("FILE______GROUPID " + groupId);
+		//_log.info("FILE______USERID " + userId);
 
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 

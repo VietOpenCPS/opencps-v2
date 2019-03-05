@@ -44,11 +44,11 @@ public class SchedulerUtilProcessing {
 
 				long toUserQueueId = notificationQueue.getToUserId();
 
-				_log.info("toUserQueueId: " + toUserQueueId);
+				//_log.info("toUserQueueId: " + toUserQueueId);
 
 				Preferences preferences = PreferencesLocalServiceUtil.fetchByF_userId(groupId, toUserQueueId);
 				
-				_log.info("preferences: " + preferences);
+				//_log.info("preferences: " + preferences);
 				
 				boolean sendMail = true;
 
@@ -80,7 +80,7 @@ public class SchedulerUtilProcessing {
 
 						}
 
-						_log.info("sendMailsendMailsendMailsendMailsendMail: " + sendMail);
+						//_log.info("sendMailsendMailsendMailsendMailsendMail: " + sendMail);
 
 						if (sendMail) {
 							JSONObject payLoad = EmailUtilities.createEmailBody(notificationtemplate, notificationQueue);

@@ -42,9 +42,9 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 	@Override
 	public ActionConfigItem addActionConfig(ActionConfigItem body) {
+		_log.info("==== START Add Query==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-//		System.out.println("ActionConfigApiImpl.addActionConfig()" + body);
 		try {
 			
 			serviceContext.setUserId(userId);
@@ -57,14 +57,14 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 					body.getDocumentType(), body.getMappingAction(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("==== END Add Query==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -73,6 +73,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 
 	@Override
 	public void deleteActionConfig(String actionConfigId) {
+		_log.info("==== START DELETE ACTIONCONFIG==== ");
 		try {
 
 			long userId = user.getUserId();
@@ -80,28 +81,26 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 			serviceContext.setUserId(userId);
 			
 			action.deleteActionConfig(Long.valueOf(actionConfigId), serviceContext);
-
+			_log.info("==== END DELETE ACTIONCONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			_log.info("====PortalException==== ");
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
 
 	@Override
 	public ActionConfigItem updateActionConfig(String id, ActionConfigItem body) {
-
+		_log.info("==== START UPDATE ACTIONCONFIG==== ");
 		long userId = user.getUserId();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
-//			System.out.println("StepConfigApiImpl.updateStepConfig()"+serviceContext);
-			
 			serviceContext.setUserId(userId);
 			
 			ActionConfig ett = action.updateActionConfig(Long.valueOf(id), userId, groupId, body.getActionCode(),
@@ -112,14 +111,14 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 					body.getDocumentType(), body.getMappingAction(), serviceContext);
 
 			body = parsing.getModel(ett);
-
+			_log.info("==== END DELETE ACTIONCONFIG==== ");
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====PortalException==== ");
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		} catch (AuthenticationException e) {
 			_log.debug(e);
-			//_log.error(e);
+			_log.info("====AuthenticationException==== ");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
 

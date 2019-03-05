@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.opencps.api.vnpost.model.VNPostCancelOrderModel;
 import org.opencps.api.vnpost.model.VNPostGetOrderModel;
 import org.opencps.api.vnpost.model.VNPostInputModel;
@@ -29,8 +28,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import backend.postal.api.rest.controller.VNPostManagement;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IOrder;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IToken;
-import vn.mitc.ngsp.sdk.models.MEmbedded;
-import vn.mitc.ngsp.sdk.models.MOId;
 import vn.mitc.ngsp.sdk.models.MOrder;
 import vn.mitc.ngsp.sdk.models.MResult;
 import vn.mitc.ngsp.sdk.models.MRhDoc;
@@ -98,8 +95,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, "VIA_POSTAL");
-		_log.info("sendPostalRequest groupId ============= " + groupId);
-		_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
+		//_log.info("sendPostalRequest groupId ============= " + groupId);
+		//_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
 
 		// String tokenUrl = "https://api.mitc.vn/token";
 		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
@@ -111,7 +108,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 				MToken token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
 				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
 				
-				_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
+				//_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
 				MOrder order = new MOrder(config.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),
 						config.getSenderProvince(), config.getSenderDistrict(), config.getSenderAddress(),
 						input.getSenderName(), config.getSenderEmail(), config.getSenderTel(), input.getSenderDesc(),
@@ -199,7 +196,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 			JSONObject jsondata = getOrder(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey(),
 					config.getApiGetOrderTracking(), input.getPageSize(), input.getLastId(), input.getOrderNumber());
 
-			_log.info("OrderTrackingReturn VNPOST====== " + jsondata.toJSONString());
+			//_log.info("OrderTrackingReturn VNPOST====== " + jsondata.toJSONString());
 
 			if (jsondata.length() == 0) {
 				return Response.status(204).entity("loi!!").build();
