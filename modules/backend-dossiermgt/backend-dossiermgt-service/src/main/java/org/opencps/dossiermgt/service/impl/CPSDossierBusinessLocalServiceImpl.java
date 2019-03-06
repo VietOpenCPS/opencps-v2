@@ -227,7 +227,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (splitCDs.length == 2) {
 						String dossierTemplateNo = splitCDs[1];
 						for (ProcessOption po : lstOptions) {
-							DossierTemplate dt = DossierTemplateLocalServiceUtil.fetchDossierTemplate(po.getDossierTemplateId());
+							DossierTemplate dt = dossierTemplateLocalService.fetchDossierTemplate(po.getDossierTemplateId());
 							if (dt.getTemplateNo().equals(dossierTemplateNo)) {
 								foundOption = po;
 								break;
