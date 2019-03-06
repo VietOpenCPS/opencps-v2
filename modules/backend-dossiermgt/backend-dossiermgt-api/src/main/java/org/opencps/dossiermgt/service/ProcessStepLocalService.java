@@ -212,6 +212,10 @@ public interface ProcessStepLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ProcessStep getByProcessAndStatus(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ProcessStep> getBySC_SPID(String stepCode, long serviceProcessId)
 		throws PortalException;
 

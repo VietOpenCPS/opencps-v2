@@ -283,13 +283,14 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long GROUPID_COLUMN_BITMASK = 256L;
 	public static final long MODIFIEDDATE_COLUMN_BITMASK = 512L;
 	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 1024L;
-	public static final long ORIGINALITY_COLUMN_BITMASK = 2048L;
-	public static final long PROCESSNO_COLUMN_BITMASK = 4096L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 8192L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 16384L;
-	public static final long USERID_COLUMN_BITMASK = 32768L;
-	public static final long UUID_COLUMN_BITMASK = 65536L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 131072L;
+	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 2048L;
+	public static final long ORIGINALITY_COLUMN_BITMASK = 4096L;
+	public static final long PROCESSNO_COLUMN_BITMASK = 8192L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 16384L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 32768L;
+	public static final long USERID_COLUMN_BITMASK = 65536L;
+	public static final long UUID_COLUMN_BITMASK = 131072L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 262144L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -2429,7 +2430,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setOriginDossierNo(String originDossierNo) {
+		_columnBitmask |= ORIGINDOSSIERNO_COLUMN_BITMASK;
+
+		if (_originalOriginDossierNo == null) {
+			_originalOriginDossierNo = _originDossierNo;
+		}
+
 		_originDossierNo = originDossierNo;
+	}
+
+	public String getOriginalOriginDossierNo() {
+		return GetterUtil.getString(_originalOriginDossierNo);
 	}
 
 	@Override
@@ -2675,6 +2686,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._originalOriginDossierId = dossierModelImpl._originDossierId;
 
 		dossierModelImpl._setOriginalOriginDossierId = false;
+
+		dossierModelImpl._originalOriginDossierNo = dossierModelImpl._originDossierNo;
 
 		dossierModelImpl._columnBitmask = 0;
 	}
@@ -4020,6 +4033,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private double _durationCount;
 	private String _dossierName;
 	private String _originDossierNo;
+	private String _originalOriginDossierNo;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }

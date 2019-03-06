@@ -237,6 +237,14 @@ public class ProcessStepLocalServiceWrapper implements ProcessStepLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessStep getByProcessAndStatus(
+		long groupId, long serviceProcessId, String dossierStatus,
+		String dossierSubStatus) {
+		return _processStepLocalService.getByProcessAndStatus(groupId,
+			serviceProcessId, dossierStatus, dossierSubStatus);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ProcessStep> getBySC_SPID(
 		String stepCode, long serviceProcessId)
 		throws com.liferay.portal.kernel.exception.PortalException {

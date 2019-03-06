@@ -1939,6 +1939,71 @@ public interface ProcessActionPersistence extends BasePersistence<ProcessAction>
 		String postStepCode);
 
 	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the matching process action
+	* @throws NoSuchProcessActionException if a matching process action could not be found
+	*/
+	public ProcessAction findByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws NoSuchProcessActionException;
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers);
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the process action that was removed
+	*/
+	public ProcessAction removeByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws NoSuchProcessActionException;
+
+	/**
+	* Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the number of matching process actions
+	*/
+	public int countByG_SPID_PRESC_DOS(long groupId, long serviceProcessId,
+		String preStepCode, String createDossiers);
+
+	/**
 	* Caches the process action in the entity cache if it is enabled.
 	*
 	* @param processAction the process action
