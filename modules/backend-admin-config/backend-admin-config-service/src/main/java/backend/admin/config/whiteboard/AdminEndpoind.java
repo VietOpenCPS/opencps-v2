@@ -260,8 +260,13 @@ public class AdminEndpoind extends Endpoint {
 					
 					if (groupId > 0 && adminConfig.getGroupFilter()) {
 						Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-						disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-						disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						if (Validator.isNotNull(code)
+								&& (code.equals("opencps_workingunit") || code.equals("opencps_applicant"))) {
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						} else {
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						}
 						dynamicQuery.add(disjunction);
 					}
 

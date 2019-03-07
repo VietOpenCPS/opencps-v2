@@ -2706,6 +2706,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					MultiMatchQuery querydueDate = new MultiMatchQuery(String.valueOf(0));
 					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryWaiting = new MultiMatchQuery(DossierTerm.DOSSIER_STATUS_WAITING);
+					queryWaiting.addField(DossierTerm.DOSSIER_STATUS);
+					subQuery.add(queryWaiting, BooleanClauseOccur.MUST_NOT);
 
 					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(1));
 					query.addFields(DossierTerm.COMPARE_DELAY_DATE);
@@ -3711,6 +3715,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	//LamTV_Process update dossier
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
@@ -3838,6 +3843,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
