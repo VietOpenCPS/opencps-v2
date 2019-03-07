@@ -260,8 +260,13 @@ public class AdminEndpoind extends Endpoint {
 					
 					if (groupId > 0 && adminConfig.getGroupFilter()) {
 						Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-						disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-						disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						if (Validator.isNotNull(code)
+								&& (code.equals("opencps_workingunit") || code.equals("opencps_applicant"))) {
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						} else {
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
+							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+						}
 						dynamicQuery.add(disjunction);
 					}
 
@@ -272,7 +277,7 @@ public class AdminEndpoind extends Endpoint {
 
 					JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 
-					System.out.println("code: " + code.equals("opencps_employee"));
+					//System.out.println("code: " + code.equals("opencps_employee"));
 					_log.info("code: " + code.equals("opencps_employee"));
 					
 					if (message.getBoolean(CONFIG)) {
@@ -301,7 +306,7 @@ public class AdminEndpoind extends Endpoint {
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 						
-						System.out.println("code: " + code.equals("opencps_employee"));
+						//System.out.println("code: " + code.equals("opencps_employee"));
 						_log.info("code: " + code.equals("opencps_employee"));
 						_log.info("lengColumns: " + lengColumns);
 						if (code.equals("opencps_employee")) {
@@ -321,7 +326,7 @@ public class AdminEndpoind extends Endpoint {
 									
 								}
 							}
-							System.out.println("employees.employees()" + employees);
+							//System.out.println("employees.employees()" + employees);
 							messageData.put(message.getString(RESPONE), employees);
 							
 						} else {
