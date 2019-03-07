@@ -206,7 +206,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String secretKey1 = PwdGenerator.getPassword(2, new String[] { "0123456789" });
 			String secretKey2 = PwdGenerator.getPassword(2, new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
 			String secretKey3 = PwdGenerator.getPassword(2, new String[] { "abcdefghijklmnopqrstuvwxyz" });
-			String secretKey4 = PwdGenerator.getPassword(2, new String[] { "~!@#$%^&*" });
+			String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
 			String secretKey5 = PwdGenerator.getPassword(4, new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 					"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
 			String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
@@ -250,7 +250,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 			//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 			UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
-			UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), "12345", "12345", false, true);
+			UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), password, password, false, true);
 
 			// Update applicant
 			applicant.setMappingUserId(mappingUser.getUserId());
@@ -278,7 +278,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setGroupId(applicant.getGroupId());
 				queue.setCompanyId(applicant.getCompanyId());
 				
-				queue.setNotificationType(NotificationType.APPLICANT_01);
+				queue.setNotificationType(NotificationType.APPLICANT_02);
 				queue.setClassName(Applicant.class.getName());
 				queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
 				queue.setToUsername(applicant.getApplicantName());
@@ -286,17 +286,17 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setToEmail(applicant.getContactEmail());
 				queue.setToTelNo(applicant.getContactTelNo());
 				
-				JSONObject object = JSONFactoryUtil.createJSONObject();
+				//JSONObject object = JSONFactoryUtil.createJSONObject();
 				
 	//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
-				String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
+				//String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
 				
-				object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
-				object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
-				object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
+				//object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
+				//object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
+				//object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
 				//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
-				object.put("toName", applicant.getApplicantName());
-				object.put("toAddress", applicant.getContactEmail());
+				//object.put("toName", applicant.getApplicantName());
+				//object.put("toAddress", applicant.getContactEmail());
 	//			
 	//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
 	//			_log.info("payloadTest1: "+payload1);
