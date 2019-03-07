@@ -4831,6 +4831,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.update(dossier);		
 	}
+
+	public List<Dossier> getByGroupAndOriginDossierNo(long groupId, String originDossierNo) {
+		return dossierPersistence.findByGID_ORI_NO(groupId, originDossierNo);
+	}
+
+	public int countByGroupAndOriginDossierNo(long groupId, String originDossierNo) {
+		return dossierPersistence.countByGID_ORI_NO(groupId, originDossierNo);
+	}
+
+	public int countByOriginDossierNo(String originDossierNo) {
+		return dossierPersistence.countByORIGIN_NO(originDossierNo);
+	}
+
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

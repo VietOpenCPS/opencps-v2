@@ -290,6 +290,8 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void removeByDossierId(long groupId, long dossierId);
+
 	/**
 	* Updates the dossier sync in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

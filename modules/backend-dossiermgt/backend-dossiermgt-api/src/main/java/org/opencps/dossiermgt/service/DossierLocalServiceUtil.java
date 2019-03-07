@@ -80,6 +80,16 @@ public class DossierLocalServiceUtil {
 		return getService().cloneDossier(srcDossier);
 	}
 
+	public static int countByGroupAndOriginDossierNo(long groupId,
+		String originDossierNo) {
+		return getService()
+				   .countByGroupAndOriginDossierNo(groupId, originDossierNo);
+	}
+
+	public static int countByOriginDossierNo(String originDossierNo) {
+		return getService().countByOriginDossierNo(originDossierNo);
+	}
+
 	public static int countByUserId(long userId, long groupId) {
 		return getService().countByUserId(userId, groupId);
 	}
@@ -321,6 +331,12 @@ public class DossierLocalServiceUtil {
 		return getService()
 				   .getByG_AN_SC_GAC_DTNO_ODID(groupId, applicantIdNo,
 			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByGroupAndOriginDossierNo(
+		long groupId, String originDossierNo) {
+		return getService()
+				   .getByGroupAndOriginDossierNo(groupId, originDossierNo);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier getByIdAndGovService(

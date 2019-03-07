@@ -103,6 +103,11 @@ public interface DossierLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier cloneDossier(Dossier srcDossier) throws PortalException;
 
+	public int countByGroupAndOriginDossierNo(long groupId,
+		String originDossierNo);
+
+	public int countByOriginDossierNo(String originDossierNo);
+
 	public int countByUserId(long userId, long groupId);
 
 	public long countDossierByG_C_GAC_SC_DTNO_NOTDS(long groupId,
@@ -264,6 +269,10 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier getByG_AN_SC_GAC_DTNO_ODID(long groupId,
 		String applicantIdNo, String serviceCode, String govAgencyCode,
 		String dossierTemplateNo, long originDossierId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> getByGroupAndOriginDossierNo(long groupId,
+		String originDossierNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier getByIdAndGovService(long groupId, String serviceCode,

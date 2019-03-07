@@ -156,12 +156,13 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 	public static final long ACTIONNAME_COLUMN_BITMASK = 2L;
 	public static final long AUTOEVENT_COLUMN_BITMASK = 4L;
 	public static final long COMPANYID_COLUMN_BITMASK = 8L;
-	public static final long GROUPID_COLUMN_BITMASK = 16L;
-	public static final long POSTSTEPCODE_COLUMN_BITMASK = 32L;
-	public static final long PRESTEPCODE_COLUMN_BITMASK = 64L;
-	public static final long SERVICEPROCESSID_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
-	public static final long PROCESSACTIONID_COLUMN_BITMASK = 512L;
+	public static final long CREATEDOSSIERS_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 32L;
+	public static final long POSTSTEPCODE_COLUMN_BITMASK = 64L;
+	public static final long PRESTEPCODE_COLUMN_BITMASK = 128L;
+	public static final long SERVICEPROCESSID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
+	public static final long PROCESSACTIONID_COLUMN_BITMASK = 1024L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ProcessAction"));
 
@@ -958,7 +959,17 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 
 	@Override
 	public void setCreateDossiers(String createDossiers) {
+		_columnBitmask |= CREATEDOSSIERS_COLUMN_BITMASK;
+
+		if (_originalCreateDossiers == null) {
+			_originalCreateDossiers = _createDossiers;
+		}
+
 		_createDossiers = createDossiers;
+	}
+
+	public String getOriginalCreateDossiers() {
+		return GetterUtil.getString(_originalCreateDossiers);
 	}
 
 	@Override
@@ -1126,6 +1137,8 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 		processActionModelImpl._originalActionCode = processActionModelImpl._actionCode;
 
 		processActionModelImpl._originalActionName = processActionModelImpl._actionName;
+
+		processActionModelImpl._originalCreateDossiers = processActionModelImpl._createDossiers;
 
 		processActionModelImpl._columnBitmask = 0;
 	}
@@ -1571,6 +1584,7 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 	private String _dossierTemplateNo;
 	private String _signatureType;
 	private String _createDossiers;
+	private String _originalCreateDossiers;
 	private int _checkInput;
 	private long _columnBitmask;
 	private ProcessAction _escapedModel;

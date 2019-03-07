@@ -2447,6 +2447,91 @@ public class ProcessActionUtil {
 	}
 
 	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the matching process action
+	* @throws NoSuchProcessActionException if a matching process action could not be found
+	*/
+	public static ProcessAction findByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessActionException {
+		return getPersistence()
+				   .findByG_SPID_PRESC_DOS(groupId, serviceProcessId,
+			preStepCode, createDossiers);
+	}
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public static ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers) {
+		return getPersistence()
+				   .fetchByG_SPID_PRESC_DOS(groupId, serviceProcessId,
+			preStepCode, createDossiers);
+	}
+
+	/**
+	* Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public static ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_SPID_PRESC_DOS(groupId, serviceProcessId,
+			preStepCode, createDossiers, retrieveFromCache);
+	}
+
+	/**
+	* Removes the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the process action that was removed
+	*/
+	public static ProcessAction removeByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessActionException {
+		return getPersistence()
+				   .removeByG_SPID_PRESC_DOS(groupId, serviceProcessId,
+			preStepCode, createDossiers);
+	}
+
+	/**
+	* Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param createDossiers the create dossiers
+	* @return the number of matching process actions
+	*/
+	public static int countByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers) {
+		return getPersistence()
+				   .countByG_SPID_PRESC_DOS(groupId, serviceProcessId,
+			preStepCode, createDossiers);
+	}
+
+	/**
 	* Caches the process action in the entity cache if it is enabled.
 	*
 	* @param processAction the process action

@@ -149,4 +149,8 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public DossierSync getByDID_DAD(long groupId, long dossierId, long dossierActionId) {
 		return dossierSyncPersistence.fetchByG_DID_DAD(groupId, dossierId, dossierActionId);
 	}
+
+	public void removeByDossierId (long groupId, long dossierId) {
+		dossierSyncPersistence.removeByG_DID(groupId, dossierId);
+	}
 }

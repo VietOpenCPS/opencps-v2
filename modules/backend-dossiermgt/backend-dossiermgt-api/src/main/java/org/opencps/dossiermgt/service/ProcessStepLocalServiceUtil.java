@@ -225,6 +225,14 @@ public class ProcessStepLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessStep getByProcessAndStatus(
+		long groupId, long serviceProcessId, String dossierStatus,
+		String dossierSubStatus) {
+		return getService()
+				   .getByProcessAndStatus(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ProcessStep> getBySC_SPID(
 		String stepCode, long serviceProcessId)
 		throws com.liferay.portal.kernel.exception.PortalException {

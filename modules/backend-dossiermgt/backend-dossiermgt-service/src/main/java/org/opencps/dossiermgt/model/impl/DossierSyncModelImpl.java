@@ -118,8 +118,8 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 
 	public static final String TABLE_SQL_CREATE = "create table opencps_dossiersync (uuid_ VARCHAR(75) null,DossierSyncId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierRefUid VARCHAR(75) null,syncRefUid VARCHAR(255) null,dossierActionId LONG,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(75) null,syncType INTEGER,infoType INTEGER,payload TEXT null,serverNo VARCHAR(75) null,state_ INTEGER,retry INTEGER,messageText TEXT null,acknowlegement TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiersync";
-	public static final String ORDER_BY_JPQL = " ORDER BY dossierSync.createDate ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiersync.createDate ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY dossierSync.modifiedDate ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiersync.modifiedDate ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -808,7 +808,8 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 	public int compareTo(DossierSync dossierSync) {
 		int value = 0;
 
-		value = DateUtil.compareTo(getCreateDate(), dossierSync.getCreateDate());
+		value = DateUtil.compareTo(getModifiedDate(),
+				dossierSync.getModifiedDate());
 
 		if (value != 0) {
 			return value;

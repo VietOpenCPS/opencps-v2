@@ -1413,7 +1413,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	private void createSubcription(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) {
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 //			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-			User u = UserLocalServiceUtil.fetchUser(userId);
+//			User u = UserLocalServiceUtil.fetchUser(userId);
 			
 			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			if (notiTemplate != null) {
@@ -1426,8 +1426,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					if ((dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 							&& dossierAction != null) {
-						StepConfig stepConfig = StepConfigLocalServiceUtil.getByCode(groupId, dossierAction.getStepCode());
-						List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDID_DAI_SC_AS(dossier.getDossierId(), dossierAction.getDossierActionId(), dossierAction.getStepCode(), new int[] { 1, 2 });
+						StepConfig stepConfig = stepConfigLocalService.getByCode(groupId, dossierAction.getStepCode());
+						List<DossierActionUser> lstDaus = dossierActionUserLocalService.getByDID_DAI_SC_AS(dossier.getDossierId(), dossierAction.getDossierActionId(), dossierAction.getStepCode(), new int[] { 1, 2 });
 						if ("EMPL-01".equals(actionConfig.getDocumentType())
 								&& stepConfig != null && "1".equals(stepConfig.getStepType())) {
 							for (DossierActionUser dau : lstDaus) {
@@ -1468,7 +1468,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		long transactionId = 0;
 		try {
-			transactionId = CounterLocalServiceUtil.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
+			transactionId = counterLocalService.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
 		} catch (SystemException e) {
 			_log.error(e);
 		}
@@ -1912,7 +1912,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //			_log.info("========STEP DUE CUR STATUS UPDATING STATE DONE");
 //			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
 //			dossierAction.setModifiedDate(new Date());
-			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
+			dossierAction = dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
 		}
 		
 //		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -1931,7 +1931,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					bResult.put(DossierTerm.FINISH_DATE, true);
 //					dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
 //					dossierAction.setModifiedDate(new Date());
-					dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+					dossierAction = dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
 //				} catch (PortalException e) {
 //					_log.error(e);
 //					e.printStackTrace();
@@ -1975,12 +1975,12 @@ public class CPSDossierBusinessLocalServiceImpl
 		int dateOption = actionConfig.getDateOption();
 		_log.debug("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
-			DossierAction dActEnd = DossierActionLocalServiceUtil
+			DossierAction dActEnd = dossierActionLocalService
 					.fetchDossierAction(dossierAction.getDossierActionId());
 //			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null) {
 				_log.debug("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
-				DossierAction dActStart = DossierActionLocalServiceUtil
+				DossierAction dActStart = dossierActionLocalService
 						.fetchDossierAction(dActEnd.getPreviousActionId());
 //				DossierAction dActStart = prevAction;
 				if (dActStart != null) {
@@ -2038,19 +2038,19 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
-			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
 			for (DossierFile df : lstFiles) {
 				if (!df.getRemoved()) {
 					df.setOriginal(true);
 				}
-				DossierFileLocalServiceUtil.updateDossierFile(df);
+				dossierFileLocalService.updateDossierFile(df);
 			}
 		}
 		
 		//Calculate step due date
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		_log.info("dossierAction: "+dossierAction);
-		dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		Date rootDate = now;
 		Date dueDate = null;
 
@@ -2106,11 +2106,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossierAction.setDueDate(dueDate);
 //				_log.info("========STEP DUE DATE SET DUE DATE: " + dossierAction.getStepCode());
 //				DossierAction dActTest = DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				dossierActionLocalService.updateDossierAction(dossierAction);
 //				_log.info("dActTest: "+dActTest);
 			}
 			else {
-				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				dossierActionLocalService.updateDossierAction(dossierAction);
 			}
 		}
 	
@@ -2180,7 +2180,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
 		long dossierId = dossier.getDossierId();
 		String templateNo = dossier.getDossierTemplateNo();
-		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossierId);
+		List<DossierMark> dossierMarkList = dossierMarkLocalService.getDossierMarks(groupId, dossierId);
 		if (dossierMarkList != null && dossierMarkList.size() > 0) {
 			JSONObject jsonMark = null;
 			String partNo;
@@ -2188,7 +2188,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				jsonMark = JSONFactoryUtil.createJSONObject();
 				partNo = dossierMark.getDossierPartNo();
 				if (Validator.isNotNull(partNo)) {
-					DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
+					DossierPart part = dossierPartLocalService.getByTempAndPartNo(groupId, templateNo, partNo);
 					if (part != null) {
 						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
 						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
@@ -2220,7 +2220,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
 			String sequenceNo = dAction.getSequenceNo();
 			if (Validator.isNotNull(sequenceNo)) {
-				ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId, serviceProcessId,
+				ProcessSequence sequence = processSequenceLocalService.findBySID_SNO(groupId, serviceProcessId,
 						sequenceNo);
 				if (sequence != null) {
 					jsonData.put(DossierTerm.SEQUENCE_ROLE, sequence.getSequenceRole());
@@ -2231,7 +2231,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
 			}
 			// Process get Next sequence Role
-			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+			List<ProcessSequence> sequenceList = processSequenceLocalService.getByServiceProcess(groupId,
 					serviceProcessId);
 			String[] sequenceArr = null;
 			if (sequenceList != null && !sequenceList.isEmpty()) {
@@ -2255,7 +2255,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (sequenceNo.equals(seq)) {
 						String nextSequenceNo = sequenceArr[i + 1];
 						if (Validator.isNotNull(nextSequenceNo)) {
-							ProcessSequence sequence = ProcessSequenceLocalServiceUtil.findBySID_SNO(groupId,
+							ProcessSequence sequence = processSequenceLocalService.findBySID_SNO(groupId,
 									serviceProcessId, nextSequenceNo);
 							if (sequence != null) {
 								jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, sequence.getSequenceRole());
@@ -2311,7 +2311,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			try {
 				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
 				if (lstQueues == null || lstQueues.isEmpty()) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);										
+					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);										
 				}
 //				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
 //				if (pq == null) {
@@ -2330,9 +2330,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.LGSP_PROTOCOL);
 		for (ServerConfig sc : lstScs) {
 			try {
-				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				List<PublishQueue> lstQueues = publishQueueLocalService.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
 				if (lstQueues == null || lstQueues.isEmpty()) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
 				}
 //				PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
 //				if (pq == null) {
@@ -2352,9 +2352,9 @@ public class CPSDossierBusinessLocalServiceImpl
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
 			long groupId) throws PortalException {
 
-		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+		ServiceConfig config = serviceConfigLocalService.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
 
-		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
+		return processOptionLocalService.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
 				config.getServiceConfigId());
 	}
 	
@@ -2364,7 +2364,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		ProcessAction action = null;
 
 		try {
-			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+			List<ProcessAction> actions = processActionLocalService.getByActionCode(groupId, actionCode,
 					serviceProcessId);
 			Dossier dossier = getDossier(groupId, dossierId, refId);
 
@@ -2377,7 +2377,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 				String preStepCode = act.getPreStepCode();
 
-				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+				ProcessStep step = processStepLocalService.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 
 				String subStepStatus = StringPool.BLANK;
 
@@ -2417,9 +2417,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		Dossier dossier = null;
 
 		if (dossierId != 0) {
-			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			dossier = dossierLocalService.fetchDossier(dossierId);
 		} else {
-			dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
+			dossier = dossierLocalService.getByRef(groupId, refId);
 		}
 
 		return dossier;
@@ -2490,6 +2490,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (DossierActionTerm.OUTSIDE_ACTION_9100.equals(actionCode)) {
 				dossier = dossierLocalService.updateDossierSpecial(dossier.getDossierId(), payloadObject);							
 			}
+			else if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
+				if (dossierAction != null && dossierAction.isRollbackable()) {
+					dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+				
+					DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
+					if (previousAction != null) {
+						dossierActionLocalService.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+						dossierActionLocalService.updateNextActionId(previousAction.getDossierActionId(), 0);
+						dossierLocalService.rollback(dossier, previousAction);
+					}
+				}
+				
+			}
 			else {
 				dossier = dossierLocalService.updateDossier(dossier.getDossierId(), payloadObject);											
 			}
@@ -2550,7 +2563,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	}
 	
 	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
-		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {		
