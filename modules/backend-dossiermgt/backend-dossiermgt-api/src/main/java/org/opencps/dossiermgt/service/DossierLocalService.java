@@ -103,6 +103,15 @@ public interface DossierLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier cloneDossier(Dossier srcDossier) throws PortalException;
 
+	public int countByG_NOTS_O_DTN(long groupId, String[] dossierStatuses,
+		int originality, String dossierTemplateNo);
+
+	public int countByG_NOTS_O_PN(long groupId, String[] dossierStatuses,
+		int originality, String processNo);
+
+	public int countByG_NOTS_O_SC(long groupId, String[] dossierStatuses,
+		int originality, String serviceCode);
+
 	public int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo);
 
@@ -420,6 +429,7 @@ public interface DossierLocalService extends BaseLocalService,
 		ProcessOption processOption, ServiceContext context)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
@@ -433,6 +443,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, ServiceContext serviceContext);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,

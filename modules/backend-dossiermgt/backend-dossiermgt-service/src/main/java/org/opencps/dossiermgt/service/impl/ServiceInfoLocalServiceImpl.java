@@ -52,6 +52,7 @@ import java.util.List;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
@@ -666,10 +667,14 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo adminProcessDelete(Long id) {
 
 		ServiceInfo object = serviceInfoPersistence.fetchByPrimaryKey(id);
-
 		if (Validator.isNull(object)) {
 			return null;
 		} else {
+			int countDossier = dossierLocalService.countByG_NOTS_O_SC(object.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, object.getServiceCode());
+			if (countDossier > 0) {
+				return null;
+			}
+			
 			serviceInfoPersistence.remove(object);
 
 			List<ServiceFileTemplate> fileTemplates = serviceFileTemplateLocalService.getByServiceInfoId(id);

@@ -3513,6 +3513,806 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 	public int countByORIGIN_NO(String originDossierNo);
 
 	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String dossierStatus, int originality, String serviceCode);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String dossierStatus, int originality, String serviceCode, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String dossierStatus, int originality, String serviceCode, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String dossierStatus, int originality, String serviceCode, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_SC_First(long groupId, String dossierStatus,
+		int originality, String serviceCode,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_SC_First(long groupId, String dossierStatus,
+		int originality, String serviceCode,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_SC_Last(long groupId, String dossierStatus,
+		int originality, String serviceCode,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_SC_Last(long groupId, String dossierStatus,
+		int originality, String serviceCode,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public Dossier[] findByG_NOTS_O_SC_PrevAndNext(long dossierId,
+		long groupId, String dossierStatus, int originality,
+		String serviceCode,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String[] dossierStatuses, int originality, String serviceCode);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String[] dossierStatuses, int originality, String serviceCode,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String[] dossierStatuses, int originality, String serviceCode,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_SC(long groupId,
+		String[] dossierStatuses, int originality, String serviceCode,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	*/
+	public void removeByG_NOTS_O_SC(long groupId, String dossierStatus,
+		int originality, String serviceCode);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_SC(long groupId, String dossierStatus,
+		int originality, String serviceCode);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param serviceCode the service code
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_SC(long groupId, String[] dossierStatuses,
+		int originality, String serviceCode);
+
+	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String dossierStatus, int originality, String dossierTemplateNo);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String dossierStatus, int originality, String dossierTemplateNo,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String dossierStatus, int originality, String dossierTemplateNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String dossierStatus, int originality, String dossierTemplateNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_DTN_First(long groupId, String dossierStatus,
+		int originality, String dossierTemplateNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_DTN_First(long groupId,
+		String dossierStatus, int originality, String dossierTemplateNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_DTN_Last(long groupId, String dossierStatus,
+		int originality, String dossierTemplateNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_DTN_Last(long groupId, String dossierStatus,
+		int originality, String dossierTemplateNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public Dossier[] findByG_NOTS_O_DTN_PrevAndNext(long dossierId,
+		long groupId, String dossierStatus, int originality,
+		String dossierTemplateNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String[] dossierStatuses, int originality, String dossierTemplateNo);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String[] dossierStatuses, int originality, String dossierTemplateNo,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String[] dossierStatuses, int originality, String dossierTemplateNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_DTN(long groupId,
+		String[] dossierStatuses, int originality, String dossierTemplateNo,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	*/
+	public void removeByG_NOTS_O_DTN(long groupId, String dossierStatus,
+		int originality, String dossierTemplateNo);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_DTN(long groupId, String dossierStatus,
+		int originality, String dossierTemplateNo);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and dossierTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param dossierTemplateNo the dossier template no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_DTN(long groupId, String[] dossierStatuses,
+		int originality, String dossierTemplateNo);
+
+	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String dossierStatus, int originality, String processNo);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String dossierStatus, int originality, String processNo, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String dossierStatus, int originality, String processNo, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String dossierStatus, int originality, String processNo, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_PN_First(long groupId, String dossierStatus,
+		int originality, String processNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the first dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_PN_First(long groupId, String dossierStatus,
+		int originality, String processNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByG_NOTS_O_PN_Last(long groupId, String dossierStatus,
+		int originality, String processNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the last dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByG_NOTS_O_PN_Last(long groupId, String dossierStatus,
+		int originality, String processNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public Dossier[] findByG_NOTS_O_PN_PrevAndNext(long dossierId,
+		long groupId, String dossierStatus, int originality, String processNo,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param processNo the process no
+	* @return the matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String[] dossierStatuses, int originality, String processNo);
+
+	/**
+	* Returns a range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String[] dossierStatuses, int originality, String processNo, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String[] dossierStatuses, int originality, String processNo, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public java.util.List<Dossier> findByG_NOTS_O_PN(long groupId,
+		String[] dossierStatuses, int originality, String processNo, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	*/
+	public void removeByG_NOTS_O_PN(long groupId, String dossierStatus,
+		int originality, String processNo);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param processNo the process no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_PN(long groupId, String dossierStatus,
+		int originality, String processNo);
+
+	/**
+	* Returns the number of dossiers where groupId = &#63; and dossierStatus &ne; all &#63; and originality &ge; &#63; and processNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierStatuses the dossier statuses
+	* @param originality the originality
+	* @param processNo the process no
+	* @return the number of matching dossiers
+	*/
+	public int countByG_NOTS_O_PN(long groupId, String[] dossierStatuses,
+		int originality, String processNo);
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

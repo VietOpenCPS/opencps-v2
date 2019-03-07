@@ -574,6 +574,24 @@
 		<finder return-type="Collection" name="ORIGIN_NO">
 			<finder-column name="originDossierNo" />
 		</finder>
+		<finder return-type="Collection" name="G_NOTS_O_SC">
+			<finder-column name="groupId" />
+            <finder-column name="dossierStatus" comparator="!=" arrayable-operator="AND"></finder-column>
+            <finder-column name="originality" comparator="&gt;="></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_NOTS_O_DTN">
+			<finder-column name="groupId" />
+            <finder-column name="dossierStatus" comparator="!=" arrayable-operator="AND"></finder-column>
+            <finder-column name="originality" comparator="&gt;="></finder-column>
+            <finder-column name="dossierTemplateNo"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_NOTS_O_PN">
+			<finder-column name="groupId" />
+            <finder-column name="dossierStatus" comparator="!=" arrayable-operator="AND"></finder-column>
+            <finder-column name="originality" comparator="&gt;="></finder-column>
+            <finder-column name="processNo"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

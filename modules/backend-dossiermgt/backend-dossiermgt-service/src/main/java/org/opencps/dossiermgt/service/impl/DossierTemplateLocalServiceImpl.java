@@ -42,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.DuplicateTemplateNameException;
 import org.opencps.dossiermgt.exception.DuplicateTemplateNoException;
 import org.opencps.dossiermgt.exception.HasChildrenException;
@@ -378,6 +379,10 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		if (Validator.isNull(object)) {
 			return null;
 		} else {
+			int countDossier = dossierLocalService.countByG_NOTS_O_DTN(object.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, object.getTemplateNo());
+			if (countDossier > 0) {
+				return null;
+			}
 			dossierTemplatePersistence.remove(object);
 		}
 

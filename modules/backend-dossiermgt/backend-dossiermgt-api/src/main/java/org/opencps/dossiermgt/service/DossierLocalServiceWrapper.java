@@ -74,6 +74,27 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public int countByG_NOTS_O_DTN(long groupId, String[] dossierStatuses,
+		int originality, String dossierTemplateNo) {
+		return _dossierLocalService.countByG_NOTS_O_DTN(groupId,
+			dossierStatuses, originality, dossierTemplateNo);
+	}
+
+	@Override
+	public int countByG_NOTS_O_PN(long groupId, String[] dossierStatuses,
+		int originality, String processNo) {
+		return _dossierLocalService.countByG_NOTS_O_PN(groupId,
+			dossierStatuses, originality, processNo);
+	}
+
+	@Override
+	public int countByG_NOTS_O_SC(long groupId, String[] dossierStatuses,
+		int originality, String serviceCode) {
+		return _dossierLocalService.countByG_NOTS_O_SC(groupId,
+			dossierStatuses, originality, serviceCode);
+	}
+
+	@Override
 	public int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo) {
 		return _dossierLocalService.countByGroupAndOriginDossierNo(groupId,

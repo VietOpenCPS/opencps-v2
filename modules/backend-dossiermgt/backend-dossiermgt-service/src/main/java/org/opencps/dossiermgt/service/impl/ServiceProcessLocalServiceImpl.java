@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNoException;
@@ -864,6 +865,10 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			String processNo = process.getProcessNo();
 			long groupId = process.getGroupId();
 			if (Validator.isNotNull(processNo)) {
+				int countDossier = dossierLocalService.countByG_NOTS_O_PN(process.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, process.getProcessNo());
+				if (countDossier > 0) {
+					return null;
+				}
 				List<Dossier> dossierList = dossierPersistence.findByGID_PNO(groupId, processNo);
 				if (dossierList == null) {
 					boolean flagProRole = deleteAllProcessRole(id);

@@ -141,7 +141,7 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 	public static final long STATE_COLUMN_BITMASK = 64L;
 	public static final long SYNCTYPE_COLUMN_BITMASK = 128L;
 	public static final long UUID_COLUMN_BITMASK = 256L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierSync"));
 
@@ -434,8 +434,6 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 
 	@Override
 	public void setCreateDate(Date createDate) {
-		_columnBitmask = -1L;
-
 		_createDate = createDate;
 	}
 
@@ -451,6 +449,8 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_setModifiedDate = true;
+
+		_columnBitmask = -1L;
 
 		_modifiedDate = modifiedDate;
 	}

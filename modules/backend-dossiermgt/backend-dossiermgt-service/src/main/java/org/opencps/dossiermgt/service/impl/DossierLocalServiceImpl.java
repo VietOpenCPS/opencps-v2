@@ -4850,6 +4850,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.countByORIGIN_NO(originDossierNo);
 	}
 
+	public int countByG_NOTS_O_SC(long groupId, String[] dossierStatuses, int originality, String serviceCode) {
+		return dossierPersistence.countByG_NOTS_O_SC(groupId, dossierStatuses, originality, serviceCode);
+	}
+	public int countByG_NOTS_O_DTN(long groupId, String[] dossierStatuses, int originality, String dossierTemplateNo) {
+		return dossierPersistence.countByG_NOTS_O_DTN(groupId, dossierStatuses, originality, dossierTemplateNo);
+	}
+	public int countByG_NOTS_O_PN(long groupId, String[] dossierStatuses, int originality, String processNo) {
+		return dossierPersistence.countByG_NOTS_O_PN(groupId, dossierStatuses, originality, processNo);
+	}
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

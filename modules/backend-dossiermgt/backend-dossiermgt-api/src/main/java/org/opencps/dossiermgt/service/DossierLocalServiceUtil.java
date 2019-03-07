@@ -80,6 +80,27 @@ public class DossierLocalServiceUtil {
 		return getService().cloneDossier(srcDossier);
 	}
 
+	public static int countByG_NOTS_O_DTN(long groupId,
+		String[] dossierStatuses, int originality, String dossierTemplateNo) {
+		return getService()
+				   .countByG_NOTS_O_DTN(groupId, dossierStatuses, originality,
+			dossierTemplateNo);
+	}
+
+	public static int countByG_NOTS_O_PN(long groupId,
+		String[] dossierStatuses, int originality, String processNo) {
+		return getService()
+				   .countByG_NOTS_O_PN(groupId, dossierStatuses, originality,
+			processNo);
+	}
+
+	public static int countByG_NOTS_O_SC(long groupId,
+		String[] dossierStatuses, int originality, String serviceCode) {
+		return getService()
+				   .countByG_NOTS_O_SC(groupId, dossierStatuses, originality,
+			serviceCode);
+	}
+
 	public static int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo) {
 		return getService()
