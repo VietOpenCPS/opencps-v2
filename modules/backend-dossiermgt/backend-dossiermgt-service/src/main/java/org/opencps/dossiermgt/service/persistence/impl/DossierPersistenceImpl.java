@@ -13355,6 +13355,1150 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 		removeConjunction(_FINDER_COLUMN_NOT_ST_GT_MD_DOSSIERSTATUS_3) + ")";
 	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_1 = "dossier.modifiedDate IS NULL";
 	private static final String _FINDER_COLUMN_NOT_ST_GT_MD_MODIFIEDDATE_2 = "dossier.modifiedDate >= ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_ORI_NO =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGID_ORI_NO",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGID_ORI_NO",
+			new String[] { Long.class.getName(), String.class.getName() },
+			DossierModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierModelImpl.ORIGINDOSSIERNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_ORI_NO = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGID_ORI_NO",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the dossiers where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_ORI_NO(long groupId, String originDossierNo) {
+		return findByGID_ORI_NO(groupId, originDossierNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_ORI_NO(long groupId, String originDossierNo,
+		int start, int end) {
+		return findByGID_ORI_NO(groupId, originDossierNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_ORI_NO(long groupId, String originDossierNo,
+		int start, int end, OrderByComparator<Dossier> orderByComparator) {
+		return findByGID_ORI_NO(groupId, originDossierNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_ORI_NO(long groupId, String originDossierNo,
+		int start, int end, OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO;
+			finderArgs = new Object[] { groupId, originDossierNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_ORI_NO;
+			finderArgs = new Object[] {
+					groupId, originDossierNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if ((groupId != dossier.getGroupId()) ||
+							!Objects.equals(originDossierNo,
+								dossier.getOriginDossierNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_ORI_NO_GROUPID_2);
+
+			boolean bindOriginDossierNo = false;
+
+			if (originDossierNo == null) {
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_1);
+			}
+			else if (originDossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_3);
+			}
+			else {
+				bindOriginDossierNo = true;
+
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindOriginDossierNo) {
+					qPos.add(originDossierNo);
+				}
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByGID_ORI_NO_First(long groupId, String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByGID_ORI_NO_First(groupId, originDossierNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", originDossierNo=");
+		msg.append(originDossierNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByGID_ORI_NO_First(long groupId,
+		String originDossierNo, OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByGID_ORI_NO(groupId, originDossierNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByGID_ORI_NO_Last(long groupId, String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByGID_ORI_NO_Last(groupId, originDossierNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", originDossierNo=");
+		msg.append(originDossierNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByGID_ORI_NO_Last(long groupId, String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		int count = countByGID_ORI_NO(groupId, originDossierNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByGID_ORI_NO(groupId, originDossierNo,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param dossierId the primary key of the current dossier
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier
+	 * @throws NoSuchDossierException if a dossier with the primary key could not be found
+	 */
+	@Override
+	public Dossier[] findByGID_ORI_NO_PrevAndNext(long dossierId, long groupId,
+		String originDossierNo, OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = findByPrimaryKey(dossierId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Dossier[] array = new DossierImpl[3];
+
+			array[0] = getByGID_ORI_NO_PrevAndNext(session, dossier, groupId,
+					originDossierNo, orderByComparator, true);
+
+			array[1] = dossier;
+
+			array[2] = getByGID_ORI_NO_PrevAndNext(session, dossier, groupId,
+					originDossierNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Dossier getByGID_ORI_NO_PrevAndNext(Session session,
+		Dossier dossier, long groupId, String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+		query.append(_FINDER_COLUMN_GID_ORI_NO_GROUPID_2);
+
+		boolean bindOriginDossierNo = false;
+
+		if (originDossierNo == null) {
+			query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_1);
+		}
+		else if (originDossierNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_3);
+		}
+		else {
+			bindOriginDossierNo = true;
+
+			query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindOriginDossierNo) {
+			qPos.add(originDossierNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Dossier> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dossiers where groupId = &#63; and originDossierNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 */
+	@Override
+	public void removeByGID_ORI_NO(long groupId, String originDossierNo) {
+		for (Dossier dossier : findByGID_ORI_NO(groupId, originDossierNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and originDossierNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param originDossierNo the origin dossier no
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByGID_ORI_NO(long groupId, String originDossierNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_ORI_NO;
+
+		Object[] finderArgs = new Object[] { groupId, originDossierNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_ORI_NO_GROUPID_2);
+
+			boolean bindOriginDossierNo = false;
+
+			if (originDossierNo == null) {
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_1);
+			}
+			else if (originDossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_3);
+			}
+			else {
+				bindOriginDossierNo = true;
+
+				query.append(_FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindOriginDossierNo) {
+					qPos.add(originDossierNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_ORI_NO_GROUPID_2 = "dossier.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_1 = "dossier.originDossierNo IS NULL";
+	private static final String _FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_2 = "dossier.originDossierNo = ?";
+	private static final String _FINDER_COLUMN_GID_ORI_NO_ORIGINDOSSIERNO_3 = "(dossier.originDossierNo IS NULL OR dossier.originDossierNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_ORIGIN_NO =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByORIGIN_NO",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByORIGIN_NO",
+			new String[] { String.class.getName() },
+			DossierModelImpl.ORIGINDOSSIERNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_ORIGIN_NO = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByORIGIN_NO",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns all the dossiers where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByORIGIN_NO(String originDossierNo) {
+		return findByORIGIN_NO(originDossierNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByORIGIN_NO(String originDossierNo, int start,
+		int end) {
+		return findByORIGIN_NO(originDossierNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByORIGIN_NO(String originDossierNo, int start,
+		int end, OrderByComparator<Dossier> orderByComparator) {
+		return findByORIGIN_NO(originDossierNo, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where originDossierNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByORIGIN_NO(String originDossierNo, int start,
+		int end, OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO;
+			finderArgs = new Object[] { originDossierNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_ORIGIN_NO;
+			finderArgs = new Object[] {
+					originDossierNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if (!Objects.equals(originDossierNo,
+								dossier.getOriginDossierNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			boolean bindOriginDossierNo = false;
+
+			if (originDossierNo == null) {
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_1);
+			}
+			else if (originDossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_3);
+			}
+			else {
+				bindOriginDossierNo = true;
+
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindOriginDossierNo) {
+					qPos.add(originDossierNo);
+				}
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByORIGIN_NO_First(String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByORIGIN_NO_First(originDossierNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("originDossierNo=");
+		msg.append(originDossierNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByORIGIN_NO_First(String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByORIGIN_NO(originDossierNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByORIGIN_NO_Last(String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByORIGIN_NO_Last(originDossierNo,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("originDossierNo=");
+		msg.append(originDossierNo);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByORIGIN_NO_Last(String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator) {
+		int count = countByORIGIN_NO(originDossierNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByORIGIN_NO(originDossierNo, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossiers before and after the current dossier in the ordered set where originDossierNo = &#63;.
+	 *
+	 * @param dossierId the primary key of the current dossier
+	 * @param originDossierNo the origin dossier no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier
+	 * @throws NoSuchDossierException if a dossier with the primary key could not be found
+	 */
+	@Override
+	public Dossier[] findByORIGIN_NO_PrevAndNext(long dossierId,
+		String originDossierNo, OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = findByPrimaryKey(dossierId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Dossier[] array = new DossierImpl[3];
+
+			array[0] = getByORIGIN_NO_PrevAndNext(session, dossier,
+					originDossierNo, orderByComparator, true);
+
+			array[1] = dossier;
+
+			array[2] = getByORIGIN_NO_PrevAndNext(session, dossier,
+					originDossierNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Dossier getByORIGIN_NO_PrevAndNext(Session session,
+		Dossier dossier, String originDossierNo,
+		OrderByComparator<Dossier> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+		boolean bindOriginDossierNo = false;
+
+		if (originDossierNo == null) {
+			query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_1);
+		}
+		else if (originDossierNo.equals("")) {
+			query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_3);
+		}
+		else {
+			bindOriginDossierNo = true;
+
+			query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindOriginDossierNo) {
+			qPos.add(originDossierNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Dossier> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dossiers where originDossierNo = &#63; from the database.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 */
+	@Override
+	public void removeByORIGIN_NO(String originDossierNo) {
+		for (Dossier dossier : findByORIGIN_NO(originDossierNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where originDossierNo = &#63;.
+	 *
+	 * @param originDossierNo the origin dossier no
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByORIGIN_NO(String originDossierNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_ORIGIN_NO;
+
+		Object[] finderArgs = new Object[] { originDossierNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			boolean bindOriginDossierNo = false;
+
+			if (originDossierNo == null) {
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_1);
+			}
+			else if (originDossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_3);
+			}
+			else {
+				bindOriginDossierNo = true;
+
+				query.append(_FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindOriginDossierNo) {
+					qPos.add(originDossierNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_1 = "dossier.originDossierNo IS NULL";
+	private static final String _FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_2 = "dossier.originDossierNo = ?";
+	private static final String _FINDER_COLUMN_ORIGIN_NO_ORIGINDOSSIERNO_3 = "(dossier.originDossierNo IS NULL OR dossier.originDossierNo = '')";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -13967,6 +15111,21 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_PNO,
 				args);
 
+			args = new Object[] {
+					dossierModelImpl.getGroupId(),
+					dossierModelImpl.getOriginDossierNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_ORI_NO, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO,
+				args);
+
+			args = new Object[] { dossierModelImpl.getOriginDossierNo() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_ORIGIN_NO, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -14277,6 +15436,44 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_PNO, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_PNO,
+					args);
+			}
+
+			if ((dossierModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierModelImpl.getOriginalGroupId(),
+						dossierModelImpl.getOriginalOriginDossierNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_ORI_NO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO,
+					args);
+
+				args = new Object[] {
+						dossierModelImpl.getGroupId(),
+						dossierModelImpl.getOriginDossierNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_ORI_NO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_ORI_NO,
+					args);
+			}
+
+			if ((dossierModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierModelImpl.getOriginalOriginDossierNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_ORIGIN_NO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO,
+					args);
+
+				args = new Object[] { dossierModelImpl.getOriginDossierNo() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_ORIGIN_NO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ORIGIN_NO,
 					args);
 			}
 		}

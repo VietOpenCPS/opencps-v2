@@ -560,6 +560,13 @@
 			<finder-column name="dossierStatus" comparator="!=" arrayable-operator="AND"/>
             <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
 		</finder>
+		<finder return-type="Collection" name="GID_ORI_NO">
+			<finder-column name="groupId" />
+			<finder-column name="originDossierNo" />
+		</finder>
+		<finder return-type="Collection" name="ORIGIN_NO">
+			<finder-column name="originDossierNo" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -1016,6 +1023,12 @@
             <finder-column name="serviceProcessId"></finder-column>
             <finder-column name="sequenceNo"></finder-column>
         </finder>
+        <finder return-type="ProcessStep" name="GID_SID_STATUS">
+			<finder-column name="groupId"/>
+			<finder-column name="serviceProcessId"/>
+			<finder-column name="dossierStatus"/>
+			<finder-column name="dossierSubStatus"/>
+		</finder>
 
 	</entity>
 	
@@ -1249,7 +1262,13 @@
 			<finder-column name="actionCode" />
             <finder-column name="preStepCode" />
             <finder-column name="postStepCode" />
-		</finder>		
+		</finder>
+		<finder name="G_SPID_PRESC_DOS" return-type="ProcessAction">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+			<finder-column name="preStepCode" />
+			<finder-column name="createDossiers" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="DossierAction"
@@ -2135,8 +2154,8 @@
 		<column name="messageText" type="String" />
 		<column name="acknowlegement" type="String" />
 		
-        <order by="desc">
-            <order-column name="modifiedDate" order-by="desc" case-sensitive="true" />
+        <order by="asc">
+            <order-column name="modifiedDate" order-by="asc" case-sensitive="true" />
         </order>
         <finder name="ST" return-type="Collection">
             <finder-column name="state"></finder-column>

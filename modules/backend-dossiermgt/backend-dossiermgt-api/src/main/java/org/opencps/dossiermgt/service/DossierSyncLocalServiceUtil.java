@@ -363,6 +363,10 @@ public class DossierSyncLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static void removeByDossierId(long groupId, long dossierId) {
+		getService().removeByDossierId(groupId, dossierId);
+	}
+
 	/**
 	* Updates the dossier sync in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

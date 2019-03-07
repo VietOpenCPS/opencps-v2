@@ -6939,6 +6939,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
 			dossier.setFinishDate(now);
+			if (dossier.getReleaseDate() == null) {
+				dossier.setReleaseDate(now);
+			}
 		}
 	}		
 }

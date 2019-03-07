@@ -4183,6 +4183,357 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 	private static final String _FINDER_COLUMN_G_SP_SNO_SEQUENCENO_1 = "processStep.sequenceNo IS NULL";
 	private static final String _FINDER_COLUMN_G_SP_SNO_SEQUENCENO_2 = "processStep.sequenceNo = ?";
 	private static final String _FINDER_COLUMN_G_SP_SNO_SEQUENCENO_3 = "(processStep.sequenceNo IS NULL OR processStep.sequenceNo = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_GID_SID_STATUS = new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, ProcessStepImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByGID_SID_STATUS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			ProcessStepModelImpl.GROUPID_COLUMN_BITMASK |
+			ProcessStepModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessStepModelImpl.DOSSIERSTATUS_COLUMN_BITMASK |
+			ProcessStepModelImpl.DOSSIERSUBSTATUS_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_SID_STATUS = new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGID_SID_STATUS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or throws a {@link NoSuchProcessStepException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param dossierStatus the dossier status
+	 * @param dossierSubStatus the dossier sub status
+	 * @return the matching process step
+	 * @throws NoSuchProcessStepException if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep findByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus)
+		throws NoSuchProcessStepException {
+		ProcessStep processStep = fetchByGID_SID_STATUS(groupId,
+				serviceProcessId, dossierStatus, dossierSubStatus);
+
+		if (processStep == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", serviceProcessId=");
+			msg.append(serviceProcessId);
+
+			msg.append(", dossierStatus=");
+			msg.append(dossierStatus);
+
+			msg.append(", dossierSubStatus=");
+			msg.append(dossierSubStatus);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchProcessStepException(msg.toString());
+		}
+
+		return processStep;
+	}
+
+	/**
+	 * Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param dossierStatus the dossier status
+	 * @param dossierSubStatus the dossier sub status
+	 * @return the matching process step, or <code>null</code> if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep fetchByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus) {
+		return fetchByGID_SID_STATUS(groupId, serviceProcessId, dossierStatus,
+			dossierSubStatus, true);
+	}
+
+	/**
+	 * Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param dossierStatus the dossier status
+	 * @param dossierSubStatus the dossier sub status
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching process step, or <code>null</code> if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep fetchByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, dossierStatus, dossierSubStatus
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS,
+					finderArgs, this);
+		}
+
+		if (result instanceof ProcessStep) {
+			ProcessStep processStep = (ProcessStep)result;
+
+			if ((groupId != processStep.getGroupId()) ||
+					(serviceProcessId != processStep.getServiceProcessId()) ||
+					!Objects.equals(dossierStatus,
+						processStep.getDossierStatus()) ||
+					!Objects.equals(dossierSubStatus,
+						processStep.getDossierSubStatus())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_SID_STATUS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_SID_STATUS_SERVICEPROCESSID_2);
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_2);
+			}
+
+			boolean bindDossierSubStatus = false;
+
+			if (dossierSubStatus == null) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_1);
+			}
+			else if (dossierSubStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_3);
+			}
+			else {
+				bindDossierSubStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindDossierSubStatus) {
+					qPos.add(dossierSubStatus);
+				}
+
+				List<ProcessStep> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ProcessStepPersistenceImpl.fetchByGID_SID_STATUS(long, long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ProcessStep processStep = list.get(0);
+
+					result = processStep;
+
+					cacheResult(processStep);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ProcessStep)result;
+		}
+	}
+
+	/**
+	 * Removes the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param dossierStatus the dossier status
+	 * @param dossierSubStatus the dossier sub status
+	 * @return the process step that was removed
+	 */
+	@Override
+	public ProcessStep removeByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus)
+		throws NoSuchProcessStepException {
+		ProcessStep processStep = findByGID_SID_STATUS(groupId,
+				serviceProcessId, dossierStatus, dossierSubStatus);
+
+		return remove(processStep);
+	}
+
+	/**
+	 * Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param dossierStatus the dossier status
+	 * @param dossierSubStatus the dossier sub status
+	 * @return the number of matching process steps
+	 */
+	@Override
+	public int countByGID_SID_STATUS(long groupId, long serviceProcessId,
+		String dossierStatus, String dossierSubStatus) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_SID_STATUS;
+
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, dossierStatus, dossierSubStatus
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_SID_STATUS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_SID_STATUS_SERVICEPROCESSID_2);
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_2);
+			}
+
+			boolean bindDossierSubStatus = false;
+
+			if (dossierSubStatus == null) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_1);
+			}
+			else if (dossierSubStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_3);
+			}
+			else {
+				bindDossierSubStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindDossierSubStatus) {
+					qPos.add(dossierSubStatus);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_GROUPID_2 = "processStep.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_SERVICEPROCESSID_2 =
+		"processStep.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_1 = "processStep.dossierStatus IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_2 = "processStep.dossierStatus = ? AND ";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSTATUS_3 = "(processStep.dossierStatus IS NULL OR processStep.dossierStatus = '') AND ";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_1 =
+		"processStep.dossierSubStatus IS NULL";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_2 =
+		"processStep.dossierSubStatus = ?";
+	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_3 =
+		"(processStep.dossierSubStatus IS NULL OR processStep.dossierSubStatus = '')";
 
 	public ProcessStepPersistenceImpl() {
 		setModelClass(ProcessStep.class);
@@ -4224,6 +4575,13 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 			new Object[] {
 				processStep.getStepCode(), processStep.getGroupId(),
 				processStep.getServiceProcessId()
+			}, processStep);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS,
+			new Object[] {
+				processStep.getGroupId(), processStep.getServiceProcessId(),
+				processStep.getDossierStatus(),
+				processStep.getDossierSubStatus()
 			}, processStep);
 
 		processStep.resetOriginalValues();
@@ -4317,6 +4675,18 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_SC_GID, args,
 			processStepModelImpl, false);
+
+		args = new Object[] {
+				processStepModelImpl.getGroupId(),
+				processStepModelImpl.getServiceProcessId(),
+				processStepModelImpl.getDossierStatus(),
+				processStepModelImpl.getDossierSubStatus()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_GID_SID_STATUS, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS, args,
+			processStepModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -4363,6 +4733,31 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_SC_GID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_SC_GID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					processStepModelImpl.getGroupId(),
+					processStepModelImpl.getServiceProcessId(),
+					processStepModelImpl.getDossierStatus(),
+					processStepModelImpl.getDossierSubStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SID_STATUS, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS, args);
+		}
+
+		if ((processStepModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_GID_SID_STATUS.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					processStepModelImpl.getOriginalGroupId(),
+					processStepModelImpl.getOriginalServiceProcessId(),
+					processStepModelImpl.getOriginalDossierStatus(),
+					processStepModelImpl.getOriginalDossierSubStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_SID_STATUS, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_SID_STATUS, args);
 		}
 	}
 

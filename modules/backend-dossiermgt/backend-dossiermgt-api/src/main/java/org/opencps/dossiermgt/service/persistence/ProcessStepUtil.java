@@ -1317,6 +1317,91 @@ public class ProcessStepUtil {
 	}
 
 	/**
+	* Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or throws a {@link NoSuchProcessStepException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param dossierStatus the dossier status
+	* @param dossierSubStatus the dossier sub status
+	* @return the matching process step
+	* @throws NoSuchProcessStepException if a matching process step could not be found
+	*/
+	public static ProcessStep findByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessStepException {
+		return getPersistence()
+				   .findByGID_SID_STATUS(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus);
+	}
+
+	/**
+	* Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param dossierStatus the dossier status
+	* @param dossierSubStatus the dossier sub status
+	* @return the matching process step, or <code>null</code> if a matching process step could not be found
+	*/
+	public static ProcessStep fetchByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus) {
+		return getPersistence()
+				   .fetchByGID_SID_STATUS(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus);
+	}
+
+	/**
+	* Returns the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param dossierStatus the dossier status
+	* @param dossierSubStatus the dossier sub status
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process step, or <code>null</code> if a matching process step could not be found
+	*/
+	public static ProcessStep fetchByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByGID_SID_STATUS(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus, retrieveFromCache);
+	}
+
+	/**
+	* Removes the process step where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param dossierStatus the dossier status
+	* @param dossierSubStatus the dossier sub status
+	* @return the process step that was removed
+	*/
+	public static ProcessStep removeByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessStepException {
+		return getPersistence()
+				   .removeByGID_SID_STATUS(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus);
+	}
+
+	/**
+	* Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and dossierStatus = &#63; and dossierSubStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param dossierStatus the dossier status
+	* @param dossierSubStatus the dossier sub status
+	* @return the number of matching process steps
+	*/
+	public static int countByGID_SID_STATUS(long groupId,
+		long serviceProcessId, String dossierStatus, String dossierSubStatus) {
+		return getPersistence()
+				   .countByGID_SID_STATUS(groupId, serviceProcessId,
+			dossierStatus, dossierSubStatus);
+	}
+
+	/**
 	* Caches the process step in the entity cache if it is enabled.
 	*
 	* @param processStep the process step

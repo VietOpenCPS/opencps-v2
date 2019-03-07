@@ -8148,6 +8148,358 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 		"processAction.postStepCode = ?";
 	private static final String _FINDER_COLUMN_F_GID_SID_AC_PRE_POST_POSTSTEPCODE_3 =
 		"(processAction.postStepCode IS NULL OR processAction.postStepCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED,
+			ProcessActionImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByG_SPID_PRESC_DOS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			ProcessActionModelImpl.GROUPID_COLUMN_BITMASK |
+			ProcessActionModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessActionModelImpl.PRESTEPCODE_COLUMN_BITMASK |
+			ProcessActionModelImpl.CREATEDOSSIERS_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_SPID_PRESC_DOS = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByG_SPID_PRESC_DOS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param createDossiers the create dossiers
+	 * @return the matching process action
+	 * @throws NoSuchProcessActionException if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction findByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = fetchByG_SPID_PRESC_DOS(groupId,
+				serviceProcessId, preStepCode, createDossiers);
+
+		if (processAction == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", serviceProcessId=");
+			msg.append(serviceProcessId);
+
+			msg.append(", preStepCode=");
+			msg.append(preStepCode);
+
+			msg.append(", createDossiers=");
+			msg.append(createDossiers);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchProcessActionException(msg.toString());
+		}
+
+		return processAction;
+	}
+
+	/**
+	 * Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param createDossiers the create dossiers
+	 * @return the matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers) {
+		return fetchByG_SPID_PRESC_DOS(groupId, serviceProcessId, preStepCode,
+			createDossiers, true);
+	}
+
+	/**
+	 * Returns the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param createDossiers the create dossiers
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, preStepCode, createDossiers
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS,
+					finderArgs, this);
+		}
+
+		if (result instanceof ProcessAction) {
+			ProcessAction processAction = (ProcessAction)result;
+
+			if ((groupId != processAction.getGroupId()) ||
+					(serviceProcessId != processAction.getServiceProcessId()) ||
+					!Objects.equals(preStepCode, processAction.getPreStepCode()) ||
+					!Objects.equals(createDossiers,
+						processAction.getCreateDossiers())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_SERVICEPROCESSID_2);
+
+			boolean bindPreStepCode = false;
+
+			if (preStepCode == null) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_1);
+			}
+			else if (preStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_3);
+			}
+			else {
+				bindPreStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_2);
+			}
+
+			boolean bindCreateDossiers = false;
+
+			if (createDossiers == null) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_1);
+			}
+			else if (createDossiers.equals("")) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_3);
+			}
+			else {
+				bindCreateDossiers = true;
+
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindPreStepCode) {
+					qPos.add(preStepCode);
+				}
+
+				if (bindCreateDossiers) {
+					qPos.add(createDossiers);
+				}
+
+				List<ProcessAction> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ProcessActionPersistenceImpl.fetchByG_SPID_PRESC_DOS(long, long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ProcessAction processAction = list.get(0);
+
+					result = processAction;
+
+					cacheResult(processAction);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ProcessAction)result;
+		}
+	}
+
+	/**
+	 * Removes the process action where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param createDossiers the create dossiers
+	 * @return the process action that was removed
+	 */
+	@Override
+	public ProcessAction removeByG_SPID_PRESC_DOS(long groupId,
+		long serviceProcessId, String preStepCode, String createDossiers)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = findByG_SPID_PRESC_DOS(groupId,
+				serviceProcessId, preStepCode, createDossiers);
+
+		return remove(processAction);
+	}
+
+	/**
+	 * Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and preStepCode = &#63; and createDossiers = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param createDossiers the create dossiers
+	 * @return the number of matching process actions
+	 */
+	@Override
+	public int countByG_SPID_PRESC_DOS(long groupId, long serviceProcessId,
+		String preStepCode, String createDossiers) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_SPID_PRESC_DOS;
+
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, preStepCode, createDossiers
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_SERVICEPROCESSID_2);
+
+			boolean bindPreStepCode = false;
+
+			if (preStepCode == null) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_1);
+			}
+			else if (preStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_3);
+			}
+			else {
+				bindPreStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_2);
+			}
+
+			boolean bindCreateDossiers = false;
+
+			if (createDossiers == null) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_1);
+			}
+			else if (createDossiers.equals("")) {
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_3);
+			}
+			else {
+				bindCreateDossiers = true;
+
+				query.append(_FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindPreStepCode) {
+					qPos.add(preStepCode);
+				}
+
+				if (bindCreateDossiers) {
+					qPos.add(createDossiers);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_GROUPID_2 = "processAction.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_SERVICEPROCESSID_2 =
+		"processAction.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_1 = "processAction.preStepCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_2 = "processAction.preStepCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_PRESTEPCODE_3 = "(processAction.preStepCode IS NULL OR processAction.preStepCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_1 =
+		"processAction.createDossiers IS NULL";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_2 =
+		"processAction.createDossiers = ?";
+	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_3 =
+		"(processAction.createDossiers IS NULL OR processAction.createDossiers = '')";
 
 	public ProcessActionPersistenceImpl() {
 		setModelClass(ProcessAction.class);
@@ -8209,6 +8561,13 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 				processAction.getGroupId(), processAction.getServiceProcessId(),
 				processAction.getActionCode(), processAction.getPreStepCode(),
 				processAction.getPostStepCode()
+			}, processAction);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS,
+			new Object[] {
+				processAction.getGroupId(), processAction.getServiceProcessId(),
+				processAction.getPreStepCode(),
+				processAction.getCreateDossiers()
 			}, processAction);
 
 		processAction.resetOriginalValues();
@@ -8336,6 +8695,18 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SID_AC_PRE_POST, args,
 			processActionModelImpl, false);
+
+		args = new Object[] {
+				processActionModelImpl.getGroupId(),
+				processActionModelImpl.getServiceProcessId(),
+				processActionModelImpl.getPreStepCode(),
+				processActionModelImpl.getCreateDossiers()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_SPID_PRESC_DOS, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS, args,
+			processActionModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -8457,6 +8828,31 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_SID_AC_PRE_POST,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					processActionModelImpl.getGroupId(),
+					processActionModelImpl.getServiceProcessId(),
+					processActionModelImpl.getPreStepCode(),
+					processActionModelImpl.getCreateDossiers()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SPID_PRESC_DOS, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS, args);
+		}
+
+		if ((processActionModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					processActionModelImpl.getOriginalGroupId(),
+					processActionModelImpl.getOriginalServiceProcessId(),
+					processActionModelImpl.getOriginalPreStepCode(),
+					processActionModelImpl.getOriginalCreateDossiers()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SPID_PRESC_DOS, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_SPID_PRESC_DOS, args);
 		}
 	}
 

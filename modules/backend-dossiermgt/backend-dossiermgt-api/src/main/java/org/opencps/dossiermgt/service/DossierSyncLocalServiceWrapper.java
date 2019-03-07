@@ -389,6 +389,11 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 		return _dossierSyncLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public void removeByDossierId(long groupId, long dossierId) {
+		_dossierSyncLocalService.removeByDossierId(groupId, dossierId);
+	}
+
 	/**
 	* Updates the dossier sync in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

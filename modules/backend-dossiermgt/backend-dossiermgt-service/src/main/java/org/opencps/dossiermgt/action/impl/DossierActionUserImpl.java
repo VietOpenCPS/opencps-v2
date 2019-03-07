@@ -376,7 +376,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 //		_log.info("Allow assign user: " + allowAssignUser);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-		_log.info("Employee : " + employee);
+		//_log.info("Employee : " + employee);
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);

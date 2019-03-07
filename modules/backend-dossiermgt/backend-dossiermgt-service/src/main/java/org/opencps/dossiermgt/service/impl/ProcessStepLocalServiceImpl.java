@@ -492,4 +492,9 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return object;
 	}
 
+	public ProcessStep getByProcessAndStatus(long groupId, long serviceProcessId, String dossierStatus,
+			String dossierSubStatus) {
+		return processStepPersistence.fetchByGID_SID_STATUS(groupId, serviceProcessId, dossierStatus, dossierSubStatus);
+	}
+
 }
