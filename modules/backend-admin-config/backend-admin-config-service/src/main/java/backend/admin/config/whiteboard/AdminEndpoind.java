@@ -272,8 +272,8 @@ public class AdminEndpoind extends Endpoint {
 
 					JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 
-					System.out.println("code: " + code.equals("opencps_employee"));
-					_log.info("code: " + code.equals("opencps_employee"));
+//					System.out.println("code: " + code.equals("opencps_employee"));
+					_log.debug("code: " + code.equals("opencps_employee"));
 					
 					if (message.getBoolean(CONFIG)) {
 
@@ -301,18 +301,18 @@ public class AdminEndpoind extends Endpoint {
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 						
-						System.out.println("code: " + code.equals("opencps_employee"));
-						_log.info("code: " + code.equals("opencps_employee"));
-						_log.info("lengColumns: " + lengColumns);
+//						System.out.println("code: " + code.equals("opencps_employee"));
+						_log.debug("code: " + code.equals("opencps_employee"));
+						_log.debug("lengColumns: " + lengColumns);
 						if (code.equals("opencps_employee")) {
 							
 							List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 
-							_log.info("employees: " + employees);
+							_log.debug("employees: " + employees);
 							if (lengColumns > 0) {
 								for (Object[] obj: employees) {
 
-									_log.info("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
+									_log.debug("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
 									if (Validator.isNotNull(obj[lengColumns - 1])) {
 										long userIdMapping = (long) obj[lengColumns - 1];
 										User user = UserLocalServiceUtil.fetchUser(userIdMapping);
@@ -321,7 +321,7 @@ public class AdminEndpoind extends Endpoint {
 									
 								}
 							}
-							System.out.println("employees.employees()" + employees);
+//							System.out.println("employees.employees()" + employees);
 							messageData.put(message.getString(RESPONE), employees);
 							
 						} else {

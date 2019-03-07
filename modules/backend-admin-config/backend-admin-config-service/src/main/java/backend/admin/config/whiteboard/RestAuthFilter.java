@@ -86,7 +86,7 @@ public class RestAuthFilter implements Filter {
 		}
 		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
-			System.out.println("RestAuthFilter.doFilter()" + userObj);
+//			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
 				if (!exclude) {

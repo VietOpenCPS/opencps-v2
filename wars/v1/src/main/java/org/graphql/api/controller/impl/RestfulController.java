@@ -873,13 +873,13 @@ public class RestfulController {
 			List<Object[]> list = (List<Object[]>) method.invoke(model, dynamicQuery, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
-			_log.info("List object: "+JSONFactoryUtil.looseSerialize(list));
+//			_log.info("List object: "+JSONFactoryUtil.looseSerialize(list));
 			JSONObject object = null;
 			for (Object[] objects : list) {
 
 				object = JSONFactoryUtil.createJSONObject();
 
-				_log.info("objects[0]: "+objects[0]);
+//				_log.info("objects[0]: "+objects[0]);
 				object.put("id", objects[0]);
 
 				if (modelName.equals(EmployeeJobPos.class.getName())) {
@@ -891,16 +891,16 @@ public class RestfulController {
 					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
 
 					object.put("name", name);
-					_log.info("name: "+name);
+					_log.debug("name: "+name);
 
 				} else {
 					object.put("name", objects[1]);
-					_log.info("name: "+objects[1]);
+					_log.debug("name: "+objects[1]);
 				}
 
 				result.put(object);
 
-				_log.info("result: "+JSONFactoryUtil.looseSerialize(result));
+//				_log.info("result: "+JSONFactoryUtil.looseSerialize(result));
 			}
 
 		} catch (Exception e) {
