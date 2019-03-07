@@ -242,6 +242,11 @@ public class JobPosLocalServiceUtil {
 		return getService().findByF_mappingRoleIds(groupId, mappingRoleIds);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.JobPos> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

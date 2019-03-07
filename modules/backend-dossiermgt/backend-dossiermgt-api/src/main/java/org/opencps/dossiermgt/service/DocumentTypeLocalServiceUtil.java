@@ -203,6 +203,11 @@ public class DocumentTypeLocalServiceUtil {
 		return getService().fetchDocumentTypeByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DocumentType> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

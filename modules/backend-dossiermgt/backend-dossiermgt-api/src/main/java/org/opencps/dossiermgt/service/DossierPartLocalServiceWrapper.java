@@ -226,6 +226,12 @@ public class DossierPartLocalServiceWrapper implements DossierPartLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierPart> findByG(
+		long groupId) {
+		return _dossierPartLocalService.findByG(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierPartLocalService.getActionableDynamicQuery();
 	}

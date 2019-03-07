@@ -203,6 +203,8 @@ public interface DossierPartLocalService extends BaseLocalService,
 	public DossierPart fetchDossierPartByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DossierPart> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

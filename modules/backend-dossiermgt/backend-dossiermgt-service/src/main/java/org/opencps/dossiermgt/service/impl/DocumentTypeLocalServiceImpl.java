@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
@@ -232,5 +233,9 @@ public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseIm
 		documentTypePersistence.update(object);
 
 		return object;
+	}
+	
+	public List<DocumentType> findByG(long groupId) {
+		return documentTypePersistence.findByG(groupId);
 	}
 }

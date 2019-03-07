@@ -278,6 +278,11 @@ public class DictCollectionLocalServiceUtil {
 		return getService().fetchDictCollectionByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.datamgt.model.DictCollection> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static java.util.List<org.opencps.datamgt.model.DictCollection> findOlderThanDate(
 		java.util.Date date, long groupId, int start, int end) {
 		return getService().findOlderThanDate(date, groupId, start, end);

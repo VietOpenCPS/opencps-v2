@@ -153,6 +153,9 @@
 		</finder>
 
 		<!-- References -->
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 
 	</entity>
 
@@ -227,6 +230,9 @@
 		</finder>
 		<!-- References -->
 
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 	</entity>
 
 	<entity name="ServiceConfig" table="opencps_serviceconfig"
@@ -1726,6 +1732,9 @@
 			<finder-column name="typeCode" />
 		</finder>
 
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="Deliverable" remote-service="false"
@@ -2104,6 +2113,9 @@
 		<finder return-type="DocumentType" name="F_CODE">
 			<finder-column name="groupId" />
 			<finder-column name="typeCode" />
+		</finder>
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
 		</finder>
 	</entity>
 

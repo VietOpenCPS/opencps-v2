@@ -574,4 +574,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	public List<JobPos> findByF_mappingRoleIds(long groupId, long[] mappingRoleIds) {
 		return jobPosPersistence.findByF_mappingRoleIds(groupId, mappingRoleIds);
 	}
+	
+	public List<JobPos> findByG(long groupId) {
+		return jobPosPersistence.findByG(groupId);
+	}
 }

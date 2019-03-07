@@ -231,6 +231,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchEmployeeByUuidAndGroupId(String uuid, long groupId);
 
+	public List<Employee> findByG(long groupId);
+
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

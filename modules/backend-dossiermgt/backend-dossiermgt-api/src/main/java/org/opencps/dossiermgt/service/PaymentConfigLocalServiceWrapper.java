@@ -220,6 +220,12 @@ public class PaymentConfigLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentConfig> findByG(
+		long groupId) {
+		return _paymentConfigLocalService.findByG(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _paymentConfigLocalService.getActionableDynamicQuery();
 	}

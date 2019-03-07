@@ -777,4 +777,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 		return dictCollectionPersistence.update(dictCollection);
 	}
 
+	public List<DictCollection> findByG(long groupId) {
+		return dictCollectionPersistence.findByF_dictCollectionByGroup(groupId);
+	}
 }

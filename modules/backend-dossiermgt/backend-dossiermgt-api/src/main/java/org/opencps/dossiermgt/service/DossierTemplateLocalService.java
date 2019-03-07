@@ -200,6 +200,8 @@ public interface DossierTemplateLocalService extends BaseLocalService,
 	public DossierTemplate fetchDossierTemplateByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DossierTemplate> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

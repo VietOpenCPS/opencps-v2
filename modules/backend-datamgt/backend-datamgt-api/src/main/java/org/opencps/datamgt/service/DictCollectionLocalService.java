@@ -20,6 +20,7 @@ import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -239,6 +240,7 @@ public interface DictCollectionLocalService extends BaseLocalService,
 	* @param groupId
 	* @return DictCollection
 	*/
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode,
 		long groupId);
@@ -256,6 +258,8 @@ public interface DictCollectionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DictCollection fetchDictCollectionByUuidAndGroupId(String uuid,
 		long groupId);
+
+	public List<DictCollection> findByG(long groupId);
 
 	public List<DictCollection> findOlderThanDate(Date date, long groupId,
 		int start, int end);

@@ -8,12 +8,19 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -26,6 +33,7 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.BackupDataManagement;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.v21.model.ActionConfigList;
+import org.opencps.api.v21.model.Actions;
 import org.opencps.api.v21.model.BusinessList;
 import org.opencps.api.v21.model.BusinessList.Business;
 import org.opencps.api.v21.model.CitizenList;
@@ -35,8 +43,15 @@ import org.opencps.api.v21.model.FileTemplates;
 import org.opencps.api.v21.model.FileTemplates.FileTemplate;
 import org.opencps.api.v21.model.Items;
 import org.opencps.api.v21.model.MenuConfigList;
+import org.opencps.api.v21.model.Parts;
 import org.opencps.api.v21.model.Processes;
+import org.opencps.api.v21.model.Sequences;
+import org.opencps.api.v21.model.Sequences.ProcessSequence;
+import org.opencps.api.v21.model.ServiceProcess.Roles;
+import org.opencps.api.v21.model.ServiceProcess.Roles.ProcessRole;
 import org.opencps.api.v21.model.StepConfigList;
+import org.opencps.api.v21.model.Steps;
+import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -49,24 +64,39 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.MenuRole;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.JobPos;
@@ -578,6 +608,542 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		}
 
 		return null;
+	}
+
+	@Override
+	public Response backupMasterDataZip(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		_log.info("export DB to XML");
+		BackendAuth auth = new BackendAuthImpl();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long userId = user.getUserId();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (!auth2.isAdmin(serviceContext, "admin")) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			}
+
+			ByteArrayOutputStream actionConfigXMLStream = ReadXMLFileUtils.exportActionConfigToXMLStream(groupId);
+			ByteArrayOutputStream stepConfigXMLStream = ReadXMLFileUtils.exportStepConfigToXMLStream(groupId);
+			ByteArrayOutputStream menuConfigXMLStream = ReadXMLFileUtils.exportMenuConfigToXMLStream(groupId);
+			ByteArrayOutputStream documentTypeXMLStream = ReadXMLFileUtils.exportDocumentTypeToXMLStream(groupId);
+			ByteArrayOutputStream deliverableTypeXMLStream = ReadXMLFileUtils.exportDeliverableTypeToXMLStream(groupId);
+			ByteArrayOutputStream paymentConfigXMLStream = ReadXMLFileUtils.exportPaymentConfigToXMLStream(groupId);
+			ByteArrayOutputStream serverConfigXMLStream = ReadXMLFileUtils.exportServerConfigToXMLStream(groupId);
+			ByteArrayOutputStream notificationTemplateXMLStream = ReadXMLFileUtils.exportNotificationTemplateToXMLStream(groupId);
+			ByteArrayOutputStream userManagementXMLStream = ReadXMLFileUtils.exportUserManagementToXMLStream(groupId);
+			
+			byte[] input = actionConfigXMLStream.toByteArray();
+			
+			File file = new File("backupmaster" + System.currentTimeMillis() + ".zip");
+			
+			FileOutputStream fos = new FileOutputStream(file);
+		    ZipOutputStream zos = new ZipOutputStream(fos);
+		    
+		    ZipEntry entry = new ZipEntry("ActionConfig.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    actionConfigXMLStream.close();
+		    
+		    input = stepConfigXMLStream.toByteArray();
+		    entry = new ZipEntry("StepConfig.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    stepConfigXMLStream.close();
+
+		    input = menuConfigXMLStream.toByteArray();
+		    entry = new ZipEntry("MenuConfig.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    menuConfigXMLStream.close();
+
+		    input = documentTypeXMLStream.toByteArray();
+		    entry = new ZipEntry("DocumentType.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    documentTypeXMLStream.close();
+		    
+		    input = deliverableTypeXMLStream.toByteArray();
+		    entry = new ZipEntry("DeliverableType.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    deliverableTypeXMLStream.close();
+
+		    input = paymentConfigXMLStream.toByteArray();
+		    entry = new ZipEntry("PaymentConfig.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    paymentConfigXMLStream.close();
+
+		    input = serverConfigXMLStream.toByteArray();
+		    entry = new ZipEntry("ServerConfig.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    serverConfigXMLStream.close();
+
+		    input = notificationTemplateXMLStream.toByteArray();
+		    entry = new ZipEntry("NotificationTemplate.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    notificationTemplateXMLStream.close();
+
+		    input = userManagementXMLStream.toByteArray();
+		    entry = new ZipEntry("Users.xml");
+		    entry.setSize(input.length);
+		    zos.putNextEntry(entry);
+		    zos.write(input);
+		    zos.closeEntry();
+		    userManagementXMLStream.close();
+
+		    ZipEntry dicts = new ZipEntry("dicts/");
+		    zos.putNextEntry(dicts);
+		    List<DictCollection> lstCollections = DictCollectionLocalServiceUtil.findByG(groupId);
+		    for (DictCollection collection : lstCollections) {
+		    	ByteArrayOutputStream dictCollectionXMLStream = null;
+				org.opencps.api.v21.model.DictCollection dictCollection = new org.opencps.api.v21.model.DictCollection();
+				List<DictItem> dictItemList = DictItemLocalServiceUtil
+					.findByF_dictCollectionId(collection.getDictCollectionId());
+				if (dictItemList != null && dictItemList.size() > 0) {
+					Items itemList = new Items();
+					for (DictItem dictItem : dictItemList) {
+						org.opencps.api.v21.model.Items.DictItem item = new org.opencps.api.v21.model.Items.DictItem();
+						item.setItemCode(dictItem.getItemCode());
+						item.setItemName(dictItem.getItemName());
+						item.setItemNameEN(dictItem.getItemNameEN());
+						item.setItemDescription(dictItem.getItemDescription());
+						DictItem itemParent = DictItemLocalServiceUtil.fetchDictItem(dictItem.getParentItemId());
+						if (itemParent != null) {
+							item.setParent(itemParent.getItemCode());
+						}
+						item.setLevel(dictItem.getLevel());
+						item.setSibling(dictItem.getSibling());
+						item.setMetadata(dictItem.getMetaData());
+						//
+						itemList.getDictItem().add(item);
+					}
+					//
+					dictCollection.setItems(itemList);
+					dictCollection.setCollectionCode(collection.getCollectionCode());
+					dictCollection.setCollectionName(collection.getCollectionName());
+					dictCollection.setCollectionNameEN(collection.getCollectionNameEN());
+					dictCollection.setDescription(collection.getDescription());
+					dictCollection.setStatus(collection.getStatus());
+				}
+				
+				dictCollectionXMLStream = ReadXMLFileUtils.convertDictCollectionToXMLStream(dictCollection);
+	
+				input = dictCollectionXMLStream.toByteArray();
+			    entry = new ZipEntry("dicts/" + collection.getCollectionCode() + ".xml");
+			    entry.setSize(input.length);
+			    zos.putNextEntry(entry);
+			    zos.write(input);
+			    dictCollectionXMLStream.close();
+			    zos.closeEntry();				
+		    }
+	
+		    ZipEntry forms = new ZipEntry("forms/");
+		    zos.putNextEntry(forms);
+		    zos.closeEntry();
+
+		    ZipEntry files = new ZipEntry("files/");
+		    zos.putNextEntry(files);
+		    zos.closeEntry();
+		    
+		    ZipEntry reports = new ZipEntry("reports/");
+		    zos.putNextEntry(reports);
+		    zos.closeEntry();
+		    
+		    List<DocumentType> lstDocumentTypes = DocumentTypeLocalServiceUtil.findByG(groupId);
+		    for (DocumentType dt : lstDocumentTypes) {
+		    	if (Validator.isNotNull(dt.getDocumentScript())) {
+					input = dt.getDocumentScript().getBytes();
+				    entry = new ZipEntry("reports/" + dt.getTypeCode() + ".xml");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);		    		
+		    	}
+		    }
+		    
+		    List<org.opencps.dossiermgt.model.DossierPart> lstParts = DossierPartLocalServiceUtil.findByG(groupId);
+		    for (org.opencps.dossiermgt.model.DossierPart dp : lstParts) {
+		    	if (Validator.isNotNull(dp.getFormReport())) {
+					input = dp.getFormReport().getBytes();
+				    entry = new ZipEntry("reports/" + dp.getTemplateNo() + "_" + dp.getPartNo() + ".xml");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);		    		
+		    	}
+			    
+		    	if (Validator.isNotNull(dp.getFormScript())) {
+					input = dp.getFormScript().getBytes();
+				    entry = new ZipEntry("forms/" + dp.getTemplateNo() + "_" + dp.getPartNo() + ".json");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);		    		
+		    	}
+		    }
+		    	
+		    List<DeliverableType> lstDeliverableTypes = DeliverableTypeLocalServiceUtil.findByG(groupId);
+		    for (DeliverableType dt : lstDeliverableTypes) {
+		    	if (Validator.isNotNull(dt.getFormReport())) {
+					input = dt.getFormReport().getBytes();
+				    entry = new ZipEntry("reports/" + dt.getTypeCode() + ".xml");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);		    		
+		    	}
+			    
+		    	if (Validator.isNotNull(dt.getFormScript())) {
+					input = dt.getFormScript().getBytes();
+				    entry = new ZipEntry("forms/" + dt.getTypeCode() + ".json");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);		    		
+		    	}
+		    }
+		    
+		    ZipEntry services = new ZipEntry("services/");
+		    zos.putNextEntry(services);
+			List<ServiceInfo> serviceList = ServiceInfoLocalServiceUtil.findByGroup(groupId);
+			ByteArrayOutputStream serviceInfoXMLStream;
+			
+			if (serviceList != null && serviceList.size() > 0) {
+				//Create new folder
+				for (ServiceInfo serviceInfo : serviceList) {
+					org.opencps.api.v21.model.ServiceInfo serviceInfoExport = new org.opencps.api.v21.model.ServiceInfo();
+					//
+					serviceInfoExport.setServiceCode(serviceInfo.getServiceCode());
+					serviceInfoExport.setServiceName(serviceInfo.getServiceName());
+					serviceInfoExport.setProcessText(serviceInfo.getProcessText());
+					serviceInfoExport.setMethodText(serviceInfo.getMethodText());
+					serviceInfoExport.setDossierText(serviceInfo.getDossierText());
+					serviceInfoExport.setConditionText(serviceInfo.getConditionText());
+					serviceInfoExport.setDurationText(serviceInfo.getDurationText());
+					serviceInfoExport.setApplicantText(serviceInfo.getApplicantText());
+					serviceInfoExport.setResultText(serviceInfo.getResultText());
+					serviceInfoExport.setRegularText(serviceInfo.getRegularText());
+					serviceInfoExport.setFeeText(serviceInfo.getFeeText());
+					serviceInfoExport.setAdministrationCode(serviceInfo.getAdministrationCode());
+					serviceInfoExport.setAdministrationName(serviceInfo.getAdministrationName());
+					serviceInfoExport.setDomainCode(serviceInfo.getDomainCode());
+					serviceInfoExport.setDomainName(serviceInfo.getDomainName());
+					serviceInfoExport.setMaxLevel(serviceInfo.getMaxLevel());
+					// Process ServiceFileTemplate
+					long serviceInfoId = serviceInfo.getServiceInfoId();
+					if (serviceInfoId > 0) {
+						List<ServiceFileTemplate> fileServiceList = ServiceFileTemplateLocalServiceUtil
+								.getByServiceInfoId(serviceInfoId);
+						if (fileServiceList != null && fileServiceList.size() > 0) {
+							FileTemplates fileTempList = new FileTemplates();
+							for (ServiceFileTemplate serviceFileTemplate : fileServiceList) {
+								FileTemplate fileTemp = new FileTemplate();
+								//
+								fileTemp.setFileTemplateNo(serviceFileTemplate.getFileTemplateNo());
+								fileTemp.setTemplateName(serviceFileTemplate.getTemplateName());
+								//Get file name
+								long fileEntryId = serviceFileTemplate.getFileEntryId();
+								if (fileEntryId > 0) {
+									DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+									if (fileEntry != null) {
+										fileTemp.setFilename(fileEntry.getFileName());
+									}
+								}
+								//add FileTemplate in list
+								fileTempList.getFileTemplate().add(fileTemp);
+							}
+							// add FileTemplates to serviceInfo
+							serviceInfoExport.setFileTemplates(fileTempList);
+						} else {
+							FileTemplate fileTemp = new FileTemplate();
+							fileTemp.setFileTemplateNo(StringPool.BLANK);
+							fileTemp.setTemplateName(StringPool.BLANK);
+							fileTemp.setFilename(StringPool.BLANK);
+						}
+						//
+						List<ServiceConfig> serviceConfigList = ServiceConfigLocalServiceUtil
+								.getByServiceInfo(groupId, serviceInfoId);
+						if (serviceConfigList != null && serviceConfigList.size() > 0) {
+							Configs configList = new Configs();
+							for (ServiceConfig serviceConfig : serviceConfigList) {
+								org.opencps.api.v21.model.Configs.ServiceConfig config = new org.opencps.api.v21.model.Configs.ServiceConfig();
+								//
+								config.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+								config.setGovAgencyName(serviceConfig.getGovAgencyName());
+								config.setServiceInstruction(serviceConfig.getServiceInstruction());
+								config.setServiceLevel(serviceConfig.getServiceLevel());
+								config.setServiceUrl(serviceConfig.getServiceUrl());
+								config.setForCitizen(serviceConfig.getForCitizen());
+								config.setForBusiness(serviceConfig.getForBusiness());
+								config.setPostalService(serviceConfig.getPostService());
+								config.setRegistration(serviceConfig.getRegistration());
+								//Get Process Option
+								long serviceConfigId = serviceConfig.getServiceConfigId();
+								if (serviceConfigId > 0) {
+									List<ProcessOption> processOptionList = ProcessOptionLocalServiceUtil
+											.getByServiceProcessId(serviceConfigId);
+									if (processOptionList != null && processOptionList.size() > 0) {
+										Processes processes = new Processes();
+										for (ProcessOption processOption : processOptionList) {
+											org.opencps.api.v21.model.Processes.ProcessOption option = new org.opencps.api.v21.model.Processes.ProcessOption();
+											//
+											option.setOptionName(processOption.getOptionName());
+											option.setSeqOrder(processOption.getOptionOrder());
+											option.setSampleCount((int) processOption.getSampleCount());
+											option.setAutoSelect(processOption.getAutoSelect());
+											option.setInstructionNote(processOption.getInstructionNote());
+											option.setSubmissionNote(processOption.getSubmissionNote());
+											//Get templateNo
+											DossierTemplate template = DossierTemplateLocalServiceUtil.fetchDossierTemplate(processOption.getDossierTemplateId());
+											if (template != null) {
+												option.setTemplateNo(template.getTemplateNo());
+												option.setTemplateName(template.getTemplateName());
+											}
+											// Get ServiceProcess
+											ServiceProcess process = ServiceProcessLocalServiceUtil.fetchServiceProcess(processOption.getServiceProcessId());
+											if (process != null) {
+												option.setProcessNo(process.getProcessNo());
+												option.setProcessName(process.getProcessName());
+											}
+											option.setRegisterBookCode(processOption.getRegisterBookCode());
+											// Add option to list
+											processes.getProcessOption().add(option);
+										}
+										// Add list option to serviceConfig
+										config.setProcesses(processes);
+									}
+								}
+								//add serviceConfig in list
+								configList.getServiceConfig().add(config);
+							}
+							// add FileTemplates to serviceInfo
+							serviceInfoExport.setConfigs(configList);
+						}
+					}
+					serviceInfoXMLStream = ReadXMLFileUtils.convertServiceInfoToXMLStream(serviceInfoExport);
+					input = serviceInfoXMLStream.toByteArray();
+				    entry = new ZipEntry("services/" + serviceInfo.getServiceCode() + ".xml");
+				    entry.setSize(input.length);
+				    zos.putNextEntry(entry);
+				    zos.write(input);
+				    serviceInfoXMLStream.close();
+				    
+				    List<ServiceFileTemplate> sfts = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(serviceInfo.getServiceInfoId());
+				    for (ServiceFileTemplate sft : sfts) {
+				    	DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(sft.getFileEntryId());
+				    	if (fileEntry != null) {
+				    		try {
+					    		InputStream is = fileEntry.getContentStream();
+					    		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	
+					    		int nRead;
+					    		byte[] data = new byte[16384];
+	
+					    		while ((nRead = is.read(data, 0, data.length)) != -1) {
+					    		  buffer.write(data, 0, nRead);
+					    		}
+	
+								input = buffer.toByteArray();
+							    entry = new ZipEntry("files/" + fileEntry.getFileName());
+							    entry.setSize(input.length);
+							    zos.putNextEntry(entry);
+							    zos.write(input);
+							    buffer.close();		
+				    		}
+				    		catch (Exception e) {
+				    			
+				    		}
+				    	}
+				    }
+				}		
+			}
+		    zos.closeEntry();
+		    
+		    ZipEntry templates = new ZipEntry("templates/");
+		    zos.putNextEntry(templates);
+		    zos.closeEntry();
+		    
+		    List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
+		    for (DossierTemplate dt : lstTemplates) {
+		    	org.opencps.api.v21.model.DossierTemplate dossierTemplate = new org.opencps.api.v21.model.DossierTemplate();
+		    	dossierTemplate.setDescription(dt.getDescription());
+		    	dossierTemplate.setTemplateName(dt.getTemplateName());
+		    	dossierTemplate.setTemplateNo(dt.getTemplateNo());
+		    	
+		    	List<DossierPart> parts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dt.getTemplateNo());
+		    	Parts tempParts = new Parts();
+		    	
+		    	for (DossierPart dp : parts) {
+		    		org.opencps.api.v21.model.Parts.DossierPart dossierPart = new org.opencps.api.v21.model.Parts.DossierPart();
+		    		dossierPart.setPartNo(dp.getPartNo());
+		    		dossierPart.setPartName(dp.getPartName());
+		    		dossierPart.setPartTip(dp.getPartTip());
+		    		dossierPart.setPartType(dp.getPartType());
+		    		dossierPart.setMultiple(dp.getMultiple());
+		    		dossierPart.setRequired(dp.getRequired());
+		    		dossierPart.setEsign(dp.getESign());
+		    		dossierPart.setFileTemplateNo(dp.getFileTemplateNo());
+		    		dossierPart.setDeliverableType(dp.getDeliverableType());
+		    		dossierPart.setDeliverableAction(dp.getDeliverableAction());
+		    		dossierPart.setEForm(dp.getEForm());
+		    		dossierPart.setSampleData(dp.getSampleData());
+		    		
+		    		tempParts.getDossierPart().add(dossierPart);
+		    	}
+		    	
+		    	dossierTemplate.setParts(tempParts);
+		    	
+	    		ByteArrayOutputStream buffer = ReadXMLFileUtils.convertDossierTemplateToXMLStream(dossierTemplate);
+	    		
+				input = buffer.toByteArray();
+			    entry = new ZipEntry("templates/" + dt.getTemplateNo() + ".xml");
+			    entry.setSize(input.length);
+			    zos.putNextEntry(entry);
+			    zos.write(input);
+			    buffer.close();		
+		    	
+		    }
+		    ZipEntry processes = new ZipEntry("processes/");
+		    zos.putNextEntry(processes);
+		    zos.closeEntry();
+		    
+		    List<ServiceProcess> lstProcesses = ServiceProcessLocalServiceUtil.getByG_ID(groupId);
+		    for (ServiceProcess sp : lstProcesses) {
+		    	org.opencps.api.v21.model.ServiceProcess serviceProcess = new org.opencps.api.v21.model.ServiceProcess();
+		    	serviceProcess.setProcessNo(sp.getProcessNo());
+		    	serviceProcess.setProcessName(sp.getProcessName());
+		    	serviceProcess.setDescription(sp.getDescription());
+		    	serviceProcess.setDurationCount(String.valueOf(sp.getDurationCount()));
+		    	serviceProcess.setDurationUnit(sp.getDurationUnit());
+		    	serviceProcess.setGeneratePassword(sp.getGeneratePassword());
+		    	serviceProcess.setServerNo(sp.getServerNo());
+		    	serviceProcess.setServerName(sp.getServerName());
+		    	serviceProcess.setDossierNoPattern(sp.getDossierNoPattern());
+		    	serviceProcess.setDueDatePattern(sp.getDueDatePattern());
+		    	List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(sp.getServiceProcessId());
+		    	Roles roles = new Roles();
+		    	for (ServiceProcessRole role : lstProcessRoles) {
+		    		ProcessRole processRole = new ProcessRole();
+		    		processRole.setRoleCode(role.getRoleCode());
+		    		processRole.setRoleName(role.getRoleName());
+		    		processRole.setModerator(role.getModerator());
+		    		processRole.setCondition(role.getCondition());
+		    		
+		    		roles.getProcessRole().add(processRole);
+		    	}
+		    	
+		    	serviceProcess.setRoles(roles);
+		    	List<org.opencps.dossiermgt.model.ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, sp.getServiceProcessId());
+		    	Sequences sequences = new Sequences();
+		    	for (org.opencps.dossiermgt.model.ProcessSequence ps : lstSequences) {
+		    		ProcessSequence sequence = new ProcessSequence();
+		    		sequence.setSequenceNo(ps.getSequenceNo());
+		    		sequence.setSequenceName(ps.getSequenceName());
+		    		sequence.setSequenceRole(ps.getSequenceRole());
+		    		sequence.setDurationCount(String.valueOf(ps.getDurationCount()));
+		    		
+		    		sequences.getProcessSequence().add(sequence);
+		    	}
+		    	serviceProcess.setSequences(sequences);
+		    	List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(sp.getServiceProcessId());
+		    	Steps steps = new Steps();
+		    	for (ProcessStep ps : lstSteps) {
+		    		org.opencps.api.v21.model.Steps.ProcessStep step = new org.opencps.api.v21.model.Steps.ProcessStep();
+		    		step.setStepCode(ps.getStepCode());
+		    		step.setStepName(ps.getStepName());
+		    		step.setSequenceNo(ps.getSequenceNo());
+		    		step.setDossierStatus(ps.getDossierStatus());
+		    		step.setDossierSubStatus(ps.getDossierSubStatus());
+		    		step.setDurationCount(String.valueOf(ps.getDurationCount()));
+		    		step.setBriefNote(ps.getBriefNote());
+		    		step.setRoleAsStep(ps.getRoleAsStep());
+		    		
+		    		List<ProcessStepRole> lstStepRoles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(ps.getProcessStepId());
+		    		org.opencps.api.v21.model.Steps.ProcessStep.Roles rs = new org.opencps.api.v21.model.Steps.ProcessStep.Roles();
+		    		for (ProcessStepRole sr : lstStepRoles) {
+		    			StepRole stepRole = new StepRole();
+		    			stepRole.setCondition(sr.getCondition());
+		    			stepRole.setModerator(sr.getModerator());
+		    			stepRole.setRoleCode(sr.getRoleCode());
+		    			stepRole.setRoleName(sr.getRoleName());
+		    			
+		    			rs.getStepRole().add(stepRole);
+		    		}
+		    		step.setRoles(rs);
+		    		steps.getProcessStep().add(step);
+		    	}
+		    	serviceProcess.setSteps(steps);
+		    	
+		    	Actions actions = new Actions();
+		    	List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(sp.getServiceProcessId());
+		    	for (ProcessAction pa : lstActions) {
+		    		org.opencps.api.v21.model.Actions.ProcessAction paction = new org.opencps.api.v21.model.Actions.ProcessAction();
+		    		paction.setActionCode(pa.getActionCode());
+		    		paction.setActionName(pa.getActionName());
+		    		paction.setPreStepCode(pa.getPreStepCode());
+		    		paction.setPostStepCode(pa.getPostStepCode());
+		    		paction.setAutoEvent(pa.getAutoEvent());
+		    		paction.setPreCondition(pa.getPreCondition());
+		    		paction.setAllowAssignUser(pa.getAllowAssignUser());
+		    		paction.setRequestPayment(pa.getRequestPayment());
+		    		User u = UserLocalServiceUtil.fetchUser(pa.getAssignUserId());
+		    		if (u != null) {
+		    			paction.setAssignUserName(u.getFullName());
+		    		}
+		    		paction.setPaymentFee(pa.getPaymentFee());
+		    		paction.setCreateDossierFiles(pa.getCreateDossierFiles());
+		    		paction.setReturnDossierFiles(pa.getReturnDossierFiles());
+		    		paction.setESignature(pa.getESignature());
+		    		paction.setSignatureType(pa.getSignatureType());
+		    		paction.setCreateDossiers(pa.getCreateDossiers());
+		    		
+		    		actions.getProcessAction().add(paction);
+		    	}
+		    	serviceProcess.setActions(actions);
+		    	
+	    		ByteArrayOutputStream buffer = ReadXMLFileUtils.convertServiceProcessToXMLStream(serviceProcess);
+	    		
+				input = buffer.toByteArray();
+			    entry = new ZipEntry("processes/" + sp.getProcessNo() + ".xml");
+			    entry.setSize(input.length);
+			    zos.putNextEntry(entry);
+			    zos.write(input);
+			    buffer.close();		
+
+		    }
+		    zos.close();
+		    
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+			responseBuilder.header("Content-Disposition",
+					"attachment; filename=\"" + "backupmaster.zip" + "\"");
+			responseBuilder.header("Content-Type", "application/xml");
+
+			return responseBuilder.build();			
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }

@@ -221,6 +221,12 @@ public class DossierTemplateLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierTemplate> findByG(
+		long groupId) {
+		return _dossierTemplateLocalService.findByG(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierTemplateLocalService.getActionableDynamicQuery();
 	}

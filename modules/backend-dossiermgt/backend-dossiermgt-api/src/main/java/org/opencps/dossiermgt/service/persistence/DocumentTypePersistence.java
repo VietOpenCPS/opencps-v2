@@ -274,6 +274,137 @@ public interface DocumentTypePersistence extends BasePersistence<DocumentType> {
 	public int countByF_CODE(long groupId, String typeCode);
 
 	/**
+	* Returns all the document types where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching document types
+	*/
+	public java.util.List<DocumentType> findByG(long groupId);
+
+	/**
+	* Returns a range of all the document types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DocumentTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of document types
+	* @param end the upper bound of the range of document types (not inclusive)
+	* @return the range of matching document types
+	*/
+	public java.util.List<DocumentType> findByG(long groupId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the document types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DocumentTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of document types
+	* @param end the upper bound of the range of document types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching document types
+	*/
+	public java.util.List<DocumentType> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the document types where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DocumentTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of document types
+	* @param end the upper bound of the range of document types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching document types
+	*/
+	public java.util.List<DocumentType> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first document type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching document type
+	* @throws NoSuchDocumentTypeException if a matching document type could not be found
+	*/
+	public DocumentType findByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator)
+		throws NoSuchDocumentTypeException;
+
+	/**
+	* Returns the first document type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching document type, or <code>null</code> if a matching document type could not be found
+	*/
+	public DocumentType fetchByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator);
+
+	/**
+	* Returns the last document type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching document type
+	* @throws NoSuchDocumentTypeException if a matching document type could not be found
+	*/
+	public DocumentType findByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator)
+		throws NoSuchDocumentTypeException;
+
+	/**
+	* Returns the last document type in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching document type, or <code>null</code> if a matching document type could not be found
+	*/
+	public DocumentType fetchByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator);
+
+	/**
+	* Returns the document types before and after the current document type in the ordered set where groupId = &#63;.
+	*
+	* @param DocumentTypeId the primary key of the current document type
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next document type
+	* @throws NoSuchDocumentTypeException if a document type with the primary key could not be found
+	*/
+	public DocumentType[] findByG_PrevAndNext(long DocumentTypeId,
+		long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DocumentType> orderByComparator)
+		throws NoSuchDocumentTypeException;
+
+	/**
+	* Removes all the document types where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public void removeByG(long groupId);
+
+	/**
+	* Returns the number of document types where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching document types
+	*/
+	public int countByG(long groupId);
+
+	/**
 	* Caches the document type in the entity cache if it is enabled.
 	*
 	* @param documentType the document type

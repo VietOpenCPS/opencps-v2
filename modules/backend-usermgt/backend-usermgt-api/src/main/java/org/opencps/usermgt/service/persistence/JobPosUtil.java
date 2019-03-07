@@ -949,6 +949,158 @@ public class JobPosUtil {
 	}
 
 	/**
+	* Returns all the job poses where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching job poses
+	*/
+	public static List<JobPos> findByG(long groupId) {
+		return getPersistence().findByG(groupId);
+	}
+
+	/**
+	* Returns a range of all the job poses where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link JobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of job poses
+	* @param end the upper bound of the range of job poses (not inclusive)
+	* @return the range of matching job poses
+	*/
+	public static List<JobPos> findByG(long groupId, int start, int end) {
+		return getPersistence().findByG(groupId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the job poses where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link JobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of job poses
+	* @param end the upper bound of the range of job poses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching job poses
+	*/
+	public static List<JobPos> findByG(long groupId, int start, int end,
+		OrderByComparator<JobPos> orderByComparator) {
+		return getPersistence().findByG(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the job poses where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link JobPosModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of job poses
+	* @param end the upper bound of the range of job poses (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching job poses
+	*/
+	public static List<JobPos> findByG(long groupId, int start, int end,
+		OrderByComparator<JobPos> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first job pos in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching job pos
+	* @throws NoSuchJobPosException if a matching job pos could not be found
+	*/
+	public static JobPos findByG_First(long groupId,
+		OrderByComparator<JobPos> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchJobPosException {
+		return getPersistence().findByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the first job pos in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public static JobPos fetchByG_First(long groupId,
+		OrderByComparator<JobPos> orderByComparator) {
+		return getPersistence().fetchByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last job pos in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching job pos
+	* @throws NoSuchJobPosException if a matching job pos could not be found
+	*/
+	public static JobPos findByG_Last(long groupId,
+		OrderByComparator<JobPos> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchJobPosException {
+		return getPersistence().findByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last job pos in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching job pos, or <code>null</code> if a matching job pos could not be found
+	*/
+	public static JobPos fetchByG_Last(long groupId,
+		OrderByComparator<JobPos> orderByComparator) {
+		return getPersistence().fetchByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the job poses before and after the current job pos in the ordered set where groupId = &#63;.
+	*
+	* @param jobPosId the primary key of the current job pos
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next job pos
+	* @throws NoSuchJobPosException if a job pos with the primary key could not be found
+	*/
+	public static JobPos[] findByG_PrevAndNext(long jobPosId, long groupId,
+		OrderByComparator<JobPos> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchJobPosException {
+		return getPersistence()
+				   .findByG_PrevAndNext(jobPosId, groupId, orderByComparator);
+	}
+
+	/**
+	* Removes all the job poses where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public static void removeByG(long groupId) {
+		getPersistence().removeByG(groupId);
+	}
+
+	/**
+	* Returns the number of job poses where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching job poses
+	*/
+	public static int countByG(long groupId) {
+		return getPersistence().countByG(groupId);
+	}
+
+	/**
 	* Caches the job pos in the entity cache if it is enabled.
 	*
 	* @param jobPos the job pos

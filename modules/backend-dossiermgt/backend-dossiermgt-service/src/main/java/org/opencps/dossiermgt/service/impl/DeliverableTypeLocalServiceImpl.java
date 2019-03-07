@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
@@ -348,5 +349,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		deliverableTypePersistence.update(object);
 
 		return object;
+	}
+	
+	public List<DeliverableType> findByG(long groupId) {
+		return deliverableTypePersistence.findByG(groupId);
 	}
 }

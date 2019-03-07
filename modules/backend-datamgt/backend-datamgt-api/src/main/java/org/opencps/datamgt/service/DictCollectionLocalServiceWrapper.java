@@ -296,6 +296,12 @@ public class DictCollectionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.datamgt.model.DictCollection> findByG(
+		long groupId) {
+		return _dictCollectionLocalService.findByG(groupId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.datamgt.model.DictCollection> findOlderThanDate(
 		java.util.Date date, long groupId, int start, int end) {
 		return _dictCollectionLocalService.findOlderThanDate(date, groupId,

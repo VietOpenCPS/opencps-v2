@@ -199,6 +199,8 @@ public interface PaymentConfigLocalService extends BaseLocalService,
 	public PaymentConfig fetchPaymentConfigByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<PaymentConfig> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

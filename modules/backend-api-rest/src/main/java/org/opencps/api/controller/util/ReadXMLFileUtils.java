@@ -5,15 +5,22 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.RoleModel;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -42,6 +49,32 @@ import org.opencps.api.v21.model.ServiceInfo;
 import org.opencps.api.v21.model.ServiceProcess;
 import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
+import org.opencps.api.v21.model.UserManagement.Roles;
+import org.opencps.api.v21.model.UserManagement.Users;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.MenuRole;
+import org.opencps.dossiermgt.model.PaymentConfig;
+import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class ReadXMLFileUtils {
 
@@ -816,5 +849,494 @@ public class ReadXMLFileUtils {
 	public static void setStrError(String strError) {
 		ReadXMLFileUtils.strError = strError;
 	}
+	
+	public static ByteArrayOutputStream exportActionConfigToXMLStream(long groupId) throws JAXBException {
+		List<ActionConfig> actConfigList = ActionConfigLocalServiceUtil.getByGroupId(groupId);
+		ByteArrayOutputStream actionConfigXMLStream = new ByteArrayOutputStream();
+		
+		if (actConfigList != null && actConfigList.size() > 0) {
+			ActionConfigList configList = new ActionConfigList();
+			for (ActionConfig act : actConfigList) {
+				org.opencps.api.v21.model.ActionConfigList.ActionConfig config = new org.opencps.api.v21.model.ActionConfigList.ActionConfig();
+				if (Validator.isNotNull(act.getActionCode())) {
+					config.setActionCode(act.getActionCode());
+					config.setActionName(act.getActionName());
+					config.setExtraForm(act.getExtraForm());
+					config.setFormConfig(act.getFormConfig());
+					config.setSampleData(act.getSampleData());
+					config.setInsideProcess(act.getInsideProcess());
+					config.setUserNote(act.getUserNote());
+					config.setSyncType(act.getSyncType());
+					config.setEventType(act.getEventType());
+					config.setInfoType(act.getInfoType());
+					config.setRollbackable(act.getRollbackable());
+					config.setNotificationType(act.getNotificationType());
+					config.setDocumentType(act.getDocumentType());
+					config.setMappingAction(act.getMappingAction());
+					config.setDateOption(act.getDateOption());
+					//
+					configList.getActionConfig().add(config);
+				}
+			}
+			actionConfigXMLStream = ReadXMLFileUtils.convertActionConfigToXMLStream(configList);
+		}	
+		
+		return actionConfigXMLStream;
+	}
+	public static ByteArrayOutputStream convertActionConfigToXMLStream(ActionConfigList actConfigList) throws JAXBException {
+		ByteArrayOutputStream actionConfigXMLStream = new ByteArrayOutputStream();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(ActionConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(actConfigList, actionConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return actionConfigXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertStepConfigToXMLStream(StepConfigList stepConfigList) throws JAXBException {
+		ByteArrayOutputStream stepConfigXMLStream = new ByteArrayOutputStream();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(StepConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(stepConfigList, stepConfigXMLStream);
+
+		return stepConfigXMLStream;
+	}
+
+	// LamTV_ Process convert xml to Object StepConfig
+	public static ByteArrayOutputStream convertMenuConfigToXMLStream(MenuConfigList meuConfigList) throws JAXBException {
+		ByteArrayOutputStream menuConfigXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(MenuConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(meuConfigList, menuConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return menuConfigXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertDocumentTypeToXMLStream(DocumentTypeList documentTypeList) throws JAXBException {
+		ByteArrayOutputStream documentTypeConfigXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(DocumentTypeList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(documentTypeList, documentTypeConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return documentTypeConfigXMLStream;
+	}
+
+	public static ByteArrayOutputStream convertDeliverableTypeToXMLStream(DeliverableTypeList deliverableTypeList) throws JAXBException {
+		ByteArrayOutputStream deliverableTypeConfigXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(DeliverableTypeList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(deliverableTypeList, deliverableTypeConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return deliverableTypeConfigXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertPaymentConfigToXMLStream(PaymentConfigList paymentConfigList) throws JAXBException {
+		ByteArrayOutputStream paymentConfigXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(PaymentConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(paymentConfigList, paymentConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return paymentConfigXMLStream;
+	}
+
+	public static ByteArrayOutputStream convertServerConfigToXMLStream(ServerConfigList serverConfigList) throws JAXBException {
+		ByteArrayOutputStream serverConfigXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(ServerConfigList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(serverConfigList, serverConfigXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return serverConfigXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertNotificationTemplateToXMLStream(NotificationTemplateList notificationTemplateList) throws JAXBException {
+		ByteArrayOutputStream notificationTemplateXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(NotificationTemplateList.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(notificationTemplateList, notificationTemplateXMLStream);
+		//jaxbMarshaller.marshal(citizenList, System.out);
+
+		return notificationTemplateXMLStream;
+	}
+
+	public static ByteArrayOutputStream convertServiceInfoToXMLStream(ServiceInfo serviceInfo)
+			throws JAXBException {
+		ByteArrayOutputStream serviceInfoXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(ServiceInfo.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+
+		jaxbMarshaller.marshal(serviceInfo, serviceInfoXMLStream);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+		return serviceInfoXMLStream;
+	}
+
+	public static ByteArrayOutputStream convertDictCollectionToXMLStream(DictCollection dictCollection) throws JAXBException {
+		ByteArrayOutputStream dictCollectionXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(DictCollection.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+
+		// Writes XML file to file-system
+		jaxbMarshaller.marshal(dictCollection, dictCollectionXMLStream);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+
+		return dictCollectionXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertDossierTemplateToXMLStream(DossierTemplate dossierTemplate)
+			throws JAXBException {
+		ByteArrayOutputStream dossierTemplateXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(DossierTemplate.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+
+		jaxbMarshaller.marshal(dossierTemplate, dossierTemplateXMLStream);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+		return dossierTemplateXMLStream;
+	}
+	
+	public static ByteArrayOutputStream convertServiceProcessToXMLStream(ServiceProcess serviceProcess)
+			throws JAXBException {
+		ByteArrayOutputStream serviceProcessXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(ServiceProcess.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+
+		jaxbMarshaller.marshal(serviceProcess, serviceProcessXMLStream);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+		return serviceProcessXMLStream;
+	}
+
+	public static ByteArrayOutputStream convertUserManagementToXMLStream(UserManagement userManagement)
+			throws JAXBException {
+		ByteArrayOutputStream userManagementXMLStream = new ByteArrayOutputStream();
+		JAXBContext jaxbContext = JAXBContext.newInstance(UserManagement.class);
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		//for pretty-print XML in JAXB
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//Store XML to File
+
+		jaxbMarshaller.marshal(userManagement, userManagementXMLStream);
+		//out log in server
+		//jaxbMarshaller.marshal(dictCollection, System.out);
+		return userManagementXMLStream;
+	}
+	
+	public static ByteArrayOutputStream exportStepConfigToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream stepConfigXMLStream = new ByteArrayOutputStream();
+		
+		List<StepConfig> stepConfigList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+		if (stepConfigList != null && stepConfigList.size() > 0) {
+			StepConfigList configList = new StepConfigList();
+			for (StepConfig step : stepConfigList) {
+				org.opencps.api.v21.model.StepConfigList.StepConfig config = new org.opencps.api.v21.model.StepConfigList.StepConfig();
+				if (Validator.isNotNull(step.getStepCode())) {
+					config.setStepCode(step.getStepCode());
+					config.setStepName(step.getStepName());
+					config.setStepType(step.getStepType());
+					config.setDossierStatus(step.getDossierStatus());
+					config.setDossierSubStatus(step.getDossierSubStatus());
+					config.setMenuGroup(step.getMenuGroup());
+					config.setMenuStepName(step.getMenuStepName());
+					config.setButtonConfig(step.getButtonConfig());
+					//
+					configList.getStepConfig().add(config);
+				}
+				stepConfigXMLStream = ReadXMLFileUtils.convertStepConfigToXMLStream(configList);
+			}
+		}	
+		
+		return stepConfigXMLStream;
+	}	
+
+	public static ByteArrayOutputStream exportMenuConfigToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream menuConfigXMLStream = new ByteArrayOutputStream();
+		List<MenuConfig> menuConfigList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+		if (menuConfigList != null && menuConfigList.size() > 0) {
+			MenuConfigList configList = new MenuConfigList();
+			for (MenuConfig menu : menuConfigList) {
+				org.opencps.api.v21.model.MenuConfigList.MenuConfig config = new org.opencps.api.v21.model.MenuConfigList.MenuConfig();
+				if (Validator.isNotNull(menu.getMenuGroup())) {
+					config.setMenuGroup(menu.getMenuGroup());
+					config.setMenuName(menu.getMenuName());
+					config.setOrder(menu.getOrder());
+					config.setMenuType(menu.getMenuType());
+					config.setQueryParams(menu.getQueryParams());
+					config.setTableConfig(menu.getTableConfig());
+					config.setButtonConfig(menu.getButtonConfig());
+					//
+					long menuConfigId = menu.getMenuConfigId();
+					if (menuConfigId > 0) {
+						List<MenuRole> roleList = MenuRoleLocalServiceUtil.getByMenuConfig(menuConfigId);
+						if (roleList != null && roleList.size() > 0) {
+							long[] roleArr = new long[roleList.size()];
+							for (int i = 0; i < roleList.size(); i++) {
+								roleArr[i] = roleList.get(i).getRoleId();
+							}
+							//
+							List<JobPos> jobPosList = JobPosLocalServiceUtil.findByF_mappingRoleIds(groupId, roleArr);
+							StringBuilder sb = new StringBuilder();
+							if (jobPosList != null && jobPosList.size() > 0) {
+								for (int i = 0; i < jobPosList.size(); i++) {
+									if (i == 0) {
+										sb.append(jobPosList.get(i).getJobPosCode());
+									} else {
+										sb.append(StringPool.COMMA);
+										sb.append(jobPosList.get(i).getJobPosCode());
+									}
+								}
+							}
+							config.setRoles(sb.toString());
+						}
+					}
+					
+					//
+					configList.getMenuConfig().add(config);
+				}
+				menuConfigXMLStream = ReadXMLFileUtils.convertMenuConfigToXMLStream(configList);
+			}	
+		}
+		
+		return menuConfigXMLStream;
+	}
+	
+	public static ByteArrayOutputStream exportDocumentTypeToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream documentTypeXMLStream = new ByteArrayOutputStream();
+		
+		List<DocumentType> documentTypeList = DocumentTypeLocalServiceUtil.findByG(groupId);
+		
+		if (documentTypeList != null && documentTypeList.size() > 0) {
+			DocumentTypeList typeList = new DocumentTypeList();
+			for (DocumentType type : documentTypeList) {
+				org.opencps.api.v21.model.DocumentTypeList.DocumentType documentType = new org.opencps.api.v21.model.DocumentTypeList.DocumentType();
+				documentType.setCodePattern(type.getCodePattern());
+				documentType.setDocSync(type.getDocSync());
+				documentType.setDocumentName(type.getDocumentName());
+				documentType.setTemplateClass(type.getTemplateClass());
+				documentType.setTypeCode(type.getTypeCode());
+				
+				typeList.getDocumentType().add(documentType);
+			}
+			documentTypeXMLStream = ReadXMLFileUtils.convertDocumentTypeToXMLStream(typeList);
+		}	
+		
+		return documentTypeXMLStream;
+	}
+	
+	public static ByteArrayOutputStream exportDeliverableTypeToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream deliverableTypeXMLStream = new ByteArrayOutputStream();
+		
+		List<DeliverableType> deliverableTypeList = DeliverableTypeLocalServiceUtil.findByG(groupId);
+		
+		if (deliverableTypeList != null && deliverableTypeList.size() > 0) {
+			DeliverableTypeList typeList = new DeliverableTypeList();
+			for (DeliverableType type : deliverableTypeList) {
+				org.opencps.api.v21.model.DeliverableTypeList.DeliverableType deliverableType = new org.opencps.api.v21.model.DeliverableTypeList.DeliverableType();
+				deliverableType.setCodePattern(type.getCodePattern());
+				deliverableType.setCounter((int)type.getCounter());
+				deliverableType.setDataConfig(type.getDataConfig());
+				deliverableType.setDocSync(type.getDocSync());
+				deliverableType.setFormReport(type.getFormReport());
+				deliverableType.setFormReportFileId((int)type.getFormReportFileId());
+				deliverableType.setFormScript(type.getFormScript());
+				deliverableType.setFormScriptFileId((int)type.getFormScriptFileId());
+				deliverableType.setGovAgencies(type.getGovAgencies());
+				deliverableType.setMappingData(type.getMappingData());
+				deliverableType.setTableConfig(type.getTableConfig());
+				deliverableType.setTypeCode(type.getTypeCode());
+				deliverableType.setTypeName(type.getTypeName());
+				
+				typeList.getDeliverableType().add(deliverableType);
+			}
+			deliverableTypeXMLStream = ReadXMLFileUtils.convertDeliverableTypeToXMLStream(typeList);
+		}	
+		
+		return deliverableTypeXMLStream;
+	}	
+	
+	public static ByteArrayOutputStream exportPaymentConfigToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream paymentConfigXMLStream = new ByteArrayOutputStream();
+		
+		List<PaymentConfig> paymentConfigList = PaymentConfigLocalServiceUtil.findByG(groupId);
+		
+		if (paymentConfigList != null && paymentConfigList.size() > 0) {
+			PaymentConfigList typeList = new PaymentConfigList();
+			for (PaymentConfig type : paymentConfigList) {
+				org.opencps.api.v21.model.PaymentConfigList.PaymentConfig paymentConfig = new org.opencps.api.v21.model.PaymentConfigList.PaymentConfig();
+				paymentConfig.setBankInfo(type.getBankInfo());
+				paymentConfig.setEpaymentConfig(type.getEpaymentConfig());
+				paymentConfig.setGovAgencyCode(type.getGovAgencyCode());
+				paymentConfig.setGovAgencyName(type.getGovAgencyName());
+				paymentConfig.setGovAgencyTaxNo(type.getGovAgencyTaxNo());
+				paymentConfig.setInvoiceIssueNo(type.getInvoiceIssueNo());
+				paymentConfig.setInvoiceLastNo(type.getInvoiceLastNo());
+				paymentConfig.setInvoiceTemplateNo(type.getInvoiceTemplateNo());
+				typeList.getPaymentConfig().add(paymentConfig);
+			}
+			paymentConfigXMLStream = ReadXMLFileUtils.convertPaymentConfigToXMLStream(typeList);
+		}	
+		
+		return paymentConfigXMLStream;
+	}	
+	
+	public static ByteArrayOutputStream exportServerConfigToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream serverConfigXMLStream = new ByteArrayOutputStream();
+		
+		List<ServerConfig> serverConfigList = ServerConfigLocalServiceUtil.getGroupId(groupId);
+		
+		if (serverConfigList != null && serverConfigList.size() > 0) {
+			ServerConfigList typeList = new ServerConfigList();
+			for (ServerConfig type : serverConfigList) {
+				org.opencps.api.v21.model.ServerConfigList.ServerConfig serverConfig = new org.opencps.api.v21.model.ServerConfigList.ServerConfig();
+				serverConfig.setConfigs(type.getConfigs());
+				serverConfig.setGovAgencyCode(type.getGovAgencyCode());
+				serverConfig.setProtocol(type.getProtocol());
+				serverConfig.setServerName(type.getServerName());
+				serverConfig.setServerNo(type.getServerNo());
+				
+				typeList.getServerConfig().add(serverConfig);
+			}
+			serverConfigXMLStream = ReadXMLFileUtils.convertServerConfigToXMLStream(typeList);
+		}	
+		
+		return serverConfigXMLStream;
+	}	
+	
+	public static ByteArrayOutputStream exportNotificationTemplateToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream notificationTemplateXMLStream = new ByteArrayOutputStream();
+		
+		List<Notificationtemplate> notiTemplateList = NotificationtemplateLocalServiceUtil.findByF_NotificationtemplateByGroup(groupId);
+		
+		if (notiTemplateList != null && notiTemplateList.size() > 0) {
+			NotificationTemplateList typeList = new NotificationTemplateList();
+			for (Notificationtemplate type : notiTemplateList) {
+				org.opencps.api.v21.model.NotificationTemplateList.NotificationTemplate notiConfig = new org.opencps.api.v21.model.NotificationTemplateList.NotificationTemplate();
+				notiConfig.setEmailBody(type.getEmailBody());
+				notiConfig.setEmailSubject(type.getEmailSubject());
+				notiConfig.setExpireDuration(type.getExpireDuration());
+				notiConfig.setInterval(type.getInterval());
+				notiConfig.setNotificationType(type.getNotificationType());
+				notiConfig.setSendEmail(type.getSendEmail());
+				notiConfig.setSendSMS(type.getSendSMS());
+				notiConfig.setTextMessage(type.getTextMessage());
+				typeList.getNotificationTemplate().add(notiConfig);
+			}
+			notificationTemplateXMLStream = ReadXMLFileUtils.convertNotificationTemplateToXMLStream(typeList);
+		}	
+		
+		return notificationTemplateXMLStream;
+	}	
+	
+	public static ByteArrayOutputStream exportUserManagementToXMLStream(long groupId) throws JAXBException {
+		ByteArrayOutputStream userManagementXMLStream = new ByteArrayOutputStream();
+		
+		List<Employee> employeeList = EmployeeLocalServiceUtil.findByG(groupId);
+		
+		if (employeeList != null && employeeList.size() > 0) {
+			UserManagement userManagement = new UserManagement();
+			Users users = new Users();
+			for (Employee employee : employeeList) {
+				if (Validator.isNotNull(employee.getMappingUserId())) {
+					org.opencps.api.v21.model.UserManagement.Users.Employee emp = new org.opencps.api.v21.model.UserManagement.Users.Employee();
+					emp.setEmployeeNo(employee.getEmployeeNo());
+					emp.setFullname(employee.getFullName());
+					emp.setTitle(employee.getTitle());
+					emp.setGender(employee.getGender());
+					emp.setBirthdate(String.valueOf(employee.getBirthdate()));
+					emp.setTelNo(employee.getTelNo());
+					emp.setEmail(employee.getEmail());
+					emp.setWorkingStatus(employee.getWorkingStatus());
+					JobPos mainJob = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
+					if (mainJob != null) {
+						emp.setJobTitle(mainJob.getTitle());
+					}
+					StringBuilder roles = new StringBuilder();
+					List<EmployeeJobPos> lstEmps = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employee.getEmployeeId());
+					for (EmployeeJobPos ejp : lstEmps) {
+						JobPos jp = JobPosLocalServiceUtil.fetchJobPos(ejp.getJobPostId());
+						if (jp != null) {
+							if (roles.length() == 0) {
+								roles.append(jp.getJobPosCode());
+							}
+							else {
+								roles.append(",");
+								roles.append(jp.getJobPosCode());
+							}
+						}
+					}
+					emp.setRoles(roles.toString());
+					
+					users.getEmployee().add(emp);
+				}
+			}
+			userManagement.setUsers(users);
+			List<JobPos> lstJobs = JobPosLocalServiceUtil.findByG(groupId);
+			Roles roles = new Roles();
+			for (JobPos jp : lstJobs) {
+				org.opencps.api.v21.model.UserManagement.Roles.JobPos jobPos = new org.opencps.api.v21.model.UserManagement.Roles.JobPos();
+				jobPos.setCode(jp.getJobPosCode());
+				jobPos.setTitle(jp.getTitle());
+				jobPos.setDescription(jp.getDescription());
+				
+				roles.getJobPos().add(jobPos);
+			}
+			
+			userManagement.setRoles(roles);
+			
+			userManagementXMLStream = ReadXMLFileUtils.convertUserManagementToXMLStream(userManagement);
+		}	
+		
+		return userManagementXMLStream;
+	}		
 }

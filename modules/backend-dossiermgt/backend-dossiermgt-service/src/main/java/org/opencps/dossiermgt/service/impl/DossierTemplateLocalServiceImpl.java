@@ -419,6 +419,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		return object;
 	}
 
+	public List<DossierTemplate> findByG(long groupId) {
+		return dossierTemplatePersistence.findByG(groupId);			
+	}
 	public static final String CLASS_NAME = DossierTemplate.class.getName();
 
 }

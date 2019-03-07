@@ -216,6 +216,11 @@ public class DeliverableTypeLocalServiceUtil {
 		return getService().fetchDeliverableTypeByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

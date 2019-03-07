@@ -210,6 +210,12 @@ public class DocumentTypeLocalServiceWrapper implements DocumentTypeLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DocumentType> findByG(
+		long groupId) {
+		return _documentTypeLocalService.findByG(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _documentTypeLocalService.getActionableDynamicQuery();
 	}

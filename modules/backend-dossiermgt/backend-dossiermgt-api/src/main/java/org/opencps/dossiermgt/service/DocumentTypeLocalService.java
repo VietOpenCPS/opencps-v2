@@ -188,6 +188,8 @@ public interface DocumentTypeLocalService extends BaseLocalService,
 	public DocumentType fetchDocumentTypeByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DocumentType> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

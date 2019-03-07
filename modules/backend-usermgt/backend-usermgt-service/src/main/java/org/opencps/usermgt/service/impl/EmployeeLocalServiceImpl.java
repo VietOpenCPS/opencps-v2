@@ -882,4 +882,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	public long countByG_EMPID(long groupId, long[] employeeIds) {
 		return employeePersistence.countByG_EMPID(groupId, employeeIds);
 	}	
+	
+	public List<Employee> findByG(long groupId) {
+		return employeePersistence.findByF_groupId(groupId);
+	}
 }

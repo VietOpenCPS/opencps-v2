@@ -518,6 +518,138 @@ public interface DossierTemplatePersistence extends BasePersistence<DossierTempl
 	public int countByGID_DTPLNO(long groupId, String templateNo);
 
 	/**
+	* Returns all the dossier templates where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching dossier templates
+	*/
+	public java.util.List<DossierTemplate> findByG(long groupId);
+
+	/**
+	* Returns a range of all the dossier templates where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier templates
+	* @param end the upper bound of the range of dossier templates (not inclusive)
+	* @return the range of matching dossier templates
+	*/
+	public java.util.List<DossierTemplate> findByG(long groupId, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dossier templates where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier templates
+	* @param end the upper bound of the range of dossier templates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier templates
+	*/
+	public java.util.List<DossierTemplate> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier templates where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier templates
+	* @param end the upper bound of the range of dossier templates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier templates
+	*/
+	public java.util.List<DossierTemplate> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier template in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier template
+	* @throws NoSuchDossierTemplateException if a matching dossier template could not be found
+	*/
+	public DossierTemplate findByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator)
+		throws NoSuchDossierTemplateException;
+
+	/**
+	* Returns the first dossier template in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier template, or <code>null</code> if a matching dossier template could not be found
+	*/
+	public DossierTemplate fetchByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator);
+
+	/**
+	* Returns the last dossier template in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier template
+	* @throws NoSuchDossierTemplateException if a matching dossier template could not be found
+	*/
+	public DossierTemplate findByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator)
+		throws NoSuchDossierTemplateException;
+
+	/**
+	* Returns the last dossier template in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier template, or <code>null</code> if a matching dossier template could not be found
+	*/
+	public DossierTemplate fetchByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator);
+
+	/**
+	* Returns the dossier templates before and after the current dossier template in the ordered set where groupId = &#63;.
+	*
+	* @param dossierTemplateId the primary key of the current dossier template
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier template
+	* @throws NoSuchDossierTemplateException if a dossier template with the primary key could not be found
+	*/
+	public DossierTemplate[] findByG_PrevAndNext(long dossierTemplateId,
+		long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierTemplate> orderByComparator)
+		throws NoSuchDossierTemplateException;
+
+	/**
+	* Removes all the dossier templates where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public void removeByG(long groupId);
+
+	/**
+	* Returns the number of dossier templates where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching dossier templates
+	*/
+	public int countByG(long groupId);
+
+	/**
 	* Caches the dossier template in the entity cache if it is enabled.
 	*
 	* @param dossierTemplate the dossier template

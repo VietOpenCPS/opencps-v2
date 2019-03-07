@@ -226,6 +226,12 @@ public class DeliverableTypeLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableType> findByG(
+		long groupId) {
+		return _deliverableTypeLocalService.findByG(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _deliverableTypeLocalService.getActionableDynamicQuery();
 	}

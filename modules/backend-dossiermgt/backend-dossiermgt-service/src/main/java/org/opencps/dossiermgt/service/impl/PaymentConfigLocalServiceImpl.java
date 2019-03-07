@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.constants.PaymentConfigTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -439,6 +440,9 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 		return paymentConfigPersistence.fetchByG_ITN(groupId, invoiceTemplateNo);
 	}
 
+	public List<PaymentConfig> findByG(long groupId) {
+		return paymentConfigPersistence.findByFB_GID(groupId);
+	}
 	public static final String CLASS_NAME = PaymentConfig.class.getName();
 
 }

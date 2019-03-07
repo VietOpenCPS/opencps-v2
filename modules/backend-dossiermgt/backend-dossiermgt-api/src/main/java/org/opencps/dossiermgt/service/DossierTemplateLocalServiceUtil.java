@@ -211,6 +211,11 @@ public class DossierTemplateLocalServiceUtil {
 		return getService().fetchDossierTemplateByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierTemplate> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

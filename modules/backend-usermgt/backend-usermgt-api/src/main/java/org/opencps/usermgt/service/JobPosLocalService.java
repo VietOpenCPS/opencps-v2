@@ -224,6 +224,8 @@ public interface JobPosLocalService extends BaseLocalService,
 	public List<JobPos> findByF_mappingRoleIds(long groupId,
 		long[] mappingRoleIds);
 
+	public List<JobPos> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

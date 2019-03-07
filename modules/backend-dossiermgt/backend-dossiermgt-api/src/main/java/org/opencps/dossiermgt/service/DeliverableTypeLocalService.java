@@ -196,6 +196,8 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	public DeliverableType fetchDeliverableTypeByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DeliverableType> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

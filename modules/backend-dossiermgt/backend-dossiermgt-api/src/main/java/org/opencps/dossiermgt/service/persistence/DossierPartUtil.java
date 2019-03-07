@@ -962,6 +962,160 @@ public class DossierPartUtil {
 	}
 
 	/**
+	* Returns all the dossier parts where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching dossier parts
+	*/
+	public static List<DossierPart> findByG(long groupId) {
+		return getPersistence().findByG(groupId);
+	}
+
+	/**
+	* Returns a range of all the dossier parts where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierPartModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier parts
+	* @param end the upper bound of the range of dossier parts (not inclusive)
+	* @return the range of matching dossier parts
+	*/
+	public static List<DossierPart> findByG(long groupId, int start, int end) {
+		return getPersistence().findByG(groupId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier parts where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierPartModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier parts
+	* @param end the upper bound of the range of dossier parts (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier parts
+	*/
+	public static List<DossierPart> findByG(long groupId, int start, int end,
+		OrderByComparator<DossierPart> orderByComparator) {
+		return getPersistence().findByG(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier parts where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierPartModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of dossier parts
+	* @param end the upper bound of the range of dossier parts (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier parts
+	*/
+	public static List<DossierPart> findByG(long groupId, int start, int end,
+		OrderByComparator<DossierPart> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier part in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier part
+	* @throws NoSuchDossierPartException if a matching dossier part could not be found
+	*/
+	public static DossierPart findByG_First(long groupId,
+		OrderByComparator<DossierPart> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierPartException {
+		return getPersistence().findByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier part in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	*/
+	public static DossierPart fetchByG_First(long groupId,
+		OrderByComparator<DossierPart> orderByComparator) {
+		return getPersistence().fetchByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier part in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier part
+	* @throws NoSuchDossierPartException if a matching dossier part could not be found
+	*/
+	public static DossierPart findByG_Last(long groupId,
+		OrderByComparator<DossierPart> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierPartException {
+		return getPersistence().findByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier part in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier part, or <code>null</code> if a matching dossier part could not be found
+	*/
+	public static DossierPart fetchByG_Last(long groupId,
+		OrderByComparator<DossierPart> orderByComparator) {
+		return getPersistence().fetchByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the dossier parts before and after the current dossier part in the ordered set where groupId = &#63;.
+	*
+	* @param dossierPartId the primary key of the current dossier part
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier part
+	* @throws NoSuchDossierPartException if a dossier part with the primary key could not be found
+	*/
+	public static DossierPart[] findByG_PrevAndNext(long dossierPartId,
+		long groupId, OrderByComparator<DossierPart> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierPartException {
+		return getPersistence()
+				   .findByG_PrevAndNext(dossierPartId, groupId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier parts where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public static void removeByG(long groupId) {
+		getPersistence().removeByG(groupId);
+	}
+
+	/**
+	* Returns the number of dossier parts where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching dossier parts
+	*/
+	public static int countByG(long groupId) {
+		return getPersistence().countByG(groupId);
+	}
+
+	/**
 	* Caches the dossier part in the entity cache if it is enabled.
 	*
 	* @param dossierPart the dossier part
