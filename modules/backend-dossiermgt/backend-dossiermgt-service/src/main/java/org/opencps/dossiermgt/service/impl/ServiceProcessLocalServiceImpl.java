@@ -50,6 +50,7 @@ import java.util.Properties;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNoException;
 import org.opencps.dossiermgt.exception.HasChildrenException;
@@ -858,7 +859,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceProcess adminProcessDelete(Long id) {
+	public ServiceProcess adminProcessDelete(Long id) throws Exception {
 
 		ServiceProcess process = serviceProcessPersistence.fetchByPrimaryKey(id);
 		if (process != null) {
@@ -867,7 +868,7 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			if (Validator.isNotNull(processNo)) {
 				int countDossier = dossierLocalService.countByG_NOTS_O_PN(process.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, process.getProcessNo());
 				if (countDossier > 0) {
-					return null;
+					throw new DataConflictException("Have dossiers use this service process");
 				}
 				List<Dossier> dossierList = dossierPersistence.findByGID_PNO(groupId, processNo);
 				if (dossierList == null) {

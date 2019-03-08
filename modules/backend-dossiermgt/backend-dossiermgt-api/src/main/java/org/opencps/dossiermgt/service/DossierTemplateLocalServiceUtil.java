@@ -60,7 +60,7 @@ public class DossierTemplateLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.DossierTemplate adminProcessDelete(
-		Long id) {
+		Long id) throws Exception {
 		return getService().adminProcessDelete(id);
 	}
 

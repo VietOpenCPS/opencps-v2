@@ -85,7 +85,7 @@ public interface ServiceProcessLocalService extends BaseLocalService,
 	public ServiceProcess adminProcessData(JSONObject objectData);
 
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceProcess adminProcessDelete(Long id);
+	public ServiceProcess adminProcessDelete(Long id) throws Exception;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public void cloneServiceProcess(long serviceProcessId, long groupId,

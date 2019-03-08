@@ -54,7 +54,7 @@ public class DossierTemplateLocalServiceWrapper
 
 	@Override
 	public org.opencps.dossiermgt.model.DossierTemplate adminProcessDelete(
-		Long id) {
+		Long id) throws Exception {
 		return _dossierTemplateLocalService.adminProcessDelete(id);
 	}
 

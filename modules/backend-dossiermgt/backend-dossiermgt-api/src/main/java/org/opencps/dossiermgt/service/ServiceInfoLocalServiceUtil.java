@@ -76,7 +76,7 @@ public class ServiceInfoLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.ServiceInfo adminProcessDelete(
-		Long id) {
+		Long id) throws Exception {
 		return getService().adminProcessDelete(id);
 	}
 

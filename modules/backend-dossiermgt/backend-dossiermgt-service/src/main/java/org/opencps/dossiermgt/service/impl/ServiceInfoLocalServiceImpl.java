@@ -54,6 +54,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
 import org.opencps.dossiermgt.exception.RequiredServiceCodeException;
@@ -664,7 +665,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceInfo adminProcessDelete(Long id) {
+	public ServiceInfo adminProcessDelete(Long id) throws Exception {
 
 		ServiceInfo object = serviceInfoPersistence.fetchByPrimaryKey(id);
 		if (Validator.isNull(object)) {
@@ -672,7 +673,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		} else {
 			int countDossier = dossierLocalService.countByG_NOTS_O_SC(object.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, object.getServiceCode());
 			if (countDossier > 0) {
-				return null;
+				throw new DataConflictException("Have dossiers use this service info");
 			}
 			
 			serviceInfoPersistence.remove(object);

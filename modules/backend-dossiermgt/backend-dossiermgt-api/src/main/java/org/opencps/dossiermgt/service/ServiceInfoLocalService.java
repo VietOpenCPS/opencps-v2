@@ -94,7 +94,7 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 	public ServiceInfo adminProcessData(JSONObject objectData);
 
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceInfo adminProcessDelete(Long id);
+	public ServiceInfo adminProcessDelete(Long id) throws Exception;
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

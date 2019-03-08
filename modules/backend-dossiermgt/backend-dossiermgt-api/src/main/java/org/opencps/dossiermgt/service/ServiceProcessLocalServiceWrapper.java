@@ -54,7 +54,7 @@ public class ServiceProcessLocalServiceWrapper
 
 	@Override
 	public org.opencps.dossiermgt.model.ServiceProcess adminProcessDelete(
-		Long id) {
+		Long id) throws Exception {
 		return _serviceProcessLocalService.adminProcessDelete(id);
 	}
 

@@ -69,7 +69,8 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.ServiceInfo adminProcessDelete(Long id) {
+	public org.opencps.dossiermgt.model.ServiceInfo adminProcessDelete(Long id)
+		throws Exception {
 		return _serviceInfoLocalService.adminProcessDelete(id);
 	}
 

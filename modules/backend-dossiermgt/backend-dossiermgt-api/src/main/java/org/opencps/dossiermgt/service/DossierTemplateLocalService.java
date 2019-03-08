@@ -85,7 +85,8 @@ public interface DossierTemplateLocalService extends BaseLocalService,
 	public DossierTemplate adminProcessData(JSONObject objectData);
 
 	@Indexable(type = IndexableType.DELETE)
-	public DossierTemplate adminProcessDelete(Long id);
+	public DossierTemplate adminProcessDelete(Long id)
+		throws Exception;
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
