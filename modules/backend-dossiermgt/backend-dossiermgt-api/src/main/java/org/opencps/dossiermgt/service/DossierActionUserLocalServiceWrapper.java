@@ -56,6 +56,16 @@ public class DossierActionUserLocalServiceWrapper
 			visited);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionUserLocalService.addOrUpdateDossierActionUser(userId,
+			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
+			visited);
+	}
+
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*

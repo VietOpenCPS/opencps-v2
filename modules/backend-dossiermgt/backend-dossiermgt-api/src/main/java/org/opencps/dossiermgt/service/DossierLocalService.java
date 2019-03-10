@@ -503,6 +503,33 @@ public interface DossierLocalService extends BaseLocalService,
 		Date correctingDate, Date endorsementDate, Date extendDate,
 		Date processDate, ServiceContext context) throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier publishDossier(long groupId, long dossierId,
+		String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName, String contactName, String contactTelNo,
+		String contactEmail, String dossierTemplateNo, String password,
+		int viaPostal, String postalAddress, String postalCityCode,
+		String postalCityName, String postalTelNo, boolean online,
+		boolean notification, String applicantNote, int originality,
+		Date createDate, Date modifiedDate, Date submitDate, Date receiveDate,
+		Date dueDate, Date releaseDate, Date finishDate, Date cancellingDate,
+		Date correctingDate, Date endorsementDate, Date extendDate,
+		Date processDate, String dossierNo, String dossierStatus,
+		String dossierStatusText, String dossierSubStatus,
+		String dossierSubStatusText, long dossierActionId,
+		String submissionNote, String lockState, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, double durationCount, int durationUnit,
+		String dossierName, String processNo, ServiceContext context)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.DELETE)
 	public Dossier removeDossier(long groupId, long dossierId, String refId)
 		throws PortalException;

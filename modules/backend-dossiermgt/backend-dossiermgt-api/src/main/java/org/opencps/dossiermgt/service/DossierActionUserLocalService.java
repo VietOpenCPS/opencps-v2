@@ -76,6 +76,10 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 		long dossierActionId, long dossierId, String stepCode, int moderator,
 		int assigned, boolean visited) throws PortalException;
 
+	public DossierActionUser addOrUpdateDossierActionUser(long userId,
+		long groupId, long dossierActionId, long dossierId, String stepCode,
+		int moderator, int assigned, boolean visited) throws PortalException;
+
 	/**
 	* Creates a new dossier action user with the primary key. Does not add the dossier action user to the database.
 	*

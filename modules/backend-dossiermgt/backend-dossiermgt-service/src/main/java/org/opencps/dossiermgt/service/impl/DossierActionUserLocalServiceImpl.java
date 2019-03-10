@@ -114,6 +114,26 @@ public class DossierActionUserLocalServiceImpl
 				
 		return dossierActionUserPersistence.update(dau);
 	}
+
+	public DossierActionUser addOrUpdateDossierActionUser(long userId, long groupId, 
+			long dossierActionId,
+			long dossierId, String stepCode, int moderator, 
+			int assigned, boolean visited) throws PortalException {
+		User user = userLocalService.getUser(userId);
+		
+		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+		DossierActionUser dau = dossierActionUserPersistence.fetchByPrimaryKey(pk);
+		if (dau == null) {
+			dau = dossierActionUserPersistence.create(pk);			
+		}
+		dau.setAssigned(assigned);
+		dau.setStepCode(stepCode);
+		dau.setModerator(moderator);
+		dau.setVisited(visited);
+		dau.setDossierId(dossierId);
+
+		return dossierActionUserPersistence.update(dau);
+	}
 	
 	public List<DossierActionUser> getByDID_DAI_SC_AS(long dossierId, long dossierActionId, String stepCode, int[] asArr) {
 		return dossierActionUserPersistence.findByDID__DAI_SC_AS(dossierId, dossierActionId, stepCode, asArr);

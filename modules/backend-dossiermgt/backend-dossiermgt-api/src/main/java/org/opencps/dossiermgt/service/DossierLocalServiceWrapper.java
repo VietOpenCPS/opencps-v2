@@ -733,6 +733,55 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier publishDossier(long groupId,
+		long dossierId, String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		java.util.Date applicantIdDate, String address, String cityCode,
+		String cityName, String districtCode, String districtName,
+		String wardCode, String wardName, String contactName,
+		String contactTelNo, String contactEmail, String dossierTemplateNo,
+		String password, int viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName, String postalTelNo,
+		boolean online, boolean notification, String applicantNote,
+		int originality, java.util.Date createDate,
+		java.util.Date modifiedDate, java.util.Date submitDate,
+		java.util.Date receiveDate, java.util.Date dueDate,
+		java.util.Date releaseDate, java.util.Date finishDate,
+		java.util.Date cancellingDate, java.util.Date correctingDate,
+		java.util.Date endorsementDate, java.util.Date extendDate,
+		java.util.Date processDate, String dossierNo, String dossierStatus,
+		String dossierStatusText, String dossierSubStatus,
+		String dossierSubStatusText, long dossierActionId,
+		String submissionNote, String lockState, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, double durationCount, int durationUnit,
+		String dossierName, String processNo,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.publishDossier(groupId, dossierId,
+			referenceUid, counter, serviceCode, serviceName, govAgencyCode,
+			govAgencyName, applicantName, applicantIdType, applicantIdNo,
+			applicantIdDate, address, cityCode, cityName, districtCode,
+			districtName, wardCode, wardName, contactName, contactTelNo,
+			contactEmail, dossierTemplateNo, password, viaPostal,
+			postalAddress, postalCityCode, postalCityName, postalTelNo, online,
+			notification, applicantNote, originality, createDate, modifiedDate,
+			submitDate, receiveDate, dueDate, releaseDate, finishDate,
+			cancellingDate, correctingDate, endorsementDate, extendDate,
+			processDate, dossierNo, dossierStatus, dossierStatusText,
+			dossierSubStatus, dossierSubStatusText, dossierActionId,
+			submissionNote, lockState, delegateName, delegateIdNo,
+			delegateTelNo, delegateEmail, delegateAddress, delegateCityCode,
+			delegateCityName, delegateDistrictCode, delegateDistrictName,
+			delegateWardCode, delegateWardName, durationCount, durationUnit,
+			dossierName, processNo, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier removeDossier(long groupId,
 		long dossierId, String refId)
 		throws com.liferay.portal.kernel.exception.PortalException {

@@ -3559,40 +3559,44 @@ public class DossierManagementImpl implements DossierManagement {
 							endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
 							extendDateLong != 0 ? new Date(extendDateLong) : null,
 							processDateLong != 0 ? new Date(processDateLong) : null,
+							input.getDossierNo(), input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(), input.getDossierSubStatusText(),
+							input.getDossierActionId() != null ? input.getDossierActionId(): 0, submissionNote, lockState, input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(), 
+							input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(), 
+							input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(), input.getDurationUnit(), input.getDossierName(), input.getProcessNo(),
 							serviceContext);
 	
-				dossier.setDossierNo(input.getDossierNo());
-				dossier.setDossierStatus(input.getDossierStatus());
-				dossier.setDossierStatusText(input.getDossierStatusText());
-				dossier.setDossierSubStatus(input.getDossierSubStatus());
-				dossier.setDossierSubStatusText(input.getDossierSubStatusText());
-				dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
-				dossier.setSubmissionNote(submissionNote);
-				dossier.setLockState(lockState);
-				dossier.setCounter(input.getCounter() != null ? input.getCounter() : 0);
-				dossier.setPostalAddress(input.getPostalAddress());
-				dossier.setPostalCityCode(input.getPostalCityCode());
-				dossier.setPostalCityName(input.getPostalCityName());
-				dossier.setDelegateName(input.getDelegateName());
-				dossier.setDelegateAddress(input.getDelegateAddress());
-				dossier.setDelegateIdNo(input.getDelegateIdNo());
-				dossier.setDelegateTelNo(input.getDelegateTelNo());
-				dossier.setDelegateEmail(input.getDelegateEmail());
-				dossier.setDelegateAddress(input.getDelegateAddress());
-				dossier.setDelegateCityCode(input.getDelegateCityCode());
-				dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
-				dossier.setDelegateWardCode(input.getDelegateWardCode());
-				dossier.setDelegateCityName(input.getDelegateCityName());
-				dossier.setDelegateDistrictName(input.getDelegateDistrictName());
-				dossier.setDelegateWardName(input.getDelegateWardName());
-				dossier.setDurationCount(input.getDurationCount());
-				dossier.setDurationUnit(input.getDurationUnit());
+//				dossier.setDossierNo(input.getDossierNo());
+//				dossier.setDossierStatus(input.getDossierStatus());
+//				dossier.setDossierStatusText(input.getDossierStatusText());
+//				dossier.setDossierSubStatus(input.getDossierSubStatus());
+//				dossier.setDossierSubStatusText(input.getDossierSubStatusText());
+//				dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
+//				dossier.setSubmissionNote(submissionNote);
+//				dossier.setLockState(lockState);
+//				dossier.setCounter(input.getCounter() != null ? input.getCounter() : 0);
+//				dossier.setPostalAddress(input.getPostalAddress());
+//				dossier.setPostalCityCode(input.getPostalCityCode());
+//				dossier.setPostalCityName(input.getPostalCityName());
+//				dossier.setDelegateName(input.getDelegateName());
+//				dossier.setDelegateAddress(input.getDelegateAddress());
+//				dossier.setDelegateIdNo(input.getDelegateIdNo());
+//				dossier.setDelegateTelNo(input.getDelegateTelNo());
+//				dossier.setDelegateEmail(input.getDelegateEmail());
+//				dossier.setDelegateAddress(input.getDelegateAddress());
+//				dossier.setDelegateCityCode(input.getDelegateCityCode());
+//				dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
+//				dossier.setDelegateWardCode(input.getDelegateWardCode());
+//				dossier.setDelegateCityName(input.getDelegateCityName());
+//				dossier.setDelegateDistrictName(input.getDelegateDistrictName());
+//				dossier.setDelegateWardName(input.getDelegateWardName());
+//				dossier.setDurationCount(input.getDurationCount());
+//				dossier.setDurationUnit(input.getDurationUnit());
 //				dossier.setSampleCount(input.getSampleCount() != null ? input.getSampleCount() : 0l);
-				dossier.setDossierName(input.getDossierName());
-				dossier.setProcessNo(input.getProcessNo());
+//				dossier.setDossierName(input.getDossierName());
+//				dossier.setProcessNo(input.getProcessNo());
 				
 				//Update dossier
-				dossier = DossierLocalServiceUtil.updateDossier(dossier);
+//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
 
 				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 			}

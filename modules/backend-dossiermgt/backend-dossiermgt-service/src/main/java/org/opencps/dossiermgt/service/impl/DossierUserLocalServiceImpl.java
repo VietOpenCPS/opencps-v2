@@ -14,9 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import java.util.List;
 
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
@@ -44,26 +41,16 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierUserLocalServiceUtil} to access the dossier user local service.
 	 */
-	private static Log _log = LogFactoryUtil.getLog(DossierUserLocalServiceImpl.class);
+//	private static Log _log = LogFactoryUtil.getLog(DossierUserLocalServiceImpl.class);
 //	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser addDossierUser(long groupId, long dossierId, long userId, int moderator, boolean visited) {
 		DossierUserPK pk = new DossierUserPK();
 		pk.setUserId(userId);
 		pk.setDossierId(dossierId);
-		DossierUser oldObject = null;
-		try {
-			oldObject = dossierUserPersistence.findByPrimaryKey(pk);
-		} catch (NoSuchDossierUserException e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
-		DossierUser object = null;
+		DossierUser object = dossierUserPersistence.fetchByPrimaryKey(pk);
 		
-		if (oldObject == null) {
+		if (object == null) {
 			object = dossierUserPersistence.create(pk);
-		}
-		else {
-			object = oldObject;
 		}
 			
 		object.setModerator(moderator);
