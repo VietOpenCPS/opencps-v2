@@ -2732,12 +2732,12 @@ public class DossierActionsImpl implements DossierActions {
 //
 ////			employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 //		}		
-//		String type = StringPool.BLANK;
+		String type = StringPool.BLANK;
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNotNull(dossierStatus)) {
 			if(!"new".equals(dossierStatus)) {
-//				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
-//				dossier.setApplicantNote(applicantNote);
+				String applicantNote = _buildDossierNote(dossier, actionNote, groupId, type);
+				dossier.setApplicantNote(applicantNote);
 			} else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 				dossier.setSubmitDate(new Date());
 			}
@@ -2765,7 +2765,7 @@ public class DossierActionsImpl implements DossierActions {
 			updateDossierPayload(dossier, pl);
 		}
 		
-		
+		_log.info("proAction: " + JSONFactoryUtil.looseSerialize(proAction));
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
 			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
@@ -3510,7 +3510,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 			
 			payloadObject.put("dossierFiles", dossierFilesArr);
-//			_log.info("Payload: " + payloadObject.toJSONString());
+			_log.info("Payload: " + JSONFactoryUtil.looseSerialize(proAction));
 			
 			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 //				List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossierId);
@@ -3521,25 +3521,27 @@ public class DossierActionsImpl implements DossierActions {
 				List<String> returnDossierFileTemplateNos = ListUtil
 						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
 
-				for (DossierFile dossierFile : lsDossierFile) {
-					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-
+				if (lsDossierFile != null && lsDossierFile.size() > 0) {
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
 					}
-
+					payloadObject.put("dossierFiles", dossierFilesArr);
 				}
-				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
 			List<DossierDocument> lstDossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
 
-			for (DossierDocument dossierDocument : lstDossierDocuments) {
-				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
-				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
-				dossierDocumentArr.put(dossierDocumentObj);
+			if (lstDossierDocuments != null && lstDossierDocuments.size() > 0) {
+				for (DossierDocument dossierDocument : lstDossierDocuments) {
+					JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+					dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+					dossierDocumentArr.put(dossierDocumentObj);
+				}
 			}
 			payloadObject.put("dossierFiles", dossierFilesArr);				
 			payloadObject.put("dossierDocuments", dossierDocumentArr);
@@ -4002,8 +4004,10 @@ public class DossierActionsImpl implements DossierActions {
 				Date expired = cal.getTime();
 
 				if (actionConfig.getNotificationType().startsWith("APLC")) {
-					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
-							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+					//if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+					//		|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG &&
+							Validator.isNull(dossier.getOriginDossierNo())) {
 						try {
 //							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
 							List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(dossier.getApplicantIdNo());

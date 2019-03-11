@@ -278,7 +278,7 @@ public class AdminEndpoind extends Endpoint {
 					JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 
 					//System.out.println("code: " + code.equals("opencps_employee"));
-					_log.info("code: " + code.equals("opencps_employee"));
+					//_log.info("code: " + code.equals("opencps_employee"));
 					
 					if (message.getBoolean(CONFIG)) {
 
@@ -307,17 +307,17 @@ public class AdminEndpoind extends Endpoint {
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 						
 						//System.out.println("code: " + code.equals("opencps_employee"));
-						_log.info("code: " + code.equals("opencps_employee"));
-						_log.info("lengColumns: " + lengColumns);
+						//_log.info("code: " + code.equals("opencps_employee"));
+						//_log.info("lengColumns: " + lengColumns);
 						if (code.equals("opencps_employee")) {
 							
 							List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 
-							_log.info("employees: " + employees);
+							//_log.info("employees: " + employees);
 							if (lengColumns > 0) {
 								for (Object[] obj: employees) {
 
-									_log.info("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
+									//_log.info("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
 									if (Validator.isNotNull(obj[lengColumns - 1])) {
 										long userIdMapping = (long) obj[lengColumns - 1];
 										User user = UserLocalServiceUtil.fetchUser(userIdMapping);
