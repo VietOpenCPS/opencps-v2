@@ -26,11 +26,14 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+
 import org.opencps.auth.api.exception.UnauthenticationException;
 
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 
@@ -60,6 +63,17 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	)
 	public Dossier addDossier(long groupId, Company company, User user,
 		ServiceContext serviceContext, DossierInputModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public DossierFile addDossierFileByDossierId(long groupId, Company company,
+		User user, ServiceContext serviceContext, Attachment file, String id,
+		String referenceUid, String dossierTemplateNo, String dossierPartNo,
+		String fileTemplateNo, String displayName, String fileType,
+		String isSync, String formData, String removed, String eForm,
+		Long modifiedDate)
 		throws UnauthenticationException, PortalException, Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {

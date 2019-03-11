@@ -53,6 +53,24 @@ public class CPSDossierBusinessLocalServiceUtil {
 				   .addDossier(groupId, company, user, serviceContext, input);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile addDossierFileByDossierId(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.apache.cxf.jaxrs.ext.multipart.Attachment file, String id,
+		String referenceUid, String dossierTemplateNo, String dossierPartNo,
+		String fileTemplateNo, String displayName, String fileType,
+		String isSync, String formData, String removed, String eForm,
+		Long modifiedDate)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return getService()
+				   .addDossierFileByDossierId(groupId, company, user,
+			serviceContext, file, id, referenceUid, dossierTemplateNo,
+			dossierPartNo, fileTemplateNo, displayName, fileType, isSync,
+			formData, removed, eForm, modifiedDate);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierAction doAction(
 		long groupId, long userId,
 		org.opencps.dossiermgt.model.Dossier dossier,

@@ -8,4 +8,9 @@ dependencies {
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-auth")
+	
+	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: '3.0.3'
+	compile group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: '3.0.3'
 }

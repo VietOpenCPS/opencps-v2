@@ -64,8 +64,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -111,6 +113,7 @@ import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
+import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
@@ -148,10 +151,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
@@ -3667,6 +3667,234 @@ public class CPSDossierBusinessLocalServiceImpl
 			return StringPool.BLANK;
 		}
 
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public DossierFile addDossierFileByDossierId(long groupId, Company company, User user, ServiceContext serviceContext, 
+			Attachment file, String id, String referenceUid,
+			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo, String displayName, String fileType,
+			String isSync, String formData, String removed, String eForm, Long modifiedDate) throws UnauthenticationException, PortalException, Exception {
+		BackendAuth auth = new BackendAuthImpl();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long dossierId = GetterUtil.getLong(id);
+			Dossier dossier = null;
+
+			if (dossierId != 0) {
+				dossier = dossierLocalService.fetchDossier(dossierId);
+				if (Validator.isNull(dossier)) {
+					dossier = dossierLocalService.getByRef(groupId, id);
+				}
+			} else {
+				dossier = dossierLocalService.getByRef(groupId, id);
+			}
+
+			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
+
+			long originDossierId = dossier.getOriginDossierId();
+			if (originDossierId != 0) {
+				//HSLT
+				Dossier hsltDossier = dossierLocalService.fetchDossier(dossier.getDossierId());
+				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+				ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), hsltDossier.getGovAgencyCode());
+				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
+				
+				if (serviceConfig != null) {
+					if (lstOptions.size() > 0) {
+						ProcessOption processOption = lstOptions.get(0);
+						DossierTemplate dossierTemplate = dossierTemplateLocalService.fetchDossierTemplate(processOption.getDossierTemplateId());
+						List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId, dossierTemplate.getTemplateNo());
+						for (DossierPart dp : lstParts) {
+							if (dp.getPartNo().equals(dossierPartNo) && dp.getFileTemplateNo().equals(fileTemplateNo)) {
+								dossierTemplateNo = dp.getTemplateNo();
+							}
+						}
+					}
+				}
+			}
+			else {
+				List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
+				for (DossierPart dp : lstParts) {
+					if (dp.getPartNo().equals(dossierPartNo)) {
+						fileTemplateNo = dp.getFileTemplateNo();
+						dossierTemplateNo = dossier.getDossierTemplateNo();
+					}
+				}
+			}
+			
+			if (originDossierId > 0) {
+				_log.debug("__Start add file at:" + new Date());
+				DossierFile dossierFile =  null;
+				DossierFile oldDossierFile = null;
+				if (Validator.isNotNull(referenceUid)) {
+					oldDossierFile = dossierFileLocalService.getByDossierAndRef(dossier.getDossierId(), referenceUid);
+				}
+				if (oldDossierFile != null && modifiedDate != null) {
+					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
+				
+						if (dataHandler != null && dataHandler.getInputStream() != null) {
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									StringPool.BLANK,
+									dataHandler.getInputStream(), serviceContext);
+						} else {
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									StringPool.BLANK,
+									null, serviceContext);
+						}
+						
+						_log.debug("__End add file at:" + new Date());
+						
+						if(Validator.isNotNull(formData)) {
+							dossierFile.setFormData(formData);
+						}
+						_log.debug("REMOVED:" + removed);
+						if(Validator.isNotNull(removed)) {
+							dossierFile.setRemoved(Boolean.parseBoolean(removed));
+						}
+						if(Validator.isNotNull(eForm)) {
+							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
+						_log.debug("__Start update dossier file at:" + new Date());
+			
+						dossierFileLocalService.updateDossierFile(dossierFile);
+			
+						_log.debug("__End update dossier file at:" + new Date());
+			
+						_log.debug("__End bind to dossierFile" + new Date());
+						return dossierFile;
+					}
+					else {
+						throw new DataConflictException("Conflict dossier file");
+					}					
+				}
+				else {
+					_log.debug("__Start add file at:" + new Date());
+					if (dataHandler != null && dataHandler.getInputStream() != null) {
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+								dataHandler.getInputStream(), fileType, isSync, serviceContext);
+					} else {
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+								serviceContext);
+					}
+					
+					_log.debug("__End add file at:" + new Date());
+					
+					if(Validator.isNotNull(formData)) {
+						dossierFile.setFormData(formData);
+					}
+					if(Validator.isNotNull(removed)) {
+						dossierFile.setRemoved(Boolean.parseBoolean(removed));
+					}
+					if(Validator.isNotNull(eForm)) {
+						dossierFile.setEForm(Boolean.parseBoolean(eForm));
+					}
+					_log.debug("__Start update dossier file at:" + new Date());
+		
+					dossierFileLocalService.updateDossierFile(dossierFile);
+		
+					_log.debug("__End update dossier file at:" + new Date());
+		
+					_log.debug("__End bind to dossierFile" + new Date());
+					return dossierFile;
+				}
+			} else {
+//				DossierFile lastDossierFile = DossierFileLocalServiceUtil.findLastDossierFile(dossier.getDossierId(), fileTemplateNo, dossierTemplateNo);
+				//_log.info("lastDossierFile: "+lastDossierFile);
+				DossierFile oldDossierFile = null;
+				if (Validator.isNotNull(referenceUid)) {
+					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossier.getDossierId(), referenceUid);
+				}
+				if (oldDossierFile != null && modifiedDate != null) {
+					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
+						_log.debug("__Start add file at:" + new Date());
+						DossierFile dossierFile =  null;
+						
+						if (dataHandler != null && dataHandler.getInputStream() != null) {
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									StringPool.BLANK,
+									dataHandler.getInputStream(), serviceContext);
+						} else {
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
+									dossier.getDossierId(), 
+									referenceUid, 
+									displayName, 
+									StringPool.BLANK,
+									null, serviceContext);
+						}
+						
+						_log.debug("__End add file at:" + new Date());
+						
+						if(Validator.isNotNull(formData)) {
+							dossierFile.setFormData(formData);
+						}
+						if(Validator.isNotNull(removed)) {
+							dossierFile.setRemoved(Boolean.parseBoolean(removed));
+						}
+						if(Validator.isNotNull(eForm)) {
+							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
+						_log.debug("__Start update dossier file at:" + new Date());
+
+						DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+						_log.debug("__End update dossier file at:" + new Date());
+
+						_log.debug("__End bind to dossierFile" + new Date());
+						return dossierFile;
+					}
+					else {
+						throw new DataConflictException("Conflict dossier file");				
+					}
+				}
+				else {
+					_log.debug("__Start add file at:" + new Date());
+					DossierFile dossierFile =  null;
+					
+					if (dataHandler != null && dataHandler.getInputStream() != null) {
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+								dataHandler.getInputStream(), fileType, isSync, serviceContext);
+					} else {
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+								serviceContext);
+					}
+					
+					_log.debug("__End add file at:" + new Date());
+					
+					if(Validator.isNotNull(formData)) {
+						dossierFile.setFormData(formData);
+					}
+					if(Validator.isNotNull(removed)) {
+						dossierFile.setRemoved(Boolean.parseBoolean(removed));
+					}
+					if(Validator.isNotNull(eForm)) {
+						dossierFile.setEForm(Boolean.parseBoolean(eForm));
+					}
+					_log.debug("__Start update dossier file at:" + new Date());
+		
+					dossierFileLocalService.updateDossierFile(dossierFile);
+		
+					_log.debug("__End update dossier file at:" + new Date());
+		
+					_log.debug("__End bind to dossierFile" + new Date());
+					return dossierFile;
+				}
+			}
 	}
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";

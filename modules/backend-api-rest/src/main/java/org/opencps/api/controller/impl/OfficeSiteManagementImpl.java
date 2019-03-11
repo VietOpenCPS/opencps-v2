@@ -230,7 +230,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
 					.header("Content-Type", fileEntry.getMimeType());
-
+			
 			return responseBuilder.build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
