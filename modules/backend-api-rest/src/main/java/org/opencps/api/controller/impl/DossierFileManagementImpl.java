@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -53,20 +52,11 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-import backend.auth.api.exception.ErrorMsgModel;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
 
@@ -203,9 +193,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		DataHandler dataHandle = file.getDataHandler();
-
 		try {
+			DataHandler dataHandle = file.getDataHandler();
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -531,7 +520,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(JSONFactoryUtil.serialize(result)).build();
 
 		} catch (Exception e) {
-			_log.info("DOSSIER_LOG_"+e);
+			_log.debug("DOSSIER_LOG_"+e);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
@@ -548,7 +537,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("********START *********");
+		_log.debug("********START *********");
 		try {
 			if(!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -558,9 +547,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			DossierFile dossierFile = null;
 			if (Validator.isNotNull(deliverableCode)) {
-				_log.info("********START GET DOSSIERFILE*********"+ new Date().getTime());
+				_log.debug("********START GET DOSSIERFILE*********"+ new Date().getTime());
 				dossierFile = actions.getDossierFileByDeliverableCode(groupId, deliverableCode);
-				_log.info("********END GET DOSSIERFILE *********"+ new Date().getTime());
+				_log.debug("********END GET DOSSIERFILE *********"+ new Date().getTime());
 			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
@@ -569,7 +558,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				results.put("referenceUid", dossierFile.getReferenceUid());
 			}
 
-			_log.info("********END *********");
+			_log.debug("********END *********");
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
@@ -689,16 +678,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response uploadFileEntry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file) {
-		_log.info("uploadFileEntry");
+		_log.debug("uploadFileEntry");
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
-		DataHandler dataHandle = file.getDataHandler();
 		InputStream fileInputStream = null;
 
 		try {
+			DataHandler dataHandle = file.getDataHandler();
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -736,29 +725,29 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			fileInputStream = dataHandle.getInputStream();
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
-			_log.info("extFile: "+extFile);
+			_log.debug("extFile: "+extFile);
 			if (Validator.isNotNull(extFile)) {
 				if ("zip".equals(extFile.toLowerCase())) {
 					String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 //					//delete folder if exits
 					File fileOld = new File(pathFolder);
-					_log.info("fileOld: "+fileOld);
+					_log.debug("fileOld: "+fileOld);
 					if (fileOld.exists()) {
 						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-						_log.info("LamTV_Delete DONE: "+flag);
+						_log.debug("LamTV_Delete DONE: "+flag);
 					}
-//					_log.info("LamTV_pathFolder: "+pathFolder);
+//					_log.debug("LamTV_pathFolder: "+pathFolder);
 					ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 					File fileList = new File(pathFolder);
 //					//Validate xml
 					String strError = ReadXMLFileUtils.validateXML(fileList, true);
-					_log.info("strError: "+strError);
+					_log.debug("strError: "+strError);
 					if (Validator.isNotNull(strError)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
 					}
 
 //					String errorCheck = ReadXMLFileUtils.getStrError();
-//					_log.info("errorCheck: "+errorCheck);
+//					_log.debug("errorCheck: "+errorCheck);
 //					if (Validator.isNotNull(errorCheck)) {
 //						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
 //					}
@@ -766,23 +755,23 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (Validator.isNull(result)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
 					}
-					_log.info("LamTV_IMPORT DONE_ZIP");
+					_log.debug("LamTV_IMPORT DONE_ZIP");
 				} else if ("xml".equals(extFile.toLowerCase())) {
 					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 //					//delete folder if exits
 					File fileOld = new File(pathFile);
-					_log.info("fileOld: "+fileOld.getAbsolutePath());
+					_log.debug("fileOld: "+fileOld.getAbsolutePath());
 					if (fileOld.exists()) {
 						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-						_log.info("LamTV_Delete DONE: "+flag);
+						_log.debug("LamTV_Delete DONE: "+flag);
 					}
-					_log.info("LamTV_pathFolder: "+pathFile);
+					_log.debug("LamTV_pathFolder: "+pathFile);
 					File fileList = new File(pathFile);
 					FileOutputStream out = new FileOutputStream(fileList);
 					IOUtils.copy(fileInputStream, out);
 //					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
-					_log.info("fileList: "+fileList);
-//					_log.info("LamTV_fileList: "+fileList.getPath());
+					_log.debug("fileList: "+fileList);
+//					_log.debug("LamTV_fileList: "+fileList.getPath());
 					String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 					if (Validator.isNotNull(subFileName)) {
 						String strError = ReadXMLFileUtils.validateXML(fileList, false);
@@ -792,7 +781,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
 						result = ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
 					}
-					_log.info("LamTV_IMPORT DONE_FILE");
+					_log.debug("LamTV_IMPORT DONE_FILE");
 				}
 			}
 
