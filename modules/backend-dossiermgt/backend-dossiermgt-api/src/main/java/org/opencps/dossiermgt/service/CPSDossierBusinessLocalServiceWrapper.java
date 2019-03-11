@@ -102,6 +102,40 @@ public class CPSDossierBusinessLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierFile resetformdataDossierFileFormData(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		long id, String referenceUid, String formdata)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return _cpsDossierBusinessLocalService.resetformdataDossierFileFormData(groupId,
+			company, serviceContext, id, referenceUid, formdata);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierFile updateDossierFile(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		long id, String referenceUid,
+		org.apache.cxf.jaxrs.ext.multipart.Attachment file)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return _cpsDossierBusinessLocalService.updateDossierFile(groupId,
+			company, serviceContext, id, referenceUid, file);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierFile updateDossierFileFormData(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		long id, String referenceUid, String formdata)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return _cpsDossierBusinessLocalService.updateDossierFileFormData(groupId,
+			company, serviceContext, id, referenceUid, formdata);
+	}
+
+	@Override
 	public CPSDossierBusinessLocalService getWrappedService() {
 		return _cpsDossierBusinessLocalService;
 	}

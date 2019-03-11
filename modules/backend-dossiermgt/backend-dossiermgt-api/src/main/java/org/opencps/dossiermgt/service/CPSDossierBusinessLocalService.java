@@ -95,4 +95,28 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	public void initDossierActionUser(ProcessAction processAction,
 		Dossier dossier, int allowAssignUser, DossierAction dossierAction,
 		long userId, long groupId, long assignUserId) throws PortalException;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public DossierFile resetformdataDossierFileFormData(long groupId,
+		Company company, ServiceContext serviceContext, long id,
+		String referenceUid, String formdata)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public DossierFile updateDossierFile(long groupId, Company company,
+		ServiceContext serviceContext, long id, String referenceUid,
+		Attachment file)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public DossierFile updateDossierFileFormData(long groupId, Company company,
+		ServiceContext serviceContext, long id, String referenceUid,
+		String formdata)
+		throws UnauthenticationException, PortalException, Exception;
 }

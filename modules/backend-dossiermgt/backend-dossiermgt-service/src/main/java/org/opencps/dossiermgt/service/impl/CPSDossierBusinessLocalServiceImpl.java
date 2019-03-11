@@ -92,6 +92,7 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -118,6 +119,7 @@ import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -3896,6 +3898,101 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public DossierFile updateDossierFile(long groupId, Company company, ServiceContext serviceContext, long id, String referenceUid, Attachment file) 
+		throws UnauthenticationException, PortalException, Exception {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		DataHandler dataHandle = file.getDataHandler();
+
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+
+		Dossier dossier = dossierLocalService.fetchDossier(id);
+		if (dossier != null) {
+			if (dossier.getOriginDossierId() != 0) {
+				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+				id = dossier.getDossierId();
+			}
+		}
+
+		DossierFile dossierFile = dossierFileLocalService.updateDossierFile(groupId, id, referenceUid, dataHandle.getName(),
+				StringPool.BLANK,
+				dataHandle.getInputStream(), serviceContext);
+
+		return dossierFile;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public DossierFile updateDossierFileFormData(long groupId, Company company,
+			ServiceContext serviceContext, long id, String referenceUid, String formdata) throws UnauthenticationException, PortalException, Exception {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+
+		Dossier dossier = dossierLocalService.fetchDossier(id);
+		if (dossier != null) {
+			if (dossier.getOriginDossierId() != 0) {
+				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+				id = dossier.getOriginDossierId();
+			}
+		}
+
+		DossierFile dossierFile = dossierFileLocalService.updateFormData(groupId, id, referenceUid, formdata,
+					serviceContext);
+		return dossierFile;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public DossierFile resetformdataDossierFileFormData(long groupId, Company company,
+			ServiceContext serviceContext, long id, String referenceUid, String formdata) throws UnauthenticationException, PortalException, Exception {
+		BackendAuth auth = new BackendAuthImpl();
+
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+
+		Dossier dossier = dossierLocalService.fetchDossier(id);
+		if (dossier != null) {
+			if (dossier.getOriginDossierId() != 0) {
+				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+				id = dossier.getOriginDossierId();
+			}
+		}
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossier.getDossierId(), referenceUid);
+		
+		String defaultData = StringPool.BLANK;
+
+		if (Validator.isNotNull(dossierFile)) {
+			DossierPart part = dossierPartLocalService.getByFileTemplateNo(groupId,
+					dossierFile.getFileTemplateNo());
+
+			defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier.getDossierId(), serviceContext);
+			dossierFile = dossierFileLocalService.getByReferenceUid(referenceUid).get(0);
+			JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
+			defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
+			defaultData = defaultDataObj.toJSONString();
+		}
+
+		dossierFile = dossierFileLocalService.updateFormData(groupId, dossier.getDossierId(), referenceUid, defaultData,
+				serviceContext);
+		
+		String deliverableCode = dossierFile.getDeliverableCode();
+		
+		if (Validator.isNotNull(deliverableCode)) {
+			Deliverable deliverable = deliverableLocalService.getByCode(deliverableCode);
+			deliverableLocalService.deleteDeliverable(deliverable);
+		}
+
+		return dossierFile;
+	}
+	
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";

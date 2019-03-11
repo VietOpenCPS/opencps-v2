@@ -189,29 +189,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response updateDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String referenceUid, Attachment file) {
 
-		BackendAuth auth = new BackendAuthImpl();
-
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
-			DataHandler dataHandle = file.getDataHandler();
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
-			if (dossier != null) {
-				if (dossier.getOriginDossierId() != 0) {
-					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
-					id = dossier.getDossierId();
-				}
-			}
-			DossierFileActions action = new DossierFileActionsImpl();
-
-			DossierFile dossierFile = action.updateDossierFile(groupId, id, referenceUid, dataHandle.getName(),
-					dataHandle.getInputStream(), serviceContext);
-
+			DossierFile dossierFile = CPSDossierBusinessLocalServiceUtil.updateDossierFile(groupId, company, serviceContext, groupId, referenceUid, file);
+			
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
 			return Response.status(200).entity(result).build();
@@ -274,27 +256,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response updateDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata) {
 
-		BackendAuth auth = new BackendAuthImpl();
-
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
-			if (dossier != null) {
-				if (dossier.getOriginDossierId() != 0) {
-					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
-					id = dossier.getOriginDossierId();
-				}
-			}
-			DossierFileActions action = new DossierFileActionsImpl();
-
-			DossierFile dossierFile = action.updateDossierFileFormData(groupId, id, referenceUid, formdata,
-					serviceContext);
+			DossierFile dossierFile = CPSDossierBusinessLocalServiceUtil.updateDossierFileFormData(groupId, company, serviceContext, id, referenceUid, formdata);
 
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
@@ -459,27 +425,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response resetformdataDossierFileFormData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String referenceUid, String formdata) {
-		BackendAuth auth = new BackendAuthImpl();
-
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
-			if (dossier != null) {
-				if (dossier.getOriginDossierId() != 0) {
-					dossier = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
-					id = dossier.getOriginDossierId();
-				}
-			}
-			DossierFileActions action = new DossierFileActionsImpl();
-
-			DossierFile dossierFile = action.resetDossierFileFormData(groupId, id, referenceUid, formdata,
-					serviceContext);
+			DossierFile dossierFile = CPSDossierBusinessLocalServiceUtil.resetformdataDossierFileFormData(groupId, company, serviceContext, id, referenceUid, formdata);
 
 			DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
