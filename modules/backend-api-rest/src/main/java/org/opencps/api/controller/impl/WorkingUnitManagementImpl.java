@@ -203,9 +203,8 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 		WorkingUnitInterface actions = new WorkingUnitActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 

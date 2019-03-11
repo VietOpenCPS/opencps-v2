@@ -99,7 +99,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					message.put("formData", jsonData.toJSONString());
 
 					Date dateEnd = new Date();
-					_log.info("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
+					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
@@ -117,7 +117,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						responseBuilder.header("Content-Type", "application/pdf");
 
 						Date dateEnd1 = new Date();
-						_log.info("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
+						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
 						return responseBuilder.build();
 
 					} catch (MessageBusException e) {
@@ -146,7 +146,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 		BackendAuth auth = new BackendAuthImpl();
 		long dossierId = GetterUtil.getLong(id);
-		_log.info("START");
 
 		try {
 
@@ -203,7 +202,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				dossierIdArr = JSONFactoryUtil.createJSONArray(strDossiers);
 			}
 
-			_log.info("START");
 			JSONObject formDataJSON = null;
 			if (dossierIdArr != null && dossierIdArr.length() > 0) {
 				//Declare Object
@@ -218,8 +216,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				//Get formScript
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 				String documentScript = StringPool.BLANK;
-				_log.info("typeCode: "+typeCode);
-				_log.info("docType: "+docType);
+				_log.debug("typeCode: "+typeCode);
+				_log.debug("docType: "+docType);
 				if (docType != null) {
 					documentScript = docType.getDocumentScript();
 				}
@@ -232,7 +230,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 						if (Validator.isNotNull(dossier)) {
 							long dossierActionId = dossier.getDossierActionId();
-							_log.info("dossierActionId: "+dossierActionId);
+							_log.debug("dossierActionId: "+dossierActionId);
 							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
@@ -246,9 +244,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								jsonData = JSONFactoryUtil.createJSONObject(payload);
 								jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 								formDataArr.put(jsonData);
-								_log.info("jsonData: "+jsonData);
-								_log.info("formDataArr: "+formDataArr);
-								_log.info("payload: "+payload);
+								_log.debug("jsonData: "+jsonData);
+								_log.debug("formDataArr: "+formDataArr);
+								_log.debug("payload: "+payload);
 							}
 						}
 					}

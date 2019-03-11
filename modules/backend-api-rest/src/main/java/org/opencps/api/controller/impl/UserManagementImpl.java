@@ -89,9 +89,8 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -455,13 +454,12 @@ public class UserManagementImpl implements UserManagement {
 //		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		// HARD CODE groupId = 55301
 
 		long groupId = 55301;
 
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
 			// long groupId =
 			// GetterUtil.getLong(header.getHeaderString("groupId"));
 			
@@ -503,14 +501,13 @@ public class UserManagementImpl implements UserManagement {
 //		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		// HARD CODE groupId = 55301
 
 		long groupId = 55301;
 
 		try {
 
+			DataHandler dataHandler = attachment.getDataHandler();
 			// long groupId =
 			// GetterUtil.getLong(header.getHeaderString("groupId"));
 

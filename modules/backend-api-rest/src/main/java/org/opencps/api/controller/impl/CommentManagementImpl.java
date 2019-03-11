@@ -86,12 +86,12 @@ public class CommentManagementImpl implements CommentManagement {
 
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-		List<String> lstSecureFiles = new ArrayList<>();
-		lstSecureFiles.add("text/x-sh");
-		lstSecureFiles.add("application/macbinary");
-		lstSecureFiles.add("application/x-msdownload");
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
+			List<String> lstSecureFiles = new ArrayList<>();
+			lstSecureFiles.add("text/x-sh");
+			lstSecureFiles.add("application/macbinary");
+			lstSecureFiles.add("application/x-msdownload");
 
 			long userId = serviceContext.getUserId();
 

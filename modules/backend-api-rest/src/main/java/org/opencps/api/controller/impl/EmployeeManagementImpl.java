@@ -261,9 +261,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		EmployeeInterface actions = new EmployeeActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 

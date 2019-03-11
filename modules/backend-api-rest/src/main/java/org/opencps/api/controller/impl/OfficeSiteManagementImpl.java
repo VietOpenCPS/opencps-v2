@@ -212,9 +212,8 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 		OfficeSiteInterface actions = new OfficeSiteActions();
 		InputStream inputStream = null;
 
-		DataHandler dataHandler = attachment.getDataHandler();
-
 		try {
+			DataHandler dataHandler = attachment.getDataHandler();
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
