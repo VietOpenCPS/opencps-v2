@@ -4105,7 +4105,8 @@ public class DossierManagementImpl implements DossierManagement {
 					if (serviceProcess == null) {
 						serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(da.getServiceProcessId());
 					}
-					ProcessAction proAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcess != null ? serviceProcess.getServiceProcessId() : 0l, da.getActionCode());
+					ProcessAction proAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(groupId, serviceProcess != null ? serviceProcess.getServiceProcessId() : 0l, da.getActionCode(), da.getFromStepCode(), da.getStepCode());
+//					ProcessAction proAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(serviceProcess != null ? serviceProcess.getServiceProcessId() : 0l, da.getActionCode());
 					
 					if (ac != null) {
 						if (ac.getSyncType() > 0) {

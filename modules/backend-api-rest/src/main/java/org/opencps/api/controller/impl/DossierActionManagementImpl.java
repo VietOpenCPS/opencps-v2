@@ -62,7 +62,6 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -71,7 +70,6 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
@@ -198,13 +196,6 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					List<User> lstUser = new ArrayList<>();
 
 					if (processStep != null) {	
-						List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
-								.findByP_S_ID(processStep.getProcessStepId());
-						ProcessAction processAction = null;
-						
-						if (dossierAction != null) {
-							processAction = ProcessActionLocalServiceUtil.fetchBySPID_AC(dossierAction.getServiceProcessId(), dossierAction.getActionCode());
-						}
 //						if (processAction != null && processAction.getAllowAssignUser() == ProcessActionTerm.NOT_ASSIGNED) {
 //							if (Validator.isNotNull(processStep.getRoleAsStep())) {
 //								String[] steps = StringUtil.split(processStep.getRoleAsStep());
