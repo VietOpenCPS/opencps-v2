@@ -186,91 +186,16 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 		Applicant applicant = ApplicantLocalServiceUtil.fetchApplicant(id);
 		if (applicant != null) {
-			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
-			//String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-
-			boolean autoPassword = false;
-			boolean autoScreenName = true;
-			boolean sendEmail = false;
-
-			long[] groupIds = new long [] {groupId};
-			long[] organizationIds = null;
-			long[] roleIds = null;
-			long[] userGroupIds = null;
-
-			if (Validator.isNull(screenName)) {
-				screenName = email.substring(0, email.indexOf(StringPool.AT));
-			}
-
-			//
-			String secretKey1 = PwdGenerator.getPassword(2, new String[] { "0123456789" });
-			String secretKey2 = PwdGenerator.getPassword(2, new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
-			String secretKey3 = PwdGenerator.getPassword(2, new String[] { "abcdefghijklmnopqrstuvwxyz" });
-			String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
-			String secretKey5 = PwdGenerator.getPassword(4, new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-					"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
-			String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
-
-			//String password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-
-			String firstName = ("citizen".equals(applicant.getApplicantIdType()) ? "Ông/bà"
-					: ("business".equals(applicant.getApplicantIdType()) ? "Quý công ty" : "Tổ chức"));
-			String lastName = applicant.getApplicantName();
-
-			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
-
-			// add default role
-			if (Validator.isNotNull(roleDefault)) {
-				roleIds = new long[] { roleDefault.getRoleId() };
-			}
-
-			Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
-
-			List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(adminRole.getRoleId());
-
-			long creatorUserId = 0;
-
-			if (adminUsers.size() != 0) {
-				creatorUserId = adminUsers.get(0).getUserId();
-			}
-
-			Calendar calendar = Calendar.getInstance();
-
-			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
-
-			int year = calendar.get(Calendar.YEAR);
-			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
-			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-			//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
-			User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
-						password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
-						LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-						dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
-						userGroupIds, sendEmail, context);
-			//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
-			//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
-			UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
-			UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), password, password, false, true);
-
-			// Update applicant
-			applicant.setMappingUserId(mappingUser.getUserId());
-			applicant.setActivationCode(StringPool.BLANK);
-			applicant.setTmpPass(password);
-			
-			ApplicantLocalServiceUtil.updateApplicant(applicant);
-			//Send mail
-			//_log.info("Applicant Log trigger!");
-			if (applicant.getMappingUserId() > 0) {
+			if (applicant.getMappingUserId() > 0 && Validator.isNotNull(applicant.getActivationCode())) {
+				//Active account register
+				ApplicantLocalServiceUtil.activateApplicant(applicant.getApplicantId(), context);
+				//Send Email
 				NotificationQueue queue = null;
-				
 				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-				
 				queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
 				
 				Date now = new Date();
-				
 				Calendar cal = Calendar.getInstance();
-				
 				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
 				
 				queue.setCreateDate(now);
@@ -286,23 +211,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setToEmail(applicant.getContactEmail());
 				queue.setToTelNo(applicant.getContactTelNo());
 				
-				//JSONObject object = JSONFactoryUtil.createJSONObject();
-				
-	//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
-				//String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
-				
-				//object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
-				//object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
-				//object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
-				//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
-				//object.put("toName", applicant.getApplicantName());
-				//object.put("toAddress", applicant.getContactEmail());
-	//			
-	//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
-	//			_log.info("payloadTest1: "+payload1);
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
-					//_log.info("START PAYLOAD: ");
 					payload.put(
 						"Applicant", JSONFactoryUtil.createJSONObject(
 							JSONFactoryUtil.looseSerialize(applicant)));
@@ -310,32 +220,161 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				catch (JSONException parse) {
 					_log.error(parse);
 				}
-				//_log.info("payloadTest: "+payload.toJSONString());
 				queue.setPayload(payload.toJSONString());
 				queue.setExpireDate(cal.getTime());
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			} else {
+				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+				//String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+
+				boolean autoPassword = false;
+				boolean autoScreenName = true;
+				boolean sendEmail = false;
+
+				long[] groupIds = new long [] {groupId};
+				long[] organizationIds = null;
+				long[] roleIds = null;
+				long[] userGroupIds = null;
+
+				if (Validator.isNull(screenName)) {
+					screenName = email.substring(0, email.indexOf(StringPool.AT));
+				}
+
+				//
+				String secretKey1 = PwdGenerator.getPassword(2, new String[] { "0123456789" });
+				String secretKey2 = PwdGenerator.getPassword(2, new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
+				String secretKey3 = PwdGenerator.getPassword(2, new String[] { "abcdefghijklmnopqrstuvwxyz" });
+				String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
+				String secretKey5 = PwdGenerator.getPassword(4, new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+						"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+				String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
+
+				//String password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+
+				String firstName = ("citizen".equals(applicant.getApplicantIdType()) ? "Ông/bà"
+						: ("business".equals(applicant.getApplicantIdType()) ? "Quý công ty" : "Tổ chức"));
+				String lastName = applicant.getApplicantName();
+
+				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
+
+				// add default role
+				if (Validator.isNotNull(roleDefault)) {
+					roleIds = new long[] { roleDefault.getRoleId() };
+				}
+
+				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+
+				List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(adminRole.getRoleId());
+
+				long creatorUserId = 0;
+
+				if (adminUsers.size() != 0) {
+					creatorUserId = adminUsers.get(0).getUserId();
+				}
+
+				Calendar calendar = Calendar.getInstance();
+
+				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
+
+				int year = calendar.get(Calendar.YEAR);
+				int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
+				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+				//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
+				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
+							password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
+							LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
+							dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+							userGroupIds, sendEmail, context);
+				//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+				//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
+				UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
+				UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), password, password, false, true);
+
+				// Update applicant
+				applicant.setMappingUserId(mappingUser.getUserId());
+				applicant.setActivationCode(StringPool.BLANK);
+				applicant.setTmpPass(password);
 				
-				//binhth add user applicant to siteGroup
-				GroupLocalServiceUtil.addUserGroup(applicant.getMappingUserId(), applicant.getGroupId());
-				//Add applicant to search
-				String applicantIdNo = applicant.getApplicantIdNo();
-				String applicantName = applicant.getApplicantName();
-				String applicantIdType = applicant.getApplicantIdType();
-				Date applicantIdDate = applicant.getApplicantIdDate();
-				String address = applicant.getAddress();
-				String cityCode = applicant.getCityCode();
-				String cityName = applicant.getCityName();
-				String districtCode = applicant.getDistrictCode();
-				String districtName = applicant.getDistrictName();
-				String wardCode = applicant.getWardCode();
-				String wardName = applicant.getWardName();
-				String contactName = applicant.getContactName();
-				String contactTelNo = applicant.getContactTelNo();
-				String contactEmail = applicant.getContactEmail();
-				
-				ApplicantLocalServiceUtil.updateApplicant(0l, applicant.getMappingUserId(), companyId, applicantName, applicantIdType, applicantIdNo,
-						applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-						contactName, contactTelNo, contactEmail);
+				ApplicantLocalServiceUtil.updateApplicant(applicant);
+				//Send mail
+				//_log.info("Applicant Log trigger!");
+				if (applicant.getMappingUserId() > 0) {
+					NotificationQueue queue = null;
+					
+					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+					
+					queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					
+					Date now = new Date();
+					
+					Calendar cal = Calendar.getInstance();
+					
+					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+					
+					queue.setCreateDate(now);
+					queue.setModifiedDate(now);
+					queue.setGroupId(applicant.getGroupId());
+					queue.setCompanyId(applicant.getCompanyId());
+					
+					queue.setNotificationType(NotificationType.APPLICANT_02);
+					queue.setClassName(Applicant.class.getName());
+					queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
+					queue.setToUsername(applicant.getApplicantName());
+					queue.setToUserId(applicant.getUserId());
+					queue.setToEmail(applicant.getContactEmail());
+					queue.setToTelNo(applicant.getContactTelNo());
+					
+					//JSONObject object = JSONFactoryUtil.createJSONObject();
+					
+		//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
+					//String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
+					
+					//object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
+					//object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
+					//object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
+					//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
+					//object.put("toName", applicant.getApplicantName());
+					//object.put("toAddress", applicant.getContactEmail());
+		//			
+		//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
+		//			_log.info("payloadTest1: "+payload1);
+					JSONObject payload = JSONFactoryUtil.createJSONObject();
+					try {
+						//_log.info("START PAYLOAD: ");
+						payload.put(
+							"Applicant", JSONFactoryUtil.createJSONObject(
+								JSONFactoryUtil.looseSerialize(applicant)));
+					}
+					catch (JSONException parse) {
+						_log.error(parse);
+					}
+					//_log.info("payloadTest: "+payload.toJSONString());
+					queue.setPayload(payload.toJSONString());
+					queue.setExpireDate(cal.getTime());
+					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+					
+					//binhth add user applicant to siteGroup
+					GroupLocalServiceUtil.addUserGroup(applicant.getMappingUserId(), applicant.getGroupId());
+					//Add applicant to search
+					String applicantIdNo = applicant.getApplicantIdNo();
+					String applicantName = applicant.getApplicantName();
+					String applicantIdType = applicant.getApplicantIdType();
+					Date applicantIdDate = applicant.getApplicantIdDate();
+					String address = applicant.getAddress();
+					String cityCode = applicant.getCityCode();
+					String cityName = applicant.getCityName();
+					String districtCode = applicant.getDistrictCode();
+					String districtName = applicant.getDistrictName();
+					String wardCode = applicant.getWardCode();
+					String wardName = applicant.getWardName();
+					String contactName = applicant.getContactName();
+					String contactTelNo = applicant.getContactTelNo();
+					String contactEmail = applicant.getContactEmail();
+					
+					ApplicantLocalServiceUtil.updateApplicant(0l, applicant.getMappingUserId(), companyId, applicantName, applicantIdType, applicantIdNo,
+							applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+							contactName, contactTelNo, contactEmail);
+				}
 			}
 		}
 
