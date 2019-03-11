@@ -42,6 +42,17 @@ public class CPSDossierBusinessLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static org.opencps.dossiermgt.model.Dossier addDossier(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierInputModel input)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return getService()
+				   .addDossier(groupId, company, user, serviceContext, input);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierAction doAction(
 		long groupId, long userId,
 		org.opencps.dossiermgt.model.Dossier dossier,
@@ -65,6 +76,17 @@ public class CPSDossierBusinessLocalServiceUtil {
 	*/
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static void initDossierActionUser(
+		org.opencps.dossiermgt.model.ProcessAction processAction,
+		org.opencps.dossiermgt.model.Dossier dossier, int allowAssignUser,
+		org.opencps.dossiermgt.model.DossierAction dossierAction, long userId,
+		long groupId, long assignUserId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService()
+			.initDossierActionUser(processAction, dossier, allowAssignUser,
+			dossierAction, userId, groupId, assignUserId);
 	}
 
 	public static CPSDossierBusinessLocalService getService() {

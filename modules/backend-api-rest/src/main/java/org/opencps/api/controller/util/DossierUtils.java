@@ -37,6 +37,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -57,7 +58,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -1192,6 +1192,68 @@ public class DossierUtils {
 		return ouputs;
 	}
 
+	public static DossierInputModel convertFormModelToInputModel(org.opencps.api.dossier.model.DossierInputModel input) {
+		DossierInputModel model = new DossierInputModel();
+		model.setReferenceUid(input.getReferenceUid());
+		model.setServiceCode(input.getServiceCode());
+		model.setGovAgencyCode(input.getGovAgencyCode());
+		model.setDossierTemplateNo(input.getDossierTemplateNo());
+		model.setApplicantName(input.getApplicantName());
+		model.setApplicantIdType(input.getApplicantIdType());
+		model.setApplicantIdNo(input.getApplicantIdNo());
+		model.setApplicantIdDate(input.getApplicantIdDate());
+		model.setAddress(input.getAddress());
+		model.setCityCode(input.getCityCode());
+		model.setDistrictCode(input.getDistrictCode());
+		model.setWardCode(input.getWardCode());
+		model.setContactName(input.getContactName());
+		model.setContactEmail(input.getContactEmail());
+		model.setContactTelNo(input.getContactTelNo());
+		model.setPassword(input.getPassword());
+		model.setOnline(input.getOnline());
+		model.setNotification(input.getNotification());
+		model.setApplicantNote(input.getApplicantNote());
+		model.setViaPostal(input.getViaPostal());
+		model.setPostalAddress(input.getPostalAddress());
+		model.setPostalCityCode(input.getPostalCityCode());
+		model.setPostalTelNo(input.getPostalTelNo());
+		model.setOriginality(input.getOriginality());
+		model.setDossierNo(input.getDossierNo());
+		model.setSubmitDate(input.getSubmitDate());
+		model.setReceiveDate(input.getReceiveDate());
+		model.setDueDate(input.getDueDate());
+		model.setDossierStatus(input.getDossierStatus());
+		model.setDossierStatusText(input.getDossierStatusText());
+		model.setDossierSubStatus(input.getDossierSubStatus());
+		model.setDossierSubStatusText(input.getDossierSubStatusText());
+		model.setSameAsApplicant(input.isSameAsApplicant());
+		model.setDelegateName(input.getDelegateName());
+		model.setDelegateIdNo(input.getDelegateIdNo());
+		model.setDelegateTelNo(input.getDelegateTelNo());
+		model.setDelegateEmail(input.getDelegateEmail());
+		model.setDelegateAddress(input.getDelegateAddress());
+		model.setDelegateCityCode(input.getDelegateCityCode());
+		model.setDelegateCityName(input.getDelegateCityName());
+		model.setDelegateDistrictCode(input.getDelegateDistrictCode());
+		model.setDelegateDistrictName(input.getDelegateDistrictName());
+		model.setDelegateWardCode(input.getDelegateWardCode());
+		model.setDelegateWardName(input.getDelegateWardName());
+		model.setSampleCount(input.getSampleCount());
+		model.setBriefNote(input.getBriefNote());
+		model.setServiceName(input.getServiceName());
+		model.setDossierName(input.getDossierName());
+		model.setPostalCityName(input.getPostalCityName());
+		model.setPostalServiceCode(input.getPostalServiceCode());
+		model.setPostalServiceName(input.getPostalServiceName());
+		model.setPostalDistrictCode(input.getPostalDistrictCode());
+		model.setPostalDistrictName(input.getPostalDistrictName());
+		model.setPostalWardCode(input.getPostalWardCode());
+		model.setPostalWardName(input.getPostalWardName());
+		model.setOriginDossierNo(input.getOriginDossierNo());
+		
+		return model;
+	}
+	
 	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
 		return (releaseDate!=0 && dueDate!=0 && 
 				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));

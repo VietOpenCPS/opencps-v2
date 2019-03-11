@@ -18,12 +18,17 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
+import org.opencps.auth.api.exception.UnauthenticationException;
+
+import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -53,6 +58,13 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
+	public Dossier addDossier(long groupId, Company company, User user,
+		ServiceContext serviceContext, DossierInputModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
 	public DossierAction doAction(long groupId, long userId, Dossier dossier,
 		ProcessOption option, ProcessAction proAction, String actionCode,
 		String actionUser, String actionNote, String payload,
@@ -65,4 +77,8 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	* @return the OSGi service identifier
 	*/
 	public String getOSGiServiceIdentifier();
+
+	public void initDossierActionUser(ProcessAction processAction,
+		Dossier dossier, int allowAssignUser, DossierAction dossierAction,
+		long userId, long groupId, long assignUserId) throws PortalException;
 }
