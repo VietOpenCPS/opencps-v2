@@ -91,6 +91,20 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic createOpencpsDossierStatistic(
 		long dossierStatisticId);
 
+	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
+		long groupId, long userId, String userName, int month, int year,
+		int totalCount, int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount)
+		throws PortalException, SystemException;
+
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
 	*

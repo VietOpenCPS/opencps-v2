@@ -409,7 +409,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		_log.info("Update DossierFile_________-");
+		_log.debug("Update DossierFile_________-");
 		
 		//_log.info("Expando______" + model.getExpandoBridge().getAttribute("isDel"));
 

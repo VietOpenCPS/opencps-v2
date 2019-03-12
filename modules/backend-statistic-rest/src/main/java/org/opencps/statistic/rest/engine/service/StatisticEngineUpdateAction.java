@@ -32,23 +32,43 @@ public class StatisticEngineUpdateAction {
 			payload.setGovAgencyCode((String) null);
 		}
 
-		long dossierStatisticId = 0L;
-
-		try {
-			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
-					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
-					payload.getDomainCode());
-			if (Validator.isNotNull(dossierStatistic)) {
-				dossierStatisticId = dossierStatistic.getDossierStatisticId();
-			}
-		} catch (Exception e) {
-			_log.error(e);
-		}
+//		long dossierStatisticId = 0L;
+//
+//		try {
+//			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
+//					payload.getGroupId(), payload.getMonth(), payload.getYear(), payload.getGovAgencyCode(),
+//					payload.getDomainCode());
+//			if (Validator.isNotNull(dossierStatistic)) {
+//				dossierStatisticId = dossierStatistic.getDossierStatisticId();
+//			}
+//		} catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		byte pausingCount = 0;
+//
+//		try {
+//			return OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
+//					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
+//					payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
+//					payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
+//					payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
+//					payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
+//					payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
+//					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
+//					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
+//					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
+//					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+//					payload.getInsideCount());
+//		} catch (PortalException | SystemException e) {
+//			_log.error(e);
+//			return null;
+//		}
 
 		byte pausingCount = 0;
 
 		try {
-			return OpencpsDossierStatisticLocalServiceUtil.updateStatistic(dossierStatisticId, payload.getCompanyId(),
+			return OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(payload.getCompanyId(),
 					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
 					payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
 					payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),

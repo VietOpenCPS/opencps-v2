@@ -163,12 +163,22 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 							//}
 						}
 						if (flagStatistic) {
-							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
+							try {
+								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 									engineUpdateAction, serviceDomainResponse, calculateData);
+							}
+							catch (Exception e) {
+								System.out.println("STATISTICS ERROR: " + site.getGroupId());
+							}
 						}
 					} else {
-						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
+						try {
+							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse, calculateData);
+						}
+						catch (Exception e) {
+							System.out.println("STATISTICS ERROR: " + site.getGroupId());
+						}
 					}
 					mapFlag.put(month, flagStatistic);
 				}
@@ -318,8 +328,13 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						flagLastYear = false;
 					}
 					if (flagLastYear) {
-						processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
+						try {
+							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateData);
+						}
+						catch (Exception e) {
+							
+						}
 					}
 					mapFlag.put(lastMonth, flagLastYear);
 				}
@@ -424,7 +439,12 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						}
 					}
 					else {
-						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+						try {
+							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+						}
+						catch (NoSuchOpencpsDossierStatisticException e) {
+							
+						}
 					}
 					
 					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -450,7 +470,12 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 							}
 						}
 					}	
-					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+					try {
+						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+					}
+					catch (NoSuchOpencpsDossierStatisticException e) {
+						
+					}
 				}
 			}
 			else {

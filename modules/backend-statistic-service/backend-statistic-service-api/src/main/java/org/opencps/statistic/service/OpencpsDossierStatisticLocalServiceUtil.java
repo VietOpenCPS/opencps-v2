@@ -78,6 +78,32 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().createOpencpsDossierStatistic(dossierStatisticId);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createOrUpdateStatistic(
+		long companyId, long groupId, long userId, String userName, int month,
+		int year, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .createOrUpdateStatistic(companyId, groupId, userId,
+			userName, month, year, totalCount, deniedCount, cancelledCount,
+			processCount, remainingCount, receivedCount, onlineCount,
+			releaseCount, betimesCount, ontimeCount, overtimeCount, doneCount,
+			releasingCount, unresolvedCount, processingCount, undueCount,
+			overdueCount, pausingCount, ontimePercentage, overtimeInside,
+			overtimeOutside, interoperatingCount, waitingCount, govAgencyCode,
+			govAgencyName, domainCode, domainName, reporting, onegateCount,
+			outsideCount, insideCount);
+	}
+
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
 	*
