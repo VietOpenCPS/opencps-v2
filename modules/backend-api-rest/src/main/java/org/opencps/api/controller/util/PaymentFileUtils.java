@@ -557,6 +557,34 @@ public class PaymentFileUtils {
 		return arrList;
 	}
 
+	public static org.opencps.dossiermgt.input.model.PaymentFileInputModel convertFormModelToInputModel(PaymentFileInputModel input) {
+		org.opencps.dossiermgt.input.model.PaymentFileInputModel model = new org.opencps.dossiermgt.input.model.PaymentFileInputModel();
+		model.setAccountUserName(input.getAccountUserName());
+		model.setAdvanceAmount(input.getAdvanceAmount());
+		model.setApproveDatetime(input.getApproveDatetime());
+		model.setBankInfo(input.getBankInfo());
+		model.setConfirmFileEntryId(input.getConfirmFileEntryId());
+		model.setConfirmNote(input.getConfirmNote());
+		model.setConfirmPayload(input.getConfirmPayload());
+		model.setEinvoice(input.getEinvoice());
+		model.setEpaymentProfile(input.getEpaymentProfile());
+		model.setFeeAmount(input.getFeeAmount());
+		model.setGovAgencyTaxNo(input.getGovAgencyTaxNo());
+		model.setInvoiceIssueNo(input.getInvoiceIssueNo());
+		model.setInvoiceNo(input.getInvoiceNo());;
+		model.setInvoicePayload(input.getInvoicePayload());
+		model.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+		model.setPaymentAmount(input.getPaymentAmount());
+		model.setPaymentFee(input.getPaymentFee());
+		model.setPaymentMethod(input.getPaymentMethod());
+		model.setPaymentNote(input.getPaymentNote());
+		model.setPaymentStatus(input.getPaymentStatus());
+		model.setReferenceUid(input.getReferenceUid());
+		model.setServiceAmount(input.getServiceAmount());
+		model.setShipAmount(input.getShipAmount());
+		
+		return model;
+	}
 	private static Log _log = LogFactoryUtil.getLog(PaymentFileUtils.class.getName());
 
 }

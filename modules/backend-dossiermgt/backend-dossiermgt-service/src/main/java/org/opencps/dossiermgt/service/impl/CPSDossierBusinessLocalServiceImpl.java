@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -71,6 +72,8 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -118,6 +121,7 @@ import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
+import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -3993,6 +3997,87 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierFile;
 	}
 	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public PaymentFile createPaymentFileByDossierId(long groupId, ServiceContext serviceContext, String id, PaymentFileInputModel input) throws UnauthenticationException, PortalException, Exception {
+		long userId = serviceContext.getUserId();
+		
+		BackendAuth auth = new BackendAuthImpl();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			Dossier dossier = getDossier(id, groupId);
+			long dossierId = dossier.getPrimaryKey();
+
+			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
+				throw new UnauthorizationException();
+			}
+
+
+			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+			String referenceUid = input.getReferenceUid();
+			PaymentFile paymentFile = null;
+			if (Validator.isNull(referenceUid)) {
+				referenceUid = PortalUUIDUtil.generate();
+			}
+			
+			if (oldPaymentFile != null) {
+				paymentFile = oldPaymentFile;
+			}
+			else {
+				paymentFile = paymentFileLocalService.createPaymentFiles(userId, groupId, dossierId, referenceUid,
+						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
+						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
+						input.getEpaymentProfile(), input.getBankInfo(), 0,
+						input.getPaymentMethod(), serviceContext);		
+			}
+			
+			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			if(Validator.isNotNull(input.getConfirmFileEntryId())){
+				paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			}
+			if(Validator.isNotNull(input.getPaymentStatus())){
+				paymentFile.setPaymentStatus(input.getPaymentStatus());
+			}
+			if(Validator.isNotNull(input.getEinvoice())) {
+				paymentFile.setEinvoice(input.getEinvoice());
+			}
+			if(Validator.isNotNull(input.getPaymentAmount())) {
+				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentMethod())){
+				paymentFile.setPaymentMethod(input.getPaymentMethod());
+			}
+			if(Validator.isNotNull(input.getServiceAmount())){
+				paymentFile.setServiceAmount(input.getServiceAmount());
+			}
+			if(Validator.isNotNull(input.getShipAmount())){
+				paymentFile.setShipAmount(input.getShipAmount());
+			}
+			if(Validator.isNotNull(input.getAdvanceAmount())){
+				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
+			}
+			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
+
+			return paymentFile;
+	}
+	
+	private Dossier getDossier(String id, long groupId) throws PortalException {
+		long dossierId = GetterUtil.getLong(id);
+
+		Dossier dossier = null;
+		
+		if (dossierId != 0) {
+			dossier = dossierLocalService.fetchDossier(dossierId);
+		}
+
+		if (Validator.isNull(dossier)) {
+			dossier = dossierLocalService.getByRef(groupId, id);
+		}
+
+		return dossier;
+	}
+
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";

@@ -71,6 +71,18 @@ public class CPSDossierBusinessLocalServiceUtil {
 			formData, removed, eForm, modifiedDate);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(
+		long groupId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		String id,
+		org.opencps.dossiermgt.input.model.PaymentFileInputModel input)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return getService()
+				   .createPaymentFileByDossierId(groupId, serviceContext, id,
+			input);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierAction doAction(
 		long groupId, long userId,
 		org.opencps.dossiermgt.model.Dossier dossier,

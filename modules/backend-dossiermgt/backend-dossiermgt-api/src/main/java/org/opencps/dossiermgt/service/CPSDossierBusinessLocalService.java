@@ -31,9 +31,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.exception.UnauthenticationException;
 
 import org.opencps.dossiermgt.input.model.DossierInputModel;
+import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 
@@ -74,6 +76,13 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		String fileTemplateNo, String displayName, String fileType,
 		String isSync, String formData, String removed, String eForm,
 		Long modifiedDate)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public PaymentFile createPaymentFileByDossierId(long groupId,
+		ServiceContext serviceContext, String id, PaymentFileInputModel input)
 		throws UnauthenticationException, PortalException, Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
