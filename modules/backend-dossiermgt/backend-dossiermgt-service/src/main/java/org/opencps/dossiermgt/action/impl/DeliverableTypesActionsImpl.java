@@ -1,11 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.List;
-
-import org.opencps.dossiermgt.action.DeliverableTypesActions;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -13,6 +7,13 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.List;
+
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeRoleLocalServiceUtil;
 
 public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
@@ -94,5 +95,20 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 		return DeliverableTypeLocalServiceUtil.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern,
 				docSync, mappingData, govAgencies, formReport, formScript);
+	}
+
+	@Override
+	public DeliverableType getByTypeCode(long userId, long groupId, String typeCode, ServiceContext serviceContext) {
+		return DeliverableTypeLocalServiceUtil.getByTypeCode(typeCode, groupId);
+	}
+
+	@Override
+	public List<DeliverableType> getDeliverableTypesList(long groupId, int start, int end) {
+		return DeliverableTypeLocalServiceUtil.getDeliverableTypes(groupId, start, end);
+	}
+
+	@Override
+	public List<Long> getRoleIdByTypes(long deliverableTypeId) {
+		return DeliverableTypeRoleLocalServiceUtil.getRoleIdByTypes(deliverableTypeId);
 	}
 }

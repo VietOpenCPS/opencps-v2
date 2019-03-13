@@ -24,7 +24,7 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	Log _log = LogFactoryUtil.getLog(DeliverableActionsImpl.class);
 
 	@Override
-	public JSONObject getListDeliverable(String state, String agency, String type, String applicant) {
+	public JSONObject getListDeliverable(int state, String agency, String type, String applicant) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<Deliverable> listDeliverable = DeliverableLocalServiceUtil.getListDeliverable(state, agency, type,
 				applicant);
@@ -146,7 +146,7 @@ public class DeliverableActionsImpl implements DeliverableActions {
 	}
 
 	@Override
-	public List<Deliverable> getDeliverableByState(String strDeliverableCode, String state) {
+	public List<Deliverable> getDeliverableByState(String strDeliverableCode, int state) {
 		if (Validator.isNotNull(strDeliverableCode)) {
 			return DeliverableLocalServiceUtil.findDeliverableByState(strDeliverableCode, state);
 		} else {

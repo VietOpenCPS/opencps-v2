@@ -63,9 +63,10 @@
 		<field name="expireDate" type="Date" />
 		<field name="issueDate" type="Date" />
 		<field name="revalidate" type="Date" />
-		<field name="deliverableState" type="String" />
+		<field name="deliverableState" type="int" />
 		<field name="fileEntryId" type="long" />
 		<field name="dossierId" type="long" />
+		<field name="docSync" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableLog">
 		<field name="uuid" type="String" />
@@ -76,7 +77,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="deliverableId" type="String" />
+		<field name="deliverableId" type="long" />
 		<field name="dossierUid" type="String" />
 		<field name="author" type="String" />
 		<field name="content" type="String">
@@ -132,6 +133,21 @@
 		<field name="govAgencies" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+	</model>
+	<model name="org.opencps.dossiermgt.model.DeliverableTypeRole">
+		<field name="uuid" type="String" />
+		<field name="deliverableTypeRoleId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="deliverableTypeId" type="long" />
+		<field name="roleId" type="long" />
+		<field name="moderator" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DocumentType">
 		<field name="uuid" type="String" />

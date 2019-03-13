@@ -582,7 +582,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			DeliverableActions action = new DeliverableActionsImpl();
 			//
 			//
-			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), state);
+			List<Deliverable> deliverableList = action.getDeliverableByState(sb.toString(), Integer.valueOf(state));
 //			_log.info("Str list deliverable: "+ deliverableList);
 			JSONArray results = JSONFactoryUtil.createJSONArray();
 			if (deliverableList != null && deliverableList.size() > 0) {

@@ -49,6 +49,7 @@ import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableTypePersistence;
+import org.opencps.dossiermgt.service.persistence.DeliverableTypeRolePersistence;
 import org.opencps.dossiermgt.service.persistence.DocumentTypePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionSyncPersistence;
@@ -557,6 +558,44 @@ public abstract class ServiceProcessRoleLocalServiceBaseImpl
 	public void setDeliverableTypePersistence(
 		DeliverableTypePersistence deliverableTypePersistence) {
 		this.deliverableTypePersistence = deliverableTypePersistence;
+	}
+
+	/**
+	 * Returns the deliverable type role local service.
+	 *
+	 * @return the deliverable type role local service
+	 */
+	public org.opencps.dossiermgt.service.DeliverableTypeRoleLocalService getDeliverableTypeRoleLocalService() {
+		return deliverableTypeRoleLocalService;
+	}
+
+	/**
+	 * Sets the deliverable type role local service.
+	 *
+	 * @param deliverableTypeRoleLocalService the deliverable type role local service
+	 */
+	public void setDeliverableTypeRoleLocalService(
+		org.opencps.dossiermgt.service.DeliverableTypeRoleLocalService deliverableTypeRoleLocalService) {
+		this.deliverableTypeRoleLocalService = deliverableTypeRoleLocalService;
+	}
+
+	/**
+	 * Returns the deliverable type role persistence.
+	 *
+	 * @return the deliverable type role persistence
+	 */
+	public DeliverableTypeRolePersistence getDeliverableTypeRolePersistence() {
+		return deliverableTypeRolePersistence;
+	}
+
+	/**
+	 * Sets the deliverable type role persistence.
+	 *
+	 * @param deliverableTypeRolePersistence the deliverable type role persistence
+	 */
+	public void setDeliverableTypeRolePersistence(
+		DeliverableTypeRolePersistence deliverableTypeRolePersistence) {
+		this.deliverableTypeRolePersistence = deliverableTypeRolePersistence;
 	}
 
 	/**
@@ -2298,6 +2337,10 @@ public abstract class ServiceProcessRoleLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DeliverableTypeLocalService deliverableTypeLocalService;
 	@BeanReference(type = DeliverableTypePersistence.class)
 	protected DeliverableTypePersistence deliverableTypePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableTypeRoleLocalService.class)
+	protected org.opencps.dossiermgt.service.DeliverableTypeRoleLocalService deliverableTypeRoleLocalService;
+	@BeanReference(type = DeliverableTypeRolePersistence.class)
+	protected DeliverableTypeRolePersistence deliverableTypeRolePersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.DocumentTypeLocalService.class)
 	protected org.opencps.dossiermgt.service.DocumentTypeLocalService documentTypeLocalService;
 	@BeanReference(type = DocumentTypePersistence.class)

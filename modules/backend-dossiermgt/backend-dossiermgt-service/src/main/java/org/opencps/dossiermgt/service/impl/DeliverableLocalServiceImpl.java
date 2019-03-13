@@ -94,7 +94,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
 	}
 
-	public List<Deliverable> getListDeliverable(String deliverableState, String govAgencyCode, String deliverableType,
+	public List<Deliverable> getListDeliverable(int deliverableState, String govAgencyCode, String deliverableType,
 			String applicant) {
 		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(deliverableState, govAgencyCode,
 				deliverableType, applicant);
@@ -146,7 +146,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
 		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
-		object.setDeliverableState(String.valueOf(deliverableState));
+		object.setDeliverableState(Integer.valueOf(deliverableState));
 
 		return deliverablePersistence.update(object);
 	}
@@ -507,7 +507,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
-			object.setDeliverableState(String.valueOf(deliverableState));
+			object.setDeliverableState(Integer.valueOf(deliverableState));
 		} catch (Exception e) {
 			// TODO
 			_log.error(e);
@@ -557,7 +557,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	}
 
 	/////////////////////
-	public List<Deliverable> findDeliverableByState(String strDeliverableCode, String state) {
+	public List<Deliverable> findDeliverableByState(String strDeliverableCode, int state) {
 		return deliverableFinder.findDeliverableByState(strDeliverableCode, state);
 	}
 
@@ -567,7 +567,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return deliverableFinder.findDeliverableByModifiedDate(synsDate, deliverableType, deliverableState);
 	}
 
-	public Deliverable getByCodeAndState(String deliverableCode, String state) {
+	public Deliverable getByCodeAndState(String deliverableCode, int state) {
 		return deliverablePersistence.fetchByFB_DCODE_STATE(deliverableCode, state);
 	}
 
@@ -1061,7 +1061,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setExpireDate(new Date(objectData.getLong("expireDate")));
 		object.setIssueDate(new Date(objectData.getLong("issueDate")));
 		object.setRevalidate(new Date(objectData.getLong("revalidate")));
-		object.setDeliverableState(objectData.getString("deliverableState"));
+		object.setDeliverableState(objectData.getInt("deliverableState"));
 
 		deliverablePersistence.update(object);
 

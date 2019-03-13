@@ -623,7 +623,7 @@ public class DeliverableUtil {
 	* @param applicantIdNo the applicant ID no
 	* @return the matching deliverables
 	*/
-	public static List<Deliverable> findByG_ID(String deliverableState,
+	public static List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo) {
 		return getPersistence()
 				   .findByG_ID(deliverableState, govAgencyCode,
@@ -645,7 +645,7 @@ public class DeliverableUtil {
 	* @param end the upper bound of the range of deliverables (not inclusive)
 	* @return the range of matching deliverables
 	*/
-	public static List<Deliverable> findByG_ID(String deliverableState,
+	public static List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end) {
 		return getPersistence()
@@ -669,7 +669,7 @@ public class DeliverableUtil {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching deliverables
 	*/
-	public static List<Deliverable> findByG_ID(String deliverableState,
+	public static List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end, OrderByComparator<Deliverable> orderByComparator) {
 		return getPersistence()
@@ -694,7 +694,7 @@ public class DeliverableUtil {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching deliverables
 	*/
-	public static List<Deliverable> findByG_ID(String deliverableState,
+	public static List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end, OrderByComparator<Deliverable> orderByComparator,
 		boolean retrieveFromCache) {
@@ -715,7 +715,7 @@ public class DeliverableUtil {
 	* @return the first matching deliverable
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
-	public static Deliverable findByG_ID_First(String deliverableState,
+	public static Deliverable findByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
@@ -734,7 +734,7 @@ public class DeliverableUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
-	public static Deliverable fetchByG_ID_First(String deliverableState,
+	public static Deliverable fetchByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator) {
 		return getPersistence()
@@ -753,7 +753,7 @@ public class DeliverableUtil {
 	* @return the last matching deliverable
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
-	public static Deliverable findByG_ID_Last(String deliverableState,
+	public static Deliverable findByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
@@ -772,7 +772,7 @@ public class DeliverableUtil {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
-	public static Deliverable fetchByG_ID_Last(String deliverableState,
+	public static Deliverable fetchByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator) {
 		return getPersistence()
@@ -793,7 +793,7 @@ public class DeliverableUtil {
 	* @throws NoSuchDeliverableException if a deliverable with the primary key could not be found
 	*/
 	public static Deliverable[] findByG_ID_PrevAndNext(long deliverableId,
-		String deliverableState, String govAgencyCode, String deliverableType,
+		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicantIdNo, OrderByComparator<Deliverable> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
 		return getPersistence()
@@ -809,8 +809,8 @@ public class DeliverableUtil {
 	* @param deliverableType the deliverable type
 	* @param applicantIdNo the applicant ID no
 	*/
-	public static void removeByG_ID(String deliverableState,
-		String govAgencyCode, String deliverableType, String applicantIdNo) {
+	public static void removeByG_ID(int deliverableState, String govAgencyCode,
+		String deliverableType, String applicantIdNo) {
 		getPersistence()
 			.removeByG_ID(deliverableState, govAgencyCode, deliverableType,
 			applicantIdNo);
@@ -825,8 +825,8 @@ public class DeliverableUtil {
 	* @param applicantIdNo the applicant ID no
 	* @return the number of matching deliverables
 	*/
-	public static int countByG_ID(String deliverableState,
-		String govAgencyCode, String deliverableType, String applicantIdNo) {
+	public static int countByG_ID(int deliverableState, String govAgencyCode,
+		String deliverableType, String applicantIdNo) {
 		return getPersistence()
 				   .countByG_ID(deliverableState, govAgencyCode,
 			deliverableType, applicantIdNo);
@@ -897,7 +897,7 @@ public class DeliverableUtil {
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
 	public static Deliverable findByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState)
+		int deliverableState)
 		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
 		return getPersistence()
 				   .findByFB_DCODE_STATE(deliverableCode, deliverableState);
@@ -911,7 +911,7 @@ public class DeliverableUtil {
 	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
 	public static Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) {
+		int deliverableState) {
 		return getPersistence()
 				   .fetchByFB_DCODE_STATE(deliverableCode, deliverableState);
 	}
@@ -925,7 +925,7 @@ public class DeliverableUtil {
 	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
 	public static Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState, boolean retrieveFromCache) {
+		int deliverableState, boolean retrieveFromCache) {
 		return getPersistence()
 				   .fetchByFB_DCODE_STATE(deliverableCode, deliverableState,
 			retrieveFromCache);
@@ -939,7 +939,7 @@ public class DeliverableUtil {
 	* @return the deliverable that was removed
 	*/
 	public static Deliverable removeByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState)
+		int deliverableState)
 		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
 		return getPersistence()
 				   .removeByFB_DCODE_STATE(deliverableCode, deliverableState);
@@ -953,7 +953,7 @@ public class DeliverableUtil {
 	* @return the number of matching deliverables
 	*/
 	public static int countByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) {
+		int deliverableState) {
 		return getPersistence()
 				   .countByFB_DCODE_STATE(deliverableCode, deliverableState);
 	}

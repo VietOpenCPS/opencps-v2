@@ -1910,7 +1910,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ID",
 			new String[] {
-				String.class.getName(), String.class.getName(),
+				Integer.class.getName(), String.class.getName(),
 				String.class.getName(), String.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
@@ -1920,7 +1920,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ID",
 			new String[] {
-				String.class.getName(), String.class.getName(),
+				Integer.class.getName(), String.class.getName(),
 				String.class.getName(), String.class.getName()
 			},
 			DeliverableModelImpl.DELIVERABLESTATE_COLUMN_BITMASK |
@@ -1931,7 +1931,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ID",
 			new String[] {
-				String.class.getName(), String.class.getName(),
+				Integer.class.getName(), String.class.getName(),
 				String.class.getName(), String.class.getName()
 			});
 
@@ -1945,7 +1945,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the matching deliverables
 	 */
 	@Override
-	public List<Deliverable> findByG_ID(String deliverableState,
+	public List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo) {
 		return findByG_ID(deliverableState, govAgencyCode, deliverableType,
 			applicantIdNo, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -1967,7 +1967,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the range of matching deliverables
 	 */
 	@Override
-	public List<Deliverable> findByG_ID(String deliverableState,
+	public List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end) {
 		return findByG_ID(deliverableState, govAgencyCode, deliverableType,
@@ -1991,7 +1991,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the ordered range of matching deliverables
 	 */
 	@Override
-	public List<Deliverable> findByG_ID(String deliverableState,
+	public List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end, OrderByComparator<Deliverable> orderByComparator) {
 		return findByG_ID(deliverableState, govAgencyCode, deliverableType,
@@ -2016,7 +2016,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the ordered range of matching deliverables
 	 */
 	@Override
-	public List<Deliverable> findByG_ID(String deliverableState,
+	public List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end, OrderByComparator<Deliverable> orderByComparator,
 		boolean retrieveFromCache) {
@@ -2051,8 +2051,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Deliverable deliverable : list) {
-					if (!Objects.equals(deliverableState,
-								deliverable.getDeliverableState()) ||
+					if ((deliverableState != deliverable.getDeliverableState()) ||
 							!Objects.equals(govAgencyCode,
 								deliverable.getGovAgencyCode()) ||
 							!Objects.equals(deliverableType,
@@ -2080,19 +2079,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			query.append(_SQL_SELECT_DELIVERABLE_WHERE);
 
-			boolean bindDeliverableState = false;
-
-			if (deliverableState == null) {
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_1);
-			}
-			else if (deliverableState.equals("")) {
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_3);
-			}
-			else {
-				bindDeliverableState = true;
-
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
-			}
+			query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
 
 			boolean bindGovAgencyCode = false;
 
@@ -2156,9 +2143,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindDeliverableState) {
-					qPos.add(deliverableState);
-				}
+				qPos.add(deliverableState);
 
 				if (bindGovAgencyCode) {
 					qPos.add(govAgencyCode);
@@ -2214,7 +2199,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @throws NoSuchDeliverableException if a matching deliverable could not be found
 	 */
 	@Override
-	public Deliverable findByG_ID_First(String deliverableState,
+	public Deliverable findByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException {
@@ -2257,7 +2242,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the first matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	 */
 	@Override
-	public Deliverable fetchByG_ID_First(String deliverableState,
+	public Deliverable fetchByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator) {
 		List<Deliverable> list = findByG_ID(deliverableState, govAgencyCode,
@@ -2282,7 +2267,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @throws NoSuchDeliverableException if a matching deliverable could not be found
 	 */
 	@Override
-	public Deliverable findByG_ID_Last(String deliverableState,
+	public Deliverable findByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException {
@@ -2325,7 +2310,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the last matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	 */
 	@Override
-	public Deliverable fetchByG_ID_Last(String deliverableState,
+	public Deliverable fetchByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator) {
 		int count = countByG_ID(deliverableState, govAgencyCode,
@@ -2360,7 +2345,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public Deliverable[] findByG_ID_PrevAndNext(long deliverableId,
-		String deliverableState, String govAgencyCode, String deliverableType,
+		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicantIdNo, OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException {
 		Deliverable deliverable = findByPrimaryKey(deliverableId);
@@ -2393,7 +2378,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	}
 
 	protected Deliverable getByG_ID_PrevAndNext(Session session,
-		Deliverable deliverable, String deliverableState, String govAgencyCode,
+		Deliverable deliverable, int deliverableState, String govAgencyCode,
 		String deliverableType, String applicantIdNo,
 		OrderByComparator<Deliverable> orderByComparator, boolean previous) {
 		StringBundler query = null;
@@ -2409,19 +2394,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 		query.append(_SQL_SELECT_DELIVERABLE_WHERE);
 
-		boolean bindDeliverableState = false;
-
-		if (deliverableState == null) {
-			query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_1);
-		}
-		else if (deliverableState.equals("")) {
-			query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_3);
-		}
-		else {
-			bindDeliverableState = true;
-
-			query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
-		}
+		query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
 
 		boolean bindGovAgencyCode = false;
 
@@ -2533,9 +2506,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (bindDeliverableState) {
-			qPos.add(deliverableState);
-		}
+		qPos.add(deliverableState);
 
 		if (bindGovAgencyCode) {
 			qPos.add(govAgencyCode);
@@ -2576,7 +2547,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @param applicantIdNo the applicant ID no
 	 */
 	@Override
-	public void removeByG_ID(String deliverableState, String govAgencyCode,
+	public void removeByG_ID(int deliverableState, String govAgencyCode,
 		String deliverableType, String applicantIdNo) {
 		for (Deliverable deliverable : findByG_ID(deliverableState,
 				govAgencyCode, deliverableType, applicantIdNo,
@@ -2595,7 +2566,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 * @return the number of matching deliverables
 	 */
 	@Override
-	public int countByG_ID(String deliverableState, String govAgencyCode,
+	public int countByG_ID(int deliverableState, String govAgencyCode,
 		String deliverableType, String applicantIdNo) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_ID;
 
@@ -2610,19 +2581,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			query.append(_SQL_COUNT_DELIVERABLE_WHERE);
 
-			boolean bindDeliverableState = false;
-
-			if (deliverableState == null) {
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_1);
-			}
-			else if (deliverableState.equals("")) {
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_3);
-			}
-			else {
-				bindDeliverableState = true;
-
-				query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
-			}
+			query.append(_FINDER_COLUMN_G_ID_DELIVERABLESTATE_2);
 
 			boolean bindGovAgencyCode = false;
 
@@ -2677,9 +2636,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (bindDeliverableState) {
-					qPos.add(deliverableState);
-				}
+				qPos.add(deliverableState);
 
 				if (bindGovAgencyCode) {
 					qPos.add(govAgencyCode);
@@ -2710,9 +2667,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_G_ID_DELIVERABLESTATE_1 = "deliverable.deliverableState IS NULL AND ";
 	private static final String _FINDER_COLUMN_G_ID_DELIVERABLESTATE_2 = "deliverable.deliverableState = ? AND ";
-	private static final String _FINDER_COLUMN_G_ID_DELIVERABLESTATE_3 = "(deliverable.deliverableState IS NULL OR deliverable.deliverableState = '') AND ";
 	private static final String _FINDER_COLUMN_G_ID_GOVAGENCYCODE_1 = "deliverable.govAgencyCode IS NULL AND ";
 	private static final String _FINDER_COLUMN_G_ID_GOVAGENCYCODE_2 = "deliverable.govAgencyCode = ? AND ";
 	private static final String _FINDER_COLUMN_G_ID_GOVAGENCYCODE_3 = "(deliverable.govAgencyCode IS NULL OR deliverable.govAgencyCode = '') AND ";
@@ -2966,13 +2921,13 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	public static final FinderPath FINDER_PATH_FETCH_BY_FB_DCODE_STATE = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByFB_DCODE_STATE",
-			new String[] { String.class.getName(), String.class.getName() },
+			new String[] { String.class.getName(), Integer.class.getName() },
 			DeliverableModelImpl.DELIVERABLECODE_COLUMN_BITMASK |
 			DeliverableModelImpl.DELIVERABLESTATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_FB_DCODE_STATE = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByFB_DCODE_STATE",
-			new String[] { String.class.getName(), String.class.getName() });
+			new String[] { String.class.getName(), Integer.class.getName() });
 
 	/**
 	 * Returns the deliverable where deliverableCode = &#63; and deliverableState = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
@@ -2984,7 +2939,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public Deliverable findByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) throws NoSuchDeliverableException {
+		int deliverableState) throws NoSuchDeliverableException {
 		Deliverable deliverable = fetchByFB_DCODE_STATE(deliverableCode,
 				deliverableState);
 
@@ -3020,7 +2975,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) {
+		int deliverableState) {
 		return fetchByFB_DCODE_STATE(deliverableCode, deliverableState, true);
 	}
 
@@ -3034,7 +2989,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState, boolean retrieveFromCache) {
+		int deliverableState, boolean retrieveFromCache) {
 		Object[] finderArgs = new Object[] { deliverableCode, deliverableState };
 
 		Object result = null;
@@ -3049,8 +3004,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			if (!Objects.equals(deliverableCode,
 						deliverable.getDeliverableCode()) ||
-					!Objects.equals(deliverableState,
-						deliverable.getDeliverableState())) {
+					(deliverableState != deliverable.getDeliverableState())) {
 				result = null;
 			}
 		}
@@ -3074,19 +3028,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_2);
 			}
 
-			boolean bindDeliverableState = false;
-
-			if (deliverableState == null) {
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_1);
-			}
-			else if (deliverableState.equals("")) {
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_3);
-			}
-			else {
-				bindDeliverableState = true;
-
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2);
-			}
+			query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2);
 
 			String sql = query.toString();
 
@@ -3103,9 +3045,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 					qPos.add(deliverableCode);
 				}
 
-				if (bindDeliverableState) {
-					qPos.add(deliverableState);
-				}
+				qPos.add(deliverableState);
 
 				List<Deliverable> list = q.list();
 
@@ -3119,7 +3059,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 						if (_log.isWarnEnabled()) {
 							_log.warn(
-								"DeliverablePersistenceImpl.fetchByFB_DCODE_STATE(String, String, boolean) with parameters (" +
+								"DeliverablePersistenceImpl.fetchByFB_DCODE_STATE(String, int, boolean) with parameters (" +
 								StringUtil.merge(finderArgs) +
 								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
 						}
@@ -3160,7 +3100,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public Deliverable removeByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) throws NoSuchDeliverableException {
+		int deliverableState) throws NoSuchDeliverableException {
 		Deliverable deliverable = findByFB_DCODE_STATE(deliverableCode,
 				deliverableState);
 
@@ -3176,7 +3116,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	 */
 	@Override
 	public int countByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) {
+		int deliverableState) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_FB_DCODE_STATE;
 
 		Object[] finderArgs = new Object[] { deliverableCode, deliverableState };
@@ -3202,19 +3142,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_2);
 			}
 
-			boolean bindDeliverableState = false;
-
-			if (deliverableState == null) {
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_1);
-			}
-			else if (deliverableState.equals("")) {
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_3);
-			}
-			else {
-				bindDeliverableState = true;
-
-				query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2);
-			}
+			query.append(_FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2);
 
 			String sql = query.toString();
 
@@ -3231,9 +3159,7 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 					qPos.add(deliverableCode);
 				}
 
-				if (bindDeliverableState) {
-					qPos.add(deliverableState);
-				}
+				qPos.add(deliverableState);
 
 				count = (Long)q.uniqueResult();
 
@@ -3255,12 +3181,8 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_1 = "deliverable.deliverableCode IS NULL AND ";
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_2 = "deliverable.deliverableCode = ? AND ";
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_3 = "(deliverable.deliverableCode IS NULL OR deliverable.deliverableCode = '') AND ";
-	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_1 =
-		"deliverable.deliverableState IS NULL";
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2 =
 		"deliverable.deliverableState = ?";
-	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_3 =
-		"(deliverable.deliverableState IS NULL OR deliverable.deliverableState = '')";
 
 	public DeliverablePersistenceImpl() {
 		setModelClass(Deliverable.class);

@@ -112,7 +112,7 @@ public class DeliverableUtils {
 		model.setIssueDate(APIDateTimeUtils.convertDateToString(deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setExpireDate(APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setRevalidate(APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
-		model.setDeliverableState(deliverable.getDeliverableState());
+		model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 		return model;
 	}
@@ -141,7 +141,7 @@ public class DeliverableUtils {
 			model.setModifiedDate(APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setModifiedDate(APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
 
-		    model.setDeliverableState(deliverable.getDeliverableState());
+		    model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 		    return model;
 		} else {
@@ -158,9 +158,9 @@ public class DeliverableUtils {
 			model.setIssueDate(APIDateTimeUtils.convertDateToString(deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setExpireDate(APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setRevalidate(APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
-			model.setDeliverableState(deliverable.getDeliverableState());
+			model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
-		    model.setDeliverableState(deliverable.getDeliverableState());
+		    model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 		    return model;
 		} else {

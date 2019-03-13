@@ -210,7 +210,7 @@ public interface DeliverableLocalService extends BaseLocalService,
 		long groupId);
 
 	public List<Deliverable> findDeliverableByState(String strDeliverableCode,
-		String state);
+		int state);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -219,7 +219,7 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable getByCode(String deliverableCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Deliverable getByCodeAndState(String deliverableCode, String state);
+	public Deliverable getByCodeAndState(String deliverableCode, int state);
 
 	/**
 	* Returns the deliverable with the primary key.
@@ -311,7 +311,7 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Deliverable> getListDeliverable(String deliverableState,
+	public List<Deliverable> getListDeliverable(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicant);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

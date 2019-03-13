@@ -18,7 +18,14 @@ dependencies {
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
 	compileOnly group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 	
+	compileOnly project(":modules:backend-auth")
+	
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")
 	compileOnly project(":modules:backend-statistic-common")	
+	
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
+	compileOnly project(":modules:backend-communication:backend-communication-api")
+	compileOnly project(":modules:backend-communication:backend-communication-service")
 }

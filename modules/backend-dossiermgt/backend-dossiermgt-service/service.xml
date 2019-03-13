@@ -1801,9 +1801,10 @@
 		<column name="expireDate" type="Date" />
 		<column name="issueDate" type="Date" />
 		<column name="revalidate" type="Date" />
-		<column name="deliverableState" type="String" />
+		<column name="deliverableState" type="int" />
 		<column name="fileEntryId" type="long" />
 		<column name="dossierId" type="long" />
+		<column name="docSync" type="int" />
 
 		<finder return-type="Deliverable" name="DID">
 			<finder-column name="deliverableId" />
@@ -1847,7 +1848,7 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<column name="deliverableId" type="String" />
+		<column name="deliverableId" type="long" />
 		<column name="dossierUid" type="String" />
 		<column name="author" type="String" />
 		<column name="content" type="String" />
@@ -1859,6 +1860,9 @@
 <!-- 			<finder-column name="gropuId" /> -->
 <!-- 			<finder-column name="deliverableId" /> -->
 <!-- 		</finder> -->
+		<finder return-type="Collection" name="F_deliverableId">
+			<finder-column name="deliverableId"></finder-column>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="RegistrationTemplates"
@@ -2502,6 +2506,42 @@
 			<finder-column name="govAgencyCode"/>
 			<finder-column name="domainCode"/>
 		</finder>
+	</entity>
+	
+	<entity name="DeliverableTypeRole" table="opencps_deliverabletyperole"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="deliverableTypeRoleId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="deliverableTypeId" type="long" />
+		<column name="roleId" type="long" />
+		<column name="moderator" type="boolean" />
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate"></order-column>
+		</order>
+		
+		<finder return-type="Collection" name="F_deliverableTypeId">
+			<finder-column name="deliverableTypeId"></finder-column>
+		</finder>
+		
 	</entity>
 	
 	<entity local-service="true" name="CPSDossierBusiness"

@@ -76,7 +76,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
-			{ "deliverableId", Types.VARCHAR },
+			{ "deliverableId", Types.BIGINT },
 			{ "dossierUid", Types.VARCHAR },
 			{ "author", Types.VARCHAR },
 			{ "content", Types.VARCHAR },
@@ -95,7 +95,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("deliverableId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("deliverableId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierUid", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("author", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
@@ -104,7 +104,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId VARCHAR(75) null,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId LONG,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverablelog";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableLog.deliverableLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverablelog.deliverableLogId ASC";
@@ -121,9 +121,10 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.DeliverableLog"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long DELIVERABLELOGID_COLUMN_BITMASK = 8L;
+	public static final long DELIVERABLEID_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
+	public static final long DELIVERABLELOGID_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DeliverableLog"));
 
@@ -236,7 +237,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			setModifiedDate(modifiedDate);
 		}
 
-		String deliverableId = (String)attributes.get("deliverableId");
+		Long deliverableId = (Long)attributes.get("deliverableId");
 
 		if (deliverableId != null) {
 			setDeliverableId(deliverableId);
@@ -424,18 +425,25 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 	}
 
 	@Override
-	public String getDeliverableId() {
-		if (_deliverableId == null) {
-			return "";
-		}
-		else {
-			return _deliverableId;
-		}
+	public long getDeliverableId() {
+		return _deliverableId;
 	}
 
 	@Override
-	public void setDeliverableId(String deliverableId) {
+	public void setDeliverableId(long deliverableId) {
+		_columnBitmask |= DELIVERABLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalDeliverableId) {
+			_setOriginalDeliverableId = true;
+
+			_originalDeliverableId = _deliverableId;
+		}
+
 		_deliverableId = deliverableId;
+	}
+
+	public long getOriginalDeliverableId() {
+		return _originalDeliverableId;
 	}
 
 	@Override
@@ -644,6 +652,10 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 
 		deliverableLogModelImpl._setModifiedDate = false;
 
+		deliverableLogModelImpl._originalDeliverableId = deliverableLogModelImpl._deliverableId;
+
+		deliverableLogModelImpl._setOriginalDeliverableId = false;
+
 		deliverableLogModelImpl._columnBitmask = 0;
 	}
 
@@ -694,12 +706,6 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		}
 
 		deliverableLogCacheModel.deliverableId = getDeliverableId();
-
-		String deliverableId = deliverableLogCacheModel.deliverableId;
-
-		if ((deliverableId != null) && (deliverableId.length() == 0)) {
-			deliverableLogCacheModel.deliverableId = null;
-		}
 
 		deliverableLogCacheModel.dossierUid = getDossierUid();
 
@@ -878,7 +884,9 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private String _deliverableId;
+	private long _deliverableId;
+	private long _originalDeliverableId;
+	private boolean _setOriginalDeliverableId;
 	private String _dossierUid;
 	private String _author;
 	private String _content;

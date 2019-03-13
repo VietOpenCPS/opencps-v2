@@ -58,6 +58,7 @@ public class DeliverableSoap implements Serializable {
 		soapModel.setDeliverableState(model.getDeliverableState());
 		soapModel.setFileEntryId(model.getFileEntryId());
 		soapModel.setDossierId(model.getDossierId());
+		soapModel.setDocSync(model.getDocSync());
 
 		return soapModel;
 	}
@@ -286,11 +287,11 @@ public class DeliverableSoap implements Serializable {
 		_revalidate = revalidate;
 	}
 
-	public String getDeliverableState() {
+	public int getDeliverableState() {
 		return _deliverableState;
 	}
 
-	public void setDeliverableState(String deliverableState) {
+	public void setDeliverableState(int deliverableState) {
 		_deliverableState = deliverableState;
 	}
 
@@ -308,6 +309,14 @@ public class DeliverableSoap implements Serializable {
 
 	public void setDossierId(long dossierId) {
 		_dossierId = dossierId;
+	}
+
+	public int getDocSync() {
+		return _docSync;
+	}
+
+	public void setDocSync(int docSync) {
+		_docSync = docSync;
 	}
 
 	private String _uuid;
@@ -332,7 +341,8 @@ public class DeliverableSoap implements Serializable {
 	private Date _expireDate;
 	private Date _issueDate;
 	private Date _revalidate;
-	private String _deliverableState;
+	private int _deliverableState;
 	private long _fileEntryId;
 	private long _dossierId;
+	private int _docSync;
 }

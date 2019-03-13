@@ -164,11 +164,11 @@ public class DeliverableLogSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
-	public String getDeliverableId() {
+	public long getDeliverableId() {
 		return _deliverableId;
 	}
 
-	public void setDeliverableId(String deliverableId) {
+	public void setDeliverableId(long deliverableId) {
 		_deliverableId = deliverableId;
 	}
 
@@ -228,7 +228,7 @@ public class DeliverableLogSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
-	private String _deliverableId;
+	private long _deliverableId;
 	private String _dossierUid;
 	private String _author;
 	private String _content;

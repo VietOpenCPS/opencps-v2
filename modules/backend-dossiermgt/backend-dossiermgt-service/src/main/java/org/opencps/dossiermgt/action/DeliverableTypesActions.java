@@ -7,7 +7,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-public interface DeliverableTypesActions {
+public interface DeliverableTypesActions extends DeliverableTypeInterface {
 
 	public JSONObject getDeliverableTypes(long groupId, int start, int end);
 

@@ -225,7 +225,7 @@ public class DeliverableLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
-		String strDeliverableCode, String state) {
+		String strDeliverableCode, int state) {
 		return getService().findDeliverableByState(strDeliverableCode, state);
 	}
 
@@ -239,7 +239,7 @@ public class DeliverableLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.Deliverable getByCodeAndState(
-		String deliverableCode, String state) {
+		String deliverableCode, int state) {
 		return getService().getByCodeAndState(deliverableCode, state);
 	}
 
@@ -353,7 +353,7 @@ public class DeliverableLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> getListDeliverable(
-		String deliverableState, String govAgencyCode, String deliverableType,
+		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicant) {
 		return getService()
 				   .getListDeliverable(deliverableState, govAgencyCode,

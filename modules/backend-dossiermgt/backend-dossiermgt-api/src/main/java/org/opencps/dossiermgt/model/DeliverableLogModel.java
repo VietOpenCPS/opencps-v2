@@ -215,15 +215,14 @@ public interface DeliverableLogModel extends BaseModel<DeliverableLog>,
 	 *
 	 * @return the deliverable ID of this deliverable log
 	 */
-	@AutoEscape
-	public String getDeliverableId();
+	public long getDeliverableId();
 
 	/**
 	 * Sets the deliverable ID of this deliverable log.
 	 *
 	 * @param deliverableId the deliverable ID of this deliverable log
 	 */
-	public void setDeliverableId(String deliverableId);
+	public void setDeliverableId(long deliverableId);
 
 	/**
 	 * Returns the dossier uid of this deliverable log.

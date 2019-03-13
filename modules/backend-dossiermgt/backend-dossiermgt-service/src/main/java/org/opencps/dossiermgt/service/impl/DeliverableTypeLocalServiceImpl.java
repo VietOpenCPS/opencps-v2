@@ -354,4 +354,33 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	public List<DeliverableType> findByG(long groupId) {
 		return deliverableTypePersistence.findByG(groupId);
 	}
+	
+	public DeliverableType getByTypeCode(String typeCode, long groupId) {
+		return deliverableTypePersistence.fetchByG_DLT(groupId, typeCode);
+	}
+	
+	public List<DeliverableType> getDeliverableTypes(long groupId, int start, int end) {
+		return deliverableTypePersistence.findByG(groupId, start, end);
+	}
+	
+	class ModelKeys {
+		public static final String DELIVERABLETYPEID = "deliverableTypeId";
+		public static final String GROUPID = "groupId";
+		public static final String COMPANYID = "companyId";
+		public static final String USERID = "userId";
+		public static final String USERNAME = "userName";
+		public static final String CREATEDATE = "createDate";
+		public static final String MODIFIEDDATE = "modifiedDate";
+		public static final String TYPECODE = "typeCode";
+		public static final String TYPENAME = "typeName";
+		public static final String FORMSCRIPTFILEID = "formScriptFileId";
+		public static final String FORMREPORTFILEID = "formReportFileId";
+		public static final String CODEPATTERN = "codePattern";
+		public static final String COUNTER = "counter";
+		public static final String MAPPINGDATA = "mappingData";
+		public static final String DATACONFIG = "dataConfig";
+		public static final String TABLECONFIG = "tableConfig";
+		public static final String DOCSYNC = "docSync";
+		public static final String GOVAGENCIES = "govAgencies";
+	}
 }

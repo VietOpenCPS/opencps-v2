@@ -139,12 +139,7 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 			deliverableLogImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		if (deliverableId == null) {
-			deliverableLogImpl.setDeliverableId("");
-		}
-		else {
-			deliverableLogImpl.setDeliverableId(deliverableId);
-		}
+		deliverableLogImpl.setDeliverableId(deliverableId);
 
 		if (dossierUid == null) {
 			deliverableLogImpl.setDossierUid("");
@@ -202,7 +197,8 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		deliverableId = objectInput.readUTF();
+
+		deliverableId = objectInput.readLong();
 		dossierUid = objectInput.readUTF();
 		author = objectInput.readUTF();
 		content = objectInput.readUTF();
@@ -240,12 +236,7 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		if (deliverableId == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(deliverableId);
-		}
+		objectOutput.writeLong(deliverableId);
 
 		if (dossierUid == null) {
 			objectOutput.writeUTF("");
@@ -287,7 +278,7 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public String deliverableId;
+	public long deliverableId;
 	public String dossierUid;
 	public String author;
 	public String content;

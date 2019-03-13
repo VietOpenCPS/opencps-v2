@@ -232,7 +232,7 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 
 	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
-		String strDeliverableCode, String state) {
+		String strDeliverableCode, int state) {
 		return _deliverableLocalService.findDeliverableByState(strDeliverableCode,
 			state);
 	}
@@ -250,7 +250,7 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.Deliverable getByCodeAndState(
-		String deliverableCode, String state) {
+		String deliverableCode, int state) {
 		return _deliverableLocalService.getByCodeAndState(deliverableCode, state);
 	}
 
@@ -375,7 +375,7 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 
 	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Deliverable> getListDeliverable(
-		String deliverableState, String govAgencyCode, String deliverableType,
+		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicant) {
 		return _deliverableLocalService.getListDeliverable(deliverableState,
 			govAgencyCode, deliverableType, applicant);

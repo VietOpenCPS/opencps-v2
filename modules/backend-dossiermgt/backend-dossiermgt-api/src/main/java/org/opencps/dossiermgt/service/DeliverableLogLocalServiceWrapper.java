@@ -212,6 +212,13 @@ public class DeliverableLogLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end) {
+		return _deliverableLogLocalService.findByF_deliverableId(deliverableId,
+			start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _deliverableLogLocalService.getActionableDynamicQuery();
 	}

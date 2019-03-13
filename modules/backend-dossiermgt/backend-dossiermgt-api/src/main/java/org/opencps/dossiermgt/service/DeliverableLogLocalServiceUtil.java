@@ -203,6 +203,11 @@ public class DeliverableLogLocalServiceUtil {
 		return getService().fetchDeliverableLogByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end) {
+		return getService().findByF_deliverableId(deliverableId, start, end);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

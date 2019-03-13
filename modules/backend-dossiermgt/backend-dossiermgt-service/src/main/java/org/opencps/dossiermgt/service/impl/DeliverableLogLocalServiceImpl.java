@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.model.DeliverableLog;
 import org.opencps.dossiermgt.service.base.DeliverableLogLocalServiceBaseImpl;
@@ -95,7 +96,7 @@ public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBa
 		object.setUserId(objectData.getLong("userId"));
 		object.setUserName(objectData.getString("userName"));
 
-		object.setDeliverableId(objectData.getString("deliverableId"));
+		object.setDeliverableId(objectData.getInt("deliverableId"));
 		object.setDossierUid(objectData.getString("dossierUid"));
 		object.setAuthor(objectData.getString("author"));
 		object.setContent(objectData.getString("content"));
@@ -107,4 +108,9 @@ public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBa
 
 		return object;
 	}
+	
+	public List<DeliverableLog> findByF_deliverableId(long deliverableId, int start, int end) {
+		return deliverableLogPersistence.findByF_deliverableId(deliverableId, start, end);
+	}
+	
 }

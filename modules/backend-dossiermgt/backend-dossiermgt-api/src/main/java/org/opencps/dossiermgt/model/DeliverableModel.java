@@ -422,15 +422,14 @@ public interface DeliverableModel extends BaseModel<Deliverable>, GroupedModel,
 	 *
 	 * @return the deliverable state of this deliverable
 	 */
-	@AutoEscape
-	public String getDeliverableState();
+	public int getDeliverableState();
 
 	/**
 	 * Sets the deliverable state of this deliverable.
 	 *
 	 * @param deliverableState the deliverable state of this deliverable
 	 */
-	public void setDeliverableState(String deliverableState);
+	public void setDeliverableState(int deliverableState);
 
 	/**
 	 * Returns the file entry ID of this deliverable.
@@ -459,6 +458,20 @@ public interface DeliverableModel extends BaseModel<Deliverable>, GroupedModel,
 	 * @param dossierId the dossier ID of this deliverable
 	 */
 	public void setDossierId(long dossierId);
+
+	/**
+	 * Returns the doc sync of this deliverable.
+	 *
+	 * @return the doc sync of this deliverable
+	 */
+	public int getDocSync();
+
+	/**
+	 * Sets the doc sync of this deliverable.
+	 *
+	 * @param docSync the doc sync of this deliverable
+	 */
+	public void setDocSync(int docSync);
 
 	@Override
 	public boolean isNew();

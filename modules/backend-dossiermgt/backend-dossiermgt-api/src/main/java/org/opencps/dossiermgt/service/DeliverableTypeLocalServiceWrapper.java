@@ -242,6 +242,12 @@ public class DeliverableTypeLocalServiceWrapper
 		return _deliverableTypeLocalService.getByCode(groupId, typeCode);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.DeliverableType getByTypeCode(
+		String typeCode, long groupId) {
+		return _deliverableTypeLocalService.getByTypeCode(typeCode, groupId);
+	}
+
 	/**
 	* Returns the deliverable type with the primary key.
 	*
@@ -295,6 +301,13 @@ public class DeliverableTypeLocalServiceWrapper
 	public java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypes(
 		int start, int end) {
 		return _deliverableTypeLocalService.getDeliverableTypes(start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableType> getDeliverableTypes(
+		long groupId, int start, int end) {
+		return _deliverableTypeLocalService.getDeliverableTypes(groupId, start,
+			end);
 	}
 
 	/**

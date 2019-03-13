@@ -74,11 +74,13 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.model.OpenCPSDeliverableType;
-import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
-import org.opencps.deliverable.service.OpenCPSDeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
@@ -104,7 +106,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import backend.admin.config.whiteboard.BundleLoader;
-import backend.deliverable.action.impl.DeliverableTypeActions;
 import backend.utils.FileUploadUtils;
 import io.swagger.annotations.ApiParam;
 
@@ -497,8 +498,8 @@ public class RestfulController {
 					EmployeeLocalServiceUtil.updateEmployee(employee);
 				} else if (code.equals("opencps_deliverabletype")) {
 
-					OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
-							.fetchOpenCPSDeliverableType(Long.valueOf(pk));
+					DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
+							.fetchDeliverableType(Long.valueOf(pk));
 
 					if (className.endsWith("FORM")) {
 						openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
@@ -506,7 +507,7 @@ public class RestfulController {
 						openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
 					}
 
-					OpenCPSDeliverableTypeLocalServiceUtil.updateOpenCPSDeliverableType(openCPSDeliverableType);
+					DeliverableTypeLocalServiceUtil.updateDeliverableType(openCPSDeliverableType);
 
 				} else if (code.equals("opencps_applicant")) {
 
@@ -531,12 +532,12 @@ public class RestfulController {
 
 				} else if (code.equals("opencps_deliverable")) {
 
-					OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil
-							.fetchOpenCPSDeliverable(Long.valueOf(pk));
+					Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
+							.fetchDeliverable(Long.valueOf(pk));
 
 					openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 
-					OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+					DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 
 				}
 
@@ -666,12 +667,12 @@ public class RestfulController {
 		}
 
 		if (code.equals("opencps_deliverable")) {
-			OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil
-					.fetchOpenCPSDeliverable(Long.valueOf(pk));
+			Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
+					.fetchDeliverable(Long.valueOf(pk));
 
 			openCPSDeliverable.setFileEntryId(0);
 
-			OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 		}
 
 		return result.toJSONString();
@@ -991,9 +992,9 @@ public class RestfulController {
 
 				try {
 
-					DeliverableTypeActions actions = new DeliverableTypeActions();
+					DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
-					OpenCPSDeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
+					DeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
 							new ServiceContext());
 
 					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());

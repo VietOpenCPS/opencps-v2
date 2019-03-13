@@ -368,6 +368,139 @@ public interface DeliverableLogPersistence extends BasePersistence<DeliverableLo
 	public int countByUuid_C(String uuid, long companyId);
 
 	/**
+	* Returns all the deliverable logs where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @return the matching deliverable logs
+	*/
+	public java.util.List<DeliverableLog> findByF_deliverableId(
+		long deliverableId);
+
+	/**
+	* Returns a range of all the deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of deliverable logs
+	* @param end the upper bound of the range of deliverable logs (not inclusive)
+	* @return the range of matching deliverable logs
+	*/
+	public java.util.List<DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of deliverable logs
+	* @param end the upper bound of the range of deliverable logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching deliverable logs
+	*/
+	public java.util.List<DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the deliverable logs where deliverableId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableLogModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param deliverableId the deliverable ID
+	* @param start the lower bound of the range of deliverable logs
+	* @param end the upper bound of the range of deliverable logs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching deliverable logs
+	*/
+	public java.util.List<DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable log
+	* @throws NoSuchDeliverableLogException if a matching deliverable log could not be found
+	*/
+	public DeliverableLog findByF_deliverableId_First(long deliverableId,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator)
+		throws NoSuchDeliverableLogException;
+
+	/**
+	* Returns the first deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable log, or <code>null</code> if a matching deliverable log could not be found
+	*/
+	public DeliverableLog fetchByF_deliverableId_First(long deliverableId,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator);
+
+	/**
+	* Returns the last deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable log
+	* @throws NoSuchDeliverableLogException if a matching deliverable log could not be found
+	*/
+	public DeliverableLog findByF_deliverableId_Last(long deliverableId,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator)
+		throws NoSuchDeliverableLogException;
+
+	/**
+	* Returns the last deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable log, or <code>null</code> if a matching deliverable log could not be found
+	*/
+	public DeliverableLog fetchByF_deliverableId_Last(long deliverableId,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator);
+
+	/**
+	* Returns the deliverable logs before and after the current deliverable log in the ordered set where deliverableId = &#63;.
+	*
+	* @param deliverableLogId the primary key of the current deliverable log
+	* @param deliverableId the deliverable ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next deliverable log
+	* @throws NoSuchDeliverableLogException if a deliverable log with the primary key could not be found
+	*/
+	public DeliverableLog[] findByF_deliverableId_PrevAndNext(
+		long deliverableLogId, long deliverableId,
+		com.liferay.portal.kernel.util.OrderByComparator<DeliverableLog> orderByComparator)
+		throws NoSuchDeliverableLogException;
+
+	/**
+	* Removes all the deliverable logs where deliverableId = &#63; from the database.
+	*
+	* @param deliverableId the deliverable ID
+	*/
+	public void removeByF_deliverableId(long deliverableId);
+
+	/**
+	* Returns the number of deliverable logs where deliverableId = &#63;.
+	*
+	* @param deliverableId the deliverable ID
+	* @return the number of matching deliverable logs
+	*/
+	public int countByF_deliverableId(long deliverableId);
+
+	/**
 	* Caches the deliverable log in the entity cache if it is enabled.
 	*
 	* @param deliverableLog the deliverable log

@@ -473,7 +473,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String issueDate = StringPool.BLANK;
 				String expireDate = StringPool.BLANK;
 				String revalidate = StringPool.BLANK;
-				String deliverableState = (dlv != null ? dlv.getDeliverableState() : StringPool.BLANK);
+				String deliverableState = (dlv != null ? String.valueOf(dlv.getDeliverableState()) : StringPool.BLANK);
 				if (eSign && Validator.isNull(deliverableState)) {
 					deliverableState = "0";
 				} else {

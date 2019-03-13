@@ -189,6 +189,9 @@ public interface DeliverableLogLocalService extends BaseLocalService,
 	public DeliverableLog fetchDeliverableLogByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<DeliverableLog> findByF_deliverableId(long deliverableId,
+		int start, int end);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

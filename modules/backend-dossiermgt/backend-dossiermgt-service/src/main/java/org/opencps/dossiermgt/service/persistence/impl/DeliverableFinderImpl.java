@@ -26,7 +26,7 @@ public class DeliverableFinderImpl extends DeliverableFinderBaseImpl
 
 	@SuppressWarnings("unchecked")
 	public List<Deliverable> findDeliverableByState(
-		    String strDeliverableCode, String state) {
+		    String strDeliverableCode, int state) {
 
 		    Session session = null;
 		    List<Deliverable> deliverableList = null;

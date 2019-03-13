@@ -129,7 +129,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 			setModifiedDate(modifiedDate);
 		}
 
-		String deliverableId = (String)attributes.get("deliverableId");
+		Long deliverableId = (Long)attributes.get("deliverableId");
 
 		if (deliverableId != null) {
 			setDeliverableId(deliverableId);
@@ -248,7 +248,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 	* @return the deliverable ID of this deliverable log
 	*/
 	@Override
-	public String getDeliverableId() {
+	public long getDeliverableId() {
 		return _deliverableLog.getDeliverableId();
 	}
 
@@ -458,7 +458,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 	* @param deliverableId the deliverable ID of this deliverable log
 	*/
 	@Override
-	public void setDeliverableId(String deliverableId) {
+	public void setDeliverableId(long deliverableId) {
 		_deliverableLog.setDeliverableId(deliverableId);
 	}
 

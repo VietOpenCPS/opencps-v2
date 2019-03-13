@@ -204,6 +204,9 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DeliverableType getByCode(long groupId, String typeCode);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DeliverableType getByTypeCode(String typeCode, long groupId);
+
 	/**
 	* Returns the deliverable type with the primary key.
 	*
@@ -244,6 +247,10 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DeliverableType> getDeliverableTypes(int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DeliverableType> getDeliverableTypes(long groupId, int start,
+		int end);
 
 	/**
 	* Returns all the deliverable types matching the UUID and company.

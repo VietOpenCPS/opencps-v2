@@ -17,6 +17,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableLogPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DeliverableTypeLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableTypeLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableTypePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableTypePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.DeliverableTypeRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableTypeRoleLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverableTypeRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverableTypeRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DocumentTypeLocalServiceImpl" id="org.opencps.dossiermgt.service.DocumentTypeLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DocumentTypePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DocumentTypePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierLocalService" />

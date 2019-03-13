@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface DeliverableActions {
-	public JSONObject getListDeliverable(String state, String agency, String type, String applicant);
+	public JSONObject getListDeliverable(int state, String agency, String type, String applicant);
 
 	//4
 	public Deliverable updateDeliverable(long groupId, long id, String subject, String issueDate, String expireDate,
@@ -46,5 +46,5 @@ public interface DeliverableActions {
 			int end, ServiceContext serviceContext);
 
 	//
-	public List<Deliverable> getDeliverableByState(String strDeliverableCode, String state);
+	public List<Deliverable> getDeliverableByState(String strDeliverableCode, int state);
 }

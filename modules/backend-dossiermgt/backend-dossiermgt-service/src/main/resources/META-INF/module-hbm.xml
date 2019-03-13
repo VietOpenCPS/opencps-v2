@@ -6,6 +6,7 @@
 	<import class="org.opencps.dossiermgt.model.Deliverable" />
 	<import class="org.opencps.dossiermgt.model.DeliverableLog" />
 	<import class="org.opencps.dossiermgt.model.DeliverableType" />
+	<import class="org.opencps.dossiermgt.model.DeliverableTypeRole" />
 	<import class="org.opencps.dossiermgt.model.DocumentType" />
 	<import class="org.opencps.dossiermgt.model.Dossier" />
 	<import class="org.opencps.dossiermgt.model.DossierAction" />
@@ -98,9 +99,10 @@
 		<property name="expireDate" type="org.hibernate.type.TimestampType" />
 		<property name="issueDate" type="org.hibernate.type.TimestampType" />
 		<property name="revalidate" type="org.hibernate.type.TimestampType" />
-		<property name="deliverableState" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="deliverableState" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableLogImpl" table="opencps_deliverablelog">
 		<id name="deliverableLogId" type="long">
@@ -113,7 +115,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="deliverableId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="deliverableId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierUid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="author" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -145,6 +147,21 @@
 		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.DeliverableTypeRoleImpl" table="opencps_deliverabletyperole">
+		<id name="deliverableTypeRoleId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="deliverableTypeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DocumentTypeImpl" table="opencps_documenttype">
 		<id name="DocumentTypeId" type="long">

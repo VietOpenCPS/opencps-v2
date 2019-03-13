@@ -47,9 +47,10 @@ create table opencps_deliverable (
 	expireDate DATE null,
 	issueDate DATE null,
 	revalidate DATE null,
-	deliverableState VARCHAR(75) null,
+	deliverableState INTEGER,
 	fileEntryId LONG,
-	dossierId LONG
+	dossierId LONG,
+	docSync INTEGER
 );
 
 create table opencps_deliverablelog (
@@ -61,7 +62,7 @@ create table opencps_deliverablelog (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	deliverableId VARCHAR(75) null,
+	deliverableId LONG,
 	dossierUid VARCHAR(75) null,
 	author VARCHAR(75) null,
 	content TEXT null,
@@ -92,6 +93,20 @@ create table opencps_deliverabletype (
 	mappingData TEXT null,
 	docSync INTEGER,
 	govAgencies VARCHAR(255) null
+);
+
+create table opencps_deliverabletyperole (
+	uuid_ VARCHAR(75) null,
+	deliverableTypeRoleId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	deliverableTypeId LONG,
+	roleId LONG,
+	moderator BOOLEAN
 );
 
 create table opencps_documenttype (

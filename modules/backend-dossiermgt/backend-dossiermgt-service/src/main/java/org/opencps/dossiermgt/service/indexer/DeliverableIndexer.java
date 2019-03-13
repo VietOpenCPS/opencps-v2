@@ -31,6 +31,8 @@ import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
+import backend.deliverable.service.util.ModelKeysDeliverable;
+
 @Component(
     immediate = true,
     service = BaseIndexer.class
@@ -104,6 +106,19 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());			
 		}
 
+		document.addNumberSortable(ModelKeysDeliverable.ISSUEDATE, Validator.isNotNull(object.getIssueDate()) ? object.getIssueDate().getTime() : null);
+		document.addNumberSortable(ModelKeysDeliverable.EXPIREDATE, Validator.isNotNull(object.getExpireDate()) ? object.getExpireDate().getTime(): null);
+		document.addNumberSortable(ModelKeysDeliverable.REVALIDATE, Validator.isNotNull(object.getRevalidate()) ? object.getRevalidate().getTime() : null);
+		
+		document.addDateSortable(ModelKeysDeliverable.ISSUEDATE + "_date", object.getIssueDate());
+		document.addDateSortable(ModelKeysDeliverable.EXPIREDATE + "_date", object.getExpireDate());
+		document.addDateSortable(ModelKeysDeliverable.REVALIDATE + "_date", object.getRevalidate());
+		
+		document.addNumberSortable(ModelKeysDeliverable.DELIVERABLESTATE, object.getDeliverableState());
+		document.addNumberSortable(ModelKeysDeliverable.FILEENTRYID, object.getFileEntryId());
+		document.addNumberSortable(ModelKeysDeliverable.DOCSYNC, object.getDocSync());
+		document.addNumberSortable(ModelKeysDeliverable.DOSSIERID, object.getDossierId());
+		
 		// add form data detail
 		String formData = object.getFormData();
 		if (Validator.isNotNull(formData)) {
@@ -122,14 +137,24 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			}
 		}
 
+		try {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
+
+			Iterator<String> keys = jsonObject.keys();
+
+			while(keys.hasNext()) {
+			    String key = keys.next();
+			    document.addTextSortable(key, jsonObject.getString(key));
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
 		if (Validator.isNotNull(object.getFormScript())) {
 			document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());			
 		}
 		if (Validator.isNotNull(object.getFormReport())) {
 			document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());			
-		}
-		if (Validator.isNotNull(object.getDeliverableState())) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());			
 		}
 
 		return document;

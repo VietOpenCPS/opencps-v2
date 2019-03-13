@@ -1,13 +1,11 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -22,8 +20,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -38,14 +34,11 @@ import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -57,8 +50,6 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -169,9 +160,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -507,9 +498,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -628,9 +619,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -681,9 +672,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -786,9 +777,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -839,9 +830,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 						if (Validator.isNotNull(deliverableCode)) {
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
-								String deliState = deliverable.getDeliverableState();
+								String deliState = String.valueOf(deliverable.getDeliverableState());
 								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState("2");
+									deliverable.setDeliverableState(2);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}

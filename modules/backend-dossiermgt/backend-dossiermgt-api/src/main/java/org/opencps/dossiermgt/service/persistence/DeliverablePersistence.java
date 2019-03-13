@@ -469,7 +469,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param applicantIdNo the applicant ID no
 	* @return the matching deliverables
 	*/
-	public java.util.List<Deliverable> findByG_ID(String deliverableState,
+	public java.util.List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo);
 
 	/**
@@ -487,7 +487,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param end the upper bound of the range of deliverables (not inclusive)
 	* @return the range of matching deliverables
 	*/
-	public java.util.List<Deliverable> findByG_ID(String deliverableState,
+	public java.util.List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end);
 
@@ -507,7 +507,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching deliverables
 	*/
-	public java.util.List<Deliverable> findByG_ID(String deliverableState,
+	public java.util.List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator);
@@ -529,7 +529,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching deliverables
 	*/
-	public java.util.List<Deliverable> findByG_ID(String deliverableState,
+	public java.util.List<Deliverable> findByG_ID(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator,
@@ -546,7 +546,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the first matching deliverable
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
-	public Deliverable findByG_ID_First(String deliverableState,
+	public Deliverable findByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException;
@@ -561,7 +561,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
-	public Deliverable fetchByG_ID_First(String deliverableState,
+	public Deliverable fetchByG_ID_First(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator);
 
@@ -576,7 +576,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the last matching deliverable
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
-	public Deliverable findByG_ID_Last(String deliverableState,
+	public Deliverable findByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException;
@@ -591,7 +591,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
-	public Deliverable fetchByG_ID_Last(String deliverableState,
+	public Deliverable fetchByG_ID_Last(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicantIdNo,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator);
 
@@ -608,7 +608,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @throws NoSuchDeliverableException if a deliverable with the primary key could not be found
 	*/
 	public Deliverable[] findByG_ID_PrevAndNext(long deliverableId,
-		String deliverableState, String govAgencyCode, String deliverableType,
+		int deliverableState, String govAgencyCode, String deliverableType,
 		String applicantIdNo,
 		com.liferay.portal.kernel.util.OrderByComparator<Deliverable> orderByComparator)
 		throws NoSuchDeliverableException;
@@ -621,7 +621,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param deliverableType the deliverable type
 	* @param applicantIdNo the applicant ID no
 	*/
-	public void removeByG_ID(String deliverableState, String govAgencyCode,
+	public void removeByG_ID(int deliverableState, String govAgencyCode,
 		String deliverableType, String applicantIdNo);
 
 	/**
@@ -633,7 +633,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @param applicantIdNo the applicant ID no
 	* @return the number of matching deliverables
 	*/
-	public int countByG_ID(String deliverableState, String govAgencyCode,
+	public int countByG_ID(int deliverableState, String govAgencyCode,
 		String deliverableType, String applicantIdNo);
 
 	/**
@@ -690,7 +690,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @throws NoSuchDeliverableException if a matching deliverable could not be found
 	*/
 	public Deliverable findByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) throws NoSuchDeliverableException;
+		int deliverableState) throws NoSuchDeliverableException;
 
 	/**
 	* Returns the deliverable where deliverableCode = &#63; and deliverableState = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -700,7 +700,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
 	public Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState);
+		int deliverableState);
 
 	/**
 	* Returns the deliverable where deliverableCode = &#63; and deliverableState = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -711,7 +711,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
 	*/
 	public Deliverable fetchByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState, boolean retrieveFromCache);
+		int deliverableState, boolean retrieveFromCache);
 
 	/**
 	* Removes the deliverable where deliverableCode = &#63; and deliverableState = &#63; from the database.
@@ -721,7 +721,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the deliverable that was removed
 	*/
 	public Deliverable removeByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState) throws NoSuchDeliverableException;
+		int deliverableState) throws NoSuchDeliverableException;
 
 	/**
 	* Returns the number of deliverables where deliverableCode = &#63; and deliverableState = &#63;.
@@ -731,7 +731,7 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	* @return the number of matching deliverables
 	*/
 	public int countByFB_DCODE_STATE(String deliverableCode,
-		String deliverableState);
+		int deliverableState);
 
 	/**
 	* Caches the deliverable in the entity cache if it is enabled.

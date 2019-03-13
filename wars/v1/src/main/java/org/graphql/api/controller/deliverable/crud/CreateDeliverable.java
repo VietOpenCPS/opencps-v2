@@ -8,8 +8,8 @@ import com.liferay.portal.kernel.util.Validator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.graphql.api.controller.utils.WebKeys;
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import graphql.schema.DataFetchingEnvironment;
  * Created binhth
  */
 @Component
-public class CreateDeliverable implements DataFetcher<OpenCPSDeliverable> {
+public class CreateDeliverable implements DataFetcher<Deliverable> {
 
 	@Autowired
 	private final HttpServletRequest request;
@@ -31,9 +31,9 @@ public class CreateDeliverable implements DataFetcher<OpenCPSDeliverable> {
 	}
 	
 	@Override
-	public OpenCPSDeliverable get(DataFetchingEnvironment dataFetchingEnvironment) {
+	public Deliverable get(DataFetchingEnvironment dataFetchingEnvironment) {
 
-		OpenCPSDeliverable result = null;
+		Deliverable result = null;
 		
 		String input = dataFetchingEnvironment.getArgument(WebKeys.BODY);
 
@@ -54,7 +54,7 @@ public class CreateDeliverable implements DataFetcher<OpenCPSDeliverable> {
 			inputObject.put(WebKeys.USERID, request.getAttribute(WebKeys.USER_ID));
 			inputObject.put(WebKeys.COMPANYID, request.getAttribute(WebKeys.COMPANY_ID));
 			
-			result = OpenCPSDeliverableLocalServiceUtil.adminProcessData(inputObject);
+			result = DeliverableLocalServiceUtil.adminProcessData(inputObject);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

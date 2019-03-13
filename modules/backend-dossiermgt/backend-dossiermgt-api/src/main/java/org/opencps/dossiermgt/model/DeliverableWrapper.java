@@ -85,6 +85,7 @@ public class DeliverableWrapper implements Deliverable,
 		attributes.put("deliverableState", getDeliverableState());
 		attributes.put("fileEntryId", getFileEntryId());
 		attributes.put("dossierId", getDossierId());
+		attributes.put("docSync", getDocSync());
 
 		return attributes;
 	}
@@ -223,7 +224,7 @@ public class DeliverableWrapper implements Deliverable,
 			setRevalidate(revalidate);
 		}
 
-		String deliverableState = (String)attributes.get("deliverableState");
+		Integer deliverableState = (Integer)attributes.get("deliverableState");
 
 		if (deliverableState != null) {
 			setDeliverableState(deliverableState);
@@ -239,6 +240,12 @@ public class DeliverableWrapper implements Deliverable,
 
 		if (dossierId != null) {
 			setDossierId(dossierId);
+		}
+
+		Integer docSync = (Integer)attributes.get("docSync");
+
+		if (docSync != null) {
+			setDocSync(docSync);
 		}
 	}
 
@@ -328,7 +335,7 @@ public class DeliverableWrapper implements Deliverable,
 	* @return the deliverable state of this deliverable
 	*/
 	@Override
-	public String getDeliverableState() {
+	public int getDeliverableState() {
 		return _deliverable.getDeliverableState();
 	}
 
@@ -340,6 +347,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public String getDeliverableType() {
 		return _deliverable.getDeliverableType();
+	}
+
+	/**
+	* Returns the doc sync of this deliverable.
+	*
+	* @return the doc sync of this deliverable
+	*/
+	@Override
+	public int getDocSync() {
+		return _deliverable.getDocSync();
 	}
 
 	/**
@@ -638,7 +655,7 @@ public class DeliverableWrapper implements Deliverable,
 	* @param deliverableState the deliverable state of this deliverable
 	*/
 	@Override
-	public void setDeliverableState(String deliverableState) {
+	public void setDeliverableState(int deliverableState) {
 		_deliverable.setDeliverableState(deliverableState);
 	}
 
@@ -650,6 +667,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public void setDeliverableType(String deliverableType) {
 		_deliverable.setDeliverableType(deliverableType);
+	}
+
+	/**
+	* Sets the doc sync of this deliverable.
+	*
+	* @param docSync the doc sync of this deliverable
+	*/
+	@Override
+	public void setDocSync(int docSync) {
+		_deliverable.setDocSync(docSync);
 	}
 
 	/**

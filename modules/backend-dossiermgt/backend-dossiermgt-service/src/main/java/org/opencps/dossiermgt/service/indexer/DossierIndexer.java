@@ -5,8 +5,6 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -33,30 +31,23 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
@@ -718,55 +709,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			_log.error(e);
 		}
 		return document;
-	}
-
-	private List<String> certNoIndexer(long dossierId, long groupId) {
-		List<String> certIndex = new ArrayList<String>();
-		// Get info cert Number
-		List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getAllDossierFile(dossierId);
-		if (dossierFileList != null && dossierFileList.size() > 0) {
-			String templateNo;
-			String partNo;
-			int partType = 2;
-			boolean eSign = true;
-			String deliverableCode;
-			for (DossierFile dossierFile : dossierFileList) {
-				templateNo = dossierFile.getDossierTemplateNo();
-				partNo = dossierFile.getDossierPartNo();
-				DossierPart dossierPart = DossierPartLocalServiceUtil.getByPartTypeEsign (templateNo,
-						partNo, partType, eSign);
-				if (dossierPart != null) {
-					List<DossierFile> dossierFileRefList = DossierFileLocalServiceUtil
-							.getByReferenceUid(dossierFile.getReferenceUid());
-					if (dossierFileRefList != null && dossierFileRefList.size() > 0) {
-						for (DossierFile dof : dossierFileRefList) {
-							deliverableCode = dof.getDeliverableCode();
-//							_log.info("DOssier deliverableCode: "+deliverableCode);
-							if (Validator.isNotNull(deliverableCode)) {
-								Deliverable deli = DeliverableLocalServiceUtil.getByCodeAndState(deliverableCode, "2");
-								if (deli != null) {
-									String formData;
-									formData = deli.getFormData();
-									try {
-										JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-										String certNo = String.valueOf(jsonData.get("so_chung_chi"));
-										String certDateStr = String.valueOf(jsonData.get("ngay_ky_cc"));
-										if (Validator.isNotNull(certNo) && Validator.isNotNull(certDateStr)) {
-											certIndex.add(certNo);
-											certIndex.add(certDateStr);
-										}
-										return certIndex;
-									} catch (Exception e) {
-										_log.error(e);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return certIndex;
 	}
 
 	private boolean getDossierOverDue(long dossierId, Date dueDate) {

@@ -65,7 +65,7 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -117,6 +117,8 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		sb.append(fileEntryId);
 		sb.append(", dossierId=");
 		sb.append(dossierId);
+		sb.append(", docSync=");
+		sb.append(docSync);
 		sb.append("}");
 
 		return sb.toString();
@@ -257,15 +259,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 			deliverableImpl.setRevalidate(new Date(revalidate));
 		}
 
-		if (deliverableState == null) {
-			deliverableImpl.setDeliverableState("");
-		}
-		else {
-			deliverableImpl.setDeliverableState(deliverableState);
-		}
-
+		deliverableImpl.setDeliverableState(deliverableState);
 		deliverableImpl.setFileEntryId(fileEntryId);
 		deliverableImpl.setDossierId(dossierId);
+		deliverableImpl.setDocSync(docSync);
 
 		deliverableImpl.resetOriginalValues();
 
@@ -300,11 +297,14 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		expireDate = objectInput.readLong();
 		issueDate = objectInput.readLong();
 		revalidate = objectInput.readLong();
-		deliverableState = objectInput.readUTF();
+
+		deliverableState = objectInput.readInt();
 
 		fileEntryId = objectInput.readLong();
 
 		dossierId = objectInput.readLong();
+
+		docSync = objectInput.readInt();
 	}
 
 	@Override
@@ -416,16 +416,13 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		objectOutput.writeLong(issueDate);
 		objectOutput.writeLong(revalidate);
 
-		if (deliverableState == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(deliverableState);
-		}
+		objectOutput.writeInt(deliverableState);
 
 		objectOutput.writeLong(fileEntryId);
 
 		objectOutput.writeLong(dossierId);
+
+		objectOutput.writeInt(docSync);
 	}
 
 	public String uuid;
@@ -450,7 +447,8 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 	public long expireDate;
 	public long issueDate;
 	public long revalidate;
-	public String deliverableState;
+	public int deliverableState;
 	public long fileEntryId;
 	public long dossierId;
+	public int docSync;
 }

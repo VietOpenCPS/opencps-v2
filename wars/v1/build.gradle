@@ -47,8 +47,8 @@ dependencies {
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
 
-	compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
-	compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
+	//compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
+	//compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
 	
 	compile name : "filters-2.0.235", transitive:false
     compile name : "jcaptcha-2.0-alpha-1-SNAPSHOT", transitive:false
