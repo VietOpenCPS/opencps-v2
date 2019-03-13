@@ -12,8 +12,8 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_API_HTTP_CACHE_ENABLE = "org.opencps.api.httpcache.enable";
 	public static final int DEFAULT_HTTP_CACHE_AGE = 86400;
 	public static final String OPENCPS_API_HTTP_CACHE_MAX_AGE = "org.opencps.api.httpcache.maxage";
-	public static final int DEFAULT_CONNECT_TIMEOUT = 0;
-	public static final int DEFAULT_READ_TIMEOUT = 0;
+	public static final int DEFAULT_CONNECT_TIMEOUT = 3 * 60000;
+	public static final int DEFAULT_READ_TIMEOUT = 3 * 60000;
 	public static final String OPENCPS_REST_CONNECTION_TIMEOUT = "org.opencps.rest.connection.timeout";
 	public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
 	

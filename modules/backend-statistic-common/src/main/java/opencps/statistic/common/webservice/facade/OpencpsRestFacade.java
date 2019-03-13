@@ -40,8 +40,8 @@ import opencps.statistic.common.webservice.util.OpencpsUtils;
  * @author khoavu
  */
 public abstract class OpencpsRestFacade<T, R> {
-	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
-	private static final int DEFAULT_READ_TIMEOUT = 0;
+	private static final int DEFAULT_CONNECT_TIMEOUT = 3 * 60000;
+	private static final int DEFAULT_READ_TIMEOUT = 3 * 60000;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpencpsRestFacade.class);
 
