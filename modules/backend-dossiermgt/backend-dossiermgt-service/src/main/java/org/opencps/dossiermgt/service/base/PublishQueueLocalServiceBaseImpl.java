@@ -69,8 +69,6 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
-import org.opencps.dossiermgt.service.persistence.OpencpsDossierStatisticPersistence;
-import org.opencps.dossiermgt.service.persistence.OpencpsVotingStatisticPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
@@ -1318,82 +1316,6 @@ public abstract class PublishQueueLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the opencps dossier statistic local service.
-	 *
-	 * @return the opencps dossier statistic local service
-	 */
-	public org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService getOpencpsDossierStatisticLocalService() {
-		return opencpsDossierStatisticLocalService;
-	}
-
-	/**
-	 * Sets the opencps dossier statistic local service.
-	 *
-	 * @param opencpsDossierStatisticLocalService the opencps dossier statistic local service
-	 */
-	public void setOpencpsDossierStatisticLocalService(
-		org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService opencpsDossierStatisticLocalService) {
-		this.opencpsDossierStatisticLocalService = opencpsDossierStatisticLocalService;
-	}
-
-	/**
-	 * Returns the opencps dossier statistic persistence.
-	 *
-	 * @return the opencps dossier statistic persistence
-	 */
-	public OpencpsDossierStatisticPersistence getOpencpsDossierStatisticPersistence() {
-		return opencpsDossierStatisticPersistence;
-	}
-
-	/**
-	 * Sets the opencps dossier statistic persistence.
-	 *
-	 * @param opencpsDossierStatisticPersistence the opencps dossier statistic persistence
-	 */
-	public void setOpencpsDossierStatisticPersistence(
-		OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence) {
-		this.opencpsDossierStatisticPersistence = opencpsDossierStatisticPersistence;
-	}
-
-	/**
-	 * Returns the opencps voting statistic local service.
-	 *
-	 * @return the opencps voting statistic local service
-	 */
-	public org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalService getOpencpsVotingStatisticLocalService() {
-		return opencpsVotingStatisticLocalService;
-	}
-
-	/**
-	 * Sets the opencps voting statistic local service.
-	 *
-	 * @param opencpsVotingStatisticLocalService the opencps voting statistic local service
-	 */
-	public void setOpencpsVotingStatisticLocalService(
-		org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalService opencpsVotingStatisticLocalService) {
-		this.opencpsVotingStatisticLocalService = opencpsVotingStatisticLocalService;
-	}
-
-	/**
-	 * Returns the opencps voting statistic persistence.
-	 *
-	 * @return the opencps voting statistic persistence
-	 */
-	public OpencpsVotingStatisticPersistence getOpencpsVotingStatisticPersistence() {
-		return opencpsVotingStatisticPersistence;
-	}
-
-	/**
-	 * Sets the opencps voting statistic persistence.
-	 *
-	 * @param opencpsVotingStatisticPersistence the opencps voting statistic persistence
-	 */
-	public void setOpencpsVotingStatisticPersistence(
-		OpencpsVotingStatisticPersistence opencpsVotingStatisticPersistence) {
-		this.opencpsVotingStatisticPersistence = opencpsVotingStatisticPersistence;
-	}
-
-	/**
 	 * Returns the payment config local service.
 	 *
 	 * @return the payment config local service
@@ -2434,14 +2356,6 @@ public abstract class PublishQueueLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.MenuRoleLocalService menuRoleLocalService;
 	@BeanReference(type = MenuRolePersistence.class)
 	protected MenuRolePersistence menuRolePersistence;
-	@BeanReference(type = org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService.class)
-	protected org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalService opencpsDossierStatisticLocalService;
-	@BeanReference(type = OpencpsDossierStatisticPersistence.class)
-	protected OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence;
-	@BeanReference(type = org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalService.class)
-	protected org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalService opencpsVotingStatisticLocalService;
-	@BeanReference(type = OpencpsVotingStatisticPersistence.class)
-	protected OpencpsVotingStatisticPersistence opencpsVotingStatisticPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.PaymentConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.PaymentConfigLocalService paymentConfigLocalService;
 	@BeanReference(type = PaymentConfigPersistence.class)
