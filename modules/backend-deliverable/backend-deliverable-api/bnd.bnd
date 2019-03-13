@@ -1,9 +1,0 @@
-Bundle-Name: backend-deliverable-api
-Bundle-SymbolicName: backend.deliverable.api
-Bundle-Version: 1.0.0
-Export-Package:\
-	backend.deliverable.exception,\
-	backend.deliverable.model,\
-	backend.deliverable.service,\
-	backend.deliverable.service.persistence
--includeresource: META-INF/service.xml=../backend-deliverable-service/service.xml

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.dossiermgt.action.util.MultipartUtility;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 
 public class InvokeREST {
 	
@@ -44,7 +45,9 @@ public class InvokeREST {
 			URL url = new URL(urlPath);
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
+			
 			String authString = username + ":" + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
@@ -116,6 +119,8 @@ public class InvokeREST {
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
 			String authString = username + ":" + password;
 
@@ -347,6 +352,8 @@ public class InvokeREST {
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
 			String authString = username + ":" + password;
 
@@ -436,6 +443,8 @@ public class InvokeREST {
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
@@ -532,6 +541,8 @@ public class InvokeREST {
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);

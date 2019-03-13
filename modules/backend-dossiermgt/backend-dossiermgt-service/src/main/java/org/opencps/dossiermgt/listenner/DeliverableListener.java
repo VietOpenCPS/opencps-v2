@@ -25,15 +25,13 @@ import org.apache.commons.io.IOUtils;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.datamgt.util.DateTimeUtils;
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.model.OpenCPSDeliverableType;
-import org.opencps.deliverable.service.OpenCPSDeliverableLogLocalServiceUtil;
-import org.opencps.deliverable.service.OpenCPSDeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ModelKeysDeliverableLog;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
-
-import backend.deliverable.service.util.ModelKeysDeliverableLog;
 
 @Component(immediate = true, service = ModelListener.class)
 public class DeliverableListener extends BaseModelListener<Deliverable> {
@@ -43,7 +41,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", OpenCPSDeliverable.class.getName());
+		msgData.put("className", Deliverable.class.getName());
 		msgData.put("classPK", model.getDeliverableId());
 		msgData.put("jrxmlTemplate", getJrxmlTemplate(model));
 		msgData.put("formData", model.getFormData());
@@ -67,7 +65,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 		objectData.put(ModelKeysDeliverableLog.PAYLOAD, model.getFormData());
 
-		OpenCPSDeliverableLogLocalServiceUtil.adminProcessData(objectData);
+		DeliverableLogLocalServiceUtil.adminProcessData(objectData);
 	}
 
 	@Override
@@ -87,10 +85,10 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 		objectData.put(ModelKeysDeliverableLog.PAYLOAD, model.getFormData());
 
-		OpenCPSDeliverableLogLocalServiceUtil.adminProcessData(objectData);
+		DeliverableLogLocalServiceUtil.adminProcessData(objectData);
 
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(model.getGroupId(),
-				OpenCPSDeliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
+				Deliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
 
 		boolean isAttact = false;
 
@@ -98,7 +96,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			isAttact = true;
 		}
 
-		OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
+		DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
 				.getByTypeCode(model.getDeliverableType(), model.getGroupId());
 
 		try {
@@ -203,7 +201,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			Message message = new Message();
 
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put("className", OpenCPSDeliverable.class.getName());
+			msgData.put("className", Deliverable.class.getName());
 			msgData.put("classPK", model.getDeliverableId());
 			msgData.put("jrxmlTemplate", getJrxmlTemplate(model));
 			msgData.put("formData", model.getFormData());
@@ -233,7 +231,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 	public String getJrxmlTemplate(Deliverable model) {
 		String result = StringPool.BLANK;
 
-		OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
+		DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
 				.getByTypeCode(model.getDeliverableType(), model.getGroupId());
 
 		InputStream is = null;

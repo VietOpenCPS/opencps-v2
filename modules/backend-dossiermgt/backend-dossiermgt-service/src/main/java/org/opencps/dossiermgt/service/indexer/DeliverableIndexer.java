@@ -27,11 +27,10 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.ModelKeysDeliverable;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
-
-import backend.deliverable.service.util.ModelKeysDeliverable;
 
 @Component(
     immediate = true,

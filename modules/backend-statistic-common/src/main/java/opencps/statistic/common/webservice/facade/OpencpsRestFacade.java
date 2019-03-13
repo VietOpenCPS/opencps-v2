@@ -40,7 +40,9 @@ import opencps.statistic.common.webservice.util.OpencpsUtils;
  * @author khoavu
  */
 public abstract class OpencpsRestFacade<T, R> {
-
+	private static final int DEFAULT_CONNECT_TIMEOUT = 0;
+	private static final int DEFAULT_READ_TIMEOUT = 0;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OpencpsRestFacade.class);
 
 	private List<Class<? extends Exception>> exceptionsWhitelist = new ArrayList<>();
@@ -74,6 +76,9 @@ public abstract class OpencpsRestFacade<T, R> {
 		//LOGGER.info("RESOURCE: {}", url);
 
 		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+		requestFactory.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
+		requestFactory.setReadTimeout(DEFAULT_READ_TIMEOUT);
+		
 		Optional.ofNullable(proxy).ifPresent(requestFactory::setProxy);
 
 		RestTemplate restTemplate = new RestTemplate(requestFactory);

@@ -3,13 +3,12 @@ package org.opencps.jasper.message;
 import java.io.File;
 import java.util.Date;
 
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -161,8 +160,8 @@ public class Engine implements MessageListener {
     
     			indexer.reindex(dossierDocument);
 				
-			} else if (engineClass.isAssignableFrom(OpenCPSDeliverable.class)) {
-				OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil.fetchOpenCPSDeliverable(classPK);
+			} else if (engineClass.isAssignableFrom(Deliverable.class)) {
+				Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
 				
     			ServiceContext serviceContext = new ServiceContext();
     			serviceContext.setUserId(openCPSDeliverable.getUserId());
@@ -176,7 +175,7 @@ public class Engine implements MessageListener {
     
     			openCPSDeliverable.setFileEntryId(fileEntryId);
     
-    			OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+    			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
     
 			}
 

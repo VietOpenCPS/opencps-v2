@@ -6,8 +6,12 @@ Liferay-Service: true
 Export-Package: \
 	org.opencps.dossiermgt.action.impl,\
 	org.opencps.backend.dossiermgt.service.util,\
-	org.opencps.dossiermgt.action.util,\
 	org.opencps.dossiermgt.action,\
+	org.opencps.dossiermgt.action.util,\
 	org.opencps.dossiermgt.model.impl,\
 	org.opencps.dossiermgt.scheduler,\
-	org.opencps.datamgt.util
+	org.opencps.datamgt.util,\
+	org.apache.commons.io,\
+	org.apache.commons.io.filefilter,\
+	org.apache.commons.io.output,\
+	org.apache.commons.io.input

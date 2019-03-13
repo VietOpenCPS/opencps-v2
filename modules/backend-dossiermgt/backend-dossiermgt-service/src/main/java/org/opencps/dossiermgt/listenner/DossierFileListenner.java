@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;

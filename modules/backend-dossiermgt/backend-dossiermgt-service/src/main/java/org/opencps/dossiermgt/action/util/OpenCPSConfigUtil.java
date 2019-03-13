@@ -12,6 +12,10 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_API_HTTP_CACHE_ENABLE = "org.opencps.api.httpcache.enable";
 	public static final int DEFAULT_HTTP_CACHE_AGE = 86400;
 	public static final String OPENCPS_API_HTTP_CACHE_MAX_AGE = "org.opencps.api.httpcache.maxage";
+	public static final int DEFAULT_CONNECT_TIMEOUT = 0;
+	public static final int DEFAULT_READ_TIMEOUT = 0;
+	public static final String OPENCPS_REST_CONNECTION_TIMEOUT = "org.opencps.rest.connection.timeout";
+	public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -42,6 +46,18 @@ public class OpenCPSConfigUtil {
 	public static int getHttpCacheMaxAge() {
 	    String httpCacheMaxAgeProperty = PropsUtil.get(OPENCPS_API_HTTP_CACHE_MAX_AGE);
 	    return Validator.isNotNull(httpCacheMaxAgeProperty) ? Integer.parseInt(httpCacheMaxAgeProperty) : DEFAULT_HTTP_CACHE_AGE;
+		
+	}
+	
+	public static int getRestConnectionTimeout() {
+	    String connectionTimeoutProperty = PropsUtil.get(OPENCPS_REST_CONNECTION_TIMEOUT);
+	    return Validator.isNotNull(connectionTimeoutProperty) ? Integer.parseInt(connectionTimeoutProperty) : DEFAULT_CONNECT_TIMEOUT;
+		
+	}
+	
+	public static int getRestReadTimeout() {
+	    String readTimeoutProperty = PropsUtil.get(OPENCPS_REST_READ_TIMEOUT);
+	    return Validator.isNotNull(readTimeoutProperty) ? Integer.parseInt(readTimeoutProperty) : DEFAULT_READ_TIMEOUT;
 		
 	}
 }

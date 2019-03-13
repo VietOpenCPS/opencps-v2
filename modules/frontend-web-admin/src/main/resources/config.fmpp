@@ -1,5 +1,0 @@
-sourceRoot: templates
-outputRoot: build
-data: {tdd(datasource/admin.tdd)}
-datetimeFormat: "MMM d, yyyy hh:mm a zzz"
-caseSensitive
