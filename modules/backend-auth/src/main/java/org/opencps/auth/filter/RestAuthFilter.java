@@ -12,7 +12,7 @@
  * details.
  */
 
-package backend.admin.config.whiteboard;
+package org.opencps.auth.filter;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 
+import backend.utils.HttpUtil;
+
 /**
  * @author Binhth
  */
@@ -51,8 +53,8 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/o/v1/opencps/users/*"
 		,
 		"url-pattern=/o/v1/opencps/login",
-		//"url-pattern=/o/rest/v2/*",
-		//"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -60,8 +62,9 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice" };
+	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
+	public final static String LIFERAY_GZIP_FILTER = "com.liferay.portal.servlet.filters.gzip.GZipFilter";
 	
 	@Override
 	public void destroy() {
@@ -69,7 +72,6 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-//		System.out.println("RestAuthFilter.doFilter()");
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(P_AUTH);
@@ -84,9 +86,11 @@ public class RestAuthFilter implements Filter {
 		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
 			pAuth = httpRequest.getParameter("Token");
 		}
-		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
+		String ipAddress = HttpUtil.getIpAddress(httpRequest);
+		boolean checkLocal = (ipAddress.equals("localhost") || ipAddress.equals("127.0.0.1"));
+		
+		if (checkLocal || exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
-//			System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
 				if (!exclude) {
@@ -150,17 +154,18 @@ public class RestAuthFilter implements Filter {
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-//		response.addHeader("Access-Control-Allow-Origin", "*");
-//		response.addHeader("Access-Control-Allow-Headers", "*");
-//		response.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
 	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
 	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
+	    String liferayGzipProperty = PropsUtil.get(LIFERAY_GZIP_FILTER);
+	    
 	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
+	    if (Validator.isNotNull(liferayGzipProperty) && Boolean.parseBoolean(liferayGzipProperty)) {
+	    	gzipFilterEnable = false;
+	    }
 	    gzipFilterEnable = false;
 	    if (gzipFilterEnable) {
-		    if ( acceptsGZipEncoding(httpRequest) 
-		    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
+		    if ( acceptsGZipEncoding(httpRequest)) {
 		    	if (!httpResponse.containsHeader("Content-Encoding")
 		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
 		    		httpResponse.addHeader("Content-Encoding", "gzip");
@@ -187,9 +192,6 @@ public class RestAuthFilter implements Filter {
 		servletResponse.setContentType("application/json; charset=utf-8");
 		
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		// response.addHeader("Access-Control-Allow-Origin", "*");
-		// response.addHeader("Access-Control-Allow-Headers", "*");
-		// response.addHeader("Access-Control-Allow-Methods", "*");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		response.setContentType("application/json; charset=utf-8");
 		

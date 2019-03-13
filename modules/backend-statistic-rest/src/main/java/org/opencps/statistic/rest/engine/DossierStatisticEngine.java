@@ -1,5 +1,23 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
+import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,27 +50,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
-import com.liferay.portal.kernel.messaging.DestinationNames;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	private static volatile boolean isRunning = false;
 	
 	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
+	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
 	
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
@@ -69,6 +73,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		else {
 			return;
 		}
+		long startTime = System.currentTimeMillis();
 		try {
 			//LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 	//		SchedulerRecord schedulerRecord = SchedulerRecordLocalServiceUtil.fetchByST(SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE);
@@ -111,6 +116,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	//						onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
 	//			}
 	//		}
+			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
 			List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
@@ -137,7 +143,9 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				sdPayload.setStart(QueryUtil.ALL_POS);
 				sdPayload.setEnd(QueryUtil.ALL_POS);
 				
+				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
 				ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 				
 				GetDossierRequest payload = new GetDossierRequest();
 				
@@ -151,6 +159,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
+						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + site.getName() + " " + (System.currentTimeMillis() - startTime) + " ms");;
 						List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 						if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
@@ -168,16 +177,15 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 									engineUpdateAction, serviceDomainResponse, calculateData);
 							}
 							catch (Exception e) {
-								System.out.println("STATISTICS ERROR: " + site.getGroupId());
 							}
 						}
+						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName() + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
 					} else {
 						try {
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse, calculateData);
 						}
 						catch (Exception e) {
-							System.out.println("STATISTICS ERROR: " + site.getGroupId());
 						}
 					}
 					mapFlag.put(month, flagStatistic);
@@ -185,7 +193,12 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				//Recalculate data
 				for (int month = 1; month <= monthCurrent; month ++) {
 					if (mapFlag.get(month)) {
-						engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+						try {
+							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+						}
+						catch (Exception e) {
+							
+						}
 						if (calculateData.get(month) != null) {
 							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 							
@@ -341,7 +354,12 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlag.get(lastMonth)) {
-						engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
+						try {
+							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
+						}
+						catch (Exception e) {
+							
+						}
 						if (calculateData.get(lastMonth) != null) {
 							statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
 						}
@@ -350,14 +368,24 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	
 				/* Update summary */
 				//Delete record
-				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+				try {
+					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+				}
+				catch (Exception e) {
+					
+				}
 				//
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				//TODO: Calculator again last year
 				//Delete record
-				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+				try {
+					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+				}
+				catch (Exception e) {
+					
+				}
 				//
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 	
@@ -373,6 +401,8 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		_log.debug("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+
 		isRunning = false;
 	}
 
@@ -489,11 +519,21 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 						}
 					}
 				}
-				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+				try {
+					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+				}
+				catch (Exception e) {
+					
+				}
 			}
 		}
 		else {
-			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+			try {
+				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+			}
+			catch (Exception e) {
+				
+			}
 		}
 	}
 
@@ -501,7 +541,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

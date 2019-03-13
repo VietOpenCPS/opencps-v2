@@ -1,4 +1,4 @@
-package backend.admin.config.whiteboard;
+package org.opencps.auth.filter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
