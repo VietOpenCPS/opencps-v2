@@ -1759,7 +1759,7 @@ public class DossierActionsImpl implements DossierActions {
 									if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
 										createFile = processFileResult(dossierFilesResult, createFile,
 												dossierPart.getPartNo());
-										_log.info("createFile: "+createFile.toJSONString());
+										_log.debug("createFile: "+createFile.toJSONString());
 
 									} else {
 										createFile = processEFormByCreateFile(dossierPart, groupId, dossierId,

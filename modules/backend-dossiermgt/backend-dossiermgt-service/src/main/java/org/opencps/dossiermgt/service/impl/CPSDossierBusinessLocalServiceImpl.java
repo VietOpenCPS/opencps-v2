@@ -2513,22 +2513,22 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (DossierActionTerm.OUTSIDE_ACTION_9100.equals(actionCode)) {
 				dossier = dossierLocalService.updateDossierSpecial(dossier.getDossierId(), payloadObject);							
 			}
-			else if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
-				if (dossierAction != null && dossierAction.isRollbackable()) {
-					dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
-				
-					DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
-					if (previousAction != null) {
-						dossierActionLocalService.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
-						dossierActionLocalService.updateNextActionId(previousAction.getDossierActionId(), 0);
-						dossierLocalService.rollback(dossier, previousAction);
-					}
-				}
-				
-			}
 			else {
 				dossier = dossierLocalService.updateDossier(dossier.getDossierId(), payloadObject);											
 			}
+		}
+		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
+			if (dossierAction != null && dossierAction.isRollbackable()) {
+				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+			
+				DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
+				if (previousAction != null) {
+					dossierActionLocalService.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+					dossierActionLocalService.updateNextActionId(previousAction.getDossierActionId(), 0);
+					dossierLocalService.rollback(dossier, previousAction);
+				}
+			}
+			
 		}
 		
 		//Create DossierSync

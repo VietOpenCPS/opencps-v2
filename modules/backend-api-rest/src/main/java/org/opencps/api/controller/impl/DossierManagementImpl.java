@@ -96,6 +96,7 @@ import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -3103,9 +3104,17 @@ public class DossierManagementImpl implements DossierManagement {
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
+			String dossierNo = input.getDossierNo();
 			
-			Dossier oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
-			
+//			Dossier oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
+			Dossier oldDossier = null;
+			if (Validator.isNotNull(input.getReferenceUid())) {
+				oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
+			} else {
+			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+			}
+			   
 			if (oldDossier == null || oldDossier.getOriginality() == 0) {
 				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 						govAgencyCode, govAgencyName, applicantName, applicantType,
