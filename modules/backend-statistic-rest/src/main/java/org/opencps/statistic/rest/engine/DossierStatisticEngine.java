@@ -75,47 +75,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 		}
 		long startTime = System.currentTimeMillis();
 		try {
-			//LOG.info("START getDossierStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-	//		SchedulerRecord schedulerRecord = SchedulerRecordLocalServiceUtil.fetchByST(SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE);
-	//		Date now = new Date();
-	//		
-	//		if (schedulerRecord == null) {
-	//			Date onTime = new Date();
-	//			Calendar c = Calendar.getInstance();
-	//			c.setTime(onTime);
-	//			
-	//			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
-	//			
-	//			Date nextTime = c.getTime();
-	//			c.setTime(onTime);
-	//			c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-	//			Date expiredTime = c.getTime();
-	//			
-	//			schedulerRecord = SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
-	//					0l, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_TYPE, onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-	//		}
-	//		else {
-	//			if ((schedulerRecord.getOnTime() != null || (schedulerRecord.getNextTime() != null && now.getTime() < schedulerRecord.getNextTime().getTime()))
-	//					&& (schedulerRecord.getOnTime() == null || now.getTime() < schedulerRecord.getExpiredTime().getTime())) {
-	//				return;
-	//			}
-	//			else {
-	//				Date onTime = new Date();
-	//				Calendar c = Calendar.getInstance();
-	//				c.setTime(onTime);
-	//				
-	//				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION);
-	//				
-	//				Date nextTime = c.getTime();
-	//				c.setTime(onTime);
-	//				c.add(Calendar.MILLISECOND, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-	//				Date expiredTime = c.getTime();
-	//	
-	//				SchedulerRecordLocalServiceUtil.updateSchedulerRecord(
-	//						schedulerRecord.getSchedulerId(), schedulerRecord.getSchedulerType(), 
-	//						onTime, nextTime, expiredTime, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MIN_DURATION, SchedulerRecordTerm.DOSSIER_STATISTIC_SCHEDULER_MAX_DURATION);
-	//			}
-	//		}
 			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
@@ -207,128 +166,6 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 					}
 				}			
 				
-				
-					/////////////////////////////////
-	//				engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
-	//				
-	//				payload.setMonth(Integer.toString(month));
-	//				payload.setYear(Integer.toString(LocalDate.now().getYear()));
-	//				payload.setCalculate(true);
-	//				
-	//				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
-	//				if (dossierResponse != null) {
-	//					List<GetDossierData> dossierData = dossierResponse.getData();
-	//					if (dossierData != null) {
-	//						//LOG.info("***** " + site.getGroupId() + source.size());
-	//						
-	//						if(dossierData.size() > 0) {
-	//							if (serviceDomainResponse != null) {
-	//								List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-	//								if (serviceDomainData != null) {
-	//									for (ServiceDomainData sdd : serviceDomainData) {
-	//										boolean existsDomain = false;
-	//										for (GetDossierData dd : dossierData) {
-	//											if (dd.getDomainCode().equals(sdd.getItemCode())) {
-	//												existsDomain = true;
-	//												break;
-	//											}
-	//										}
-	//										if (existsDomain) {
-	//											
-	//										}
-	//										else {
-	//											try {
-	//												engineUpdateAction.removeDossierStatisticByD_M_Y(site.getGroupId(), sdd.getItemCode(), month, LocalDate.now().getYear());
-	//											} catch (NoSuchOpencpsDossierStatisticException e) {
-	//												
-	//											}
-	//										}
-	//									}
-	//									for (GetDossierData dd : dossierData) {
-	//										boolean existsDomain = false;
-	//										for (ServiceDomainData sdd : serviceDomainData) {
-	//											if (dd.getDomainCode().equals(sdd.getItemCode())) {
-	//												existsDomain = true;
-	//												break;
-	//											}											
-	//										}
-	//										if (existsDomain) {
-	//											
-	//										}
-	//										else {
-	//											try {
-	//												engineUpdateAction.removeDossierStatisticByD_M_Y(site.getGroupId(), dd.getDomainCode(), month, LocalDate.now().getYear());
-	//											} catch (NoSuchOpencpsDossierStatisticException e) {
-	//												
-	//											}
-	//										}
-	//									}
-	//								}
-	//							}
-	//							else {
-	//								engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());								
-	//							}
-	//							
-	//							StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-	//	
-	//							Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-	//	
-	//							engineFetch.fecthStatisticData(site.getGroupId(), statisticData, dossierData, month);
-	//							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-	//							
-	//							statisticEngineUpdate.updateStatisticData(statisticData);														
-	//						}
-	//						else {
-	//							List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-	//							if (serviceDomainData != null) {
-	//								for (ServiceDomainData sdd : serviceDomainData) {
-	//									try {
-	//										engineUpdateAction.removeDossierStatisticByD_M_Y(site.getGroupId(), sdd.getItemCode(), month, LocalDate.now().getYear());
-	//									} catch (NoSuchOpencpsDossierStatisticException e) {
-	//											
-	//									}
-	//								}
-	//							}	
-	//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
-	//						}
-	//					}
-	//					else {
-	//						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-	//						if (serviceDomainData != null) {
-	//							for (ServiceDomainData sdd : serviceDomainData) {
-	//								try {
-	//									engineUpdateAction.removeDossierStatisticByD_M_Y(site.getGroupId(), sdd.getItemCode(), month, LocalDate.now().getYear());
-	//								} catch (NoSuchOpencpsDossierStatisticException e) {
-	//										
-	//								}
-	//							}
-	//						}											
-	//						engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());
-	//					}
-	//				}
-	//				else {
-	//					engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, LocalDate.now().getYear());					
-	//				}
-	//			Optional<List<GetDossierData>> dossierData = Optional.ofNullable(dossierResponse.getData());
-	//			
-	//			dossierData.ifPresent(source -> {
-	//				
-	//				LOG.info("***** " + site.getGroupId() + source.size());
-	//				
-	//				if(source.size() > 0) {
-	//					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-	//					
-	//					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-	//
-	//					engineFetch.fecthStatisticData(site.getGroupId(), statisticData, source);
-	//					
-	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-	//					
-	//					statisticEngineUpdate.updateStatisticData(statisticData);
-	//					
-	//				}
-	//				
-	//			});
 				//TODO: Calculator again year ago
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = true;
@@ -541,7 +378,7 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 2, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

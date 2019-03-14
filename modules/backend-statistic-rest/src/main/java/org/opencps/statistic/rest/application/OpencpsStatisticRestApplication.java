@@ -2,6 +2,11 @@ package org.opencps.statistic.rest.application;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -9,6 +14,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,16 +27,24 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
+import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.DossierStatisticModel;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GetDossierData;
@@ -48,6 +62,8 @@ import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
+import org.opencps.statistic.rest.dto.StatisticFixedModel;
+import org.opencps.statistic.rest.dto.StatisticFixedResult;
 import org.opencps.statistic.rest.dto.VotingResultRequest;
 import org.opencps.statistic.rest.dto.VotingResultResponse;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
@@ -61,6 +77,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
+import org.opencps.statistic.rest.facade.OpencpsCallStatisticRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
@@ -68,6 +85,7 @@ import org.opencps.statistic.rest.service.PersonStatisticFinderService;
 import org.opencps.statistic.rest.service.PersonStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.service.VotingStatisticFinderService;
 import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
+import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -76,6 +94,8 @@ import org.slf4j.LoggerFactory;
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
 import opencps.statistic.common.webservice.exception.ServiceException;
+import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
+import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
 /**
  * @author khoavu
@@ -693,7 +713,115 @@ public class OpencpsStatisticRestApplication extends Application {
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
 		statisticSumYearService.caculateSumYear(companyId, groupId, year);
-
 	}
 
+	@POST
+	@Path("/reports")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public DossierStatisticModel fixDossierStatistic(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierStatisticModel input) {
+		try {
+			OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(
+					0l, groupId, -1, "ADM", input.getMonth(), input.getYear(), input.getTotalCount(), input.getDeniedCount(), 
+					input.getCancelledCount(), input.getProcessCount(), input.getRemainingCount(), input.getReceivedCount(), 
+					input.getOnlineCount(), input.getReleaseCount(), input.getBetimesCount(), input.getOntimeCount(), input.getOvertimeCount(), input.getDoneCount(), 
+					input.getReleasingCount(), input.getUnresolvedCount(), input.getProcessingCount(), input.getUndueCount(), 
+					input.getOverdueCount(), input.getPausingCount(), input.getOntimePercentage(), input.getOvertimeInside(), 
+					input.getOvertimeOutside(), input.getInteroperatingCount(), input.getWaitingCount(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getDomainCode(), input.getDomainName(), input.getReporting(), input.getOnegateCount(), 
+					input.getOutsideCount(), input.getInsideCount());
+			input.setDomainCode(statistic.getDomainCode());
+		} catch (SystemException e) {
+		} catch (PortalException e) {
+		}
+		
+		return input;
+	}
+	
+	@POST
+	@Path("/reports/fixed")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public StatisticFixedResult fixedStatistic(@HeaderParam("groupId") long groupId, @BeanParam StatisticFixedModel input) {
+		int month = input.getMonth();
+		int year = input.getYear();
+		int monthCurrent = LocalDate.now().getMonthValue();
+		int yearCurrent = LocalDate.now().getYear();
+		StatisticFixedResult result = new StatisticFixedResult();
+		if (yearCurrent < year) {
+			return result;
+		}
+		if (year == yearCurrent && month >= monthCurrent) {
+			return result;
+		}
+		List<OpencpsDossierStatistic> lstStatistics = OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYear(groupId, month, year);
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.PUBLISH_PROTOCOL);
+		for (OpencpsDossierStatistic statistic : lstStatistics) {
+			if (Validator.isNotNull(statistic.getGovAgencyCode())) {
+				statistic.setModifiedDate(new Date());
+				statistic.setReporting(true);
+				OpencpsDossierStatisticLocalServiceUtil.updateOpencpsDossierStatistic(statistic);
+				
+				//Chốt lên cổng tra cứu
+				for (ServerConfig sc : lstScs) {
+					if (Validator.isNotNull(sc.getConfigs())) {
+						try {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+							if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+								long publishGroupId = configObj.getLong(SyncServerTerm.SERVER_GROUP_ID);
+								OpencpsCallRestFacade<DossierStatisticModel, DossierStatisticModel> callReportService = new OpencpsCallStatisticRestFacadeImpl();
+								DossierStatisticModel request = new DossierStatisticModel();
+								request.setGroupId(publishGroupId);
+								request.setBetimesCount(statistic.getBetimesCount());
+								request.setCancelledCount(statistic.getCancelledCount());
+								request.setDeniedCount(statistic.getDeniedCount());
+								request.setDomainCode(statistic.getDomainCode());
+								request.setDomainName(statistic.getDomainName());
+								request.setDoneCount(statistic.getDoneCount());
+								request.setGovAgencyCode(statistic.getGovAgencyCode());
+								request.setGovAgencyName(statistic.getGovAgencyName());
+								request.setGroupAgencyCode(statistic.getGroupAgencyCode());
+								request.setInsideCount(statistic.getInsideCount());
+								request.setInteroperatingCount(statistic.getInteroperatingCount());
+								request.setMonth(statistic.getMonth());
+								request.setOnegateCount(statistic.getOnegateCount());
+								request.setOnlineCount(statistic.getOnlineCount());
+								request.setOntimeCount(statistic.getOntimeCount());
+								request.setOntimePercentage(statistic.getOntimePercentage());
+								request.setOutsideCount(statistic.getOutsideCount());
+								request.setOverdueCount(statistic.getOverdueCount());
+								request.setOvertimeCount(statistic.getOvertimeCount());
+								request.setOvertimeInside(statistic.getOvertimeInside());
+								request.setOvertimeOutside(statistic.getOvertimeOutside());
+								request.setPausingCount(statistic.getPausingCount());
+								request.setProcessCount(statistic.getProcessCount());
+								request.setProcessingCount(statistic.getProcessingCount());
+								request.setReceivedCount(statistic.getReceivedCount());
+								request.setReleaseCount(statistic.getReleaseCount());
+								request.setReleasingCount(statistic.getReleasingCount());
+								request.setRemainingCount(statistic.getRemainingCount());
+								request.setReporting(statistic.getReporting());
+								request.setTotalCount(statistic.getTotalCount());
+								request.setUndueCount(statistic.getUndueCount());
+								request.setUnresolvedCount(statistic.getUnresolvedCount());
+								request.setWaitingCount(statistic.getWaitingCount());
+								request.setYear(statistic.getYear());
+								DossierStatisticModel model = callReportService.callRestService(request);
+							}
+						}
+						catch (JSONException e) {
+							
+						} catch (UpstreamServiceTimedOutException e) {
+						} catch (UpstreamServiceFailedException e) {
+						}
+					}
+				}
+			}
+		}
+		
+		result.setErrorCode(0);
+		result.setErrorMessage("");
+		result.setSuccess(true);
+		return result;
+	}
 }

@@ -275,41 +275,43 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setOutsideCount(outsideCount);
 			dossierStatistic.setInsideCount(insideCount);
 		} else {
-			dossierStatistic.setModifiedDate(now);
-			dossierStatistic.setMonth(month);
-			dossierStatistic.setYear(year);
-			dossierStatistic.setTotalCount(totalCount);
-			dossierStatistic.setDeniedCount(deniedCount);
-			dossierStatistic.setCancelledCount(cancelledCount);
-			dossierStatistic.setProcessCount(processCount);
-			dossierStatistic.setRemainingCount(remainingCount);
-			dossierStatistic.setReceivedCount(receivedCount);
-			dossierStatistic.setOnlineCount(onlineCount);
-			dossierStatistic.setReleaseCount(releaseCount);
-			dossierStatistic.setBetimesCount(betimesCount);
-			dossierStatistic.setOntimeCount(ontimeCount);
-			dossierStatistic.setOvertimeCount(overtimeCount);
-			dossierStatistic.setDoneCount(doneCount);
-			dossierStatistic.setReleasingCount(releasingCount);
-			dossierStatistic.setUnresolvedCount(unresolvedCount);
-			dossierStatistic.setProcessingCount(processingCount);
-			dossierStatistic.setUndueCount(undueCount);
-			dossierStatistic.setOverdueCount(overdueCount);
-			dossierStatistic.setPausingCount(pausingCount);
-			dossierStatistic.setOntimePercentage(ontimePercentage);
-			dossierStatistic.setOvertimeInside(overtimeInside);
-			dossierStatistic.setOvertimeOutside(overtimeOutside);
-			dossierStatistic.setInteroperatingCount(interoperatingCount);
-			dossierStatistic.setWaitingCount(waitingCount);
-			dossierStatistic.setOnegateCount(onegateCount);
-			dossierStatistic.setOutsideCount(outsideCount);
-			dossierStatistic.setInsideCount(insideCount);
-			
-			dossierStatistic.setGovAgencyCode(govAgencyCode);
-			dossierStatistic.setGovAgencyName(govAgencyName);
-			dossierStatistic.setDomainCode(domainCode);
-			dossierStatistic.setDomainName(domainName);
-
+			if (!dossierStatistic.isReporting()) {
+				dossierStatistic.setModifiedDate(now);
+				dossierStatistic.setMonth(month);
+				dossierStatistic.setYear(year);
+				dossierStatistic.setTotalCount(totalCount);
+				dossierStatistic.setDeniedCount(deniedCount);
+				dossierStatistic.setCancelledCount(cancelledCount);
+				dossierStatistic.setProcessCount(processCount);
+				dossierStatistic.setRemainingCount(remainingCount);
+				dossierStatistic.setReceivedCount(receivedCount);
+				dossierStatistic.setOnlineCount(onlineCount);
+				dossierStatistic.setReleaseCount(releaseCount);
+				dossierStatistic.setBetimesCount(betimesCount);
+				dossierStatistic.setOntimeCount(ontimeCount);
+				dossierStatistic.setOvertimeCount(overtimeCount);
+				dossierStatistic.setDoneCount(doneCount);
+				dossierStatistic.setReleasingCount(releasingCount);
+				dossierStatistic.setUnresolvedCount(unresolvedCount);
+				dossierStatistic.setProcessingCount(processingCount);
+				dossierStatistic.setUndueCount(undueCount);
+				dossierStatistic.setOverdueCount(overdueCount);
+				dossierStatistic.setPausingCount(pausingCount);
+				dossierStatistic.setOntimePercentage(ontimePercentage);
+				dossierStatistic.setOvertimeInside(overtimeInside);
+				dossierStatistic.setOvertimeOutside(overtimeOutside);
+				dossierStatistic.setInteroperatingCount(interoperatingCount);
+				dossierStatistic.setWaitingCount(waitingCount);
+				dossierStatistic.setOnegateCount(onegateCount);
+				dossierStatistic.setOutsideCount(outsideCount);
+				dossierStatistic.setInsideCount(insideCount);
+				
+				dossierStatistic.setGovAgencyCode(govAgencyCode);
+				dossierStatistic.setGovAgencyName(govAgencyName);
+				dossierStatistic.setDomainCode(domainCode);
+				dossierStatistic.setDomainName(domainName);
+				dossierStatistic.setReporting(reporting);
+			}
 		}
 
 		int ontimePercent = 100;

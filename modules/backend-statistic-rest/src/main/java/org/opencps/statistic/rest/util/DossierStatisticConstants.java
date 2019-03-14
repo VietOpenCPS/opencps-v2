@@ -25,6 +25,8 @@ public interface DossierStatisticConstants {
 	
 	String VOTING_ENDPOINT = "opencps.rest.enpoint.voting.result";
 	
+	String STATISTIC_REPORT_ENDPOINT = "opencps.rest.enpoint.statistic.report";
+	
 	String GROUP_ID = "groupId";
 	
 	int START_YEARS = 1990;
