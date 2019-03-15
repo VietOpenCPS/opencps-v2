@@ -3109,8 +3109,10 @@ public class DossierActionsImpl implements DossierActions {
 						
 //						Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo());
 //						long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
+						Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
+						long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);						
 						
-						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
+						Dossier hsltDossier = DossierLocalServiceUtil.initDossier(groupId, hsltDossierId, UUID.randomUUID().toString(), 
 								dossier.getCounter(), dossier.getServiceCode(),
 								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 								dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),

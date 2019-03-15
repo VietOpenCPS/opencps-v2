@@ -1029,10 +1029,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
 //					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
-			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByU_G_C_DS_SC_GC_O(
-					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
-
+//			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByU_G_C_DS_SC_GC_O(
+//					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
+			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByU_G_GAC_SC_DTNO_DS_O(
+					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), input.getDossierTemplateNo(), StringPool.BLANK, Integer.valueOf(input.getOriginality()));
+			
 			Dossier dossier = null;
+			
+			Dossier oldRefDossier = Validator.isNotNull(input.getReferenceUid()) ? DossierLocalServiceUtil.getByRef(groupId, input.getReferenceUid()) : null;
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				online = true;
@@ -1042,8 +1046,27 @@ public class DossierManagementImpl implements DossierManagement {
 			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
 			_log.info("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
-			
-			if (oldDossiers.size() > 0) {
+			if (oldRefDossier != null) {
+				dossier = oldRefDossier;
+				dossier.setSubmitDate(new Date());
+				ServiceProcess serviceProcess = process;
+				
+				double durationCount = 0;
+				int durationUnit = 0;
+				if (serviceProcess != null ) {
+					durationCount = serviceProcess.getDurationCount();
+					durationUnit = serviceProcess.getDurationUnit();
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
+				}
+
+				if (durationCount > 0) {
+					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					dossier.setDueDate(dueDate);
+				}
+				
+			}
+			else if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
