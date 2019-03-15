@@ -3061,7 +3061,8 @@ public class DossierActionsImpl implements DossierActions {
 				}
 				
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
-				
+				_log.info("govAgencyCode: "+govAgencyCode);
+				_log.info("serviceConfig: "+JSONFactoryUtil.looseSerialize(serviceConfig));
 				if (serviceConfig != null) {
 					List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfig.getServiceConfigId());
 					//
@@ -4587,11 +4588,11 @@ public class DossierActionsImpl implements DossierActions {
 					Date newDueDate = HolidayUtils.getDueDate(new Date(),
 							serviceProcess.getDurationCount(),
 							serviceProcess.getDurationUnit(), dossier.getGroupId());
-					if (newDueDate != null) {
-						dossier.setReceiveDate(new Date());
-						dossier.setDueDate(newDueDate);
-						bResult.put(DossierTerm.DUE_DATE, true);
-					}
+					//if (newDueDate != null) {
+					dossier.setReceiveDate(new Date());
+					dossier.setDueDate(newDueDate);
+					bResult.put(DossierTerm.DUE_DATE, true);
+					//}
 				}
 			}
 		}

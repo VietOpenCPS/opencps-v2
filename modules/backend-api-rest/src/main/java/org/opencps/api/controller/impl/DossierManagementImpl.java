@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.process.log.ProcessOutputStream;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -23,10 +23,12 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -56,6 +58,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.HttpResponse;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -88,13 +91,9 @@ import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.model.DictItemGroup;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
-import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
@@ -143,7 +142,6 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
-import org.opencps.dossiermgt.model.impl.DossierMarkImpl;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -3488,6 +3486,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response addDossierPublish(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierPublishModel input) {
 
+		_log.info("START PUPISH");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -3538,8 +3537,16 @@ public class DossierManagementImpl implements DossierManagement {
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
+			String dossierNo = input.getDossierNo();
 			
-			Dossier oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
+			Dossier oldDossier = null;
+			if (Validator.isNotNull(input.getReferenceUid())) {
+				oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
+			} else {
+				oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+				//
+				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+			}
 			
 			if (oldDossier == null || oldDossier.getOriginality() == 0) {
 				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
@@ -5261,6 +5268,27 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getUrlSiteInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String referenceUid) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			if (dossier != null) {
+				jsonData.put("dossierId", dossier.getDossierId());
+				// Get info group
+				Group group = GroupLocalServiceUtil.getGroup(groupId);
+				jsonData.put("url", PortalUtil.getPathFriendlyURLPublic() + group.getFriendlyURL());
+			}
+			
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(HttpServletResponse.SC_OK).entity(JSONFactoryUtil.looseSerialize(jsonData)).build();
 	}
 
 }

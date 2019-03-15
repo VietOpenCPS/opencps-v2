@@ -762,7 +762,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		object.setApplicantName(objectData.getString("applicantName"));
 		object.setApplicantIdType(objectData.getString("applicantIdType"));
 		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
-		object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		if(objectData.getLong("applicantIdDate") > 0)
+			object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
 		object.setAddress(objectData.getString("address"));
 		object.setContactName(objectData.getString("contactName"));
 		object.setContactTelNo(objectData.getString("contactTelNo"));
