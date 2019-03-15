@@ -838,15 +838,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setFullName(objectData.getString("fullName"));
 		object.setTitle(objectData.getString("title"));
 		object.setGender(objectData.getInt("gender"));
-		object.setBirthdate(new Date(objectData.getLong("birthdate")));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setMobile(objectData.getString("mobile"));
 		object.setEmail(objectData.getString("email"));
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
-		object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
-		object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
+		if(objectData.getLong("birthdate") > 0)
+			object.setBirthdate(new Date(objectData.getLong("birthdate")));
+		if(objectData.getLong("recruitDate") > 0)
+			object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
+		if(objectData.getLong("leaveDate") > 0)
+			object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
 		// object.setFileCertId(fileCertId);
 		// object.setFileSignId(fileSignId);
 		// object.setFileCertPath(fileCertPath);
@@ -881,5 +884,6 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	
 	public long countByG_EMPID(long groupId, long[] employeeIds) {
 		return employeePersistence.countByG_EMPID(groupId, employeeIds);
-	}	
+	}
+
 }
