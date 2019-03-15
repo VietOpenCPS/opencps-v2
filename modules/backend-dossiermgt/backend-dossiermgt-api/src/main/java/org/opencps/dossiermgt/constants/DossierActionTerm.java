@@ -36,4 +36,5 @@ public class DossierActionTerm {
 	public static final int EVENT_STATUS_SENDED_ERROR = 3;
 	
 	public static final String OUTSIDE_ACTION_9100 = "9100";
+	public static final String OUTSIDE_ACTION_ROLLBACK = "9000";
 }

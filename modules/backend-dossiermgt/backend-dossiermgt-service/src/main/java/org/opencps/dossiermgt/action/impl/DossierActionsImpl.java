@@ -3664,6 +3664,25 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		
+		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
+			if (dossierAction != null && dossierAction.isRollbackable()) {
+				DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
+			
+				DossierAction previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getPreviousActionId());
+				if (previousAction != null) {
+					DossierActionLocalServiceUtil.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+					DossierActionLocalServiceUtil.updateNextActionId(previousAction.getDossierActionId(), 0);
+					DossierLocalServiceUtil.rollback(dossier, previousAction);
+				}
+				else {
+					DossierActionLocalServiceUtil.removeAction(dossierAction.getDossierActionId());
+					dossier.setDossierActionId(0);
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+			}
+			
+		}
+
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
@@ -3717,6 +3736,30 @@ public class DossierActionsImpl implements DossierActions {
 			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
 		}
 		
+		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
+			if (dossier.getOriginDossierId() != 0) {
+				Dossier hslt = DossierLocalServiceUtil.fetchDossier(dossier.getOriginDossierId());
+				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
+						hslt.getDossierTemplateNo(), groupId);
+				String actionUserHslt = actionUser;
+				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+					Date now = new Date();
+					hslt.setSubmitDate(now);
+					hslt = DossierLocalServiceUtil.updateDossier(hslt);
+					try {
+						JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
+
+
+						payloadObj.put(DossierTerm.SUBMIT_DATE, now.getTime());
+						payload = payloadObj.toJSONString();
+					}
+					catch (JSONException e) {
+						_log.debug(e);
+					}
+				}
+				doAction(groupId, userId, hslt, optionHslt, null, DossierActionTerm.OUTSIDE_ACTION_ROLLBACK, actionUserHslt, actionNote, payload, assignUsers, payment, 0, context, errorModel);
+			}
+		}
 		return dossierAction;
 	}
 
