@@ -969,7 +969,18 @@ public class DossierManagementImpl implements DossierManagement {
 				try {
 					Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-					dossierPermission.checkPassword(dossier, secretKey);
+					List<Role> userRoles = user.getRoles();
+					boolean isAdmin = false;
+					for (Role r : userRoles) {
+						if (r.getName().startsWith("Administrator")) {
+							isAdmin = true;
+							break;
+						}
+					}
+					
+					if (!isAdmin) {
+						dossierPermission.checkPassword(dossier, secretKey);						
+					}
 
 					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 

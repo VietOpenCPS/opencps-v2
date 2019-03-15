@@ -336,6 +336,9 @@ public class DossierUtils {
 				model.setPermission(StringPool.BLANK);
 			}
 
+			if (isAdministratorData) {
+				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + "," : "") + userId + "_read");
+			}
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
 			model.setLastActionName(doc.get(DossierTerm.LAST_ACTION_NAME));
@@ -769,33 +772,33 @@ public class DossierUtils {
 
 		if (input.getDossierActionId() != 0) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(input.getDossierActionId());
+			if (dossierAction != null) {
+				model.setLastActionDate(APIDateTimeUtils.convertDateToString(dossierAction.getCreateDate(),
+						APIDateTimeUtils._NORMAL_PARTTERN));				
+				model.setLastActionName(dossierAction.getActionName());
+				model.setLastActionUser(dossierAction.getActionUser() != null ? dossierAction.getActionUser().toUpperCase() : StringPool.BLANK);
+				model.setLastActionNote(dossierAction.getActionNote());
+				model.setLastActionCode(dossierAction.getActionCode());
+				model.setLastActionUserId(dossierAction.getUserId());
 
-			model.setLastActionDate(APIDateTimeUtils.convertDateToString(dossierAction.getCreateDate(),
-					APIDateTimeUtils._NORMAL_PARTTERN));
-			model.setLastActionName(dossierAction.getActionName());
-			model.setLastActionUser(dossierAction.getActionUser() != null ? dossierAction.getActionUser().toUpperCase() : StringPool.BLANK);
-			model.setLastActionNote(dossierAction.getActionNote());
-			model.setLastActionCode(dossierAction.getActionCode());
-			model.setLastActionUserId(dossierAction.getUserId());
+				model.setStepCode(dossierAction.getStepCode());
+				model.setStepName(dossierAction.getStepName());
 
-			model.setStepCode(dossierAction.getStepCode());
-			model.setStepName(dossierAction.getStepName());
+				Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
+				if (dossierAction.getActionOverdue() != 0) {
+					model.setStepOverdue(StringPool.TRUE);
+				} else {
+					model.setStepOverdue(StringPool.TRUE);
+				}
 
-			if (dossierAction.getActionOverdue() != 0) {
-				model.setStepOverdue(StringPool.TRUE);
-			} else {
-				model.setStepOverdue(StringPool.TRUE);
+				model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
+						dossierAction.getGroupId(), dossierAction.getServiceProcessId());
+
+				model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
 			}
-
-			model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
-
-			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
-					dossierAction.getGroupId(), dossierAction.getServiceProcessId());
-
-			model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
-
 			// Check permission process dossier
 			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
 					input.getGroupId());
