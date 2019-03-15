@@ -5341,6 +5341,275 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns all the dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @return the matching dossiers
+	*/
+	public static List<Dossier> findByU_G_GAC_SC_DTNO_DS_O(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality) {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality);
+	}
+
+	/**
+	* Returns a range of all the dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @return the range of matching dossiers
+	*/
+	public static List<Dossier> findByU_G_GAC_SC_DTNO_DS_O(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		int start, int end) {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality, start,
+			end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByU_G_GAC_SC_DTNO_DS_O(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		int start, int end, OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality, start,
+			end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param start the lower bound of the range of dossiers
+	* @param end the upper bound of the range of dossiers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossiers
+	*/
+	public static List<Dossier> findByU_G_GAC_SC_DTNO_DS_O(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		int start, int end, OrderByComparator<Dossier> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality, start,
+			end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByU_G_GAC_SC_DTNO_DS_O_First(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O_First(userId, groupId,
+			govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+			originality, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier in the ordered set where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByU_G_GAC_SC_DTNO_DS_O_First(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByU_G_GAC_SC_DTNO_DS_O_First(userId, groupId,
+			govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+			originality, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByU_G_GAC_SC_DTNO_DS_O_Last(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O_Last(userId, groupId,
+			govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+			originality, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier in the ordered set where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByU_G_GAC_SC_DTNO_DS_O_Last(long userId,
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		return getPersistence()
+				   .fetchByU_G_GAC_SC_DTNO_DS_O_Last(userId, groupId,
+			govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+			originality, orderByComparator);
+	}
+
+	/**
+	* Returns the dossiers before and after the current dossier in the ordered set where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param dossierId the primary key of the current dossier
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier
+	* @throws NoSuchDossierException if a dossier with the primary key could not be found
+	*/
+	public static Dossier[] findByU_G_GAC_SC_DTNO_DS_O_PrevAndNext(
+		long dossierId, long userId, long groupId, String govAgencyCode,
+		String serviceCode, String dossierTemplateNo, String dossierStatus,
+		int originality, OrderByComparator<Dossier> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence()
+				   .findByU_G_GAC_SC_DTNO_DS_O_PrevAndNext(dossierId, userId,
+			groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+			dossierStatus, originality, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63; from the database.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	*/
+	public static void removeByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, int originality) {
+		getPersistence()
+			.removeByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality);
+	}
+
+	/**
+	* Returns the number of dossiers where userId = &#63; and groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and originality = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param serviceCode the service code
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierStatus the dossier status
+	* @param originality the originality
+	* @return the number of matching dossiers
+	*/
+	public static int countByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, int originality) {
+		return getPersistence()
+				   .countByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality);
+	}
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

@@ -230,7 +230,7 @@ public class MultipartUtility {
 
 		// checks server's status code first
 		int status = httpConn.getResponseCode();
-		_log.info("Status: " + status);
+		_log.debug("Status: " + status);
 		if (status == HttpURLConnection.HTTP_OK) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 			String line = null;

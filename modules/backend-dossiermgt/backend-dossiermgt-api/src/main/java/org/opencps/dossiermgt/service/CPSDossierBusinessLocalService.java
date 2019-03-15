@@ -81,6 +81,14 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
+	public Dossier addDossierPublish(long groupId, Company company, User user,
+		ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
 	public PaymentFile createPaymentFileByDossierId(long groupId,
 		ServiceContext serviceContext, String id, PaymentFileInputModel input)
 		throws UnauthenticationException, PortalException, Exception;

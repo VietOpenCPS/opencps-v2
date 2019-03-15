@@ -92,7 +92,9 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
@@ -275,11 +277,10 @@ public class CPSDossierBusinessLocalServiceImpl
 					String delegateEmail = dossier.getDelegateEmail();
 					String delegateIdNo = dossier.getGovAgencyCode();
 					
-//					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo());
-//					long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
-					
+					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
+					long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
 					//Khởi tạo hồ sơ liên thông
-					Dossier hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
+					Dossier hsltDossier = dossierLocalService.initDossier(groupId, hsltDossierId, UUID.randomUUID().toString(), 
 							dossier.getCounter(), dossier.getServiceCode(),
 							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
@@ -2506,7 +2507,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
-		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
+//		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
+		ActionConfig ac = actionConfig;
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		
 		if (Validator.isNotNull(payload)) {
@@ -2526,6 +2528,11 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossierActionLocalService.updateState(previousAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
 					dossierActionLocalService.updateNextActionId(previousAction.getDossierActionId(), 0);
 					dossierLocalService.rollback(dossier, previousAction);
+				}
+				else {
+					dossierActionLocalService.removeAction(dossierAction.getDossierActionId());
+					dossier.setDossierActionId(0);
+					dossierLocalService.updateDossier(dossier);
 				}
 			}
 			
@@ -2580,6 +2587,29 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
 			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+		}
+		
+		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
+			if (dossier.getOriginDossierId() != 0) {
+				Dossier hslt = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
+						hslt.getDossierTemplateNo(), groupId);
+				String actionUserHslt = actionUser;
+				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+					Date now = new Date();
+					hslt.setSubmitDate(now);
+					hslt = dossierLocalService.updateDossier(hslt);
+					try {
+						JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
+						payloadObj.put(DossierTerm.SUBMIT_DATE, now.getTime());
+						payload = payloadObj.toJSONString();
+					}
+					catch (JSONException e) {
+						_log.debug(e);
+					}
+				}
+				doAction(groupId, userId, hslt, optionHslt, null, DossierActionTerm.OUTSIDE_ACTION_ROLLBACK, actionUserHslt, actionNote, payload, assignUsers, payment, 0, context);
+			}
 		}
 		
 		return dossierAction;
@@ -3233,10 +3263,14 @@ public class CPSDossierBusinessLocalServiceImpl
 
 //			List<Dossier> oldDossiers = DossierLocalServiceUtil.getByNotO_DS_SC_GC(groupId, 
 //					0, StringPool.BLANK, input.getServiceCode(), input.getGovAgencyCode());
-			List<Dossier> oldDossiers = dossierLocalService.getByU_G_C_DS_SC_GC_O(
-					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
-
+//			List<Dossier> oldDossiers = dossierLocalService.getByU_G_C_DS_SC_GC_O(
+//					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), 0l, Integer.valueOf(input.getOriginality()));
+			List<Dossier> oldDossiers = dossierLocalService.getByU_G_GAC_SC_DTNO_DS_O(
+					userId, groupId, input.getServiceCode(), input.getGovAgencyCode(), input.getDossierTemplateNo(), StringPool.BLANK, Integer.valueOf(input.getOriginality()));
+			
 			Dossier dossier = null;
+			
+			Dossier oldRefDossier = Validator.isNotNull(input.getReferenceUid()) ? dossierLocalService.getByRef(groupId, input.getReferenceUid()) : null;
 			
 			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 				online = true;
@@ -3247,7 +3281,27 @@ public class CPSDossierBusinessLocalServiceImpl
 			Long sampleCount = (option != null ? option.getSampleCount() : 1l);
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
-			if (oldDossiers.size() > 0) {
+			if (oldRefDossier != null) {
+				dossier = oldRefDossier;
+				dossier.setSubmitDate(new Date());
+				ServiceProcess serviceProcess = process;
+				
+				double durationCount = 0;
+				int durationUnit = 0;
+				if (serviceProcess != null ) {
+					durationCount = serviceProcess.getDurationCount();
+					durationUnit = serviceProcess.getDurationUnit();
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
+				}
+
+				if (durationCount > 0) {
+					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					dossier.setDueDate(dueDate);
+				}
+				
+			}
+			else if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
 				dossier = oldDossiers.get(0);
 				dossier.setApplicantName(input.getApplicantName());
@@ -4078,6 +4132,98 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossier;
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public Dossier addDossierPublish(long groupId, Company company,
+			User user, ServiceContext serviceContext, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
+
+		BackendAuth auth = new BackendAuthImpl();
+		DossierActions actions = new DossierActionsImpl();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String referenceUid = input.getReferenceUid();
+			int counter = 0;
+			String serviceCode = input.getServiceCode();
+			String serviceName = input.getServiceName();
+			String govAgencyCode = input.getGovAgencyCode();
+			String govAgencyName = input.getGovAgencyName();
+			String applicantName = input.getApplicantName();
+			String applicantType = input.getApplicantIdType();
+			String applicantIdNo = input.getApplicantIdNo();
+			String applicantIdDate = input.getApplicantIdDate();
+			String address = input.getAddress();
+			String cityCode = input.getCityCode();
+			String cityName = input.getCityName();
+			String districtCode = input.getDistrictCode();
+			String districtName = input.getDistrictName();
+			String wardCode = input.getWardCode();
+			String wardName = input.getWardName();
+			String contactName = input.getContactName();
+			String contactTelNo = input.getContactTelNo();
+			String contactEmail = input.getContactEmail();
+			String dossierTemplateNo = input.getDossierTemplateNo();
+			String password = input.getPassword();
+			String online = input.getOnline();
+			String applicantNote = input.getApplicantNote();
+			int originality = 0;
+			long createDateLong = GetterUtil.getLong(input.getCreateDate());
+			long modifiedDateLong = GetterUtil.getLong(input.getModifiedDate());
+			long submitDateLong = GetterUtil.getLong(input.getSubmitDate());
+			long receiveDateLong = GetterUtil.getLong(input.getReceiveDate());
+			long dueDateLong = GetterUtil.getLong(input.getDueDate());
+			long releaseDateLong = GetterUtil.getLong(input.getReleaseDate());
+			long finishDateLong = GetterUtil.getLong(input.getFinishDate());
+			long cancellingDateLong = GetterUtil.getLong(input.getCancellingDate());
+			long correcttingDateLong = GetterUtil.getLong(input.getCorrecttingDate());
+			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
+			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
+			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			String submissionNote = input.getSubmissionNote();
+			String lockState = input.getLockState();
+			String dossierNo = input.getDossierNo();
+			
+			Dossier oldDossier = null;
+			if (Validator.isNotNull(input.getReferenceUid())) {
+				oldDossier = getDossier(input.getReferenceUid(), groupId);
+			} else {
+			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+			}
+			   
+			if (oldDossier == null || oldDossier.getOriginality() == 0) {
+				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+						govAgencyCode, govAgencyName, applicantName, applicantType,
+						applicantIdNo, applicantIdDate, address, cityCode,
+							cityName, districtCode, districtName, wardCode, wardName,
+							contactName, contactTelNo, contactEmail,
+							dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+							StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
+							originality, 
+							createDateLong != 0 ? new Date(createDateLong) : null,
+							modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+							submitDateLong != 0 ? new Date(submitDateLong) : null,
+							receiveDateLong != 0 ? new Date(receiveDateLong) : null,
+							dueDateLong != 0 ? new Date(dueDateLong) : null,
+							releaseDateLong != 0 ? new Date(releaseDateLong) : null,
+							finishDateLong != 0 ? new Date(finishDateLong) : null,
+							cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
+							correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
+							endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
+							extendDateLong != 0 ? new Date(extendDateLong) : null,
+							processDateLong != 0 ? new Date(processDateLong) : null,
+							input.getDossierNo(), input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(), input.getDossierSubStatusText(),
+							input.getDossierActionId() != null ? input.getDossierActionId(): 0, submissionNote, lockState, input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(), 
+							input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(), 
+							input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(), input.getDurationUnit(), input.getDossierName(), input.getProcessNo(),
+							serviceContext);
+				
+				return dossier;
+			}
+			return oldDossier;
+	}
+	
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";

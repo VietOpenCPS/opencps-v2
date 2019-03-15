@@ -592,6 +592,15 @@
             <finder-column name="originality" comparator="&gt;="></finder-column>
             <finder-column name="processNo"></finder-column>
 		</finder>
+        <finder name="U_G_GAC_SC_DTNO_DS_O" return-type="Collection">
+        	<finder-column name="userId"></finder-column>
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+            <finder-column name="serviceCode"></finder-column>
+            <finder-column name="dossierTemplateNo"></finder-column>
+            <finder-column name="dossierStatus"></finder-column>
+            <finder-column name="originality"></finder-column>
+        </finder>		
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

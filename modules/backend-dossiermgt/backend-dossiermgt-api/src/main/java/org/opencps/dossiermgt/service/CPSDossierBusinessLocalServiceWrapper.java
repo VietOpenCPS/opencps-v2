@@ -65,6 +65,18 @@ public class CPSDossierBusinessLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier addDossierPublish(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return _cpsDossierBusinessLocalService.addDossierPublish(groupId,
+			company, user, serviceContext, input);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(
 		long groupId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,

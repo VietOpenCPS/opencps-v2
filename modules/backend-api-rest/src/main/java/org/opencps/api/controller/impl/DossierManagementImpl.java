@@ -3055,131 +3055,11 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierPublishModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		BackendAuth auth = new BackendAuthImpl();
-		DossierActions actions = new DossierActionsImpl();
 
 		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			//Get input
-			String referenceUid = input.getReferenceUid();
-			int counter = 0;
-			String serviceCode = input.getServiceCode();
-			String serviceName = input.getServiceName();
-			String govAgencyCode = input.getGovAgencyCode();
-			String govAgencyName = input.getGovAgencyName();
-			String applicantName = input.getApplicantName();
-			String applicantType = input.getApplicantIdType();
-			String applicantIdNo = input.getApplicantIdNo();
-			String applicantIdDate = input.getApplicantIdDate();
-			String address = input.getAddress();
-			String cityCode = input.getCityCode();
-			String cityName = input.getCityName();
-			String districtCode = input.getDistrictCode();
-			String districtName = input.getDistrictName();
-			String wardCode = input.getWardCode();
-			String wardName = input.getWardName();
-			String contactName = input.getContactName();
-			String contactTelNo = input.getContactTelNo();
-			String contactEmail = input.getContactEmail();
-			String dossierTemplateNo = input.getDossierTemplateNo();
-			String password = input.getPassword();
-			String online = input.getOnline();
-			String applicantNote = input.getApplicantNote();
-			int originality = 0;
-			long createDateLong = GetterUtil.getLong(input.getCreateDate());
-			long modifiedDateLong = GetterUtil.getLong(input.getModifiedDate());
-			long submitDateLong = GetterUtil.getLong(input.getSubmitDate());
-			long receiveDateLong = GetterUtil.getLong(input.getReceiveDate());
-			long dueDateLong = GetterUtil.getLong(input.getDueDate());
-			long releaseDateLong = GetterUtil.getLong(input.getReleaseDate());
-			long finishDateLong = GetterUtil.getLong(input.getFinishDate());
-			long cancellingDateLong = GetterUtil.getLong(input.getCancellingDate());
-			long correcttingDateLong = GetterUtil.getLong(input.getCorrecttingDate());
-			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
-			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
-			long processDateLong = GetterUtil.getLong(input.getProcessDate());
-			String submissionNote = input.getSubmissionNote();
-			String lockState = input.getLockState();
-			String dossierNo = input.getDossierNo();
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossierPublish(groupId, company, user, serviceContext, DossierUtils.convertFormModelToPublishModel(input));
 			
-//			Dossier oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
-			Dossier oldDossier = null;
-			if (Validator.isNotNull(input.getReferenceUid())) {
-				oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
-			} else {
-			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
-			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-			}
-			   
-			if (oldDossier == null || oldDossier.getOriginality() == 0) {
-				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
-						govAgencyCode, govAgencyName, applicantName, applicantType,
-						applicantIdNo, applicantIdDate, address, cityCode,
-							cityName, districtCode, districtName, wardCode, wardName,
-							contactName, contactTelNo, contactEmail,
-							dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-							StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
-							originality, 
-							createDateLong != 0 ? new Date(createDateLong) : null,
-							modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
-							submitDateLong != 0 ? new Date(submitDateLong) : null,
-							receiveDateLong != 0 ? new Date(receiveDateLong) : null,
-							dueDateLong != 0 ? new Date(dueDateLong) : null,
-							releaseDateLong != 0 ? new Date(releaseDateLong) : null,
-							finishDateLong != 0 ? new Date(finishDateLong) : null,
-							cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
-							correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
-							endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
-							extendDateLong != 0 ? new Date(extendDateLong) : null,
-							processDateLong != 0 ? new Date(processDateLong) : null,
-							input.getDossierNo(), input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(), input.getDossierSubStatusText(),
-							input.getDossierActionId() != null ? input.getDossierActionId(): 0, submissionNote, lockState, input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(), 
-							input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(), 
-							input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(), input.getDurationUnit(), input.getDossierName(), input.getProcessNo(),
-							serviceContext);
-	
-//				dossier.setDossierNo(input.getDossierNo());
-//				dossier.setDossierStatus(input.getDossierStatus());
-//				dossier.setDossierStatusText(input.getDossierStatusText());
-//				dossier.setDossierSubStatus(input.getDossierSubStatus());
-//				dossier.setDossierSubStatusText(input.getDossierSubStatusText());
-//				dossier.setDossierActionId(input.getDossierActionId() != null ? input.getDossierActionId(): 0);
-//				dossier.setSubmissionNote(submissionNote);
-//				dossier.setLockState(lockState);
-//				dossier.setCounter(input.getCounter() != null ? input.getCounter() : 0);
-//				dossier.setPostalAddress(input.getPostalAddress());
-//				dossier.setPostalCityCode(input.getPostalCityCode());
-//				dossier.setPostalCityName(input.getPostalCityName());
-//				dossier.setDelegateName(input.getDelegateName());
-//				dossier.setDelegateAddress(input.getDelegateAddress());
-//				dossier.setDelegateIdNo(input.getDelegateIdNo());
-//				dossier.setDelegateTelNo(input.getDelegateTelNo());
-//				dossier.setDelegateEmail(input.getDelegateEmail());
-//				dossier.setDelegateAddress(input.getDelegateAddress());
-//				dossier.setDelegateCityCode(input.getDelegateCityCode());
-//				dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
-//				dossier.setDelegateWardCode(input.getDelegateWardCode());
-//				dossier.setDelegateCityName(input.getDelegateCityName());
-//				dossier.setDelegateDistrictName(input.getDelegateDistrictName());
-//				dossier.setDelegateWardName(input.getDelegateWardName());
-//				dossier.setDurationCount(input.getDurationCount());
-//				dossier.setDurationUnit(input.getDurationUnit());
-//				dossier.setSampleCount(input.getSampleCount() != null ? input.getSampleCount() : 0l);
-//				dossier.setDossierName(input.getDossierName());
-//				dossier.setProcessNo(input.getProcessNo());
-				
-				//Update dossier
-//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
-
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
-			}
-			else {
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(oldDossier)).build();				
-			}
+			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();				
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -4841,5 +4721,4 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
 }

@@ -71,6 +71,18 @@ public class CPSDossierBusinessLocalServiceUtil {
 			formData, removed, eForm, modifiedDate);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier addDossierPublish(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return getService()
+				   .addDossierPublish(groupId, company, user, serviceContext,
+			input);
+	}
+
 	public static org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(
 		long groupId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,

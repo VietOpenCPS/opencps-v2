@@ -302,6 +302,11 @@ public interface DossierLocalService extends BaseLocalService,
 		String serviceCode, String govAgencyCode, long dossierActionId,
 		int originality);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> getByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, int originality);
+
 	/**
 	* Returns the dossier with the primary key.
 	*
