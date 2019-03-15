@@ -293,6 +293,11 @@ public interface DossierLocalService extends BaseLocalService,
 		String serviceCode, String govAgencyCode, long dossierActionId,
 		int originality);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> getByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, int originality);
+
 	/**
 	* Returns the dossier with the primary key.
 	*
@@ -420,6 +425,7 @@ public interface DossierLocalService extends BaseLocalService,
 		ProcessOption processOption, ServiceContext context)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
@@ -433,6 +439,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, ServiceContext serviceContext);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
