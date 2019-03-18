@@ -4723,6 +4723,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.countByORIGIN_NO(originDossierNo);
 	}
 
+	public List<Dossier> getByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId, String govAgencyCode, String serviceCode, String dossierTemplateNo, String dossierStatus, int originality) {
+		return dossierPersistence.findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus, originality);
+	}
+	
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

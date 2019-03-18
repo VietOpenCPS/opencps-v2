@@ -372,6 +372,14 @@ public class DossierLocalServiceUtil {
 			govAgencyCode, dossierActionId, originality);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByU_G_GAC_SC_DTNO_DS_O(
+		long userId, long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, int originality) {
+		return getService()
+				   .getByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, originality);
+	}
+
 	/**
 	* Returns the dossier with the primary key.
 	*
