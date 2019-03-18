@@ -32,6 +32,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.util.TimeComingUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
@@ -248,18 +249,27 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			double durationCount = object.getDurationCount();
 			double durationUnit = object.getDurationUnit();
-			long durationComing = 0;
+//			if (durationCount > 0) {
+//				if ((int)durationUnit == 0) {
+//					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
+//				} else {
+//					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
+//				}
+//				long dueDateComing = dueDateTime - durationComing;
+//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
+//			} else {
+//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
+//			}
+			
 			if (durationCount > 0) {
-				if ((int)durationUnit == 0) {
-					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
-				} else {
-					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
-				}
-				long dueDateComing = dueDateTime - durationComing;
-				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
+				double durationComing = durationCount / 5;
+				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+						object.getGroupId());
+				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 			} else {
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
 			}
+			
 			
 
 			// add number fields
