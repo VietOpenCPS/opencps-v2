@@ -3572,6 +3572,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
 			String dossierNo = input.getDossierNo();
+			_log.info("dossierNo: "+dossierNo);
 			
 			Dossier oldDossier = null;
 			if (Validator.isNotNull(input.getReferenceUid())) {
@@ -3581,7 +3582,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//
 				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 			}
-			
+			_log.info("oldDossier: "+oldDossier);
 			if (oldDossier == null || oldDossier.getOriginality() == 0) {
 				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
 						govAgencyCode, govAgencyName, applicantName, applicantType,

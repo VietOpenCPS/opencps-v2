@@ -147,19 +147,20 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DELIVERABLECODE_COLUMN_BITMASK = 2L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
-	public static final long DOSSIERPARTNO_COLUMN_BITMASK = 8L;
-	public static final long DOSSIERPARTTYPE_COLUMN_BITMASK = 16L;
-	public static final long DOSSIERTEMPLATENO_COLUMN_BITMASK = 32L;
-	public static final long FILEENTRYID_COLUMN_BITMASK = 64L;
-	public static final long FILETEMPLATENO_COLUMN_BITMASK = 128L;
-	public static final long GROUPID_COLUMN_BITMASK = 256L;
-	public static final long ISNEW_COLUMN_BITMASK = 512L;
-	public static final long ORIGINAL_COLUMN_BITMASK = 1024L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 2048L;
-	public static final long REMOVED_COLUMN_BITMASK = 4096L;
-	public static final long UUID_COLUMN_BITMASK = 8192L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 16384L;
+	public static final long DISPLAYNAME_COLUMN_BITMASK = 4L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 8L;
+	public static final long DOSSIERPARTNO_COLUMN_BITMASK = 16L;
+	public static final long DOSSIERPARTTYPE_COLUMN_BITMASK = 32L;
+	public static final long DOSSIERTEMPLATENO_COLUMN_BITMASK = 64L;
+	public static final long FILEENTRYID_COLUMN_BITMASK = 128L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 256L;
+	public static final long GROUPID_COLUMN_BITMASK = 512L;
+	public static final long ISNEW_COLUMN_BITMASK = 1024L;
+	public static final long ORIGINAL_COLUMN_BITMASK = 2048L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 4096L;
+	public static final long REMOVED_COLUMN_BITMASK = 8192L;
+	public static final long UUID_COLUMN_BITMASK = 16384L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32768L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierFile"));
 
@@ -701,7 +702,17 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 
 	@Override
 	public void setDisplayName(String displayName) {
+		_columnBitmask |= DISPLAYNAME_COLUMN_BITMASK;
+
+		if (_originalDisplayName == null) {
+			_originalDisplayName = _displayName;
+		}
+
 		_displayName = displayName;
+	}
+
+	public String getOriginalDisplayName() {
+		return GetterUtil.getString(_originalDisplayName);
 	}
 
 	@Override
@@ -1092,6 +1103,8 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 		dossierFileModelImpl._setOriginalDossierPartType = false;
 
 		dossierFileModelImpl._originalFileTemplateNo = dossierFileModelImpl._fileTemplateNo;
+
+		dossierFileModelImpl._originalDisplayName = dossierFileModelImpl._displayName;
 
 		dossierFileModelImpl._originalFileEntryId = dossierFileModelImpl._fileEntryId;
 
@@ -1485,6 +1498,7 @@ public class DossierFileModelImpl extends BaseModelImpl<DossierFile>
 	private String _fileTemplateNo;
 	private String _originalFileTemplateNo;
 	private String _displayName;
+	private String _originalDisplayName;
 	private String _formData;
 	private long _fileEntryId;
 	private long _originalFileEntryId;

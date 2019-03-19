@@ -72,6 +72,7 @@ import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FaqManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
+import org.opencps.api.controller.impl.ImportDataManagementImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
 import org.opencps.api.controller.impl.NotificationManagementImpl;
@@ -202,6 +203,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new NotificationManagementImpl());
 		singletons.add(new FaqManagementImpl());
 		singletons.add(new CacheTestManagementImpl());
+		singletons.add(new ImportDataManagementImpl());
 		
 		singletons.add(this);
 		

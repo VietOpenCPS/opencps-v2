@@ -3022,6 +3022,76 @@ public interface DossierFilePersistence extends BasePersistence<DossierFile> {
 		String fileTemplateNo, boolean removed, boolean original);
 
 	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and dossierPartType = &#63; and displayName = &#63; or throws a {@link NoSuchDossierFileException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param dossierPartType the dossier part type
+	* @param displayName the display name
+	* @return the matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public DossierFile findByG_DID_PART_NAME(long groupId, long dossierId,
+		String dossierPartNo, int dossierPartType, String displayName)
+		throws NoSuchDossierFileException;
+
+	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and dossierPartType = &#63; and displayName = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param dossierPartType the dossier part type
+	* @param displayName the display name
+	* @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public DossierFile fetchByG_DID_PART_NAME(long groupId, long dossierId,
+		String dossierPartNo, int dossierPartType, String displayName);
+
+	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and dossierPartType = &#63; and displayName = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param dossierPartType the dossier part type
+	* @param displayName the display name
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public DossierFile fetchByG_DID_PART_NAME(long groupId, long dossierId,
+		String dossierPartNo, int dossierPartType, String displayName,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and dossierPartType = &#63; and displayName = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param dossierPartType the dossier part type
+	* @param displayName the display name
+	* @return the dossier file that was removed
+	*/
+	public DossierFile removeByG_DID_PART_NAME(long groupId, long dossierId,
+		String dossierPartNo, int dossierPartType, String displayName)
+		throws NoSuchDossierFileException;
+
+	/**
+	* Returns the number of dossier files where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and dossierPartType = &#63; and displayName = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param dossierPartType the dossier part type
+	* @param displayName the display name
+	* @return the number of matching dossier files
+	*/
+	public int countByG_DID_PART_NAME(long groupId, long dossierId,
+		String dossierPartNo, int dossierPartType, String displayName);
+
+	/**
 	* Caches the dossier file in the entity cache if it is enabled.
 	*
 	* @param dossierFile the dossier file

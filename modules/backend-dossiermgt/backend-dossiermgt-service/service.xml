@@ -721,7 +721,14 @@
 			<finder-column name="fileTemplateNo" />
 			<finder-column name="removed" />
 			<finder-column name="original" />
-		</finder>		        
+		</finder>
+		<finder return-type="DossierFile" name="G_DID_PART_NAME">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="dossierPartNo" />
+			<finder-column name="dossierPartType" />
+			<finder-column name="displayName" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
