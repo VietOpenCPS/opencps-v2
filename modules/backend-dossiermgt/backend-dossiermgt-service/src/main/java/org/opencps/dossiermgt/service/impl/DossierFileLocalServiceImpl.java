@@ -1298,5 +1298,10 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.findByG_DID_FTN_R_O(groupId, dossierIds, fileTemplateNo, removed, original);
 	}
 
+	// Import Data old system
+	public DossierFile getByG_DID_PART_NAME(long groupId, long dossierId, String dossierPartNo, int dossierPartType, String displayName) {
+		return dossierFilePersistence.fetchByG_DID_PART_NAME(groupId, dossierId, dossierPartNo, dossierPartType, displayName);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }
