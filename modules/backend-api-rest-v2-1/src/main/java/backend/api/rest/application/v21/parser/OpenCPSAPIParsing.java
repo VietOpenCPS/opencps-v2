@@ -159,6 +159,10 @@ public class OpenCPSAPIParsing {
 						isAdmin = true;
 						break;
 					}
+					if ("Administrator_data".equalsIgnoreCase(r.getName())) {
+						isAdmin = true;
+						break;
+					}
 				}
 				if (isAdmin) {
 					List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);

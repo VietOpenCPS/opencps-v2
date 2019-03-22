@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -779,13 +780,29 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
 			params.put(DossierTerm.DAY, query.getDay());
-			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
-			if (auth2.isAdmin(serviceContext, "admin")) {
-				
+			//backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+			//Check role follow dossier
+			boolean isAdmin = false;
+			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+			if (roles != null && roles.size() > 0) {
+				for (Role role : roles) {
+					// LamTV_Fix sonarqube
+					if ("Administrator".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+					if ("Administrator_data".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+				}
+			}
+			if (isAdmin) {
 			}
 			else {
 				params.put(DossierTerm.USER_ID, user.getUserId());
 			}
+
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -817,8 +834,8 @@ public class DossierManagementImpl implements DossierManagement {
 			} else {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
-			if (auth2.isAdmin(serviceContext, "admin")) {
-				
+			//if (auth2.isAdmin(serviceContext, "admin")) {
+			if (isAdmin) {
 			}
 			else {
 				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
