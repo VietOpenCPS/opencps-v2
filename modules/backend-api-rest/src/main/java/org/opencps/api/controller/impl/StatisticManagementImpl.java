@@ -7,9 +7,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -162,8 +164,23 @@ public class StatisticManagementImpl implements StatisticManagement {
 			JSONArray statistics = JSONFactoryUtil.createJSONArray();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			if (auth2.isAdmin(serviceContext, "admin")) {
-				
+			boolean isAdmin = false;
+			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+			if (roles != null && roles.size() > 0) {
+				for (Role role : roles) {
+					// LamTV_Fix sonarqube
+					if ("Administrator".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+					if ("Administrator_data".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+				}
+			}
+			//if (auth2.isAdmin(serviceContext, "admin")) {
+			if (isAdmin) {
 			}
 			else {
 				params.put(Field.USER_ID, String.valueOf(userId));
@@ -185,8 +202,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 							params.put(DossierTerm.STATUS, stepConfig.getDossierStatus());
 							params.put(DossierTerm.SUBSTATUS, stepConfig.getDossierSubStatus());
 							//TODO
-							if (auth2.isAdmin(serviceContext, "admin")) {
-								
+							if (isAdmin) {
 							}
 							else {
 								String permission = user.getUserId() + StringPool.UNDERLINE + "write";
@@ -215,8 +231,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 						//TODO
-						if (auth2.isAdmin(serviceContext, "admin")) {
-							
+						if (isAdmin) {
 						}
 						else {
 							String permission = user.getUserId() + StringPool.UNDERLINE + "write";
