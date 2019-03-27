@@ -199,7 +199,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	Log _log = LogFactoryUtil.getLog(ServiceInfoActionsImpl.class);
 
 	@Override
-	public JSONObject getStatisticByAdministration(ServiceContext context, long groupId)
+	public JSONObject getStatisticByAdministration(long groupId, Sort[] sorts, ServiceContext context)
 			throws ParseException, SearchException {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -218,8 +218,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
 		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.ADMINTRATION_CODE);
-
-		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
+		
 
 		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				searchContext);
@@ -227,7 +226,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		List<Document> documents = hits.toList();
 
 		for (Document doc : documents) {
-
 			long admCount = 0;
 
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
@@ -256,7 +254,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	}
 
 	@Override
-	public JSONObject getStatisticByDomain(ServiceContext context, long groupId)
+	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context)
 			throws ParseException, SearchException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
@@ -274,8 +272,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
 		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
-
-		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
 
 		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				searchContext);
@@ -446,7 +442,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	}
 
 	@Override
-	public JSONObject getStatisticByDomainFilterAdministration(ServiceContext context, long groupId,
+	public JSONObject getStatisticByDomainFilterAdministration(long groupId, Sort[] sorts, ServiceContext context,
 			String administration) throws ParseException, SearchException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
@@ -464,8 +460,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		paramsData.put(Field.GROUP_ID, String.valueOf(groupId));
 		paramsData.put(DictItemTerm.DICT_COLLECTION_CODE, DataMGTConstants.SERVICE_DOMAIN);
-
-		Sort[] sorts = new Sort[] { SortFactoryUtil.create(StringPool.BLANK + "_sortable", Sort.STRING_TYPE, true) };
 
 		Hits hits = DictItemLocalServiceUtil.luceneSearchEngine(paramsData, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				searchContext);

@@ -47,8 +47,10 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -460,15 +462,23 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByAgency(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, ServiceInfoSearchModel search) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		
 		try {
-			results = actions.getStatisticByAdministration(serviceContext, groupId);
+			//Sort agency
+			Sort[] sorts = null;
+			if (Validator.isNull(search.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
+			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
 			
 //			_log.info(results);
 			
@@ -481,7 +491,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String agency) {
+			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -489,11 +499,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
 		try {
+			//Sort agency
+			Sort[] sorts = null;
+			if (Validator.isNull(search.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
 			if (Validator.isNotNull(agency)) {
-				results = actions.getStatisticByDomainFilterAdministration(serviceContext, groupId, agency);
+				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
 			}
 			else {
-				results = actions.getStatisticByDomain(serviceContext, groupId);
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext);
 			}
 //			_log.info(results);
 			

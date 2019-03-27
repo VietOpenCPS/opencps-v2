@@ -67,7 +67,8 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByAgency(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search);
 
 	@GET
 	@Path("/statistics/domains")
@@ -80,7 +81,8 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getStatisticByDomain(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("agency") String agency);
+			@Context ServiceContext serviceContext, @QueryParam("agency") String agency,
+			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search);
 
 	@GET
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
