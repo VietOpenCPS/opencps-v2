@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -3382,8 +3383,18 @@ public class DossierActionsImpl implements DossierActions {
 												
 							//Generate PDF
 							String formData = dossierAction.getPayload();
+							JSONObject payloadTmp = JSONFactoryUtil.createJSONObject(formData);
+							if (payloadTmp != null && payloadTmp.has("complementDate")) {
+								if (payloadTmp.getLong("complementDate") > 0) {
+									Timestamp ts = new Timestamp(payloadTmp.getLong("complementDate"));
+									SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+									payloadTmp.put("complementDate", format.format(ts));
+								}
+							}
+							
 //							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
-							JSONObject formDataObj = processMergeDossierFormData(dossier, JSONFactoryUtil.createJSONObject(formData));
+							JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
+							
 							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 							formDataObj.put("url", context.getPortalURL());
 							Message message = new Message();
