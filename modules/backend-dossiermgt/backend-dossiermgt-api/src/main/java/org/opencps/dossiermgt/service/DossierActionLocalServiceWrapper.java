@@ -552,6 +552,21 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierAction updateImportDossierAction(
+		long groupId, long dossierActionId, long serviceProcessId,
+		String fromStepCode, String fromStepName, String fromSequenceNo,
+		String actionCode, String actionUser, String actionName,
+		String stepCode, String stepName, java.util.Date dueDate,
+		long nextActionId, int state,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionLocalService.updateImportDossierAction(groupId,
+			dossierActionId, serviceProcessId, fromStepCode, fromStepName,
+			fromSequenceNo, actionCode, actionUser, actionName, stepCode,
+			stepName, dueDate, nextActionId, state, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierAction updateNextActionId(
 		long actionId, long nextActionId)
 		throws com.liferay.portal.kernel.exception.PortalException {

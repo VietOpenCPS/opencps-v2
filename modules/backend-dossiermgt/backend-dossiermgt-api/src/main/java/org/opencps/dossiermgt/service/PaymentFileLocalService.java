@@ -351,7 +351,8 @@ public interface PaymentFileLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateApplicantFeeAmount(long paymentFileId,
-		int requestPayment, Long feeAmount, Long serviceAmount, Long shipAmount);
+		int requestPayment, Long feeAmount, Long serviceAmount,
+		Long shipAmount, String paymentNote, int originality);
 
 	/**
 	* Update info Epayment Profile

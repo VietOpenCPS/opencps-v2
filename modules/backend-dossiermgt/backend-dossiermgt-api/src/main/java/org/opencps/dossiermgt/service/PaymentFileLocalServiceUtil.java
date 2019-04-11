@@ -402,10 +402,10 @@ public class PaymentFileLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.PaymentFile updateApplicantFeeAmount(
 		long paymentFileId, int requestPayment, Long feeAmount,
-		Long serviceAmount, Long shipAmount) {
+		Long serviceAmount, Long shipAmount, String paymentNote, int originality) {
 		return getService()
 				   .updateApplicantFeeAmount(paymentFileId, requestPayment,
-			feeAmount, serviceAmount, shipAmount);
+			feeAmount, serviceAmount, shipAmount, paymentNote, originality);
 	}
 
 	/**

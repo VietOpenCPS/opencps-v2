@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,7 +22,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossier.model.DossierPublishModel;
+import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.exception.model.ExceptionModel;
@@ -60,9 +59,9 @@ public interface ImportDataManagement {
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("displayName") String displayName,
 			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("fileType") String fileType,
-			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("isSync") String isSync,
-			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "createDate", required = false) @Nullable Long createDate,
-			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "modifiedDate", required = false) @Nullable Long modifiedDate);
+			@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart("isSync") String isSync);
+			//@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "createDate", required = false) @Nullable Long createDate,
+			//@ApiParam(value = "Metadata of DossierFile", required = false) @Multipart(value = "modifiedDate", required = false) @Nullable Long modifiedDate);
 
 	@POST
 	@Path("/publish/importData")
@@ -76,5 +75,5 @@ public interface ImportDataManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response addDossierImportData(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam DossierPublishModel input);
+			@Context ServiceContext serviceContext, @BeanParam DossierPublishImportModel input);
 }

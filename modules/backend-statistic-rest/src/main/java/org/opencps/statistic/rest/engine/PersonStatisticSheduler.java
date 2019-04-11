@@ -1,6 +1,8 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
@@ -41,8 +43,8 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
-	private static volatile boolean isRunning = false;
-	//private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
+	private static volatile boolean isRunningPerson = false;
+	private final static Log _log = LogFactoryUtil.getLog(PersonStatisticSheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
@@ -51,8 +53,9 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
+		_log.info("START STATISTIC PERSON: " + isRunningPerson);
+		if (!isRunningPerson) {
+			isRunningPerson = true;
 		}
 		else {
 			return;
@@ -112,9 +115,10 @@ public class PersonStatisticSheduler extends BaseSchedulerEntryMessageListener {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
-		isRunning = false;
+		isRunningPerson = false;
+		_log.info("END STATISTIC PERSON: " + isRunningPerson);
 	}
 
 	private void processUpdatePersonStatistic(long groupId, int month, int year, GetPersonRequest payload,

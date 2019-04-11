@@ -431,9 +431,10 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	@Override
 	public org.opencps.dossiermgt.model.PaymentFile updateApplicantFeeAmount(
 		long paymentFileId, int requestPayment, Long feeAmount,
-		Long serviceAmount, Long shipAmount) {
+		Long serviceAmount, Long shipAmount, String paymentNote, int originality) {
 		return _paymentFileLocalService.updateApplicantFeeAmount(paymentFileId,
-			requestPayment, feeAmount, serviceAmount, shipAmount);
+			requestPayment, feeAmount, serviceAmount, shipAmount, paymentNote,
+			originality);
 	}
 
 	/**

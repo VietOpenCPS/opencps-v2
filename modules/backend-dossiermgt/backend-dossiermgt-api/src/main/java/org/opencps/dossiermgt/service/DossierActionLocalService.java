@@ -400,6 +400,14 @@ public interface DossierActionLocalService extends BaseLocalService,
 		int eventStatus, ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateImportDossierAction(long groupId,
+		long dossierActionId, long serviceProcessId, String fromStepCode,
+		String fromStepName, String fromSequenceNo, String actionCode,
+		String actionUser, String actionName, String stepCode, String stepName,
+		Date dueDate, long nextActionId, int state, ServiceContext context)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateNextActionId(long actionId, long nextActionId)
 		throws PortalException;
 

@@ -1,6 +1,8 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
@@ -45,8 +47,8 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener {
-	private static volatile boolean isRunning = false;
-	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
+	private static volatile boolean isRunningVoting = false;
+	private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
@@ -55,8 +57,9 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
+		_log.info("START STATISTIC VOTING: " + isRunningVoting);
+		if (!isRunningVoting) {
+			isRunningVoting = true;
 		}
 		else {
 			return;
@@ -130,9 +133,10 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
-		isRunning = false;
+		isRunningVoting = false;
+		_log.info("END STATISTIC VOTING: " + isRunningVoting);
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetVotingResultRequest payload,
@@ -209,7 +213,7 @@ public class VotingStatisticScheduler extends BaseSchedulerEntryMessageListener 
 	@Modified
 	protected void activate() {
 		schedulerEntryImpl.setTrigger(
-				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 10, TimeUnit.MINUTE));
+				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.MINUTE));
 		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
 	}
 

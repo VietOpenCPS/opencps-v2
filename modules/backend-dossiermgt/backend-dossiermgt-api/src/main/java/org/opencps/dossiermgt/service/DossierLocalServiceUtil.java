@@ -660,6 +660,34 @@ public class DossierLocalServiceUtil {
 			correctingDate, endorsementDate, extendDate, processDate, context);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier publishImportDossier(
+		long groupId, long dossierId, String referenceUid, int counter,
+		String serviceCode, String serviceName, String govAgencyCode,
+		String govAgencyName, String applicantName, String applicantIdType,
+		String applicantIdNo, java.util.Date applicantIdDate, String address,
+		String contactName, String contactTelNo, String contactEmail,
+		Boolean online, int originality, String dossierNo,
+		String dossierStatus, String dossierStatusText, long dossierActionId,
+		Double durationCount, Integer durationUnit, Integer sampleCount,
+		java.util.Date createDate, java.util.Date modifiedDate,
+		java.util.Date submitDate, java.util.Date receiveDate,
+		java.util.Date dueDate, java.util.Date releaseDate,
+		java.util.Date finishDate, java.util.Date extendDate,
+		java.util.Date processDate, String dossierTemplateNo,
+		String dossierTemplateName,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .publishImportDossier(groupId, dossierId, referenceUid,
+			counter, serviceCode, serviceName, govAgencyCode, govAgencyName,
+			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
+			address, contactName, contactTelNo, contactEmail, online,
+			originality, dossierNo, dossierStatus, dossierStatusText,
+			dossierActionId, durationCount, durationUnit, sampleCount,
+			createDate, modifiedDate, submitDate, receiveDate, dueDate,
+			releaseDate, finishDate, extendDate, processDate,
+			dossierTemplateNo, dossierTemplateName, serviceContext);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier removeDossier(
 		long groupId, long dossierId, String refId)
 		throws com.liferay.portal.kernel.exception.PortalException {

@@ -1,5 +1,23 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
+import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,39 +50,26 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
-import com.liferay.portal.kernel.messaging.DestinationNames;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
-	private static volatile boolean isRunning = false;
+	private static volatile boolean isRunningDossier = false;
 	
 	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
 	public static final int GROUP_TYPE_SITE = 1;
+	private static final Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
 	
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
+		_log.info("START STATISTIC DOSSIER: " + isRunningDossier);
+		if (!isRunningDossier) {
+			isRunningDossier = true;
 		}
 		else {
 			return;
@@ -356,9 +361,10 @@ public class DossierStatisticEngine extends BaseSchedulerEntryMessageListener {
 	//		}
 			}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
-		isRunning = false;
+		isRunningDossier = false;
+		_log.info("END STATISTIC DOSSIER: " + isRunningDossier);
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
