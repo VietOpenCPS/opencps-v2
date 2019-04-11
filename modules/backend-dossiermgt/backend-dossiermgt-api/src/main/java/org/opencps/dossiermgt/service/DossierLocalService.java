@@ -485,6 +485,21 @@ public interface DossierLocalService extends BaseLocalService,
 		Date correctingDate, Date endorsementDate, Date extendDate,
 		Date processDate, ServiceContext context) throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier publishImportDossier(long groupId, long dossierId,
+		String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String contactName,
+		String contactTelNo, String contactEmail, Boolean online,
+		int originality, String dossierNo, String dossierStatus,
+		String dossierStatusText, long dossierActionId, Double durationCount,
+		Integer durationUnit, Integer sampleCount, Date createDate,
+		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+		Date releaseDate, Date finishDate, Date extendDate, Date processDate,
+		String dossierTemplateNo, String dossierTemplateName,
+		ServiceContext serviceContext);
+
 	@Indexable(type = IndexableType.DELETE)
 	public Dossier removeDossier(long groupId, long dossierId, String refId)
 		throws PortalException;

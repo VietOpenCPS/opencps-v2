@@ -18,6 +18,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -751,10 +752,6 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			object.setAdministrationIndex(adm.getTreeIndex());
 		}
 
-		if (Validator.isNotNull(objectData.getString("administrationName"))) {
-			object.setAdministrationName(objectData.getString("administrationName"));
-		}
-		
 		if (Validator.isNotNull(dom)) {
 			object.setDomainName(dom.getItemName());
 			object.setDomainIndex(dom.getTreeIndex());

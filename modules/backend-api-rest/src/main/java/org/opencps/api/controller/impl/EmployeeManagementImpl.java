@@ -45,6 +45,7 @@ import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
@@ -54,7 +55,6 @@ import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -147,9 +147,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
-			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
-			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
+			Date birthDate = APIDateTimeUtils.convertStringToDate(input.getBirthdate(), APIDateTimeUtils._NORMAL_DATE);
+			Date recruitDate = APIDateTimeUtils.convertStringToDate(input.getRecruitDate(), APIDateTimeUtils._NORMAL_DATE);
+			Date leaveDate = APIDateTimeUtils.convertStringToDate(input.getLeaveDate(), APIDateTimeUtils._NORMAL_DATE);
 
 			String fullName = HtmlUtil.escape(input.getFullName());
 			String employeeNo = HtmlUtil.escape(input.getEmployeeNo());
@@ -182,9 +182,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
-			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
-			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
+			Date birthDate = APIDateTimeUtils.convertStringToDate(input.getBirthdate(), APIDateTimeUtils._NORMAL_DATE);
+			Date recruitDate = APIDateTimeUtils.convertStringToDate(input.getRecruitDate(), APIDateTimeUtils._NORMAL_DATE);
+			Date leaveDate = APIDateTimeUtils.convertStringToDate(input.getLeaveDate(), APIDateTimeUtils._NORMAL_DATE);
 
 			String fullName = HtmlUtil.escape(input.getFullName());
 			String employeeNo = HtmlUtil.escape(input.getEmployeeNo());

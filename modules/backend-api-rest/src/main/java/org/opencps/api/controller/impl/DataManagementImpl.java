@@ -725,8 +725,16 @@ public class DataManagementImpl implements DataManagement {
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
 
-			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = null;
+			
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] {
+						SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+			} else {
+				sorts = new Sort[] {
+						SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+			}
+			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);

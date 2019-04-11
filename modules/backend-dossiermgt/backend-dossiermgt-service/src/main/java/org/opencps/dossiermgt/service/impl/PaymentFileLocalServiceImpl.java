@@ -18,6 +18,8 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -697,18 +699,39 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount,
-			Long serviceAmount, Long shipAmount) {
+			Long serviceAmount, Long shipAmount, String paymentNote, int originality) {
 		try {
 			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(paymentFileId);
 			paymentFile.setFeeAmount(feeAmount);
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
 			paymentFile.setPaymentStatus(requestPayment);
+			if (Validator.isNotNull(paymentNote))
+				paymentFile.setPaymentNote(paymentNote);
 			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
-				paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
+				if(originality != DossierTerm.ORIGINALITY_MOTCUA) {
+					long paymentAmount = feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount();
+					paymentFile.setPaymentAmount(paymentAmount);
+				} else {
+					paymentFile.setAdvanceAmount(feeAmount + serviceAmount + shipAmount);
+				}
 			} else if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI
 					|| requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI) {
 				paymentFile.setPaymentAmount(feeAmount + serviceAmount + shipAmount - paymentFile.getAdvanceAmount());
+			}
+			// Update epayment Profile
+			try {
+				JSONObject epaymentProFile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+				if (Validator.isNull(epaymentProFile)) {
+					epaymentProFile = JSONFactoryUtil.createJSONObject();
+				}
+				epaymentProFile.put("serviceAmount", serviceAmount);
+				epaymentProFile.put("feeAmount", feeAmount);
+				epaymentProFile.put("paymentNote", paymentNote);
+				//
+				paymentFile.setEpaymentProfile(epaymentProFile.toJSONString());
+			} catch (JSONException e) {
+				_log.debug(e);
 			}
 
 			return paymentFilePersistence.update(paymentFile);

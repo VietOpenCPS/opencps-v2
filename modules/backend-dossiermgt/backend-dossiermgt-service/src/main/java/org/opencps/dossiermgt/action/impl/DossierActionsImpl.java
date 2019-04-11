@@ -153,6 +153,7 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
@@ -1601,6 +1602,7 @@ public class DossierActionsImpl implements DossierActions {
 								lstUser.addAll(processRoleAsStepDonedListUser(dossier, stepCodePunc, serviceProcessId, processStep, processStepRoleList));
 							}
 							else {
+								_log.info("StepCode: "+stepCode);
 								lstUser.addAll(processRoleAsStepListUser(dossier, stepCode, serviceProcessId, processStep, processStepRoleList));								
 							}
 						}
@@ -2822,14 +2824,13 @@ public class DossierActionsImpl implements DossierActions {
 					_log.debug(e);
 				}
 				PaymentFile oldPaymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
-				
 				if (oldPaymentFile != null) {
-					if (Validator.isNotNull(paymentNote))
-						oldPaymentFile.setPaymentNote(paymentNote);
-					//oldPaymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
+					//if (Validator.isNotNull(paymentNote))
+					//	oldPaymentFile.setPaymentNote(paymentNote);
 					try {
-						PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-								proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+						PaymentFile paymentFile = PaymentFileLocalServiceUtil.updateApplicantFeeAmount(
+								oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount,
+								serviceAmount, shipAmount, paymentNote, dossier.getOriginality());
 						
 						String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 								paymentFile.getPaymentFileId(), paymentFee, dossierId);
@@ -2846,7 +2847,6 @@ public class DossierActionsImpl implements DossierActions {
 					} catch (IOException e) {
 						_log.error(e);
 					}
-					
 				} else {
 					
 					paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
@@ -6540,6 +6540,31 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			}
 		}
 		
+		ProcessStep stepRoleAsStep = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, dossier.getGroupId(),
+				serviceProcessId);
+		if (stepRoleAsStep != null) {
+			List<ProcessStepRole> stepRoleAsStepList = ProcessStepRoleLocalServiceUtil
+					.findByP_S_ID(stepRoleAsStep.getProcessStepId());
+			if (stepRoleAsStepList != null && stepRoleAsStepList.size() > 0) {
+				for (ProcessStepRole role : stepRoleAsStepList) {
+					List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
+					for (User u : lstUsers) {
+						if (!u.isLockout() && u.isActive()) {
+							HashMap<String, Object> assigned = new HashMap<>();
+							assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
+							HashMap<String, Object> moderator = new HashMap<>();
+							moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
+							u.setModelAttributes(moderator);
+							u.setModelAttributes(assigned);
+							
+							lstUser.add(u);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		return lstUser;
 	}
 	
@@ -6993,5 +7018,67 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				dossier.setReleaseDate(now);
 			}
 		}
-	}		
+	}
+
+	@Override
+	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
+			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
+			String contactTelNo, String contactEmail, String dossierNo, String dossierStatus, String dossierStatusText,
+			Boolean online, int originality, int sampleCount, Double durationCount, Integer durationUnit,
+			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate,
+			Date finishDate, Date extendDate, Date processDate, ServiceContext serviceContext) {
+
+		Dossier dossier = null;
+		try {
+			String dossierTemplateNo = StringPool.BLANK;
+			String dossierTemplateName = StringPool.BLANK;
+			ProcessOption option = null;
+			if (Validator.isNotNull(serviceCode) && Validator.isNotNull(govAgencyCode)) {
+				ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceCode,
+						govAgencyCode);
+				if (config != null) {
+					List<ProcessOption> optionList = ProcessOptionLocalServiceUtil
+							.getByServiceProcessId(config.getServiceConfigId());
+					if (optionList != null && optionList.size() > 0) {
+						option = optionList.get(0);
+//						DossierTemplate template = DossierTemplateLocalServiceUtil
+//								.fetchDossierTemplate(option.getDossierTemplateId());
+//						if (template != null) {
+//							dossierTemplateNo = template.getTemplateNo();
+//							dossierTemplateName = template.getTemplateName();
+//						}
+					}
+				}
+			}
+			dossierTemplateNo = "MAU_SVHTTDL_TP99";
+			dossierTemplateName = "Mẫu giấy phép khác";
+			//Create DossierAction
+			String fromStepCode = "300";
+			String fromStepName = "Trả kết quả";
+			String fromSequenceNo = "04";
+			String actionCode = "4000";
+			String actionUser = "Tiếp nhận";
+			String actionName = "Trả hoàn thiện";
+			String stepCode = "400";
+			String stepName = "Hoàn thành";
+			DossierAction dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
+					option.getServiceProcessId(), fromStepCode, fromStepName, fromSequenceNo, actionCode, actionUser,
+					actionName, stepCode, stepName, null, 0l, 1, serviceContext);
+			//
+			dossier = DossierLocalServiceUtil.publishImportDossier(groupId, dossierId, referenceUid, counter,
+					serviceCode, serviceName, govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo,
+					applicantIdDate, address, contactName, contactTelNo, contactEmail, online, originality, dossierNo,
+					dossierStatus, dossierStatusText, dossierAction != null ? dossierAction.getDossierActionId() : 0,
+					durationCount, durationUnit, sampleCount, createDate, modifiedDate, submitDate, receiveDate,
+					dueDate, releaseDate, finishDate, extendDate, processDate, dossierTemplateNo, dossierTemplateName,
+					serviceContext);
+		} catch (PortalException e) {
+			_log.error(e);
+		}
+
+		return dossier;
+	}
+
+
 }

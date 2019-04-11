@@ -666,6 +666,61 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		object = dossierActionPersistence.update(object);
 
 		return object;
-	}	
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierAction updateImportDossierAction(long groupId, long dossierActionId, long serviceProcessId,
+			String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode, String actionUser,
+			String actionName, String stepCode, String stepName, Date dueDate, long nextActionId, int state,
+			ServiceContext context) throws PortalException {
+
+		DossierAction object = null;
+		long userId = 0l;
+		String fullName = StringPool.BLANK;
+		Date now = new Date();
+
+		if (context.getUserId() > 0) {
+			User userAction = userLocalService.getUser(context.getUserId());
+			userId = userAction.getUserId();
+			fullName = userAction.getFullName();
+		}
+
+		if (dossierActionId == 0) {
+			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
+
+			object = dossierActionPersistence.create(dossierActionId);
+
+			// Add audit fields
+			object.setCompanyId(context.getCompanyId());
+			object.setGroupId(groupId);
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userId);
+			object.setUserName(fullName);
+
+			object.setServiceProcessId(serviceProcessId);
+			object.setPreviousActionId(0);
+			object.setFromStepCode(fromStepCode);
+			object.setFromStepName(fromStepName);
+			object.setFromSequenceNo(fromSequenceNo);
+			object.setActionCode(actionCode);
+			if (Validator.isNotNull(actionUser)) {
+				object.setActionUser(actionUser);
+			} else {
+				object.setActionUser(fullName);
+			}
+			object.setActionName(actionName);
+			object.setStepCode(stepCode);
+			object.setStepName(stepName);
+			object.setDueDate(dueDate);
+			object.setNextActionId(nextActionId);
+			object.setState(state);
+
+			object = dossierActionPersistence.update(object);
+		}
+
+		return object;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

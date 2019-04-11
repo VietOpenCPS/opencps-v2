@@ -120,6 +120,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -5341,6 +5342,100 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 		return Response.status(HttpServletResponse.SC_OK).entity(JSONFactoryUtil.looseSerialize(jsonData)).build();
+	}
+
+	@Override
+	public Response getValidateProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String actionCode) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		results.put("value", false);
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long userId = user.getUserId();
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				long serviceProcessId = 0;
+				String stepCode = StringPool.BLANK;
+				boolean pending = false;
+				long dossierActionId = dossier.getDossierActionId();
+				// _log.info("dossierActionId: "+dossierActionId);
+				DossierAction dossierAction = null;
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+
+				if (dossierAction != null) {
+					serviceProcessId = dossierAction.getServiceProcessId();
+					stepCode = dossierAction.getStepCode();
+					pending = dossierAction.getPending();
+				}
+
+				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
+							.getByDossierAndUser(dossierActionId, userId);
+					// _log.info("User id: " + userId);
+					int enable = 2;
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+						if (dossier.getUserId() == userId && !pending) {
+							enable = 1;
+						}
+					}
+					if (dActionUser != null) {
+						int assign = dActionUser.getAssigned();
+						if (assign == 1 && !pending)
+							enable = 1;
+					}
+					_log.info("enable: "+enable);
+					List<ProcessAction> processActionList = ProcessActionLocalServiceUtil
+							.getProcessActionByG_SPID_PRESC(groupId, serviceProcessId, stepCode);
+					if (processActionList != null && processActionList.size() > 0) {
+						StringBuilder sb = new StringBuilder();
+						for (ProcessAction processAction : processActionList) {
+							if (enable == 1 && (processCheckEnable(processAction.getPreCondition(),
+									processAction.getAutoEvent(), dossier, actionCode, groupId))) {
+									sb.append(processAction.getActionCode());
+									sb.append(StringPool.SPACE);
+							}
+						}
+						_log.info("SB: "+sb.toString());
+						if (sb != null && sb.toString().contains(actionCode)) {
+							results.put("value", true);
+						}
+					}
+				}
+			}
+
+			return Response.status(200).entity(results.toJSONString()).build();
+		} catch (Exception e) {
+			_log.info(e);
+			return Response.status(200).entity(results.toJSONString()).build();
+		}
+	}
+
+	//LamTV_Process check permission action
+	public static final String AUTO_EVENT_SUBMIT = "submit";
+	public static final String AUTO_EVENT_TIMMER = "timer";
+	public static final String AUTO_EVENT_LISTENER = "listener";
+	public static final String AUTO_EVENT_SPECIAL = "special";
+	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
+			long groupId) {
+		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
+				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+			return false;
+		}
+		String[] preConditionArr = StringUtil.split(preCondition);
+		if (preConditionArr != null && preConditionArr.length > 0) {
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
+		}
+
+		return true;
 	}
 
 }

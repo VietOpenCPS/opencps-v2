@@ -38,6 +38,7 @@ import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import backend.utils.APIDateTimeUtils;
@@ -76,6 +77,8 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 		Indexer<DossierLog> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(DossierLog.class);
 		
+		long userId = model.getUserId();
+		long groupId = model.getGroupId();
 		if (true) {
 
 			ServiceContext serviceContext = new ServiceContext();
@@ -85,8 +88,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			JobposActions jobposActions = new JobposActions();
 
 			try {
-
-				long userId = model.getUserId();
 
 				Employee employee = employeeActions.getEmployeeByMappingUserId(model.getGroupId(), userId);
 
@@ -130,7 +131,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						if (dossierFileId != 0) {
 							DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
 
-							if (Validator.isNotNull(dossierFile)) {
+							if (Validator.isNotNull(dossierFile) && dossierFile.getFileEntryId() > 0) {
 								JSONObject file = JSONFactoryUtil.createJSONObject();
 
 								file.put("dossierFileId", dossierFile.getDossierFileId());
@@ -186,8 +187,13 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 
 				if (ok) {
+					String userNameLog = StringPool.BLANK;
+					if (userId > 0) {
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+						userNameLog = emp != null ? emp.getFullName() : model.getActionUser();
+					}
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
-							model.getActionUser(), content, "PROCESS_TYPE", payload.toString(),
+							userNameLog, content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
 				}
 
@@ -206,7 +212,12 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			serviceContext.setUserId(model.getUserId());
 
 			try {
-				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(),
+				String userNameLog = StringPool.BLANK;
+				if (userId > 0) {
+					Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					userNameLog = emp != null ? emp.getFullName() : model.getUserName();
+				}
+				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), userNameLog,
 						content, notificationType, payload, serviceContext);
 			} catch (SystemException | PortalException e) {
 				_log.debug(e);

@@ -4726,7 +4726,125 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> getByU_G_GAC_SC_DTNO_DS_O(long userId, long groupId, String govAgencyCode, String serviceCode, String dossierTemplateNo, String dossierStatus, int originality) {
 		return dossierPersistence.findByU_G_GAC_SC_DTNO_DS_O(userId, groupId, govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus, originality);
 	}
-	
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
+			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
+			String contactTelNo, String contactEmail, Boolean online, int originality, String dossierNo,
+			String dossierStatus, String dossierStatusText, long dossierActionId, Double durationCount,
+			Integer durationUnit, Integer sampleCount, Date createDate, Date modifiedDate, Date submitDate,
+			Date receiveDate, Date dueDate, Date releaseDate, Date finishDate, Date extendDate, Date processDate,
+			String dossierTemplateNo, String dossierTemplateName, ServiceContext serviceContext) {
+
+		long userId = serviceContext.getUserId();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+
+		Dossier dossier = getByRef(groupId, referenceUid);
+		if (dossier == null) {
+
+			dossierId = counterLocalService.increment(Dossier.class.getName());
+
+			dossier = dossierPersistence.create(dossierId);
+
+			dossier.setCreateDate(createDate);
+			dossier.setModifiedDate(modifiedDate);
+			dossier.setSubmitDate(submitDate);
+			dossier.setReceiveDate(receiveDate);
+			dossier.setDueDate(dueDate);
+			dossier.setReleaseDate(releaseDate);
+			dossier.setFinishDate(finishDate);
+			dossier.setExtendDate(extendDate);
+			dossier.setProcessDate(processDate);
+			
+			dossier.setCompanyId(serviceContext.getCompanyId());
+			dossier.setGroupId(groupId);
+			dossier.setUserId(userId);
+			dossier.setUserName(auditUser.getFullName());
+
+			// Add extent fields
+			dossier.setReferenceUid(referenceUid);
+			dossier.setCounter(counter);
+			dossier.setServiceCode(serviceCode);
+			dossier.setServiceName(serviceName);
+			dossier.setGovAgencyCode(govAgencyCode);
+			dossier.setGovAgencyName(govAgencyName);
+			dossier.setDossierTemplateNo(dossierTemplateNo);
+			dossier.setDossierTemplateName(dossierTemplateName);
+
+			dossier.setApplicantName(applicantName);
+			dossier.setApplicantIdType(applicantIdType);
+			dossier.setApplicantIdNo(applicantIdNo);
+			dossier.setApplicantIdDate(applicantIdDate);
+			dossier.setOnline(online);
+			dossier.setAddress(address);
+			dossier.setContactName(contactName);
+			dossier.setContactEmail(contactEmail);
+			dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(0);
+			dossier.setOriginality(originality);
+			dossier.setDossierNo(dossierNo);
+			dossier.setDossierStatus(dossierStatus);
+			dossier.setDossierStatusText(dossierStatusText);
+			dossier.setDossierActionId(dossierActionId);
+			dossier.setCounter(counter);
+
+			dossier.setDelegateName(applicantName);
+			dossier.setDelegateAddress(address);
+			dossier.setDelegateIdNo(applicantIdNo);
+			dossier.setDelegateTelNo(contactTelNo);
+			dossier.setDelegateEmail(contactEmail);
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
+			dossier.setSampleCount(sampleCount);
+			dossier.setDossierName(serviceName);
+
+			dossier = dossierPersistence.update(dossier);
+		} else {
+			dossier.setModifiedDate(modifiedDate);
+			dossier.setSubmitDate(submitDate);
+			dossier.setReceiveDate(receiveDate);
+			dossier.setDueDate(dueDate);
+			dossier.setReleaseDate(releaseDate);
+			dossier.setFinishDate(finishDate);
+			dossier.setExtendDate(extendDate);
+			dossier.setProcessDate(processDate);
+
+			if (Validator.isNotNull(address))
+				dossier.setAddress(address);
+			if (Validator.isNotNull(contactName))
+				dossier.setContactName(contactName);
+			if (Validator.isNotNull(contactEmail))
+				dossier.setContactEmail(contactEmail);
+			if (Validator.isNotNull(contactTelNo))
+				dossier.setContactTelNo(contactTelNo);
+
+			dossier.setViaPostal(0);
+			dossier.setOriginality(originality);
+			dossier.setDossierNo(dossierNo);
+			dossier.setDossierStatus(dossierStatus);
+			dossier.setDossierStatusText(dossierStatusText);
+			dossier.setDossierActionId(dossierActionId);
+			dossier.setCounter(counter);
+
+			dossier.setDelegateName(applicantName);
+			dossier.setDelegateAddress(address);
+			dossier.setDelegateIdNo(applicantIdNo);
+			dossier.setDelegateTelNo(contactTelNo);
+			dossier.setDelegateEmail(contactEmail);
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
+			dossier.setSampleCount(sampleCount);
+			dossier.setDossierName(serviceName);
+
+			dossier = dossierPersistence.update(dossier);
+		}
+
+		return dossier;
+	}
+
 	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 
 }

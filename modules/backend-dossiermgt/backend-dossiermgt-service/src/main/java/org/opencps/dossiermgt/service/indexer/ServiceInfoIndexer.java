@@ -1,16 +1,5 @@
 package org.opencps.dossiermgt.service.indexer;
 
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.dossiermgt.action.util.AccentUtils;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -23,6 +12,24 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.AccentUtils;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 @Component(
     immediate = true,
@@ -76,6 +83,30 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_NAME, object.getAdministrationName());
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_INDEX, object.getAdministrationIndex());
 		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_CODE, object.getDomainCode());
+		
+		//Sort by agency
+		DictCollection dictAgency = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.ADMINTRATION_CODE,
+				object.getGroupId());
+		if (Validator.isNotNull(dictAgency)) {
+			DictItem item = DictItemLocalServiceUtil.fetchByF_dictItemCode(object.getAdministrationCode(),
+					dictAgency.getDictCollectionId(), object.getGroupId());
+			if (item != null) {
+				document.addNumberSortable(DictItemTerm.SIBLING_AGENCY, GetterUtil.getInteger(item.getSibling()));
+			}
+		}
+		
+
+		//Sort by domain
+		DictCollection dictDomain = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.SERVICE_DOMAIN,
+				object.getGroupId());
+		if (Validator.isNotNull(dictDomain)) {
+			DictItem item = DictItemLocalServiceUtil.fetchByF_dictItemCode(object.getDomainCode(),
+					dictDomain.getDictCollectionId(), object.getGroupId());
+			if (item != null) {
+				document.addNumberSortable(DictItemTerm.SIBLING_DOMAIN, GetterUtil.getInteger(item.getSibling()));
+			}
+		}
+
 		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_NAME, object.getDomainName());
 		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_INDEX, object.getDomainIndex());
 		document.addNumberSortable(ServiceInfoTerm.MAX_LEVEL, object.getMaxLevel());

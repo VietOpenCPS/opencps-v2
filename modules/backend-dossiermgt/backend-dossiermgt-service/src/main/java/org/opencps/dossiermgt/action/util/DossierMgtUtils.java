@@ -1,7 +1,24 @@
 package org.opencps.dossiermgt.action.util;
 
-import java.util.Calendar;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -31,22 +48,6 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
@@ -439,7 +440,14 @@ public class DossierMgtUtils {
 				if (splitRoles.length == 2) {
 					result = result && checkRoleDone(splitRoles[1], dossier);
 				}																			
-			}			
+			}
+			if (preCondition.contains("roleCode=")) {
+				String[] splitRoles = preCondition.split("=");
+				System.out.println(splitRoles[0] + "," + splitRoles[1]);
+				if (splitRoles.length == 2) {
+					result = result && checkRoleCode(splitRoles[1], dossier);
+				}
+			}
 		}
 
 		return result;
@@ -526,6 +534,24 @@ public class DossierMgtUtils {
 		else {
 			return false;
 		}
+	}
+
+	private static boolean checkRoleCode(String roleCode, Dossier dossier) {
+		boolean flag = false;
+		if (Validator.isNotNull(roleCode)) {
+			if (roleCode.contains(StringPool.PLUS)) {
+				String[] splitRole = StringUtil.split(StringPool.PLUS);
+				if (splitRole != null && splitRole.length > 0) {
+					for (String role : splitRole) {
+						flag = checkRoleDone(role, dossier);
+						if (flag) break;
+					}
+				}
+			} else {
+				flag = checkRoleDone(roleCode, dossier);
+			}
+		}
+		return flag;
 	}
 	
 	private static boolean checkStepNotDone(String stepCode, Dossier dossier) {

@@ -58,6 +58,10 @@ public class DictItemTerm {
 	
 	public static final String SIBLING_SEARCH = "siblingSearch";
 	
+	public static final String SIBLING_AGENCY = "siblingAgency";
+	
+	public static final String SIBLING_DOMAIN = "siblingDomain";
+	
 	public static final String TREE_INDEX = "treeIndex";
 	
 	public static final String LEVEL = "level";
@@ -96,6 +100,10 @@ public class DictItemTerm {
 	public static final String SIBLING_SORTABLE = "sibling_sortable";
 	
 	public static final String SIBLING_SEARCH_SORTABLE = "siblingSearch_sortable";
+	
+	public static final String SIBLING_AGENCY_SORTABLE = "siblingAgency_sortable";
+	
+	public static final String SIBLING_DOMAIN_SORTABLE = "siblingDomain_sortable";
 	
 	public static final String TREE_INDEX_SORTABLE = "treeIndex_sortable";
 	
