@@ -119,11 +119,11 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 					for (DossierLog log : dossierLogs) {
 						long dossierFileId = 0;
-
 						try {
 							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
-
-							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
+							if (payloadFile.get("dossierFileId") != null) {
+								dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));								
+							}
 						} catch (Exception e) {
 							_log.debug(e);
 						}
@@ -141,6 +141,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 								files.put(file);
 							}
 						}
+						
 
 //						DossierLogLocalServiceUtil.deleteDossierLog(log);
 						indexer.delete(log);
@@ -155,8 +156,10 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
 					payload.put("dossierStatusText", jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
 				}
+				payload.put("dossierActionId", model.getDossierActionId());
 				payload.put("jobPosName", jobPosName);
 				payload.put("stepName", model.getActionName());
+				payload.put("stepCode", model.getStepCode());
 				payload.put("stepInstruction", model.getStepInstruction());
 				payload.put("files", files);
 
