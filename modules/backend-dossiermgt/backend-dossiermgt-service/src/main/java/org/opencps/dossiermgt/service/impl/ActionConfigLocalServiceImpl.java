@@ -332,6 +332,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 		object.setNotificationType(objectData.getString("notificationType"));
 		object.setDocumentType(objectData.getString("documentType"));
 		object.setMappingAction(objectData.getString("mappingAction"));
+		object.setDateOption(objectData.getInt("dateOption"));
 
 		actionConfigPersistence.update(object);
 

@@ -65,14 +65,18 @@ import org.opencps.api.v21.model.Steps.ProcessStep.Roles.StepRole;
 import org.opencps.api.v21.model.UserManagement;
 import org.opencps.api.v21.model.UserManagement.Roles.JobPos;
 import org.opencps.api.v21.model.UserManagement.Users.Employee;
+import org.opencps.api.v21.model.WorkingTimeList;
+import org.opencps.api.v21.model.WorkingTimeList.WorkingTime;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.HolidayInterface;
+import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.action.impl.HolidayActions;
+import org.opencps.datamgt.action.impl.WorkTimeActions;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -590,6 +594,31 @@ public class ProcessUpdateDBUtils {
 							// Check record exits DB
 							actions.updateHolidayDB(userId, groupId, cal.getTime(), description, holidayType);
 						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	//LamTV_Update WorkingTime to DB
+	public static boolean processUpdateWorkingTime(WorkingTimeList workingTimeList, String folderPath, long groupId,
+			long userId, ServiceContext serviceContext) {
+		try {
+			WorkTimeInterface actions = new WorkTimeActions();
+			//Create table ActionConfig
+			List<WorkingTime> workTimeList = workingTimeList.getWorkingTime();
+			if (workTimeList != null && workTimeList.size() > 0) {
+				for (WorkingTime workTime : workTimeList) {
+					int workTimeDay = workTime.getWorkTimeDay();
+					String workTimeHours = workTime.getWorkTimeHours();
+
+					if (Validator.isNotNull(workTimeDay) && workTimeDay > 0 && Validator.isNotNull(workTimeHours)) {
+						// Check record exits DB
+						actions.updateWorkTimeDB(userId, groupId, workTimeDay, workTimeHours);
 					}
 				}
 			}

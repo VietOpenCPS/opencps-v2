@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 		"applicantIdType", "applicantIdNo", "applicantIdDate", "address", "contactName", "contactTelNo", "contactEmail",
 		"online", "originality", "dossierNo", "createDate", "modifiedDate", "submitDate", "receiveDate", "dueDate",
 		"releaseDate", "finishDate", "extendDate", "processDate", "dossierStatus", "dossierStatusText", "counter",
-		"durationCount", "durationUnit", "sampleCount"
+		"durationCount", "durationUnit", "sampleCount", "dossierTemplateNo", "dossierTemplateName"
 })
 @XmlRootElement(name = "DossierPublishImportModel")
 public class DossierPublishImportModel {
@@ -86,6 +86,10 @@ public class DossierPublishImportModel {
 	protected Integer durationUnit;
 	@FormParam(value = "sampleCount")
 	protected Integer sampleCount;
+	@FormParam(value = "dossierTemplateNo")
+	protected String dossierTemplateNo;
+	@FormParam(value = "dossierTemplateName")
+	protected String dossierTemplateName;
 
 	public String getReferenceUid() {
 		return referenceUid;
@@ -273,6 +277,17 @@ public class DossierPublishImportModel {
 	public void setSampleCount(Integer sampleCount) {
 		this.sampleCount = sampleCount;
 	}
-
+	public String getDossierTemplateNo() {
+		return dossierTemplateNo;
+	}
+	public void setDossierTemplateNo(String dossierTemplateNo) {
+		this.dossierTemplateNo = dossierTemplateNo;
+	}
+	public String getDossierTemplateName() {
+		return dossierTemplateName;
+	}
+	public void setDossierTemplateName(String dossierTemplateName) {
+		this.dossierTemplateName = dossierTemplateName;
+	}
 
 }

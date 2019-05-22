@@ -40,6 +40,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
@@ -73,8 +74,8 @@ import org.osgi.service.component.annotations.Component;
 public class DossierIndexer extends BaseIndexer<Dossier> {
 	public static final String CLASS_NAME = Dossier.class.getName();
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	//private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+	//private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
 	@Override
 	public String getClassName() {
@@ -436,12 +437,15 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (Validator.isNotNull(object.getReferenceUid())) {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 			}
-//			if (Validator.isNotNull(object.getServiceCode())) {
-				document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
-//			}
-//			if (Validator.isNotNull(object.getServiceName())) {
-				document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
-//			}
+
+			document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
+			if (Validator.isNotNull(object.getServiceCode())) {
+				String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(object.getServiceCode());
+				document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+			}
+
+			document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
+
 			if (Validator.isNotNull(object.getServiceName())) {
 				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH,
 						SpecialCharacterUtils.splitSpecial(object.getServiceName()));
@@ -482,6 +486,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.CONTACT_TEL_NO, object.getContactTelNo());
 			document.addTextSortable(DossierTerm.CONTACT_EMAIL, object.getContactEmail());
 			document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());
+			if (Validator.isNotNull(object.getDossierTemplateNo())) {
+				String template = SpecialCharacterUtils.splitSpecial(object.getDossierTemplateNo());
+				document.addTextSortable(DossierTerm.TEMPLATE, template);
+			}
 			document.addTextSortable(DossierTerm.DOSSIER_NOTE, object.getDossierNote());
 			document.addTextSortable(DossierTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 			document.addTextSortable(DossierTerm.APPLICANT_NOTE, object.getApplicantNote());

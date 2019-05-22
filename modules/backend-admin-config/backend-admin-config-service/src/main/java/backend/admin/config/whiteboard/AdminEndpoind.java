@@ -93,6 +93,7 @@ public class AdminEndpoind extends Endpoint {
 	@Override
 	public void onOpen(Session session, EndpointConfig config) {
 
+		System.out.println("HAHAHAHAHAHA");
 		session.setMaxBinaryMessageBufferSize(8388608);
 		session.setMaxTextMessageBufferSize(8388608);
 		
@@ -391,14 +392,19 @@ public class AdminEndpoind extends Endpoint {
 				}
 				headers.set("localaccess", headerObject.getString("Token"));
 				headers.set("userid", headerObject.getString("USER_ID"));
+				_log.info("headerObject.getString(\"USER_ID\"): "+headerObject.getString("USER_ID"));
+				_log.info("TOKEN: "+headerObject.getString("Token"));
 				
 				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 				
+				_log.info("LINK: "+"http://" + portalURL + message.getString("api"));
 				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
 						HttpMethod.GET, entity, String.class);
 
+				_log.info("LINK: "+"http://" + portalURL + message.getString("api"));
 				String resultString = response.getBody();
 
+				_log.info("resultString: "+resultString);
 				JSONArray responeData = JSONFactoryUtil.createJSONArray();
 				try {
 					responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");

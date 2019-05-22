@@ -1,6 +1,7 @@
 package org.opencps.communication.scheduler;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseSchedulerEntryMessageListener;
@@ -82,7 +83,7 @@ public class OneMinute extends BaseSchedulerEntryMessageListener {
 							NotificationUtil.createMBMessageEntry(
 								notificationQueue, notificationtemplate,
 								serviceContext);
-						_log.info("messageEntry: "+messageEntry);
+						//_log.info("messageEntry: "+JSONFactoryUtil.looseSerialize(messageEntry));
 						//Process send SMS
 						boolean flagSend = false;
 						if(messageEntry.isSendSMS()){

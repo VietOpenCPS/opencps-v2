@@ -228,10 +228,18 @@ public class DossierManagementImpl implements DossierManagement {
 			if ("all".equals(agency)) {
 				agency = StringPool.BLANK;
 			}
-			String service = query.getService();
-			String template = query.getTemplate();
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
 			//Integer originality = GetterUtil.getInteger(query.getOriginality());
-			String originality = query.getOriginality();
+			//String originality = query.getOriginality();
 			String owner = query.getOwner();
 //			if (originality == -1) {
 //				owner = String.valueOf(false);
@@ -491,8 +499,18 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
-			String service = query.getService();
-			String template = query.getTemplate();
+
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
+
 			int year = query.getYear();
 			int month = query.getMonth();
 			String owner = query.getOwner();
@@ -715,8 +733,16 @@ public class DossierManagementImpl implements DossierManagement {
  			}
 
 			String agency = query.getAgency();
-			String service = query.getService();
-			String template = query.getTemplate();
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
 			String owner = query.getOwner();
 			// If user is citizen then default owner true
 			if (isCitizen) {
@@ -3153,114 +3179,118 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 		
-		for (ProcessSequence ps : lstSequences) {		
-			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-			sequenceObj.put("sequenceNo", ps.getSequenceNo());
-			sequenceObj.put("sequenceName", ps.getSequenceName());
-			sequenceObj.put("sequenceRole", ps.getSequenceRole());
-			sequenceObj.put("durationCount", ps.getDurationCount());
-			
-			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
-			}
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+		List<DossierAction> dossierActionListCheck = DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		if (dossierActionListCheck != null && dossierActionListCheck.size() == 1 && dossierActionListCheck.get(0).getStepCode().equals("400")) {
+		} else {
+			for (ProcessSequence ps : lstSequences) {		
+				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+				sequenceObj.put("sequenceNo", ps.getSequenceNo());
+				sequenceObj.put("sequenceName", ps.getSequenceName());
+				sequenceObj.put("sequenceRole", ps.getSequenceRole());
+				sequenceObj.put("durationCount", ps.getDurationCount());
 				
-			DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
-			if (lastAction != null) {
-				sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
-			}			
-			
-			if (lstDossierActions.size() > 0) {
-				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
-				if (lastDASequence.getActionOverdue() != 0) {
-					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
-					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+				if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+					sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
 				}
-			}
-			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
-			List<Long> lstUsers = new ArrayList<>();
-			
-			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				for (DossierActionUser dau : lstDus) {
-					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-					if (u != null) {
-						if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-							JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-							lstUsers.add(dau.getUserId());
-							assignUserObj.put("userId", dau.getUserId());
-							//TODO: Not update user
-							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
-							if (emp != null) {
-								assignUserObj.put("userName", emp.getFullName());
-							} else {
-								assignUserObj.put("userName", u.getFullName());
+				List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+				List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+					
+				DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
+				if (lastAction != null) {
+					sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+				}			
+				
+				if (lstDossierActions.size() > 0) {
+					DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
+					if (lastDASequence.getActionOverdue() != 0) {
+						String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
+						sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+					}
+				}
+				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
+				List<Long> lstUsers = new ArrayList<>();
+				
+				if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+					for (DossierActionUser dau : lstDus) {
+						User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+						if (u != null) {
+							if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+								JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+								lstUsers.add(dau.getUserId());
+								assignUserObj.put("userId", dau.getUserId());
+								//TODO: Not update user
+								Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+								if (emp != null) {
+									assignUserObj.put("userName", emp.getFullName());
+								} else {
+									assignUserObj.put("userName", u.getFullName());
+								}
+								
+								assignUserArr.put(assignUserObj);
 							}
-							
-							assignUserArr.put(assignUserObj);
 						}
 					}
 				}
-			}
-			for (DossierAction da : lstDossierActions) {
-				if (!lstUsers.contains(da.getUserId())) {
-					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
-					//TODO: Not update user
-					Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
-					if (emp != null) {
-						assignUserObj.put("userName", emp.getFullName());
-					} else {
-						assignUserObj.put("userName", da.getUserName());
+				for (DossierAction da : lstDossierActions) {
+					if (!lstUsers.contains(da.getUserId())) {
+						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
+						lstUsers.add(da.getUserId());
+						assignUserObj.put("userId", da.getUserId());
+						//TODO: Not update user
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
+						if (emp != null) {
+							assignUserObj.put("userName", emp.getFullName());
+						} else {
+							assignUserObj.put("userName", da.getUserName());
+						}
+						
+						assignUserArr.put(assignUserObj);					
 					}
-					
-					assignUserArr.put(assignUserObj);					
 				}
-			}
-			
-			sequenceObj.put("assignUsers", assignUserArr);
-			
-			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
-			for (DossierAction da : lstDossierActions) {
-				JSONObject actionObj = JSONFactoryUtil.createJSONObject();
+
+				sequenceObj.put("assignUsers", assignUserArr);
 				
-				actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
-				actionObj.put("fromStepCode", da.getFromStepCode());
-				actionObj.put("fromStepName", da.getFromStepName());
-				actionObj.put("sequenceNo", da.getSequenceNo());
-				actionObj.put("dossierId", da.getDossierId());
-				actionObj.put("serviceProcessId", da.getServiceProcessId());
-				actionObj.put("previousActionId", da.getPreviousActionId());
-				actionObj.put("actionCode", da.getActionCode());
-				actionObj.put("actionName", da.getActionName());
-				actionObj.put("actionNote", da.getActionNote());
-				actionObj.put("actionUser", da.getActionUser());
-				actionObj.put("actionOverdue", da.getActionOverdue());
-				actionObj.put("payload", da.getPayload());
-				actionObj.put("pending", da.getPending());
-				actionObj.put("rollbackable", da.getRollbackable());
-				actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
-				actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
-				actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
-				actionObj.put("nextActionId", da.getNextActionId());
-				actionObj.put("state", da.getState());
-				actionObj.put("stepCode", da.getStepCode());
-				actionObj.put("stepName", da.getStepName());
-				actionObj.put("userId", da.getUserId());				
-				if (mapFiles.containsKey(da.getDossierActionId())) {
-					actionObj.put("files", mapFiles.get(da.getDossierActionId()));
-				}
-				_log.info("Action obj: " + actionObj.toJSONString());
-				actionsArr.put(actionObj);
-			}			
-			
-			sequenceObj.put("actions", actionsArr);
-			
-			sequenceArr.put(sequenceObj);
-			
+				JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
+				for (DossierAction da : lstDossierActions) {
+					JSONObject actionObj = JSONFactoryUtil.createJSONObject();
+					
+					actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
+					actionObj.put("fromStepCode", da.getFromStepCode());
+					actionObj.put("fromStepName", da.getFromStepName());
+					actionObj.put("sequenceNo", da.getSequenceNo());
+					actionObj.put("dossierId", da.getDossierId());
+					actionObj.put("serviceProcessId", da.getServiceProcessId());
+					actionObj.put("previousActionId", da.getPreviousActionId());
+					actionObj.put("actionCode", da.getActionCode());
+					actionObj.put("actionName", da.getActionName());
+					actionObj.put("actionNote", da.getActionNote());
+					actionObj.put("actionUser", da.getActionUser());
+					actionObj.put("actionOverdue", da.getActionOverdue());
+					actionObj.put("payload", da.getPayload());
+					actionObj.put("pending", da.getPending());
+					actionObj.put("rollbackable", da.getRollbackable());
+					actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
+					actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
+					actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
+					actionObj.put("nextActionId", da.getNextActionId());
+					actionObj.put("state", da.getState());
+					actionObj.put("stepCode", da.getStepCode());
+					actionObj.put("stepName", da.getStepName());
+					actionObj.put("userId", da.getUserId());				
+					if (mapFiles.containsKey(da.getDossierActionId())) {
+						actionObj.put("files", mapFiles.get(da.getDossierActionId()));
+					}
+					_log.info("Action obj: " + actionObj.toJSONString());
+					actionsArr.put(actionObj);
+				}			
+				
+				sequenceObj.put("actions", actionsArr);
+				
+				sequenceArr.put(sequenceObj);
+				
+			}
 		}
-		
+
 		result.put("data", sequenceArr);
 		return result;
 	}

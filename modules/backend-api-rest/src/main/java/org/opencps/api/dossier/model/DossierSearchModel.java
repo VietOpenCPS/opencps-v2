@@ -113,7 +113,8 @@ import javax.xml.bind.annotation.XmlType;
     "originDossierId",
     "time",
     "register",
-    "day"
+    "day",
+    "paymentStatus"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -233,7 +234,7 @@ public class DossierSearchModel {
     protected String register;
 	@QueryParam(value = "day")
     protected int day;
-	
+
     public Integer getAssigned() {
 		return assigned;
 	}

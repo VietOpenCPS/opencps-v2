@@ -26,6 +26,8 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.AccentUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -65,7 +67,12 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		_log.info("object.getPrimaryKey(): "+object.getPrimaryKey());
 		_log.info("ServiceInfo: "+object.getServiceInfoId());
 
-		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, object.getServiceCode());
+		String serviceCode = object.getServiceCode();
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, serviceCode);
+		if (Validator.isNotNull(serviceCode)) {
+			String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(serviceCode);
+			document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+		}
 
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME, object.getServiceName());
 		//Convert serviceName

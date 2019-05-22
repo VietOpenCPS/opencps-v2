@@ -108,4 +108,10 @@ public class WorkTimeActions implements WorkTimeInterface {
 		return workTime;
 	}
 
+	@Override
+	public void updateWorkTimeDB(long userId, long groupId, int workTimeDay, String workTimeHours) throws NoSuchUserException {
+
+		WorkTimeLocalServiceUtil.updateWorkTimeDB(userId, groupId, workTimeDay, workTimeHours);
+	}
+
 }

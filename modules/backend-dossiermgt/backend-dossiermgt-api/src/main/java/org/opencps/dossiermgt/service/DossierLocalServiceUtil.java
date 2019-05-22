@@ -672,8 +672,7 @@ public class DossierLocalServiceUtil {
 		java.util.Date createDate, java.util.Date modifiedDate,
 		java.util.Date submitDate, java.util.Date receiveDate,
 		java.util.Date dueDate, java.util.Date releaseDate,
-		java.util.Date finishDate, java.util.Date extendDate,
-		java.util.Date processDate, String dossierTemplateNo,
+		java.util.Date finishDate, String dossierTemplateNo,
 		String dossierTemplateName,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
@@ -684,8 +683,8 @@ public class DossierLocalServiceUtil {
 			originality, dossierNo, dossierStatus, dossierStatusText,
 			dossierActionId, durationCount, durationUnit, sampleCount,
 			createDate, modifiedDate, submitDate, receiveDate, dueDate,
-			releaseDate, finishDate, extendDate, processDate,
-			dossierTemplateNo, dossierTemplateName, serviceContext);
+			releaseDate, finishDate, dossierTemplateNo, dossierTemplateName,
+			serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier removeDossier(

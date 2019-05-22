@@ -53,6 +53,7 @@ import java.util.List;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DuplicateServiceCodeException;
 import org.opencps.dossiermgt.exception.RequiredAdministrationCodeException;
@@ -360,7 +361,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		//
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME, ServiceInfoTerm.SERVICE_NAME_SEARCH };
+			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME_SEARCH, ServiceInfoTerm.SERVICE_NAME,
+					ServiceInfoTerm.SERVICE_CODE_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -494,7 +496,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		//
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME, ServiceInfoTerm.SERVICE_NAME_SEARCH };
+			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME_SEARCH, ServiceInfoTerm.SERVICE_NAME,
+					ServiceInfoTerm.SERVICE_CODE_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {

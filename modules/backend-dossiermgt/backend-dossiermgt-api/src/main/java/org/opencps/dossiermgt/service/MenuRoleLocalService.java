@@ -183,6 +183,9 @@ public interface MenuRoleLocalService extends BaseLocalService,
 	public List<MenuRole> getByMenuConfig(long menuConfigId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<MenuRole> getByRoleId(long roleId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MenuRole> getByRoles(long[] roleIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

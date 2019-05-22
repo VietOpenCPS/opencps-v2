@@ -829,4 +829,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		return object;
 
 	}
+
+	public PaymentFile getByG_DID(long groupId, long dossierId) {
+		return paymentFilePersistence.fetchByDossierId(groupId, dossierId);
+	}
 }

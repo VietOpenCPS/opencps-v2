@@ -199,6 +199,7 @@ public class RestfulController {
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserLoginInfo(HttpServletRequest request, HttpServletResponse response) {
 
+		_log.info("LINK: "+"http://");
 		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -212,10 +213,13 @@ public class RestfulController {
 			long userId = 0;
 			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+				_log.info("userId: "+userId);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
+				_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
 
 				List<Role> roles = user.getRoles();
+				_log.info("roles: "+JSONFactoryUtil.looseSerialize(roles));
 
 				String roleName = StringPool.BLANK;
 

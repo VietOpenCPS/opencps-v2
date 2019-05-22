@@ -26,8 +26,10 @@ import org.opencps.rest.application.model.MenuConfigStepsItem;
 import org.opencps.rest.application.model.StepConfigItem;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 
 public class OpenCPSAPIParsing {
@@ -186,32 +188,50 @@ public class OpenCPSAPIParsing {
 						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
 						
 						data.add(menuConfigItem);
-					}					
+					}
 				}
 			}
 		}
 		else {
-			List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
+			long[] arrMenuConfigIds = null;
+			if (job != null) {
+				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
+				if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
+					int length = lstMenuRoles.size();
+					arrMenuConfigIds = new long[length];
+					for (int i = 0; i < length; i++) {
+						MenuRole menu = lstMenuRoles.get(i);
+						arrMenuConfigIds[i] = menu.getMenuConfigId();
+					}
+				}
+			}
+			//List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+			if (arrMenuConfigIds != null && arrMenuConfigIds.length > 0) {
+				List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds);
+				List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 
-			for (MenuConfig menuConfig : lstMenus) {
-				if (menuConfig.getMenuType() > 0) {
-					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-					MenuConfigStepsItem menuConfigStepsItem;
-					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-					
-					for (StepConfig stepConfig : lstSteps) {
-						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
-								&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
-							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
-								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
-								
-								menuConfigStepsItems.add(menuConfigStepsItem);							
+				if (lstMenus != null && lstMenus.size() > 0) {
+					for (MenuConfig menuConfig : lstMenus) {
+						if (menuConfig.getMenuType() > 0) {
+							MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+							MenuConfigStepsItem menuConfigStepsItem;
+							List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+							
+							for (StepConfig stepConfig : lstSteps) {
+								if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
+										&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
+									if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+										menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+										
+										menuConfigStepsItems.add(menuConfigStepsItem);
+									}
+								}
 							}
+							menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+							data.add(menuConfigItem);
 						}
 					}
-					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
-					data.add(menuConfigItem);
 				}
 			}
 		}

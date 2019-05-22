@@ -208,6 +208,12 @@ public class MenuRoleLocalServiceWrapper implements MenuRoleLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.MenuRole> getByRoleId(
+		long roleId) {
+		return _menuRoleLocalService.getByRoleId(roleId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.MenuRole> getByRoles(
 		long[] roleIds) {
 		return _menuRoleLocalService.getByRoles(roleIds);
