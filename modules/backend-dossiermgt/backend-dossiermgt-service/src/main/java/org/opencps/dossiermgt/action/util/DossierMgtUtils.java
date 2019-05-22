@@ -441,7 +441,7 @@ public class DossierMgtUtils {
 					result = result && checkRoleDone(splitRoles[1], dossier);
 				}																			
 			}
-			if (preCondition.contains("roleCode=")) {
+			if (preCondition.contains("rolecode=")) {
 				String[] splitRoles = preCondition.split("=");
 				System.out.println(splitRoles[0] + "," + splitRoles[1]);
 				if (splitRoles.length == 2) {

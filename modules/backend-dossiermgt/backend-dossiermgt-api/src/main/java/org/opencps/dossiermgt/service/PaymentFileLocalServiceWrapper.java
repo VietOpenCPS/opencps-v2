@@ -262,6 +262,12 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 		return _paymentFileLocalService.getByDossierId(groupId, dossierId);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.PaymentFile getByG_DID(long groupId,
+		long dossierId) {
+		return _paymentFileLocalService.getByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Get info Epayment Profile
 	*

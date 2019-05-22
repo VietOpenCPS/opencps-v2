@@ -252,6 +252,11 @@ public class PaymentFileLocalServiceUtil {
 		return getService().getByDossierId(groupId, dossierId);
 	}
 
+	public static org.opencps.dossiermgt.model.PaymentFile getByG_DID(
+		long groupId, long dossierId) {
+		return getService().getByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Get info Epayment Profile
 	*

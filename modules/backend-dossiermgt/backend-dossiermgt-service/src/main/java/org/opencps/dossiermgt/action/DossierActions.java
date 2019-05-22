@@ -182,6 +182,6 @@ public interface DossierActions {
 			String contactTelNo, String contactEmail, String dossierNo, String dossierStatus, String dossierStatusText,
 			Boolean online, int originality, int sampleCount, Double durationCount, Integer durationUnit,
 			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate,
-			Date finishDate, Date extendDate, Date processDate, ServiceContext serviceContext);
+			Date finishDate, String dossierTemplateNo, String dossierTemplateName, ServiceContext serviceContext);
 
 }

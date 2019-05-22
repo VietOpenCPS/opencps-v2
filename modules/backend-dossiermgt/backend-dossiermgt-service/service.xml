@@ -853,7 +853,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
-		
 
 	</entity>
 
@@ -2108,6 +2107,9 @@
 		</finder>
 		<finder return-type="Collection" name="F_CONFIG_ID">
 			<finder-column name="menuConfigId" />
+		</finder>
+		<finder return-type="Collection" name="F_ROLE">
+			<finder-column name="roleId" />
 		</finder>
 
 	</entity>

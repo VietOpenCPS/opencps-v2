@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -46,26 +47,25 @@ public class FaqManagementImpl implements FaqManagement {
 		try {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
-	        try {
-	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-	        			jCaptchaResponse);
-	        	if (!isResponseCorrect) {
-	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
-	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+			try {
+				boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+				if (!isResponseCorrect) {
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage("Captcha incorrect");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Captcha incorrect");
 
-	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-	        	}
-	        } catch (CaptchaServiceException e) {
-        		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
-    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				}
+			} catch (CaptchaServiceException e) {
+				ErrorMsgModel error = new ErrorMsgModel();
+				error.setMessage("Captcha incorrect");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Captcha incorrect");
 
-    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-	        }
-	        
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			}
+
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, 0l, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
@@ -211,5 +211,87 @@ public class FaqManagementImpl implements FaqManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	}
+
+	@Override
+	public Response updateQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, QuestionInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long questionId = GetterUtil.getLong(id);
+		try {
+			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, questionId, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish());
+			if (question != null) {
+				QuestionDetailModel result = new QuestionDetailModel();
+				result.setContent(question.getContent());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(question.getCreateDate()));
+				result.setEmail(question.getEmail());
+				result.setFullname(question.getFullname());
+				result.setPublish(question.getPublish());
+				result.setQuestionId(question.getQuestionId());
+				
+				return Response.status(200).entity(result).build();
+			}
+			else {
+				throw new Exception("Error process database");
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response deleteQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		long questionId = GetterUtil.getLong(id);
+		
+		try {
+			QuestionLocalServiceUtil.deleteQuestion(questionId);
+
+			return Response.status(200).entity("Delete question is success!").build();
+		} catch (PortalException e) {
+			return Response.status(500).entity("Delete question is false!").build();
+		}
+	}
+
+	@Override
+	public Response updateAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long questionId, long answerId, AnswerInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+			Answer answer = AnswerLocalServiceUtil.updateAnswer(user.getUserId(), groupId, answerId, questionId, input.getContent(), input.getPublish());
+
+			if (answer != null) {
+				AnswerDetailModel result = new AnswerDetailModel();
+				result.setAnswerId(answer.getAnswerId());
+				result.setContent(answer.getContent());
+				result.setCreateDate(APIDateTimeUtils.convertDateToString(answer.getCreateDate()));
+				result.setModifiedDate(APIDateTimeUtils.convertDateToString(answer.getModifiedDate()));
+				result.setPublish(answer.getPublish());
+				result.setQuestionId(answer.getQuestionId());
+				result.setUserName(answer.getUserName());
+				return Response.status(200).entity(result).build();
+			}
+			else {
+				throw new Exception("Error process database");
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response deleteAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long questionId, long answerId) {
+
+		try {
+			AnswerLocalServiceUtil.deleteAnswer(answerId);
+
+			return Response.status(200).entity("Delete Answer is success!").build();
+		} catch (PortalException e) {
+			return Response.status(500).entity("Delete Answer is false!").build();
+		}
+	}
 
 }

@@ -2,6 +2,7 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -50,6 +51,7 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -85,7 +87,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			//params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			//Keyword search like
+			String keywordSearch = query.getKeyword();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearch)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+			}
+			params.put(Field.KEYWORD_SEARCH, keySearch);
+
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
 			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());

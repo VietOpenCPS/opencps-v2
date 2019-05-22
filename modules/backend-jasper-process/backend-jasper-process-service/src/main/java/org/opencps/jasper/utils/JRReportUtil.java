@@ -88,7 +88,7 @@ public class JRReportUtil {
             else
             	return false;
         } catch (JSONException ex) {
-        	_log.error(ex);
+        	_log.debug(ex);
             try {
                 JSONObject obj = JSONFactoryUtil.createJSONObject(jsonString);
                 if (obj == null) {
@@ -98,7 +98,7 @@ public class JRReportUtil {
                 	return true;
                 }
             } catch (JSONException e) {
-            	_log.error(e);
+            	_log.debug(e);
                 return false;
             }
         }
@@ -120,13 +120,13 @@ public class JRReportUtil {
 //			jsonData = quoteHTML(jsonData);
 //			_log.info("JASPER JSON DATA: " + jsonData);
 			if (isJsonObject(jsonData)) {
-//				_log.info("JSON Object");
-			JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
-			JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
+				//_log.info("JSON Object");
+				JasperReport reportTemplate = JRReportTemplate.getJasperReport(jrxmlTemplate);
+				JRJSONDataSource dataSource = JRJSONDataSource.getInstance(jsonData);
+	
+				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
-			JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
-
-				return exportReport(jasperPrint, destFileName, DocType.PDF);				
+				return exportReport(jasperPrint, destFileName, DocType.PDF);
 			}
 			else {
 				_log.info("JSON array");

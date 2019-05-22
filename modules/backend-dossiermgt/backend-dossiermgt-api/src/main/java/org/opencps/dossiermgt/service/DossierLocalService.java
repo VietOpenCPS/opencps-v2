@@ -496,9 +496,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String dossierStatusText, long dossierActionId, Double durationCount,
 		Integer durationUnit, Integer sampleCount, Date createDate,
 		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-		Date releaseDate, Date finishDate, Date extendDate, Date processDate,
-		String dossierTemplateNo, String dossierTemplateName,
-		ServiceContext serviceContext);
+		Date releaseDate, Date finishDate, String dossierTemplateNo,
+		String dossierTemplateName, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.DELETE)
 	public Dossier removeDossier(long groupId, long dossierId, String refId)

@@ -267,7 +267,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 //				e.printStackTrace();
 //				throw new SystemException(e);
 				_log.debug(e);
-				//_log.error(e);
+				_log.error(e);
 			}
 		}
 		_log.info("****End uploadFile file at:" + new Date());
@@ -791,7 +791,7 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		msgData.put("jrxmlTemplate", jrxmlTemplate);
 		msgData.put("formData", formData);
 		msgData.put("userId", serviceContext.getUserId());
-
+		_log.info("msgData: "+msgData.getString("formData"));
 		message.put("msgToEngine", msgData);
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 

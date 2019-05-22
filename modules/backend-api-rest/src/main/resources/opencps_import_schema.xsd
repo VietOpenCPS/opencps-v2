@@ -1568,6 +1568,27 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="WorkingTimeList">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="WorkingTime" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence >
+							<xsd:element name="workTimeDay" type="xsd:int" />
+							<xsd:element name="workTimeHours">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="ApplicantList">
 		<xsd:complexType>
 			<xsd:sequence >
