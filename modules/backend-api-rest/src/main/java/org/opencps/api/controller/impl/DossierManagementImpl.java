@@ -129,6 +129,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
@@ -150,6 +151,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
@@ -3132,6 +3134,24 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+		List<DossierLog> lstLogs = new ArrayList<>();
+		
+		try {
+			lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		} catch (PortalException e) {
+		}
+		Map<Long, JSONArray> mapFiles = new HashMap<>();
+		
+		for (DossierLog log : lstLogs) {
+			JSONObject payload;
+			try {
+				payload = JSONFactoryUtil.createJSONObject(log.getPayload());
+				if (payload.has("dossierActionId")) {
+					mapFiles.put(payload.getLong("dossierActionId"), payload.getJSONArray("files"));
+				}
+			} catch (JSONException e) {
+			}
+		}
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
@@ -3228,7 +3248,9 @@ public class DossierManagementImpl implements DossierManagement {
 				actionObj.put("stepCode", da.getStepCode());
 				actionObj.put("stepName", da.getStepName());
 				actionObj.put("userId", da.getUserId());				
-				
+				if (mapFiles.containsKey(da.getDossierActionId())) {
+					actionObj.put("files", mapFiles.get(da.getDossierActionId()));
+				}
 				_log.info("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			

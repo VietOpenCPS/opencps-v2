@@ -3407,6 +3407,9 @@ public class DossierActionsImpl implements DossierActions {
 							msgData.put("userId", userId);
 
 							message.put("msgToEngine", msgData);
+//							MessageBusUtil.sendSynchronousMessage("jasper/engine/out/destination", message);
+							
+							//PERFORMANCE ISSUE FIX FOR DOSSIER LOG
 							MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 							
 							payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
