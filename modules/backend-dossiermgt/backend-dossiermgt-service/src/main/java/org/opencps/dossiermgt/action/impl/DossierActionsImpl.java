@@ -3726,48 +3726,50 @@ public class DossierActionsImpl implements DossierActions {
 				// Only create dossier document if 2 && 3
 				if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 					if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
-						// Generate document
-						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, ac.getDocumentType());
-						if (dt != null) {
-							String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId,
-									ac.getCompanyId(), dt.getDocumentTypeId());
-							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
-									dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
-									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
 
-							// Generate PDF
-							String formData = dossierAction.getPayload();
-							JSONObject payloadTmp = JSONFactoryUtil.createJSONObject(formData);
-							if (payloadTmp != null && payloadTmp.has("complementDate")) {
-								if (payloadTmp.getLong("complementDate") > 0) {
-									Timestamp ts = new Timestamp(payloadTmp.getLong("complementDate"));
-									SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-									payloadTmp.put("complementDate", format.format(ts));
+						//Generate document
+						String[] documentTypes = ac.getDocumentType().split(",");
+						for (String documentType : documentTypes) {
+							DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
+							if (dt != null) {
+								String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+								DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
+										dossierId, UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
+										dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+													
+								//Generate PDF
+								String formData = dossierAction.getPayload();
+								JSONObject payloadTmp = JSONFactoryUtil.createJSONObject(formData);
+								if (payloadTmp != null && payloadTmp.has("complementDate")) {
+									if (payloadTmp.getLong("complementDate") > 0) {
+										Timestamp ts = new Timestamp(payloadTmp.getLong("complementDate"));
+										SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+										payloadTmp.put("complementDate", format.format(ts));
+									}
 								}
+								
+//								formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+								JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
+								
+								formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+								formDataObj.put("url", context.getPortalURL());
+								Message message = new Message();
+//								_log.info("Document script: " + dt.getDocumentScript());
+								JSONObject msgData = JSONFactoryUtil.createJSONObject();
+								msgData.put("className", DossierDocument.class.getName());
+								msgData.put("classPK", dossierDocument.getDossierDocumentId());
+								msgData.put("jrxmlTemplate", dt.getDocumentScript());
+								msgData.put("formData", formDataObj.toJSONString());
+								msgData.put("userId", userId);
+
+								message.put("msgToEngine", msgData);
+//								MessageBusUtil.sendSynchronousMessage("jasper/engine/out/destination", message);
+								
+								//PERFORMANCE ISSUE FIX FOR DOSSIER LOG
+								MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+								
+								payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
 							}
-
-							// formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj,
-							// dossierAction);
-							JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
-
-							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
-							formDataObj.put("url", context.getPortalURL());
-							Message message = new Message();
-							// _log.info("Document script: " + dt.getDocumentScript());
-							JSONObject msgData = JSONFactoryUtil.createJSONObject();
-							msgData.put("className", DossierDocument.class.getName());
-							msgData.put("classPK", dossierDocument.getDossierDocumentId());
-							msgData.put("jrxmlTemplate", dt.getDocumentScript());
-							msgData.put("formData", formDataObj.toJSONString());
-							msgData.put("userId", userId);
-
-							message.put("msgToEngine", msgData);
-//							MessageBusUtil.sendSynchronousMessage("jasper/engine/out/destination", message);
-							
-							//PERFORMANCE ISSUE FIX FOR DOSSIER LOG
-							MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
-
-							payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
 						}
 					}
 				}
