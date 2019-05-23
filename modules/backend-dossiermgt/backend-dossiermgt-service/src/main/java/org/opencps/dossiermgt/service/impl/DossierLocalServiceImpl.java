@@ -59,9 +59,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -3045,18 +3048,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 		}
-
+		Set<String> addedSubStatuses = new HashSet<>();
 		if (Validator.isNotNull(subStatusStep)) {
 			String[] subStatusStepArr = StringUtil.split(subStatusStep);
-
 			if (subStatusStepArr != null && subStatusStepArr.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < subStatusStepArr.length; i++) {
 					String subStatusStepDetail = subStatusStepArr[i];
-					if (!"empty".equals(subStatusStepDetail)) {
+					if (!"empty".equals(subStatusStepDetail) && !addedSubStatuses.contains(subStatusStepDetail)) {
 						MultiMatchQuery query = new MultiMatchQuery(subStatusStepArr[i]);
 						query.addField(DossierTerm.DOSSIER_SUB_STATUS);
 						subQuery.add(query, BooleanClauseOccur.SHOULD);
+						addedSubStatuses.add(subStatusStepArr[i]);
+						
 					}
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);

@@ -67,6 +67,7 @@ public class DossierDocumentListener extends BaseModelListener<DossierDocument> 
 						file.put("fileName", model.getDocumentName());
 						file.put("createDate", APIDateTimeUtils.convertDateToString(model.getCreateDate(),
 								APIDateTimeUtils._TIMESTAMP));
+						file.put("dossierReferenceUid", model.getReferenceUid());
 						files.put(file);
 						payload.put("files", files);
 						log.setPayload(payload.toJSONString());
