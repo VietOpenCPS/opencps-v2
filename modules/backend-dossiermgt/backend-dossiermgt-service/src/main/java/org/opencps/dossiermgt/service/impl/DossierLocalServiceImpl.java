@@ -3031,48 +3031,79 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		//LamTV_Test
-		if (Validator.isNotNull(statusStep)) {
-			String[] statusStepArr = StringUtil.split(statusStep);
+//		if (Validator.isNotNull(statusStep)) {
+//			String[] statusStepArr = StringUtil.split(statusStep);
+//
+//			if (statusStepArr != null && statusStepArr.length > 0) {
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (int i = 0; i < statusStepArr.length; i++) {
+//					MultiMatchQuery query = new MultiMatchQuery(statusStepArr[i]);
+//					query.addField(DossierTerm.DOSSIER_STATUS);
+//					subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			} else {
+//				MultiMatchQuery query = new MultiMatchQuery(statusStep);
+//				query.addFields(DossierTerm.DOSSIER_STATUS);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
+//		}
+//		Set<String> addedSubStatuses = new HashSet<>();
+//		if (Validator.isNotNull(subStatusStep)) {
+//			String[] subStatusStepArr = StringUtil.split(subStatusStep);
+//			if (subStatusStepArr != null && subStatusStepArr.length > 0) {
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (int i = 0; i < subStatusStepArr.length; i++) {
+//					String subStatusStepDetail = subStatusStepArr[i];
+//					if (!"empty".equals(subStatusStepDetail) && !addedSubStatuses.contains(subStatusStepDetail)) {
+//						MultiMatchQuery query = new MultiMatchQuery(subStatusStepArr[i]);
+//						query.addField(DossierTerm.DOSSIER_SUB_STATUS);
+//						subQuery.add(query, BooleanClauseOccur.SHOULD);
+//						addedSubStatuses.add(subStatusStepArr[i]);
+//						
+//					}
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			} else {
+//				if (!"empty".equals(subStatusStep)) {
+//					MultiMatchQuery query = new MultiMatchQuery(subStatusStep);
+//					query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+//					booleanQuery.add(query, BooleanClauseOccur.MUST);
+//				}
+//			}
+//		}
 
+		if (Validator.isNotNull(statusStep)
+				&& Validator.isNotNull(subStatusStep)) {
+			String[] statusStepArr = StringUtil.split(statusStep);
+			String[] subStatusStepArr = StringUtil.split(subStatusStep);
+			
 			if (statusStepArr != null && statusStepArr.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < statusStepArr.length; i++) {
+					BooleanQuery matchedQuery = new BooleanQueryImpl();
 					MultiMatchQuery query = new MultiMatchQuery(statusStepArr[i]);
 					query.addField(DossierTerm.DOSSIER_STATUS);
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
+					
+					matchedQuery.add(query, BooleanClauseOccur.MUST);
+					if (!"empty".equals(subStatusStepArr[i])) {
+						MultiMatchQuery querySub = new MultiMatchQuery(subStatusStepArr[i]);
+						querySub.addField(DossierTerm.DOSSIER_SUB_STATUS);
+						matchedQuery.add(querySub, BooleanClauseOccur.MUST);
+					}
+					subQuery.add(matchedQuery, BooleanClauseOccur.SHOULD);
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
 				MultiMatchQuery query = new MultiMatchQuery(statusStep);
 				query.addFields(DossierTerm.DOSSIER_STATUS);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
+				
+				MultiMatchQuery querySub = new MultiMatchQuery(subStatusStep);
+				query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
+				booleanQuery.add(querySub, BooleanClauseOccur.MUST);				
 			}
 		}
-		Set<String> addedSubStatuses = new HashSet<>();
-		if (Validator.isNotNull(subStatusStep)) {
-			String[] subStatusStepArr = StringUtil.split(subStatusStep);
-			if (subStatusStepArr != null && subStatusStepArr.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < subStatusStepArr.length; i++) {
-					String subStatusStepDetail = subStatusStepArr[i];
-					if (!"empty".equals(subStatusStepDetail) && !addedSubStatuses.contains(subStatusStepDetail)) {
-						MultiMatchQuery query = new MultiMatchQuery(subStatusStepArr[i]);
-						query.addField(DossierTerm.DOSSIER_SUB_STATUS);
-						subQuery.add(query, BooleanClauseOccur.SHOULD);
-						addedSubStatuses.add(subStatusStepArr[i]);
-						
-					}
-				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
-				if (!"empty".equals(subStatusStep)) {
-					MultiMatchQuery query = new MultiMatchQuery(subStatusStep);
-					query.addFields(DossierTerm.DOSSIER_SUB_STATUS);
-					booleanQuery.add(query, BooleanClauseOccur.MUST);
-				}
-			}
-		}
-
 //		_log.info("Permission: " + permission);
 		if (Validator.isNotNull(permission)) {
 			MultiMatchQuery query = new MultiMatchQuery(permission);
