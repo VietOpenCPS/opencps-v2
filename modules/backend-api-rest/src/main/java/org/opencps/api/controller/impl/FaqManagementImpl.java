@@ -126,6 +126,12 @@ public class FaqManagementImpl implements FaqManagement {
 				model.setPublish(q.getPublish());
 				model.setQuestionId(q.getQuestionId());
 				
+				int count = AnswerLocalServiceUtil.countByG_Q_PL(groupId, q.getQuestionId(), new int[] { 0, 1 } );
+				model.setAnswered(false);
+				
+				if (count > 0) {
+					model.setAnswered(true);
+				}
 				lstModels.add(model);
 			}
 			result.getData().addAll(lstModels);
