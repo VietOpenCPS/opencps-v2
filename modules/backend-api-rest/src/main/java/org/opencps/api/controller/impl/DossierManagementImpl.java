@@ -3277,8 +3277,8 @@ public class DossierManagementImpl implements DossierManagement {
 					actionObj.put("stepCode", da.getStepCode());
 					actionObj.put("stepName", da.getStepName());
 					actionObj.put("userId", da.getUserId());				
-					if (mapFiles.containsKey(da.getDossierActionId())) {
-						actionObj.put("files", mapFiles.get(da.getDossierActionId()));
+					if (mapFiles.containsKey(da.getPreviousActionId())) {
+						actionObj.put("files", mapFiles.get(da.getPreviousActionId()));
 					}
 					_log.info("Action obj: " + actionObj.toJSONString());
 					actionsArr.put(actionObj);
