@@ -22,6 +22,7 @@
 			<xsd:element name="email" type="xsd:string" />
 			<xsd:element name="content" type="xsd:string" />
 			<xsd:element name="publish" type="xsd:int" />
+			<xsd:element name="answered" type="xsd:boolean"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -874,4 +874,32 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
 
+	@GET
+	@Path("/{referenceUid}/urlSiteInfo")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get a list of Dossiers", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getUrlSiteInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("referenceUid") String referenceUid);
+
+	@GET
+	@Path("/{id}/validateProcess")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "validateProcess")
+	@ApiResponses(value = { @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "certificateNumber"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getValidateProcess(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "dossier id", required = true) @PathParam("id") String id,
+			@QueryParam("actionCode") String actionCode);
 }

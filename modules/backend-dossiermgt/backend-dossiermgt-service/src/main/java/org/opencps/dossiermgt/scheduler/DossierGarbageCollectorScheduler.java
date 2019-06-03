@@ -38,20 +38,7 @@ public class DossierGarbageCollectorScheduler extends BaseMessageListener {
 			_log.error(e);
 		}
 	}
-//	@Activate
-//	@Modified
-//	protected void activate() {
-//		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
-//				30, TimeUnit.MINUTE));
-//		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-//	}
-
-	/**
-	   * activate: Called whenever the properties for the component change (ala Config Admin)
-	   * or OSGi is activating the component.
-	   * @param properties The properties map from Config Admin.
-	   * @throws SchedulerException in case of error.
-	   */
+	//TODO
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {

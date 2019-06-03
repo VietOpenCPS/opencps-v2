@@ -198,20 +198,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 		return true;
 	}
 	
-//	@Activate
-//	@Modified
-//	protected void activate() {
-//		schedulerEntryImpl.setTrigger(
-//				TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(), 5, TimeUnit.SECOND));
-//		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-//	}
-
-	/**
-	   * activate: Called whenever the properties for the component change (ala Config Admin)
-	   * or OSGi is activating the component.
-	   * @param properties The properties map from Config Admin.
-	   * @throws SchedulerException in case of error.
-	   */
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {

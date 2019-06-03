@@ -200,4 +200,12 @@ public interface DossierActions {
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, String dossierName, String briefNote, ServiceContext serviceContext);
+
+	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
+			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+			String applicantType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
+			String contactTelNo, String contactEmail, String dossierNo, String dossierStatus, String dossierStatusText,
+			Boolean online, int originality, int sampleCount, Double durationCount, Integer durationUnit,
+			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate,
+			Date finishDate, String dossierTemplateNo, String dossierTemplateName, ServiceContext serviceContext);
 }

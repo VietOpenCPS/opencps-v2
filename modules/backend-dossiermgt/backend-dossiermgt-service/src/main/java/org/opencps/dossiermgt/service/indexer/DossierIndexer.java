@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -30,24 +32,33 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.util.TimeComingUtils;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
@@ -63,8 +74,8 @@ import org.osgi.service.component.annotations.Component;
 public class DossierIndexer extends BaseIndexer<Dossier> {
 	public static final String CLASS_NAME = Dossier.class.getName();
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	//private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+	//private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
 	@Override
 	public String getClassName() {
@@ -239,15 +250,23 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			double durationCount = object.getDurationCount();
 			double durationUnit = object.getDurationUnit();
-			long durationComing = 0;
+//			if (durationCount > 0) {
+//				if ((int)durationUnit == 0) {
+//					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
+//				} else {
+//					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
+//				}
+//				long dueDateComing = dueDateTime - durationComing;
+//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
+//			} else {
+//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
+//			}
+			
 			if (durationCount > 0) {
-				if ((int)durationUnit == 0) {
-					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
-				} else {
-					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
-				}
-				long dueDateComing = dueDateTime - durationComing;
-				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
+				double durationComing = durationCount / 5;
+				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+						object.getGroupId());
+				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 			} else {
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
 			}
@@ -417,12 +436,15 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (Validator.isNotNull(object.getReferenceUid())) {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 			}
-//			if (Validator.isNotNull(object.getServiceCode())) {
+
 				document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
-//			}
-//			if (Validator.isNotNull(object.getServiceName())) {
+			if (Validator.isNotNull(object.getServiceCode())) {
+				String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(object.getServiceCode());
+				document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+			}
+
 				document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
-//			}
+
 			if (Validator.isNotNull(object.getServiceName())) {
 				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH,
 						SpecialCharacterUtils.splitSpecial(object.getServiceName()));
@@ -463,6 +485,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.CONTACT_TEL_NO, object.getContactTelNo());
 			document.addTextSortable(DossierTerm.CONTACT_EMAIL, object.getContactEmail());
 			document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());
+			if (Validator.isNotNull(object.getDossierTemplateNo())) {
+				String template = SpecialCharacterUtils.splitSpecial(object.getDossierTemplateNo());
+				document.addTextSortable(DossierTerm.TEMPLATE, template);
+			}
 			document.addTextSortable(DossierTerm.DOSSIER_NOTE, object.getDossierNote());
 			document.addTextSortable(DossierTerm.SUBMISSION_NOTE, object.getSubmissionNote());
 			document.addTextSortable(DossierTerm.APPLICANT_NOTE, object.getApplicantNote());

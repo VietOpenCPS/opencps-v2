@@ -378,6 +378,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		processOption.setServiceProcessId(serviceProcessId);
 		processOption.setOptionName(optionName);
 		processOption.setSampleCount(sampleCount);
+		processOption.setRegisterBookCode(registerBookCode);
 
 		return processOptionPersistence.update(processOption);
 	}

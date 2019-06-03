@@ -335,4 +335,8 @@ public interface WorkTimeLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public WorkTime updateWorkTime(WorkTime workTime);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkTime updateWorkTimeDB(long userId, long groupId,
+		int workTimeDay, String workTimeHours) throws NoSuchUserException;
 }

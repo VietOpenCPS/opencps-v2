@@ -407,6 +407,14 @@ public class WorkTimeLocalServiceWrapper implements WorkTimeLocalService,
 	}
 
 	@Override
+	public org.opencps.datamgt.model.WorkTime updateWorkTimeDB(long userId,
+		long groupId, int workTimeDay, String workTimeHours)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return _workTimeLocalService.updateWorkTimeDB(userId, groupId,
+			workTimeDay, workTimeHours);
+	}
+
+	@Override
 	public WorkTimeLocalService getWrappedService() {
 		return _workTimeLocalService;
 	}

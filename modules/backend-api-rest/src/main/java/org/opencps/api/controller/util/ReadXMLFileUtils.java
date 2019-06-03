@@ -75,6 +75,8 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.api.v21.model.WorkingTimeList;
+import org.opencps.api.v21.model.WorkingTimeList.WorkingTime;
 
 public class ReadXMLFileUtils {
 
@@ -320,6 +322,16 @@ public class ReadXMLFileUtils {
 			case ConstantUtils.XML_APPLICANT:
 				ApplicantList applicantList = convertXMLToApplicant(xmlString);
 				flag = ProcessUpdateDBUtils.processUpdateApplicant(applicantList, folderPath, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_HOLIDAY;
+				}
+				break;
+			case ConstantUtils.XML_WORKING_TIME:
+				WorkingTimeList workingTimeList = convertXMLToWorkingTime(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateWorkingTime(workingTimeList, folderPath, groupId, userId, serviceContext);
 				if (flag) {
 					sbParentFile.append(fileName);
 					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
@@ -577,6 +589,18 @@ public class ReadXMLFileUtils {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(xmlString);
 			HolidayList objectElement = (HolidayList) jaxbUnmarshaller.unmarshal(reader);
+
+			return objectElement;
+	}
+
+	// LamTV_ Process convert xml to Object WorkingTime
+	private static WorkingTimeList convertXMLToWorkingTime(String xmlString) throws JAXBException {
+
+			JAXBContext jaxbContext = null;
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			StringReader reader = new StringReader(xmlString);
+			WorkingTimeList objectElement = (WorkingTimeList) jaxbUnmarshaller.unmarshal(reader);
 
 			return objectElement;
 	}

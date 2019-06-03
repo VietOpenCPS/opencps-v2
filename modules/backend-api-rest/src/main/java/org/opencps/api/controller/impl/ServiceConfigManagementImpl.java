@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.api.controller.ServiceConfigManagement;
 import org.opencps.api.controller.util.ServiceConfigUtils;
+import org.opencps.api.dictcollection.model.DictItemCompareModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionResultsModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionSearchModel;
@@ -448,41 +451,53 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		List<DictItem> govItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
 
+		List<DictItemCompareModel> itemGovList = null; 
+		if (govItems != null && govItems.size() > 0) {
+			itemGovList = new ArrayList<>();
+			DictItemCompareModel item = null;
+			for (DictItem dictItem : govItems) {
+				item = new DictItemCompareModel(dictItem.getItemCode(), dictItem.getItemName(),
+						Validator.isNotNull(dictItem.getSibling()) ? GetterUtil.getInteger(dictItem.getSibling()) : 0);
+				//
+				itemGovList.add(item);
+			}
+		}
+
 		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
 				groupId);
-
 		List<DictItem> domainItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
 
-
-		SearchContext searchContext = new SearchContext();
-		searchContext.setCompanyId(company.getCompanyId());
-
-		if (query.getEnd() == 0) {
-
-			query.setStart(-1);
-
-			query.setEnd(-1);
-
+		List<DictItemCompareModel> itemDomainList = null; 
+		if (domainItems != null && domainItems.size() > 0) {
+			itemDomainList = new ArrayList<>();
+			DictItemCompareModel item = null;
+			for (DictItem dictItem : domainItems) {
+				item = new DictItemCompareModel(dictItem.getItemCode(), dictItem.getItemName(),
+						Validator.isNotNull(dictItem.getSibling()) ? GetterUtil.getInteger(dictItem.getSibling()) : 0);
+				//
+				itemDomainList.add(item);
+			}
 		}
 
-		JSONObject results = JSONFactoryUtil.createJSONObject();
+		//SearchContext searchContext = new SearchContext();
+		//searchContext.setCompanyId(company.getCompanyId());
 
+		JSONObject results = JSONFactoryUtil.createJSONObject();
 		JSONArray arrGovAgency = JSONFactoryUtil.createJSONArray();
 
 		try {
-
-			for (DictItem govItem : govItems) {
-
-//				LinkedHashMap<String, Object> paramsGovAgent = new LinkedHashMap<String, Object>();
-//
-//				paramsGovAgent.put(Field.GROUP_ID, String.valueOf(groupId));
-//				paramsGovAgent.put(Field.KEYWORD_SEARCH, query.getKeyword());
-//				paramsGovAgent.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
-
+			if (itemGovList != null && itemGovList.size() > 0) {
+				Collections.sort(itemGovList, DictItemCompareModel.SiblingComparator);
+				for (DictItemCompareModel govItem : itemGovList) {
+	
+	//				LinkedHashMap<String, Object> paramsGovAgent = new LinkedHashMap<String, Object>();
+	//				paramsGovAgent.put(Field.GROUP_ID, String.valueOf(groupId));
+	//				paramsGovAgent.put(Field.KEYWORD_SEARCH, query.getKeyword());
+	//				paramsGovAgent.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+	//				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
+	
 				JSONObject govElm = JSONFactoryUtil.createJSONObject();
-
-//				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
 				List<ServiceConfig> lstGovs = ServiceConfigLocalServiceUtil.searchByGovAgency(query.getKeyword(), govItem.getItemCode(), groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 				List<ServiceInfo> lstServiceInfos =	ServiceInfoLocalServiceUtil.findByGroup(groupId);
@@ -492,27 +507,29 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				long countGov = lstGovs.size();
 				
 				if (countGov != 0) {
-
+	
 					govElm.put("govAgencyCode", govItem.getItemCode());
 					govElm.put("govAgencyName", govItem.getItemName());
-
+	
 					JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
-
-					for (DictItem domainItem : domainItems) {
-
+	
+						if (itemDomainList != null && itemDomainList.size() > 0) {
+							Collections.sort(itemDomainList, DictItemCompareModel.SiblingComparator);
+							for (DictItemCompareModel domainItem : itemDomainList) {
+		
 						JSONObject domElm = JSONFactoryUtil.createJSONObject();
-
-//						LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-//
-//						params.put(Field.GROUP_ID, String.valueOf(groupId));
-//						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
-//						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
-//						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
-//
-//						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
-//								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
-//
-//						long countGovDomain = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
+		
+		//						LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		//
+		//						params.put(Field.GROUP_ID, String.valueOf(groupId));
+		//						params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+		//						params.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+		//						params.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+		//
+		//						Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+		//								Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+		//
+		//						long countGovDomain = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
 						List<ServiceConfig> lstGovDomains = new ArrayList<>();
 						for (ServiceConfig sc : lstGovs) {
 							if (mapServiceInfos.containsKey(sc.getServiceInfoId())
@@ -526,11 +543,6 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 							domElm.put("domainCode", domainItem.getItemCode());
 							domElm.put("domainName", domainItem.getItemName());
-
-//							List<Document> docs = ServiceConfigLocalServiceUtil
-//									.searchLucene(params, sorts, query.getStart(), query.getEnd(), searchContext)
-//									.toList();
-
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
 							for (ServiceConfig sc : lstGovDomains) {
 								int level = sc.getServiceLevel();
@@ -545,36 +557,25 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 									arrService.put(srvElm);									
 								}								
 							}
-//							for (Document doc : docs) {
-//								int level = GetterUtil.getInteger(doc.get(ServiceConfigTerm.SERVICE_LEVEL));
-//								if (level > 2) {
-//									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
-//
-//									srvElm.put("serviceInfoId", doc.get(ServiceConfigTerm.SERVICEINFO_ID));
-//									srvElm.put("serviceConfigId", doc.get(Field.ENTRY_CLASS_PK));
-//									srvElm.put("serviceInfoName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-//									srvElm.put("level", doc.get(ServiceConfigTerm.SERVICE_LEVEL));
-//
-//									arrService.put(srvElm);									
-//								}
-//							}
 
 							if (arrService.length() > 0) {
 								domElm.put("serviceConfigs", arrService);								
 								arrDomain.put(domElm);
 							}
-
+		
+								}
+		
 						}
-
 					}
-
+	
 					if (arrDomain.length() > 0) {
 						govElm.put("domains", arrDomain);						
 						arrGovAgency.put(govElm);						
 					}
-
+	
+					}
+	
 				}
-
 			}
 
 			results.put("govAgencies", arrGovAgency);

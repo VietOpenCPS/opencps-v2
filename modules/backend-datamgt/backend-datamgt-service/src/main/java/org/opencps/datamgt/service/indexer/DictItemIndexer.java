@@ -76,12 +76,13 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		}
 		document.addNumberSortable(DictItemTerm.PARENT_ITEM_ID, dictItem.getParentItemId());
 		document.addTextSortable(DictItemTerm.SIBLING, dictItem.getSibling());
+		document.addNumberSortable(DictItemTerm.SIBLING_SEARCH, GetterUtil.getInteger(dictItem.getSibling()));
 		document.addTextSortable(DictItemTerm.TREE_INDEX, dictItem.getTreeIndex());
 		document.addNumberSortable(DictItemTerm.LEVEL, dictItem.getLevel());
 		if (Validator.isNotNull(dictItem.getMetaData())) {
 			document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());			
 		}
-		
+
 		long dictCollectionId = dictItem.getDictCollectionId();
 		
 		DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchDictCollection(dictCollectionId);
@@ -89,7 +90,6 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		if(Validator.isNotNull(dictCollection)){
 			document.addTextSortable(DictItemTerm.DICT_COLLECTION_CODE, dictCollection.getCollectionCode());
 		}
-		
 		String parentCode = StringPool.BLANK;
 		
 		if(dictItem.getParentItemId() > 0){

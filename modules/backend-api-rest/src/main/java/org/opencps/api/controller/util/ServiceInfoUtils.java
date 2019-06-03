@@ -148,7 +148,6 @@ public class ServiceInfoUtils {
 		return model;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo,
 			ServiceContext serviceContext) {
 
@@ -178,42 +177,31 @@ public class ServiceInfoUtils {
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
-		
-		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
 		
-		ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
+		
+		List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(serviceInfo.getGroupId(),
+				serviceInfo.getServiceInfoId());
+		
+		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
+		if (configList != null && configList.size() > 0) {
+			ServiceInfoServiceConfig cf = null;
+			for (ServiceConfig serviceConfig : configList) {
+				cf = new ServiceInfoServiceConfig();
 
-		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-		params.put(Field.GROUP_ID, String.valueOf(serviceInfo.getGroupId()));
-
-		params.put(ServiceConfigTerm.SERVICE_CODE, serviceInfo.getServiceCode());
-
-		Sort[] sorts = new Sort[] {
-				SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
-
-		JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
-				serviceContext.getCompanyId(), serviceInfo.getGroupId(), params, sorts,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
-
-		List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
-
-		for (Document serviceConfig : serviceConfigs) {
-			ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-
-			cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(ServiceConfigTerm.SERVICECONFIG_ID)));
-			cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-			cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-			cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-			cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-			cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
+				cf.setServiceConfigId(serviceConfig.getServiceConfigId());
+				cf.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+				cf.setGovAgencyName(serviceConfig.getGovAgencyName());
+				cf.setServiceInstruction(serviceConfig.getServiceInstruction());
+				cf.setServiceUr(serviceConfig.getServiceUrl());
+				cf.setServiceLevel(serviceConfig.getServiceLevel());
 
 			lsServiceConfig.add(cf);
+			}
 		}
-		
+
 		model.getServiceConfigs().addAll(lsServiceConfig);
 		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
 

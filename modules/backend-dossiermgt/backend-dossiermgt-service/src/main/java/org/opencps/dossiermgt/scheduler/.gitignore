@@ -1,0 +1,16 @@
+/ActionOverdueScheduler.class
+/DossierGarbageCollectorScheduler.class
+/DossierPullScheduler.class
+/DossierSubmitScheduler.class
+/DossierSyncOrderedModel.class
+/DossierSyncProcessingScheduler.class
+/DossierSyncScheduler.class
+/DossierSyncUtils.class
+/GarbageCollectorScheduler.class
+/InvokeREST.class
+/PublishEventScheduler.class
+/RESTFulConfiguration.class
+/RegistrationSyncScheduler.class
+/StatisticsReportScheduler.class
+/TimerScheduler.class
+/VnPostScheduler.class

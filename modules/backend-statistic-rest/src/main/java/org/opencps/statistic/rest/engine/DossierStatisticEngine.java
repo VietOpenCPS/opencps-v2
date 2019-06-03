@@ -58,7 +58,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private static volatile boolean isRunningDossier = false;
 	
 	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
@@ -70,8 +70,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		if (!isRunning) {
-			isRunning = true;
+		_log.info("START STATISTIC DOSSIER: " + isRunningDossier);
+		if (!isRunningDossier) {
+			isRunningDossier = true;
 		}
 		else {
 			return;
@@ -239,11 +240,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	//		}
 			}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 		_log.debug("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
-		isRunning = false;
+		isRunningDossier = false;
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,

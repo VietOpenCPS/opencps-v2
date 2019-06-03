@@ -18,20 +18,24 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class DossierDocumentUtils {
 
 	//LamTV_ Mapping process dossier and formData
 	public static JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
+		jsonData.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 		jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
 		jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
 		jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
@@ -50,6 +54,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
 		jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
 		jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+		jsonData.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
@@ -243,6 +248,16 @@ public class DossierDocumentUtils {
 		}
 		
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
+
+		PaymentFile payment = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		if (payment != null) {
+			jsonData.put(PaymentFileTerm.ADVANCE_AMOUNT, payment.getAdvanceAmount());
+			jsonData.put(PaymentFileTerm.PAYMENT_AMOUNT, payment.getPaymentAmount());
+			jsonData.put(PaymentFileTerm.PAYMENT_FEE, payment.getPaymentFee());
+			jsonData.put(PaymentFileTerm.SERVICE_AMOUNT, payment.getServiceAmount());
+			jsonData.put(PaymentFileTerm.SHIP_AMOUNT, payment.getShipAmount());
+		}
+
 		return jsonData;
 	}
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentUtils.class);

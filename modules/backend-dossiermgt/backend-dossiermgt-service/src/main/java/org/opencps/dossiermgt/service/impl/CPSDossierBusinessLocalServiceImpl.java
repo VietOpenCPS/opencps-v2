@@ -1207,8 +1207,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (Validator.isNotNull(paymentNote))
 					oldPaymentFile.setPaymentNote(paymentNote);
 				try {
-					PaymentFile paymentFile = paymentFileLocalService.updateApplicantFeeAmount(oldPaymentFile.getPaymentFileId(),
-							proAction.getRequestPayment(), feeAmount, serviceAmount, shipAmount);
+					PaymentFile paymentFile = paymentFileLocalService.updateApplicantFeeAmount(
+							oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount,
+							shipAmount, paymentNote, dossier.getOriginality());
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 							paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
 					JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
