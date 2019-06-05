@@ -27,13 +27,12 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = DossierGarbageCollectorScheduler.class)
-public class DossierGarbageCollectorScheduler extends BaseMessageListener {
+@Component(immediate = true, service = GarbageGroupDossierScheduler.class)
+public class GarbageGroupDossierScheduler extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		try {
-			int[] originalityArr = {0, 9};
-			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(originalityArr, StringPool.BLANK);
+			DossierLocalServiceUtil.removeDossierByF_OG_DS(9, StringPool.BLANK);
 		}
 		catch (Exception e) {
 			_log.error(e);
@@ -44,7 +43,7 @@ public class DossierGarbageCollectorScheduler extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 30, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 4, TimeUnit.HOUR);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
@@ -119,5 +118,5 @@ public class DossierGarbageCollectorScheduler extends BaseMessageListener {
 	private volatile boolean _initialized;
 	private SchedulerEntryImpl _schedulerEntryImpl = null;
 
-	private Log _log = LogFactoryUtil.getLog(DossierGarbageCollectorScheduler.class);	
+	private Log _log = LogFactoryUtil.getLog(GarbageGroupDossierScheduler.class);	
 }

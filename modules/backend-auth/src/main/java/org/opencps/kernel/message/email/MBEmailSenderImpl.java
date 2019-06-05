@@ -5,6 +5,8 @@ import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.kernel.service.MailServiceUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -31,7 +33,10 @@ public class MBEmailSenderImpl implements MBEmailSender {
 			mailMessage.setBody(messageEntry.getEmailBody());
 			mailMessage.setHTMLFormat(true);
 			mailMessage.setFrom(messageEntry.getFrom());
-			//mailService.sendEmail(mailMessage);
+			System.out.println("mailMessage: "+JSONFactoryUtil.looseSerialize(mailMessage));
+			System.out.println("messageEntry.getFrom(): "+JSONFactoryUtil.looseSerialize(messageEntry.getFrom()));
+			
+			System.out.println("FROM: "+messageEntry.getFrom().getAddress());
 			MailServiceUtil.sendEmail(mailMessage);
 			_log.info("===========/////////////// Send to " + messageEntry.getToAddress()[0]);
 		}

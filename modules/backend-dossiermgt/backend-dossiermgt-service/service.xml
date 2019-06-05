@@ -450,6 +450,7 @@
 		<column name="durationCount" type="double" />
 		<column name="dossierName" type ="String" />
 		<column name="originDossierNo" type="String" />
+		<column name="groupDossierId" type="long" />
 		
 		<!-- Order -->
 		
@@ -485,7 +486,12 @@
 		</finder>
 
 		<finder return-type="Collection" name="NOTO_DS">
-			<finder-column name="originality" comparator="!="/>
+			<finder-column name="originality" comparator="!=" arrayable-operator="AND"/>
+			<finder-column name="dossierStatus" />
+		</finder>
+
+		<finder return-type="Collection" name="F_OG_DS">
+			<finder-column name="originality" />
 			<finder-column name="dossierStatus" />
 		</finder>
 
@@ -961,6 +967,7 @@
 		<column name="serverName" type="String" />
 		<column name="requestPayment" type="boolean"/>
 		<column name="paymentFee" type="String"/>
+		<column name="dossierGroupPattern" type="String"/>
 
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />

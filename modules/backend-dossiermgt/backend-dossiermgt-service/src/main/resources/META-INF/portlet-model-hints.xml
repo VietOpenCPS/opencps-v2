@@ -321,6 +321,7 @@
 		<field name="originDossierNo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="groupDossierId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -1323,6 +1324,7 @@
 		<field name="paymentFee" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="dossierGroupPattern" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcessRole">
 		<field name="uuid" type="String" />

@@ -84,6 +84,7 @@ public class ServiceProcessWrapper implements ServiceProcess,
 		attributes.put("serverName", getServerName());
 		attributes.put("requestPayment", isRequestPayment());
 		attributes.put("paymentFee", getPaymentFee());
+		attributes.put("dossierGroupPattern", getDossierGroupPattern());
 
 		return attributes;
 	}
@@ -234,6 +235,13 @@ public class ServiceProcessWrapper implements ServiceProcess,
 		if (paymentFee != null) {
 			setPaymentFee(paymentFee);
 		}
+
+		String dossierGroupPattern = (String)attributes.get(
+				"dossierGroupPattern");
+
+		if (dossierGroupPattern != null) {
+			setDossierGroupPattern(dossierGroupPattern);
+		}
 	}
 
 	@Override
@@ -294,6 +302,16 @@ public class ServiceProcessWrapper implements ServiceProcess,
 	@Override
 	public boolean getDirectNotification() {
 		return _serviceProcess.getDirectNotification();
+	}
+
+	/**
+	* Returns the dossier group pattern of this service process.
+	*
+	* @return the dossier group pattern of this service process
+	*/
+	@Override
+	public String getDossierGroupPattern() {
+		return _serviceProcess.getDossierGroupPattern();
 	}
 
 	/**
@@ -644,6 +662,16 @@ public class ServiceProcessWrapper implements ServiceProcess,
 	@Override
 	public void setDirectNotification(boolean directNotification) {
 		_serviceProcess.setDirectNotification(directNotification);
+	}
+
+	/**
+	* Sets the dossier group pattern of this service process.
+	*
+	* @param dossierGroupPattern the dossier group pattern of this service process
+	*/
+	@Override
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+		_serviceProcess.setDossierGroupPattern(dossierGroupPattern);
 	}
 
 	/**

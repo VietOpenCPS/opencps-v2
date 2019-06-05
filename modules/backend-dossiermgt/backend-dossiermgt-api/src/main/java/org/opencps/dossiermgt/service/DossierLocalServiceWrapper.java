@@ -443,6 +443,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
+		int[] originalityArr, String dossierStatus) {
+		return _dossierLocalService.getDossierByG_NOTO_DS(originalityArr,
+			dossierStatus);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.search.Document getDossierById(
 		long dossierId, long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -776,8 +783,15 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
-		_dossierLocalService.removeDossierByG_NOTO_DS(originality, dossierStatus);
+	public void removeDossierByF_OG_DS(int originality, String dossierStatus) {
+		_dossierLocalService.removeDossierByF_OG_DS(originality, dossierStatus);
+	}
+
+	@Override
+	public void removeDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus) {
+		_dossierLocalService.removeDossierByG_NOTO_DS(originalityArr,
+			dossierStatus);
 	}
 
 	@Override

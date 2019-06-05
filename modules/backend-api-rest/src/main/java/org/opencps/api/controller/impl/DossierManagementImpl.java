@@ -873,7 +873,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			}
 			// Add param original
-//			params.put(DossierTerm.ORIGINALLITY, ConstantUtils.ORIGINAL_TODO);
+			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
 			params.put(DossierTerm.REGISTER, query.getRegister());
 			
 			Sort[] sorts = null;
@@ -1159,9 +1159,6 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 			}
-//			boolean online = true;
-//
-//			String password = StringPool.BLANK;
 
 //			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
 //					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
@@ -1181,15 +1178,9 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getApplicantNote(), input.isSameAsApplicant(), input.getDelegateName(),
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
-					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), input.getBriefNote(), serviceContext);
-//			if (Validator.isNotNull(input.getServiceName())) {
-//				dossier.setServiceName(input.getServiceName());
-//			}
-//			if (Validator.isNotNull(input.getDossierName())) {
-//				dossier.setDossierName(input.getDossierName());
-//			}
-//			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-			
+					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), input.getBriefNote(),
+					serviceContext);
+
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
@@ -4940,6 +4931,26 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		return true;
+	}
+
+	@Override
+	public Response updateDossierInGroup(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long groupDossierId, long dossierId) {
+
+		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier != null) {
+				dossier.setGroupDossierId(groupDossierId);
+				DossierLocalServiceUtil.updateDossier(dossier);
+			}
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+			//
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			_log.info(e);
+			return Response.status(500).entity("{error}").build();
+		}
 	}
 
 }

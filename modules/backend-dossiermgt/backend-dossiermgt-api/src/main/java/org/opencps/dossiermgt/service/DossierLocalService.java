@@ -322,6 +322,10 @@ public interface DossierLocalService extends BaseLocalService,
 		String dossierStatus);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> getDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Document getDossierById(long dossierId, long companyId)
 		throws PortalException;
 
@@ -526,7 +530,10 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier removeDossier(long groupId, long dossierId, String refId)
 		throws PortalException;
 
-	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus);
+	public void removeDossierByF_OG_DS(int originality, String dossierStatus);
+
+	public void removeDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier reset(long groupId, long id, String refId,

@@ -158,7 +158,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "durationUnit", Types.INTEGER },
 			{ "durationCount", Types.DOUBLE },
 			{ "dossierName", Types.VARCHAR },
-			{ "originDossierNo", Types.VARCHAR }
+			{ "originDossierNo", Types.VARCHAR },
+			{ "groupDossierId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -254,9 +255,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("durationCount", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("dossierName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("originDossierNo", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("groupDossierId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter INTEGER,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(75) null,cityName VARCHAR(255) null,districtCode VARCHAR(75) null,districtName VARCHAR(255) null,wardCode VARCHAR(75) null,wardName VARCHAR(255) null,contactName TEXT null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(255) null,postalAddress VARCHAR(255) null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(255) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(255) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(255) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter INTEGER,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(75) null,cityName VARCHAR(255) null,districtCode VARCHAR(75) null,districtName VARCHAR(255) null,wardCode VARCHAR(75) null,wardName VARCHAR(255) null,contactName TEXT null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(255) null,postalAddress VARCHAR(255) null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(255) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(255) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(255) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -422,6 +424,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		attributes.put("durationCount", getDurationCount());
 		attributes.put("dossierName", getDossierName());
 		attributes.put("originDossierNo", getOriginDossierNo());
+		attributes.put("groupDossierId", getGroupDossierId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -979,6 +982,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		if (originDossierNo != null) {
 			setOriginDossierNo(originDossierNo);
+		}
+
+		Long groupDossierId = (Long)attributes.get("groupDossierId");
+
+		if (groupDossierId != null) {
+			setGroupDossierId(groupDossierId);
 		}
 	}
 
@@ -2444,6 +2453,16 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	}
 
 	@Override
+	public long getGroupDossierId() {
+		return _groupDossierId;
+	}
+
+	@Override
+	public void setGroupDossierId(long groupDossierId) {
+		_groupDossierId = groupDossierId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Dossier.class.getName()));
@@ -2571,6 +2590,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierImpl.setDurationCount(getDurationCount());
 		dossierImpl.setDossierName(getDossierName());
 		dossierImpl.setOriginDossierNo(getOriginDossierNo());
+		dossierImpl.setGroupDossierId(getGroupDossierId());
 
 		dossierImpl.resetOriginalValues();
 
@@ -3339,12 +3359,14 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			dossierCacheModel.originDossierNo = null;
 		}
 
+		dossierCacheModel.groupDossierId = getGroupDossierId();
+
 		return dossierCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(183);
+		StringBundler sb = new StringBundler(185);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -3528,6 +3550,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getDossierName());
 		sb.append(", originDossierNo=");
 		sb.append(getOriginDossierNo());
+		sb.append(", groupDossierId=");
+		sb.append(getGroupDossierId());
 		sb.append("}");
 
 		return sb.toString();
@@ -3535,7 +3559,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(277);
+		StringBundler sb = new StringBundler(280);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Dossier");
@@ -3905,6 +3929,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			"<column><column-name>originDossierNo</column-name><column-value><![CDATA[");
 		sb.append(getOriginDossierNo());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>groupDossierId</column-name><column-value><![CDATA[");
+		sb.append(getGroupDossierId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -4034,6 +4062,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _dossierName;
 	private String _originDossierNo;
 	private String _originalOriginDossierNo;
+	private long _groupDossierId;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }

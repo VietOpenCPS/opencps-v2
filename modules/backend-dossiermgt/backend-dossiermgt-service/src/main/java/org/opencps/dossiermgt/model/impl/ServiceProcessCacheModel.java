@@ -65,7 +65,7 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -115,6 +115,8 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 		sb.append(requestPayment);
 		sb.append(", paymentFee=");
 		sb.append(paymentFee);
+		sb.append(", dossierGroupPattern=");
+		sb.append(dossierGroupPattern);
 		sb.append("}");
 
 		return sb.toString();
@@ -225,6 +227,13 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 			serviceProcessImpl.setPaymentFee(paymentFee);
 		}
 
+		if (dossierGroupPattern == null) {
+			serviceProcessImpl.setDossierGroupPattern("");
+		}
+		else {
+			serviceProcessImpl.setDossierGroupPattern(dossierGroupPattern);
+		}
+
 		serviceProcessImpl.resetOriginalValues();
 
 		return serviceProcessImpl;
@@ -268,6 +277,7 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 
 		requestPayment = objectInput.readBoolean();
 		paymentFee = objectInput.readUTF();
+		dossierGroupPattern = objectInput.readUTF();
 	}
 
 	@Override
@@ -369,6 +379,13 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 		else {
 			objectOutput.writeUTF(paymentFee);
 		}
+
+		if (dossierGroupPattern == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(dossierGroupPattern);
+		}
 	}
 
 	public String uuid;
@@ -395,4 +412,5 @@ public class ServiceProcessCacheModel implements CacheModel<ServiceProcess>,
 	public String serverName;
 	public boolean requestPayment;
 	public String paymentFee;
+	public String dossierGroupPattern;
 }

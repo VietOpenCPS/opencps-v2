@@ -215,7 +215,8 @@ create table opencps_dossier (
 	durationUnit INTEGER,
 	durationCount DOUBLE,
 	dossierName VARCHAR(1000) null,
-	originDossierNo VARCHAR(255) null
+	originDossierNo VARCHAR(255) null,
+	groupDossierId LONG
 );
 
 create table opencps_dossieraction (
@@ -891,7 +892,8 @@ create table opencps_serviceprocess (
 	serverNo VARCHAR(255) null,
 	serverName TEXT null,
 	requestPayment BOOLEAN,
-	paymentFee VARCHAR(255) null
+	paymentFee VARCHAR(255) null,
+	dossierGroupPattern VARCHAR(75) null
 );
 
 create table opencps_serviceprocessrole (

@@ -419,6 +419,11 @@ public class DossierLocalServiceUtil {
 		return getService().getDossierByG_NOTO_DS(originality, dossierStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
+		int[] originalityArr, String dossierStatus) {
+		return getService().getDossierByG_NOTO_DS(originalityArr, dossierStatus);
+	}
+
 	public static com.liferay.portal.kernel.search.Document getDossierById(
 		long dossierId, long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -740,9 +745,14 @@ public class DossierLocalServiceUtil {
 		return getService().removeDossier(groupId, dossierId, refId);
 	}
 
-	public static void removeDossierByG_NOTO_DS(int originality,
+	public static void removeDossierByF_OG_DS(int originality,
 		String dossierStatus) {
-		getService().removeDossierByG_NOTO_DS(originality, dossierStatus);
+		getService().removeDossierByF_OG_DS(originality, dossierStatus);
+	}
+
+	public static void removeDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus) {
+		getService().removeDossierByG_NOTO_DS(originalityArr, dossierStatus);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier reset(long groupId,

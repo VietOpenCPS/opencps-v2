@@ -182,6 +182,7 @@ public class DossierTerm {
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
 
 	public static final int GARBAGE_COLLECTOR_TIME = 30; //minutes
+	public static final int GARBAGE_COLLECTOR_GROUP_DOSSIER = 4; //hours
 	
 	public static final String PUBLISH_DOSSIER_DESTINATION = "publish/dossier/in/destination";
 	public static final String YEAR_FINISH = "yearFinish";
@@ -246,4 +247,5 @@ public class DossierTerm {
 	public static final String PROCESS_NO = "processNo";
 	public static final String REGISTER = "register";
 	public static final int ORIGINALITY_HSLT = 4;
+	public static final String GROUP_DOSSIER_ID = "groupDossierId";
 }
