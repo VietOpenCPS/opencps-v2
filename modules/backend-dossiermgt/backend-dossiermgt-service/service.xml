@@ -3,7 +3,7 @@
 
 <service-builder auto-namespace-tables="false"
 	package-path="org.opencps.dossiermgt"
-	>
+>
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
 	<entity name="ServiceInfo" table="opencps_serviceinfo"
@@ -600,7 +600,7 @@
             <finder-column name="dossierTemplateNo"></finder-column>
             <finder-column name="dossierStatus"></finder-column>
             <finder-column name="originality"></finder-column>
-        </finder>		
+        </finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -746,7 +746,14 @@
 			<finder-column name="fileTemplateNo" />
 			<finder-column name="removed" />
 			<finder-column name="original" />
-		</finder>		        
+		</finder>
+		<finder return-type="DossierFile" name="G_DID_PART_NAME">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="dossierPartNo" />
+			<finder-column name="dossierPartType" />
+			<finder-column name="displayName" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -871,7 +878,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
-		
 
 	</entity>
 
@@ -2133,6 +2139,9 @@
 		</finder>
 		<finder return-type="Collection" name="F_CONFIG_ID">
 			<finder-column name="menuConfigId" />
+		</finder>
+		<finder return-type="Collection" name="F_ROLE">
+			<finder-column name="roleId" />
 		</finder>
 
 	</entity>

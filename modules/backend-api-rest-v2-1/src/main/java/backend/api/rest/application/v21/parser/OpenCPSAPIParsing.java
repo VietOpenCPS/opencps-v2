@@ -26,8 +26,10 @@ import org.opencps.rest.application.model.MenuConfigStepsItem;
 import org.opencps.rest.application.model.StepConfigItem;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 
 public class OpenCPSAPIParsing {
@@ -159,6 +161,10 @@ public class OpenCPSAPIParsing {
 						isAdmin = true;
 						break;
 					}
+					if ("Administrator_data".equalsIgnoreCase(r.getName())) {
+						isAdmin = true;
+						break;
+					}
 				}
 				if (isAdmin) {
 					List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
@@ -182,14 +188,30 @@ public class OpenCPSAPIParsing {
 						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
 						
 						data.add(menuConfigItem);
-					}					
+					}
 				}
 			}
 		}
 		else {
-			List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
+			long[] arrMenuConfigIds = null;
+			if (job != null) {
+				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
+				if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
+					int length = lstMenuRoles.size();
+					arrMenuConfigIds = new long[length];
+					for (int i = 0; i < length; i++) {
+						MenuRole menu = lstMenuRoles.get(i);
+						arrMenuConfigIds[i] = menu.getMenuConfigId();
+					}
+				}
+			}
+			//List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+			if (arrMenuConfigIds != null && arrMenuConfigIds.length > 0) {
+				List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds);
 			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 
+				if (lstMenus != null && lstMenus.size() > 0) {
 			for (MenuConfig menuConfig : lstMenus) {
 				if (menuConfig.getMenuType() > 0) {
 					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
@@ -202,13 +224,15 @@ public class OpenCPSAPIParsing {
 							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
 								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
 								
-								menuConfigStepsItems.add(menuConfigStepsItem);							
+										menuConfigStepsItems.add(menuConfigStepsItem);
 							}
 						}
 					}
 					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
 					data.add(menuConfigItem);
 				}
+			}
+		}
 			}
 		}
 		

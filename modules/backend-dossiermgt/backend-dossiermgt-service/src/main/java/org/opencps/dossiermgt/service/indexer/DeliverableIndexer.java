@@ -155,6 +155,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		if (Validator.isNotNull(object.getFormReport())) {
 			document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());			
 		}
+		if (Validator.isNotNull(object.getDeliverableState())) {
+			document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());			
+		}
 
 		return document;
 	}

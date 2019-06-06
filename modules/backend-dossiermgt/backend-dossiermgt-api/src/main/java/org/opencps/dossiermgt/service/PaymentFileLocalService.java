@@ -229,6 +229,9 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PaymentFile getByDossierId(long groupId, long dossierId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PaymentFile getByG_DID(long groupId, long dossierId);
+
 	/**
 	* Get info Epayment Profile
 	*
@@ -351,7 +354,8 @@ public interface PaymentFileLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateApplicantFeeAmount(long paymentFileId,
-		int requestPayment, Long feeAmount, Long serviceAmount, Long shipAmount);
+		int requestPayment, Long feeAmount, Long serviceAmount,
+		Long shipAmount, String paymentNote, int originality);
 
 	/**
 	* Update info Epayment Profile

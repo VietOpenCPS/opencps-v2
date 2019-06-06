@@ -136,7 +136,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 		isRunning = false;
 	}

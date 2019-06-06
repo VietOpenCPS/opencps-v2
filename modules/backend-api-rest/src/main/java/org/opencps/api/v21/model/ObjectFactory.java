@@ -45,6 +45,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link WorkingTimeList }
+     * 
+     */
+    public WorkingTimeList createWorkingTimeList() {
+        return new WorkingTimeList();
+    }
+
+    /**
      * Create an instance of {@link PaymentConfigList }
      * 
      */
@@ -282,6 +290,14 @@ public class ObjectFactory {
      */
     public Configs.ServiceConfig createConfigsServiceConfig() {
         return new Configs.ServiceConfig();
+    }
+
+    /**
+     * Create an instance of {@link WorkingTimeList.WorkingTime }
+     * 
+     */
+    public WorkingTimeList.WorkingTime createWorkingTimeListWorkingTime() {
+        return new WorkingTimeList.WorkingTime();
     }
 
     /**

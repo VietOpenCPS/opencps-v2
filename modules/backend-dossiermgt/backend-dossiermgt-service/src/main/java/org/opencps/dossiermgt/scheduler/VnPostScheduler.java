@@ -97,20 +97,7 @@ public class VnPostScheduler extends BaseMessageListener {
 			}
 		}
 	}
-//	@Activate
-//	@Modified
-//	protected void activate() {
-//		schedulerEntryImpl.setTrigger(TriggerFactoryUtil.createTrigger(getEventListenerClass(), getEventListenerClass(),
-//				12, TimeUnit.HOUR));
-//		_schedulerEngineHelper.register(this, schedulerEntryImpl, DestinationNames.SCHEDULER_ENGINE);
-//	}
-
-	/**
-	   * activate: Called whenever the properties for the component change (ala Config Admin)
-	   * or OSGi is activating the component.
-	   * @param properties The properties map from Config Admin.
-	   * @throws SchedulerException in case of error.
-	   */
+	//TODO
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
@@ -174,7 +161,7 @@ public class VnPostScheduler extends BaseMessageListener {
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
-	  
+
 	@Reference(unbind = "-")
 	protected void setTriggerFactory(TriggerFactory triggerFactory) {
 		_triggerFactory = triggerFactory;

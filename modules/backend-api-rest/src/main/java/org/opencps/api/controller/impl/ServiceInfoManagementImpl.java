@@ -2,6 +2,7 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -50,13 +51,17 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -86,15 +91,29 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			//params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			//Keyword search like
+			String keywordSearch = query.getKeyword();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearch)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+			}
+			params.put(Field.KEYWORD_SEARCH, keySearch);
+
 			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
 			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = null;
+			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
+					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
-
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			}
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
@@ -497,7 +516,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByAgency(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Request requestCC) {
+			User user, ServiceContext serviceContext, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -505,7 +524,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
 		try {
-			results = actions.getStatisticByAdministration(serviceContext, groupId);
+			//Sort agency
+			Sort[] sorts = null;
+			if (Validator.isNull(search.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
+			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
 			
 //			_log.info(results);
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
@@ -528,7 +556,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@Override
 	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String agency, Request requestCC) {
+			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -536,11 +564,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
 		try {
+			//Sort agency
+			Sort[] sorts = null;
+			if (Validator.isNull(search.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
 			if (Validator.isNotNull(agency)) {
-				results = actions.getStatisticByDomainFilterAdministration(serviceContext, groupId, agency);
+				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
 			}
 			else {
-				results = actions.getStatisticByDomain(serviceContext, groupId);
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext);
 			}
 //			_log.info(results);
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));

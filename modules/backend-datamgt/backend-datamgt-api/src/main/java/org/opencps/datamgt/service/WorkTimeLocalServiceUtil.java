@@ -387,6 +387,13 @@ public class WorkTimeLocalServiceUtil {
 		return getService().updateWorkTime(workTime);
 	}
 
+	public static org.opencps.datamgt.model.WorkTime updateWorkTimeDB(
+		long userId, long groupId, int workTimeDay, String workTimeHours)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return getService()
+				   .updateWorkTimeDB(userId, groupId, workTimeDay, workTimeHours);
+	}
+
 	public static WorkTimeLocalService getService() {
 		return _serviceTracker.getService();
 	}

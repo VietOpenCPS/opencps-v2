@@ -45,7 +45,8 @@ import javax.xml.bind.annotation.XmlType;
     "fullname",
     "email",
     "content",
-    "publish"
+    "publish",
+    "answered"
 })
 public class QuestionModel {
 
@@ -59,6 +60,7 @@ public class QuestionModel {
     @XmlElement(required = true)
     protected String content;
     protected int publish;
+    protected boolean answered;
 
     /**
      * Gets the value of the questionId property.
@@ -186,6 +188,22 @@ public class QuestionModel {
      */
     public void setPublish(int value) {
         this.publish = value;
+    }
+
+    /**
+     * Gets the value of the answered property.
+     * 
+     */
+    public boolean isAnswered() {
+        return answered;
+    }
+
+    /**
+     * Sets the value of the answered property.
+     * 
+     */
+    public void setAnswered(boolean value) {
+        this.answered = value;
     }
 
 }

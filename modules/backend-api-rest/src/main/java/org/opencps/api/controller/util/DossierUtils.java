@@ -59,6 +59,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -335,7 +336,6 @@ public class DossierUtils {
 			} else {
 				model.setPermission(StringPool.BLANK);
 			}
-
 			if (isAdministratorData) {
 				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + "," : "") + userId + "_read");
 			}
@@ -774,7 +774,7 @@ public class DossierUtils {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(input.getDossierActionId());
 			if (dossierAction != null) {
 				model.setLastActionDate(APIDateTimeUtils.convertDateToString(dossierAction.getCreateDate(),
-						APIDateTimeUtils._NORMAL_PARTTERN));				
+						APIDateTimeUtils._NORMAL_PARTTERN));
 				model.setLastActionName(dossierAction.getActionName());
 				model.setLastActionUser(dossierAction.getActionUser() != null ? dossierAction.getActionUser().toUpperCase() : StringPool.BLANK);
 				model.setLastActionNote(dossierAction.getActionNote());

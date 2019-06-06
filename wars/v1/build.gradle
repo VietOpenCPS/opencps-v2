@@ -6,7 +6,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.css.builder", version: "2.2.2"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.css.builder", version: "3.0.0"
 	}
 }
 

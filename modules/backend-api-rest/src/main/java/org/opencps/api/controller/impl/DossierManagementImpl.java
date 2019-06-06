@@ -1,9 +1,11 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -11,6 +13,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -20,10 +23,14 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -35,9 +42,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -51,6 +60,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.http.HttpResponse;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -77,7 +87,10 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -87,12 +100,14 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -106,6 +121,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -114,6 +130,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
@@ -127,6 +144,7 @@ import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
@@ -135,6 +153,8 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -148,10 +168,18 @@ import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -202,10 +230,18 @@ public class DossierManagementImpl implements DossierManagement {
 			if ("all".equals(agency)) {
 				agency = StringPool.BLANK;
 			}
-			String service = query.getService();
-			String template = query.getTemplate();
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
 			//Integer originality = GetterUtil.getInteger(query.getOriginality());
-			String originality = query.getOriginality();
+			//String originality = query.getOriginality();
 			String owner = query.getOwner();
 //			if (originality == -1) {
 //				owner = String.valueOf(false);
@@ -465,8 +501,18 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
-			String service = query.getService();
-			String template = query.getTemplate();
+
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
+
 			int year = query.getYear();
 			int month = query.getMonth();
 			String owner = query.getOwner();
@@ -689,8 +735,16 @@ public class DossierManagementImpl implements DossierManagement {
  			}
 
 			String agency = query.getAgency();
-			String service = query.getService();
-			String template = query.getTemplate();
+			String serviceCode = query.getService();
+			String service = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				service = SpecialCharacterUtils.splitSpecial(serviceCode);
+			}
+			String templateNo = query.getTemplate();
+			String template = StringPool.BLANK;
+			if (Validator.isNotNull(templateNo)) {
+				template = SpecialCharacterUtils.splitSpecial(templateNo);
+			}
 			String owner = query.getOwner();
 			// If user is citizen then default owner true
 			if (isCitizen) {
@@ -757,13 +811,29 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.YEAR, year);
 			params.put(DossierTerm.MONTH, month);
 			params.put(DossierTerm.DAY, query.getDay());
-			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
-			if (auth2.isAdmin(serviceContext, "admin")) {
-				
+			//backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+			//Check role follow dossier
+			boolean isAdmin = false;
+			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+			if (roles != null && roles.size() > 0) {
+				for (Role role : roles) {
+					// LamTV_Fix sonarqube
+					if ("Administrator".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+					if ("Administrator_data".equals(role.getName())) {
+						isAdmin = true;
+						break;
+					}
+				}
+			}
+			if (isAdmin) {
 			}
 			else {
 				params.put(DossierTerm.USER_ID, user.getUserId());
 			}
+
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -795,8 +865,8 @@ public class DossierManagementImpl implements DossierManagement {
 			} else {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
-			if (auth2.isAdmin(serviceContext, "admin")) {
-				
+			//if (auth2.isAdmin(serviceContext, "admin")) {
+			if (isAdmin) {
 			}
 			else {
 				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
@@ -977,11 +1047,11 @@ public class DossierManagementImpl implements DossierManagement {
 							break;
 						}
 					}
-					
+
 					if (!isAdmin) {
 						dossierPermission.checkPassword(dossier, secretKey);						
 					}
-
+					
 					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 					return Response.status(200).entity(result).build();
@@ -2659,7 +2729,28 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
+		List<DossierLog> lstLogs = new ArrayList<>();
 		
+		try {
+			lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		} catch (PortalException e) {
+		}
+		Map<Long, JSONArray> mapFiles = new HashMap<>();
+		
+		for (DossierLog log : lstLogs) {
+			JSONObject payload;
+			try {
+				payload = JSONFactoryUtil.createJSONObject(log.getPayload());
+				if (payload.has("dossierActionId")) {
+					mapFiles.put(payload.getLong("dossierActionId"), payload.getJSONArray("files"));
+				}
+			} catch (JSONException e) {
+			}
+		}
+		
+		List<DossierAction> dossierActionListCheck = DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
+		if (dossierActionListCheck != null && dossierActionListCheck.size() == 1 && dossierActionListCheck.get(0).getStepCode().equals("400")) {
+		} else {
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
 			sequenceObj.put("sequenceNo", ps.getSequenceNo());
@@ -2725,7 +2816,7 @@ public class DossierManagementImpl implements DossierManagement {
 					assignUserArr.put(assignUserObj);					
 				}
 			}
-			
+
 			sequenceObj.put("assignUsers", assignUserArr);
 			
 			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
@@ -2755,8 +2846,10 @@ public class DossierManagementImpl implements DossierManagement {
 				actionObj.put("stepCode", da.getStepCode());
 				actionObj.put("stepName", da.getStepName());
 				actionObj.put("userId", da.getUserId());				
-				
-				_log.debug("Action obj: " + actionObj.toJSONString());
+					if (mapFiles.containsKey(da.getDossierActionId())) {
+						actionObj.put("files", mapFiles.get(da.getDossierActionId()));
+					}
+					_log.info("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			
 			
@@ -2765,7 +2858,8 @@ public class DossierManagementImpl implements DossierManagement {
 			sequenceArr.put(sequenceObj);
 			
 		}
-		
+		}
+
 		result.put("data", sequenceArr);
 		return result;
 	}
@@ -4732,4 +4826,120 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+
+	@Override
+	public Response getUrlSiteInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String referenceUid) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+		try {
+			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
+			if (dossier != null) {
+				jsonData.put("dossierId", dossier.getDossierId());
+				// Get info group
+				Group group = GroupLocalServiceUtil.getGroup(groupId);
+				jsonData.put("url", PortalUtil.getPathFriendlyURLPublic() + group.getFriendlyURL());
+			}
+			
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(HttpServletResponse.SC_OK).entity(JSONFactoryUtil.looseSerialize(jsonData)).build();
+	}
+
+	@Override
+	public Response getValidateProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String actionCode) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+		results.put("value", false);
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long userId = user.getUserId();
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				long serviceProcessId = 0;
+				String stepCode = StringPool.BLANK;
+				boolean pending = false;
+				long dossierActionId = dossier.getDossierActionId();
+				// _log.info("dossierActionId: "+dossierActionId);
+				DossierAction dossierAction = null;
+				if (dossierActionId > 0) {
+					dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+				}
+
+				if (dossierAction != null) {
+					serviceProcessId = dossierAction.getServiceProcessId();
+					stepCode = dossierAction.getStepCode();
+					pending = dossierAction.getPending();
+				}
+
+				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
+							.getByDossierAndUser(dossierActionId, userId);
+					// _log.info("User id: " + userId);
+					int enable = 2;
+					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+						if (dossier.getUserId() == userId && !pending) {
+							enable = 1;
+						}
+					}
+					if (dActionUser != null) {
+						int assign = dActionUser.getAssigned();
+						if (assign == 1 && !pending)
+							enable = 1;
+					}
+					_log.info("enable: "+enable);
+					List<ProcessAction> processActionList = ProcessActionLocalServiceUtil
+							.getProcessActionByG_SPID_PRESC(groupId, serviceProcessId, stepCode);
+					if (processActionList != null && processActionList.size() > 0) {
+						StringBuilder sb = new StringBuilder();
+						for (ProcessAction processAction : processActionList) {
+							if (enable == 1 && (processCheckEnable(processAction.getPreCondition(),
+									processAction.getAutoEvent(), dossier, actionCode, groupId))) {
+									sb.append(processAction.getActionCode());
+									sb.append(StringPool.SPACE);
+							}
+						}
+						_log.info("SB: "+sb.toString());
+						if (sb != null && sb.toString().contains(actionCode)) {
+							results.put("value", true);
+						}
+					}
+				}
+			}
+
+			return Response.status(200).entity(results.toJSONString()).build();
+		} catch (Exception e) {
+			_log.info(e);
+			return Response.status(200).entity(results.toJSONString()).build();
+		}
+	}
+
+	//LamTV_Process check permission action
+	public static final String AUTO_EVENT_SUBMIT = "submit";
+	public static final String AUTO_EVENT_TIMMER = "timer";
+	public static final String AUTO_EVENT_LISTENER = "listener";
+	public static final String AUTO_EVENT_SPECIAL = "special";
+	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
+			long groupId) {
+		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
+				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+			return false;
+		}
+		String[] preConditionArr = StringUtil.split(preCondition);
+		if (preConditionArr != null && preConditionArr.length > 0) {
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
+		}
+
+		return true;
+	}
+
 }

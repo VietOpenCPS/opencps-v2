@@ -33,7 +33,7 @@ import org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 	@Override

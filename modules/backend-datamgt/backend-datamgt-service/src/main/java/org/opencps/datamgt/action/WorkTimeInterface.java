@@ -30,4 +30,6 @@ public interface WorkTimeInterface {
 	public WorkTime update(long userId, long groupId, int n, String hours,
 			ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException;
+
+	public void updateWorkTimeDB(long userId, long groupId, int workTimeDay, String workTimeHours) throws NoSuchUserException;
 }

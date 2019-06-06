@@ -91,6 +91,7 @@ create index IX_4C1D4556 on opencps_dossierfile (dossierId, isNew, removed);
 create index IX_AEEE542B on opencps_dossierfile (dossierId, referenceUid[$COLUMN_LENGTH:75$], removed);
 create index IX_72D2A0C4 on opencps_dossierfile (dossierId, removed);
 create index IX_C7669357 on opencps_dossierfile (fileEntryId);
+create index IX_AF6CB32E on opencps_dossierfile (groupId, dossierId, dossierPartNo[$COLUMN_LENGTH:255$], dossierPartType, displayName[$COLUMN_LENGTH:500$]);
 create index IX_F9DB3FD4 on opencps_dossierfile (groupId, dossierId, fileTemplateNo[$COLUMN_LENGTH:255$], removed, original);
 create index IX_6C6A28B9 on opencps_dossierfile (groupId, referenceUid[$COLUMN_LENGTH:75$]);
 create index IX_E3E31523 on opencps_dossierfile (referenceUid[$COLUMN_LENGTH:75$]);

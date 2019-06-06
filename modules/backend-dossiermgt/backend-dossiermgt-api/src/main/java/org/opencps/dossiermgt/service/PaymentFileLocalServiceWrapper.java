@@ -262,6 +262,12 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 		return _paymentFileLocalService.getByDossierId(groupId, dossierId);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.PaymentFile getByG_DID(long groupId,
+		long dossierId) {
+		return _paymentFileLocalService.getByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Get info Epayment Profile
 	*
@@ -431,9 +437,10 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	@Override
 	public org.opencps.dossiermgt.model.PaymentFile updateApplicantFeeAmount(
 		long paymentFileId, int requestPayment, Long feeAmount,
-		Long serviceAmount, Long shipAmount) {
+		Long serviceAmount, Long shipAmount, String paymentNote, int originality) {
 		return _paymentFileLocalService.updateApplicantFeeAmount(paymentFileId,
-			requestPayment, feeAmount, serviceAmount, shipAmount);
+			requestPayment, feeAmount, serviceAmount, shipAmount, paymentNote,
+			originality);
 	}
 
 	/**

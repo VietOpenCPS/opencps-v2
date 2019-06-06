@@ -50,6 +50,7 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.WorkTimeTerm;
 import org.opencps.datamgt.exception.NoSuchWorkTimeException;
+import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.base.WorkTimeLocalServiceBaseImpl;
 
@@ -372,6 +373,41 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		return object;
 	}
-	
+
+	@Indexable(type = IndexableType.REINDEX)
+	public WorkTime updateWorkTimeDB(long userId, long groupId, int workTimeDay, String workTimeHours)
+			throws NoSuchUserException {
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+		WorkTime workTime = workTimePersistence.fetchByF_day(groupId, workTimeDay);
+
+		if (workTime == null) {
+			long workTimeId = counterLocalService.increment(WorkTime.class.getName());
+			workTime = workTimePersistence.create(workTimeId);
+
+			// Group instance
+			workTime.setGroupId(groupId);
+			// Audit fields
+			workTime.setCompanyId(user.getCompanyId());
+			workTime.setUserId(user.getUserId());
+			workTime.setUserName(user.getFullName());
+			workTime.setCreateDate(now);
+			workTime.setModifiedDate(now);
+
+			// Other fields
+			workTime.setDay(workTimeDay);
+			workTime.setHours(workTimeHours);
+		} else {
+			workTime.setModifiedDate(now);
+			if (Validator.isNotNull(workTimeDay))
+				workTime.setDay(workTimeDay);
+			if (Validator.isNotNull(workTimeHours))
+				workTime.setHours(workTimeHours);
+		}
+
+		return workTimePersistence.update(workTime);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(WorkTimeLocalServiceImpl.class);
 }
