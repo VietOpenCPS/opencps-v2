@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
@@ -93,9 +94,34 @@ public class MBMessageEntry {
 	private boolean sendEmail;
 	private boolean sendSMS;
 	private boolean sendNotify;
+	private boolean sendZalo;
 	private String emailSubject;
 	private String emailBody;
 	private String textMessage;
+	
+	private String zaloAccessToken;
+	private Map<Long, String> mappingZaloUid;
+	
+	public String getZaloAccessToken() {
+
+		return zaloAccessToken;
+	}
+
+	public void setZaloAccessToken(String zaloAccessToken) {
+
+		this.zaloAccessToken = zaloAccessToken;
+	}
+
+	public Map<Long, String> getMappingZaloUid() {
+
+		return mappingZaloUid;
+	}
+
+	public void setMappingZaloUid(Map<Long, String> mappingZaloUid) {
+
+		this.mappingZaloUid = mappingZaloUid;
+	}
+	
 	public String getNotifyMessage() {
 		return notifyMessage;
 	}
@@ -432,6 +458,16 @@ public class MBMessageEntry {
 
 	public void setToTelNo(String toTelNo) {
 		this.toTelNo = toTelNo;
+	}
+	
+	public boolean isSendZalo() {
+
+		return sendZalo;
+	}
+
+	public void setSendZalo(boolean sendZalo) {
+
+		this.sendZalo = sendZalo;
 	}
 
 }

@@ -33,4 +33,12 @@ public class SendSMSTerm {
 	public static final String SERVICE_ID = "serviceID";
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
+
+	/**
+	 * Zalo Preference to send message zalo
+	 */
+	public static final String SERVER_CONFIG_PROTOCOL_ZALO_INF = "ZALO_INF";
+	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
+	public static final String ZALO_UID = "ZALO_UID";
+	public static final String UID = "uid";
 }
