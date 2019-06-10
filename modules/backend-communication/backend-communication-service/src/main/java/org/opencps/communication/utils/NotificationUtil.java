@@ -1,7 +1,27 @@
+
 package org.opencps.communication.utils;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.communication.constants.MailVariables;
+import org.opencps.communication.constants.SendSMSTerm;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.model.Preferences;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.PreferencesLocalServiceUtil;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.kernel.message.MBMessageEntry;
+import org.opencps.kernel.prop.PropValues;
+import org.opencps.kernel.template.MessageDataModel;
+import org.opencps.kernel.template.freemarker.TemplateProcessor;
+
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -10,14 +30,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import org.opencps.communication.constants.MailVariables;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.kernel.message.MBMessageEntry;
-import org.opencps.kernel.prop.PropValues;
-import org.opencps.kernel.template.MessageDataModel;
-import org.opencps.kernel.template.freemarker.TemplateProcessor;
 
 /**
  * @author trungnt
@@ -73,11 +85,11 @@ public class NotificationUtil {
 			String textMessageTemplate = template.getTextMessage();
 			String userUrlPatternTemplate = template.getUserUrlPattern();
 			String guestUrlPatternTemplate = template.getGuestUrlPattern();
-//			_log.info("emailSubjectTemplate: "+emailSubjectTemplate);
-//			_log.info("emailBodyTemplate: "+emailBodyTemplate);
-//			_log.info("textMessageTemplate: "+textMessageTemplate);
-//			_log.info("userUrlPatternTemplate: "+userUrlPatternTemplate);
-//			_log.info("guestUrlPatternTemplate: "+guestUrlPatternTemplate);
+			// _log.info("emailSubjectTemplate: "+emailSubjectTemplate);
+			// _log.info("emailBodyTemplate: "+emailBodyTemplate);
+			// _log.info("textMessageTemplate: "+textMessageTemplate);
+			// _log.info("userUrlPatternTemplate: "+userUrlPatternTemplate);
+			// _log.info("guestUrlPatternTemplate: "+guestUrlPatternTemplate);
 
 			String baseUrl = StringPool.BLANK;
 			try {
@@ -87,11 +99,11 @@ public class NotificationUtil {
 				baseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPrivateGroup() +
 					group.getFriendlyURL();
-//				_log.info("baseUrl: "+baseUrl);
+				// _log.info("baseUrl: "+baseUrl);
 
 			}
 			catch (Exception e) {
-				 _log.error(e);
+				_log.error(e);
 			}
 
 			String guestBaseUrl = StringPool.BLANK;
@@ -103,7 +115,7 @@ public class NotificationUtil {
 				guestBaseUrl = PropValues.PORTAL_DOMAIN +
 					PortalUtil.getPathFriendlyURLPublic() +
 					group.getFriendlyURL();
-//				_log.info("guestBaseUrl: "+guestBaseUrl);
+				// _log.info("guestBaseUrl: "+guestBaseUrl);
 
 			}
 			catch (Exception e) {
@@ -117,17 +129,19 @@ public class NotificationUtil {
 				Object payload =
 					JSONFactoryUtil.looseDeserialize(queue.getPayload());
 
-//				JSONObject payloadJSON =
-//					JSONFactoryUtil.createJSONObject(queue.getPayload());
-//				if (payloadJSON.has("Visibility")) {
-//					security =
-//						payloadJSON.getJSONObject("Visibility").getString(
-//							"security");
-//				}
-				
-//				String guestConfirmUrl = guestBaseUrl + MailVariables.SUB_URL_ACTIVE + payloadJSON.getJSONObject("Applicant").getString(
-//						"applicantId");
-//				_log.info("guestConfirmUrl: "+guestConfirmUrl);
+				// JSONObject payloadJSON =
+				// JSONFactoryUtil.createJSONObject(queue.getPayload());
+				// if (payloadJSON.has("Visibility")) {
+				// security =
+				// payloadJSON.getJSONObject("Visibility").getString(
+				// "security");
+				// }
+
+				// String guestConfirmUrl = guestBaseUrl +
+				// MailVariables.SUB_URL_ACTIVE +
+				// payloadJSON.getJSONObject("Applicant").getString(
+				// "applicantId");
+				// _log.info("guestConfirmUrl: "+guestConfirmUrl);
 
 				MessageDataModel dataModel = new MessageDataModel();
 
@@ -164,7 +178,7 @@ public class NotificationUtil {
 
 				String emailBody =
 					emailBodyTemplateProcessor.process(dataModel);
-//				_log.info("emailBody: "+emailBody);
+				// _log.info("emailBody: "+emailBody);
 
 				TemplateProcessor emailSubjectTemplateProcessor =
 					new TemplateProcessor(emailSubjectTemplate);
@@ -177,7 +191,7 @@ public class NotificationUtil {
 
 				String textMessage =
 					textMessageTemplateProcessor.process(dataModel);
-//				_log.info("textMessage: "+textMessage);
+				// _log.info("textMessage: "+textMessage);
 
 				String userUrl = StringPool.BLANK;
 
@@ -186,7 +200,7 @@ public class NotificationUtil {
 						new TemplateProcessor(userUrlPatternTemplate);
 					userUrl =
 						userUrlPatternTemplateProcessor.process(dataModel);
-//					_log.info("userUrl: "+userUrl);
+					// _log.info("userUrl: "+userUrl);
 				}
 
 				String guestUrl = StringPool.BLANK;
@@ -197,7 +211,7 @@ public class NotificationUtil {
 
 					guestUrl =
 						guestUrlPatternTemplateProcessor.process(dataModel);
-//					_log.info("guestUrl: "+guestUrl);
+					// _log.info("guestUrl: "+guestUrl);
 				}
 
 				messageEntry = new MBMessageEntry(
@@ -214,7 +228,7 @@ public class NotificationUtil {
 				messageEntry.setToTelNo(queue.getToTelNo());
 				messageEntry.setNotifyMessage(template.getNotifyMessage());
 				messageEntry.setData(queue.getPayload());
-				
+
 				// _log.info(emailBody);
 
 				// _log.info(userUrl);
@@ -224,55 +238,66 @@ public class NotificationUtil {
 				boolean sendEmail = true;
 				boolean sendNotify = true;
 				boolean sendSMS = false;
+				boolean sendMesZalo = false;
 
 				if (queue.getToUserId() > 0) {
-//					Preferences preferences =
-//						PreferencesLocalServiceUtil.fetchByF_userId(
-//							serviceContext.getScopeGroupId(),
-//							queue.getToUserId());
-//					if (preferences != null &&
-//						Validator.isNotNull(preferences.getPreferences())) {
-//						try {
-//							JSONObject pref = JSONFactoryUtil.createJSONObject(
-//								preferences.getPreferences());
-//							if (pref.has(queue.getNotificationType())) {
-//								JSONObject object = pref.getJSONObject(
-//									queue.getNotificationType());
-//								if (object != null &&
-//									object.has(queue.getClassName())) {
-//									JSONObject conf = object.getJSONObject(
-//										queue.getClassName());
-//									sendEmail = conf.getBoolean("email");
-//									sendNotify = conf.getBoolean("notify");
-//									sendSMS = conf.getBoolean("sms");
-//								}
-//							}
-//						}
-//						catch (Exception e) {
-//							_log.debug(e);
-//							//_log.error(e);
-//						}
-//					}
+					// Preferences preferences =
+					// PreferencesLocalServiceUtil.fetchByF_userId(
+					// serviceContext.getScopeGroupId(),
+					// queue.getToUserId());
+					// if (preferences != null &&
+					// Validator.isNotNull(preferences.getPreferences())) {
+					// try {
+					// JSONObject pref = JSONFactoryUtil.createJSONObject(
+					// preferences.getPreferences());
+					// if (pref.has(queue.getNotificationType())) {
+					// JSONObject object = pref.getJSONObject(
+					// queue.getNotificationType());
+					// if (object != null &&
+					// object.has(queue.getClassName())) {
+					// JSONObject conf = object.getJSONObject(
+					// queue.getClassName());
+					// sendEmail = conf.getBoolean("email");
+					// sendNotify = conf.getBoolean("notify");
+					// sendSMS = conf.getBoolean("sms");
+					// }
+					// }
+					// }
+					// catch (Exception e) {
+					// _log.debug(e);
+					// //_log.error(e);
+					// }
+					// }
 					if (template != null) {
-//						sendEmail = template.getSendEmail();
+						// sendEmail = template.getSendEmail();
 						sendNotify = template.getSendNotification();
-//						sendSMS = template.getSendSMS();
+						// sendSMS = template.getSendSMS();
+						sendMesZalo = template.getSendNotification();
 					}
 				}
 				else {
 					sendNotify = false;
+					sendMesZalo = false;
 				}
 
 				if (template != null) {
 					sendEmail = template.getSendEmail();
 					sendSMS = template.getSendSMS();
+					template.getSendSMS();
 				}
 
 				messageEntry.setSendEmail(sendEmail);
 				messageEntry.setSendNotify(sendNotify);
 				messageEntry.setSendSMS(sendSMS);
+				messageEntry.setSendZalo(sendMesZalo);
+				if (sendMesZalo) {
+					messageEntry.setZaloAccessToken(
+						_getZaloAccessToken(queue.getGroupId()));
+					messageEntry.setMappingZaloUid(
+						_getZaloUID(queue.getGroupId(), queue.getGroupId()));
+				}
 
-//				_log.info("create mail message: " + messageEntry);
+				// _log.info("create mail message: " + messageEntry);
 
 			}
 			catch (Exception e) {
@@ -282,6 +307,56 @@ public class NotificationUtil {
 		}
 
 		return messageEntry;
+	}
+
+	private static String _getZaloAccessToken(long groupId) {
+
+		String zaloAccessToken = StringPool.BLANK;
+
+		try {
+			List<ServerConfig> lstScs =
+				ServerConfigLocalServiceUtil.getByProtocol(
+					groupId, SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_INF);
+
+			if (!lstScs.isEmpty()) {
+
+				ServerConfig sc = lstScs.get(0);
+
+				JSONObject zaloConfig =
+					JSONFactoryUtil.createJSONObject(sc.getConfigs());
+				zaloAccessToken =
+					zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
+				_log.info(
+					"==================OAID_TOKEN_ACCESS======================");
+				_log.info(zaloAccessToken);
+			}
+		}
+		catch (JSONException e) {
+			_log.info("_getZaloAccessToken error");
+			_log.error(e);
+		}
+		return zaloAccessToken;
+	}
+
+	private static Map<Long, String> _getZaloUID(long groupId, long toUserId) {
+
+		Map<Long, String> mappingZaloUid = new HashMap<>();
+
+		try {
+			Preferences preferences =
+				PreferencesLocalServiceUtil.fetchByF_userId(groupId, toUserId);
+			JSONObject pref =
+				JSONFactoryUtil.createJSONObject(preferences.getPreferences());
+			JSONObject oZaloUid = pref.getJSONObject(SendSMSTerm.ZALO_UID);
+			_log.info("==================ZALO_UID======================");
+			_log.info(oZaloUid);
+			mappingZaloUid.put(toUserId, oZaloUid.getString(SendSMSTerm.UID));
+		}
+		catch (Exception e) {
+			_log.info("_getZaloUID error");
+			_log.error(e);
+		}
+		return mappingZaloUid;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationUtil.class);

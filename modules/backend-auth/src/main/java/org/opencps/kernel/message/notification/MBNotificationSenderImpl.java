@@ -1,11 +1,15 @@
 
 package org.opencps.kernel.message.notification;
 
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 
 import org.opencps.kernel.message.MBMessageEntry;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -21,7 +25,9 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 @Component(immediate = true, service = MBNotificationSenderImpl.class)
 public class MBNotificationSenderImpl implements MBNotificationSender {
 
-	private static Log _log = LogFactoryUtil.getLog(MBNotificationSenderImpl.class);
+	private static Log _log =
+		LogFactoryUtil.getLog(MBNotificationSenderImpl.class);
+
 	@Override
 	public void send(
 		MBMessageEntry messageEntry, String portletId,
@@ -36,25 +42,27 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		payloadJSON.put("guestUrl", messageEntry.getGuestUrl());
 		payloadJSON.put("data", messageEntry.getData());
 		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
-		
+
 		if (messageEntry.getToUserIds() != null) {
 			for (Long toUserId : messageEntry.getToUserIds()) {
-				
+
 				try {
-					/*userNotificationEventLocalService.addUserNotificationEvent(
-						toUserId, portletId, (new Date()).getTime(),
-						UserNotificationDeliveryConstants.TYPE_WEBSITE,
-						toUserId, payloadJSON.toString(), false,
-						serviceContext[0]);*/
-					
-					//_log.info(serviceContext[0].getScopeGroupId());
-					
+					/*
+					 * userNotificationEventLocalService.
+					 * addUserNotificationEvent( toUserId, portletId, (new
+					 * Date()).getTime(),
+					 * UserNotificationDeliveryConstants.TYPE_WEBSITE, toUserId,
+					 * payloadJSON.toString(), false, serviceContext[0]);
+					 */
+
+					// _log.info(serviceContext[0].getScopeGroupId());
+
 					UserNotificationEvent event =
-							UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
-								toUserId, portletId, (new Date()).getTime(),
-								UserNotificationDeliveryConstants.TYPE_WEBSITE,
-								toUserId, payloadJSON.toString(), false,
-								serviceContext[0]);
+						UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+							toUserId, portletId, (new Date()).getTime(),
+							UserNotificationDeliveryConstants.TYPE_WEBSITE,
+							toUserId, payloadJSON.toString(), false,
+							serviceContext[0]);
 
 					event.setDelivered(false);
 
@@ -63,21 +71,81 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 				}
 				catch (Exception e) {
 					_log.debug(e);
-					//_log.error(e);
-//					continue;
+					// _log.error(e);
+					// continue;
+				}
+
+				// send to zalo
+				if (messageEntry.isSendZalo()) {
+					String zaloUid =
+						messageEntry.getMappingZaloUid().get(toUserId);
+					sendZalo(
+						messageEntry.getTextMessage(),
+						messageEntry.getZaloAccessToken(), zaloUid);
 				}
 			}
 		}
 
 	}
 
-	/*private UserNotificationEventLocalService userNotificationEventLocalService;
+	private void sendZalo(
+		String textMessage, String zaloAccessToken, String zaloUid) {
 
-	@Reference(unbind = "-")
-	public void setUserNotificationEventLocalService(
-		UserNotificationEventLocalService userNotificationEventLocalService) {
+		try {
 
-		this.userNotificationEventLocalService =
-			userNotificationEventLocalService;
-	}*/
+			String targetURL =
+				"https://openapi.zalo.me/v2.0/oa/message?access_token=" +
+					zaloAccessToken;
+
+			JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(
+				"{\"recipient\":{\"user_id\":\"1893010867233038754\"}, \"message\":{\"text\":\"1893010867233038754\"}}");
+			JSONObject recipient = JSONFactoryUtil.createJSONObject();
+			JSONObject message = JSONFactoryUtil.createJSONObject();
+
+			recipient.put("user_id", zaloUid);
+
+			message.put("text", textMessage);
+
+			payloadJSON.put("recipient", recipient);
+
+			payloadJSON.put("message", message);
+
+			postMessZalo(targetURL, payloadJSON.toJSONString());
+
+			_log.info("=================>>>>>>>>>>> Sended to Zalo " + zaloUid);
+		}
+		catch (JSONException e) {
+			_log.error(e);
+		}
+
+	}
+
+	private void postMessZalo(String url, String param) {
+
+		try {
+			String charset = "UTF-8";
+			URLConnection connection = new URL(url).openConnection();
+			connection.setDoOutput(true); // Triggers POST.
+			connection.setRequestProperty("Content-Type", "application/json;");
+
+			OutputStream output = connection.getOutputStream();
+			output.write(param.getBytes(charset));
+
+			connection.getInputStream();
+			_log.info("Send zalo message success");
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+	}
+
+	/*
+	 * private UserNotificationEventLocalService
+	 * userNotificationEventLocalService;
+	 * @Reference(unbind = "-") public void
+	 * setUserNotificationEventLocalService( UserNotificationEventLocalService
+	 * userNotificationEventLocalService) {
+	 * this.userNotificationEventLocalService =
+	 * userNotificationEventLocalService; }
+	 */
 }
