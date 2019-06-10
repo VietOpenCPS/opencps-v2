@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Locale;
 
@@ -23,7 +24,8 @@ public class SMSManagementImpl implements SMSManagement {
 	public Response sendSMS(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String body, String toTelNo) {
 		try {
-			Result result = ViettelSMSUtils.sendSMS(body, StringPool.BLANK, toTelNo);
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			Result result = ViettelSMSUtils.sendSMS(groupId, body, StringPool.BLANK, toTelNo);
 			
 			return Response.status(200).entity(result.getMessage()).build();
 		}

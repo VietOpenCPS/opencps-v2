@@ -101,7 +101,8 @@ public class OneMinute extends BaseMessageListener {
 								flagSend = true;
 							}
 							//Send viettel
-							ViettelSMSUtils.sendSMS(messageEntry.getTextMessage(), messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+							ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+								messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 							
 							_log.debug("END SEND SMS"+flagSend);
 						} else {
