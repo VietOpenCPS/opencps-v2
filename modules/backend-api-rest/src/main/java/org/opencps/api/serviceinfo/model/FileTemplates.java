@@ -40,109 +40,86 @@ import javax.xml.bind.annotation.XmlType;
     "fileTemplateNo",
     "templateName",
     "fileType",
-    "fileSize"
+    "fileSize",
+    "serviceinfoId",
+    "eForm",
+    "formScriptFileId",
+    "formReportFileId",
+    "eFormNoPattern",
+    "eFormNamePattern"
 })
 public class FileTemplates {
 
-    protected String fileTemplateNo;
-    protected String templateName;
-    protected String fileType;
-    protected Integer fileSize;
+	protected Long serviceinfoId;
+	protected String fileTemplateNo;
+	protected String templateName;
+	protected String fileType;
+	protected Integer fileSize;
+	protected Boolean eForm;
+	protected Long formScriptFileId;
+	protected Long formReportFileId;
+	protected String eFormNoPattern;
+	protected String eFormNamePattern;
 
-    /**
-     * Gets the value of the fileTemplateNo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFileTemplateNo() {
-        return fileTemplateNo;
-    }
-
-    /**
-     * Sets the value of the fileTemplateNo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFileTemplateNo(String value) {
-        this.fileTemplateNo = value;
-    }
-
-    /**
-     * Gets the value of the templateName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    /**
-     * Sets the value of the templateName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTemplateName(String value) {
-        this.templateName = value;
-    }
-
-    /**
-     * Gets the value of the fileType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFileType() {
-        return fileType;
-    }
-
-    /**
-     * Sets the value of the fileType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFileType(String value) {
-        this.fileType = value;
-    }
-
-    /**
-     * Gets the value of the fileSize property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getFileSize() {
-        return fileSize;
-    }
-
-    /**
-     * Sets the value of the fileSize property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setFileSize(Integer value) {
-        this.fileSize = value;
-    }
+	public Long getServiceinfoId() {
+		return serviceinfoId;
+	}
+	public void setServiceinfoId(Long serviceinfoId) {
+		this.serviceinfoId = serviceinfoId;
+	}
+	public String getFileTemplateNo() {
+		return fileTemplateNo;
+	}
+	public void setFileTemplateNo(String fileTemplateNo) {
+		this.fileTemplateNo = fileTemplateNo;
+	}
+	public String getTemplateName() {
+		return templateName;
+	}
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+	public String getFileType() {
+		return fileType;
+	}
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+	public Integer getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(Integer fileSize) {
+		this.fileSize = fileSize;
+	}
+	public Boolean geteForm() {
+		return eForm;
+	}
+	public void seteForm(Boolean eForm) {
+		this.eForm = eForm;
+	}
+	public Long getFormScriptFileId() {
+		return formScriptFileId;
+	}
+	public void setFormScriptFileId(Long formScriptFileId) {
+		this.formScriptFileId = formScriptFileId;
+	}
+	public Long getFormReportFileId() {
+		return formReportFileId;
+	}
+	public void setFormReportFileId(Long formReportFileId) {
+		this.formReportFileId = formReportFileId;
+	}
+	public String geteFormNoPattern() {
+		return eFormNoPattern;
+	}
+	public void seteFormNoPattern(String eFormNoPattern) {
+		this.eFormNoPattern = eFormNoPattern;
+	}
+	public String geteFormNamePattern() {
+		return eFormNamePattern;
+	}
+	public void seteFormNamePattern(String eFormNamePattern) {
+		this.eFormNamePattern = eFormNamePattern;
+	}
 
 }

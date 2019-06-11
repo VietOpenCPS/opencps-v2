@@ -588,7 +588,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String administrationName, String domainCode, String domainName, Integer maxLevel) throws PortalException {
+			String administrationName, String domainCode, String domainName, Integer maxLevel, boolean public_)
+			throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
@@ -613,6 +614,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setDomainCode(domainCode);
 			serviceInfo.setDomainName(domainName);
 			serviceInfo.setMaxLevel(maxLevel);
+			serviceInfo.setPublic_(public_);
 		} else {
 			long serviceInfoId = counterLocalService.increment(ServiceInfo.class.getName());
 
@@ -641,6 +643,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setDomainCode(domainCode);
 			serviceInfo.setDomainName(domainName);
 			serviceInfo.setMaxLevel(maxLevel);
+			serviceInfo.setPublic_(public_);
 		}
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,

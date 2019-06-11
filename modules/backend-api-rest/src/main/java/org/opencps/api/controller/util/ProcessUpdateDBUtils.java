@@ -5,14 +5,18 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
@@ -77,6 +81,8 @@ import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.action.impl.WorkTimeActions;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -100,12 +106,15 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class ProcessUpdateDBUtils {
 
@@ -717,11 +726,12 @@ public class ProcessUpdateDBUtils {
 				String domainCode = service.getDomainCode();
 				String domainName = service.getDomainName();
 				Integer maxLevel = service.getMaxLevel();
+				boolean public_ = Validator.isNotNull(service.isPublic()) ? service.isPublic() : true;
 				// Update serviceInfo
 				ServiceInfoActions actionService = new ServiceInfoActionsImpl();
 				long serviceInfoId = actionService.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText, methodText,
 						dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
-						administrationCode, administrationName, domainCode, domainName, maxLevel);
+						administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
 				// Update fileName
 				FileTemplates fileTemplate = service.getFileTemplates();
 				if (fileTemplate != null) {
@@ -864,10 +874,14 @@ public class ProcessUpdateDBUtils {
 				String fileTemplateNo;
 				String fileTemplateName;
 				String fileName;
+				String eFormNoPattern;
+				String eFormNamePattern;
 				for (FileTemplate fileTemp : fileTempList) {
 					fileTemplateNo = fileTemp.getFileTemplateNo();
 					fileTemplateName = fileTemp.getTemplateName();
 					fileName = fileTemp.getFilename();
+					eFormNoPattern = fileTemp.getEFormNoPattern();
+					eFormNamePattern = fileTemp.getEFormNamePattern();
 					if (Validator.isNotNull(fileTemplateNo)) {
 						String filePathTemplate = folderParentPath + ConstantUtils.SOURCE_FILES + StringPool.FORWARD_SLASH
 								+ fileName;
@@ -877,9 +891,34 @@ public class ProcessUpdateDBUtils {
 						if (file.exists() && !file.isDirectory()) {
 							fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, file, fileName, serviceContext);
 						}
+						//TODO
+						String filePathReport = folderParentPath + ConstantUtils.SOURCE_FILE_REPORTS + StringPool.FORWARD_SLASH
+								+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
+						String filePathForm = folderParentPath + ConstantUtils.SOURCE_FILE_FORMS + StringPool.FORWARD_SLASH
+								+ fileTemplateNo + ConstantUtils.EXTENTION_JSON;
+
+						File reportFile = new File(filePathReport);
+						File scriptFile = new File(filePathForm);
+						FileEntry fileEntryReport = null;
+						FileEntry fileEntryScript = null;
+						if (reportFile.exists() && !reportFile.isDirectory()) {
+							fileEntryReport = FileUploadUtils.uploadDossierFile(userId, groupId, reportFile, reportFile.getName(), serviceContext);
+						}
+						if (scriptFile.exists() && !scriptFile.isDirectory()) {
+							fileEntryScript = FileUploadUtils.uploadDossierFile(userId, groupId, scriptFile, scriptFile.getName(), serviceContext);
+						}
+
 						if (fileEntry != null) {
 							long fileEntryId = fileEntry.getFileEntryId();
-							actionService.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName, fileName, fileEntryId);
+							if (fileEntryReport != null && fileEntryScript != null) {
+								actionService.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName,
+										fileName, fileEntryId, true, fileEntryScript.getFileEntryId(),
+										fileEntryReport.getFileEntryId(), eFormNoPattern, eFormNamePattern);
+							} else {
+								actionService.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName,
+										fileName, fileEntryId, false, 0, 0, eFormNoPattern, eFormNamePattern);
+							}
+							
 						}
 					}
 				}

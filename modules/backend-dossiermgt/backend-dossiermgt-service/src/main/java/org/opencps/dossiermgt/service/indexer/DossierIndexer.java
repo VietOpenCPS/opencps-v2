@@ -501,6 +501,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
 				document.addTextSortable(DossierTerm.DOSSIER_NO_SEARCH, dossierNoSearch);
 			}
+			
 			document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
 
 			document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());
@@ -636,25 +637,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
 
-			// Get info cert Number
-//			List<String> certNoIndexer = certNoIndexer(dossierId, object.getGroupId());
-//			if (certNoIndexer != null && certNoIndexer.size() > 0) {
-//				String certNo = certNoIndexer.get(0);
-//				String certDateStr = certNoIndexer.get(1);
-//				String certDateTimeStamp = certDateStr + " 00:00:00";
-//				Date certDate = APIDateTimeUtils.convertStringToDate(certDateTimeStamp,
-//						APIDateTimeUtils._NORMAL_PARTTERN);
-//				_log.info("certNo: " + certNo);
-//				_log.info("certDate: " + certDate);
-//				if (Validator.isNotNull(certDate)) {
-//					document.addTextSortable("so_chung_chi", certNo);
-//					document.addDateSortable("ngay_ky_cc", certDate);
-//					// Search follow so_chung_chi
-//					String certNoSearch = SpecialCharacterUtils.splitSpecial(certNo);
-//					document.addTextSortable(DossierTerm.CERT_NO_SEARCH, certNoSearch);
-//				}
-//			}
-
 			document.addTextSortable(DossierTerm.ENDORSEMENT_DATE, APIDateTimeUtils
 					.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 			document.addNumberSortable(DossierTerm.ENDORSEMENT_DATE_TIMESTAMP,
@@ -674,36 +656,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.LOCK_STATE, StringPool.BLANK);
 			}
-			//LamTV: Process Assigned dossier
-//			long dossierActionsUserId = object.getDossierActionId();
-//			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionsUserId,
-//					object.getUserId());
-//			if (dau != null) {
-//				document.addNumberSortable(DossierTerm.ASSIGNED, dau.getAssigned());
-//			} else {
-//				document.addNumberSortable(DossierTerm.ASSIGNED, ConstantsTerm.NO_ASSINED);
-//			}
-			//LamTV_Add durationCount and durationUnit
-//			try {
-//				long groupId = object.getGroupId();
-//				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId,
-//						object.getServiceCode(), object.getGovAgencyCode());
-//				ProcessOption processOption = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
-//						object.getDossierTemplateNo(), serviceConfig.getServiceConfigId());
-//				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
-//						.fetchServiceProcess(processOption.getServiceProcessId());
-//
-//				double durationCount = serviceProcess.getDurationCount();
-//				double durationUnit = serviceProcess.getDurationUnit();
-//				document.addNumberSortable(DossierTerm.DURATION_COUNT, durationCount);
-//				document.addNumberSortable(DossierTerm.DURATION_UNIT, durationUnit);
-//			} catch (Exception e) {
-//				document.addNumberSortable(DossierTerm.DURATION_COUNT, 0d);
-//				document.addNumberSortable(DossierTerm.DURATION_UNIT, 0d);
-//			}
+
 			document.addNumberSortable(DossierTerm.DURATION_COUNT, object.getDurationCount());
 			document.addNumberSortable(DossierTerm.DURATION_UNIT, object.getDurationUnit());
 			document.addNumberSortable(DossierTerm.SAMPLE_COUNT, object.getSampleCount());
+			document.addNumberSortable(DossierTerm.GROUP_DOSSIER_ID, object.getGroupDossierId());
 			// add domainCode to dossier
 			String serviceCode = object.getServiceCode();
 			String domainCode = StringPool.BLANK;

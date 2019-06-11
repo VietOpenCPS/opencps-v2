@@ -477,6 +477,21 @@ public interface ServiceProcessModel extends BaseModel<ServiceProcess>,
 	 */
 	public void setPaymentFee(String paymentFee);
 
+	/**
+	 * Returns the dossier group pattern of this service process.
+	 *
+	 * @return the dossier group pattern of this service process
+	 */
+	@AutoEscape
+	public String getDossierGroupPattern();
+
+	/**
+	 * Sets the dossier group pattern of this service process.
+	 *
+	 * @param dossierGroupPattern the dossier group pattern of this service process
+	 */
+	public void setDossierGroupPattern(String dossierGroupPattern);
+
 	@Override
 	public boolean isNew();
 

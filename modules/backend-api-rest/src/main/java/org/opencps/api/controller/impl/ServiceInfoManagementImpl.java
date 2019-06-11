@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -24,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -37,11 +39,13 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
+import org.opencps.api.serviceinfo.model.FileTemplateSearchModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
@@ -52,19 +56,24 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.model.FileAttach;
+import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import io.swagger.annotations.ApiParam;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
@@ -328,22 +337,41 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getFileTemplatesOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, FileTemplateSearchModel query) {
 
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
-
 		FileTemplateResultsModel results = new FileTemplateResultsModel();
 
 		try {
 
-			JSONObject jsonData = actions.getServiceFileTemplate(GetterUtil.getLong(id));
+			if (Validator.isNotNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
 
-			List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+			if (Validator.isNotNull(query.geteForm())) {
+				boolean eformFlag = Boolean.valueOf(query.geteForm());
+				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, eformFlag, query.getStart(),
+						query.getEnd());
+				
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
 
-			results.setTotal(jsonData.getInt("total"));
-			results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
+				results.setTotal(jsonData.getInt("total"));
+				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
-			return Response.status(200).entity(results).build();
+				return Response.status(200).entity(results).build();
+			} else {
+				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(),
+						query.getEnd());
+				
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+
+				results.setTotal(jsonData.getInt("total"));
+				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
+
+				return Response.status(200).entity(results).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -596,6 +624,96 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getFormOfFileTemplate(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String templateNo,
+			String fileAttachId) {
+
+		String result = StringPool.BLANK;
+		InputStream is = null;
+
+		try {
+
+			FileAttach fileAttach = FileAttachLocalServiceUtil.fetchFileAttach(Long.valueOf(fileAttachId));
+			if (fileAttach != null) {
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
+
+				is = dlFileEntry.getContentStream();
+				result = IOUtils.toString(is, "UTF-8");
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+
+		return Response.status(200).entity(result).build();
+	}
+
+	@Override
+	public Response getFormReportOfFileTemplate(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String templateNo) {
+
+		String result = StringPool.BLANK;
+		InputStream is = null;
+		long serviceInfoId = GetterUtil.getLong(id);
+
+		try {
+
+			ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
+					.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
+			if (fileTemplate != null) {
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormReportFileId());
+
+					is = dlFileEntry.getContentStream();
+					result = IOUtils.toString(is, "UTF-8");
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+		return Response.status(200).entity(result).build();
+	}
+
+	@Override
+	public Response getFormScriptOfFileTemplate(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String templateNo) {
+
+		String result = StringPool.BLANK;
+		InputStream is = null;
+		long serviceInfoId = GetterUtil.getLong(id);
+
+		try {
+			ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
+					.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
+			if (fileTemplate != null) {
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormScriptFileId());
+
+					is = dlFileEntry.getContentStream();
+					result = IOUtils.toString(is, "UTF-8");
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				_log.error(e);
+			}
+		}
+		return Response.status(200).entity(result).build();
 	}
 
 }

@@ -150,6 +150,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("durationCount", getDurationCount());
 		attributes.put("dossierName", getDossierName());
 		attributes.put("originDossierNo", getOriginDossierNo());
+		attributes.put("groupDossierId", getGroupDossierId());
 
 		return attributes;
 	}
@@ -705,6 +706,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (originDossierNo != null) {
 			setOriginDossierNo(originDossierNo);
 		}
+
+		Long groupDossierId = (Long)attributes.get("groupDossierId");
+
+		if (groupDossierId != null) {
+			setGroupDossierId(groupDossierId);
+		}
 	}
 
 	@Override
@@ -1230,6 +1237,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getGovAgencyName() {
 		return _dossier.getGovAgencyName();
+	}
+
+	/**
+	* Returns the group dossier ID of this dossier.
+	*
+	* @return the group dossier ID of this dossier
+	*/
+	@Override
+	public long getGroupDossierId() {
+		return _dossier.getGroupDossierId();
 	}
 
 	/**
@@ -2251,6 +2268,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setGovAgencyName(String govAgencyName) {
 		_dossier.setGovAgencyName(govAgencyName);
+	}
+
+	/**
+	* Sets the group dossier ID of this dossier.
+	*
+	* @param groupDossierId the group dossier ID of this dossier
+	*/
+	@Override
+	public void setGroupDossierId(long groupDossierId) {
+		_dossier.setGroupDossierId(groupDossierId);
 	}
 
 	/**

@@ -16,11 +16,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -39,17 +37,22 @@ import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -449,6 +452,111 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		}
 
 		return jsonSequenceArr;
+	}
+
+	@Override
+	public Response getPreviewByPartNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String templateNo, String partNo) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		Date dateStart = new Date();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (Validator.isNotNull(dossier)) {
+
+				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, templateNo, partNo);
+				if (dossierPart != null) {
+					String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
+							dossier.getDossierId(), serviceContext);
+					String formReport = dossierPart.getFormReport();
+					
+					Message message = new Message();
+					message.put("formReport", formReport);
+					message.put("formData", formData);
+
+					Date dateEnd = new Date();
+					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
+					try {
+						Date dateStart1 = new Date();
+						String previewResponse = (String) MessageBusUtil
+								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+
+						if (Validator.isNotNull(previewResponse)) {
+						}
+
+						File file = new File(previewResponse);
+
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+						responseBuilder.header("Content-Disposition",
+								"attachment; filename=\"" + file.getName() + "\"");
+						responseBuilder.header("Content-Type", "application/pdf");
+
+						Date dateEnd1 = new Date();
+						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
+						return responseBuilder.build();
+
+					} catch (MessageBusException e) {
+						_log.error(e);
+						return BusinessExceptionImpl.processException(e);
+					}
+				}
+			}
+
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+
+		}
+	}
+
+	@Override
+	public Response printFileByPartNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String templateNo, String partNo) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long dossierId = GetterUtil.getLong(id);
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
+			if (dossierFileList  != null && dossierFileList.size() > 0) {
+				for (DossierFile dossierFile : dossierFileList) {
+					if (dossierFile != null && Validator.isNotNull(dossierFile.getFormData())) {
+						long docFileId = dossierFile.getFileEntryId();
+						if (docFileId > 0) {
+							FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(docFileId);
+
+							File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
+									fileEntry.getVersion(), true);
+
+							ResponseBuilder responseBuilder = Response.ok((Object) file);
+		
+							responseBuilder.header("Content-Disposition",
+									"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+							responseBuilder.header("Content-Type", fileEntry.getMimeType());
+		
+							return responseBuilder.build();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
 }

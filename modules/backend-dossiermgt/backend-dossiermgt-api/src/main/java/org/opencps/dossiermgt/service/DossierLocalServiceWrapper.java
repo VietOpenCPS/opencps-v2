@@ -357,6 +357,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> getByF_GID_AN_DS(
+		long groupId, String applicantIdNo, String dossierStatus) {
+		return _dossierLocalService.getByF_GID_AN_DS(groupId, applicantIdNo,
+			dossierStatus);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> getByG_AN(
 		long groupId, String applicantIdNo) {
 		return _dossierLocalService.getByG_AN(groupId, applicantIdNo);
@@ -439,6 +446,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
 		int originality, String dossierStatus) {
 		return _dossierLocalService.getDossierByG_NOTO_DS(originality,
+			dossierStatus);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
+		int[] originalityArr, String dossierStatus) {
+		return _dossierLocalService.getDossierByG_NOTO_DS(originalityArr,
 			dossierStatus);
 	}
 
@@ -776,8 +790,15 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public void removeDossierByG_NOTO_DS(int originality, String dossierStatus) {
-		_dossierLocalService.removeDossierByG_NOTO_DS(originality, dossierStatus);
+	public void removeDossierByF_OG_DS(int originality, String dossierStatus) {
+		_dossierLocalService.removeDossierByF_OG_DS(originality, dossierStatus);
+	}
+
+	@Override
+	public void removeDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus) {
+		_dossierLocalService.removeDossierByG_NOTO_DS(originalityArr,
+			dossierStatus);
 	}
 
 	@Override

@@ -74,6 +74,7 @@ import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
+import org.opencps.dossiermgt.service.persistence.EFormPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
@@ -1330,6 +1331,43 @@ public abstract class DossierMarkLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the e form local service.
+	 *
+	 * @return the e form local service
+	 */
+	public org.opencps.dossiermgt.service.EFormLocalService getEFormLocalService() {
+		return eFormLocalService;
+	}
+
+	/**
+	 * Sets the e form local service.
+	 *
+	 * @param eFormLocalService the e form local service
+	 */
+	public void setEFormLocalService(
+		org.opencps.dossiermgt.service.EFormLocalService eFormLocalService) {
+		this.eFormLocalService = eFormLocalService;
+	}
+
+	/**
+	 * Returns the e form persistence.
+	 *
+	 * @return the e form persistence
+	 */
+	public EFormPersistence getEFormPersistence() {
+		return eFormPersistence;
+	}
+
+	/**
+	 * Sets the e form persistence.
+	 *
+	 * @param eFormPersistence the e form persistence
+	 */
+	public void setEFormPersistence(EFormPersistence eFormPersistence) {
+		this.eFormPersistence = eFormPersistence;
+	}
+
+	/**
 	 * Returns the menu config local service.
 	 *
 	 * @return the menu config local service
@@ -2437,6 +2475,10 @@ public abstract class DossierMarkLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DynamicReportLocalService dynamicReportLocalService;
 	@BeanReference(type = DynamicReportPersistence.class)
 	protected DynamicReportPersistence dynamicReportPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.EFormLocalService.class)
+	protected org.opencps.dossiermgt.service.EFormLocalService eFormLocalService;
+	@BeanReference(type = EFormPersistence.class)
+	protected EFormPersistence eFormPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.MenuConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.MenuConfigLocalService menuConfigLocalService;
 	@BeanReference(type = MenuConfigPersistence.class)

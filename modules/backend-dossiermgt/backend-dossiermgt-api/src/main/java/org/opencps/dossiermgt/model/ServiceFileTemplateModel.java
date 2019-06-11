@@ -135,6 +135,85 @@ public interface ServiceFileTemplateModel extends BaseModel<ServiceFileTemplate>
 	 */
 	public void setFileEntryId(long fileEntryId);
 
+	/**
+	 * Returns the e form of this service file template.
+	 *
+	 * @return the e form of this service file template
+	 */
+	public boolean getEForm();
+
+	/**
+	 * Returns <code>true</code> if this service file template is e form.
+	 *
+	 * @return <code>true</code> if this service file template is e form; <code>false</code> otherwise
+	 */
+	public boolean isEForm();
+
+	/**
+	 * Sets whether this service file template is e form.
+	 *
+	 * @param eForm the e form of this service file template
+	 */
+	public void setEForm(boolean eForm);
+
+	/**
+	 * Returns the form script file ID of this service file template.
+	 *
+	 * @return the form script file ID of this service file template
+	 */
+	public long getFormScriptFileId();
+
+	/**
+	 * Sets the form script file ID of this service file template.
+	 *
+	 * @param formScriptFileId the form script file ID of this service file template
+	 */
+	public void setFormScriptFileId(long formScriptFileId);
+
+	/**
+	 * Returns the form report file ID of this service file template.
+	 *
+	 * @return the form report file ID of this service file template
+	 */
+	public long getFormReportFileId();
+
+	/**
+	 * Sets the form report file ID of this service file template.
+	 *
+	 * @param formReportFileId the form report file ID of this service file template
+	 */
+	public void setFormReportFileId(long formReportFileId);
+
+	/**
+	 * Returns the e form no pattern of this service file template.
+	 *
+	 * @return the e form no pattern of this service file template
+	 */
+	@AutoEscape
+	public String getEFormNoPattern();
+
+	/**
+	 * Sets the e form no pattern of this service file template.
+	 *
+	 * @param eFormNoPattern the e form no pattern of this service file template
+	 */
+	public void setEFormNoPattern(String eFormNoPattern);
+
+	/**
+	 * Returns the e form name pattern of this service file template.
+	 *
+	 * @return the e form name pattern of this service file template
+	 */
+	@AutoEscape
+	public String getEFormNamePattern();
+
+	/**
+	 * Sets the e form name pattern of this service file template.
+	 *
+	 * @param eFormNamePattern the e form name pattern of this service file template
+	 */
+	public void setEFormNamePattern(String eFormNamePattern);
+
 	@Override
 	public boolean isNew();
 

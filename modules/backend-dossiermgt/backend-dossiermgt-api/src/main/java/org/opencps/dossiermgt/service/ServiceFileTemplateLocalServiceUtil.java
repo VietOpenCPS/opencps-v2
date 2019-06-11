@@ -77,6 +77,10 @@ public class ServiceFileTemplateLocalServiceUtil {
 		return getService().addServiceFileTemplate(serviceFileTemplate);
 	}
 
+	public static int countByService_EForm(long serviceInfoId, boolean eForm) {
+		return getService().countByService_EForm(serviceInfoId, eForm);
+	}
+
 	public static int countByServiceInfoId(long serviceInfoId) {
 		return getService().countByServiceInfoId(serviceInfoId);
 	}
@@ -219,6 +223,16 @@ public class ServiceFileTemplateLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceFileTemplate> getByService(
+		long serviceInfoId, int start, int end) {
+		return getService().getByService(serviceInfoId, start, end);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceFileTemplate> getByService_EForm(
+		long serviceInfoId, boolean eForm, int start, int end) {
+		return getService().getByService_EForm(serviceInfoId, eForm, start, end);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceFileTemplate> getByServiceInfoId(
 		long serviceInfoId) {
 		return getService().getByServiceInfoId(serviceInfoId);
@@ -314,10 +328,13 @@ public class ServiceFileTemplateLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.ServiceFileTemplate updateServiceFileTemplateDB(
 		long serviceInfoId, String fileTemplateNo, String fileTemplateName,
-		String fileName, long fileEntryId) {
+		String fileName, long fileEntryId, boolean eForm,
+		long formScriptFileId, long formReportFileId, String eFormNoPattern,
+		String eFormNamePattern) {
 		return getService()
 				   .updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo,
-			fileTemplateName, fileName, fileEntryId);
+			fileTemplateName, fileName, fileEntryId, eForm, formScriptFileId,
+			formReportFileId, eFormNoPattern, eFormNamePattern);
 	}
 
 	public static ServiceFileTemplateLocalService getService() {

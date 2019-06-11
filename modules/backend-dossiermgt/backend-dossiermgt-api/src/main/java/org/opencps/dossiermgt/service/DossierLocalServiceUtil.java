@@ -341,6 +341,12 @@ public class DossierLocalServiceUtil {
 		return getService().getByDossierNo(groupId, dossierNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByF_GID_AN_DS(
+		long groupId, String applicantIdNo, String dossierStatus) {
+		return getService()
+				   .getByF_GID_AN_DS(groupId, applicantIdNo, dossierStatus);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByG_AN(
 		long groupId, String applicantIdNo) {
 		return getService().getByG_AN(groupId, applicantIdNo);
@@ -417,6 +423,11 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
 		int originality, String dossierStatus) {
 		return getService().getDossierByG_NOTO_DS(originality, dossierStatus);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getDossierByG_NOTO_DS(
+		int[] originalityArr, String dossierStatus) {
+		return getService().getDossierByG_NOTO_DS(originalityArr, dossierStatus);
 	}
 
 	public static com.liferay.portal.kernel.search.Document getDossierById(
@@ -740,9 +751,14 @@ public class DossierLocalServiceUtil {
 		return getService().removeDossier(groupId, dossierId, refId);
 	}
 
-	public static void removeDossierByG_NOTO_DS(int originality,
+	public static void removeDossierByF_OG_DS(int originality,
 		String dossierStatus) {
-		getService().removeDossierByG_NOTO_DS(originality, dossierStatus);
+		getService().removeDossierByF_OG_DS(originality, dossierStatus);
+	}
+
+	public static void removeDossierByG_NOTO_DS(int[] originalityArr,
+		String dossierStatus) {
+		getService().removeDossierByG_NOTO_DS(originalityArr, dossierStatus);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier reset(long groupId,

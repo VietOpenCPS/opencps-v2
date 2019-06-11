@@ -65,7 +65,7 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -77,6 +77,16 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 		sb.append(templateName);
 		sb.append(", fileEntryId=");
 		sb.append(fileEntryId);
+		sb.append(", eForm=");
+		sb.append(eForm);
+		sb.append(", formScriptFileId=");
+		sb.append(formScriptFileId);
+		sb.append(", formReportFileId=");
+		sb.append(formReportFileId);
+		sb.append(", eFormNoPattern=");
+		sb.append(eFormNoPattern);
+		sb.append(", eFormNamePattern=");
+		sb.append(eFormNamePattern);
 		sb.append("}");
 
 		return sb.toString();
@@ -110,6 +120,23 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 		}
 
 		serviceFileTemplateImpl.setFileEntryId(fileEntryId);
+		serviceFileTemplateImpl.setEForm(eForm);
+		serviceFileTemplateImpl.setFormScriptFileId(formScriptFileId);
+		serviceFileTemplateImpl.setFormReportFileId(formReportFileId);
+
+		if (eFormNoPattern == null) {
+			serviceFileTemplateImpl.setEFormNoPattern("");
+		}
+		else {
+			serviceFileTemplateImpl.setEFormNoPattern(eFormNoPattern);
+		}
+
+		if (eFormNamePattern == null) {
+			serviceFileTemplateImpl.setEFormNamePattern("");
+		}
+		else {
+			serviceFileTemplateImpl.setEFormNamePattern(eFormNamePattern);
+		}
 
 		serviceFileTemplateImpl.resetOriginalValues();
 
@@ -125,6 +152,14 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 		templateName = objectInput.readUTF();
 
 		fileEntryId = objectInput.readLong();
+
+		eForm = objectInput.readBoolean();
+
+		formScriptFileId = objectInput.readLong();
+
+		formReportFileId = objectInput.readLong();
+		eFormNoPattern = objectInput.readUTF();
+		eFormNamePattern = objectInput.readUTF();
 
 		serviceFileTemplatePK = new ServiceFileTemplatePK(serviceInfoId,
 				fileTemplateNo);
@@ -157,6 +192,26 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 		}
 
 		objectOutput.writeLong(fileEntryId);
+
+		objectOutput.writeBoolean(eForm);
+
+		objectOutput.writeLong(formScriptFileId);
+
+		objectOutput.writeLong(formReportFileId);
+
+		if (eFormNoPattern == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(eFormNoPattern);
+		}
+
+		if (eFormNamePattern == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(eFormNamePattern);
+		}
 	}
 
 	public String uuid;
@@ -164,5 +219,10 @@ public class ServiceFileTemplateCacheModel implements CacheModel<ServiceFileTemp
 	public String fileTemplateNo;
 	public String templateName;
 	public long fileEntryId;
+	public boolean eForm;
+	public long formScriptFileId;
+	public long formReportFileId;
+	public String eFormNoPattern;
+	public String eFormNamePattern;
 	public transient ServiceFileTemplatePK serviceFileTemplatePK;
 }

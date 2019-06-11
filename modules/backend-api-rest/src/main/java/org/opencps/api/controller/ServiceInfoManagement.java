@@ -28,6 +28,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
+import org.opencps.api.serviceinfo.model.FileTemplateSearchModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
@@ -173,8 +174,8 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getFileTemplatesOfServiceInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of ServiceInfo that need to be get the list of FileTemplates", required = true) @PathParam("id") String id);
+			@Context ServiceContext serviceContext, @PathParam("id") String id,
+			@BeanParam FileTemplateSearchModel query);
 
 	@POST
 	@Path("/{id}/filetemplates")
@@ -225,5 +226,51 @@ public interface ServiceInfoManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of ServiceInfo that need to be delete", required = true) @PathParam("id") String id,
 			@ApiParam(value = "templateNo of FileTemplate that need to be delete", required = true) @PathParam("templateNo") String templateNo);
+
+	@GET
+	@Path("/{id}/filetemplates/{templateNo}/fileAttach/{fileAttachId}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get FileTemplate list of ServiceInfo by its id)", response = FileTemplateResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the list of FileTemplate of ServiceInfo", response = FileTemplateResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getFormOfFileTemplate(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @ApiParam(required = true) @PathParam("id") String id,
+			@ApiParam(required = true) @PathParam("templateNo") String templateNo,
+			@ApiParam(required = true) @PathParam("fileAttachId") String fileAttachId);
+
+	@GET
+	@Path("/{id}/filetemplates/{templateNo}/formreport")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get FileTemplate list of ServiceInfo by its id)", response = FileTemplateResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the list of FileTemplate of ServiceInfo", response = FileTemplateResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getFormReportOfFileTemplate(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @ApiParam(required = true) @PathParam("id") String id,
+			@ApiParam(required = true) @PathParam("templateNo") String templateNo);
+
+	@GET
+	@Path("/{id}/filetemplates/{templateNo}/formscript")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get FileTemplate list of ServiceInfo by its id)", response = FileTemplateResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the list of FileTemplate of ServiceInfo", response = FileTemplateResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getFormScriptOfFileTemplate(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @ApiParam(required = true) @PathParam("id") String id,
+			@ApiParam(required = true) @PathParam("templateNo") String templateNo);
 
 }

@@ -23,6 +23,7 @@
 	<import class="org.opencps.dossiermgt.model.DossierTemplate" />
 	<import class="org.opencps.dossiermgt.model.DossierUser" />
 	<import class="org.opencps.dossiermgt.model.DynamicReport" />
+	<import class="org.opencps.dossiermgt.model.EForm" />
 	<import class="org.opencps.dossiermgt.model.MenuConfig" />
 	<import class="org.opencps.dossiermgt.model.MenuRole" />
 	<import class="org.opencps.dossiermgt.model.PaymentConfig" />
@@ -271,6 +272,7 @@
 		<property name="durationCount" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
 		<property name="dossierName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="originDossierNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupDossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">
@@ -572,6 +574,30 @@
 		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="reportType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.EFormImpl" table="opencps_eform">
+		<id access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="serviceCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="fileTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="secret" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="checkinDate" type="org.hibernate.type.TimestampType" />
+		<property name="gateNumber" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property column="state_" name="state" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuConfigImpl" table="opencps_menuconfig">
 		<id name="menuConfigId" type="long">
@@ -926,6 +952,11 @@
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormNoPattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormNamePattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoImpl" table="opencps_serviceinfo">
 		<id name="serviceInfoId" type="long">
@@ -985,6 +1016,7 @@
 		<property name="serverName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="requestPayment" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="paymentFee" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dossierGroupPattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceProcessRoleImpl" table="opencps_serviceprocessrole">
 		<composite-id class="org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK" name="primaryKey">

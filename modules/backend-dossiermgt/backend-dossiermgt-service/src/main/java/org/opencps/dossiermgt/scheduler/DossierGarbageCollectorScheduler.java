@@ -32,7 +32,8 @@ public class DossierGarbageCollectorScheduler extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		try {
-			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(0, StringPool.BLANK);
+			int[] originalityArr = {0, 9};
+			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(originalityArr, StringPool.BLANK);
 		}
 		catch (Exception e) {
 			_log.error(e);

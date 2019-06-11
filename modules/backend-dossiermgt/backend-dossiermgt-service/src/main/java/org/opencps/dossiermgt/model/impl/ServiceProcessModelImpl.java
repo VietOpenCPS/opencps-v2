@@ -91,7 +91,8 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 			{ "serverNo", Types.VARCHAR },
 			{ "serverName", Types.VARCHAR },
 			{ "requestPayment", Types.BOOLEAN },
-			{ "paymentFee", Types.VARCHAR }
+			{ "paymentFee", Types.VARCHAR },
+			{ "dossierGroupPattern", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -120,9 +121,10 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 		TABLE_COLUMNS_MAP.put("serverName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("requestPayment", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("paymentFee", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dossierGroupPattern", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocess (uuid_ VARCHAR(75) null,serviceProcessId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,processNo VARCHAR(255) null,processName STRING null,description TEXT null,durationCount DOUBLE,durationUnit INTEGER,counter LONG,generateDossierNo BOOLEAN,dossierNoPattern TEXT null,generateDueDate BOOLEAN,dueDatePattern VARCHAR(500) null,generatePassword BOOLEAN,directNotification BOOLEAN,serverNo VARCHAR(255) null,serverName TEXT null,requestPayment BOOLEAN,paymentFee VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocess (uuid_ VARCHAR(75) null,serviceProcessId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,processNo VARCHAR(255) null,processName STRING null,description TEXT null,durationCount DOUBLE,durationUnit INTEGER,counter LONG,generateDossierNo BOOLEAN,dossierNoPattern TEXT null,generateDueDate BOOLEAN,dueDatePattern VARCHAR(500) null,generatePassword BOOLEAN,directNotification BOOLEAN,serverNo VARCHAR(255) null,serverName TEXT null,requestPayment BOOLEAN,paymentFee VARCHAR(255) null,dossierGroupPattern VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceprocess";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceProcess.serviceProcessId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceprocess.serviceProcessId ASC";
@@ -209,6 +211,7 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 		attributes.put("serverName", getServerName());
 		attributes.put("requestPayment", isRequestPayment());
 		attributes.put("paymentFee", getPaymentFee());
+		attributes.put("dossierGroupPattern", getDossierGroupPattern());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -361,6 +364,13 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 
 		if (paymentFee != null) {
 			setPaymentFee(paymentFee);
+		}
+
+		String dossierGroupPattern = (String)attributes.get(
+				"dossierGroupPattern");
+
+		if (dossierGroupPattern != null) {
+			setDossierGroupPattern(dossierGroupPattern);
 		}
 	}
 
@@ -764,6 +774,21 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 	}
 
 	@Override
+	public String getDossierGroupPattern() {
+		if (_dossierGroupPattern == null) {
+			return "";
+		}
+		else {
+			return _dossierGroupPattern;
+		}
+	}
+
+	@Override
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+		_dossierGroupPattern = dossierGroupPattern;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ServiceProcess.class.getName()));
@@ -824,6 +849,7 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 		serviceProcessImpl.setServerName(getServerName());
 		serviceProcessImpl.setRequestPayment(isRequestPayment());
 		serviceProcessImpl.setPaymentFee(getPaymentFee());
+		serviceProcessImpl.setDossierGroupPattern(getDossierGroupPattern());
 
 		serviceProcessImpl.resetOriginalValues();
 
@@ -1033,12 +1059,21 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 			serviceProcessCacheModel.paymentFee = null;
 		}
 
+		serviceProcessCacheModel.dossierGroupPattern = getDossierGroupPattern();
+
+		String dossierGroupPattern = serviceProcessCacheModel.dossierGroupPattern;
+
+		if ((dossierGroupPattern != null) &&
+				(dossierGroupPattern.length() == 0)) {
+			serviceProcessCacheModel.dossierGroupPattern = null;
+		}
+
 		return serviceProcessCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1088,6 +1123,8 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 		sb.append(isRequestPayment());
 		sb.append(", paymentFee=");
 		sb.append(getPaymentFee());
+		sb.append(", dossierGroupPattern=");
+		sb.append(getDossierGroupPattern());
 		sb.append("}");
 
 		return sb.toString();
@@ -1095,7 +1132,7 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(76);
+		StringBundler sb = new StringBundler(79);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ServiceProcess");
@@ -1197,6 +1234,10 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 			"<column><column-name>paymentFee</column-name><column-value><![CDATA[");
 		sb.append(getPaymentFee());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierGroupPattern</column-name><column-value><![CDATA[");
+		sb.append(getDossierGroupPattern());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1240,6 +1281,7 @@ public class ServiceProcessModelImpl extends BaseModelImpl<ServiceProcess>
 	private String _serverName;
 	private boolean _requestPayment;
 	private String _paymentFee;
+	private String _dossierGroupPattern;
 	private long _columnBitmask;
 	private ServiceProcess _escapedModel;
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 
@@ -62,10 +63,11 @@ public interface ServiceInfoActions {
 	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
 			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
 			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
-			String domainCode, String domainName, Integer maxLevel) throws PortalException;
+			String domainCode, String domainName, Integer maxLevel, boolean public_) throws PortalException;
 
 	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
-			String fileName, long fileEntryId);
+			String fileName, long fileEntryId, boolean eForm, long formScriptFileId, long formReportFileId,
+			String eFormNoPattern, String eFormNamePattern);
 
 	public boolean deleteAllFileTemplate(long userId, long groupId, long serviceInfoId, ServiceContext serviceContext);
 
@@ -73,5 +75,9 @@ public interface ServiceInfoActions {
 
 	public JSONObject getStatisticByDomainFilterAdministration(long groupId, Sort[] sorts, ServiceContext context,
 			String administration) throws ParseException, SearchException;
+
+	public JSONObject getServiceFileTemplate(long groupId, String id, boolean eformFlag, int start, int end);
+	
+	public JSONObject getServiceFileTemplate(long groupId, String id, int start, int end);
 
 }

@@ -1459,6 +1459,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setOriginDossierNo(String originDossierNo);
 
+	/**
+	 * Returns the group dossier ID of this dossier.
+	 *
+	 * @return the group dossier ID of this dossier
+	 */
+	public long getGroupDossierId();
+
+	/**
+	 * Sets the group dossier ID of this dossier.
+	 *
+	 * @param groupDossierId the group dossier ID of this dossier
+	 */
+	public void setGroupDossierId(long groupDossierId);
+
 	@Override
 	public boolean isNew();
 

@@ -62,7 +62,12 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 			{ "serviceInfoId", Types.BIGINT },
 			{ "fileTemplateNo", Types.VARCHAR },
 			{ "templateName", Types.VARCHAR },
-			{ "fileEntryId", Types.BIGINT }
+			{ "fileEntryId", Types.BIGINT },
+			{ "eForm", Types.BOOLEAN },
+			{ "formScriptFileId", Types.BIGINT },
+			{ "formReportFileId", Types.BIGINT },
+			{ "eFormNoPattern", Types.VARCHAR },
+			{ "eFormNamePattern", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -72,9 +77,14 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		TABLE_COLUMNS_MAP.put("fileTemplateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("templateName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("eForm", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("formScriptFileId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("formReportFileId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("eFormNoPattern", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("eFormNamePattern", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_services_filetemplates (uuid_ VARCHAR(75) null,serviceInfoId LONG not null,fileTemplateNo VARCHAR(75) not null,templateName VARCHAR(1000) null,fileEntryId LONG,primary key (serviceInfoId, fileTemplateNo))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_services_filetemplates (uuid_ VARCHAR(75) null,serviceInfoId LONG not null,fileTemplateNo VARCHAR(75) not null,templateName VARCHAR(1000) null,fileEntryId LONG,eForm BOOLEAN,formScriptFileId LONG,formReportFileId LONG,eFormNoPattern VARCHAR(75) null,eFormNamePattern VARCHAR(75) null,primary key (serviceInfoId, fileTemplateNo))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_services_filetemplates";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceFileTemplate.id.serviceInfoId ASC, serviceFileTemplate.id.fileTemplateNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_services_filetemplates.serviceInfoId ASC, opencps_services_filetemplates.fileTemplateNo ASC";
@@ -90,9 +100,10 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.ServiceFileTemplate"),
 			true);
-	public static final long FILETEMPLATENO_COLUMN_BITMASK = 1L;
-	public static final long SERVICEINFOID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
+	public static final long EFORM_COLUMN_BITMASK = 1L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 2L;
+	public static final long SERVICEINFOID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ServiceFileTemplate"));
 
@@ -139,6 +150,11 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		attributes.put("fileTemplateNo", getFileTemplateNo());
 		attributes.put("templateName", getTemplateName());
 		attributes.put("fileEntryId", getFileEntryId());
+		attributes.put("eForm", isEForm());
+		attributes.put("formScriptFileId", getFormScriptFileId());
+		attributes.put("formReportFileId", getFormReportFileId());
+		attributes.put("eFormNoPattern", getEFormNoPattern());
+		attributes.put("eFormNamePattern", getEFormNamePattern());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -176,6 +192,36 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 		if (fileEntryId != null) {
 			setFileEntryId(fileEntryId);
+		}
+
+		Boolean eForm = (Boolean)attributes.get("eForm");
+
+		if (eForm != null) {
+			setEForm(eForm);
+		}
+
+		Long formScriptFileId = (Long)attributes.get("formScriptFileId");
+
+		if (formScriptFileId != null) {
+			setFormScriptFileId(formScriptFileId);
+		}
+
+		Long formReportFileId = (Long)attributes.get("formReportFileId");
+
+		if (formReportFileId != null) {
+			setFormReportFileId(formReportFileId);
+		}
+
+		String eFormNoPattern = (String)attributes.get("eFormNoPattern");
+
+		if (eFormNoPattern != null) {
+			setEFormNoPattern(eFormNoPattern);
+		}
+
+		String eFormNamePattern = (String)attributes.get("eFormNamePattern");
+
+		if (eFormNamePattern != null) {
+			setEFormNamePattern(eFormNamePattern);
 		}
 	}
 
@@ -274,6 +320,83 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		_fileEntryId = fileEntryId;
 	}
 
+	@Override
+	public boolean getEForm() {
+		return _eForm;
+	}
+
+	@Override
+	public boolean isEForm() {
+		return _eForm;
+	}
+
+	@Override
+	public void setEForm(boolean eForm) {
+		_columnBitmask |= EFORM_COLUMN_BITMASK;
+
+		if (!_setOriginalEForm) {
+			_setOriginalEForm = true;
+
+			_originalEForm = _eForm;
+		}
+
+		_eForm = eForm;
+	}
+
+	public boolean getOriginalEForm() {
+		return _originalEForm;
+	}
+
+	@Override
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	@Override
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	@Override
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	@Override
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
+	@Override
+	public String getEFormNoPattern() {
+		if (_eFormNoPattern == null) {
+			return "";
+		}
+		else {
+			return _eFormNoPattern;
+		}
+	}
+
+	@Override
+	public void setEFormNoPattern(String eFormNoPattern) {
+		_eFormNoPattern = eFormNoPattern;
+	}
+
+	@Override
+	public String getEFormNamePattern() {
+		if (_eFormNamePattern == null) {
+			return "";
+		}
+		else {
+			return _eFormNamePattern;
+		}
+	}
+
+	@Override
+	public void setEFormNamePattern(String eFormNamePattern) {
+		_eFormNamePattern = eFormNamePattern;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -297,6 +420,11 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		serviceFileTemplateImpl.setFileTemplateNo(getFileTemplateNo());
 		serviceFileTemplateImpl.setTemplateName(getTemplateName());
 		serviceFileTemplateImpl.setFileEntryId(getFileEntryId());
+		serviceFileTemplateImpl.setEForm(isEForm());
+		serviceFileTemplateImpl.setFormScriptFileId(getFormScriptFileId());
+		serviceFileTemplateImpl.setFormReportFileId(getFormReportFileId());
+		serviceFileTemplateImpl.setEFormNoPattern(getEFormNoPattern());
+		serviceFileTemplateImpl.setEFormNamePattern(getEFormNamePattern());
 
 		serviceFileTemplateImpl.resetOriginalValues();
 
@@ -359,6 +487,10 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 		serviceFileTemplateModelImpl._originalFileTemplateNo = serviceFileTemplateModelImpl._fileTemplateNo;
 
+		serviceFileTemplateModelImpl._originalEForm = serviceFileTemplateModelImpl._eForm;
+
+		serviceFileTemplateModelImpl._setOriginalEForm = false;
+
 		serviceFileTemplateModelImpl._columnBitmask = 0;
 	}
 
@@ -396,12 +528,34 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 		serviceFileTemplateCacheModel.fileEntryId = getFileEntryId();
 
+		serviceFileTemplateCacheModel.eForm = isEForm();
+
+		serviceFileTemplateCacheModel.formScriptFileId = getFormScriptFileId();
+
+		serviceFileTemplateCacheModel.formReportFileId = getFormReportFileId();
+
+		serviceFileTemplateCacheModel.eFormNoPattern = getEFormNoPattern();
+
+		String eFormNoPattern = serviceFileTemplateCacheModel.eFormNoPattern;
+
+		if ((eFormNoPattern != null) && (eFormNoPattern.length() == 0)) {
+			serviceFileTemplateCacheModel.eFormNoPattern = null;
+		}
+
+		serviceFileTemplateCacheModel.eFormNamePattern = getEFormNamePattern();
+
+		String eFormNamePattern = serviceFileTemplateCacheModel.eFormNamePattern;
+
+		if ((eFormNamePattern != null) && (eFormNamePattern.length() == 0)) {
+			serviceFileTemplateCacheModel.eFormNamePattern = null;
+		}
+
 		return serviceFileTemplateCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -413,6 +567,16 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 		sb.append(getTemplateName());
 		sb.append(", fileEntryId=");
 		sb.append(getFileEntryId());
+		sb.append(", eForm=");
+		sb.append(isEForm());
+		sb.append(", formScriptFileId=");
+		sb.append(getFormScriptFileId());
+		sb.append(", formReportFileId=");
+		sb.append(getFormReportFileId());
+		sb.append(", eFormNoPattern=");
+		sb.append(getEFormNoPattern());
+		sb.append(", eFormNamePattern=");
+		sb.append(getEFormNamePattern());
 		sb.append("}");
 
 		return sb.toString();
@@ -420,7 +584,7 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ServiceFileTemplate");
@@ -446,6 +610,26 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 			"<column><column-name>fileEntryId</column-name><column-value><![CDATA[");
 		sb.append(getFileEntryId());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>eForm</column-name><column-value><![CDATA[");
+		sb.append(isEForm());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>formScriptFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormScriptFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>formReportFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormReportFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>eFormNoPattern</column-name><column-value><![CDATA[");
+		sb.append(getEFormNoPattern());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>eFormNamePattern</column-name><column-value><![CDATA[");
+		sb.append(getEFormNamePattern());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -465,6 +649,13 @@ public class ServiceFileTemplateModelImpl extends BaseModelImpl<ServiceFileTempl
 	private String _originalFileTemplateNo;
 	private String _templateName;
 	private long _fileEntryId;
+	private boolean _eForm;
+	private boolean _originalEForm;
+	private boolean _setOriginalEForm;
+	private long _formScriptFileId;
+	private long _formReportFileId;
+	private String _eFormNoPattern;
+	private String _eFormNamePattern;
 	private long _columnBitmask;
 	private ServiceFileTemplate _escapedModel;
 }

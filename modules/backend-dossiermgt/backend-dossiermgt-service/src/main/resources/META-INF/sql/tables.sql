@@ -215,7 +215,8 @@ create table opencps_dossier (
 	durationUnit INTEGER,
 	durationCount DOUBLE,
 	dossierName VARCHAR(1000) null,
-	originDossierNo VARCHAR(255) null
+	originDossierNo VARCHAR(255) null,
+	groupDossierId LONG
 );
 
 create table opencps_dossieraction (
@@ -505,6 +506,29 @@ create table opencps_dynamicreport (
 	tableConfig VARCHAR(75) null,
 	userConfig VARCHAR(75) null,
 	reportType VARCHAR(75) null
+);
+
+create table opencps_eform (
+	uuid_ VARCHAR(75) null,
+	eFormId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	eFormNo VARCHAR(75) null,
+	serviceCode VARCHAR(75) null,
+	fileTemplateNo VARCHAR(75) null,
+	eFormName VARCHAR(75) null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
+	eFormData VARCHAR(75) null,
+	email VARCHAR(75) null,
+	secret VARCHAR(75) null,
+	checkinDate DATE null,
+	gateNumber VARCHAR(75) null,
+	state_ INTEGER
 );
 
 create table opencps_menuconfig (
@@ -891,7 +915,8 @@ create table opencps_serviceprocess (
 	serverNo VARCHAR(255) null,
 	serverName TEXT null,
 	requestPayment BOOLEAN,
-	paymentFee VARCHAR(255) null
+	paymentFee VARCHAR(255) null,
+	dossierGroupPattern VARCHAR(75) null
 );
 
 create table opencps_serviceprocessrole (
@@ -911,6 +936,11 @@ create table opencps_services_filetemplates (
 	fileTemplateNo VARCHAR(75) not null,
 	templateName VARCHAR(1000) null,
 	fileEntryId LONG,
+	eForm BOOLEAN,
+	formScriptFileId LONG,
+	formReportFileId LONG,
+	eFormNoPattern VARCHAR(75) null,
+	eFormNamePattern VARCHAR(75) null,
 	primary key (serviceInfoId, fileTemplateNo)
 );
 

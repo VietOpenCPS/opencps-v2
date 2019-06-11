@@ -114,7 +114,8 @@ import javax.xml.bind.annotation.XmlType;
     "time",
     "register",
     "day",
-    "paymentStatus"
+    "paymentStatus",
+    "groupDossierId"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -234,6 +235,8 @@ public class DossierSearchModel {
     protected String register;
 	@QueryParam(value = "day")
     protected int day;
+	@QueryParam(value = "groupDossierId")
+    protected Long groupDossierId;
 
     public Integer getAssigned() {
 		return assigned;
@@ -1039,4 +1042,13 @@ public class DossierSearchModel {
 	public void setDay(int value) {
 		this.day = value;
 	}
+
+	public Long getGroupDossierId() {
+		return groupDossierId;
+	}
+
+	public void setGroupDossierId(Long groupDossierId) {
+		this.groupDossierId = groupDossierId;
+	}
+
 }

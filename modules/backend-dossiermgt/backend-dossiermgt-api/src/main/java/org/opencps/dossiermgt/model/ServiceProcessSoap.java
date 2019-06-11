@@ -57,6 +57,7 @@ public class ServiceProcessSoap implements Serializable {
 		soapModel.setServerName(model.getServerName());
 		soapModel.setRequestPayment(model.isRequestPayment());
 		soapModel.setPaymentFee(model.getPaymentFee());
+		soapModel.setDossierGroupPattern(model.getDossierGroupPattern());
 
 		return soapModel;
 	}
@@ -321,6 +322,14 @@ public class ServiceProcessSoap implements Serializable {
 		_paymentFee = paymentFee;
 	}
 
+	public String getDossierGroupPattern() {
+		return _dossierGroupPattern;
+	}
+
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+		_dossierGroupPattern = dossierGroupPattern;
+	}
+
 	private String _uuid;
 	private long _serviceProcessId;
 	private long _companyId;
@@ -345,4 +354,5 @@ public class ServiceProcessSoap implements Serializable {
 	private String _serverName;
 	private boolean _requestPayment;
 	private String _paymentFee;
+	private String _dossierGroupPattern;
 }

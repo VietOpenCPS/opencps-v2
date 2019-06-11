@@ -142,6 +142,12 @@ public class DossierFileLocalServiceUtil {
 			dossierPartType, serviceContext);
 	}
 
+	public static int countByF_GID_DID_R_O(long groupId, long[] dossierIds,
+		boolean removed, boolean original) {
+		return getService()
+				   .countByF_GID_DID_R_O(groupId, dossierIds, removed, original);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
@@ -344,6 +350,20 @@ public class DossierFileLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByDossierIdAndIsNew(
 		long dossierId, boolean isNew) {
 		return getService().getByDossierIdAndIsNew(dossierId, isNew);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByF_GID_DID_R_O(
+		long groupId, long[] dossierIds, boolean removed, boolean original) {
+		return getService()
+				   .getByF_GID_DID_R_O(groupId, dossierIds, removed, original);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> getByF_GID_DID_R_O(
+		long groupId, long[] dossierIds, boolean removed, boolean original,
+		int start, int end) {
+		return getService()
+				   .getByF_GID_DID_R_O(groupId, dossierIds, removed, original,
+			start, end);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierFile getByFileEntryId(

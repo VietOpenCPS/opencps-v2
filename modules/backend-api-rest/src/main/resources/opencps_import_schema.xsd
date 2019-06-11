@@ -479,6 +479,7 @@
 					</xsd:simpleType>
 				</xsd:element>
 				<xsd:element name="maxLevel" type="xsd:int" minOccurs="0" />
+				<xsd:element name="public_" type="xsd:boolean" minOccurs="0" />
 				<xsd:element ref="fileTemplates" />
 				<xsd:element ref="configs" />
 			</xsd:sequence>
@@ -506,6 +507,20 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="templateName">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="eFormNoPattern">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="eFormNamePattern">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
 										<xsd:maxLength value="255"></xsd:maxLength>

@@ -422,14 +422,14 @@ public class ServiceInfoLocalServiceUtil {
 		String conditionText, String durationText, String applicantText,
 		String resultText, String regularText, String feeText,
 		String administrationCode, String administrationName,
-		String domainCode, String domainName, Integer maxLevel)
+		String domainCode, String domainName, Integer maxLevel, boolean public_)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateServiceInfoDB(userId, groupId, serviceCode,
 			serviceName, processText, methodText, dossierText, conditionText,
 			durationText, applicantText, resultText, regularText, feeText,
 			administrationCode, administrationName, domainCode, domainName,
-			maxLevel);
+			maxLevel, public_);
 	}
 
 	public static ServiceInfoLocalService getService() {
