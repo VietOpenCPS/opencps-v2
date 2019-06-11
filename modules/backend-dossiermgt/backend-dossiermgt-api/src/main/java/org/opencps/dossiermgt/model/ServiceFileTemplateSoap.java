@@ -39,6 +39,11 @@ public class ServiceFileTemplateSoap implements Serializable {
 		soapModel.setFileTemplateNo(model.getFileTemplateNo());
 		soapModel.setTemplateName(model.getTemplateName());
 		soapModel.setFileEntryId(model.getFileEntryId());
+		soapModel.setEForm(model.isEForm());
+		soapModel.setFormScriptFileId(model.getFormScriptFileId());
+		soapModel.setFormReportFileId(model.getFormReportFileId());
+		soapModel.setEFormNoPattern(model.getEFormNoPattern());
+		soapModel.setEFormNamePattern(model.getEFormNamePattern());
 
 		return soapModel;
 	}
@@ -135,9 +140,58 @@ public class ServiceFileTemplateSoap implements Serializable {
 		_fileEntryId = fileEntryId;
 	}
 
+	public boolean getEForm() {
+		return _eForm;
+	}
+
+	public boolean isEForm() {
+		return _eForm;
+	}
+
+	public void setEForm(boolean eForm) {
+		_eForm = eForm;
+	}
+
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
+	public String getEFormNoPattern() {
+		return _eFormNoPattern;
+	}
+
+	public void setEFormNoPattern(String eFormNoPattern) {
+		_eFormNoPattern = eFormNoPattern;
+	}
+
+	public String getEFormNamePattern() {
+		return _eFormNamePattern;
+	}
+
+	public void setEFormNamePattern(String eFormNamePattern) {
+		_eFormNamePattern = eFormNamePattern;
+	}
+
 	private String _uuid;
 	private long _serviceInfoId;
 	private String _fileTemplateNo;
 	private String _templateName;
 	private long _fileEntryId;
+	private boolean _eForm;
+	private long _formScriptFileId;
+	private long _formReportFileId;
+	private String _eFormNoPattern;
+	private String _eFormNamePattern;
 }

@@ -1298,6 +1298,19 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.findByG_DID_FTN_R_O(groupId, dossierIds, fileTemplateNo, removed, original);
 	}
 
+	public List<DossierFile> getByF_GID_DID_R_O(long groupId, long[] dossierIds, boolean removed, boolean original) {
+		return dossierFilePersistence.findByF_GID_DID_R_O(groupId, dossierIds, removed, original);
+	}
+
+	public List<DossierFile> getByF_GID_DID_R_O(long groupId, long[] dossierIds, boolean removed, boolean original,
+			int start, int end) {
+		return dossierFilePersistence.findByF_GID_DID_R_O(groupId, dossierIds, removed, original, start, end);
+	}
+
+	public int countByF_GID_DID_R_O(long groupId, long[] dossierIds, boolean removed, boolean original) {
+		return dossierFilePersistence.countByF_GID_DID_R_O(groupId, dossierIds, removed, original);
+	}
+
 	// Import Data old system
 	public DossierFile getByG_DID_PART_NAME(long groupId, long dossierId, String dossierPartNo, int dossierPartType, String displayName) {
 		return dossierFilePersistence.fetchByG_DID_PART_NAME(groupId, dossierId, dossierPartNo, dossierPartType, displayName);

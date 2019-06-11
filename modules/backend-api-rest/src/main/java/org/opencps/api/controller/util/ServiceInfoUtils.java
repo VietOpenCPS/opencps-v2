@@ -211,28 +211,35 @@ public class ServiceInfoUtils {
 	public static List<FileTemplates> mappingToFileTemplates(List<ServiceFileTemplate> serviceFileTemplates) {
 		List<FileTemplates> fileTemplates = new ArrayList<FileTemplates>();
 
-		for (ServiceFileTemplate sft : serviceFileTemplates) {
-			FileTemplates fileTemplate = new FileTemplates();
+		if (serviceFileTemplates != null && serviceFileTemplates.size() > 0) {
+			for (ServiceFileTemplate sft : serviceFileTemplates) {
+				FileTemplates fileTemplate = new FileTemplates();
 
-			fileTemplate.setTemplateName(sft.getTemplateName());
+				fileTemplate.setTemplateName(sft.getTemplateName());
 
-			if (sft.getFileEntryId() != 0) {
+				if (sft.getFileEntryId() != 0) {
+					try {
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(sft.getFileEntryId());
 
-				try {
-					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(sft.getFileEntryId());
+						fileTemplate.setFileSize(GetterUtil.getInteger(fileEntry.getSize()));
+						fileTemplate.setFileType(fileEntry.getExtension());
+						fileTemplate.setFileTemplateNo(sft.getFileTemplateNo());
+						fileTemplate.setTemplateName(sft.getTemplateName());
 
-					fileTemplate.setFileSize(GetterUtil.getInteger(fileEntry.getSize()));
-					fileTemplate.setFileType(fileEntry.getExtension());
-					fileTemplate.setFileTemplateNo(sft.getFileTemplateNo());
-					fileTemplate.setTemplateName(sft.getTemplateName());
-
-				} catch (Exception e) {
-					_log.debug(e);
-					//_log.error(e);
-					_log.error("Can't get ServiceFileTemplate");
+					} catch (Exception e) {
+						_log.debug(e);
+						_log.error("Can't get ServiceFileTemplate");
+					}
 				}
+
+				fileTemplate.seteForm(sft.getEForm());
+				fileTemplate.setFormScriptFileId(sft.getFormScriptFileId());
+				fileTemplate.setFormReportFileId(sft.getFormReportFileId());
+				fileTemplate.seteFormNoPattern(sft.getEFormNoPattern());
+				fileTemplate.seteFormNamePattern(sft.getEFormNamePattern());
+				
+				fileTemplates.add(fileTemplate);
 			}
-			fileTemplates.add(fileTemplate);
 		}
 
 		return fileTemplates;

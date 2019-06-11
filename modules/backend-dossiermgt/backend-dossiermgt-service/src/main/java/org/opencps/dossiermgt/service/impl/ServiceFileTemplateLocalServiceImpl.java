@@ -33,7 +33,11 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.ServiceFileTemplateLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 
@@ -171,13 +175,37 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceFileTemplate updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo,
-			String fileTemplateName, String fileName, long fileEntryId) {
+			String fileTemplateName, String fileName, long fileEntryId, boolean eForm, long formScriptFileId,
+			long formReportFileId, String eFormNoPattern, String eFormNamePattern) {
 		ServiceFileTemplatePK fileTemplatePK = new ServiceFileTemplatePK(serviceInfoId, fileTemplateNo);
 
-		ServiceFileTemplate object = serviceFileTemplatePersistence.create(fileTemplatePK);
+		ServiceFileTemplate object = serviceFileTemplatePersistence.fetchByPrimaryKey(fileTemplatePK);
+		if (object == null) {
+			object = serviceFileTemplatePersistence.create(fileTemplatePK);
 
-		object.setTemplateName(fileTemplateName);
-		object.setFileEntryId(fileEntryId);
+			object.setTemplateName(fileTemplateName);
+			object.setFileEntryId(fileEntryId);
+			object.setEForm(eForm);
+			object.setFormReportFileId(formReportFileId);
+			object.setFormScriptFileId(formScriptFileId);
+			object.setEFormNoPattern(eFormNoPattern);
+			object.setEFormNamePattern(eFormNamePattern);
+		} else {
+			if(Validator.isNotNull(fileTemplateName))
+				object.setTemplateName(fileTemplateName);
+			if(fileEntryId > 0)
+				object.setFileEntryId(fileEntryId);
+			if(Validator.isNotNull(eForm))
+				object.setEForm(eForm);
+			if(formReportFileId > 0)
+				object.setFormReportFileId(formReportFileId);
+			if(formScriptFileId > 0)
+				object.setFormScriptFileId(formScriptFileId);
+			if(Validator.isNotNull(eFormNoPattern))
+				object.setEFormNoPattern(eFormNoPattern);
+			if(Validator.isNotNull(eFormNamePattern))
+				object.setEFormNamePattern(eFormNamePattern);
+		}
 
 		return serviceFileTemplatePersistence.update(object);
 	}
@@ -186,6 +214,26 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 
 		return serviceFileTemplatePersistence.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId,
 				fileTemplateNo);
+	}
+
+	public int countByService_EForm(long serviceInfoId, boolean eForm) {
+		return serviceFileTemplatePersistence.countByF_SCID_FORM(serviceInfoId, eForm);
+	}
+
+	public List<ServiceFileTemplate> getByService_EForm(long serviceInfoId, boolean eForm, int start, int end) {
+		try {
+			return serviceFileTemplatePersistence.findByF_SCID_FORM(serviceInfoId, eForm, start, end);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<ServiceFileTemplate> getByService(long serviceInfoId, int start, int end) {
+		try {
+			return serviceFileTemplatePersistence.findByServiceInfoId(serviceInfoId, start, end);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	Log _log = LogFactoryUtil.getLog(ServiceFileTemplateLocalServiceImpl.class);

@@ -83,6 +83,8 @@ public interface ServiceFileTemplateLocalService extends BaseLocalService,
 	public ServiceFileTemplate addServiceFileTemplate(
 		ServiceFileTemplate serviceFileTemplate);
 
+	public int countByService_EForm(long serviceInfoId, boolean eForm);
+
 	public int countByServiceInfoId(long serviceInfoId);
 
 	/**
@@ -194,6 +196,14 @@ public interface ServiceFileTemplateLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ServiceFileTemplate> getByService(long serviceInfoId,
+		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ServiceFileTemplate> getByService_EForm(long serviceInfoId,
+		boolean eForm, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ServiceFileTemplate> getByServiceInfoId(long serviceInfoId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -265,5 +275,6 @@ public interface ServiceFileTemplateLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceFileTemplate updateServiceFileTemplateDB(long serviceInfoId,
 		String fileTemplateNo, String fileTemplateName, String fileName,
-		long fileEntryId);
+		long fileEntryId, boolean eForm, long formScriptFileId,
+		long formReportFileId, String eFormNoPattern, String eFormNamePattern);
 }

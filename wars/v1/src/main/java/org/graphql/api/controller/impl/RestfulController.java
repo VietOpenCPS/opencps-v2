@@ -550,6 +550,72 @@ public class RestfulController {
 
 	}
 
+	@RequestMapping(value = "/users/upload/{code}/{className}/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.POST)
+	public void uploadServiceFileAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
+			@PathVariable("className") String className, @PathVariable("serviceInfoId") String serviceInfoId,
+			@PathVariable("fileTemplateNo") String fileTemplateNo) {
+
+		CommonsMultipartFile multipartFile = null;
+
+		Iterator<String> iterator = request.getFileNames();
+
+		while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+			// create multipartFile array if you upload multiple files
+			multipartFile = (CommonsMultipartFile) request.getFile(key);
+		}
+
+		long userId = 0;
+		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+		}
+		long groupId = 0;
+		if (Validator.isNotNull(request.getHeader("groupId"))) {
+			groupId = Long.valueOf(request.getHeader("groupId"));
+		}
+		long companyId = CompanyThreadLocal.getCompanyId();
+		String desc = "FileAttach file upload";
+		String destination = "FileAttach/";
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setUserId(userId);
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(groupId);
+
+		try {
+
+			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
+					UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+					multipartFile.getOriginalFilename()
+							.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+					multipartFile.getSize(), destination, desc, serviceContext);
+
+				User user = UserLocalServiceUtil.fetchUser(userId);
+
+				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, serviceInfoId+ "_"+fileTemplateNo,
+						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
+						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
+
+				if (code.equals("opencps_services_filetemplates")) {
+
+					ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
+							.fetchByF_serviceInfoId_fileTemplateNo(Long.valueOf(serviceInfoId), fileTemplateNo);
+
+					if (className.endsWith("FORM")) {
+						fileTemplate.setFormScriptFileId(fileAttach.getFileEntryId());
+					} else if (className.endsWith("JASPER")) {
+						fileTemplate.setFormReportFileId(fileAttach.getFileEntryId());
+					}
+
+					ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(fileTemplate);
+				}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+	}
+
 	@RequestMapping(value = "/filetemplate/{pk}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getServiceFileTemplate(HttpServletRequest request, HttpServletResponse response,

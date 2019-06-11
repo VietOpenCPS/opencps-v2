@@ -1,7 +1,6 @@
 package org.opencps.dossiermgt.action.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -17,8 +16,8 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -354,11 +353,11 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	public long updateServiceInfoDB(long userId, long groupId, String serviceCode, String serviceName, String processText,
 			String methodText, String dossierText, String conditionText, String durationText, String applicantText,
 			String resultText, String regularText, String feeText, String administrationCode, String administrationName,
-			String domainCode, String domainName, Integer maxLevel) throws PortalException {
+			String domainCode, String domainName, Integer maxLevel, boolean public_) throws PortalException {
 
 		ServiceInfo serInfo =  ServiceInfoLocalServiceUtil.updateServiceInfoDB(userId, groupId, serviceCode, serviceName, processText,
 				methodText, dossierText, conditionText, durationText, applicantText, resultText, regularText, feeText,
-				administrationCode, administrationName, domainCode, domainName, maxLevel);
+				administrationCode, administrationName, domainCode, domainName, maxLevel, public_);
 		if (serInfo != null) {
 			return serInfo.getServiceInfoId();
 		}
@@ -367,10 +366,11 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 	@Override
 	public void updateServiceFileTemplateDB(long serviceInfoId, String fileTemplateNo, String fileTemplateName,
-			String fileName, long fileEntryId) {
+			String fileName, long fileEntryId, boolean eForm, long formScriptFileId, long formReportFileId, String eFormNoPattern,
+			String eFormNamePattern) {
 
 		ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplateDB(serviceInfoId, fileTemplateNo, fileTemplateName,
-				fileName, fileEntryId);
+				fileName, fileEntryId, eForm, formScriptFileId, formReportFileId, eFormNoPattern, eFormNamePattern);
 	}
 
 	@Override
@@ -493,6 +493,69 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		}
 
+		return result;
+	}
+
+	@Override
+	public JSONObject getServiceFileTemplate(long groupId, String id, boolean eForm, int start, int end) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			long serviceInfoId = GetterUtil.getLong(id);
+			if (serviceInfoId > 0) {
+				int total = ServiceFileTemplateLocalServiceUtil.countByService_EForm(serviceInfoId, eForm);
+				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService_EForm(serviceInfoId,
+						eForm, start, end);
+
+				result.put("data", data);
+				result.put("total", total);
+			} else {
+				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
+				if (service != null) {
+					int total = ServiceFileTemplateLocalServiceUtil.countByService_EForm(service.getServiceInfoId(),
+							eForm);
+					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
+							.getByService_EForm(service.getServiceInfoId(), eForm, start, end);
+
+					result.put("data", data);
+					result.put("total", total);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
+		return result;
+	}
+
+	@Override
+	public JSONObject getServiceFileTemplate(long groupId, String id, int start, int end) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		try {
+			long serviceInfoId = GetterUtil.getLong(id);
+			if (serviceInfoId > 0) {
+				int total = ServiceFileTemplateLocalServiceUtil.countByServiceInfoId(serviceInfoId);
+				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService(serviceInfoId, start,
+						end);
+
+				result.put("data", data);
+				result.put("total", total);
+			} else {
+				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
+				if (service != null) {
+					int total = ServiceFileTemplateLocalServiceUtil.countByServiceInfoId(service.getServiceInfoId());
+					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
+							.getByService(service.getServiceInfoId(), start, end);
+
+					result.put("data", data);
+					result.put("total", total);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+		
 		return result;
 	}
 

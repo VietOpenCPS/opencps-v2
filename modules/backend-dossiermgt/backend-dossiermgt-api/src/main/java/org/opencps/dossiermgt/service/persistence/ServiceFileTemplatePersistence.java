@@ -361,6 +361,155 @@ public interface ServiceFileTemplatePersistence extends BasePersistence<ServiceF
 		String fileTemplateNo);
 
 	/**
+	* Returns all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @return the matching service file templates
+	*/
+	public java.util.List<ServiceFileTemplate> findByF_SCID_FORM(
+		long serviceInfoId, boolean eForm);
+
+	/**
+	* Returns a range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param start the lower bound of the range of service file templates
+	* @param end the upper bound of the range of service file templates (not inclusive)
+	* @return the range of matching service file templates
+	*/
+	public java.util.List<ServiceFileTemplate> findByF_SCID_FORM(
+		long serviceInfoId, boolean eForm, int start, int end);
+
+	/**
+	* Returns an ordered range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param start the lower bound of the range of service file templates
+	* @param end the upper bound of the range of service file templates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service file templates
+	*/
+	public java.util.List<ServiceFileTemplate> findByF_SCID_FORM(
+		long serviceInfoId, boolean eForm, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param start the lower bound of the range of service file templates
+	* @param end the upper bound of the range of service file templates (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service file templates
+	*/
+	public java.util.List<ServiceFileTemplate> findByF_SCID_FORM(
+		long serviceInfoId, boolean eForm, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service file template
+	* @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate findByF_SCID_FORM_First(long serviceInfoId,
+		boolean eForm,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException;
+
+	/**
+	* Returns the first service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate fetchByF_SCID_FORM_First(long serviceInfoId,
+		boolean eForm,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator);
+
+	/**
+	* Returns the last service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service file template
+	* @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate findByF_SCID_FORM_Last(long serviceInfoId,
+		boolean eForm,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException;
+
+	/**
+	* Returns the last service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service file template, or <code>null</code> if a matching service file template could not be found
+	*/
+	public ServiceFileTemplate fetchByF_SCID_FORM_Last(long serviceInfoId,
+		boolean eForm,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator);
+
+	/**
+	* Returns the service file templates before and after the current service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceFileTemplatePK the primary key of the current service file template
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next service file template
+	* @throws NoSuchServiceFileTemplateException if a service file template with the primary key could not be found
+	*/
+	public ServiceFileTemplate[] findByF_SCID_FORM_PrevAndNext(
+		ServiceFileTemplatePK serviceFileTemplatePK, long serviceInfoId,
+		boolean eForm,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException;
+
+	/**
+	* Removes all the service file templates where serviceInfoId = &#63; and eForm = &#63; from the database.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	*/
+	public void removeByF_SCID_FORM(long serviceInfoId, boolean eForm);
+
+	/**
+	* Returns the number of service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	*
+	* @param serviceInfoId the service info ID
+	* @param eForm the e form
+	* @return the number of matching service file templates
+	*/
+	public int countByF_SCID_FORM(long serviceInfoId, boolean eForm);
+
+	/**
 	* Caches the service file template in the entity cache if it is enabled.
 	*
 	* @param serviceFileTemplate the service file template

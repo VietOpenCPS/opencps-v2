@@ -87,6 +87,11 @@
 
 		<column name="templateName" type="String" />
 		<column name="fileEntryId" type="long" />
+		<column name="eForm" type="boolean" />
+		<column name="formScriptFileId" type="long" />
+		<column name="formReportFileId" type="long" />
+		<column name="eFormNoPattern" type="String" />
+		<column name="eFormNamePattern" type="String" />
 
 		<!-- Order -->
 
@@ -100,11 +105,61 @@
 			<finder-column name="serviceInfoId" />
 			<finder-column name="fileTemplateNo" />
 		</finder>
-		
+		<finder name="F_SCID_FORM" return-type="Collection">
+			<finder-column name="serviceInfoId" />
+			<finder-column name="eForm" />
+		</finder>
+
 		<!-- References -->
 
 		<reference entity="DLApp" package-path="com.liferay.portlet.documentlibrary" />
 		<reference entity="DLFileEntry" package-path="com.liferay.portlet.documentlibrary" />
+	</entity>
+
+	<entity name="EForm" table="opencps_eform"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+		<column name="eFormId" primary="true" type="long" />
+
+		<!-- Group instance -->
+		<column name="groupId" type="long" />
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="eFormNo" type="String" />
+		<column name="serviceCode" type="String" />
+		<column name="fileTemplateNo" type="String" />
+		<column name="eFormName" type="String" />
+		<column name="formScriptFileId" type="long" />
+		<column name="formReportFileId" type="long" />
+		<column name="eFormData" type="String" />
+		<column name="email" type="String" />
+		<column name="secret" type="String" />
+		<column name="checkinDate" type="Date" />
+		<column name="gateNumber" type="String" />
+		<column name="state" type="int" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+		<finder name="F_GID_STATE" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="state" arrayable-operator="OR"/>
+		</finder>
+		<finder name="F_GID_SC" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="serviceCode" />
+		</finder>
+		<finder name="F_GID_FORM" return-type="EForm">
+			<finder-column name="groupId" />
+			<finder-column name="eFormNo" />
+		</finder>
+
 	</entity>
 
 	<entity name="DossierTemplate" table="opencps_dossiertemplate"
@@ -553,6 +608,11 @@
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo" />
 		</finder>
+		<finder return-type="Collection" name="F_GID_AN_DS">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="dossierStatus" />
+		</finder>
 		<finder return-type="Dossier" name="G_AN_SC_GAC_DTNO_ODID">
 			<finder-column name="groupId"/>
 			<finder-column name="applicantIdNo" />
@@ -750,6 +810,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="fileTemplateNo" />
+			<finder-column name="removed" />
+			<finder-column name="original" />
+		</finder>
+		<finder return-type="Collection" name="F_GID_DID_R_O">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="removed" />
 			<finder-column name="original" />
 		</finder>
@@ -2477,6 +2543,7 @@
 		<exception>NoSuchDeliverable</exception>
 		
 		<exception>NoSuchProcessSequence</exception>
+		<exception>NoSuchEForm</exception>
 		
 	</exceptions>
 </service-builder>

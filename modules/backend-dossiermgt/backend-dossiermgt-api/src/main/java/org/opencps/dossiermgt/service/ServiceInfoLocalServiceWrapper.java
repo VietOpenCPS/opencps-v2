@@ -454,13 +454,13 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 		String conditionText, String durationText, String applicantText,
 		String resultText, String regularText, String feeText,
 		String administrationCode, String administrationName,
-		String domainCode, String domainName, Integer maxLevel)
+		String domainCode, String domainName, Integer maxLevel, boolean public_)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoLocalService.updateServiceInfoDB(userId, groupId,
 			serviceCode, serviceName, processText, methodText, dossierText,
 			conditionText, durationText, applicantText, resultText,
 			regularText, feeText, administrationCode, administrationName,
-			domainCode, domainName, maxLevel);
+			domainCode, domainName, maxLevel, public_);
 	}
 
 	@Override

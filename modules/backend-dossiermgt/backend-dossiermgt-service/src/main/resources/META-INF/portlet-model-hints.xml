@@ -716,6 +716,28 @@
 		<field name="userConfig" type="String" />
 		<field name="reportType" type="String" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.EForm">
+		<field name="uuid" type="String" />
+		<field name="eFormId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="eFormNo" type="String" />
+		<field name="serviceCode" type="String" />
+		<field name="fileTemplateNo" type="String" />
+		<field name="eFormName" type="String" />
+		<field name="formScriptFileId" type="long" />
+		<field name="formReportFileId" type="long" />
+		<field name="eFormData" type="String" />
+		<field name="email" type="String" />
+		<field name="secret" type="String" />
+		<field name="checkinDate" type="Date" />
+		<field name="gateNumber" type="String" />
+		<field name="state" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.MenuConfig">
 		<field name="uuid" type="String" />
 		<field name="menuConfigId" type="long" />
@@ -1229,6 +1251,11 @@
 			<hint name="max-length">1000</hint>
 		</field>
 		<field name="fileEntryId" type="long" />
+		<field name="eForm" type="boolean" />
+		<field name="formScriptFileId" type="long" />
+		<field name="formReportFileId" type="long" />
+		<field name="eFormNoPattern" type="String" />
+		<field name="eFormNamePattern" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfo">
 		<field name="uuid" type="String" />

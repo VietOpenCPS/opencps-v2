@@ -318,13 +318,14 @@ public class OpenCPSRestClient {
 		Map<String, Object> params = OpenCPSConverter.convertPublishHttpParams(model);
 		ServiceContext context = new ServiceContext();
 		
+		_log.info("baseUrl  : " + baseUrl);
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json",
 				baseUrl,DOSSIERS_BASE_PATH + "/publish", username,
 				password, properties, params, context);
 		result = OpenCPSConverter.convertDossierDetail(resultObj);
 		
 		return result;
-	}	
+	}
 
 	public DossierDetailModel publishDossier(Dossier dossier) {
 		DossierDetailModel result = null;

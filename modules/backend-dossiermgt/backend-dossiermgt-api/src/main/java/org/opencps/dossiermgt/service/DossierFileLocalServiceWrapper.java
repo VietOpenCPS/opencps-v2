@@ -135,6 +135,13 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public int countByF_GID_DID_R_O(long groupId, long[] dossierIds,
+		boolean removed, boolean original) {
+		return _dossierFileLocalService.countByF_GID_DID_R_O(groupId,
+			dossierIds, removed, original);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,
@@ -361,6 +368,21 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByDossierIdAndIsNew(
 		long dossierId, boolean isNew) {
 		return _dossierFileLocalService.getByDossierIdAndIsNew(dossierId, isNew);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByF_GID_DID_R_O(
+		long groupId, long[] dossierIds, boolean removed, boolean original) {
+		return _dossierFileLocalService.getByF_GID_DID_R_O(groupId, dossierIds,
+			removed, original);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getByF_GID_DID_R_O(
+		long groupId, long[] dossierIds, boolean removed, boolean original,
+		int start, int end) {
+		return _dossierFileLocalService.getByF_GID_DID_R_O(groupId, dossierIds,
+			removed, original, start, end);
 	}
 
 	@Override

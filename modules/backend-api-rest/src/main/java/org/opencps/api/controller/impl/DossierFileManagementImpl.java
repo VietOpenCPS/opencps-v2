@@ -50,6 +50,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
@@ -810,6 +811,84 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
+	}
+
+	@Override
+	public Response getFileDoneOfApplicant(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String applicantIdNo,
+			DossierFileSearchModel query) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
+
+			DossierFileResultsModel results = new DossierFileResultsModel();
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.getByF_GID_AN_DS(groupId, applicantIdNo,
+					DossierTerm.DOSSIER_STATUS_DONE);
+
+			int countDossierFile = 0;
+			if (lstDossiers != null && lstDossiers.size() > 0) {
+				long[] dossierIds = new long[lstDossiers.size()];
+				int i = 0;
+				for (Dossier d : lstDossiers) {
+					dossierIds[i++] = d.getDossierId();
+				}
+
+				countDossierFile = DossierFileLocalServiceUtil.countByF_GID_DID_R_O(groupId, dossierIds, false, true);
+				if (countDossierFile > 0) {
+					results.setTotal(countDossierFile);
+					List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getByF_GID_DID_R_O(groupId,
+							dossierIds, false, true, query.getStart(), query.getEnd());
+					results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFileList));
+				}
+			}
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response removeDossierOfProfileApplicant(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long dossierFileId) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileModel results = null;
+			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+			if (dossierFile != null) {
+				dossierFile.setOriginal(false);
+				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			}
+			
+			if (dossierFile != null) {
+				results = DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			}
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
 	}
 
 }

@@ -508,6 +508,29 @@ create table opencps_dynamicreport (
 	reportType VARCHAR(75) null
 );
 
+create table opencps_eform (
+	uuid_ VARCHAR(75) null,
+	eFormId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	eFormNo VARCHAR(75) null,
+	serviceCode VARCHAR(75) null,
+	fileTemplateNo VARCHAR(75) null,
+	eFormName VARCHAR(75) null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
+	eFormData VARCHAR(75) null,
+	email VARCHAR(75) null,
+	secret VARCHAR(75) null,
+	checkinDate DATE null,
+	gateNumber VARCHAR(75) null,
+	state_ INTEGER
+);
+
 create table opencps_menuconfig (
 	uuid_ VARCHAR(75) null,
 	menuConfigId LONG not null primary key,
@@ -913,6 +936,11 @@ create table opencps_services_filetemplates (
 	fileTemplateNo VARCHAR(75) not null,
 	templateName VARCHAR(1000) null,
 	fileEntryId LONG,
+	eForm BOOLEAN,
+	formScriptFileId LONG,
+	formReportFileId LONG,
+	eFormNoPattern VARCHAR(75) null,
+	eFormNamePattern VARCHAR(75) null,
 	primary key (serviceInfoId, fileTemplateNo)
 );
 

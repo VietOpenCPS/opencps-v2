@@ -501,6 +501,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
 				document.addTextSortable(DossierTerm.DOSSIER_NO_SEARCH, dossierNoSearch);
 			}
+			
 			document.addTextSortable(DossierTerm.SUBMITTING, Boolean.toString(object.getSubmitting()));
 
 			document.addTextSortable(DossierTerm.DOSSIER_STATUS, object.getDossierStatus());

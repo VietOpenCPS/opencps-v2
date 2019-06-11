@@ -356,5 +356,5 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 		String durationText, String applicantText, String resultText,
 		String regularText, String feeText, String administrationCode,
 		String administrationName, String domainCode, String domainName,
-		Integer maxLevel) throws PortalException;
+		Integer maxLevel, boolean public_) throws PortalException;
 }

@@ -242,7 +242,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			//Integer originality = GetterUtil.getInteger(query.getOriginality());
 			//String originality = query.getOriginality();
-			String owner = query.getOwner();
 //			if (originality == -1) {
 //				owner = String.valueOf(false);
 //			} else {
@@ -334,6 +333,14 @@ public class DossierManagementImpl implements DossierManagement {
 			String applicantIdNo = query.getApplicantIdNo();
 			String serviceName = query.getServiceName();
 			Integer originDossierId = query.getOriginDossierId();
+			String owner = query.getOwner();
+			String applicantUserIdNo = null;
+			if (Boolean.valueOf(owner)) {
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, applicantIdNo);
+				if (applicant != null) {
+					applicantUserIdNo = applicant.getApplicantIdNo();
+				}
+			}
 
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
@@ -350,13 +357,16 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DAY, query.getDay());
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
+			params.put(DossierTerm.APPLICANT_USER_ID_NO,
+					Validator.isNotNull(applicantUserIdNo) ? applicantUserIdNo : StringPool.BLANK);
 			params.put(DossierTerm.SUBMITTING, submitting);
+
 			params.put(DossierTerm.FOLLOW, follow);
 			params.put(DossierTerm.TOP, top);
 			
 			backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 			if (!auth2.isAdmin(serviceContext, "admin")) {
-				params.put(DossierTerm.USER_ID, user.getUserId());				
+				params.put(DossierTerm.USER_ID, user.getUserId());
 			}
 			params.put("secetKey", query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
@@ -874,6 +884,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			// Add param original
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
 			params.put(DossierTerm.REGISTER, query.getRegister());
 			
 			Sort[] sorts = null;
@@ -3139,8 +3150,29 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 		}
-		else {
-			
+
+		params.put(DossierTerm.ORIGINALLITY, String.valueOf(9));
+		JSONObject jsonDataGroup = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+				-1, -1, serviceContext);
+	
+		long totalGroup = jsonDataGroup.getLong("total");
+	//	JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
+		if (totalGroup > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonDataGroup.get("data");	
+			for (Document document : lstDocuments) {
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				String uid = document.get(Field.UID);
+				Dossier oldDossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (oldDossier == null) {
+					try {
+						indexer.delete(companyId, uid);
+					} catch (SearchException e) {
+						_log.error(e);
+					}
+				}
+			}
 		}
 		
 		return Response.status(200).entity("{}").build();

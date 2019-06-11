@@ -139,6 +139,9 @@ public interface DossierFileLocalService extends BaseLocalService,
 		long oldDossierId, int dossierPartType, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
+	public int countByF_GID_DID_R_O(long groupId, long[] dossierIds,
+		boolean removed, boolean original);
+
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
 
@@ -285,6 +288,14 @@ public interface DossierFileLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierFile> getByDossierIdAndIsNew(long dossierId,
 		boolean isNew);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByF_GID_DID_R_O(long groupId,
+		long[] dossierIds, boolean removed, boolean original);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getByF_GID_DID_R_O(long groupId,
+		long[] dossierIds, boolean removed, boolean original, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getByFileEntryId(long fileEntryId);

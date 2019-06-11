@@ -357,6 +357,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> getByF_GID_AN_DS(
+		long groupId, String applicantIdNo, String dossierStatus) {
+		return _dossierLocalService.getByF_GID_AN_DS(groupId, applicantIdNo,
+			dossierStatus);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> getByG_AN(
 		long groupId, String applicantIdNo) {
 		return _dossierLocalService.getByG_AN(groupId, applicantIdNo);

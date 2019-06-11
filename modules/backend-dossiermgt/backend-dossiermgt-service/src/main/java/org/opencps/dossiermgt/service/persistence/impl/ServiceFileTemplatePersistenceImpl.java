@@ -1433,6 +1433,559 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 		"serviceFileTemplate.id.fileTemplateNo = ?";
 	private static final String _FINDER_COLUMN_F_SERVICEINFOID_FILETEMPLATENO_FILETEMPLATENO_3 =
 		"(serviceFileTemplate.id.fileTemplateNo IS NULL OR serviceFileTemplate.id.fileTemplateNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_SCID_FORM =
+		new FinderPath(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceFileTemplateModelImpl.FINDER_CACHE_ENABLED,
+			ServiceFileTemplateImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_SCID_FORM",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM =
+		new FinderPath(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceFileTemplateModelImpl.FINDER_CACHE_ENABLED,
+			ServiceFileTemplateImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_SCID_FORM",
+			new String[] { Long.class.getName(), Boolean.class.getName() },
+			ServiceFileTemplateModelImpl.SERVICEINFOID_COLUMN_BITMASK |
+			ServiceFileTemplateModelImpl.EFORM_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_SCID_FORM = new FinderPath(ServiceFileTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceFileTemplateModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_SCID_FORM",
+			new String[] { Long.class.getName(), Boolean.class.getName() });
+
+	/**
+	 * Returns all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @return the matching service file templates
+	 */
+	@Override
+	public List<ServiceFileTemplate> findByF_SCID_FORM(long serviceInfoId,
+		boolean eForm) {
+		return findByF_SCID_FORM(serviceInfoId, eForm, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param start the lower bound of the range of service file templates
+	 * @param end the upper bound of the range of service file templates (not inclusive)
+	 * @return the range of matching service file templates
+	 */
+	@Override
+	public List<ServiceFileTemplate> findByF_SCID_FORM(long serviceInfoId,
+		boolean eForm, int start, int end) {
+		return findByF_SCID_FORM(serviceInfoId, eForm, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param start the lower bound of the range of service file templates
+	 * @param end the upper bound of the range of service file templates (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service file templates
+	 */
+	@Override
+	public List<ServiceFileTemplate> findByF_SCID_FORM(long serviceInfoId,
+		boolean eForm, int start, int end,
+		OrderByComparator<ServiceFileTemplate> orderByComparator) {
+		return findByF_SCID_FORM(serviceInfoId, eForm, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceFileTemplateModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param start the lower bound of the range of service file templates
+	 * @param end the upper bound of the range of service file templates (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service file templates
+	 */
+	@Override
+	public List<ServiceFileTemplate> findByF_SCID_FORM(long serviceInfoId,
+		boolean eForm, int start, int end,
+		OrderByComparator<ServiceFileTemplate> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM;
+			finderArgs = new Object[] { serviceInfoId, eForm };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_SCID_FORM;
+			finderArgs = new Object[] {
+					serviceInfoId, eForm,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceFileTemplate> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceFileTemplate>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceFileTemplate serviceFileTemplate : list) {
+					if ((serviceInfoId != serviceFileTemplate.getServiceInfoId()) ||
+							(eForm != serviceFileTemplate.isEForm())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_SERVICEFILETEMPLATE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_SCID_FORM_SERVICEINFOID_2);
+
+			query.append(_FINDER_COLUMN_F_SCID_FORM_EFORM_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceFileTemplateModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceInfoId);
+
+				qPos.add(eForm);
+
+				if (!pagination) {
+					list = (List<ServiceFileTemplate>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceFileTemplate>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service file template
+	 * @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate findByF_SCID_FORM_First(long serviceInfoId,
+		boolean eForm, OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException {
+		ServiceFileTemplate serviceFileTemplate = fetchByF_SCID_FORM_First(serviceInfoId,
+				eForm, orderByComparator);
+
+		if (serviceFileTemplate != null) {
+			return serviceFileTemplate;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append(", eForm=");
+		msg.append(eForm);
+
+		msg.append("}");
+
+		throw new NoSuchServiceFileTemplateException(msg.toString());
+	}
+
+	/**
+	 * Returns the first service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service file template, or <code>null</code> if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate fetchByF_SCID_FORM_First(long serviceInfoId,
+		boolean eForm, OrderByComparator<ServiceFileTemplate> orderByComparator) {
+		List<ServiceFileTemplate> list = findByF_SCID_FORM(serviceInfoId,
+				eForm, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service file template
+	 * @throws NoSuchServiceFileTemplateException if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate findByF_SCID_FORM_Last(long serviceInfoId,
+		boolean eForm, OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException {
+		ServiceFileTemplate serviceFileTemplate = fetchByF_SCID_FORM_Last(serviceInfoId,
+				eForm, orderByComparator);
+
+		if (serviceFileTemplate != null) {
+			return serviceFileTemplate;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append(", eForm=");
+		msg.append(eForm);
+
+		msg.append("}");
+
+		throw new NoSuchServiceFileTemplateException(msg.toString());
+	}
+
+	/**
+	 * Returns the last service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service file template, or <code>null</code> if a matching service file template could not be found
+	 */
+	@Override
+	public ServiceFileTemplate fetchByF_SCID_FORM_Last(long serviceInfoId,
+		boolean eForm, OrderByComparator<ServiceFileTemplate> orderByComparator) {
+		int count = countByF_SCID_FORM(serviceInfoId, eForm);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServiceFileTemplate> list = findByF_SCID_FORM(serviceInfoId,
+				eForm, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the service file templates before and after the current service file template in the ordered set where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceFileTemplatePK the primary key of the current service file template
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next service file template
+	 * @throws NoSuchServiceFileTemplateException if a service file template with the primary key could not be found
+	 */
+	@Override
+	public ServiceFileTemplate[] findByF_SCID_FORM_PrevAndNext(
+		ServiceFileTemplatePK serviceFileTemplatePK, long serviceInfoId,
+		boolean eForm, OrderByComparator<ServiceFileTemplate> orderByComparator)
+		throws NoSuchServiceFileTemplateException {
+		ServiceFileTemplate serviceFileTemplate = findByPrimaryKey(serviceFileTemplatePK);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ServiceFileTemplate[] array = new ServiceFileTemplateImpl[3];
+
+			array[0] = getByF_SCID_FORM_PrevAndNext(session,
+					serviceFileTemplate, serviceInfoId, eForm,
+					orderByComparator, true);
+
+			array[1] = serviceFileTemplate;
+
+			array[2] = getByF_SCID_FORM_PrevAndNext(session,
+					serviceFileTemplate, serviceInfoId, eForm,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ServiceFileTemplate getByF_SCID_FORM_PrevAndNext(
+		Session session, ServiceFileTemplate serviceFileTemplate,
+		long serviceInfoId, boolean eForm,
+		OrderByComparator<ServiceFileTemplate> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_SERVICEFILETEMPLATE_WHERE);
+
+		query.append(_FINDER_COLUMN_F_SCID_FORM_SERVICEINFOID_2);
+
+		query.append(_FINDER_COLUMN_F_SCID_FORM_EFORM_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ServiceFileTemplateModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(serviceInfoId);
+
+		qPos.add(eForm);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(serviceFileTemplate);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ServiceFileTemplate> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the service file templates where serviceInfoId = &#63; and eForm = &#63; from the database.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 */
+	@Override
+	public void removeByF_SCID_FORM(long serviceInfoId, boolean eForm) {
+		for (ServiceFileTemplate serviceFileTemplate : findByF_SCID_FORM(
+				serviceInfoId, eForm, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(serviceFileTemplate);
+		}
+	}
+
+	/**
+	 * Returns the number of service file templates where serviceInfoId = &#63; and eForm = &#63;.
+	 *
+	 * @param serviceInfoId the service info ID
+	 * @param eForm the e form
+	 * @return the number of matching service file templates
+	 */
+	@Override
+	public int countByF_SCID_FORM(long serviceInfoId, boolean eForm) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_SCID_FORM;
+
+		Object[] finderArgs = new Object[] { serviceInfoId, eForm };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SERVICEFILETEMPLATE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_SCID_FORM_SERVICEINFOID_2);
+
+			query.append(_FINDER_COLUMN_F_SCID_FORM_EFORM_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceInfoId);
+
+				qPos.add(eForm);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_SCID_FORM_SERVICEINFOID_2 = "serviceFileTemplate.id.serviceInfoId = ? AND ";
+	private static final String _FINDER_COLUMN_F_SCID_FORM_EFORM_2 = "serviceFileTemplate.eForm = ?";
 
 	public ServiceFileTemplatePersistenceImpl() {
 		setModelClass(ServiceFileTemplate.class);
@@ -1763,6 +2316,15 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SERVICEINFOID,
 				args);
 
+			args = new Object[] {
+					serviceFileTemplateModelImpl.getServiceInfoId(),
+					serviceFileTemplateModelImpl.isEForm()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SCID_FORM, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -1804,6 +2366,27 @@ public class ServiceFileTemplatePersistenceImpl extends BasePersistenceImpl<Serv
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_SERVICEINFOID,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SERVICEINFOID,
+					args);
+			}
+
+			if ((serviceFileTemplateModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serviceFileTemplateModelImpl.getOriginalServiceInfoId(),
+						serviceFileTemplateModelImpl.getOriginalEForm()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SCID_FORM, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM,
+					args);
+
+				args = new Object[] {
+						serviceFileTemplateModelImpl.getServiceInfoId(),
+						serviceFileTemplateModelImpl.isEForm()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_SCID_FORM, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_SCID_FORM,
 					args);
 			}
 		}
