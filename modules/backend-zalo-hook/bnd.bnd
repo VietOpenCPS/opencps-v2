@@ -1,0 +1,6 @@
+Bundle-Name: backend-zalo-hook
+Bundle-SymbolicName: org.opencps.zalo.hook
+Bundle-Version: 1.0.0
+Export-Package: org.opencps.zalo.hook.constants
+
+-sources: true
