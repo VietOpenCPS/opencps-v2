@@ -68,6 +68,12 @@
 		
 	<bean class="org.opencps.dossiermgt.service.indexer.StepConfigIndexer"
 		id="org.opencps.dossiermgt.service.indexer.StepConfigIndexer" />
+
+	<bean class="org.opencps.dossiermgt.service.indexer.BookingIndexer"
+		id="org.opencps.dossiermgt.service.indexer.BookingIndexer" />
+
+	<bean class="org.opencps.dossiermgt.service.indexer.EFormIndexer"
+		id="org.opencps.dossiermgt.service.indexer.EFormIndexer" />
  
 	<!-- Listeners -->
 	<bean id="dossier.listener.jasper" class="org.opencps.jasper.message.Engine" />

@@ -140,17 +140,17 @@
 		<column name="eFormData" type="String" />
 		<column name="email" type="String" />
 		<column name="secret" type="String" />
-		<column name="checkinDate" type="Date" />
-		<column name="gateNumber" type="String" />
-		<column name="state" type="int" />
+<!-- 		<column name="checkinDate" type="Date" /> -->
+<!-- 		<column name="gateNumber" type="String" /> -->
+<!-- 		<column name="state" type="int" /> -->
 
 		<!-- Order -->
 
 		<!-- Finder methods -->
-		<finder name="F_GID_STATE" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="state" arrayable-operator="OR"/>
-		</finder>
+<!-- 		<finder name="F_GID_STATE" return-type="Collection"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="state" arrayable-operator="OR"/> -->
+<!-- 		</finder> -->
 		<finder name="F_GID_SC" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="serviceCode" />
@@ -159,6 +159,49 @@
 			<finder-column name="groupId" />
 			<finder-column name="eFormNo" />
 		</finder>
+
+	</entity>
+
+	<entity name="Booking" table="opencps_booking"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+		<column name="bookingId" primary="true" type="long" />
+
+		<!-- Group instance -->
+		<column name="groupId" type="long" />
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="className" type="String" />
+		<column name="classPK" type="long" />
+		<column name="serviceCode" type="String" />
+		<column name="codeNumber" type="String" />
+		<column name="bookingName" type="String" />
+		<column name="checkinDate" type="Date" />
+		<column name="gateNumber" type="String" />
+		<column name="state" type="int" />
+		<column name="bookingDate" type="Date" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+		<finder name="F_CLASS_NAME_PK" return-type="Booking">
+			<finder-column name="className" />
+			<finder-column name="classPK" />
+		</finder>
+<!-- 		<finder name="F_GID_SC" return-type="Collection"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="serviceCode" /> -->
+<!-- 		</finder> -->
+<!-- 		<finder name="F_GID_FORM" return-type="EForm"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="eFormNo" /> -->
+<!-- 		</finder> -->
 
 	</entity>
 
@@ -2544,6 +2587,7 @@
 		
 		<exception>NoSuchProcessSequence</exception>
 		<exception>NoSuchEForm</exception>
+		<exception>NoSuchBooking</exception>
 		
 	</exceptions>
 </service-builder>

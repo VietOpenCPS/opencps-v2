@@ -68,7 +68,7 @@ public class EFormSearchModel {
 	protected int start;
 	@QueryParam(value = "end")
 	protected int end;
-	@DefaultValue("createDate")
+	@DefaultValue("checkinDate")
 	@QueryParam("sort")
 	protected String sort;
 	@QueryParam(value = "order")

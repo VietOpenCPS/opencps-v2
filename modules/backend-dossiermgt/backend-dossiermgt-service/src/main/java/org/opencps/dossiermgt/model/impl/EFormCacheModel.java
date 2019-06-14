@@ -64,7 +64,7 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -100,12 +100,6 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		sb.append(email);
 		sb.append(", secret=");
 		sb.append(secret);
-		sb.append(", checkinDate=");
-		sb.append(checkinDate);
-		sb.append(", gateNumber=");
-		sb.append(gateNumber);
-		sb.append(", state=");
-		sb.append(state);
 		sb.append("}");
 
 		return sb.toString();
@@ -200,22 +194,6 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 			eFormImpl.setSecret(secret);
 		}
 
-		if (checkinDate == Long.MIN_VALUE) {
-			eFormImpl.setCheckinDate(null);
-		}
-		else {
-			eFormImpl.setCheckinDate(new Date(checkinDate));
-		}
-
-		if (gateNumber == null) {
-			eFormImpl.setGateNumber("");
-		}
-		else {
-			eFormImpl.setGateNumber(gateNumber);
-		}
-
-		eFormImpl.setState(state);
-
 		eFormImpl.resetOriginalValues();
 
 		return eFormImpl;
@@ -246,10 +224,6 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		eFormData = objectInput.readUTF();
 		email = objectInput.readUTF();
 		secret = objectInput.readUTF();
-		checkinDate = objectInput.readLong();
-		gateNumber = objectInput.readUTF();
-
-		state = objectInput.readInt();
 	}
 
 	@Override
@@ -332,17 +306,6 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 		else {
 			objectOutput.writeUTF(secret);
 		}
-
-		objectOutput.writeLong(checkinDate);
-
-		if (gateNumber == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(gateNumber);
-		}
-
-		objectOutput.writeInt(state);
 	}
 
 	public String uuid;
@@ -362,7 +325,4 @@ public class EFormCacheModel implements CacheModel<EForm>, Externalizable {
 	public String eFormData;
 	public String email;
 	public String secret;
-	public long checkinDate;
-	public String gateNumber;
-	public int state;
 }

@@ -75,49 +75,55 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 			throws DuplicateCategoryException, UnauthenticationException, UnauthorizationException,
 			NoSuchUserException {
 
-		// authen
-		BackendAuthImpl authImpl = new BackendAuthImpl();
+		try {
+			// authen
+			BackendAuthImpl authImpl = new BackendAuthImpl();
 
-		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
+			boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
 
-		if (!isAuth) {
-			throw new UnauthenticationException();
+			if (!isAuth) {
+				throw new UnauthenticationException();
+			}
+
+//			boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//					ActionKeys.EDIT_DATA);
+//			if (!hasPermission) {
+//				throw new UnauthorizationException();
+//			}
+
+			Date now = new Date();
+
+			User user = userPersistence.findByPrimaryKey(userId);
+
+			long preferencesId = counterLocalService.increment(Preferences.class.getName());
+
+			Preferences preferences = preferencesPersistence.create(preferencesId);
+
+			// Group instance
+			preferences.setGroupId(groupId);
+
+			// Audit fields
+			preferences.setUuid(serviceContext.getUuid());
+			preferences.setCompanyId(user.getCompanyId());
+			preferences.setUserId(user.getUserId());
+			preferences.setUserName(user.getFullName());
+			preferences.setCreateDate(serviceContext.getCreateDate(now));
+			preferences.setModifiedDate(serviceContext.getCreateDate(now));
+
+			// Other fields
+			preferences.setPreferences(preferencesData);
+
+			preferences.setExpandoBridgeAttributes(serviceContext);
+
+			preferencesPersistence.update(preferences);
+			
+			return preferences;
+		} catch (Exception e) {
+			_log.error(e);
 		}
+		
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.EDIT_DATA);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
-
-		Date now = new Date();
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		long preferencesId = counterLocalService.increment(Preferences.class.getName());
-
-		Preferences preferences = preferencesPersistence.create(preferencesId);
-
-		// Group instance
-		preferences.setGroupId(groupId);
-
-		// Audit fields
-		preferences.setUuid(serviceContext.getUuid());
-		preferences.setCompanyId(user.getCompanyId());
-		preferences.setUserId(user.getUserId());
-		preferences.setUserName(user.getFullName());
-		preferences.setCreateDate(serviceContext.getCreateDate(now));
-		preferences.setModifiedDate(serviceContext.getCreateDate(now));
-
-		// Other fields
-		preferences.setPreferences(preferencesData);
-
-		preferences.setExpandoBridgeAttributes(serviceContext);
-
-		preferencesPersistence.update(preferences);
-
-		return preferences;
+		return null;
 	}
 
 	public Preferences deletePreferences(long preferencesId, ServiceContext serviceContext)
@@ -132,12 +138,11 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 			throw new UnauthenticationException();
 		}
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.EDIT_DATA);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.EDIT_DATA);
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Preferences preferences = null;
 
@@ -168,12 +173,11 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 			throw new UnauthenticationException();
 		}
 
-		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-				ActionKeys.EDIT_DATA);
-
-		if (!hasPermission) {
-			throw new UnauthorizationException();
-		}
+//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+//				ActionKeys.EDIT_DATA);
+//		if (!hasPermission) {
+//			throw new UnauthorizationException();
+//		}
 
 		Date now = new Date();
 

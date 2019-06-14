@@ -76,7 +76,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 		// Extra fields
 		//String eformNo = GetterUtil.getString(params.get(EFormTerm.EFORM_NO));
 		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE));
-		String state = String.valueOf((params.get(EFormTerm.STATE)));
+		//String state = String.valueOf((params.get(EFormTerm.STATE)));
 
 		Indexer<EForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EForm.class);
 
@@ -97,18 +97,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-		// LamTV: Process search LIKE
-		// if (Validator.isNotNull(keywords)) {
-		// String[] keywordArr = keywords.split(StringPool.SPACE);
-		// BooleanQuery query = new BooleanQueryImpl();
-		// for (String key : keywordArr) {
-		// WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-		// key.toLowerCase() + StringPool.STAR);
-		// query.add(wildQuery, BooleanClauseOccur.MUST);
-		// }
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
-
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH};
@@ -142,23 +130,23 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(state)) {
-			String[] stateArr = StringUtil.split(state);
-
-			if (stateArr != null && stateArr.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < stateArr.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
-					query.addField(EFormTerm.STATE);
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(state);
-				query.addFields(EFormTerm.STATE);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
+//		if (Validator.isNotNull(state)) {
+//			String[] stateArr = StringUtil.split(state);
+//
+//			if (stateArr != null && stateArr.length > 0) {
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (int i = 0; i < stateArr.length; i++) {
+//					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
+//					query.addField(EFormTerm.STATE);
+//					subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			} else {
+//				MultiMatchQuery query = new MultiMatchQuery(state);
+//				query.addFields(EFormTerm.STATE);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
+//		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -171,7 +159,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE));
-		String state = String.valueOf((params.get(EFormTerm.STATE)));
+		//String state = String.valueOf((params.get(EFormTerm.STATE)));
 
 		Indexer<EForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EForm.class);
 
@@ -189,18 +177,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
-		// LamTV: Process search LIKE
-		// if (Validator.isNotNull(keywords)) {
-		// String[] keywordArr = keywords.split(StringPool.SPACE);
-		// BooleanQuery query = new BooleanQueryImpl();
-		// for (String key : keywordArr) {
-		// WildcardQuery wildQuery = new WildcardQueryImpl(DossierTerm.SERVICE_NAME,
-		// key.toLowerCase() + StringPool.STAR);
-		// query.add(wildQuery, BooleanClauseOccur.MUST);
-		// }
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
-		//
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH};
@@ -234,23 +210,23 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(state)) {
-			String[] stateArr = StringUtil.split(state);
-
-			if (stateArr != null && stateArr.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < stateArr.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
-					query.addField(EFormTerm.STATE);
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(state);
-				query.addFields(EFormTerm.STATE);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-		}
+//		if (Validator.isNotNull(state)) {
+//			String[] stateArr = StringUtil.split(state);
+//
+//			if (stateArr != null && stateArr.length > 0) {
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (int i = 0; i < stateArr.length; i++) {
+//					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
+//					query.addField(EFormTerm.STATE);
+//					subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			} else {
+//				MultiMatchQuery query = new MultiMatchQuery(state);
+//				query.addFields(EFormTerm.STATE);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
+//		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -262,9 +238,9 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 	}
 
 	@Indexable(type=IndexableType.REINDEX)
-	public EForm updateEForm(long userId, long groupId, long  eFormId, String eFormNo, String serviceCode,
-			String fileTemplateNo, String  eFormName, long formScriptFileId, long formReportFileId, String eFormData, String email, String secret,
-			Date checkinDate, String gateNumber, int state, ServiceContext serviceContext) {
+	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, String serviceCode,
+			String fileTemplateNo, String eFormName, long formScriptFileId, long formReportFileId, String eFormData,
+			String email, String secret, ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -291,12 +267,12 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 				eform.setEmail(email);
 			if (Validator.isNotNull(secret))
 				eform.setSecret(secret);
-			if (Validator.isNotNull(checkinDate))
-				eform.setCheckinDate(checkinDate);
-			if (Validator.isNotNull(gateNumber))
-				eform.setGateNumber(gateNumber);
-			if (Validator.isNotNull(state))
-				eform.setState(state);
+//			if (Validator.isNotNull(checkinDate))
+//				eform.setCheckinDate(checkinDate);
+//			if (Validator.isNotNull(gateNumber))
+//				eform.setGateNumber(gateNumber);
+//			if (Validator.isNotNull(state))
+//				eform.setState(state);
 			//
 			return eFormPersistence.update(eform);
 		} else {
@@ -318,9 +294,9 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			eform.setEFormData(eFormData);
 			eform.setEmail(email);
 			eform.setSecret(secret);
-			eform.setCheckinDate(checkinDate);
-			eform.setGateNumber(gateNumber);
-			eform.setState(state);
+//			eform.setCheckinDate(checkinDate);
+//			eform.setGateNumber(gateNumber);
+//			eform.setState(state);
 
 			return eFormPersistence.update(eform);
 		}

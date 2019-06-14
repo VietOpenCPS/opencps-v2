@@ -757,17 +757,17 @@ public class DataManagementImpl implements DataManagement {
 			result.setTotal(jsonData.getLong("total"));
 			result.getDictItemModel()
 					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get("data")));
+
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				return Response.status(200).entity(result).cacheControl(cc).build();		    	
-		    }
-		    else {
-		    	return Response.status(200).entity(result).build();
-		    }
+				cc.setPrivate(true);
+				return Response.status(200).entity(result).cacheControl(cc).build();
+			} else {
+				return Response.status(200).entity(result).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

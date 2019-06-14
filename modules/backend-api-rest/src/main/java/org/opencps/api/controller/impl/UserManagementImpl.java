@@ -223,11 +223,13 @@ public class UserManagementImpl implements UserManagement {
 	@Override
 	public Response addPreferences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String preferences) {
+		_log.info("START UPDATE PREFERENCE");
 		UserInterface actions = new UserActions();
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			_log.info("groupId: "+groupId);
 			String result = actions.addPreferences(id, groupId, preferences, serviceContext);
 
 			return Response.status(200).entity(result).build();

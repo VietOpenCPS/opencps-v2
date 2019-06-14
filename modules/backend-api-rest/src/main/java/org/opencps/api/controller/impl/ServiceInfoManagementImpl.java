@@ -647,10 +647,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		} catch (Exception e) {
 			_log.error(e);
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				_log.error(e);
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
 			}
 		}
 
@@ -678,10 +680,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		} catch (Exception e) {
 			_log.error(e);
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				_log.error(e);
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
 			}
 		}
 		return Response.status(200).entity(result).build();
@@ -707,10 +711,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		} catch (Exception e) {
 			_log.error(e);
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				_log.error(e);
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.error(e);
+				}
 			}
 		}
 		return Response.status(200).entity(result).build();

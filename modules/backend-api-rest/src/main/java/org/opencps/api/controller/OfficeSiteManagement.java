@@ -1,4 +1,4 @@
-    package org.opencps.api.controller;
+package org.opencps.api.controller;
 
 import java.util.Locale;
 

@@ -100,7 +100,7 @@ public class PublishQueueModelImpl extends BaseModelImpl<PublishQueue>
 		TABLE_COLUMNS_MAP.put("acknowlegement", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_publish_queue (uuid_ VARCHAR(75) null,publishQueueId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,serverNo VARCHAR(255) null,status INTEGER,retry INTEGER,publishType INTEGER,publishData TEXT null,messageText TEXT null,acknowlegement TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_publish_queue (uuid_ VARCHAR(75) null,publishQueueId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,serverNo VARCHAR(75) null,status INTEGER,retry INTEGER,publishType INTEGER,publishData VARCHAR(75) null,messageText VARCHAR(75) null,acknowlegement VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_publish_queue";
 	public static final String ORDER_BY_JPQL = " ORDER BY publishQueue.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_publish_queue.modifiedDate ASC";

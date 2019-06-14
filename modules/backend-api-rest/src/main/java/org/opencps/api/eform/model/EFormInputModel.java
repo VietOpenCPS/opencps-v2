@@ -62,7 +62,8 @@ import javax.xml.bind.annotation.XmlType;
  "secret",
  "checkinDate",
  "gateNumber",
- "state"
+ "state",
+ "serviceInfoId",
 })
 
 @XmlRootElement(name = "EformFileTemplateInputModel")
@@ -92,6 +93,8 @@ public class EFormInputModel {
 	protected String gateNumber;
 	@FormParam(value = "state")
 	protected Integer state;
+	@FormParam(value = "serviceInfoId")
+	protected Long serviceInfoId;
 
 	public String geteFormNo() {
 		return eFormNo;
@@ -187,6 +190,14 @@ public class EFormInputModel {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public Long getServiceInfoId() {
+		return serviceInfoId;
+	}
+
+	public void setServiceInfoId(Long serviceInfoId) {
+		this.serviceInfoId = serviceInfoId;
 	}
 
 }

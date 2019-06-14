@@ -100,7 +100,7 @@ public class DossierLogModelImpl extends BaseModelImpl<DossierLog>
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierlog (uuid_ VARCHAR(75) null,dossierLogId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,author VARCHAR(75) null,content TEXT null,notificationType VARCHAR(200) null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierlog (uuid_ VARCHAR(75) null,dossierLogId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,author VARCHAR(75) null,content VARCHAR(75) null,notificationType VARCHAR(75) null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierlog";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierLog.dossierLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierlog.dossierLogId ASC";

@@ -109,7 +109,7 @@ public class RegistrationFormModelImpl extends BaseModelImpl<RegistrationForm>
 		TABLE_COLUMNS_MAP.put("removed", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_registrationform (uuid_ VARCHAR(75) null,registrationFormId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,referenceUid VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(275) null,formData TEXT null,formScript TEXT null,formReport TEXT null,fileEntryId LONG,isNew BOOLEAN,removed BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_registrationform (uuid_ VARCHAR(75) null,registrationFormId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,referenceUid VARCHAR(75) null,formNo VARCHAR(75) null,formName VARCHAR(75) null,formData VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,fileEntryId LONG,isNew BOOLEAN,removed BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_registrationform";
 	public static final String ORDER_BY_JPQL = " ORDER BY registrationForm.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_registrationform.createDate ASC";

@@ -9,10 +9,11 @@ package org.opencps.api.eform.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EformModel", propOrder = {
+@XmlType(name = "", propOrder = {
     "eFormId",
     "createDate",
     "modifiedDate",
@@ -29,11 +30,12 @@ import javax.xml.bind.annotation.XmlType;
     "gateNumber",
     "state"
 })
+@XmlRootElement(name = "EFormDataModel")
 public class EFormDataModel {
 
 	protected Long eFormId;
-	protected String createDate;
-	protected String modifiedDate;
+	protected Long createDate;
+	protected Long modifiedDate;
 	protected String eFormNo;
 	protected String serviceCode;
 	protected String fileTemplateNo;
@@ -53,16 +55,16 @@ public class EFormDataModel {
 	public void seteFormId(Long eFormId) {
 		this.eFormId = eFormId;
 	}
-	public String getCreateDate() {
+	public Long getCreateDate() {
 		return createDate;
 	}
-	public void setCreateDate(String createDate) {
+	public void setCreateDate(Long createDate) {
 		this.createDate = createDate;
 	}
-	public String getModifiedDate() {
+	public Long getModifiedDate() {
 		return modifiedDate;
 	}
-	public void setModifiedDate(String modifiedDate) {
+	public void setModifiedDate(Long modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 	public String geteFormNo() {

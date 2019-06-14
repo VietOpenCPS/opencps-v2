@@ -97,7 +97,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_registrationlog (uuid_ VARCHAR(75) null,registrationLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,author TEXT null,content TEXT null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_registrationlog (uuid_ VARCHAR(75) null,registrationLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,registrationId LONG,author VARCHAR(75) null,content VARCHAR(75) null,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_registrationlog";
 	public static final String ORDER_BY_JPQL = " ORDER BY registrationLog.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_registrationlog.createDate DESC";

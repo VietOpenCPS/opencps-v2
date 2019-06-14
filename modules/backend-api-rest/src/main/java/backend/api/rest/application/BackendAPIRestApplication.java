@@ -51,6 +51,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.BackupDataManagementImpl;
+import org.opencps.api.controller.impl.BookingManagementImpl;
 import org.opencps.api.controller.impl.CacheTestManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
@@ -68,6 +69,7 @@ import org.opencps.api.controller.impl.DossierLogManagementImpl;
 import org.opencps.api.controller.impl.DossierManagementImpl;
 import org.opencps.api.controller.impl.DossierSyncManagementImpl;
 import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
+import org.opencps.api.controller.impl.EFormManagementImpl;
 import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FaqManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
@@ -204,6 +206,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new FaqManagementImpl());
 		singletons.add(new CacheTestManagementImpl());
 		singletons.add(new ImportDataManagementImpl());
+		singletons.add(new EFormManagementImpl());
+		singletons.add(new BookingManagementImpl());
 		
 		singletons.add(this);
 		
