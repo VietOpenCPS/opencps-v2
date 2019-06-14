@@ -102,7 +102,7 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 		TABLE_COLUMNS_MAP.put("buttonConfig", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_menuconfig (uuid_ VARCHAR(75) null,menuConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,menuGroup VARCHAR(75) null,menuName VARCHAR(75) null,order_ INTEGER,menuType INTEGER,queryParams VARCHAR(500) null,tableConfig TEXT null,buttonConfig TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_menuconfig (uuid_ VARCHAR(75) null,menuConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,menuGroup VARCHAR(75) null,menuName VARCHAR(75) null,order_ INTEGER,menuType INTEGER,queryParams VARCHAR(75) null,tableConfig VARCHAR(75) null,buttonConfig VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_menuconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY menuConfig.order ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_menuconfig.order_ ASC";

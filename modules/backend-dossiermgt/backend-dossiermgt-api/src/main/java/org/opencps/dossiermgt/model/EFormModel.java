@@ -343,49 +343,6 @@ public interface EFormModel extends BaseModel<EForm>, GroupedModel, ShardedModel
 	 */
 	public void setSecret(String secret);
 
-	/**
-	 * Returns the checkin date of this e form.
-	 *
-	 * @return the checkin date of this e form
-	 */
-	public Date getCheckinDate();
-
-	/**
-	 * Sets the checkin date of this e form.
-	 *
-	 * @param checkinDate the checkin date of this e form
-	 */
-	public void setCheckinDate(Date checkinDate);
-
-	/**
-	 * Returns the gate number of this e form.
-	 *
-	 * @return the gate number of this e form
-	 */
-	@AutoEscape
-	public String getGateNumber();
-
-	/**
-	 * Sets the gate number of this e form.
-	 *
-	 * @param gateNumber the gate number of this e form
-	 */
-	public void setGateNumber(String gateNumber);
-
-	/**
-	 * Returns the state of this e form.
-	 *
-	 * @return the state of this e form
-	 */
-	public int getState();
-
-	/**
-	 * Sets the state of this e form.
-	 *
-	 * @param state the state of this e form
-	 */
-	public void setState(int state);
-
 	@Override
 	public boolean isNew();
 

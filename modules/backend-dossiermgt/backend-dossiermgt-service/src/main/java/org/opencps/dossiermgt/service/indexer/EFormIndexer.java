@@ -65,7 +65,7 @@ public class EFormIndexer extends BaseIndexer<EForm> {
 			document.addNumber(EFormTerm.EFORM_ID, object.getEFormId());
 			document.addNumber(EFormTerm.FORM_SCRIPT_FILE_ID, object.getFormScriptFileId());
 			document.addNumber(EFormTerm.FORM_REPORT_FILE_ID, object.getFormReportFileId());
-			document.addNumber(EFormTerm.STATE, object.getState());
+//			document.addNumber(EFormTerm.STATE, object.getState());
 
 			// add text fields
 			document.addTextSortable(EFormTerm.EFORM_NO, object.getEFormNo());
@@ -75,7 +75,7 @@ public class EFormIndexer extends BaseIndexer<EForm> {
 			}
 
 			document.addTextSortable(EFormTerm.SERVICE_CODE, object.getServiceCode());
-			if (Validator.isNotNull(object.getEFormNo())) {
+			if (Validator.isNotNull(object.getServiceCode())) {
 				document.addTextSortable(EFormTerm.SERVICE_CODE_SEARCH,
 						SpecialCharacterUtils.splitSpecial(object.getServiceCode()));
 			}
@@ -84,20 +84,20 @@ public class EFormIndexer extends BaseIndexer<EForm> {
 			document.addTextSortable(EFormTerm.EFORM_DATA, object.getEFormData());
 			document.addTextSortable(EFormTerm.EMAIL, object.getEmail());
 			document.addTextSortable(EFormTerm.SECRET, object.getSecret());
-			document.addTextSortable(EFormTerm.GATE_NUMBER, object.getGateNumber());
-
-			if (Validator.isNotNull(object.getCheckinDate())) {
-				document.addTextSortable(EFormTerm.CHECK_IN_DATE, APIDateTimeUtils
-						.convertDateToString(object.getCheckinDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-			} else {
-				document.addTextSortable(EFormTerm.CHECK_IN_DATE, StringPool.BLANK);
-			}
-
-			if (Validator.isNotNull(object.getCheckinDate())) {
-				document.addDateSortable(EFormTerm.CHECK_IN_DATE_LUCENE, object.getCheckinDate());
-			} else {
-				document.addTextSortable(EFormTerm.CHECK_IN_DATE_LUCENE, StringPool.BLANK);
-			}
+//			document.addTextSortable(EFormTerm.GATE_NUMBER, object.getGateNumber());
+//
+//			if (Validator.isNotNull(object.getCheckinDate())) {
+//				document.addTextSortable(EFormTerm.CHECK_IN_DATE, APIDateTimeUtils
+//						.convertDateToString(object.getCheckinDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//			} else {
+//				document.addTextSortable(EFormTerm.CHECK_IN_DATE, StringPool.BLANK);
+//			}
+//
+//			if (Validator.isNotNull(object.getCheckinDate())) {
+//				document.addDateSortable(EFormTerm.CHECK_IN_DATE_LUCENE, object.getCheckinDate());
+//			} else {
+//				document.addTextSortable(EFormTerm.CHECK_IN_DATE_LUCENE, StringPool.BLANK);
+//			}
 
 		} catch (Exception e) {
 			_log.error(e);

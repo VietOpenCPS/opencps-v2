@@ -38,6 +38,7 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -531,7 +532,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				throw new UnauthenticationException();
 			}
 
-			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
+			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo,
+					false);
 			if (dossierFileList  != null && dossierFileList.size() > 0) {
 				for (DossierFile dossierFile : dossierFileList) {
 					if (dossierFile != null && Validator.isNotNull(dossierFile.getFormData())) {

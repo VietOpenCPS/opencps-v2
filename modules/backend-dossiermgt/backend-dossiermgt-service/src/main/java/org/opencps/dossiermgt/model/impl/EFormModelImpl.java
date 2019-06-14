@@ -83,10 +83,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			{ "formReportFileId", Types.BIGINT },
 			{ "eFormData", Types.VARCHAR },
 			{ "email", Types.VARCHAR },
-			{ "secret", Types.VARCHAR },
-			{ "checkinDate", Types.TIMESTAMP },
-			{ "gateNumber", Types.VARCHAR },
-			{ "state_", Types.INTEGER }
+			{ "secret", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,12 +105,9 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		TABLE_COLUMNS_MAP.put("eFormData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("secret", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("checkinDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("gateNumber", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("state_", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(75) null,serviceCode VARCHAR(75) null,fileTemplateNo VARCHAR(75) null,eFormName VARCHAR(75) null,formScriptFileId LONG,formReportFileId LONG,eFormData VARCHAR(75) null,email VARCHAR(75) null,secret VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(75) null,serviceCode VARCHAR(75) null,fileTemplateNo VARCHAR(75) null,eFormName VARCHAR(75) null,formScriptFileId LONG,formReportFileId LONG,eFormData VARCHAR(75) null,email VARCHAR(75) null,secret VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_eform";
 	public static final String ORDER_BY_JPQL = " ORDER BY eForm.eFormId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_eform.eFormId ASC";
@@ -133,9 +127,8 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	public static final long EFORMNO_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
 	public static final long SERVICECODE_COLUMN_BITMASK = 8L;
-	public static final long STATE_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long EFORMID_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long EFORMID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.EForm"));
 
@@ -193,9 +186,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		attributes.put("eFormData", getEFormData());
 		attributes.put("email", getEmail());
 		attributes.put("secret", getSecret());
-		attributes.put("checkinDate", getCheckinDate());
-		attributes.put("gateNumber", getGateNumber());
-		attributes.put("state", getState());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -305,24 +295,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 
 		if (secret != null) {
 			setSecret(secret);
-		}
-
-		Date checkinDate = (Date)attributes.get("checkinDate");
-
-		if (checkinDate != null) {
-			setCheckinDate(checkinDate);
-		}
-
-		String gateNumber = (String)attributes.get("gateNumber");
-
-		if (gateNumber != null) {
-			setGateNumber(gateNumber);
-		}
-
-		Integer state = (Integer)attributes.get("state");
-
-		if (state != null) {
-			setState(state);
 		}
 	}
 
@@ -616,53 +588,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	}
 
 	@Override
-	public Date getCheckinDate() {
-		return _checkinDate;
-	}
-
-	@Override
-	public void setCheckinDate(Date checkinDate) {
-		_checkinDate = checkinDate;
-	}
-
-	@Override
-	public String getGateNumber() {
-		if (_gateNumber == null) {
-			return "";
-		}
-		else {
-			return _gateNumber;
-		}
-	}
-
-	@Override
-	public void setGateNumber(String gateNumber) {
-		_gateNumber = gateNumber;
-	}
-
-	@Override
-	public int getState() {
-		return _state;
-	}
-
-	@Override
-	public void setState(int state) {
-		_columnBitmask |= STATE_COLUMN_BITMASK;
-
-		if (!_setOriginalState) {
-			_setOriginalState = true;
-
-			_originalState = _state;
-		}
-
-		_state = state;
-	}
-
-	public int getOriginalState() {
-		return _originalState;
-	}
-
-	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				EForm.class.getName()));
@@ -716,9 +641,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		eFormImpl.setEFormData(getEFormData());
 		eFormImpl.setEmail(getEmail());
 		eFormImpl.setSecret(getSecret());
-		eFormImpl.setCheckinDate(getCheckinDate());
-		eFormImpl.setGateNumber(getGateNumber());
-		eFormImpl.setState(getState());
 
 		eFormImpl.resetOriginalValues();
 
@@ -796,10 +718,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		eFormModelImpl._originalEFormNo = eFormModelImpl._eFormNo;
 
 		eFormModelImpl._originalServiceCode = eFormModelImpl._serviceCode;
-
-		eFormModelImpl._originalState = eFormModelImpl._state;
-
-		eFormModelImpl._setOriginalState = false;
 
 		eFormModelImpl._columnBitmask = 0;
 	}
@@ -910,31 +828,12 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			eFormCacheModel.secret = null;
 		}
 
-		Date checkinDate = getCheckinDate();
-
-		if (checkinDate != null) {
-			eFormCacheModel.checkinDate = checkinDate.getTime();
-		}
-		else {
-			eFormCacheModel.checkinDate = Long.MIN_VALUE;
-		}
-
-		eFormCacheModel.gateNumber = getGateNumber();
-
-		String gateNumber = eFormCacheModel.gateNumber;
-
-		if ((gateNumber != null) && (gateNumber.length() == 0)) {
-			eFormCacheModel.gateNumber = null;
-		}
-
-		eFormCacheModel.state = getState();
-
 		return eFormCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -970,12 +869,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		sb.append(getEmail());
 		sb.append(", secret=");
 		sb.append(getSecret());
-		sb.append(", checkinDate=");
-		sb.append(getCheckinDate());
-		sb.append(", gateNumber=");
-		sb.append(getGateNumber());
-		sb.append(", state=");
-		sb.append(getState());
 		sb.append("}");
 
 		return sb.toString();
@@ -983,7 +876,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(64);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.EForm");
@@ -1057,18 +950,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			"<column><column-name>secret</column-name><column-value><![CDATA[");
 		sb.append(getSecret());
 		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>checkinDate</column-name><column-value><![CDATA[");
-		sb.append(getCheckinDate());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>gateNumber</column-name><column-value><![CDATA[");
-		sb.append(getGateNumber());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>state</column-name><column-value><![CDATA[");
-		sb.append(getState());
-		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1104,11 +985,6 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	private String _eFormData;
 	private String _email;
 	private String _secret;
-	private Date _checkinDate;
-	private String _gateNumber;
-	private int _state;
-	private int _originalState;
-	private boolean _setOriginalState;
 	private long _columnBitmask;
 	private EForm _escapedModel;
 }

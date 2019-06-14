@@ -269,8 +269,10 @@ public class UserActions implements UserInterface {
 			NotFoundException {
 
 		Preferences preferences = PreferencesLocalServiceUtil.fetchByF_userId(groupId, id);
+		_log.info("preferences: "+preferences);
 
 		if (Validator.isNull(preferences)) {
+			_log.info("START ADD  preferences: ");
 			preferences = PreferencesLocalServiceUtil.addPreferences(id, groupId, preferencesData, serviceContext);
 		} else {
 			preferences = PreferencesLocalServiceUtil.updatePreferences(id, preferences.getPreferencesId(),

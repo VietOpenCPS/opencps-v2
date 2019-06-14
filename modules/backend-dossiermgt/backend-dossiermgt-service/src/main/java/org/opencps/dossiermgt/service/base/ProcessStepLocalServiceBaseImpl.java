@@ -52,6 +52,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.service.ProcessStepLocalService;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
@@ -514,6 +515,43 @@ public abstract class ProcessStepLocalServiceBaseImpl
 	public void setActionConfigPersistence(
 		ActionConfigPersistence actionConfigPersistence) {
 		this.actionConfigPersistence = actionConfigPersistence;
+	}
+
+	/**
+	 * Returns the booking local service.
+	 *
+	 * @return the booking local service
+	 */
+	public org.opencps.dossiermgt.service.BookingLocalService getBookingLocalService() {
+		return bookingLocalService;
+	}
+
+	/**
+	 * Sets the booking local service.
+	 *
+	 * @param bookingLocalService the booking local service
+	 */
+	public void setBookingLocalService(
+		org.opencps.dossiermgt.service.BookingLocalService bookingLocalService) {
+		this.bookingLocalService = bookingLocalService;
+	}
+
+	/**
+	 * Returns the booking persistence.
+	 *
+	 * @return the booking persistence
+	 */
+	public BookingPersistence getBookingPersistence() {
+		return bookingPersistence;
+	}
+
+	/**
+	 * Sets the booking persistence.
+	 *
+	 * @param bookingPersistence the booking persistence
+	 */
+	public void setBookingPersistence(BookingPersistence bookingPersistence) {
+		this.bookingPersistence = bookingPersistence;
 	}
 
 	/**
@@ -2389,6 +2427,10 @@ public abstract class ProcessStepLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ActionConfigLocalService actionConfigLocalService;
 	@BeanReference(type = ActionConfigPersistence.class)
 	protected ActionConfigPersistence actionConfigPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.BookingLocalService.class)
+	protected org.opencps.dossiermgt.service.BookingLocalService bookingLocalService;
+	@BeanReference(type = BookingPersistence.class)
+	protected BookingPersistence bookingPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
 	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)

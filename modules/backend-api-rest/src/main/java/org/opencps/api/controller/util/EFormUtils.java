@@ -12,6 +12,7 @@ import java.util.List;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.eform.model.EFormDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.EForm;
@@ -29,20 +30,18 @@ public class EFormUtils {
 				model.seteFormId(GetterUtil.getLong(doc.get(EFormTerm.EFORM_ID)));
 				
 				if (Validator.isNotNull(doc.get(EFormTerm.CREATE_DATE))) {
-					Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(EFormTerm.CREATE_DATE),
+					Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(BookingTerm.CREATE_DATE),
 							APIDateTimeUtils._LUCENE_PATTERN);
-					model.setCreateDate(
-							APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._NORMAL_PARTTERN));
+					model.setCreateDate(createDate.getTime());
 				} else {
-					model.setCreateDate(doc.get(EFormTerm.CREATE_DATE));
+					model.setCreateDate(0l);
 				}
 				if (Validator.isNotNull(doc.get(EFormTerm.MODIFIED_DATE))) {
 					Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(EFormTerm.MODIFIED_DATE),
 							APIDateTimeUtils._LUCENE_PATTERN);
-					model.setModifiedDate(
-							APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+					model.setModifiedDate(modifiedDate.getTime());
 				} else {
-					model.setModifiedDate(doc.get(EFormTerm.MODIFIED_DATE));
+					model.setModifiedDate(0l);
 				}
 				
 				model.seteFormNo(doc.get(EFormTerm.EFORM_NO));
@@ -71,10 +70,8 @@ public class EFormUtils {
 		}
 
 		model.seteFormId(input.getEFormId());
-		model.setCreateDate(
-				APIDateTimeUtils.convertDateToString(input.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		model.setModifiedDate(
-				APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		model.setCreateDate(input.getCreateDate() != null ? input.getCreateDate().getTime() : 0l);
+		model.setModifiedDate(input.getModifiedDate() != null ? input.getModifiedDate().getTime() : 0l);
 		model.seteFormNo(input.getEFormNo());
 		model.setServiceCode(input.getServiceCode());
 		model.setFileTemplateNo(input.getFileTemplateNo());
@@ -84,10 +81,10 @@ public class EFormUtils {
 		model.seteFormData(input.getEFormData());
 		model.setEmail(input.getEmail());
 		model.setSecret(input.getSecret());
-		model.setCheckinDate(
-				APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		model.setGateNumber(input.getGateNumber());
-		model.setState(input.getState());
+//		model.setCheckinDate(
+//				APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+//		model.setGateNumber(input.getGateNumber());
+//		model.setState(input.getState());
 
 		return model;
 	}

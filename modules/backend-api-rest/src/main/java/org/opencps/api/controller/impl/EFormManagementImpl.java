@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +44,7 @@ import org.opencps.api.eform.model.EFormSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.EFormActions;
@@ -92,11 +95,9 @@ public class EFormManagementImpl implements EFormManagement{
 				if (Validator.isNotNull(serviceCode)) {
 					service = SpecialCharacterUtils.splitSpecial(serviceCode);
 				}
-				String state = search.getState();
-
-
+				//String state = search.getState();
 				params.put(EFormTerm.SERVICE_CODE, service);
-				params.put(DossierTerm.STATE, state);
+				//params.put(DossierTerm.STATE, state);
 				
 				Sort[] sorts = null;
 				if (Validator.isNull(search.getSort())) {
@@ -134,17 +135,15 @@ public class EFormManagementImpl implements EFormManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		//EFormInputModel eFromInputModel = new EFormInputModel();
-
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 
 			EFormActions actions = new EFormActionsImpl();
 
 			String eFormNo = Validator.isNotNull(input.geteFormNo()) ? input.geteFormNo() : StringPool.BLANK;
-			String serviceCode = Validator.isNotNull(input.getServiceCode()) ? input.getServiceCode()
-					: StringPool.BLANK;
+			Long serviceInfoId = input.getServiceInfoId() != null ? input.getServiceInfoId() : 0;
 			String fileTemplateNo = Validator.isNotNull(input.getFileTemplateNo()) ? input.getFileTemplateNo()
 					: StringPool.BLANK;
 			String eFormName = Validator.isNotNull(input.geteFormName()) ? input.geteFormName() : StringPool.BLANK;
@@ -153,14 +152,17 @@ public class EFormManagementImpl implements EFormManagement{
 			String eFormData = Validator.isNotNull(input.geteFormData()) ? input.geteFormData() : StringPool.BLANK;
 			String email = Validator.isNotNull(input.getEmail()) ? input.getEmail() : StringPool.BLANK;
 			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
-			String checkinDate = Validator.isNotNull(input.getCheckinDate()) ? input.getCheckinDate()
-					: StringPool.BLANK;
-			String gateNumber = Validator.isNotNull(input.getGateNumber()) ? input.getGateNumber() : StringPool.BLANK;
-			Integer state = input.getState() != null ? input.getState() : 0;
 
-			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceCode, fileTemplateNo, eFormName,
-					formScriptFileId, formReportFileId, eFormData, email, secret, checkinDate, gateNumber, state,
-					serviceContext);
+//			Date checkDate = null;
+//			if (Validator.isNotNull(input.getCheckinDate())) {
+//				checkDate = APIDateTimeUtils.convertStringToDate(input.getCheckinDate(),
+//						APIDateTimeUtils._NORMAL_PARTTERN);
+//			}
+//			String gateNumber = Validator.isNotNull(input.getGateNumber()) ? input.getGateNumber() : StringPool.BLANK;
+//			Integer state = input.getState() != null ? input.getState() : 0;
+
+			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
+					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eFormInfo);
 
@@ -259,17 +261,17 @@ public class EFormManagementImpl implements EFormManagement{
 //						dossierPermission.checkPassword(dossier, secretKey);
 //					}
 
-					if (eform != null) {
+					if (eform != null && secret.equalsIgnoreCase(eform.getSecret())) {
 						eform = actions.updateDataByEFormNo(eform.getEFormId(),eFormData, serviceContext);
+						//
+						return Response.status(200).entity(eform.getEFormData()).build();
 					}
-
-					return Response.status(200).entity(eform.getEFormData()).build();
 				} catch (Exception e) {
 					_log.debug(e);
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
-							.build();
 				}
 
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+						.build();
 			}
 			else {
 //				_log.info("START");
@@ -295,40 +297,49 @@ public class EFormManagementImpl implements EFormManagement{
 
 	@Override
 	public Response updateEFromById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, EFormInputModel input) {
+			User user, ServiceContext serviceContext, String id, EFormInputModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = serviceContext.getUserId();
+		long eFormId = GetterUtil.getLong(id);
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		//EFormInputModel eFromInputModel = new EFormInputModel();
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
 
-			EForm eform = EFormLocalServiceUtil.fetchEForm(id);
+			EForm eform = null;
+			if (eFormId > 0) {
+				eform = EFormLocalServiceUtil.fetchEForm(eFormId);
+			} else {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, id);
+			}
+			
 			if (eform != null) {
 				EFormActions actions = new EFormActionsImpl();
 
 				String eFormNo = input.geteFormNo();
 				String secret = input.getSecret();
-				String serviceCode = input.getServiceCode();
+				long serviceInfoId = input.getServiceInfoId() != null ? input.getServiceInfoId() : 0;
 				String fileTemplateNo = input.getFileTemplateNo();
 				String eFormName = input.geteFormName();
 				Long formScriptFileId = input.getFormScriptFileId();
 				Long formReportFileId = input.getFormReportFileId();
 				String eFormData = input.geteFormData();
 				String email = input.getEmail();
-				String checkinDate = input.getCheckinDate();
-				String gateNumber = input.getGateNumber();
-				Integer state = input.getState();
+				//String checkinDate = input.getCheckinDate();
+				//String gateNumber = input.getGateNumber();
+				//Integer state = input.getState();
+				//Date checkinDate = null;
+				//if (state == 1) {
+				//	checkinDate = new Date();
+				//}
 
-				eform = actions.updateEForm(userId, groupId, eform.getEFormId(), eFormNo, serviceCode,
-						fileTemplateNo, eFormName, formScriptFileId, formReportFileId, eFormData, email, secret,
-						checkinDate, gateNumber, state, serviceContext);
+				eform = actions.updateEForm(userId, groupId, eform.getEFormId(), eFormNo, serviceInfoId, fileTemplateNo,
+						eFormName, formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
 			}
 
 			EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
@@ -370,10 +381,11 @@ public class EFormManagementImpl implements EFormManagement{
 
 	@Override
 	public Response printEFormReport(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String eFormNo, String secret) {
+			User user, ServiceContext serviceContext, String id, String secret) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long eFormId = GetterUtil.getLong(id);
 
 		try {
 			if (Validator.isNull(secret)) {
@@ -382,38 +394,57 @@ public class EFormManagementImpl implements EFormManagement{
 				}
 			}
 
-			EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
-			if (Validator.isNotNull(eform)) {
+			
+			EForm eform = null;
+			if (eFormId > 0) {
+				eform = EFormLocalServiceUtil.fetchEForm(eFormId);
+			} else {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, id);
+			}
+
+			if (Validator.isNotNull(eform) && secret.equalsIgnoreCase(eform.getSecret())) {
 
 				long formReportFileId = eform.getFormReportFileId();
 				String formReport = StringPool.BLANK;
 				InputStream is = null;
 				if (formReportFileId > 0) {
 					try {
+						DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
 
-						FileAttach fileAttach = FileAttachLocalServiceUtil.fetchFileAttach(Long.valueOf(formReportFileId));
-						if (fileAttach != null) {
-							DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
-
-							is = dlFileEntry.getContentStream();
-							formReport = IOUtils.toString(is, "UTF-8");
-						}
+						is = dlFileEntry.getContentStream();
+						formReport = IOUtils.toString(is, "UTF-8");
 					} catch (Exception e) {
 						_log.error(e);
 					} finally {
-						try {
-							is.close();
-						} catch (IOException e) {
-							_log.error(e);
+						if (is != null) {
+							try {
+								is.close();
+							} catch (IOException e) {
+								_log.error(e);
+							}
 						}
 					}
 				}
 				// Get formData
 				String formData = eform.getEFormData();
+				JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+				jsonData.put("userName", user.getFullName());
+				jsonData.put("url", serviceContext.getPortalURL());
+				jsonData.put("eFormNo", eform.getEFormNo());
+				jsonData.put("serviceCode", eform.getServiceCode());
+				jsonData.put("fileTemplateNo", eform.getFileTemplateNo());
+				jsonData.put("eFormName", eform.getEFormName());
+				jsonData.put("formScriptFileId", eform.getFormScriptFileId());
+				jsonData.put("formReportFileId", eform.getFormReportFileId());
+				jsonData.put("email", eform.getEmail());
+				jsonData.put("secret", eform.getSecret());
+				jsonData.put("eFormId", eform.getEFormId());
+//				jsonData.put("gateNumber", eform.getGateNumber());
+//				jsonData.put("state", eform.getState());
 				//Send message bus
 				Message message = new Message();
 				message.put("formReport", formReport);
-				message.put("formData", formData);
+				message.put("formData", jsonData.toJSONString());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
@@ -436,10 +467,113 @@ public class EFormManagementImpl implements EFormManagement{
 			}
 
 		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 
 		}
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+	}
+
+	@Override
+	public Response getEFromById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+
+		//BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			//if (!auth.isAuth(serviceContext)) {
+			//	throw new UnauthenticationException();
+			//}
+
+			EForm eform = null;
+			long eFormId = GetterUtil.getLong(id);
+			if (eFormId > 0) {
+				eform = EFormLocalServiceUtil.fetchEForm(eFormId);
+			} else {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, id);
+			}
+
+			EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getEFormDataById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String secret) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			if (Validator.isNull(secret)) {
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
+			}
+			
+			EForm eform = null;
+			long eFormId = GetterUtil.getLong(id);
+			if (eFormId > 0) {
+				eform = EFormLocalServiceUtil.fetchEForm(eFormId);
+			} else {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, id);
+			}
+
+			if (eform != null && secret.equalsIgnoreCase(eform.getSecret())) {
+				String eFormData = eform.getEFormData();
+
+				return Response.status(200).entity(eFormData).build();
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+				.build();
+	}
+
+	@Override
+	public Response updateEFromDataById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String secret, EFormInputModel input) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			if (Validator.isNull(secret)) {
+				if (!auth.isAuth(serviceContext)) {
+					throw new UnauthenticationException();
+				}
+			}
+
+			String eFormData = input.geteFormData();
+			EForm eform = null;
+			EFormActions actions = new EFormActionsImpl();
+			long eFormId = GetterUtil.getLong(id);
+			if (eFormId > 0) {
+				eform = EFormLocalServiceUtil.fetchEForm(eFormId);
+			} else {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, id);
+			}
+
+			if (eform != null && secret.equalsIgnoreCase(eform.getSecret())) {
+				eform = actions.updateDataByEFormNo(eform.getEFormId(),eFormData, serviceContext);
+
+				return Response.status(200).entity(eform.getEFormData()).build();
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+				.build();
 	}
 
 }

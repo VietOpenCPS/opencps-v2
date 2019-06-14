@@ -50,9 +50,6 @@ public class EFormSoap implements Serializable {
 		soapModel.setEFormData(model.getEFormData());
 		soapModel.setEmail(model.getEmail());
 		soapModel.setSecret(model.getSecret());
-		soapModel.setCheckinDate(model.getCheckinDate());
-		soapModel.setGateNumber(model.getGateNumber());
-		soapModel.setState(model.getState());
 
 		return soapModel;
 	}
@@ -241,30 +238,6 @@ public class EFormSoap implements Serializable {
 		_secret = secret;
 	}
 
-	public Date getCheckinDate() {
-		return _checkinDate;
-	}
-
-	public void setCheckinDate(Date checkinDate) {
-		_checkinDate = checkinDate;
-	}
-
-	public String getGateNumber() {
-		return _gateNumber;
-	}
-
-	public void setGateNumber(String gateNumber) {
-		_gateNumber = gateNumber;
-	}
-
-	public int getState() {
-		return _state;
-	}
-
-	public void setState(int state) {
-		_state = state;
-	}
-
 	private String _uuid;
 	private long _eFormId;
 	private long _groupId;
@@ -282,7 +255,4 @@ public class EFormSoap implements Serializable {
 	private String _eFormData;
 	private String _email;
 	private String _secret;
-	private Date _checkinDate;
-	private String _gateNumber;
-	private int _state;
 }

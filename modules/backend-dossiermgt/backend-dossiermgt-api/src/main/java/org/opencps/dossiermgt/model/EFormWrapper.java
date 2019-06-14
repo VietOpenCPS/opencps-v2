@@ -76,9 +76,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 		attributes.put("eFormData", getEFormData());
 		attributes.put("email", getEmail());
 		attributes.put("secret", getSecret());
-		attributes.put("checkinDate", getCheckinDate());
-		attributes.put("gateNumber", getGateNumber());
-		attributes.put("state", getState());
 
 		return attributes;
 	}
@@ -186,24 +183,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 		if (secret != null) {
 			setSecret(secret);
 		}
-
-		Date checkinDate = (Date)attributes.get("checkinDate");
-
-		if (checkinDate != null) {
-			setCheckinDate(checkinDate);
-		}
-
-		String gateNumber = (String)attributes.get("gateNumber");
-
-		if (gateNumber != null) {
-			setGateNumber(gateNumber);
-		}
-
-		Integer state = (Integer)attributes.get("state");
-
-		if (state != null) {
-			setState(state);
-		}
 	}
 
 	@Override
@@ -214,16 +193,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public int compareTo(EForm eForm) {
 		return _eForm.compareTo(eForm);
-	}
-
-	/**
-	* Returns the checkin date of this e form.
-	*
-	* @return the checkin date of this e form
-	*/
-	@Override
-	public Date getCheckinDate() {
-		return _eForm.getCheckinDate();
 	}
 
 	/**
@@ -332,16 +301,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	}
 
 	/**
-	* Returns the gate number of this e form.
-	*
-	* @return the gate number of this e form
-	*/
-	@Override
-	public String getGateNumber() {
-		return _eForm.getGateNumber();
-	}
-
-	/**
 	* Returns the group ID of this e form.
 	*
 	* @return the group ID of this e form
@@ -394,16 +353,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public String getServiceCode() {
 		return _eForm.getServiceCode();
-	}
-
-	/**
-	* Returns the state of this e form.
-	*
-	* @return the state of this e form
-	*/
-	@Override
-	public int getState() {
-		return _eForm.getState();
 	}
 
 	/**
@@ -474,16 +423,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_eForm.setCachedModel(cachedModel);
-	}
-
-	/**
-	* Sets the checkin date of this e form.
-	*
-	* @param checkinDate the checkin date of this e form
-	*/
-	@Override
-	public void setCheckinDate(Date checkinDate) {
-		_eForm.setCheckinDate(checkinDate);
 	}
 
 	/**
@@ -603,16 +542,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	}
 
 	/**
-	* Sets the gate number of this e form.
-	*
-	* @param gateNumber the gate number of this e form
-	*/
-	@Override
-	public void setGateNumber(String gateNumber) {
-		_eForm.setGateNumber(gateNumber);
-	}
-
-	/**
 	* Sets the group ID of this e form.
 	*
 	* @param groupId the group ID of this e form
@@ -670,16 +599,6 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 	@Override
 	public void setServiceCode(String serviceCode) {
 		_eForm.setServiceCode(serviceCode);
-	}
-
-	/**
-	* Sets the state of this e form.
-	*
-	* @param state the state of this e form
-	*/
-	@Override
-	public void setState(int state) {
-		_eForm.setState(state);
 	}
 
 	/**

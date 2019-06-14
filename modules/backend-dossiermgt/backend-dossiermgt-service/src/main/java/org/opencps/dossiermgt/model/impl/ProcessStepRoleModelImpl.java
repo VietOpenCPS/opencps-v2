@@ -78,7 +78,7 @@ public class ProcessStepRoleModelImpl extends BaseModelImpl<ProcessStepRole>
 		TABLE_COLUMNS_MAP.put("condition_", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processsteprole (uuid_ VARCHAR(75) null,processStepId LONG not null,roleId LONG not null,roleCode VARCHAR(255) null,roleName VARCHAR(255) null,moderator BOOLEAN,condition_ TEXT null,primary key (processStepId, roleId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processsteprole (uuid_ VARCHAR(75) null,processStepId LONG not null,roleId LONG not null,roleCode VARCHAR(75) null,roleName VARCHAR(75) null,moderator BOOLEAN,condition_ VARCHAR(75) null,primary key (processStepId, roleId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processsteprole";
 	public static final String ORDER_BY_JPQL = " ORDER BY processStepRole.id.processStepId ASC, processStepRole.id.roleId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processsteprole.processStepId ASC, opencps_processsteprole.roleId ASC";

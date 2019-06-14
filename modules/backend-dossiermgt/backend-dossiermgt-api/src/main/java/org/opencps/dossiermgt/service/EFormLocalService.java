@@ -45,7 +45,6 @@ import org.opencps.dossiermgt.model.EForm;
 
 import java.io.Serializable;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -306,6 +305,6 @@ public interface EFormLocalService extends BaseLocalService,
 	public EForm updateEForm(long userId, long groupId, long eFormId,
 		String eFormNo, String serviceCode, String fileTemplateNo,
 		String eFormName, long formScriptFileId, long formReportFileId,
-		String eFormData, String email, String secret, Date checkinDate,
-		String gateNumber, int state, ServiceContext serviceContext);
+		String eFormData, String email, String secret,
+		ServiceContext serviceContext);
 }

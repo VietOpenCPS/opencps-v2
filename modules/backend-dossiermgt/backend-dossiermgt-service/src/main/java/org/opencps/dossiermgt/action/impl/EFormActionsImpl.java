@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -55,14 +56,20 @@ public class EFormActionsImpl implements EFormActions{
 	}
 
 	@Override
-	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, String serviceCode,
+	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, long serviceInfoId,
 			String fileTemplateNo, String eFormName, Long formScriptFileId, Long formReportFileId, String eFormData,
-			String email, String secret, String checkinDate, String gateNumber, Integer state,
-			ServiceContext serviceContext) {
+			String email, String secret, ServiceContext serviceContext) {
 		
 		try {
 			String eFormNoPattern = StringPool.BLANK;
-			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+			EForm eform = null;
+			if (Validator.isNotNull(eFormNo)) {
+				eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
+			}
+			eFormId = eform != null ? eform.getEFormId() : 0;
+			secret = eform != null ? eform.getSecret() : StringPool.BLANK;
+
+			ServiceInfo service = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 			if (service != null) {
 				ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
 						.fetchByF_serviceInfoId_fileTemplateNo(service.getServiceInfoId(), fileTemplateNo);
@@ -74,19 +81,18 @@ public class EFormActionsImpl implements EFormActions{
 				}
 			}
 
-			if (Validator.isNotNull(eFormNo)) {
-			eFormNo = EFormNumberGenerator.generateServiceFileNumber(groupId, serviceContext.getCompanyId(),
-					serviceCode, eFormNoPattern);
+			if (Validator.isNull(eFormNo)) {
+				_log.info("START GENERATE EFORM");
+				eFormNo = EFormNumberGenerator.generateServiceFileNumber(groupId, serviceContext.getCompanyId(),
+						service.getServiceCode(), eFormNoPattern);
+			}
+			if (Validator.isNull(secret)) {
+				secret = PwdGenerator.getPinNumber();
 			}
 
-			Date checkDate = null;
-			if (Validator.isNotNull(checkinDate)) {
-				checkDate = APIDateTimeUtils.convertStringToDate(checkinDate, APIDateTimeUtils._NORMAL_PARTTERN);
-			}
-			
-			return EFormLocalServiceUtil.updateEForm(userId, groupId, eFormId, eFormNo, serviceCode, fileTemplateNo,
-					eFormName, formScriptFileId, formReportFileId, eFormData, email, secret, checkDate, gateNumber,
-					state, serviceContext);
+			return EFormLocalServiceUtil.updateEForm(userId, groupId, eFormId, eFormNo,
+					service != null ? service.getServiceCode() : StringPool.BLANK, fileTemplateNo, eFormName,
+					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
 		} catch (Exception e) {
 			_log.error(e);
 		}

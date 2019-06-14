@@ -98,6 +98,9 @@ public class EFormNumberGenerator {
 
 			while (m.find()) {
 				String tmp = m.group(1);
+				String tmp0 = m.group(0);
+				_log.info("tmp: "+ tmp);
+				_log.info("tmp0: "+ tmp0);
 				// Pattern follow serviceProcess
 				if (r.toString().equals(codePatternDate)) {
 					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
@@ -133,6 +136,7 @@ public class EFormNumberGenerator {
 
 					// Pattern follow GovAgencyCode
 				} else if (r.toString().equals(codePatternYear)) {
+					_log.info("codePatternYear: "+ codePatternYear);
 					//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
 					String number = countByNumber(key, tmp);

@@ -344,13 +344,11 @@ public class EFormLocalServiceUtil {
 		long groupId, long eFormId, String eFormNo, String serviceCode,
 		String fileTemplateNo, String eFormName, long formScriptFileId,
 		long formReportFileId, String eFormData, String email, String secret,
-		java.util.Date checkinDate, String gateNumber, int state,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .updateEForm(userId, groupId, eFormId, eFormNo, serviceCode,
 			fileTemplateNo, eFormName, formScriptFileId, formReportFileId,
-			eFormData, email, secret, checkinDate, gateNumber, state,
-			serviceContext);
+			eFormData, email, secret, serviceContext);
 	}
 
 	public static EFormLocalService getService() {
