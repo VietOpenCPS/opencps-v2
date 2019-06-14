@@ -211,11 +211,20 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println(id + " " + groupId + " " + key);
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			String result = actions.getPreferenceByKey(id, groupId, key, serviceContext);
-
+			System.out.println("========================result>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + result);
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			System.out.println("========================Exception>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -223,13 +232,11 @@ public class UserManagementImpl implements UserManagement {
 	@Override
 	public Response addPreferences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String preferences) {
-		_log.info("START UPDATE PREFERENCE");
 		UserInterface actions = new UserActions();
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-			_log.info("groupId: "+groupId);
 			String result = actions.addPreferences(id, groupId, preferences, serviceContext);
 
 			return Response.status(200).entity(result).build();
@@ -247,11 +254,20 @@ public class UserManagementImpl implements UserManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println(id + " " + groupId + " " + key + " " + value);
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			String result = actions.updatePreferences(id, groupId, key, value, serviceContext);
-
+			System.out.println("========================result>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+result);
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			System.out.println("========================Exception>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
