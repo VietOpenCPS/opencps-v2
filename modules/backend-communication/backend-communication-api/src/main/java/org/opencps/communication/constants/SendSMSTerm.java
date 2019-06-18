@@ -33,6 +33,7 @@ public class SendSMSTerm {
 	public static final String SERVICE_ID = "serviceID";
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
+	public static final String COUNTRY_CODE = "countryCode";
 
 	/**
 	 * Zalo Preference to send message zalo
