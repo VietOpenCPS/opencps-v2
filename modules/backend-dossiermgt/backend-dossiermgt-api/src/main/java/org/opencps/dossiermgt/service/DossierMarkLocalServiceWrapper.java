@@ -59,12 +59,13 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 	@Override
 	public org.opencps.dossiermgt.model.DossierMark addDossierMark(
 		long groupId, long dossierId, String dossierPartNo, Integer fileMark,
-		Integer fileCheck, String fileComment,
+		Integer fileCheck, String fileComment, String recordCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _dossierMarkLocalService.addDossierMark(groupId, dossierId,
-			dossierPartNo, fileMark, fileCheck, fileComment, serviceContext);
+			dossierPartNo, fileMark, fileCheck, fileComment, recordCount,
+			serviceContext);
 	}
 
 	@Override

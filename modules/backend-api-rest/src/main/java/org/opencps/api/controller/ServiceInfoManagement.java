@@ -273,4 +273,17 @@ public interface ServiceInfoManagement {
 			@Context ServiceContext serviceContext, @ApiParam(required = true) @PathParam("id") String id,
 			@ApiParam(required = true) @PathParam("templateNo") String templateNo);
 
+	@GET
+	@Path("/statistic/recently")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get ServiceInfo recently", response = ServiceInfoResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = ServiceInfoResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getServiceInfoRecently(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam ServiceInfoSearchModel search);
 }

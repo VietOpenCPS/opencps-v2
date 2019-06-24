@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "fileMark",
     "fileCheck",
-    "fileComment"
+    "fileComment",
+    "recordCount"
 })
 @XmlRootElement(name = "DossierMarkInputModel")
 public class DossierMarkInputModel {
@@ -49,6 +50,8 @@ public class DossierMarkInputModel {
 	protected Integer fileCheck;
 	@FormParam(value = "fileComment")
 	protected String fileComment;
+	@FormParam(value = "recordCount")
+	protected String recordCount;
 
 	public Integer getFileMark() {
 		return fileMark;
@@ -67,6 +70,12 @@ public class DossierMarkInputModel {
 	}
 	public void setFileComment(String fileComment) {
 		this.fileComment = fileComment;
+	}
+	public String getRecordCount() {
+		return recordCount;
+	}
+	public void setRecordCount(String recordCount) {
+		this.recordCount = recordCount;
 	}
 
 }

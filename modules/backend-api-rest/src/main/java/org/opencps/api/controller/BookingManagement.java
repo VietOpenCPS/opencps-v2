@@ -49,7 +49,7 @@ public interface BookingManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getBokkingListByClassName(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
+			@Context ServiceContext serviceContext, @PathParam("className") String className,
 			@ApiParam(value = "body params for post") @BeanParam BookingSearchModel search);
 
 	@POST

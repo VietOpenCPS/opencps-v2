@@ -289,6 +289,21 @@ public interface MenuConfigModel extends BaseModel<MenuConfig>, ShardedModel,
 	 */
 	public void setButtonConfig(String buttonConfig);
 
+	/**
+	 * Returns the icon of this menu config.
+	 *
+	 * @return the icon of this menu config
+	 */
+	@AutoEscape
+	public String getIcon();
+
+	/**
+	 * Sets the icon of this menu config.
+	 *
+	 * @param icon the icon of this menu config
+	 */
+	public void setIcon(String icon);
+
 	@Override
 	public boolean isNew();
 

@@ -47,6 +47,7 @@ public class MenuConfigSoap implements Serializable {
 		soapModel.setQueryParams(model.getQueryParams());
 		soapModel.setTableConfig(model.getTableConfig());
 		soapModel.setButtonConfig(model.getButtonConfig());
+		soapModel.setIcon(model.getIcon());
 
 		return soapModel;
 	}
@@ -211,6 +212,14 @@ public class MenuConfigSoap implements Serializable {
 		_buttonConfig = buttonConfig;
 	}
 
+	public String getIcon() {
+		return _icon;
+	}
+
+	public void setIcon(String icon) {
+		_icon = icon;
+	}
+
 	private String _uuid;
 	private long _menuConfigId;
 	private long _companyId;
@@ -225,4 +234,5 @@ public class MenuConfigSoap implements Serializable {
 	private String _queryParams;
 	private String _tableConfig;
 	private String _buttonConfig;
+	private String _icon;
 }

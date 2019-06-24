@@ -16,11 +16,11 @@ public class DossierMarkActionsImpl implements DossierMarkActions {
 
 	@Override
 	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,
-			Integer fileCheck, String fileComment, ServiceContext serviceContext)
+			Integer fileCheck, String fileComment, String recordCount, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 
 		return DossierMarkLocalServiceUtil.addDossierMark(groupId, dossierId, dossierPartNo, fileMark, fileCheck,
-				fileComment, serviceContext);
+				fileComment, recordCount, serviceContext);
 	}
 
 	@Override

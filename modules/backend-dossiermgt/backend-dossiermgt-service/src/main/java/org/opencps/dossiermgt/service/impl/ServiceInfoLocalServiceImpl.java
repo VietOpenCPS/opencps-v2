@@ -195,6 +195,10 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		return serviceInfoPersistence.findByGroupId(groupId, start, end);
 	}
 
+	public List<ServiceInfo> getByF_GID_SC(long groupId, String[] serviceArr) {
+		return serviceInfoPersistence.findByF_GID_SC(groupId, serviceArr);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceInfo updateServiceInfo(long groupId, long serviceInfoId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,

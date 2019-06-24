@@ -52,7 +52,7 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl {
 	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,
-			Integer fileCheck, String fileComment, ServiceContext serviceContext)
+			Integer fileCheck, String fileComment, String recordCount, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 
 		long userId = serviceContext.getUserId();
@@ -75,6 +75,9 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 				object.setFileMark(fileMark);
 			}
 			object.setFileComment(fileComment);
+			if (Validator.isNotNull(recordCount)) {
+				object.setRecordCount(recordCount);
+			}
 		} else {
 			long dossierMarkId = counterLocalService.increment(DossierMark.class.getName());
 			object = dossierMarkPersistence.create(dossierMarkId);
@@ -101,6 +104,7 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 			}
 			
 			object.setFileComment(fileComment);
+			object.setRecordCount(recordCount);
 		}
 
 		return dossierMarkPersistence.update(object);
@@ -166,6 +170,7 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 		object.setFileCheck(objectData.getInt("fileCheck"));
 		object.setFileMark(objectData.getInt("fileMark"));
 		object.setFileComment(objectData.getString("fileComment"));
+		object.setRecordCount(objectData.getString("recordCount"));
 
 		dossierMarkPersistence.update(object);
 
@@ -197,6 +202,9 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 					object.setFileMark(marks[i].getFileMark());
 				}
 				object.setFileComment(marks[i].getFileComment());
+				if (Validator.isNotNull(marks[i].getRecordCount())) {
+					object.setRecordCount(marks[i].getRecordCount());
+				}
 			} else {
 				long dossierMarkId = counterLocalService.increment(DossierMark.class.getName());
 				object = dossierMarkPersistence.create(dossierMarkId);
@@ -218,6 +226,7 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 					object.setFileMark(marks[i].getFileMark());
 				}
 				object.setFileComment(marks[i].getFileComment());
+				object.setRecordCount(marks[i].getRecordCount());
 			}
 			
 			dossierMarkPersistence.update(object);

@@ -1,7 +1,14 @@
 package org.opencps.dossiermgt.input.model;
 
 public class DossierMarkBatchModel {
+
 	long dossierId; 
+	String dossierPartNo;
+	Integer fileMark;
+	Integer fileCheck;
+	String fileComment;
+	String recordCount;
+
 	public long getDossierId() {
 		return dossierId;
 	}
@@ -32,8 +39,11 @@ public class DossierMarkBatchModel {
 	public void setFileComment(String fileComment) {
 		this.fileComment = fileComment;
 	}
-	String dossierPartNo;
-	Integer fileMark;
-	Integer fileCheck;
-	String fileComment;
+	public String getRecordCount() {
+		return recordCount;
+	}
+	public void setRecordCount(String recordCount) {
+		this.recordCount = recordCount;
+	}
+
 }

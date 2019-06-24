@@ -1,6 +1,7 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -25,15 +26,15 @@ public class BookingUtils {
 				
 				model.setBookingId(GetterUtil.getLong(doc.get(BookingTerm.BOOKING_ID)));
 				
-				if (Validator.isNotNull(doc.get(BookingTerm.CREATE_DATE))) {
-					Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(BookingTerm.CREATE_DATE),
+				if (Validator.isNotNull(doc.get(Field.CREATE_DATE))) {
+					Date createDate = APIDateTimeUtils.convertStringToDate(doc.get(Field.CREATE_DATE),
 							APIDateTimeUtils._LUCENE_PATTERN);
 					model.setCreateDate(createDate.getTime());
 				} else {
 					model.setCreateDate(0l);
 				}
-				if (Validator.isNotNull(doc.get(BookingTerm.MODIFIED_DATE))) {
-					Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(EFormTerm.MODIFIED_DATE),
+				if (Validator.isNotNull(doc.get(Field.MODIFIED_DATE))) {
+					Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(Field.MODIFIED_DATE),
 							APIDateTimeUtils._LUCENE_PATTERN);
 					model.setModifiedDate(modifiedDate.getTime());
 				} else {
@@ -61,6 +62,8 @@ public class BookingUtils {
 				} else {
 					model.setBookingDate(0l);
 				}
+				model.setSpeaking(Boolean.valueOf(doc.get(BookingTerm.SPEAKING)));
+
 				ouputs.add(model);
 			}
 		}
@@ -87,6 +90,7 @@ public class BookingUtils {
 		model.setGateNumber(input.getGateNumber());
 		model.setState(input.getState());
 		model.setBookingDate(input.getBookingDate() != null ? input.getBookingDate().getTime() : 0l);
+		model.setSpeaking(input.getSpeaking());
 
 		return model;
 	}

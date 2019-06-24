@@ -29,15 +29,12 @@ import org.opencps.api.booking.model.BookingResultsModel;
 import org.opencps.api.booking.model.BookingSearchModel;
 import org.opencps.api.controller.BookingManagement;
 import org.opencps.api.controller.util.BookingUtils;
-import org.opencps.api.controller.util.EFormUtils;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.BookingActions;
-import org.opencps.dossiermgt.action.EFormActions;
 import org.opencps.dossiermgt.action.impl.BookingActionsImpl;
-import org.opencps.dossiermgt.action.impl.EFormActionsImpl;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
@@ -49,9 +46,10 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 public class BookingManagementImpl implements BookingManagement{
 
 	private static final Log _log = LogFactoryUtil.getLog(BookingManagementImpl.class);
+
 	@Override
 	public Response getBokkingListByClassName(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, BookingSearchModel search) {
+			Locale locale, User user, ServiceContext serviceContext, String className, BookingSearchModel search) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -79,10 +77,6 @@ public class BookingManagementImpl implements BookingManagement{
 				params.put(Field.KEYWORD_SEARCH, keySearch);
 
 				String serviceCode = search.getService();
-				String service = StringPool.BLANK;
-				if (Validator.isNotNull(serviceCode)) {
-					service = SpecialCharacterUtils.splitSpecial(serviceCode);
-				}
 				String state = search.getState();
 
 				String from = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getFrom());
@@ -90,13 +84,14 @@ public class BookingManagementImpl implements BookingManagement{
 				String bookingFrom = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getBookingFrom());
 				String bookingTo = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getBookingTo());
 
-				params.put(BookingTerm.SERVICE_CODE, service);
+				params.put(BookingTerm.SERVICE_CODE_SEARCH, serviceCode);
 				params.put(BookingTerm.STATE, state);
 				params.put(BookingTerm.FROM_CREATE_DATE, from);
 				params.put(BookingTerm.TO_CREATE_DATE, to);
 				params.put(BookingTerm.FROM_BOOKING_DATE, bookingFrom);
 				params.put(BookingTerm.TO_BOOKING_DATE, bookingTo);
 				params.put(BookingTerm.GATE_NUMBER, search.getGateNumber());
+				params.put(BookingTerm.CLASS_NAME, className);
 				
 				Sort[] sorts = null;
 				if (Validator.isNull(search.getSort())) {
@@ -144,7 +139,7 @@ public class BookingManagementImpl implements BookingManagement{
 			String gateNumber = input.getGateNumber();
 			Integer state = input.getState();
 			Date checkinDate = null;
-			if (state == 1) {
+			if (Validator.isNotNull(state) && state == 1) {
 				checkinDate = new Date();
 			}
 
@@ -153,16 +148,16 @@ public class BookingManagementImpl implements BookingManagement{
 				bookingDate = APIDateTimeUtils.convertStringToDate(input.getBookingDate(),
 						APIDateTimeUtils._NORMAL_PARTTERN);
 			}
+			boolean speaking = Boolean.valueOf(input.getSpeaking());
 
 			Booking booking = BookingLocalServiceUtil.getByClassName_PK(className, classPK);
 			if (booking != null) {
 				booking = actions.updateBooking(userId, groupId, booking.getBookingId(), className, classPK,
-						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate,
+						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking,
 						serviceContext);
 			} else {
-				booking = actions.updateBooking(userId, groupId, 0, className, classPK,
-						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate,
-						serviceContext);
+				booking = actions.updateBooking(userId, groupId, 0, className, classPK, serviceCode, codeNumber,
+						bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceContext);
 			}
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
@@ -198,7 +193,7 @@ public class BookingManagementImpl implements BookingManagement{
 				String gateNumber = input.getGateNumber();
 				Integer state = input.getState();
 				Date checkinDate = null;
-				if (state == 1) {
+				if (Validator.isNotNull(state) && state == 1) {
 					checkinDate = new Date();
 				}
 
@@ -207,9 +202,10 @@ public class BookingManagementImpl implements BookingManagement{
 					bookingDate = APIDateTimeUtils.convertStringToDate(input.getBookingDate(),
 							APIDateTimeUtils._NORMAL_PARTTERN);
 				}
+				boolean speaking = Boolean.valueOf(input.getSpeaking());
 
 				booking = actions.updateBooking(userId, groupId, booking.getBookingId(), className, classPK,
-						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate,
+						serviceCode, codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking,
 						serviceContext);
 			}
 

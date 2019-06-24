@@ -45,6 +45,7 @@ public class DossierMarkSoap implements Serializable {
 		soapModel.setFileCheck(model.getFileCheck());
 		soapModel.setFileMark(model.getFileMark());
 		soapModel.setFileComment(model.getFileComment());
+		soapModel.setRecordCount(model.getRecordCount());
 
 		return soapModel;
 	}
@@ -193,6 +194,14 @@ public class DossierMarkSoap implements Serializable {
 		_fileComment = fileComment;
 	}
 
+	public String getRecordCount() {
+		return _recordCount;
+	}
+
+	public void setRecordCount(String recordCount) {
+		_recordCount = recordCount;
+	}
+
 	private String _uuid;
 	private long _dossierMarkId;
 	private long _companyId;
@@ -205,4 +214,5 @@ public class DossierMarkSoap implements Serializable {
 	private int _fileCheck;
 	private int _fileMark;
 	private String _fileComment;
+	private String _recordCount;
 }

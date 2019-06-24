@@ -64,7 +64,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -100,6 +100,8 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		sb.append(state);
 		sb.append(", bookingDate=");
 		sb.append(bookingDate);
+		sb.append(", speaking=");
+		sb.append(speaking);
 		sb.append("}");
 
 		return sb.toString();
@@ -195,6 +197,8 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 			bookingImpl.setBookingDate(new Date(bookingDate));
 		}
 
+		bookingImpl.setSpeaking(speaking);
+
 		bookingImpl.resetOriginalValues();
 
 		return bookingImpl;
@@ -225,6 +229,8 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 		state = objectInput.readInt();
 		bookingDate = objectInput.readLong();
+
+		speaking = objectInput.readBoolean();
 	}
 
 	@Override
@@ -296,6 +302,8 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 		objectOutput.writeInt(state);
 		objectOutput.writeLong(bookingDate);
+
+		objectOutput.writeBoolean(speaking);
 	}
 
 	public String uuid;
@@ -315,4 +323,5 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 	public String gateNumber;
 	public int state;
 	public long bookingDate;
+	public boolean speaking;
 }

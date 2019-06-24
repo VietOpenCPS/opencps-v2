@@ -29,6 +29,7 @@ public class DossierPartTerm {
 	public static final String FILE_MARK = "fileMark";
 	public static final String FILE_CHECK = "fileCheck";
 	public static final String FILE_COMMENT = "fileComment";
+	public static final String RECORD_COUNT = "recordCount";
 
 	public static final int DOSSIER_PART_TYPE_INPUT = 1;
 	public static final int DOSSIER_PART_TYPE_OUTPUT = 2;

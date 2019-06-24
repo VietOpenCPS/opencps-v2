@@ -76,6 +76,7 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		attributes.put("gateNumber", getGateNumber());
 		attributes.put("state", getState());
 		attributes.put("bookingDate", getBookingDate());
+		attributes.put("speaking", isSpeaking());
 
 		return attributes;
 	}
@@ -182,6 +183,12 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 
 		if (bookingDate != null) {
 			setBookingDate(bookingDate);
+		}
+
+		Boolean speaking = (Boolean)attributes.get("speaking");
+
+		if (speaking != null) {
+			setSpeaking(speaking);
 		}
 	}
 
@@ -346,6 +353,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Returns the speaking of this booking.
+	*
+	* @return the speaking of this booking
+	*/
+	@Override
+	public boolean getSpeaking() {
+		return _booking.getSpeaking();
+	}
+
+	/**
 	* Returns the state of this booking.
 	*
 	* @return the state of this booking
@@ -413,6 +430,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public boolean isNew() {
 		return _booking.isNew();
+	}
+
+	/**
+	* Returns <code>true</code> if this booking is speaking.
+	*
+	* @return <code>true</code> if this booking is speaking; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isSpeaking() {
+		return _booking.isSpeaking();
 	}
 
 	@Override
@@ -589,6 +616,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public void setServiceCode(String serviceCode) {
 		_booking.setServiceCode(serviceCode);
+	}
+
+	/**
+	* Sets whether this booking is speaking.
+	*
+	* @param speaking the speaking of this booking
+	*/
+	@Override
+	public void setSpeaking(boolean speaking) {
+		_booking.setSpeaking(speaking);
 	}
 
 	/**

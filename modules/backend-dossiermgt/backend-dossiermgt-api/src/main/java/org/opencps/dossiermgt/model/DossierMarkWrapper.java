@@ -72,6 +72,7 @@ public class DossierMarkWrapper implements DossierMark,
 		attributes.put("fileCheck", getFileCheck());
 		attributes.put("fileMark", getFileMark());
 		attributes.put("fileComment", getFileComment());
+		attributes.put("recordCount", getRecordCount());
 
 		return attributes;
 	}
@@ -148,6 +149,12 @@ public class DossierMarkWrapper implements DossierMark,
 
 		if (fileComment != null) {
 			setFileComment(fileComment);
+		}
+
+		String recordCount = (String)attributes.get("recordCount");
+
+		if (recordCount != null) {
+			setRecordCount(recordCount);
 		}
 	}
 
@@ -279,6 +286,16 @@ public class DossierMarkWrapper implements DossierMark,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _dossierMark.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the record count of this dossier mark.
+	*
+	* @return the record count of this dossier mark
+	*/
+	@Override
+	public String getRecordCount() {
+		return _dossierMark.getRecordCount();
 	}
 
 	/**
@@ -475,6 +492,16 @@ public class DossierMarkWrapper implements DossierMark,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_dossierMark.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the record count of this dossier mark.
+	*
+	* @param recordCount the record count of this dossier mark
+	*/
+	@Override
+	public void setRecordCount(String recordCount) {
+		_dossierMark.setRecordCount(recordCount);
 	}
 
 	/**

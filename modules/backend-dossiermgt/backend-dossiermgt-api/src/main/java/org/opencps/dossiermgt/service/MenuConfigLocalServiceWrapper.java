@@ -37,11 +37,11 @@ public class MenuConfigLocalServiceWrapper implements MenuConfigLocalService,
 	public org.opencps.dossiermgt.model.MenuConfig addMenuConfig(long userId,
 		long groupId, String menuGroup, String menuName, Integer order,
 		Integer menuType, String queryParams, String tableConfig,
-		String buttonConfig)
+		String buttonConfig, String icon)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _menuConfigLocalService.addMenuConfig(userId, groupId,
 			menuGroup, menuName, order, menuType, queryParams, tableConfig,
-			buttonConfig);
+			buttonConfig, icon);
 	}
 
 	/**
@@ -370,11 +370,11 @@ public class MenuConfigLocalServiceWrapper implements MenuConfigLocalService,
 	public org.opencps.dossiermgt.model.MenuConfig updateMenuConfig(
 		long menuConfigId, long userId, long groupId, String menuGroup,
 		String menuName, Integer order, Integer menuType, String queryParams,
-		String tableConfig, String buttonConfig)
+		String tableConfig, String buttonConfig, String icon)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _menuConfigLocalService.updateMenuConfig(menuConfigId, userId,
 			groupId, menuGroup, menuName, order, menuType, queryParams,
-			tableConfig, buttonConfig);
+			tableConfig, buttonConfig, icon);
 	}
 
 	/**
@@ -393,11 +393,11 @@ public class MenuConfigLocalServiceWrapper implements MenuConfigLocalService,
 	public org.opencps.dossiermgt.model.MenuConfig updateMenuConfigDB(
 		long userId, long groupId, String menuGroup, String menuName,
 		Integer order, Integer menuType, String queryParams,
-		String tableConfig, String buttonConfig)
+		String tableConfig, String buttonConfig, String icon)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _menuConfigLocalService.updateMenuConfigDB(userId, groupId,
 			menuGroup, menuName, order, menuType, queryParams, tableConfig,
-			buttonConfig);
+			buttonConfig, icon);
 	}
 
 	@Override

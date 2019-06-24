@@ -106,6 +106,8 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 				document.addTextSortable(BookingTerm.BOOKING_DATE_LUCENE, StringPool.BLANK);
 			}
 
+			document.addTextSortable(BookingTerm.SPEAKING, String.valueOf(object.getSpeaking()));
+
 		} catch (Exception e) {
 			_log.error(e);
 		}

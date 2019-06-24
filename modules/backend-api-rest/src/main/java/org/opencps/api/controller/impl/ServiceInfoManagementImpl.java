@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -25,10 +27,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +44,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.ServiceInfoUtils;
@@ -48,8 +53,10 @@ import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
 import org.opencps.api.serviceinfo.model.FileTemplateSearchModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
+import org.opencps.api.serviceinfo.model.ServiceInfoRecentResultModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoResultsModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoSearchModel;
+import org.opencps.api.serviceinfo.model.ServiceRecentDetailModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -58,22 +65,22 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-import io.swagger.annotations.ApiParam;
 
 public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
@@ -226,7 +233,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNull(serviceInfo)) {
 				throw new Exception();
 			} else {
-				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo, serviceContext);
+				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
@@ -720,6 +727,106 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 		}
 		return Response.status(200).entity(result).build();
+	}
+
+	@Override
+	public Response getServiceInfoRecently(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel search) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
+		//String emailLogin = user.getEmailAddress();
+		DossierActions actions = new DossierActionsImpl();
+
+		try {
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			// LamTV_Process search LIKE
+			String owner = StringPool.BLANK;
+			if (Validator.isNotNull(search.getTop()) && search.getTop().equalsIgnoreCase("recently")) {
+				owner = "true";
+			}
+
+			params.put(DossierTerm.OWNER, owner);
+			params.put(DossierTerm.USER_ID, userId);
+			_log.info("USER_ID: "+userId);
+
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(DossierTerm.SUBMIT_DATE + "_Number_sortable", Sort.LONG_TYPE, true) };
+
+			ServiceInfoRecentResultModel results = new ServiceInfoRecentResultModel();
+
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(company.getCompanyId());
+			
+			Hits hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
+			if (hits != null) {
+				List<Document> docList = hits.toList();
+				
+				Integer start = search.getStart();
+				Integer end = search.getEnd();
+				StringBuilder sb = new StringBuilder();
+				for (Document document : docList) {
+					String serviceCode = document.get(DossierTerm.SERVICE_CODE);
+					if (Validator.isNotNull(serviceCode)) {
+						if (sb.length() == 0) {
+							sb.append(serviceCode);
+						} else if (!sb.toString().contains(serviceCode)) {
+							sb.append(StringPool.COMMA);
+							sb.append(serviceCode);
+						}
+					}
+				}
+				_log.info("sb: "+sb.toString());
+				if (sb.length() > 0) {
+					// Convert the sb of Array
+					String[] serviceArr = sb.toString().split(StringPool.COMMA);
+					List<ServiceRecentDetailModel> serviceDetailList = new ArrayList<ServiceRecentDetailModel>();
+					List<ServiceInfo> serviceList = ServiceInfoLocalServiceUtil.getByF_GID_SC(groupId, serviceArr);
+					if (serviceList != null && serviceList.size() > 0) {
+						int lengthFull = serviceList.size();
+						results.setTotal(lengthFull);
+						if (Validator.isNotNull(end) && end == 0) {
+							for (int i = 0; i < lengthFull; i++) {
+								String serviceCode = serviceArr[i];
+								_log.info("serviceCode: " + serviceCode);
+								for (ServiceInfo info : serviceList) {
+									if (serviceCode.equals(info.getServiceCode())) {
+										serviceDetailList.add(ServiceInfoUtils.mappingToServiceRecentDetailModel(info));
+										break;
+									}
+								}
+							}
+						} else {
+							int length = 0;
+							if (lengthFull > end) {
+								length = end - start + 1;
+							} else {
+								length = lengthFull - start;
+							}
+							for (int i = start; i < length; i++) {
+								String serviceCode = serviceArr[i];
+								for (ServiceInfo info : serviceList) {
+									if (serviceCode.equals(info.getServiceCode())) {
+										serviceDetailList.add(ServiceInfoUtils.mappingToServiceRecentDetailModel(info));
+										break;
+									}
+								}
+							}
+						}
+						results.getData().addAll(serviceDetailList);
+					} else {
+						results.setTotal(0);
+					}
+				}
+			}
+
+			return Response.status(200).entity(results).build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }

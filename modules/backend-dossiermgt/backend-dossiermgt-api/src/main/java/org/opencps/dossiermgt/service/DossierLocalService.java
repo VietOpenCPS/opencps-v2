@@ -284,6 +284,12 @@ public interface DossierLocalService extends BaseLocalService,
 		String dossierTemplateNo, long originDossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] statusArr, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Dossier> getByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo);
 
@@ -514,7 +520,17 @@ public interface DossierLocalService extends BaseLocalService,
 		Date createDate, Date modifiedDate, Date submitDate, Date receiveDate,
 		Date dueDate, Date releaseDate, Date finishDate, Date cancellingDate,
 		Date correctingDate, Date endorsementDate, Date extendDate,
-		Date processDate, ServiceContext context) throws PortalException;
+		Date processDate, String dossierNo, String dossierStatus,
+		String dossierStatusText, String dossierSubStatus,
+		String dossierSubStatusText, long dossierActionId,
+		String submissionNote, String lockState, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, double durationCount, int durationUnit,
+		String dossierName, String processNo, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,

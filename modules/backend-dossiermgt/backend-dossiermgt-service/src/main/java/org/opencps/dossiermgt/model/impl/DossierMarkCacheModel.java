@@ -65,7 +65,7 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -91,6 +91,8 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 		sb.append(fileMark);
 		sb.append(", fileComment=");
 		sb.append(fileComment);
+		sb.append(", recordCount=");
+		sb.append(recordCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -145,6 +147,13 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 			dossierMarkImpl.setFileComment(fileComment);
 		}
 
+		if (recordCount == null) {
+			dossierMarkImpl.setRecordCount("");
+		}
+		else {
+			dossierMarkImpl.setRecordCount(recordCount);
+		}
+
 		dossierMarkImpl.resetOriginalValues();
 
 		return dossierMarkImpl;
@@ -171,6 +180,7 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 
 		fileMark = objectInput.readInt();
 		fileComment = objectInput.readUTF();
+		recordCount = objectInput.readUTF();
 	}
 
 	@Override
@@ -212,6 +222,13 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 		else {
 			objectOutput.writeUTF(fileComment);
 		}
+
+		if (recordCount == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(recordCount);
+		}
 	}
 
 	public String uuid;
@@ -226,4 +243,5 @@ public class DossierMarkCacheModel implements CacheModel<DossierMark>,
 	public int fileCheck;
 	public int fileMark;
 	public String fileComment;
+	public String recordCount;
 }

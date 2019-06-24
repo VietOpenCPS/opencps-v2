@@ -79,7 +79,8 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 			{ "dossierPartNo", Types.VARCHAR },
 			{ "fileCheck", Types.INTEGER },
 			{ "fileMark", Types.INTEGER },
-			{ "fileComment", Types.VARCHAR }
+			{ "fileComment", Types.VARCHAR },
+			{ "recordCount", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,9 +97,10 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		TABLE_COLUMNS_MAP.put("fileCheck", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("fileMark", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("fileComment", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("recordCount", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiermark (uuid_ VARCHAR(75) null,dossierMarkId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierPartNo VARCHAR(75) null,fileCheck INTEGER,fileMark INTEGER,fileComment VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiermark (uuid_ VARCHAR(75) null,dossierMarkId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierPartNo VARCHAR(75) null,fileCheck INTEGER,fileMark INTEGER,fileComment VARCHAR(75) null,recordCount VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiermark";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierMark.dossierMarkId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiermark.dossierMarkId ASC";
@@ -173,6 +175,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		attributes.put("fileCheck", getFileCheck());
 		attributes.put("fileMark", getFileMark());
 		attributes.put("fileComment", getFileComment());
+		attributes.put("recordCount", getRecordCount());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -252,6 +255,12 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 
 		if (fileComment != null) {
 			setFileComment(fileComment);
+		}
+
+		String recordCount = (String)attributes.get("recordCount");
+
+		if (recordCount != null) {
+			setRecordCount(recordCount);
 		}
 	}
 
@@ -479,6 +488,21 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 	}
 
 	@Override
+	public String getRecordCount() {
+		if (_recordCount == null) {
+			return "";
+		}
+		else {
+			return _recordCount;
+		}
+	}
+
+	@Override
+	public void setRecordCount(String recordCount) {
+		_recordCount = recordCount;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DossierMark.class.getName()));
@@ -527,6 +551,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		dossierMarkImpl.setFileCheck(getFileCheck());
 		dossierMarkImpl.setFileMark(getFileMark());
 		dossierMarkImpl.setFileComment(getFileComment());
+		dossierMarkImpl.setRecordCount(getRecordCount());
 
 		dossierMarkImpl.resetOriginalValues();
 
@@ -674,12 +699,20 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 			dossierMarkCacheModel.fileComment = null;
 		}
 
+		dossierMarkCacheModel.recordCount = getRecordCount();
+
+		String recordCount = dossierMarkCacheModel.recordCount;
+
+		if ((recordCount != null) && (recordCount.length() == 0)) {
+			dossierMarkCacheModel.recordCount = null;
+		}
+
 		return dossierMarkCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -705,6 +738,8 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		sb.append(getFileMark());
 		sb.append(", fileComment=");
 		sb.append(getFileComment());
+		sb.append(", recordCount=");
+		sb.append(getRecordCount());
 		sb.append("}");
 
 		return sb.toString();
@@ -712,7 +747,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierMark");
@@ -766,6 +801,10 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 			"<column><column-name>fileComment</column-name><column-value><![CDATA[");
 		sb.append(getFileComment());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>recordCount</column-name><column-value><![CDATA[");
+		sb.append(getRecordCount());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -799,6 +838,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 	private int _originalFileMark;
 	private boolean _setOriginalFileMark;
 	private String _fileComment;
+	private String _recordCount;
 	private long _columnBitmask;
 	private DossierMark _escapedModel;
 }

@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
   private String tableConfig = null;
   @ApiModelProperty(example = "buttonConfig", value = "")
   private String buttonConfig = null;
+  @ApiModelProperty(example = "icon", value = "")
+  private String icon = null;
   @ApiModelProperty(example = "null", value = "")
   private List<MenuConfigStepsItem> steps = new ArrayList<MenuConfigStepsItem>();
 
@@ -214,7 +216,15 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
 
-  @Override
+  public String getIcon() {
+	return icon;
+}
+
+public void setIcon(String icon) {
+	this.icon = icon;
+}
+
+@Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class MenuConfigItem {\n");

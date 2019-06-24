@@ -50,6 +50,7 @@ public class BookingSoap implements Serializable {
 		soapModel.setGateNumber(model.getGateNumber());
 		soapModel.setState(model.getState());
 		soapModel.setBookingDate(model.getBookingDate());
+		soapModel.setSpeaking(model.isSpeaking());
 
 		return soapModel;
 	}
@@ -238,6 +239,18 @@ public class BookingSoap implements Serializable {
 		_bookingDate = bookingDate;
 	}
 
+	public boolean getSpeaking() {
+		return _speaking;
+	}
+
+	public boolean isSpeaking() {
+		return _speaking;
+	}
+
+	public void setSpeaking(boolean speaking) {
+		_speaking = speaking;
+	}
+
 	private String _uuid;
 	private long _bookingId;
 	private long _groupId;
@@ -255,4 +268,5 @@ public class BookingSoap implements Serializable {
 	private String _gateNumber;
 	private int _state;
 	private Date _bookingDate;
+	private boolean _speaking;
 }

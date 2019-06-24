@@ -27,8 +27,8 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 
 	@Override
 	public MenuConfig addMenuConfig(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig, ServiceContext serviceContext)
-			throws PortalException, AuthenticationException {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon,
+			ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
 		BackendAuthImpl authImpl = new BackendAuthImpl();
 
@@ -36,7 +36,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 			MenuConfig object = null;
 
 			object = MenuConfigLocalServiceUtil.addMenuConfig(userId, groupId, menuGroup, menuName, order, menuType,
-					queryParams, tableConfig, buttonConfig);
+					queryParams, tableConfig, buttonConfig, icon);
 
 			return object;
 		} else {
@@ -47,7 +47,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 
 	@Override
 	public MenuConfig updateMenuConfig(long actionCodePK, long userId, long groupId, String menuGroup, String menuName,
-			Integer order, Integer menuType, String queryParams, String tableConfig, String buttonConfig,
+			Integer order, Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon,
 			ServiceContext serviceContext) throws PortalException, AuthenticationException {
 
 		BackendAuthImpl authImpl = new BackendAuthImpl();
@@ -56,7 +56,7 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 			MenuConfig object = null;
 
 			object = MenuConfigLocalServiceUtil.updateMenuConfig(actionCodePK, userId, groupId, menuGroup, menuName,
-					order, menuType, queryParams, tableConfig, buttonConfig);
+					order, menuType, queryParams, tableConfig, buttonConfig, icon);
 
 			return object;
 		} else {
@@ -81,10 +81,11 @@ public class MenuConfigActionsImpl implements MenuConfigActions {
 
 	@Override
 	public long updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon)
+			throws PortalException {
 
 		MenuConfig menuConfig = MenuConfigLocalServiceUtil.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order,
-				menuType, queryParams, tableConfig, buttonConfig);
+				menuType, queryParams, tableConfig, buttonConfig, icon);
 		if (menuConfig != null) {
 			return menuConfig.getMenuConfigId();
 		}

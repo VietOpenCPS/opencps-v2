@@ -34,6 +34,7 @@ import org.opencps.api.controller.DossierDocumentManagement;
 import org.opencps.api.controller.util.DossierDocumentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
+import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -55,6 +56,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -94,7 +96,12 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
-					jsonData.put("userName", user.getFullName());
+					org.opencps.usermgt.model.Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+					if (employee != null) {
+						jsonData.put("userName", employee.getFullName());
+					} else {
+						jsonData.put("userName", user.getFullName());
+					}
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
@@ -476,11 +483,15 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (dossierPart != null) {
 					String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
 							dossier.getDossierId(), serviceContext);
+					//Mapping FormData with dossier
+					JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
+
 					String formReport = dossierPart.getFormReport();
 					
 					Message message = new Message();
 					message.put("formReport", formReport);
-					message.put("formData", formData);
+					message.put("formData", jsonData.toJSONString());
 
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");

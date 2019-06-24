@@ -140,17 +140,17 @@ public interface DossierActions {
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, ServiceContext serviceContext);
 
-	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
-			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
-			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, 
-			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
-			Date endorsementDate, Date extendDate,
-			Date processDate, ServiceContext context) throws PortalException;
+//	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+//			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+//			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+//			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+//			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+//			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+//			boolean online, boolean notification, String applicantNote, int originality, 
+//			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+//			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+//			Date endorsementDate, Date extendDate,
+//			Date processDate, ServiceContext context) throws PortalException;
 	
 	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,

@@ -65,7 +65,7 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -95,6 +95,8 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 		sb.append(tableConfig);
 		sb.append(", buttonConfig=");
 		sb.append(buttonConfig);
+		sb.append(", icon=");
+		sb.append(icon);
 		sb.append("}");
 
 		return sb.toString();
@@ -168,6 +170,13 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 			menuConfigImpl.setButtonConfig(buttonConfig);
 		}
 
+		if (icon == null) {
+			menuConfigImpl.setIcon("");
+		}
+		else {
+			menuConfigImpl.setIcon(icon);
+		}
+
 		menuConfigImpl.resetOriginalValues();
 
 		return menuConfigImpl;
@@ -195,6 +204,7 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 		queryParams = objectInput.readUTF();
 		tableConfig = objectInput.readUTF();
 		buttonConfig = objectInput.readUTF();
+		icon = objectInput.readUTF();
 	}
 
 	@Override
@@ -255,6 +265,13 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 		else {
 			objectOutput.writeUTF(buttonConfig);
 		}
+
+		if (icon == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(icon);
+		}
 	}
 
 	public String uuid;
@@ -271,4 +288,5 @@ public class MenuConfigCacheModel implements CacheModel<MenuConfig>,
 	public String queryParams;
 	public String tableConfig;
 	public String buttonConfig;
+	public String icon;
 }

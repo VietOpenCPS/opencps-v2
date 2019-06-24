@@ -94,6 +94,7 @@
 		<property name="gateNumber" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="state_" name="state" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="bookingDate" type="org.hibernate.type.TimestampType" />
+		<property name="speaking" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableImpl" table="opencps_deliverable">
 		<id name="deliverableId" type="long">
@@ -443,6 +444,7 @@
 		<property name="fileCheck" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="fileMark" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="fileComment" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="recordCount" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierPartImpl" table="opencps_dossierpart">
 		<id name="dossierPartId" type="long">
@@ -635,6 +637,7 @@
 		<property name="queryParams" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="buttonConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="icon" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuRoleImpl" table="opencps_menurole">
 		<id name="menuRoleId" type="long">

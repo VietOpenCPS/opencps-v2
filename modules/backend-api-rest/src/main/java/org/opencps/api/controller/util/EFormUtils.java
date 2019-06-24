@@ -2,6 +2,7 @@ package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -36,8 +37,8 @@ public class EFormUtils {
 				} else {
 					model.setCreateDate(0l);
 				}
-				if (Validator.isNotNull(doc.get(EFormTerm.MODIFIED_DATE))) {
-					Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(EFormTerm.MODIFIED_DATE),
+				if (Validator.isNotNull(doc.get(Field.MODIFIED_DATE))) {
+					Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(Field.MODIFIED_DATE),
 							APIDateTimeUtils._LUCENE_PATTERN);
 					model.setModifiedDate(modifiedDate.getTime());
 				} else {
