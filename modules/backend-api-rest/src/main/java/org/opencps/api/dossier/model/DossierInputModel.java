@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossier.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -105,7 +106,9 @@ import javax.xml.bind.annotation.XmlType;
 	"postalDistrictCode",
 	"postalDistrictName",
 	"postalWardCode",
-	"postalWardName"
+	"postalWardName",
+	"dossierMarkArr",
+	"importing"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -221,6 +224,11 @@ public class DossierInputModel {
 	private String postalWardName;
 	@FormParam(value = "originDossierNo")
 	private String originDossierNo;
+	@FormParam(value = "dossierMarkArr")
+	private String dossierMarkArr;
+	@FormParam(value = "importing")
+	@DefaultValue("false")
+	private String importing;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -1021,4 +1029,21 @@ public class DossierInputModel {
 	public void setOriginDossierNo(String value) {
 		this.originDossierNo = value;
 	}
+
+	public String getDossierMarkArr() {
+		return dossierMarkArr;
+	}
+
+	public void setDossierMarkArr(String dossierMarkArr) {
+		this.dossierMarkArr = dossierMarkArr;
+	}
+
+	public String getImporting() {
+		return importing;
+	}
+
+	public void setImporting(String importing) {
+		this.importing = importing;
+	}
+
 }

@@ -629,7 +629,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response uploadFileEntry(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file) {
-		_log.debug("uploadFileEntry");
+		_log.info("uploadFileEntry");
+		System.out.println("uploadFileEntry");
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -676,29 +677,29 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			fileInputStream = dataHandle.getInputStream();
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
-			_log.debug("extFile: "+extFile);
+			_log.info("extFile: "+extFile);
 			if (Validator.isNotNull(extFile)) {
 				if ("zip".equals(extFile.toLowerCase())) {
 					String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
 //					//delete folder if exits
 					File fileOld = new File(pathFolder);
-					_log.debug("fileOld: "+fileOld);
+					_log.info("fileOld: "+fileOld);
 					if (fileOld.exists()) {
 						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-						_log.debug("LamTV_Delete DONE: "+flag);
+						_log.info("LamTV_Delete DONE: "+flag);
 					}
-//					_log.debug("LamTV_pathFolder: "+pathFolder);
+//					_log.info("LamTV_pathFolder: "+pathFolder);
 					ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
 					File fileList = new File(pathFolder);
 //					//Validate xml
 					String strError = ReadXMLFileUtils.validateXML(fileList, true);
-					_log.debug("strError: "+strError);
+					_log.info("strError: "+strError);
 					if (Validator.isNotNull(strError)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(strError).build();
 					}
 
 //					String errorCheck = ReadXMLFileUtils.getStrError();
-//					_log.debug("errorCheck: "+errorCheck);
+//					_log.info("errorCheck: "+errorCheck);
 //					if (Validator.isNotNull(errorCheck)) {
 //						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(errorCheck).build();
 //					}
@@ -706,23 +707,23 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (Validator.isNull(result)) {
 						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Folder is not structure").build();
 					}
-					_log.debug("LamTV_IMPORT DONE_ZIP");
+					_log.info("LamTV_IMPORT DONE_ZIP");
 				} else if ("xml".equals(extFile.toLowerCase())) {
 					String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 //					//delete folder if exits
 					File fileOld = new File(pathFile);
-					_log.debug("fileOld: "+fileOld.getAbsolutePath());
+					_log.info("fileOld: "+fileOld.getAbsolutePath());
 					if (fileOld.exists()) {
 						boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
-						_log.debug("LamTV_Delete DONE: "+flag);
+						_log.info("LamTV_Delete DONE: "+flag);
 					}
-					_log.debug("LamTV_pathFolder: "+pathFile);
+					_log.info("LamTV_pathFolder: "+pathFile);
 					File fileList = new File(pathFile);
 					FileOutputStream out = new FileOutputStream(fileList);
 					IOUtils.copy(fileInputStream, out);
 //					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
-					_log.debug("fileList: "+fileList);
-//					_log.debug("LamTV_fileList: "+fileList.getPath());
+					_log.info("fileList: "+fileList);
+//					_log.info("LamTV_fileList: "+fileList.getPath());
 					String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 					if (Validator.isNotNull(subFileName)) {
 						String strError = ReadXMLFileUtils.validateXML(fileList, false);
@@ -732,7 +733,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
 						result = ReadXMLFileUtils.compareParentFile(ConstantUtils.DEST_DIRECTORY, fileName, xmlString, groupId, userId, serviceContext);
 					}
-					_log.debug("LamTV_IMPORT DONE_FILE");
+					_log.info("LamTV_IMPORT DONE_FILE");
 				}
 			}
 

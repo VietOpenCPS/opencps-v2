@@ -7908,6 +7908,1846 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	private static final String _FINDER_COLUMN_G_NOTO_DS_SC_GC_GOVAGENCYCODE_1 = "dossier.govAgencyCode IS NULL";
 	private static final String _FINDER_COLUMN_G_NOTO_DS_SC_GC_GOVAGENCYCODE_2 = "dossier.govAgencyCode = ?";
 	private static final String _FINDER_COLUMN_G_NOTO_DS_SC_GC_GOVAGENCYCODE_3 = "(dossier.govAgencyCode IS NULL OR dossier.govAgencyCode = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByGID_GC_SC_DTN_DS_APP_DELEGATE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByGID_GC_SC_DTN_DS_APP_DELEGATE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Integer.class.getName()
+			},
+			DossierModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			DossierModelImpl.SERVICECODE_COLUMN_BITMASK |
+			DossierModelImpl.DOSSIERTEMPLATENO_COLUMN_BITMASK |
+			DossierModelImpl.DOSSIERSTATUS_COLUMN_BITMASK |
+			DossierModelImpl.APPLICANTIDNO_COLUMN_BITMASK |
+			DossierModelImpl.APPLICANTIDTYPE_COLUMN_BITMASK |
+			DossierModelImpl.DELEGATEIDNO_COLUMN_BITMASK |
+			DossierModelImpl.ORIGINALITY_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByGID_GC_SC_DTN_DS_APP_DELEGATE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Integer.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByGID_GC_SC_DTN_DS_APP_DELEGATE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatus, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE;
+			finderArgs = new Object[] {
+					groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+					dossierStatus, applicantIdNo, applicantIdType, delegateIdNo,
+					originality
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE;
+			finderArgs = new Object[] {
+					groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+					dossierStatus, applicantIdNo, applicantIdType, delegateIdNo,
+					originality,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if ((groupId != dossier.getGroupId()) ||
+							!Objects.equals(govAgencyCode,
+								dossier.getGovAgencyCode()) ||
+							!Objects.equals(serviceCode,
+								dossier.getServiceCode()) ||
+							!Objects.equals(dossierTemplateNo,
+								dossier.getDossierTemplateNo()) ||
+							!Objects.equals(dossierStatus,
+								dossier.getDossierStatus()) ||
+							!Objects.equals(applicantIdNo,
+								dossier.getApplicantIdNo()) ||
+							!Objects.equals(applicantIdType,
+								dossier.getApplicantIdType()) ||
+							!Objects.equals(delegateIdNo,
+								dossier.getDelegateIdNo()) ||
+							(originality != dossier.getOriginality())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(11 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(11);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2);
+			}
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_2);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2);
+			}
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2);
+			}
+
+			boolean bindDelegateIdNo = false;
+
+			if (delegateIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1);
+			}
+			else if (delegateIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3);
+			}
+			else {
+				bindDelegateIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				if (bindDelegateIdNo) {
+					qPos.add(delegateIdNo);
+				}
+
+				qPos.add(originality);
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByGID_GC_SC_DTN_DS_APP_DELEGATE_First(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByGID_GC_SC_DTN_DS_APP_DELEGATE_First(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(20);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", serviceCode=");
+		msg.append(serviceCode);
+
+		msg.append(", dossierTemplateNo=");
+		msg.append(dossierTemplateNo);
+
+		msg.append(", dossierStatus=");
+		msg.append(dossierStatus);
+
+		msg.append(", applicantIdNo=");
+		msg.append(applicantIdNo);
+
+		msg.append(", applicantIdType=");
+		msg.append(applicantIdType);
+
+		msg.append(", delegateIdNo=");
+		msg.append(delegateIdNo);
+
+		msg.append(", originality=");
+		msg.append(originality);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByGID_GC_SC_DTN_DS_APP_DELEGATE_First(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByGID_GC_SC_DTN_DS_APP_DELEGATE_Last(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByGID_GC_SC_DTN_DS_APP_DELEGATE_Last(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality,
+				orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(20);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", serviceCode=");
+		msg.append(serviceCode);
+
+		msg.append(", dossierTemplateNo=");
+		msg.append(dossierTemplateNo);
+
+		msg.append(", dossierStatus=");
+		msg.append(dossierStatus);
+
+		msg.append(", applicantIdNo=");
+		msg.append(applicantIdNo);
+
+		msg.append(", applicantIdType=");
+		msg.append(applicantIdType);
+
+		msg.append(", delegateIdNo=");
+		msg.append(delegateIdNo);
+
+		msg.append(", originality=");
+		msg.append(originality);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByGID_GC_SC_DTN_DS_APP_DELEGATE_Last(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality,
+		OrderByComparator<Dossier> orderByComparator) {
+		int count = countByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param dossierId the primary key of the current dossier
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier
+	 * @throws NoSuchDossierException if a dossier with the primary key could not be found
+	 */
+	@Override
+	public Dossier[] findByGID_GC_SC_DTN_DS_APP_DELEGATE_PrevAndNext(
+		long dossierId, long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String dossierStatus, String applicantIdNo,
+		String applicantIdType, String delegateIdNo, int originality,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = findByPrimaryKey(dossierId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Dossier[] array = new DossierImpl[3];
+
+			array[0] = getByGID_GC_SC_DTN_DS_APP_DELEGATE_PrevAndNext(session,
+					dossier, groupId, govAgencyCode, serviceCode,
+					dossierTemplateNo, dossierStatus, applicantIdNo,
+					applicantIdType, delegateIdNo, originality,
+					orderByComparator, true);
+
+			array[1] = dossier;
+
+			array[2] = getByGID_GC_SC_DTN_DS_APP_DELEGATE_PrevAndNext(session,
+					dossier, groupId, govAgencyCode, serviceCode,
+					dossierTemplateNo, dossierStatus, applicantIdNo,
+					applicantIdType, delegateIdNo, originality,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Dossier getByGID_GC_SC_DTN_DS_APP_DELEGATE_PrevAndNext(
+		Session session, Dossier dossier, long groupId, String govAgencyCode,
+		String serviceCode, String dossierTemplateNo, String dossierStatus,
+		String applicantIdNo, String applicantIdType, String delegateIdNo,
+		int originality, OrderByComparator<Dossier> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(12 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(11);
+		}
+
+		query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+		query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2);
+		}
+
+		boolean bindServiceCode = false;
+
+		if (serviceCode == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1);
+		}
+		else if (serviceCode.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3);
+		}
+		else {
+			bindServiceCode = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2);
+		}
+
+		boolean bindDossierTemplateNo = false;
+
+		if (dossierTemplateNo == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1);
+		}
+		else if (dossierTemplateNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3);
+		}
+		else {
+			bindDossierTemplateNo = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2);
+		}
+
+		boolean bindDossierStatus = false;
+
+		if (dossierStatus == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_1);
+		}
+		else if (dossierStatus.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_3);
+		}
+		else {
+			bindDossierStatus = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_2);
+		}
+
+		boolean bindApplicantIdNo = false;
+
+		if (applicantIdNo == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1);
+		}
+		else if (applicantIdNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3);
+		}
+		else {
+			bindApplicantIdNo = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2);
+		}
+
+		boolean bindApplicantIdType = false;
+
+		if (applicantIdType == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1);
+		}
+		else if (applicantIdType.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3);
+		}
+		else {
+			bindApplicantIdType = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2);
+		}
+
+		boolean bindDelegateIdNo = false;
+
+		if (delegateIdNo == null) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1);
+		}
+		else if (delegateIdNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3);
+		}
+		else {
+			bindDelegateIdNo = true;
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2);
+		}
+
+		query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (bindServiceCode) {
+			qPos.add(serviceCode);
+		}
+
+		if (bindDossierTemplateNo) {
+			qPos.add(dossierTemplateNo);
+		}
+
+		if (bindDossierStatus) {
+			qPos.add(dossierStatus);
+		}
+
+		if (bindApplicantIdNo) {
+			qPos.add(applicantIdNo);
+		}
+
+		if (bindApplicantIdType) {
+			qPos.add(applicantIdType);
+		}
+
+		if (bindDelegateIdNo) {
+			qPos.add(delegateIdNo);
+		}
+
+		qPos.add(originality);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Dossier> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = any &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatuses the dossier statuses
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] dossierStatuses, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatuses, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = any &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatuses the dossier statuses
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] dossierStatuses, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatuses, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = any &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatuses the dossier statuses
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] dossierStatuses, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, dossierStatuses, applicantIdNo,
+			applicantIdType, delegateIdNo, originality, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] dossierStatuses, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		if (dossierStatuses == null) {
+			dossierStatuses = new String[0];
+		}
+		else if (dossierStatuses.length > 1) {
+			dossierStatuses = ArrayUtil.distinct(dossierStatuses,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(dossierStatuses, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (dossierStatuses.length == 1) {
+			return findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+				serviceCode, dossierTemplateNo, dossierStatuses[0],
+				applicantIdNo, applicantIdType, delegateIdNo, originality,
+				start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+					StringUtil.merge(dossierStatuses), applicantIdNo,
+					applicantIdType, delegateIdNo, originality
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+					StringUtil.merge(dossierStatuses), applicantIdNo,
+					applicantIdType, delegateIdNo, originality,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if ((groupId != dossier.getGroupId()) ||
+							!Objects.equals(govAgencyCode,
+								dossier.getGovAgencyCode()) ||
+							!Objects.equals(serviceCode,
+								dossier.getServiceCode()) ||
+							!Objects.equals(dossierTemplateNo,
+								dossier.getDossierTemplateNo()) ||
+							!ArrayUtil.contains(dossierStatuses,
+								dossier.getDossierStatus()) ||
+							!Objects.equals(applicantIdNo,
+								dossier.getApplicantIdNo()) ||
+							!Objects.equals(applicantIdType,
+								dossier.getApplicantIdType()) ||
+							!Objects.equals(delegateIdNo,
+								dossier.getDelegateIdNo()) ||
+							(originality != dossier.getOriginality())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2);
+			}
+
+			if (dossierStatuses.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < dossierStatuses.length; i++) {
+					String dossierStatus = dossierStatuses[i];
+
+					if (dossierStatus == null) {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_4);
+					}
+					else if (dossierStatus.equals("")) {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_5);
+					}
+
+					if ((i + 1) < dossierStatuses.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2);
+			}
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2);
+			}
+
+			boolean bindDelegateIdNo = false;
+
+			if (delegateIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1);
+			}
+			else if (delegateIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3);
+			}
+			else {
+				bindDelegateIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				for (String dossierStatus : dossierStatuses) {
+					if ((dossierStatus != null) && !dossierStatus.isEmpty()) {
+						qPos.add(dossierStatus);
+					}
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				if (bindDelegateIdNo) {
+					qPos.add(delegateIdNo);
+				}
+
+				qPos.add(originality);
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 */
+	@Override
+	public void removeByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality) {
+		for (Dossier dossier : findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+				govAgencyCode, serviceCode, dossierTemplateNo, dossierStatus,
+				applicantIdNo, applicantIdType, delegateIdNo, originality,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatus the dossier status
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String dossierStatus, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE;
+
+		Object[] finderArgs = new Object[] {
+				groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+				dossierStatus, applicantIdNo, applicantIdType, delegateIdNo,
+				originality
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(10);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2);
+			}
+
+			boolean bindDossierStatus = false;
+
+			if (dossierStatus == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_1);
+			}
+			else if (dossierStatus.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_3);
+			}
+			else {
+				bindDossierStatus = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_2);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2);
+			}
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2);
+			}
+
+			boolean bindDelegateIdNo = false;
+
+			if (delegateIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1);
+			}
+			else if (delegateIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3);
+			}
+			else {
+				bindDelegateIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				if (bindDossierStatus) {
+					qPos.add(dossierStatus);
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				if (bindDelegateIdNo) {
+					qPos.add(delegateIdNo);
+				}
+
+				qPos.add(originality);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of dossiers where groupId = &#63; and govAgencyCode = &#63; and serviceCode = &#63; and dossierTemplateNo = &#63; and dossierStatus = any &#63; and applicantIdNo = &#63; and applicantIdType = &#63; and delegateIdNo = &#63; and originality = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param serviceCode the service code
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierStatuses the dossier statuses
+	 * @param applicantIdNo the applicant ID no
+	 * @param applicantIdType the applicant ID type
+	 * @param delegateIdNo the delegate ID no
+	 * @param originality the originality
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+		String govAgencyCode, String serviceCode, String dossierTemplateNo,
+		String[] dossierStatuses, String applicantIdNo, String applicantIdType,
+		String delegateIdNo, int originality) {
+		if (dossierStatuses == null) {
+			dossierStatuses = new String[0];
+		}
+		else if (dossierStatuses.length > 1) {
+			dossierStatuses = ArrayUtil.distinct(dossierStatuses,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(dossierStatuses, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, govAgencyCode, serviceCode, dossierTemplateNo,
+				StringUtil.merge(dossierStatuses), applicantIdNo,
+				applicantIdType, delegateIdNo, originality
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2);
+			}
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2);
+			}
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2);
+			}
+
+			if (dossierStatuses.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < dossierStatuses.length; i++) {
+					String dossierStatus = dossierStatuses[i];
+
+					if (dossierStatus == null) {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_4);
+					}
+					else if (dossierStatus.equals("")) {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_5);
+					}
+
+					if ((i + 1) < dossierStatuses.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2);
+			}
+
+			boolean bindApplicantIdType = false;
+
+			if (applicantIdType == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1);
+			}
+			else if (applicantIdType.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3);
+			}
+			else {
+				bindApplicantIdType = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2);
+			}
+
+			boolean bindDelegateIdNo = false;
+
+			if (delegateIdNo == null) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1);
+			}
+			else if (delegateIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3);
+			}
+			else {
+				bindDelegateIdNo = true;
+
+				query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				for (String dossierStatus : dossierStatuses) {
+					if ((dossierStatus != null) && !dossierStatus.isEmpty()) {
+						qPos.add(dossierStatus);
+					}
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				if (bindApplicantIdType) {
+					qPos.add(applicantIdType);
+				}
+
+				if (bindDelegateIdNo) {
+					qPos.add(delegateIdNo);
+				}
+
+				qPos.add(originality);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GROUPID_2 =
+		"dossier.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_1 =
+		"dossier.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_2 =
+		"dossier.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_GOVAGENCYCODE_3 =
+		"(dossier.govAgencyCode IS NULL OR dossier.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_1 =
+		"dossier.serviceCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_2 =
+		"dossier.serviceCode = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_SERVICECODE_3 =
+		"(dossier.serviceCode IS NULL OR dossier.serviceCode = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_1 =
+		"dossier.dossierTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_2 =
+		"dossier.dossierTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERTEMPLATENO_3 =
+		"(dossier.dossierTemplateNo IS NULL OR dossier.dossierTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_1 =
+		"dossier.dossierStatus IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_2 =
+		"dossier.dossierStatus = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_3 =
+		"(dossier.dossierStatus IS NULL OR dossier.dossierStatus = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_4 =
+		"(" +
+		removeConjunction(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_1) +
+		")";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_5 =
+		"(" +
+		removeConjunction(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_2) +
+		")";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_6 =
+		"(" +
+		removeConjunction(_FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DOSSIERSTATUS_3) +
+		")";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_1 =
+		"dossier.applicantIdNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_2 =
+		"dossier.applicantIdNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDNO_3 =
+		"(dossier.applicantIdNo IS NULL OR dossier.applicantIdNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_1 =
+		"dossier.applicantIdType IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_2 =
+		"dossier.applicantIdType = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_APPLICANTIDTYPE_3 =
+		"(dossier.applicantIdType IS NULL OR dossier.applicantIdType = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_1 =
+		"dossier.delegateIdNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_2 =
+		"dossier.delegateIdNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_DELEGATEIDNO_3 =
+		"(dossier.delegateIdNo IS NULL OR dossier.delegateIdNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_GC_SC_DTN_DS_APP_DELEGATE_ORIGINALITY_2 =
+		"dossier.originality = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_O_DID = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
 			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_O_DID",
@@ -20886,6 +22726,23 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 			args = new Object[] {
 					dossierModelImpl.getGroupId(),
+					dossierModelImpl.getGovAgencyCode(),
+					dossierModelImpl.getServiceCode(),
+					dossierModelImpl.getDossierTemplateNo(),
+					dossierModelImpl.getDossierStatus(),
+					dossierModelImpl.getApplicantIdNo(),
+					dossierModelImpl.getApplicantIdType(),
+					dossierModelImpl.getDelegateIdNo(),
+					dossierModelImpl.getOriginality()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+				args);
+
+			args = new Object[] {
+					dossierModelImpl.getGroupId(),
 					dossierModelImpl.getOriginDossierId()
 				};
 
@@ -21155,6 +23012,43 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_OG_DS, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_OG_DS,
+					args);
+			}
+
+			if ((dossierModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierModelImpl.getOriginalGroupId(),
+						dossierModelImpl.getOriginalGovAgencyCode(),
+						dossierModelImpl.getOriginalServiceCode(),
+						dossierModelImpl.getOriginalDossierTemplateNo(),
+						dossierModelImpl.getOriginalDossierStatus(),
+						dossierModelImpl.getOriginalApplicantIdNo(),
+						dossierModelImpl.getOriginalApplicantIdType(),
+						dossierModelImpl.getOriginalDelegateIdNo(),
+						dossierModelImpl.getOriginalOriginality()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					args);
+
+				args = new Object[] {
+						dossierModelImpl.getGroupId(),
+						dossierModelImpl.getGovAgencyCode(),
+						dossierModelImpl.getServiceCode(),
+						dossierModelImpl.getDossierTemplateNo(),
+						dossierModelImpl.getDossierStatus(),
+						dossierModelImpl.getApplicantIdNo(),
+						dossierModelImpl.getApplicantIdType(),
+						dossierModelImpl.getDelegateIdNo(),
+						dossierModelImpl.getOriginality()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_GC_SC_DTN_DS_APP_DELEGATE,
 					args);
 			}
 

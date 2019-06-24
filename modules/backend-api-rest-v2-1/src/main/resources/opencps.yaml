@@ -1011,6 +1011,9 @@ definitions:
       buttonConfig:
         type: string
         example: 'buttonConfig'
+      icon:
+        type: string
+        example: 'icon'
       steps:
         type: array
         items:

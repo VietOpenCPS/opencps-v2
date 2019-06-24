@@ -258,6 +258,21 @@ public interface DossierMarkModel extends BaseModel<DossierMark>, ShardedModel,
 	 */
 	public void setFileComment(String fileComment);
 
+	/**
+	 * Returns the record count of this dossier mark.
+	 *
+	 * @return the record count of this dossier mark
+	 */
+	@AutoEscape
+	public String getRecordCount();
+
+	/**
+	 * Sets the record count of this dossier mark.
+	 *
+	 * @param recordCount the record count of this dossier mark
+	 */
+	public void setRecordCount(String recordCount);
+
 	@Override
 	public boolean isNew();
 

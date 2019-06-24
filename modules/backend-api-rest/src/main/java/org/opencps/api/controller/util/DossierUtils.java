@@ -396,6 +396,17 @@ public class DossierUtils {
 			model.setOrigin(doc.get(DossierTerm.ORIGIN));
 			model.setOriginDossierId(GetterUtil.getInteger(doc.get(DossierTerm.ORIGIN_DOSSIER_ID)));
 			model.setOriginDossierNo(doc.get(DossierTerm.ORIGIN_DOSSIER_NO));
+			model.setDelegateName(doc.get(DossierTerm.DELEGATE_NAME));
+			model.setDelegateIdNo(doc.get(DossierTerm.DELEGATE_ID_NO));
+			model.setDelegateEmail(doc.get(DossierTerm.DELEGATE_EMAIL));
+			model.setDelegateTelNo(doc.get(DossierTerm.DELEGATE_TELNO));
+			model.setDelegateAddress(doc.get(DossierTerm.DELEGATE_ADDRESS));
+			model.setDelegateCityCode(doc.get(DossierTerm.DELEGATE_CITYCODE));
+			model.setDelegateCityName(doc.get(DossierTerm.DELEGATE_CITYNAME));
+			model.setDelegateDistrictCode(doc.get(DossierTerm.DELEGATE_DISTRICTCODE));
+			model.setDelegateDistrictName(doc.get(DossierTerm.DELEGATE_DISTRICTNAME));
+			model.setDelegateWardCode(doc.get(DossierTerm.DELEGATE_WARDCODE));
+			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			
 			ouputs.add(model);
 		}
@@ -1254,6 +1265,7 @@ public class DossierUtils {
 		model.setPostalWardCode(input.getPostalWardCode());
 		model.setPostalWardName(input.getPostalWardName());
 		model.setOriginDossierNo(input.getOriginDossierNo());
+		model.setDossierMarkArr(input.getDossierMarkArr());
 		
 		return model;
 	}

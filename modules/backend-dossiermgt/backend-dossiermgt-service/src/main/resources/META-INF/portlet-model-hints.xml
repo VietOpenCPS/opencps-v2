@@ -44,6 +44,7 @@
 		<field name="gateNumber" type="String" />
 		<field name="state" type="int" />
 		<field name="bookingDate" type="Date" />
+		<field name="speaking" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />
@@ -367,6 +368,7 @@
 		<field name="fileCheck" type="int" />
 		<field name="fileMark" type="int" />
 		<field name="fileComment" type="String" />
+		<field name="recordCount" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierPart">
 		<field name="uuid" type="String" />
@@ -541,6 +543,7 @@
 		<field name="queryParams" type="String" />
 		<field name="tableConfig" type="String" />
 		<field name="buttonConfig" type="String" />
+		<field name="icon" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.MenuRole">
 		<field name="uuid" type="String" />

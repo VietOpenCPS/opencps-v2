@@ -1,16 +1,11 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -25,6 +20,7 @@ import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
+import org.opencps.api.serviceinfo.model.ServiceRecentDetailModel;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
@@ -148,8 +144,7 @@ public class ServiceInfoUtils {
 		return model;
 	}
 
-	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo,
-			ServiceContext serviceContext) {
+	public static ServiceInfoDetailModel mappingToServiceInfoDetailModel(ServiceInfo serviceInfo) {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
@@ -268,6 +263,65 @@ public class ServiceInfoUtils {
 		}
 
 		return fileTemplate;
+	}
+
+	public static ServiceRecentDetailModel mappingToServiceRecentDetailModel(ServiceInfo serviceInfo) {
+
+		ServiceRecentDetailModel model = new ServiceRecentDetailModel();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		
+		model.setServiceInfoId(serviceInfo.getServiceInfoId());
+		model.setServiceName(serviceInfo.getServiceName());
+		model.setServiceInfoId(serviceInfo.getServiceInfoId());
+		model.setModifiedDate(sdf.format(serviceInfo.getModifiedDate()));
+		model.setCreateDate(sdf.format(serviceInfo.getCreateDate()));
+		model.setServiceCode(serviceInfo.getServiceCode());
+		model.setServiceName(serviceInfo.getServiceName());
+		model.setProcessText(serviceInfo.getProcessText());
+		model.setMethodText(serviceInfo.getMethodText());
+		model.setDossierText(serviceInfo.getDossierText());
+		model.setConditionText(serviceInfo.getConditionText());
+		model.setDurationText(serviceInfo.getDurationText());
+		model.setApplicantText(serviceInfo.getApplicantText());
+		model.setRegularText(serviceInfo.getRegularText());
+		model.setResultText(serviceInfo.getResultText());
+		model.setFeeText(serviceInfo.getFeeText());
+		model.setAdministrationCode(serviceInfo.getAdministrationCode());
+		model.setAdministrationName(serviceInfo.getAdministrationName());
+		model.setDomainCode(serviceInfo.getDomainCode());
+		model.setDomainName(serviceInfo.getDomainName());
+		model.setMaxLevel(serviceInfo.getMaxLevel());
+		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
+
+		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
+				.getByServiceInfoId(serviceInfo.getServiceInfoId());
+		
+		
+		List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(serviceInfo.getGroupId(),
+				serviceInfo.getServiceInfoId());
+		
+		List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
+		if (configList != null && configList.size() > 0) {
+			ServiceInfoServiceConfig cf = null;
+			for (ServiceConfig serviceConfig : configList) {
+				cf = new ServiceInfoServiceConfig();
+
+				cf.setServiceConfigId(serviceConfig.getServiceConfigId());
+				cf.setGovAgencyCode(serviceConfig.getGovAgencyCode());
+				cf.setGovAgencyName(serviceConfig.getGovAgencyName());
+				cf.setServiceInstruction(serviceConfig.getServiceInstruction());
+				cf.setServiceUr(serviceConfig.getServiceUrl());
+				cf.setServiceLevel(serviceConfig.getServiceLevel());
+
+			lsServiceConfig.add(cf);
+			}
+		}
+
+		model.getServiceConfigs().addAll(lsServiceConfig);
+		model.getFileTemplates().addAll(mappingToFileTemplates(serviceFileTemplates));
+
+		return model;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(ServiceInfoUtils.class);

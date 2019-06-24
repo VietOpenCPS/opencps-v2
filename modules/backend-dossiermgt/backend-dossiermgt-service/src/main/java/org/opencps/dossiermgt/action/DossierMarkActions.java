@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 public interface DossierMarkActions {
 
 	public DossierMark addDossierMark(long groupId, long dossierId, String dossierPartNo, Integer fileMark,
-			Integer fileCheck, String fileComment, ServiceContext serviceContext)
+			Integer fileCheck, String fileComment, String recordCount, ServiceContext serviceContext)
 			throws PortalException, SystemException;
 
 	public List<DossierMark> getDossierMarks(long groupId, long dossierId);

@@ -71,8 +71,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="public_" />
 		</finder>
-
-
+		<finder name="F_GID_SC" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="serviceCode" arrayable-operator="OR"/>
+		</finder>
 		<!-- References -->
 
 	</entity>
@@ -186,6 +188,7 @@
 		<column name="gateNumber" type="String" />
 		<column name="state" type="int" />
 		<column name="bookingDate" type="Date" />
+		<column name="speaking" type="boolean" />
 
 		<!-- Order -->
 
@@ -593,15 +596,15 @@
 			<finder-column name="dossierStatus" />
 		</finder>
 
-		<!-- References -->
-        <finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="companyId"></finder-column>
-            <finder-column name="govAgencyCode"></finder-column>
-            <finder-column name="serviceCode"></finder-column>
-            <finder-column name="dossierTemplateNo"></finder-column>
-            <finder-column name="dossierStatus" comparator="!="></finder-column>
-        </finder>
+			<!-- References -->
+		<finder name="G_C_GAC_SC_DTNO_NOTDS" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="companyId"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="dossierTemplateNo"></finder-column>
+			<finder-column name="dossierStatus" comparator="!="></finder-column>
+		</finder>
 
 		<finder name="F_GID_GOV_DID" return-type="Dossier">
 			<finder-column name="groupId" />
@@ -609,13 +612,26 @@
 			<finder-column name="serviceCode" />
 			<finder-column name="dossierId" />
 		</finder>
-        <finder name="G_NOTO_DS_SC_GC" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="originality" comparator="!="></finder-column>
-            <finder-column name="dossierStatus"></finder-column>
-            <finder-column name="serviceCode"></finder-column>
-            <finder-column name="govAgencyCode"></finder-column>
-        </finder>
+		<finder name="G_NOTO_DS_SC_GC" return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="originality" comparator="!="></finder-column>
+			<finder-column name="dossierStatus"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+		</finder>
+
+		<finder name="GID_GC_SC_DTN_DS_APP_DELEGATE" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="govAgencyCode" />
+			<finder-column name="serviceCode" />
+			<finder-column name="dossierTemplateNo" />
+			<finder-column name="dossierStatus" arrayable-operator="OR"/>
+			<finder-column name="applicantIdNo" />
+			<finder-column name="applicantIdType" />
+			<finder-column name="delegateIdNo" />
+			<finder-column name="originality" />
+		</finder>
+
 		<finder return-type="Collection" name="G_O_DID">
 			<finder-column name="groupId" />
 			<finder-column name="originDossierId" />
@@ -2083,6 +2099,7 @@
 		<column name="fileCheck" type="int" />
 		<column name="fileMark" type="int" />
 		<column name="fileComment" type="String" />
+		<column name="recordCount" type="String" />
 
 		<finder return-type="DossierMark" name="G_DID_PN">
 			<finder-column name="groupId" />
@@ -2211,6 +2228,7 @@
 		<column name="queryParams" type="String" />
 		<column name="tableConfig" type="String" />
 		<column name="buttonConfig" type="String" />
+		<column name="icon" type="String" />
 		
         <order by="asc">
             <order-column name="order" order-by="asc" case-sensitive="true"></order-column>

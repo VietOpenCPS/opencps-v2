@@ -23,4 +23,5 @@ public class BookingTerm {
 	public static final String TO_CREATE_DATE = "toCreateDate";
 	public static final String FROM_BOOKING_DATE = "fromBookingDate";
 	public static final String TO_BOOKING_DATE = "toBookingDate";
+	public static final String SPEAKING = "speaking";
 }

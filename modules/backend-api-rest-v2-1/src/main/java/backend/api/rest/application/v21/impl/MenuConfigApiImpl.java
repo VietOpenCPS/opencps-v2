@@ -56,7 +56,7 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			
 			MenuConfig ett = action.addMenuConfig(userId, groupId, body.getMenuGroup(), body.getMenuName(),
 					body.getOrder(), body.getMenuType(), body.getQueryParams(), body.getTableConfig(),
-					body.getButtonConfig(), serviceContext);
+					body.getButtonConfig(), body.getIcon(), serviceContext);
 
 			body = parsing.getModel(ett);
 			_log.info("====END ADD MENU CONFIG==== ");
@@ -117,7 +117,7 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 			
 			MenuConfig ett = action.updateMenuConfig(Long.valueOf(id), userId, groupId, body.getMenuGroup(), body.getMenuName(),
 					body.getOrder(), body.getMenuType(), body.getQueryParams(), body.getTableConfig(),
-					body.getButtonConfig(), serviceContext);
+					body.getButtonConfig(), body.getIcon(), serviceContext);
 
 			body = parsing.getModel(ett);
 			_log.info("====END UPDATE MENU CONFIG==== ");

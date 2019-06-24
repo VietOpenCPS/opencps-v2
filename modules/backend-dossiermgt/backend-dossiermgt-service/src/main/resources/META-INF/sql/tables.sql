@@ -41,7 +41,8 @@ create table opencps_booking (
 	checkinDate DATE null,
 	gateNumber VARCHAR(75) null,
 	state_ INTEGER,
-	bookingDate DATE null
+	bookingDate DATE null,
+	speaking BOOLEAN
 );
 
 create table opencps_deliverable (
@@ -378,7 +379,8 @@ create table opencps_dossiermark (
 	dossierPartNo VARCHAR(75) null,
 	fileCheck INTEGER,
 	fileMark INTEGER,
-	fileComment VARCHAR(75) null
+	fileComment VARCHAR(75) null,
+	recordCount VARCHAR(75) null
 );
 
 create table opencps_dossierpart (
@@ -562,7 +564,8 @@ create table opencps_menuconfig (
 	menuType INTEGER,
 	queryParams VARCHAR(75) null,
 	tableConfig VARCHAR(75) null,
-	buttonConfig VARCHAR(75) null
+	buttonConfig VARCHAR(75) null,
+	icon VARCHAR(75) null
 );
 
 create table opencps_menurole (

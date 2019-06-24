@@ -186,7 +186,18 @@ import javax.xml.bind.annotation.XmlType;
     "originality",
     "origin",
     "originDossierId",
-    "originDossierNo"
+    "originDossierNo",
+    "delegateName",
+    "delegateIdNo",
+    "delegateTelNo",
+    "delegateEmail",
+    "delegateAddress",
+    "delegateCityCode",
+    "delegateCityName",
+    "delegateDistrictCode",
+    "delegateDistrictName",
+    "delegateWardCode",
+    "delegateWardName",
 })
 public class DossierDataModel {
 
@@ -279,6 +290,17 @@ public class DossierDataModel {
 	protected String origin;
 	protected Integer originDossierId;
 	protected String originDossierNo;
+	protected String delegateAddress;
+    protected String delegateCityCode;
+    protected String delegateCityName;
+    protected String delegateDistrictCode;
+    protected String delegateDistrictName;
+    protected String delegateEmail;
+    protected String delegateIdNo;
+    protected String delegateName;
+    protected String delegateTelNo;
+    protected String delegateWardCode;
+    protected String delegateWardName;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -2000,6 +2022,94 @@ public class DossierDataModel {
 
 	public void setOriginDossierNo(String originDossierNo) {
 		this.originDossierNo = originDossierNo;
+	}
+
+	public String getDelegateAddress() {
+		return delegateAddress;
+	}
+
+	public void setDelegateAddress(String delegateAddress) {
+		this.delegateAddress = delegateAddress;
+	}
+
+	public String getDelegateCityCode() {
+		return delegateCityCode;
+	}
+
+	public void setDelegateCityCode(String delegateCityCode) {
+		this.delegateCityCode = delegateCityCode;
+	}
+
+	public String getDelegateCityName() {
+		return delegateCityName;
+	}
+
+	public void setDelegateCityName(String delegateCityName) {
+		this.delegateCityName = delegateCityName;
+	}
+
+	public String getDelegateDistrictCode() {
+		return delegateDistrictCode;
+	}
+
+	public void setDelegateDistrictCode(String delegateDistrictCode) {
+		this.delegateDistrictCode = delegateDistrictCode;
+	}
+
+	public String getDelegateDistrictName() {
+		return delegateDistrictName;
+	}
+
+	public void setDelegateDistrictName(String delegateDistrictName) {
+		this.delegateDistrictName = delegateDistrictName;
+	}
+
+	public String getDelegateEmail() {
+		return delegateEmail;
+	}
+
+	public void setDelegateEmail(String delegateEmail) {
+		this.delegateEmail = delegateEmail;
+	}
+
+	public String getDelegateIdNo() {
+		return delegateIdNo;
+	}
+
+	public void setDelegateIdNo(String delegateIdNo) {
+		this.delegateIdNo = delegateIdNo;
+	}
+
+	public String getDelegateName() {
+		return delegateName;
+	}
+
+	public void setDelegateName(String delegateName) {
+		this.delegateName = delegateName;
+	}
+
+	public String getDelegateTelNo() {
+		return delegateTelNo;
+	}
+
+	public void setDelegateTelNo(String delegateTelNo) {
+		this.delegateTelNo = delegateTelNo;
+	}
+
+	public String getDelegateWardCode() {
+		return delegateWardCode;
+	}
+
+	public void setDelegateWardCode(String delegateWardCode) {
+		this.delegateWardCode = delegateWardCode;
+	}
+
+	public String getDelegateWardName() {
+		return delegateWardName;
+	}
+
+	public void setDelegateWardName(String delegateWardName) {
+		this.delegateWardName = delegateWardName;
 	}
 
 }

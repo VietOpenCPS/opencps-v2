@@ -324,25 +324,22 @@ public class UserActions implements UserInterface {
 	@Override
 	public String addPreferences(
 		long id, long groupId, String preferencesData,
-		ServiceContext serviceContext)
-		throws NoSuchUserException, UnauthenticationException,
-		UnauthorizationException, DuplicateCategoryException,
-		NotFoundException {
+		ServiceContext serviceContext) {
 
-		Preferences preferences =
-			PreferencesLocalServiceUtil.fetchByF_userId(groupId, id);
-
-		if (Validator.isNull(preferences)) {
-			preferences = PreferencesLocalServiceUtil.addPreferences(
-				id, groupId, preferencesData, serviceContext);
+		try {
+			Preferences preferences = PreferencesLocalServiceUtil.fetchByF_userId(groupId, id);
+			if (Validator.isNull(preferences)) {
+				preferences = PreferencesLocalServiceUtil.addPreferences(id, groupId, preferencesData, serviceContext);
+			} else {
+				preferences = PreferencesLocalServiceUtil.updatePreferences(id, preferences.getPreferencesId(),
+						preferencesData, serviceContext);
+			}
+			return preferences.getPreferences();
+		} catch (Exception e) {
+			_log.error(e);
 		}
-		else {
-			preferences = PreferencesLocalServiceUtil.updatePreferences(
-				id, preferences.getPreferencesId(), preferencesData,
-				serviceContext);
-		}
+		return null;
 
-		return preferences.getPreferences();
 	}
 
 	@Override

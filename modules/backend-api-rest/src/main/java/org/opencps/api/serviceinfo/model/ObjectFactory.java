@@ -156,4 +156,20 @@ public class ObjectFactory {
         return new ServiceInfoServiceConfig();
     }
 
+    /**
+     * Create an instance of {@link ServiceInfoRecentResultModel }
+     * 
+     */
+    public ServiceInfoRecentResultModel createServiceInfoRecentResultModel() {
+        return new ServiceInfoRecentResultModel();
+    }
+
+    /**
+     * Create an instance of {@link ServiceInfoRecentResultModel }
+     * 
+     */
+    public ServiceRecentDetailModel createServiceRecentDetailModel() {
+        return new ServiceRecentDetailModel();
+    }
+
 }

@@ -177,6 +177,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="icon">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 							<xsd:element name="roles">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
