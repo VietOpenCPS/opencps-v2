@@ -61,6 +61,23 @@ dependencies {
     compile name : "jcaptcha-api-1.0", transitive:false
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7' 
 	testCompile group: "junit", name: "junit", version: "4.12"
+	
+	// https://mvnrepository.com/artifact/org.apache.poi/poi
+	//compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
+	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+	//compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.1'
+	//compileInclude name : "poi-3.10.1", transitive:false
+	//compileInclude name : "poi-ooxml-3.10.1", transitive:false
+	//compileInclude name : "poi-ooxml-schemas-3.10.1", transitive:false
+	//compileInclude name : "commons-collections4-4.0", transitive:false
+	compileInclude name : "poi-4.0.1", transitive:false
+	compileInclude name : "poi-ooxml-4.0.1", transitive:false
+	compileInclude name : "poi-ooxml-schemas-4.0.1", transitive:false
+	compileInclude name : "xmlbeans-3.0.2", transitive:false
+	compileInclude name : "dom4j-1.6.1", transitive:false
+	compileInclude name : "commons-collections4-4.1", transitive:false
+	compileInclude name : "commons-compress-1.18", transitive:false
+
 }
 
 repositories {

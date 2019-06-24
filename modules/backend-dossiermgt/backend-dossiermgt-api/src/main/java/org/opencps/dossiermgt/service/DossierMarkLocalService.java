@@ -82,7 +82,7 @@ public interface DossierMarkLocalService extends BaseLocalService,
 
 	public DossierMark addDossierMark(long groupId, long dossierId,
 		String dossierPartNo, Integer fileMark, Integer fileCheck,
-		String fileComment, ServiceContext serviceContext)
+		String fileComment, String recordCount, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)

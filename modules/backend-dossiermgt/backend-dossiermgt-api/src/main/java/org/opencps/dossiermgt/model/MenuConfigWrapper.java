@@ -73,6 +73,7 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 		attributes.put("queryParams", getQueryParams());
 		attributes.put("tableConfig", getTableConfig());
 		attributes.put("buttonConfig", getButtonConfig());
+		attributes.put("icon", getIcon());
 
 		return attributes;
 	}
@@ -162,6 +163,12 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 		if (buttonConfig != null) {
 			setButtonConfig(buttonConfig);
 		}
+
+		String icon = (String)attributes.get("icon");
+
+		if (icon != null) {
+			setIcon(icon);
+		}
 	}
 
 	@Override
@@ -217,6 +224,16 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 	@Override
 	public long getGroupId() {
 		return _menuConfig.getGroupId();
+	}
+
+	/**
+	* Returns the icon of this menu config.
+	*
+	* @return the icon of this menu config
+	*/
+	@Override
+	public String getIcon() {
+		return _menuConfig.getIcon();
 	}
 
 	/**
@@ -428,6 +445,16 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 	@Override
 	public void setGroupId(long groupId) {
 		_menuConfig.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the icon of this menu config.
+	*
+	* @param icon the icon of this menu config
+	*/
+	@Override
+	public void setIcon(String icon) {
+		_menuConfig.setIcon(icon);
 	}
 
 	/**

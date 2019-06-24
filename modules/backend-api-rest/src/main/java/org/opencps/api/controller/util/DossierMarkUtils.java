@@ -26,6 +26,7 @@ public class DossierMarkUtils {
 			model.setFileCheck(dossierMark.getFileCheck());
 			model.setFileMark(dossierMark.getFileMark());
 			model.setFileComment(dossierMark.getFileComment());
+			model.setRecordCount(dossierMark.getRecordCount());
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -44,6 +45,7 @@ public class DossierMarkUtils {
 				model.setFileCheck(dossierMark.getFileCheck());
 				model.setFileMark(dossierMark.getFileMark());
 				model.setFileComment(dossierMark.getFileComment());
+				model.setRecordCount(dossierMark.getRecordCount());
 				
 				result.add(model);
 			}

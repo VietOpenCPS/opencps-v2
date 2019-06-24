@@ -216,6 +216,7 @@ public class DossierDocumentUtils {
 				jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+				jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
 //				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 				dossierMarkArr.put(jsonMark);
 			}
@@ -240,6 +241,7 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
 						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 						dossierMarkArr.put(jsonMark);
 					}

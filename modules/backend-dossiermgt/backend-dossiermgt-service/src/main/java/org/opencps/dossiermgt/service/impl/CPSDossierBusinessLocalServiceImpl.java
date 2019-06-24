@@ -3245,11 +3245,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		String password = StringPool.BLANK;
 		if (Validator.isNotNull(input.getPassword())) {
 			password = input.getPassword();
-		} else {
-			if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-				password = PwdGenerator.getPinNumber();
-			}
+		} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
+			password = PwdGenerator.getPinNumber();
 		}
+
 		String postalCityName = StringPool.BLANK;
 		
 		if (Validator.isNotNull(input.getPostalCityCode())) {
@@ -3319,7 +3318,32 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("originality: "+originality);
 			String templateNo = dossier.getDossierTemplateNo();
 			_log.debug("templateNo: "+templateNo);
-			if (Validator.isNotNull(templateNo)) {
+			if (Validator.isNotNull(input.getDossierMarkArr())) {
+				JSONArray markArr = JSONFactoryUtil.createJSONArray(input.getDossierMarkArr());
+				if (markArr != null && markArr.length() > 0) {
+					List<DossierMark> lstMarks = dossierMarkLocalService.getDossierMarks(groupId, dossier.getDossierId());
+					Map<String, DossierMark> mapMarks = new HashMap<>();
+					for (DossierMark dm : lstMarks) {
+						mapMarks.put(dm.getDossierPartNo(), dm);
+					}
+
+					for (int i = 0; i < markArr.length(); i++) {
+						JSONObject jsonMark = markArr.getJSONObject(i);
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[markArr.length()];
+						
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+						model.setDossierId(dossier.getDossierId());
+						model.setDossierPartNo(jsonMark.getString("partNo"));
+						model.setFileCheck(0);
+						model.setFileMark(jsonMark.getInt("fileMark"));
+						model.setFileComment(StringPool.BLANK);
+						model.setRecordCount(StringPool.BLANK);
+						marks[i] = model;
+
+						dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+					}
+				}
+			} else if (Validator.isNotNull(templateNo)) {
 				List<DossierPart> partList = dossierPartLocalService.getByTemplateNo(groupId, templateNo);
 //						_log.info("partList: "+partList);
 				if (partList != null && partList.size() > 0) {
@@ -3341,6 +3365,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						model.setFileCheck(0);
 						model.setFileMark(fileMark);
 						model.setFileComment(StringPool.BLANK);
+						model.setRecordCount(StringPool.BLANK);
 						marks[count++] = model;
 					}
 					
@@ -4296,33 +4321,33 @@ public class CPSDossierBusinessLocalServiceImpl
 			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
 			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
 			}
-			   
-			if (oldDossier == null || oldDossier.getOriginality() == 0) {
-				Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
-						govAgencyCode, govAgencyName, applicantName, applicantType,
-						applicantIdNo, applicantIdDate, address, cityCode,
-							cityName, districtCode, districtName, wardCode, wardName,
-							contactName, contactTelNo, contactEmail,
-							dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-							StringPool.BLANK, Boolean.valueOf(online), false, applicantNote,
-							originality, 
-							createDateLong != 0 ? new Date(createDateLong) : null,
-							modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
-							submitDateLong != 0 ? new Date(submitDateLong) : null,
-							receiveDateLong != 0 ? new Date(receiveDateLong) : null,
-							dueDateLong != 0 ? new Date(dueDateLong) : null,
-							releaseDateLong != 0 ? new Date(releaseDateLong) : null,
-							finishDateLong != 0 ? new Date(finishDateLong) : null,
-							cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
-							correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
-							endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
-							extendDateLong != 0 ? new Date(extendDateLong) : null,
-							processDateLong != 0 ? new Date(processDateLong) : null,
-							input.getDossierNo(), input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(), input.getDossierSubStatusText(),
-							input.getDossierActionId() != null ? input.getDossierActionId(): 0, submissionNote, lockState, input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(), 
-							input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(), 
-							input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(), input.getDurationUnit(), input.getDossierName(), input.getProcessNo(),
-							serviceContext);
+
+		if (oldDossier == null || oldDossier.getOriginality() == 0) {
+			Dossier dossier = actions.publishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, applicantIdDate, address,
+					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+					contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
+					createDateLong != 0 ? new Date(createDateLong) : null,
+					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+					submitDateLong != 0 ? new Date(submitDateLong) : null,
+					receiveDateLong != 0 ? new Date(receiveDateLong) : null,
+					dueDateLong != 0 ? new Date(dueDateLong) : null,
+					releaseDateLong != 0 ? new Date(releaseDateLong) : null,
+					finishDateLong != 0 ? new Date(finishDateLong) : null,
+					cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
+					correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
+					endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
+					extendDateLong != 0 ? new Date(extendDateLong) : null,
+					processDateLong != 0 ? new Date(processDateLong) : null, input.getDossierNo(),
+					input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(),
+					input.getDossierSubStatusText(),
+					input.getDossierActionId() != null ? input.getDossierActionId() : 0, submissionNote, lockState,
+					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
+					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
+					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
+					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), serviceContext);
 				
 				return dossier;
 			}

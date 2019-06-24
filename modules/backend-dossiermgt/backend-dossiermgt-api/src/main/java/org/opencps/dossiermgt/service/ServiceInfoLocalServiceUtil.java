@@ -256,6 +256,11 @@ public class ServiceInfoLocalServiceUtil {
 		return getService().getByCode(groupId, serviceCode);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> getByF_GID_SC(
+		long groupId, String[] serviceArr) {
+		return getService().getByF_GID_SC(groupId, serviceArr);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return getService().getExportActionableDynamicQuery(portletDataContext);

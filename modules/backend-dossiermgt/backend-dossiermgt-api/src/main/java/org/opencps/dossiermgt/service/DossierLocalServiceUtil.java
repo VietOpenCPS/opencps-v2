@@ -360,6 +360,16 @@ public class DossierLocalServiceUtil {
 			serviceCode, govAgencyCode, dossierTemplateNo, originDossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByGID_GC_SC_DTN_DS_APP_DELEGATE(
+		long groupId, String govAgencyCode, String serviceCode,
+		String dossierTemplateNo, String[] statusArr, String applicantIdNo,
+		String applicantIdType, String delegateIdNo, int originality) {
+		return getService()
+				   .getByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode,
+			serviceCode, dossierTemplateNo, statusArr, applicantIdNo,
+			applicantIdType, delegateIdNo, originality);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> getByGroupAndOriginDossierNo(
 		long groupId, String originDossierNo) {
 		return getService()
@@ -702,7 +712,16 @@ public class DossierLocalServiceUtil {
 		java.util.Date releaseDate, java.util.Date finishDate,
 		java.util.Date cancellingDate, java.util.Date correctingDate,
 		java.util.Date endorsementDate, java.util.Date extendDate,
-		java.util.Date processDate,
+		java.util.Date processDate, String dossierNo, String dossierStatus,
+		String dossierStatusText, String dossierSubStatus,
+		String dossierSubStatusText, long dossierActionId,
+		String submissionNote, String lockState, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, double durationCount, int durationUnit,
+		String dossierName, String processNo,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -715,7 +734,14 @@ public class DossierLocalServiceUtil {
 			postalCityCode, postalCityName, postalTelNo, online, notification,
 			applicantNote, originality, createDate, modifiedDate, submitDate,
 			receiveDate, dueDate, releaseDate, finishDate, cancellingDate,
-			correctingDate, endorsementDate, extendDate, processDate, context);
+			correctingDate, endorsementDate, extendDate, processDate,
+			dossierNo, dossierStatus, dossierStatusText, dossierSubStatus,
+			dossierSubStatusText, dossierActionId, submissionNote, lockState,
+			delegateName, delegateIdNo, delegateTelNo, delegateEmail,
+			delegateAddress, delegateCityCode, delegateCityName,
+			delegateDistrictCode, delegateDistrictName, delegateWardCode,
+			delegateWardName, durationCount, durationUnit, dossierName,
+			processNo, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier publishImportDossier(

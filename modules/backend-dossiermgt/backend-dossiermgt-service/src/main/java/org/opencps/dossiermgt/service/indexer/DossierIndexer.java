@@ -682,6 +682,18 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_NO_SEARCH, originDossierNoSearch);
 			}
 			document.addTextSortable(DossierTerm.REGISTER, object.getRegisterBookCode());
+			//Info user create dossier
+			document.addTextSortable(DossierTerm.DELEGATE_NAME, object.getDelegateName());
+			document.addTextSortable(DossierTerm.DELEGATE_ID_NO, object.getDelegateIdNo());
+			document.addTextSortable(DossierTerm.DELEGATE_EMAIL, object.getDelegateEmail());
+			document.addTextSortable(DossierTerm.DELEGATE_TELNO, object.getDelegateTelNo());
+			document.addTextSortable(DossierTerm.DELEGATE_ADDRESS, object.getDelegateAddress());
+			document.addTextSortable(DossierTerm.DELEGATE_CITYCODE, object.getDelegateCityCode());
+			document.addTextSortable(DossierTerm.DELEGATE_CITYNAME, object.getDelegateCityName());
+			document.addTextSortable(DossierTerm.DELEGATE_DISTRICTCODE, object.getDistrictCode());
+			document.addTextSortable(DossierTerm.DELEGATE_DISTRICTNAME, object.getDistrictName());
+			document.addTextSortable(DossierTerm.DELEGATE_WARDCODE, object.getWardCode());
+			document.addTextSortable(DossierTerm.DELEGATE_WARDNAME, object.getWardName());
 			
 			//Add payment status
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);

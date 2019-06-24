@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,7 +29,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -60,7 +58,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.http.HttpResponse;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
@@ -87,10 +84,7 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -100,18 +94,15 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
-import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -121,7 +112,6 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -144,7 +134,6 @@ import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
@@ -154,7 +143,6 @@ import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
@@ -168,19 +156,12 @@ import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
-import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 import uk.org.okapibarcode.backend.Code128;
@@ -251,7 +232,6 @@ public class DossierManagementImpl implements DossierManagement {
 //				}
 //			}
 
-			String follow = query.getFollow();
 			String step = query.getStep();
 			String submitting = query.getSubmitting();
 			//Process Top using statistic
@@ -334,11 +314,12 @@ public class DossierManagementImpl implements DossierManagement {
 			String serviceName = query.getServiceName();
 			Integer originDossierId = query.getOriginDossierId();
 			String owner = query.getOwner();
-			String applicantUserIdNo = null;
-			if (Boolean.valueOf(owner)) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, applicantIdNo);
+			String follow = query.getFollow();
+			String applicantFollowIdNo = null;
+			if (Boolean.valueOf(follow)) {
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
 				if (applicant != null) {
-					applicantUserIdNo = applicant.getApplicantIdNo();
+					applicantFollowIdNo = applicant.getApplicantIdNo();
 				}
 			}
 
@@ -357,8 +338,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DAY, query.getDay());
 			params.put(DossierTerm.STEP, step);
 			params.put(DossierTerm.OWNER, owner);
-			params.put(DossierTerm.APPLICANT_USER_ID_NO,
-					Validator.isNotNull(applicantUserIdNo) ? applicantUserIdNo : StringPool.BLANK);
+			params.put(DossierTerm.APPLICANT_FOLLOW_ID_NO,
+					Validator.isNotNull(applicantFollowIdNo) ? applicantFollowIdNo : StringPool.BLANK);
 			params.put(DossierTerm.SUBMITTING, submitting);
 
 			params.put(DossierTerm.FOLLOW, follow);
@@ -949,90 +930,33 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext, DossierUtils.convertFormModelToInputModel(input));
+			String applicantName = Validator.isNotNull(input.getApplicantName()) ? input.getApplicantName() : StringPool.BLANK;
+			String delegateName = Validator.isNotNull(input.getDelegateName()) ? input.getDelegateName() : StringPool.BLANK;
+			if (Boolean.valueOf(input.getImporting())) {
+				String[] statusArr = {StringPool.BLANK, DossierTerm.DOSSIER_STATUS_NEW};
+				List<Dossier> dossierList = DossierLocalServiceUtil.getByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+						input.getGovAgencyCode(), input.getServiceCode(), input.getDossierTemplateNo(), statusArr,
+						input.getApplicantIdNo(), input.getApplicantIdType(), input.getDelegateIdNo(),
+						Validator.isNotNull(input.getOriginality()) ? Integer.valueOf(input.getOriginality()) : 0);
+				if (dossierList != null && dossierList.size() > 0) {
+					for (Dossier dossierImport : dossierList) {
+						if (applicantName.equalsIgnoreCase(dossierImport.getApplicantName())
+								&& delegateName.equalsIgnoreCase(dossierImport.getDelegateName())) {
+							return Response.status(HttpStatus.SC_CONFLICT).entity("{CONFLICT}").build();
+						}
+					}
+				}
+			}
+
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
+					DossierUtils.convertFormModelToInputModel(input));
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 			return Response.status(HttpStatus.SC_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
-	private void updateApplicantInfo(Dossier dossier, Date applicantIdDate,
-			String applicantIdNo,
-			String applicantIdType,
-			String applicantName,
-			String address,
-			String cityCode,
-			String cityName,
-			String districtCode,
-			String districtName,
-			String wardCode,
-			String wardName,
-			String contactEmail,
-			String contactTelNo) {
-		dossier.setApplicantIdDate(applicantIdDate);
-		dossier.setApplicantIdNo(applicantIdNo);
-		dossier.setApplicantIdType(applicantIdType);
-		dossier.setApplicantName(applicantName);
-		dossier.setAddress(address);
-		dossier.setCityCode(cityCode);
-		dossier.setCityName(cityName);
-		dossier.setDistrictCode(districtCode);
-		dossier.setDistrictName(districtName);
-		dossier.setWardCode(wardCode);
-		dossier.setWardName(wardName);
-		dossier.setContactEmail(contactEmail);
-		dossier.setContactTelNo(contactTelNo);
-		
-		dossier.setDelegateAddress(address);
-		dossier.setDelegateCityCode(cityCode);
-		dossier.setDelegateCityName(cityName);
-		dossier.setDelegateDistrictCode(districtCode);
-		dossier.setDelegateDistrictName(districtName);
-		dossier.setDelegateEmail(contactEmail);
-		dossier.setDelegateIdNo(applicantIdNo);
-		dossier.setDelegateName(applicantName);
-		dossier.setDelegateTelNo(contactTelNo);
-		dossier.setDelegateWardCode(wardCode);
-		dossier.setDelegateWardName(wardName);		
-	}
-	private void updateDelegateApplicant(Dossier dossier, DossierInputModel input) {
-		if (Validator.isNotNull(input.getDelegateName())) {
-			dossier.setDelegateName(input.getDelegateName());
-		}
-		if (Validator.isNotNull(input.getDelegateIdNo())) {
-			dossier.setDelegateIdNo(input.getDelegateIdNo());
-		}
-		if (Validator.isNotNull(input.getDelegateTelNo())) {
-			dossier.setDelegateTelNo(input.getDelegateTelNo());
-		}
-		if (Validator.isNotNull(input.getDelegateEmail())) {
-			dossier.setDelegateEmail(input.getDelegateEmail());
-		}
-		if (Validator.isNotNull(input.getDelegateAddress())) {
-			dossier.setDelegateAddress(input.getDelegateAddress());
-		}
-		if (Validator.isNotNull(input.getDelegateCityCode())) {
-			dossier.setDelegateCityCode(input.getDelegateCityCode());
-		}
-		if (Validator.isNotNull(input.getDelegateCityName())) {
-			dossier.setDelegateCityName(input.getDelegateCityName());
-		}
-		if (Validator.isNotNull(input.getDelegateDistrictCode())) {
-			dossier.setDelegateDistrictCode(input.getDelegateDistrictCode());
-		}
-		if (Validator.isNotNull(input.getDelegateDistrictName())) {
-			dossier.setDelegateDistrictName(input.getDelegateDistrictName());
-		}
-		if (Validator.isNotNull(input.getDelegateWardCode())) {
-			dossier.setDelegateWardCode(input.getDelegateWardCode());
-		}		
-		if (Validator.isNotNull(input.getDelegateWardName())) {
-			dossier.setDelegateWardCode(input.getDelegateWardName());
-		}		
-	}
-	
 	@Override
 	public Response getDetailDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String secretKey) {
@@ -1895,7 +1819,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkActions actions = new DossierMarkActionsImpl();
 
 			DossierMark dossierMark = actions.addDossierMark(groupId, dossierId, dossierPartNo, input.getFileMark(),
-					input.getFileCheck(), input.getFileComment(), serviceContext);
+					input.getFileCheck(), input.getFileComment(), input.getRecordCount(), serviceContext);
 
 			DossierMarkResultDetailModel result = DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
 
@@ -2848,10 +2772,10 @@ public class DossierManagementImpl implements DossierManagement {
 				actionObj.put("stepCode", da.getStepCode());
 				actionObj.put("stepName", da.getStepName());
 				actionObj.put("userId", da.getUserId());				
-					if (mapFiles.containsKey(da.getDossierActionId())) {
-						actionObj.put("files", mapFiles.get(da.getDossierActionId()));
-					}
-					_log.info("Action obj: " + actionObj.toJSONString());
+				if (mapFiles.containsKey(da.getPreviousActionId())) {
+					actionObj.put("files", mapFiles.get(da.getPreviousActionId()));
+				}
+				_log.info("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			
 			

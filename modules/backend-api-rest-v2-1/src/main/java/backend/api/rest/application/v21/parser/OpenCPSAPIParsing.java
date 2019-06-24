@@ -250,6 +250,7 @@ public class OpenCPSAPIParsing {
 		menuConfigItem.setQueryParams(menuConfig.getQueryParams());
 		menuConfigItem.setButtonConfig(menuConfig.getButtonConfig());
 		menuConfigItem.setTableConfig(menuConfig.getTableConfig());
+		menuConfigItem.setIcon(menuConfig.getIcon());
 		
 		return menuConfigItem;
 	}

@@ -341,6 +341,27 @@ public interface BookingModel extends BaseModel<Booking>, GroupedModel,
 	 */
 	public void setBookingDate(Date bookingDate);
 
+	/**
+	 * Returns the speaking of this booking.
+	 *
+	 * @return the speaking of this booking
+	 */
+	public boolean getSpeaking();
+
+	/**
+	 * Returns <code>true</code> if this booking is speaking.
+	 *
+	 * @return <code>true</code> if this booking is speaking; <code>false</code> otherwise
+	 */
+	public boolean isSpeaking();
+
+	/**
+	 * Sets whether this booking is speaking.
+	 *
+	 * @param speaking the speaking of this booking
+	 */
+	public void setSpeaking(boolean speaking);
+
 	@Override
 	public boolean isNew();
 

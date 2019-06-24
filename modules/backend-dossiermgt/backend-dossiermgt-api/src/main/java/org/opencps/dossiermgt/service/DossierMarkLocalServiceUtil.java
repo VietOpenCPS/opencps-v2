@@ -65,13 +65,13 @@ public class DossierMarkLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.DossierMark addDossierMark(
 		long groupId, long dossierId, String dossierPartNo, Integer fileMark,
-		Integer fileCheck, String fileComment,
+		Integer fileCheck, String fileComment, String recordCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .addDossierMark(groupId, dossierId, dossierPartNo, fileMark,
-			fileCheck, fileComment, serviceContext);
+			fileCheck, fileComment, recordCount, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierMark adminProcessData(

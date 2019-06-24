@@ -248,5 +248,6 @@ public class DossierTerm {
 	public static final String REGISTER = "register";
 	public static final int ORIGINALITY_HSLT = 4;
 	public static final String GROUP_DOSSIER_ID = "groupDossierId";
-	public static final String APPLICANT_USER_ID_NO = "applicantUserIdNo";
+	public static final String APPLICANT_FOLLOW_ID_NO = "applicantFollowIdNo";
+	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 }

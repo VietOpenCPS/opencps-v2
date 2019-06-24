@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierPartNo",
     "fileMark",
     "fileCheck",
-    "fileComment"
+    "fileComment",
+    "recordCount"
 })
 public class DossierMarkModel {
 
@@ -50,6 +51,7 @@ public class DossierMarkModel {
 	protected Integer fileMark;
 	protected Integer fileCheck;
 	protected String fileComment;
+	protected String recordCount;
 
 	public Long getDossierId() {
 		return dossierId;
@@ -80,6 +82,12 @@ public class DossierMarkModel {
 	}
 	public void setFileComment(String fileComment) {
 		this.fileComment = fileComment;
+	}
+	public String getRecordCount() {
+		return recordCount;
+	}
+	public void setRecordCount(String recordCount) {
+		this.recordCount = recordCount;
 	}
 
 }

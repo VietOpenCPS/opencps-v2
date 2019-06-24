@@ -8,6 +8,9 @@
 
 package org.opencps.api.booking.model;
 
+import com.liferay.petra.string.StringPool;
+
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 * 
 */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EformFileTemplateInputModel", propOrder = {
+@XmlType(name = "", propOrder = {
  "className",
  "classPK",
  "serviceCode",
@@ -59,10 +62,11 @@ import javax.xml.bind.annotation.XmlType;
  "checkinDate",
  "gateNumber",
  "state",
- "bookingDate"
+ "bookingDate",
+ "speaking"
 })
 
-@XmlRootElement(name = "EformFileTemplateInputModel")
+@XmlRootElement(name = "BookingInputModel")
 public class BookingInputModel {
 
 	@FormParam(value = "className")
@@ -83,6 +87,9 @@ public class BookingInputModel {
 	protected Integer state;
 	@FormParam(value = "bookingDate")
 	protected String bookingDate;
+	@DefaultValue(StringPool.FALSE)
+	@FormParam(value = "speaking")
+	protected String speaking;
 
 	public String getClassName() {
 		return className;
@@ -137,6 +144,12 @@ public class BookingInputModel {
 	}
 	public void setBookingDate(String bookingDate) {
 		this.bookingDate = bookingDate;
+	}
+	public String getSpeaking() {
+		return speaking;
+	}
+	public void setSpeaking(String speaking) {
+		this.speaking = speaking;
 	}
 
 }

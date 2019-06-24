@@ -3314,10 +3314,16 @@ public class DossierActionsImpl implements DossierActions {
 								}
 								
 //							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
-								JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
-								
+							JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
+
 							formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 							formDataObj.put("url", context.getPortalURL());
+							if (employee != null) {
+								formDataObj.put("userName", employee.getFullName());
+							} else {
+								formDataObj.put("userName", user.getFullName());
+							}
+
 							Message message = new Message();
 //							_log.info("Document script: " + dt.getDocumentScript());
 							JSONObject msgData = JSONFactoryUtil.createJSONObject();
@@ -3788,6 +3794,7 @@ public class DossierActionsImpl implements DossierActions {
 	}
 	
 	private JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
+		jsonData.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 		jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
 		jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
 		jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
@@ -3806,27 +3813,149 @@ public class DossierActionsImpl implements DossierActions {
 		jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
 		jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
 		jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+		jsonData.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
 		jsonData.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
-		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
 		jsonData.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+		jsonData.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+		jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
 		jsonData.put(DossierTerm.RECEIVE_DATE,
 				APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		jsonData.put(DossierTerm.DUE_DATE,
-				APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-		if (dossier.getExtendDate() != null) {
-			jsonData.put(DossierTerm.EXTEND_DATE,
-					APIDateTimeUtils.convertDateToString(dossier.getExtendDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		jsonData.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+		jsonData.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		jsonData.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
+		jsonData.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
+		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+		//
+		Date dueDate = dossier.getDueDate();
+		if (dueDate != null) {
+			ServiceProcess process = ServiceProcessLocalServiceUtil.getByG_PNO(dossier.getGroupId(),
+					dossier.getProcessNo());
+			if (process != null) {
+				String dueDatePattern = process.getDueDatePattern();
+				//_log.info("dueDatePattern: " + dueDatePattern);
+				// _log.info("START DUEDATE TEST");
+				if (Validator.isNotNull(dueDatePattern)) {
+					//_log.info("START DUEDATE TEST");
+					// _log.info("dueDatePattern: "+dueDatePattern);
+					try {
+						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
+						//_log.info("jsonDueDate: " + jsonDueDate);
+						if (jsonDueDate != null) {
+							JSONObject hours = jsonDueDate.getJSONObject("hour");
+							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
+							//_log.info("hours: " + hours);
+							if (hours != null && hours.has("AM") && hours.has("PM")) {
+								//_log.info("AM-PM: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(dossier.getReceiveDate());
+
+								Calendar dueCalendar = Calendar.getInstance();
+								//_log.info("hours: " + receiveCalendar.get(Calendar.HOUR_OF_DAY));
+								if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
+									dueCalendar.setTime(dossier.getDueDate());
+
+									String hoursAfterNoon = hours.getString("AM");
+									//_log.info("hoursAfterNoon: " + hoursAfterNoon);
+
+									if (Validator.isNotNull(hoursAfterNoon)) {
+										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+										if (splitAfter != null) {
+											dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+											dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+										}
+									}
+								} else {
+									dueCalendar.setTime(dossier.getDueDate());
+									String hoursAfterNoon = hours.getString("PM");
+									if (Validator.isNotNull(hoursAfterNoon)) {
+										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
+										if (splitAfter != null) {
+											if (Integer.valueOf(splitAfter[0]) < 12) {
+												dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											} else {
+												//dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
+												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
+												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
+											}
+										}
+									}
+								}
+								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
+										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
+							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+								//_log.info("STRART check new: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(dossier.getReceiveDate());
+								//
+								String receiveHour = processHours.getString("startHour");
+								//_log.info("receiveHour: " + receiveHour);
+
+								if (Validator.isNotNull(receiveHour)) {
+									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
+									if (splitHour != null) {
+										int hourStart = GetterUtil.getInteger(splitHour[0]);
+										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
+											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+													StringPool.COLON);
+											Calendar dueCalendar = Calendar.getInstance();
+											if (splitdueHour != null) {
+												dueCalendar.set(Calendar.HOUR_OF_DAY,
+														GetterUtil.getInteger(splitdueHour[0]));
+												dueCalendar.set(Calendar.MINUTE,
+														GetterUtil.getInteger(splitdueHour[1]));
+											} else {
+												jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+														dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+											}
+											jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+													dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
+										} else {
+											jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(
+													dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+										}
+									}
+								}
+							} else {
+								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
+										.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+							}
+						} else {
+							jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
+									.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+						}
+					} catch (JSONException e) {
+						_log.error(e);
+						jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
+								APIDateTimeUtils._NORMAL_PARTTERN));
+					}
+				} else {
+					jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
+							APIDateTimeUtils._NORMAL_PARTTERN));
+				}
+			} else {
+				jsonData.put(DossierTerm.DUE_DATE,
+						APIDateTimeUtils.convertDateToString(dossier.getDueDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+		} else {
+			jsonData.put(DossierTerm.DUE_DATE, StringPool.BLANK);
 		}
+		//
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.COUNTER, dossier.getCounter());
 		jsonData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+		jsonData.put(DossierTerm.SECRET, dossier.getPassword());
+		jsonData.put(DossierTerm.BRIEF_NOTE, dossier.getBriefNote());
+		jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 		//
 		long groupId = dossier.getGroupId();
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
 		long dossierId = dossier.getDossierId();
 		String templateNo = dossier.getDossierTemplateNo();
-		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossierId);
+		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarksByFileMark(groupId, dossierId, 0);
 		if (dossierMarkList != null && dossierMarkList.size() > 0) {
 			JSONObject jsonMark = null;
 			String partNo;
@@ -3850,7 +3979,44 @@ public class DossierActionsImpl implements DossierActions {
 				dossierMarkArr.put(jsonMark);
 			}
 		}
+		
+		//Hot fix TP99
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		if (dossierMark != null) {
+			JSONObject jsonMark = null;
+			String partNo = dossierMark.getDossierPartNo();
+			if (Validator.isNotNull(partNo)) {
+				List<DossierFile> fileList = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossierId, partNo, false);
+				DossierPart part = DossierPartLocalServiceUtil.getByTempAndPartNo(groupId, templateNo, partNo);
+				if (fileList != null && part != null) {
+					for (DossierFile dossierFile : fileList) {
+						jsonMark = JSONFactoryUtil.createJSONObject();
+						jsonMark.put(DossierPartTerm.PART_NAME, dossierFile.getDisplayName());
+						jsonMark.put(DossierPartTerm.DOSSIERPART_ID, part.getDossierPartId());
+						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
+						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						jsonMark.put(DossierPartTerm.PART_NO, partNo);
+						jsonMark.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
+						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
+//						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+						dossierMarkArr.put(jsonMark);
+					}
+				}
+			}
+		}
+		
 		jsonData.put(DossierTerm.DOSSIER_MARKS, dossierMarkArr);
+
+		PaymentFile payment = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		if (payment != null) {
+			jsonData.put(PaymentFileTerm.ADVANCE_AMOUNT, payment.getAdvanceAmount());
+			jsonData.put(PaymentFileTerm.PAYMENT_AMOUNT, payment.getPaymentAmount());
+			jsonData.put(PaymentFileTerm.PAYMENT_FEE, payment.getPaymentFee());
+			jsonData.put(PaymentFileTerm.SERVICE_AMOUNT, payment.getServiceAmount());
+			jsonData.put(PaymentFileTerm.SHIP_AMOUNT, payment.getShipAmount());
+		}
+
 		return jsonData;
 	}
 
@@ -3892,9 +4058,6 @@ public class DossierActionsImpl implements DossierActions {
 			}
 
 			if (sequenceArr != null && sequenceArr.length > 0) {
-				for (int i = 0; i < sequenceArr.length; i++) {
-//						_log.info("sequenceArr[i]: "+sequenceArr[i]);
-				}
 				Arrays.sort(sequenceArr);
 				for (int i = 0; i < sequenceArr.length - 1; i++) {
 					String seq = sequenceArr[i];
@@ -3916,11 +4079,48 @@ public class DossierActionsImpl implements DossierActions {
 			} else {
 				jsonData.put(DossierTerm.NEXT_SEQUENCE_ROLE, StringPool.BLANK);
 			}
+			//Process array sequence
+			JSONArray jsonSequenceArr = getProcessSequencesJSON(sequenceArr, sequenceList);
+			if (jsonSequenceArr != null) {
+				jsonData.put("processSequenceArr", jsonSequenceArr);
+			}
 		}
 
 		return jsonData;
 	}
-	
+
+	private static JSONArray getProcessSequencesJSON(String[] sequenceArr, List<ProcessSequence> sequenceList) {
+
+		JSONArray jsonSequenceArr = JSONFactoryUtil.createJSONArray();
+		if (sequenceArr != null && sequenceArr.length > 0) {
+			for (int i = 0; i < sequenceArr.length - 1; i++) {
+				String sequenceNo = sequenceArr[i];
+				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
+				for (ProcessSequence proSeq : sequenceList) {
+					if (sequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put("sequenceNo", proSeq.getSequenceNo());
+						sequenceObj.put("sequenceName", proSeq.getSequenceName());
+						sequenceObj.put("sequenceRole", proSeq.getSequenceRole());
+						sequenceObj.put("durationCount", proSeq.getDurationCount());
+						sequenceObj.put("createDate", proSeq.getCreateDate());
+					}
+				}
+				String nextSequenceNo = sequenceArr[i + 1];
+				for (ProcessSequence proSeq : sequenceList) {
+					if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
+						sequenceObj.put("nextSequenceNo", proSeq.getSequenceNo());
+						sequenceObj.put("nextSequenceName", proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put("nextCreateDate", proSeq.getCreateDate());
+					}
+				}
+				jsonSequenceArr.put(sequenceObj);
+			}
+		}
+
+		return jsonSequenceArr;
+	}
+
 	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig, DossierAction dossierAction, ServiceContext context) {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
@@ -6338,51 +6538,51 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 	}
 
-	@Override
-	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
-			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
-			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, 
-			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
-			Date endorsementDate, Date extendDate,
-			Date processDate, ServiceContext context)
-			throws PortalException {
-
-//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-		Date appIdDate = null;
+//	@Override
+//	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+//			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
+//			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
+//			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+//			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
+//			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+//			boolean online, boolean notification, String applicantNote, int originality, 
+//			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
+//			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+//			Date endorsementDate, Date extendDate,
+//			Date processDate, ServiceContext context)
+//			throws PortalException {
+//
+////		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+//		Date appIdDate = null;
+////		try {
+////			appIdDate = sdf.parse(applicantIdDate);
+////		} catch (Exception e) {
+////			// TODO: handle exception
+////			_log.debug(e);
+////			//_log.error(e);
+////		}
+//
+//		Dossier dossier = null;
+//
 //		try {
-//			appIdDate = sdf.parse(applicantIdDate);
+//
+//			//Process
+//			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
+//					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
+//					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+//					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
+//					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate, modifiedDate, submitDate, receiveDate, dueDate,
+//					releaseDate, finishDate, cancellingDate, correctingDate, 
+//					endorsementDate, extendDate,
+//					processDate, context);
+//
 //		} catch (Exception e) {
-//			// TODO: handle exception
 //			_log.debug(e);
 //			//_log.error(e);
 //		}
-
-		Dossier dossier = null;
-
-		try {
-
-			//Process
-			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
-					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
-					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
-					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate, modifiedDate, submitDate, receiveDate, dueDate,
-					releaseDate, finishDate, cancellingDate, correctingDate, 
-					endorsementDate, extendDate,
-					processDate, context);
-
-		} catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
-
-		return dossier;
-	}
+//
+//		return dossier;
+//	}
 
 	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier, int intpaymentMethod) {
 		Map<String, Object> params = new HashMap<>();
@@ -6742,20 +6942,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
 			int durationUnit, String dossierName, String processNo, ServiceContext context) throws PortalException {
-//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
 		Date appIdDate = null;
-//		try {
-//			appIdDate = sdf.parse(applicantIdDate);
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			_log.debug(e);
-//			//_log.error(e);
-//		}
-
-		Dossier dossier = null;
-
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		try {
-
+			appIdDate = sdf.parse(applicantIdDate);
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		Dossier dossier = null;
+		try {
 			//Process
 			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
@@ -6763,14 +6959,18 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
 					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate,
 					modifiedDate, submitDate, receiveDate, dueDate, releaseDate, finishDate, cancellingDate,
-					correctingDate, endorsementDate, extendDate, processDate, context);
+					correctingDate, endorsementDate, extendDate, processDate, dossierNo, dossierStatus,
+					dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,
+					lockState, delegateName, delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
+					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
+					delegateWardName, durationCount, durationUnit, dossierName, processNo, context);
 
 		} catch (Exception e) {
 			_log.debug(e);
 			//_log.error(e);
 		}
 
-		return dossier;			
+		return dossier;
 	}
 
 	@Override

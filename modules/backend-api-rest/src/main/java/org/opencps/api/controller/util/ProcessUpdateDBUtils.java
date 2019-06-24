@@ -211,11 +211,12 @@ public class ProcessUpdateDBUtils {
 						String queryParams = menuConfig.getQueryParams();
 						String tableConfig = menuConfig.getTableConfig();
 						String buttonConfig = menuConfig.getButtonConfig();
+						String icon = menuConfig.getIcon();
 						String roles = menuConfig.getRoles();
 						if (Validator.isNotNull(menuGroup)) {
 							// Check record exits DB
 							long menuConfigId = actions.updateMenuConfigDB(userId, groupId, menuGroup, menuName, order, menuType, queryParams,
-									tableConfig, buttonConfig);
+									tableConfig, buttonConfig, icon);
 							if (menuConfigId > 0) {
 								actions.updateMenuRoles(groupId, menuConfigId, roles);
 							}

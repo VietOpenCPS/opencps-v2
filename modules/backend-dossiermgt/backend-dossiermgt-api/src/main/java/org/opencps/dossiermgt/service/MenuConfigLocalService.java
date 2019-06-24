@@ -67,7 +67,7 @@ public interface MenuConfigLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig addMenuConfig(long userId, long groupId,
 		String menuGroup, String menuName, Integer order, Integer menuType,
-		String queryParams, String tableConfig, String buttonConfig)
+		String queryParams, String tableConfig, String buttonConfig, String icon)
 		throws PortalException;
 
 	/**
@@ -303,7 +303,7 @@ public interface MenuConfigLocalService extends BaseLocalService,
 	public MenuConfig updateMenuConfig(long menuConfigId, long userId,
 		long groupId, String menuGroup, String menuName, Integer order,
 		Integer menuType, String queryParams, String tableConfig,
-		String buttonConfig) throws PortalException;
+		String buttonConfig, String icon) throws PortalException;
 
 	/**
 	* Updates the menu config in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -317,6 +317,6 @@ public interface MenuConfigLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig updateMenuConfigDB(long userId, long groupId,
 		String menuGroup, String menuName, Integer order, Integer menuType,
-		String queryParams, String tableConfig, String buttonConfig)
+		String queryParams, String tableConfig, String buttonConfig, String icon)
 		throws PortalException;
 }

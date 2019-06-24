@@ -57,7 +57,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig addMenuConfig(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon) throws PortalException {
 
 		validate(menuGroup, 0);
 
@@ -83,6 +83,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		object.setMenuGroup(menuGroup);
 		object.setTableConfig(tableConfig);
 		object.setButtonConfig(buttonConfig);
+		object.setIcon(icon);
 
 		menuConfigPersistence.update(object);
 
@@ -92,7 +93,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig updateMenuConfig(long menuConfigId, long userId, long groupId, String menuGroup, String menuName,
-			Integer order, Integer menuType, String queryParams, String tableConfig, String buttonConfig)
+			Integer order, Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon)
 			throws PortalException {
 
 		validate(menuGroup, menuConfigId);
@@ -126,6 +127,9 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		}
 		if (buttonConfig != null) {
 			object.setButtonConfig(buttonConfig);
+		}
+		if (icon != null) {
+			object.setIcon(icon);
 		}
 
 		menuConfigPersistence.update(object);
@@ -170,7 +174,8 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	// LamTV_ Process ouput MenuConfig to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig updateMenuConfigDB(long userId, long groupId, String menuGroup, String menuName, Integer order,
-			Integer menuType, String queryParams, String tableConfig, String buttonConfig) throws PortalException {
+			Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon)
+			throws PortalException {
 
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
@@ -181,11 +186,11 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			long menuConfigId = counterLocalService.increment(MenuConfig.class.getName());
 			object = menuConfigPersistence.create(menuConfigId);
 
-		object.setGroupId(groupId);
-		object.setCompanyId(user.getCompanyId());
-		object.setUserId(user.getUserId());
-		object.setCreateDate(now);
-		object.setModifiedDate(now);
+			object.setGroupId(groupId);
+			object.setCompanyId(user.getCompanyId());
+			object.setUserId(user.getUserId());
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
 
 			object.setMenuGroup(menuGroup);
 			object.setMenuName(menuName);
@@ -195,6 +200,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object.setMenuGroup(menuGroup);
 			object.setTableConfig(tableConfig);
 			object.setButtonConfig(buttonConfig);
+			object.setIcon(icon);
 		} else {
 			object.setUserId(user.getUserId());
 			object.setModifiedDate(new Date());
@@ -204,6 +210,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object.setQueryParams(queryParams);
 			object.setTableConfig(tableConfig);
 			object.setButtonConfig(buttonConfig);
+			object.setIcon(icon);
 		}
 
 		return menuConfigPersistence.update(object);
@@ -264,6 +271,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		object.setQueryParams(objectData.getString("queryParams"));
 		object.setTableConfig(objectData.getString("tableConfig"));
 		object.setButtonConfig(objectData.getString("buttonConfig"));
+		object.setIcon(objectData.getString("icon"));
 
 		menuConfigPersistence.update(object);
 

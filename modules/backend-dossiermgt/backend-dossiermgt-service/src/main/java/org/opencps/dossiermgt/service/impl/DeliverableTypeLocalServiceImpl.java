@@ -281,9 +281,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			if (Validator.isNotNull(docSync)) {
 				object.setDocSync(docSync);
 			}
-			// if (Validator.isNotNull(fieldConfigs)) {
-			// object.setFieldConfigs(fieldConfigs);
-			// }
+			 if (Validator.isNotNull(govAgencies)) {
+			 object.setGovAgencies(govAgencies);
+			 }
 		}
 
 		return deliverableTypePersistence.update(object);

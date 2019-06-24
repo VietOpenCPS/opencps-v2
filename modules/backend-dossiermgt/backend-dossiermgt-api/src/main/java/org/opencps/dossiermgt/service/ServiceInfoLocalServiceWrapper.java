@@ -271,6 +271,12 @@ public class ServiceInfoLocalServiceWrapper implements ServiceInfoLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceInfo> getByF_GID_SC(
+		long groupId, String[] serviceArr) {
+		return _serviceInfoLocalService.getByF_GID_SC(groupId, serviceArr);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _serviceInfoLocalService.getExportActionableDynamicQuery(portletDataContext);

@@ -65,6 +65,7 @@ public class DossierInputModel {
 	private String postalWardCode;
 	private String postalWardName;
 	private String originDossierNo;
+	private String dossierMarkArr;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -865,4 +866,13 @@ public class DossierInputModel {
 	public void setOriginDossierNo(String value) {
 		this.originDossierNo = value;
 	}
+
+	public String getDossierMarkArr() {
+		return dossierMarkArr;
+	}
+
+	public void setDossierMarkArr(String dossierMarkArr) {
+		this.dossierMarkArr = dossierMarkArr;
+	}
+
 }

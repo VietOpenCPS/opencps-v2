@@ -2224,7 +2224,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
-		String applicantUserIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_USER_ID_NO));
+		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
+		//_log.info("follow: "+follow);
+		//_log.info("originality: "+originality);
+		//_log.info("applicantFollowIdNo: "+applicantFollowIdNo);
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2247,12 +2250,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, emailLogin, originality, applicantUserIdNo, booleanQuery);
+				template, top, emailLogin, originality, applicantFollowIdNo, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
-				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
+				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
 				originDossierId, time, register, day, groupDossierId, booleanCommon);
@@ -2332,7 +2335,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String time = GetterUtil.getString(params.get(DossierTerm.TIME));
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
-		String applicantUserIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_USER_ID_NO));
+		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2352,12 +2355,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		//Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(keywords, secetKey, groupId, owner, userId, follow, step,
-				template, top, emailLogin, originality, applicantUserIdNo, booleanQuery);
+				template, top, emailLogin, originality, applicantFollowIdNo, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(status, subStatus, state, online, submitting, agency, service,
 				userId, top, year, month, dossierNo, certificateNo, strDossierActionId, fromReceiveDate, toReceiveDate,
 				certNo, fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState, statusReg, notStatusReg,
-				originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
+				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
 				originDossierId, time, register, day, groupDossierId, booleanCommon);
@@ -2369,7 +2372,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private BooleanQuery processSearchCommon(String keywords, String secetKey, String groupId, String owner,
 			long userId, String follow, String step, String template, String top, String emailLogin, String originality,
-			String applicantUserIdNo, BooleanQuery booleanQuery) throws ParseException {
+			String applicantFollowIdNo, BooleanQuery booleanQuery) throws ParseException {
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
@@ -2408,7 +2411,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(follow) && Boolean.parseBoolean(follow) && userId > 0) {
 			if (Validator.isNotNull(originality) && Long.valueOf(originality) == DossierTerm.ORIGINALITY_PUBLISH) {
-				MultiMatchQuery query = new MultiMatchQuery(applicantUserIdNo);
+				//_log.info("applicantFollowIdNo: "+applicantFollowIdNo);
+				MultiMatchQuery query = new MultiMatchQuery(applicantFollowIdNo);
 
 				query.addField(DossierTerm.APPLICANT_ID_NO);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -2455,7 +2459,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String submitting, String agency, String service, long userId, String top, int year, int month,
 			String dossierNo, String certificateNo, String strDossierActionId, String fromReceiveDate,
 			String toReceiveDate, String certNo, String fromCertDate, String toCertDate, String fromSubmitDate,
-			String toSubmitDate, String notState, Long statusReg, Long notStatusReg, String originality,
+			String toSubmitDate, String notState, Long statusReg, Long notStatusReg, String follow, String originality,
 			String assigned, String statusStep, String subStatusStep, String permission, String domain,
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
@@ -3061,7 +3065,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		} else {
 			if (Validator.isNotNull(originality)) {
 				Integer originalityInt = GetterUtil.getInteger(originality);
-				if (originalityInt != 9) {
+				if (Validator.isNotNull(follow) && Boolean.valueOf(follow)
+						&& originalityInt == DossierTerm.ORIGINALITY_PUBLISH) {
+
+				} else if (originalityInt != 9) {
 					MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
 					queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
 					booleanQuery.add(queryDossierAction, BooleanClauseOccur.MUST_NOT);
@@ -3070,6 +3077,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //				queryOrigin.addField(DossierTerm.ORIGIN_DOSSIER_ID);
 //				booleanQuery.add(queryOrigin, BooleanClauseOccur.MUST);
 				}
+				
 			} else {
 				MultiMatchQuery queryDossierAction = new MultiMatchQuery(String.valueOf(0));
 				queryDossierAction.addField(DossierTerm.DOSSIER_ACTION_ID);
@@ -4142,12 +4150,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, 
-			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate,
-			Date endorsementDate, Date extendDate,
-			Date processDate,
-			ServiceContext context) throws PortalException {
+			boolean online, boolean notification, String applicantNote, int originality, Date createDate,
+			Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate, Date finishDate,
+			Date cancellingDate, Date correctingDate, Date endorsementDate, Date extendDate, Date processDate,
+			String dossierNo, String dossierStatus, String dossierStatusText, String dossierSubStatus,
+			String dossierSubStatusText, long dossierActionId, String submissionNote, String lockState,
+			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
+			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
+			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
+			int durationUnit, String dossierName, String processNo, ServiceContext context) throws PortalException {
 
 		long userId = context.getUserId();
 
@@ -4223,7 +4234,31 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setApplicantNote(applicantNote);
 //			dossier.setServerNo(getServerNo(groupId));
 			dossier.setOriginality(originality);
-			
+			//
+			dossier.setDossierNo(dossierNo);
+			dossier.setDossierStatus(dossierStatus);
+			dossier.setDossierStatusText(dossierStatusText);
+			dossier.setDossierSubStatus(dossierSubStatus);
+			dossier.setDossierSubStatusText(dossierSubStatusText);
+			dossier.setDossierActionId(dossierActionId);
+			dossier.setSubmissionNote(submissionNote);
+			dossier.setLockState(lockState);
+			dossier.setDelegateName(delegateName);
+			dossier.setDelegateIdNo(delegateIdNo);
+			dossier.setDelegateTelNo(delegateTelNo);
+			dossier.setDelegateEmail(delegateEmail);
+			dossier.setDelegateAddress(delegateAddress);
+			dossier.setDelegateCityCode(delegateCityCode);
+			dossier.setDelegateCityName(delegateCityName);
+			dossier.setDelegateDistrictCode(delegateDistrictCode);
+			dossier.setDelegateDistrictName(delegateDistrictName);
+			dossier.setDelegateWardCode(delegateWardCode);
+			dossier.setDelegateWardName(delegateWardName);
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
+			dossier.setDossierName(dossierName);
+			dossier.setProcessNo(processNo);
+
 			dossier = dossierPersistence.update(dossier);
 		} else {
 			dossier.setModifiedDate(modifiedDate);
@@ -4258,9 +4293,55 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setContactEmail(contactEmail);
 			if (Validator.isNotNull(contactTelNo))
 				dossier.setContactTelNo(contactTelNo);
+			
+			if (Validator.isNotNull(dossierNo))
+				dossier.setDossierNo(dossierNo);
+			if (Validator.isNotNull(dossierStatus))
+				dossier.setDossierStatus(dossierStatus);
+			if (Validator.isNotNull(dossierStatusText))
+				dossier.setDossierStatusText(dossierStatusText);
+			if (Validator.isNotNull(dossierSubStatus))
+				dossier.setDossierSubStatus(dossierSubStatus);
+			if (Validator.isNotNull(dossierSubStatusText))
+				dossier.setDossierSubStatusText(dossierSubStatusText);
+			if (Validator.isNotNull(dossierActionId))
+				dossier.setDossierActionId(dossierActionId);
+			if (Validator.isNotNull(submissionNote))
+				dossier.setSubmissionNote(submissionNote);
+			if (Validator.isNotNull(lockState))
+				dossier.setLockState(lockState);
+			if (Validator.isNotNull(delegateName))
+				dossier.setDelegateName(delegateName);
+			if (Validator.isNotNull(delegateIdNo))
+				dossier.setDelegateIdNo(delegateIdNo);
+			if (Validator.isNotNull(delegateTelNo))
+				dossier.setDelegateTelNo(delegateTelNo);
+			if (Validator.isNotNull(delegateEmail))
+				dossier.setDelegateEmail(delegateEmail);
+			if (Validator.isNotNull(delegateAddress))
+				dossier.setDelegateAddress(delegateAddress);
+			if (Validator.isNotNull(delegateCityCode))
+				dossier.setDelegateCityCode(delegateCityCode);
+			if (Validator.isNotNull(delegateCityName))
+				dossier.setDelegateCityName(delegateCityName);
+			if (Validator.isNotNull(delegateDistrictCode))
+				dossier.setDelegateDistrictCode(delegateDistrictCode);
+			if (Validator.isNotNull(delegateDistrictName))
+				dossier.setDelegateDistrictName(delegateDistrictName);
+			if (Validator.isNotNull(delegateWardCode))
+				dossier.setDelegateWardCode(delegateWardCode);
+			if (Validator.isNotNull(delegateWardName))
+				dossier.setDelegateWardName(delegateWardName);
+			if (Validator.isNotNull(durationCount))
+				dossier.setDurationCount(durationCount);
+			if (Validator.isNotNull(durationUnit))
+				dossier.setDurationUnit(durationUnit);
+			if (Validator.isNotNull(dossierName))
+				dossier.setDossierName(dossierName);
+			if (Validator.isNotNull(processNo))
+				dossier.setProcessNo(processNo);
 
 			dossier.setViaPostal(viaPostal);
-
 			if (viaPostal == 1) {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
@@ -4298,7 +4379,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (processStep != null) {
 			dossierAction.setState(DossierActionTerm.STATE_WAITING_PROCESSING);
 			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
-			JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), DOSSIER_SATUS_DC_CODE, processStep.getDossierStatus(), processStep.getDossierSubStatus());
+			JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), DossierTerm.DOSSIER_SATUS_DC_CODE, processStep.getDossierStatus(), processStep.getDossierSubStatus());
 
 			dossier.setDossierActionId(dossierAction.getDossierActionId());
 			dossier.setDossierStatus(processStep.getDossierStatus());
@@ -4873,7 +4954,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		dossier.setApplicantNote(applicantNote);
-		dossier.setDossierName(dossierName);
+		if (Validator.isNotNull(dossierName)) {
+			dossier.setDossierName(dossierName);
+		}
 		dossier.setBriefNote(briefNote);
 		//Process add status of group dossier
 		if (dossier.getOriginality() == 9) {
@@ -5042,6 +5125,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByF_GID_AN_DS(groupId, applicantIdNo, dossierStatus);
 	}
 
-	private String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
+	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId, String govAgencyCode, String serviceCode,
+			String dossierTemplateNo, String[] statusArr, String applicantIdNo, String applicantIdType, String delegateIdNo,
+			int originality) {
+		try {
+			return dossierPersistence.findByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId, govAgencyCode, serviceCode,
+					dossierTemplateNo, statusArr, applicantIdNo, applicantIdType, delegateIdNo, originality);
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return null;
+	}
 
 }

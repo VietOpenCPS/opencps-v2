@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
@@ -80,13 +81,14 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		// Extra fields
-		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE));
+		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE_SEARCH));
 		String state = GetterUtil.getString((params.get(BookingTerm.STATE)));
 		String from = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String to = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
 		String bookingFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String bookingTo = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
 		String gateNumber = GetterUtil.getString(params.get(BookingTerm.GATE_NUMBER));
+		String className = GetterUtil.getString(params.get(BookingTerm.CLASS_NAME));
 
 		Indexer<Booking> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Booking.class);
 
@@ -133,17 +135,36 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(serviceCode)) {
-			MultiMatchQuery query = new MultiMatchQuery(serviceCode);
-
-			query.addFields(EFormTerm.SERVICE_CODE_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (serviceCode.contains(StringPool.COMMA)) {
+				String[] serviceArr = StringUtil.split(serviceCode);
+				if (serviceArr != null && serviceArr.length > 0) {
+					BooleanQuery subQuery = new BooleanQueryImpl();
+					for (int i = 0; i < serviceArr.length; i++) {
+						MultiMatchQuery query = new MultiMatchQuery(SpecialCharacterUtils.splitSpecial(serviceArr[i]));
+						query.addField(EFormTerm.SERVICE_CODE_SEARCH);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+					booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(SpecialCharacterUtils.splitSpecial(serviceCode));
+				query.addFields(EFormTerm.SERVICE_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(gateNumber)) {
 			MultiMatchQuery query = new MultiMatchQuery(gateNumber);
 
 			query.addFields(BookingTerm.GATE_NUMBER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+			MultiMatchQuery query = new MultiMatchQuery(className);
+
+			query.addFields(BookingTerm.CLASS_NAME);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -224,13 +245,14 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE));
+		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE_SEARCH));
 		String state = String.valueOf((params.get(EFormTerm.STATE)));
 		String from = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String to = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
 		String bookingFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String bookingTo = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
 		String gateNumber = GetterUtil.getString(params.get(BookingTerm.GATE_NUMBER));
+		String className = GetterUtil.getString(params.get(BookingTerm.CLASS_NAME));
 
 		Indexer<Booking> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Booking.class);
 
@@ -274,17 +296,36 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(serviceCode)) {
-			MultiMatchQuery query = new MultiMatchQuery(serviceCode);
-
-			query.addFields(EFormTerm.SERVICE_CODE_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			if (serviceCode.contains(StringPool.COMMA)) {
+				String[] serviceArr = StringUtil.split(serviceCode);
+				if (serviceArr != null && serviceArr.length > 0) {
+					BooleanQuery subQuery = new BooleanQueryImpl();
+					for (int i = 0; i < serviceArr.length; i++) {
+						MultiMatchQuery query = new MultiMatchQuery(SpecialCharacterUtils.splitSpecial(serviceArr[i]));
+						query.addField(EFormTerm.SERVICE_CODE_SEARCH);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+					booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(SpecialCharacterUtils.splitSpecial(serviceCode));
+				query.addFields(EFormTerm.SERVICE_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		if (Validator.isNotNull(gateNumber)) {
 			MultiMatchQuery query = new MultiMatchQuery(gateNumber);
 
 			query.addFields(BookingTerm.GATE_NUMBER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+			MultiMatchQuery query = new MultiMatchQuery(className);
+
+			query.addFields(BookingTerm.CLASS_NAME);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -363,7 +404,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, ServiceContext serviceContext) {
+			Date checkinDate, Date bookingDate, boolean speaking, ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -391,6 +432,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 					booking.setState(state);
 				if (Validator.isNotNull(bookingDate))
 					booking.setBookingDate(bookingDate);
+				booking.setSpeaking(speaking);
 			}
 			//
 			return bookingPersistence.update(booking);
@@ -413,6 +455,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			booking.setGateNumber(gateNumber);
 			booking.setState(state);
 			booking.setBookingDate(bookingDate);
+			booking.setSpeaking(speaking);
 
 			return bookingPersistence.update(booking);
 		}
