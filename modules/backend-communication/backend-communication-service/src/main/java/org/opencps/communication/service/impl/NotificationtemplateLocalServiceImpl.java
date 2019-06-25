@@ -525,6 +525,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 		object.setGuestUrlPattern(objectData.getString("guestUrlPattern"));
 		object.setInterval(objectData.getString("interval"));
 		object.setGrouping(objectData.getBoolean("grouping"));
+		object.setSendNotification(objectData.getBoolean("sendNotification"));
 
 		notificationtemplatePersistence.update(object);
 
