@@ -1723,6 +1723,7 @@ public class DossierActionsImpl implements DossierActions {
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
+								_log.info("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 											.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
@@ -1757,7 +1758,7 @@ public class DossierActionsImpl implements DossierActions {
 										if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
 											String deliverables = mappingDataObj
 													.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
-//											_log.info("--------DELIVERABLES----------" + deliverables);
+											_log.info("--------DELIVERABLES----------" + deliverables);
 //											_log.info("--------HAS E SIGNATURE----------"
 //													+ processAction.getESignature());
 //											_log.info("---------FILE TEMPLATE NO--------" + fileTemplateNo);
@@ -1779,6 +1780,7 @@ public class DossierActionsImpl implements DossierActions {
 															dossierPart.getSampleData(), dossierId, serviceContext);
 //													_log.info("Dossier part: " + dossierPart.getPartNo());
 //													_log.info("Form data: " + formData);
+													_log.info("--------eForm----------: " + eForm);
 
 													if (eForm) {
 														createFile = processEFormAndUpdateDossierFile(dossierPart,
@@ -2185,6 +2187,7 @@ public class DossierActionsImpl implements DossierActions {
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
 						null, StringPool.BLANK, String.valueOf(false), serviceContext);
 				dossierFile.setFormScript(dossierPart.getFormScript());
+				dossierFile.setFormReport(dossierPart.getFormReport());
 				dossierFile.setEForm(dossierPart.getEForm());
 				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);				
 				_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());

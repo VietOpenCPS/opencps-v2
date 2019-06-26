@@ -903,36 +903,58 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 //				}
 //			}
 			// Get dossierTemplate by dossierTemplateNo
-			DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
-			JSONArray partArr = JSONFactoryUtil.createJSONArray();
-			if (template != null) {
-				jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
-				// Get list part by templateNo
-				List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
-						template.getTemplateNo());
-				if (partList != null && partList.size() > 0) {
-					JSONObject jsonPart = null;
-					for (DossierPart part : partList) {
-						if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
-							jsonPart = JSONFactoryUtil.createJSONObject();
-							jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
-							jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
-							jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
-							jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
-							jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+			String typeCode = search.getTypeCode();
+			jsonGuide.put("typeCode", typeCode);
+			if (Validator.isNotNull(typeCode) && typeCode.equalsIgnoreCase("completed")) {
+				DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
+				JSONArray partArr = JSONFactoryUtil.createJSONArray();
+				if (template != null) {
+					String strPartNo = search.getPartNo();
+					jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
+					// Get list part by templateNo
+					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+							template.getTemplateNo());
+					if (partList != null && partList.size() > 0) {
+						JSONObject jsonPart = null;
+						if (Validator.isNotNull(strPartNo)) {
+							for (DossierPart part : partList) {
+								if (part != null && strPartNo.contains(part.getPartNo())) {
+									if (part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
+										jsonPart = JSONFactoryUtil.createJSONObject();
+										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
+										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
+										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
+										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
+										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
 
-							partArr.put(jsonPart);
+										partArr.put(jsonPart);
+									}
+								}
+							}
+						} else {
+							for (DossierPart part : partList) {
+								if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
+									jsonPart = JSONFactoryUtil.createJSONObject();
+									jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
+									jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
+									jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
+									jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
+									jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
+
+									partArr.put(jsonPart);
+								}
+							}
 						}
 					}
+					// Add key template in jsonOption
+					jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
+				} else {
+					jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
+					// Add key template in jsonOption
+					jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
 				}
-				// Add key template in jsonOption
-				jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
-			} else {
-				jsonGuide.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
-				// Add key template in jsonOption
-				jsonGuide.put(ProcessOptionTerm.TEMPLATE, partArr);
 			}
-
+			
 			DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, search.getTypeCode());
 			String documentScript = StringPool.BLANK;
 			if (docType != null) {

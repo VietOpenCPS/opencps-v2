@@ -421,6 +421,14 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierFile getByGID_DID_PART_EFORM(
+		long groupId, long dossierId, String dossierPartNo, boolean eform,
+		boolean removed) {
+		return _dossierFileLocalService.getByGID_DID_PART_EFORM(groupId,
+			dossierId, dossierPartNo, eform, removed);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierFile getByRefAndGroupId(
 		long groupId, String referenceUid)
 		throws com.liferay.portal.kernel.exception.PortalException {

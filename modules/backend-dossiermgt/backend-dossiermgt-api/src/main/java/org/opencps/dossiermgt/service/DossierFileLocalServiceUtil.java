@@ -399,6 +399,14 @@ public class DossierFileLocalServiceUtil {
 			dossierPartType, displayName);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile getByGID_DID_PART_EFORM(
+		long groupId, long dossierId, String dossierPartNo, boolean eform,
+		boolean removed) {
+		return getService()
+				   .getByGID_DID_PART_EFORM(groupId, dossierId, dossierPartNo,
+			eform, removed);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierFile getByRefAndGroupId(
 		long groupId, String referenceUid)
 		throws com.liferay.portal.kernel.exception.PortalException {
