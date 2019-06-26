@@ -19,7 +19,6 @@ import org.opencps.kernel.template.MessageDataModel;
 import org.opencps.kernel.template.freemarker.TemplateProcessor;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -74,6 +73,7 @@ public class NotificationUtil {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static MBMessageEntry createMBMessageEntry(
 		NotificationQueue queue, Notificationtemplate template,
 		ServiceContext serviceContext) {
@@ -289,12 +289,22 @@ public class NotificationUtil {
 				messageEntry.setSendEmail(sendEmail);
 				messageEntry.setSendNotify(sendNotify);
 				messageEntry.setSendSMS(sendSMS);
-				messageEntry.setSendZalo(sendMesZalo);
+
 				if (sendMesZalo) {
-					messageEntry.setZaloAccessToken(
-						_getZaloAccessToken(queue.getGroupId()));
-					messageEntry.setMappingZaloUid(
-						_getZaloUID(queue.getGroupId(), queue.getToUserId()));
+					JSONObject checkZaloInfo =
+						_checkZaloInfo(queue.getGroupId(), queue.getToUserId());
+					if (checkZaloInfo.has(ZALO_UID) &&
+						checkZaloInfo.has(ZALO_TOKEN)) {
+
+						messageEntry.setMappingZaloUid(
+							(Map<Long, String>) checkZaloInfo.get(ZALO_UID));
+						messageEntry.setZaloAccessToken(
+							checkZaloInfo.getString(ZALO_TOKEN));
+					}
+					else {
+						sendMesZalo = false;
+					}
+					messageEntry.setSendZalo(sendMesZalo);
 				}
 
 				// _log.info("create mail message: " + messageEntry);
@@ -309,53 +319,44 @@ public class NotificationUtil {
 		return messageEntry;
 	}
 
-	private static String _getZaloAccessToken(long groupId) {
+	private static JSONObject _checkZaloInfo(long groupId, long toUserId) {
 
-		String zaloAccessToken = StringPool.BLANK;
-
-		try {
-			List<ServerConfig> lstScs =
-				ServerConfigLocalServiceUtil.getByProtocol(
-					groupId, SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_INF);
-
-			if (!lstScs.isEmpty()) {
-
-				ServerConfig sc = lstScs.get(0);
-
-				JSONObject zaloConfig =
-					JSONFactoryUtil.createJSONObject(sc.getConfigs());
-				zaloAccessToken =
-					zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
-			}
-		}
-		catch (JSONException e) {
-			_log.info("_getZaloAccessToken error");
-			_log.error(e);
-		}
-		return zaloAccessToken;
-	}
-
-	private static Map<Long, String> _getZaloUID(long groupId, long toUserId) {
-
-		Map<Long, String> mappingZaloUid = new HashMap<>();
+		JSONObject sendZaloInfo = JSONFactoryUtil.createJSONObject();
 
 		try {
 			Preferences preferences =
 				PreferencesLocalServiceUtil.fetchByF_userId(groupId, toUserId);
 			JSONObject pref =
 				JSONFactoryUtil.createJSONObject(preferences.getPreferences());
-
 			String uID = pref.getString(SendSMSTerm.ZALO_UID);
 			JSONObject oZaloUid = JSONFactoryUtil.createJSONObject(uID);
+			Map<Long, String> mappingZaloUid = new HashMap<>();
 
 			mappingZaloUid.put(toUserId, oZaloUid.getString(SendSMSTerm.UID));
+
+			List<ServerConfig> lstScs =
+				ServerConfigLocalServiceUtil.getByProtocol(
+					groupId, SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_INF);
+			ServerConfig sc = lstScs.get(0);
+			JSONObject zaloConfig =
+				JSONFactoryUtil.createJSONObject(sc.getConfigs());
+			String zaloAccessToken =
+				zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
+
+			sendZaloInfo.put(ZALO_UID, mappingZaloUid);
+			sendZaloInfo.put(ZALO_TOKEN, zaloAccessToken);
 		}
 		catch (Exception e) {
-			_log.info("_getZaloUID error");
-			_log.error(e);
+
+			_log.info(
+				"Cant send zalo mess to groupId: " + groupId + " userId:" +
+					toUserId);
 		}
-		return mappingZaloUid;
+		return sendZaloInfo;
 	}
+
+	private static final String ZALO_UID = "zaloUid";
+	private static final String ZALO_TOKEN = "zaloToken";
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationUtil.class);
 
