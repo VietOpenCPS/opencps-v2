@@ -294,7 +294,7 @@ public class NotificationUtil {
 					messageEntry.setZaloAccessToken(
 						_getZaloAccessToken(queue.getGroupId()));
 					messageEntry.setMappingZaloUid(
-						_getZaloUID(queue.getGroupId(), queue.getGroupId()));
+						_getZaloUID(queue.getGroupId(), queue.getToUserId()));
 				}
 
 				// _log.info("create mail message: " + messageEntry);
@@ -326,9 +326,6 @@ public class NotificationUtil {
 					JSONFactoryUtil.createJSONObject(sc.getConfigs());
 				zaloAccessToken =
 					zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
-				_log.info(
-					"==================OAID_TOKEN_ACCESS======================");
-				_log.info(zaloAccessToken);
 			}
 		}
 		catch (JSONException e) {
@@ -347,9 +344,10 @@ public class NotificationUtil {
 				PreferencesLocalServiceUtil.fetchByF_userId(groupId, toUserId);
 			JSONObject pref =
 				JSONFactoryUtil.createJSONObject(preferences.getPreferences());
-			JSONObject oZaloUid = pref.getJSONObject(SendSMSTerm.ZALO_UID);
-			_log.info("==================ZALO_UID======================");
-			_log.info(oZaloUid);
+
+			String uID = pref.getString(SendSMSTerm.ZALO_UID);
+			JSONObject oZaloUid = JSONFactoryUtil.createJSONObject(uID);
+
 			mappingZaloUid.put(toUserId, oZaloUid.getString(SendSMSTerm.UID));
 		}
 		catch (Exception e) {

@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import ws.bulkSms.impl.Result;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -93,17 +95,21 @@ public class OneMinute extends BaseMessageListener {
 						//Process send SMS
 						boolean flagSend = false;
 						if(messageEntry.isSendSMS()){
+							/** stop send sms 8369
 							_log.debug("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
 							String results = SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
 									messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 							if (Validator.isNotNull(results)
 									&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
 								flagSend = true;
-							}
+							} */
 							//Send viettel
-							ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+							Result result = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
 								messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-							
+							if (Validator.isNotNull(result) && result.getResult() > 0) {
+								
+								flagSend = true;
+							}
 							_log.debug("END SEND SMS"+flagSend);
 						} else {
 							flagSend = true;
