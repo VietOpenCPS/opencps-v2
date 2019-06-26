@@ -4179,6 +4179,96 @@ public class DossierFileUtil {
 	}
 
 	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or throws a {@link NoSuchDossierFileException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public static DossierFile findByGID_DID_PART_EFORM(long groupId,
+		long dossierId, String dossierPartNo, boolean eForm, boolean removed)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByGID_DID_PART_EFORM(groupId, dossierId, dossierPartNo,
+			eForm, removed);
+	}
+
+	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByGID_DID_PART_EFORM(long groupId,
+		long dossierId, String dossierPartNo, boolean eForm, boolean removed) {
+		return getPersistence()
+				   .fetchByGID_DID_PART_EFORM(groupId, dossierId,
+			dossierPartNo, eForm, removed);
+	}
+
+	/**
+	* Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByGID_DID_PART_EFORM(long groupId,
+		long dossierId, String dossierPartNo, boolean eForm, boolean removed,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByGID_DID_PART_EFORM(groupId, dossierId,
+			dossierPartNo, eForm, removed, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the dossier file that was removed
+	*/
+	public static DossierFile removeByGID_DID_PART_EFORM(long groupId,
+		long dossierId, String dossierPartNo, boolean eForm, boolean removed)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .removeByGID_DID_PART_EFORM(groupId, dossierId,
+			dossierPartNo, eForm, removed);
+	}
+
+	/**
+	* Returns the number of dossier files where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public static int countByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed) {
+		return getPersistence()
+				   .countByGID_DID_PART_EFORM(groupId, dossierId,
+			dossierPartNo, eForm, removed);
+	}
+
+	/**
 	* Caches the dossier file in the entity cache if it is enabled.
 	*
 	* @param dossierFile the dossier file

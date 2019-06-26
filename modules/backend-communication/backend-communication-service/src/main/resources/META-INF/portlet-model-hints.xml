@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="org.opencps.communication.model.NotificationQueue">
+		<field name="notificationQueueId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="notificationType" type="String" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="payload" type="String" />
+		<field name="fromUsername" type="String" />
+		<field name="toUsername" type="String" />
+		<field name="toUserId" type="long" />
+		<field name="toEmail" type="String" />
+		<field name="toTelNo" type="String" />
+		<field name="publicationDate" type="Date" />
+		<field name="expireDate" type="Date" />
+	</model>
+	<model name="org.opencps.communication.model.Notificationtemplate">
+		<field name="notificationTemplateId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="notificationType" type="String" />
+		<field name="emailSubject" type="String" />
+		<field name="emailBody" type="String" />
+		<field name="textMessage" type="String" />
+		<field name="notifyMessage" type="String" />
+		<field name="sendSMS" type="boolean" />
+		<field name="sendEmail" type="boolean" />
+		<field name="sendNotification" type="boolean" />
+		<field name="expireDuration" type="int" />
+		<field name="userUrlPattern" type="String" />
+		<field name="guestUrlPattern" type="String" />
+		<field name="interval" type="String" />
+		<field name="grouping" type="boolean" />
+	</model>
+	<model name="org.opencps.communication.model.Preferences">
+		<field name="uuid" type="String" />
+		<field name="preferencesId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="preferences" type="String" />
+	</model>
+	<model name="org.opencps.communication.model.ServerConfig">
+		<field name="serverConfigId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="govAgencyCode" type="String" />
+		<field name="serverNo" type="String" />
+		<field name="serverName" type="String" />
+		<field name="protocol" type="String" />
+		<field name="configs" type="String" />
+		<field name="lastSync" type="Date" />
+	</model>
+</model-hints>

@@ -1316,5 +1316,15 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.fetchByG_DID_PART_NAME(groupId, dossierId, dossierPartNo, dossierPartType, displayName);
 	}
 
+	public DossierFile getByGID_DID_PART_EFORM(long groupId, long dossierId, String dossierPartNo, boolean eform,
+			boolean removed) {
+		try {
+			return dossierFilePersistence.findByGID_DID_PART_EFORM(groupId, dossierId, dossierPartNo, eform, removed);
+		} catch (NoSuchDossierFileException e) {
+			_log.debug(e);
+		}
+		return null;
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

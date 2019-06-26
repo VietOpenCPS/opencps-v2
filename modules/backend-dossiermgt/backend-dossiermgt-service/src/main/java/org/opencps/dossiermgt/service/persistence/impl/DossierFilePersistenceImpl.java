@@ -13436,6 +13436,347 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 	private static final String _FINDER_COLUMN_G_DID_PART_NAME_DISPLAYNAME_1 = "dossierFile.displayName IS NULL";
 	private static final String _FINDER_COLUMN_G_DID_PART_NAME_DISPLAYNAME_2 = "dossierFile.displayName = ?";
 	private static final String _FINDER_COLUMN_G_DID_PART_NAME_DISPLAYNAME_3 = "(dossierFile.displayName IS NULL OR dossierFile.displayName = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM = new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByGID_DID_PART_EFORM",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Boolean.class.getName(),
+				Boolean.class.getName()
+			},
+			DossierFileModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERID_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERPARTNO_COLUMN_BITMASK |
+			DossierFileModelImpl.EFORM_COLUMN_BITMASK |
+			DossierFileModelImpl.REMOVED_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_DID_PART_EFORM = new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByGID_DID_PART_EFORM",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Boolean.class.getName(),
+				Boolean.class.getName()
+			});
+
+	/**
+	 * Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or throws a {@link NoSuchDossierFileException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByGID_DID_PART_EFORM(groupId, dossierId,
+				dossierPartNo, eForm, removed);
+
+		if (dossierFile == null) {
+			StringBundler msg = new StringBundler(12);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierId=");
+			msg.append(dossierId);
+
+			msg.append(", dossierPartNo=");
+			msg.append(dossierPartNo);
+
+			msg.append(", eForm=");
+			msg.append(eForm);
+
+			msg.append(", removed=");
+			msg.append(removed);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierFileException(msg.toString());
+		}
+
+		return dossierFile;
+	}
+
+	/**
+	 * Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed) {
+		return fetchByGID_DID_PART_EFORM(groupId, dossierId, dossierPartNo,
+			eForm, removed, true);
+	}
+
+	/**
+	 * Returns the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, dossierId, dossierPartNo, eForm, removed
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+					finderArgs, this);
+		}
+
+		if (result instanceof DossierFile) {
+			DossierFile dossierFile = (DossierFile)result;
+
+			if ((groupId != dossierFile.getGroupId()) ||
+					(dossierId != dossierFile.getDossierId()) ||
+					!Objects.equals(dossierPartNo,
+						dossierFile.getDossierPartNo()) ||
+					(eForm != dossierFile.isEForm()) ||
+					(removed != dossierFile.isRemoved())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERID_2);
+
+			boolean bindDossierPartNo = false;
+
+			if (dossierPartNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_1);
+			}
+			else if (dossierPartNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_3);
+			}
+			else {
+				bindDossierPartNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_EFORM_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_REMOVED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindDossierPartNo) {
+					qPos.add(dossierPartNo);
+				}
+
+				qPos.add(eForm);
+
+				qPos.add(removed);
+
+				List<DossierFile> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierFilePersistenceImpl.fetchByGID_DID_PART_EFORM(long, long, String, boolean, boolean, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DossierFile dossierFile = list.get(0);
+
+					result = dossierFile;
+
+					cacheResult(dossierFile);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DossierFile)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier file where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the dossier file that was removed
+	 */
+	@Override
+	public DossierFile removeByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = findByGID_DID_PART_EFORM(groupId, dossierId,
+				dossierPartNo, eForm, removed);
+
+		return remove(dossierFile);
+	}
+
+	/**
+	 * Returns the number of dossier files where groupId = &#63; and dossierId = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eForm, boolean removed) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_DID_PART_EFORM;
+
+		Object[] finderArgs = new Object[] {
+				groupId, dossierId, dossierPartNo, eForm, removed
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERID_2);
+
+			boolean bindDossierPartNo = false;
+
+			if (dossierPartNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_1);
+			}
+			else if (dossierPartNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_3);
+			}
+			else {
+				bindDossierPartNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_EFORM_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_PART_EFORM_REMOVED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindDossierPartNo) {
+					qPos.add(dossierPartNo);
+				}
+
+				qPos.add(eForm);
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_GROUPID_2 = "dossierFile.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERID_2 = "dossierFile.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_1 =
+		"dossierFile.dossierPartNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_2 =
+		"dossierFile.dossierPartNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_DOSSIERPARTNO_3 =
+		"(dossierFile.dossierPartNo IS NULL OR dossierFile.dossierPartNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_EFORM_2 = "dossierFile.eForm = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_REMOVED_2 = "dossierFile.removed = ?";
 
 	public DossierFilePersistenceImpl() {
 		setModelClass(DossierFile.class);
@@ -13499,6 +13840,13 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 				dossierFile.getGroupId(), dossierFile.getDossierId(),
 				dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
 				dossierFile.getDisplayName()
+			}, dossierFile);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+			new Object[] {
+				dossierFile.getGroupId(), dossierFile.getDossierId(),
+				dossierFile.getDossierPartNo(), dossierFile.isEForm(),
+				dossierFile.isRemoved()
 			}, dossierFile);
 
 		dossierFile.resetOriginalValues();
@@ -13638,6 +13986,18 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 		finderCache.putResult(FINDER_PATH_COUNT_BY_G_DID_PART_NAME, args,
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DID_PART_NAME, args,
+			dossierFileModelImpl, false);
+
+		args = new Object[] {
+				dossierFileModelImpl.getGroupId(),
+				dossierFileModelImpl.getDossierId(),
+				dossierFileModelImpl.getDossierPartNo(),
+				dossierFileModelImpl.isEForm(), dossierFileModelImpl.isRemoved()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_GID_DID_PART_EFORM, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM, args,
 			dossierFileModelImpl, false);
 	}
 
@@ -13790,6 +14150,37 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DID_PART_NAME, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DID_PART_NAME, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierFileModelImpl.getGroupId(),
+					dossierFileModelImpl.getDossierId(),
+					dossierFileModelImpl.getDossierPartNo(),
+					dossierFileModelImpl.isEForm(),
+					dossierFileModelImpl.isRemoved()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_DID_PART_EFORM,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+				args);
+		}
+
+		if ((dossierFileModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierFileModelImpl.getOriginalGroupId(),
+					dossierFileModelImpl.getOriginalDossierId(),
+					dossierFileModelImpl.getOriginalDossierPartNo(),
+					dossierFileModelImpl.getOriginalEForm(),
+					dossierFileModelImpl.getOriginalRemoved()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_DID_PART_EFORM,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_GID_DID_PART_EFORM,
+				args);
 		}
 	}
 

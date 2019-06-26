@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -94,6 +95,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
@@ -2879,21 +2881,43 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierFile dossierFile = null;
 			DossierFileActions action = new DossierFileActionsImpl();
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
+			_log.info("__file:" + file);
 			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 			
-			if (dataHandler != null && dataHandler.getInputStream() != null) {								
+			if (dataHandler != null && dataHandler.getInputStream() != null) {
 				_log.info("__Start add file at:" + new Date());
 	
-				dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
-						dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
-						dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+				dossierFile = DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(groupId, dossier.getDossierId(),
+						partNo, true, false);
+				if (dossierFile == null) {
+					dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
+							dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
+							dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+				} else {
+					try {
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(user.getUserId(), groupId,
+								dataHandler.getInputStream(), dossierPart.getPartName(), StringPool.BLANK, 0,
+								serviceContext);
+
+						if (fileEntry != null) {
+							dossierFile.setFileEntryId(fileEntry.getFileEntryId());
+						}
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
 				
 				_log.info("__End add file at:" + new Date());
 			}
 			else {
-				dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
-						dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dossierPart.getPartName(), 0,
-						null, StringPool.BLANK, "true", serviceContext);				
+				dossierFile = DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(groupId, dossier.getDossierId(),
+						partNo, true, false);
+				if (dossierFile == null) {
+					_log.info("dossierFile NULL");
+					dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
+							dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dossierPart.getPartName(), 0,
+							null, StringPool.BLANK, "true", serviceContext);
+				}
 			}
 			
 			if(Validator.isNotNull(formData)) {
@@ -2905,12 +2929,12 @@ public class DossierManagementImpl implements DossierManagement {
 			if(Validator.isNotNull(eForm)) {
 				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
-					
+
 			_log.info("__Start update dossier file at:" + new Date());
 
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-			dossierFile = action.updateDossierFileFormData(groupId, dossier.getDossierId(), referenceUid, formData,
+			dossierFile = action.updateDossierFileFormData(groupId, dossier.getDossierId(), dossierFile.getReferenceUid(), formData,
 					serviceContext);
 			
 			_log.info("__End update dossier file at:" + new Date());

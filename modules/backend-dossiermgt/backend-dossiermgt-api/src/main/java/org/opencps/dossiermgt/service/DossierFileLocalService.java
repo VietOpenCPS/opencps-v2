@@ -317,6 +317,10 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String dossierPartNo, int dossierPartType, String displayName);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierFile getByGID_DID_PART_EFORM(long groupId, long dossierId,
+		String dossierPartNo, boolean eform, boolean removed);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getByRefAndGroupId(long groupId, String referenceUid)
 		throws PortalException;
 
