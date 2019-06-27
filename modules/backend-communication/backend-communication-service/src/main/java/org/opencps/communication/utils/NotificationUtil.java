@@ -290,7 +290,7 @@ public class NotificationUtil {
 				messageEntry.setSendNotify(sendNotify);
 				messageEntry.setSendSMS(sendSMS);
 
-				if (sendMesZalo) {
+				if (queue.getToUserId() > 0 && sendMesZalo ) {
 					JSONObject checkZaloInfo =
 						_checkZaloInfo(queue.getGroupId(), queue.getToUserId());
 					if (checkZaloInfo.has(ZALO_UID) &&
