@@ -203,6 +203,8 @@
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="publish" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="govAgencyCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ResourceRoleImpl" table="opencps_resourcerole">
 		<id name="resourceRoleId" type="long">

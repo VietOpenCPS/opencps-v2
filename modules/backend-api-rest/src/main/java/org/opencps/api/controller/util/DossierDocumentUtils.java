@@ -76,9 +76,11 @@ public class DossierDocumentUtils {
 		try {
 			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(), dossier.getServiceCode());
 			jsonData.put(ServiceInfoTerm.FEE_TEXT, service != null ? service.getFeeText() : StringPool.BLANK);
+			jsonData.put(ServiceInfoTerm.DURATION_TEXT, service != null ? service.getDurationText() : StringPool.BLANK);
 		} catch (PortalException e1) {
 			_log.debug(e1);
 			jsonData.put(ServiceInfoTerm.FEE_TEXT, StringPool.BLANK);
+			jsonData.put(ServiceInfoTerm.DURATION_TEXT, StringPool.BLANK);
 		}
 		//
 		Date dueDate = dossier.getDueDate();

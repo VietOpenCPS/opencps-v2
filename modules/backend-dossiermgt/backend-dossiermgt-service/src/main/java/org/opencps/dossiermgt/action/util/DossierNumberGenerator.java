@@ -473,9 +473,38 @@ public class DossierNumberGenerator {
 		return password;
 	}
 
-//	public static final String PRE_FIX_CERT = "CERT@";
-//	public static final String PRE_FIX_CERT_CURR = "CERT_CURR@";
-//	public static final String PRE_FIX_CERT_ELM = "CERT_ELM@";
+	public static long countByRegiterBookCode(long groupId, String registerBookCode) {
+		
+		long _counterNumber = 0;
+
+		try {
+			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + StringPool.AT + groupId;
+			
+			_log.info("___certConfigId" + certConfigName);
+			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);
+
+			if (Validator.isNotNull(counterConfig)) {
+				// create counter config
+				_counterNumber = counterConfig.getCurrentId() + 1;
+				//
+				counterConfig.setCurrentId(_counterNumber);
+				CounterLocalServiceUtil.updateCounter(counterConfig);
+					
+				} else {
+					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+					counterConfig = CounterLocalServiceUtil.createCounter(certConfigName);
+					//increment CurrentCounter 
+					counterConfig.setCurrentId(1);
+					_counterNumber = 1;
+					CounterLocalServiceUtil.updateCounter(counterConfig);
+				}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return _counterNumber;
+
+	}
 
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());
 }

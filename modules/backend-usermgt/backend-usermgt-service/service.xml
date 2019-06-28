@@ -649,8 +649,10 @@
 
 		<column name="fullname" type="String" />
 		<column name="email" type="String" />
-		<column name="content" type="String" />		
+		<column name="content" type="String" />
 		<column name="publish" type="int" />
+		<column name="govAgencyCode" type="String" />
+		<column name="govAgencyName" type="String" />
 
 		<!-- Order -->
 		<order by="asc">

@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -4166,33 +4167,32 @@ public class DossierActionsImpl implements DossierActions {
 
 			if (notiTemplate != null) {
 				if ("minutely".equals(notiTemplate.getInterval())) {
-			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
-				}
-				else if ("hourly".equals(notiTemplate.getInterval())) {
-			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
-				}
-				else {
-			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
+				} else if ("hourly".equals(notiTemplate.getInterval())) {
+					cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
+				} else {
+					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 				}
 				Date expired = cal.getTime();
 
 				if (actionConfig.getNotificationType().startsWith("APLC")) {
 					//if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 					//		|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
-					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG &&
-							Validator.isNull(dossier.getOriginDossierNo())) {
+					if ((dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
+							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+							&& Validator.isNull(dossier.getOriginDossierNo())) {
 						try {
 //							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
 							List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(dossier.getApplicantIdNo());
 							Applicant foundApplicant = (applicants.isEmpty() ? null : applicants.get(0));
 
-							for (Applicant applicant : applicants) {
-								long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
-								if (toUserId != 0) {
-									foundApplicant = applicant;
-									break;
-								}
-							}
+//							for (Applicant applicant : applicants) {
+//								long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+//								if (toUserId != 0) {
+//									foundApplicant = applicant;
+//									break;
+//								}
+//							}
 							if (foundApplicant != null) {
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
@@ -4210,10 +4210,7 @@ public class DossierActionsImpl implements DossierActions {
 										context);								
 							}
 						} catch (NoSuchUserException e) {
-//							e.printStackTrace();
 							_log.error(e);
-							//_log.error(e);
-//							e.printStackTrace();
 						}
 					}
 				}
@@ -4402,13 +4399,13 @@ public class DossierActionsImpl implements DossierActions {
 
         if (emplTemplate != null) {
 			if ("minutely".equals(emplTemplate.getInterval())) {
-				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());
 			}
 			else if ("hourly".equals(emplTemplate.getInterval())) {
-				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
+				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());
 			}
 			else {
-				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());										
+				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());
 			}
 			Date expired = calEmpl.getTime();
 
@@ -4511,9 +4508,8 @@ public class DossierActionsImpl implements DossierActions {
 		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-//		ServiceProcess serviceProcess =  null;
 //		
-//		long serviceProcessId = (option != null ? option.getServiceProcessId() : prevAction.getServiceProcessId());
+		long groupId = dossier.getGroupId();
 //		serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 		
 //		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
@@ -4581,22 +4577,48 @@ public class DossierActionsImpl implements DossierActions {
 				dossier.setDurationCount(durationCount);
 				dossier.setDurationUnit(durationUnit);
 				
-//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
-//			} catch (PortalException e) {
-//				_log.error(e);
-//				e.printStackTrace();
-//			}
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					//_log.debug(e);
+				}
+			}
 		}
 
-		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus) && DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
-//			try {
-//				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
-				dossier.setProcessDate(now);
-				bResult.put(DossierTerm.PROCESS_DATE, true);
-//			} catch (PortalException e) {
-//				_log.error(e);
-//				e.printStackTrace();
-//			}
+		//Update counter and dossierNo
+		if (actionConfig != null && actionConfig.getDateOption() == 2) {
+
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
+							params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					// _log.debug(e);
+				}
+			}
+		}
+
+		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus)
+				&& DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {
+			dossier.setProcessDate(now);
+			bResult.put(DossierTerm.PROCESS_DATE, true);
 		}
 //		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -6368,6 +6390,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 							user.setModelAttributes(moderator);
 							user.setModelAttributes(assigned);
+
 							lstUser.add(user);
 						}
 					}
@@ -6388,6 +6411,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 								HashMap<String, Object> moderator = new HashMap<>();
 								moderator.put("moderator", serviceProcessRole.getModerator());
 								user.setModelAttributes(moderator);
+
 								lstUser.add(user);
 							}
 						}
@@ -6440,10 +6464,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							u.setModelAttributes(moderator);
 							u.setModelAttributes(assigned);
 
-					lstUser.add(u);
+							lstUser.add(u);
+						}
+					}
 				}
-			}
-		}
 			}
 		}
 

@@ -249,11 +249,11 @@ public class DossierSoap implements Serializable {
 		_referenceUid = referenceUid;
 	}
 
-	public int getCounter() {
+	public long getCounter() {
 		return _counter;
 	}
 
-	public void setCounter(int counter) {
+	public void setCounter(long counter) {
 		_counter = counter;
 	}
 
@@ -938,7 +938,7 @@ public class DossierSoap implements Serializable {
 	private Date _createDate;
 	private Date _modifiedDate;
 	private String _referenceUid;
-	private int _counter;
+	private long _counter;
 	private String _registerBookCode;
 	private String _registerBookName;
 	private String _dossierRegister;

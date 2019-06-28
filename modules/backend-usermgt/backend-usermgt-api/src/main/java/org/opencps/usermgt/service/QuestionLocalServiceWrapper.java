@@ -261,9 +261,10 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 	@Override
 	public org.opencps.usermgt.model.Question updateQuestion(long companyId,
 		long groupId, long questionId, String fullname, String email,
-		String content, int publish) {
+		String content, int publish, String govAgencyCode, String govAgencyName) {
 		return _questionLocalService.updateQuestion(companyId, groupId,
-			questionId, fullname, email, content, publish);
+			questionId, fullname, email, content, publish, govAgencyCode,
+			govAgencyName);
 	}
 
 	/**

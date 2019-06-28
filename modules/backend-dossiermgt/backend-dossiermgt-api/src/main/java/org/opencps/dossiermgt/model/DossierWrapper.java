@@ -211,7 +211,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 			setReferenceUid(referenceUid);
 		}
 
-		Integer counter = (Integer)attributes.get("counter");
+		Long counter = (Long)attributes.get("counter");
 
 		if (counter != null) {
 			setCounter(counter);
@@ -880,7 +880,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	* @return the counter of this dossier
 	*/
 	@Override
-	public int getCounter() {
+	public long getCounter() {
 		return _dossier.getCounter();
 	}
 
@@ -1900,7 +1900,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	* @param counter the counter of this dossier
 	*/
 	@Override
-	public void setCounter(int counter) {
+	public void setCounter(long counter) {
 		_dossier.setCounter(counter);
 	}
 

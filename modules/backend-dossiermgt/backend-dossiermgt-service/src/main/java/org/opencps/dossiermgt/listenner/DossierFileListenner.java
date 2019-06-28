@@ -514,8 +514,8 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						if (Validator.isNotNull(model.getFormData()))
 							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-						if (jsMappingData.has("deliverables") && !Validator.isNull(jsMappingData.get("deliverbles"))) {
-							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());							
+						if (jsMappingData.has("deliverables") && Validator.isNotNull(jsMappingData.get("deliverbles"))) {
+							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
 						}
 						else {
 							formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());

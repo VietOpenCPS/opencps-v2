@@ -151,7 +151,7 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="referenceUid" type="String" />
-		<field name="counter" type="int" />
+		<field name="counter" type="long" />
 		<field name="registerBookCode" type="String" />
 		<field name="registerBookName" type="String" />
 		<field name="dossierRegister" type="String" />

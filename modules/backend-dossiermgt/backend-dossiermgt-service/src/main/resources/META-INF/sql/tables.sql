@@ -155,7 +155,7 @@ create table opencps_dossier (
 	createDate DATE null,
 	modifiedDate DATE null,
 	referenceUid VARCHAR(75) null,
-	counter INTEGER,
+	counter LONG,
 	registerBookCode VARCHAR(75) null,
 	registerBookName VARCHAR(75) null,
 	dossierRegister VARCHAR(75) null,

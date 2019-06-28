@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -84,6 +84,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(content);
 		sb.append(", publish=");
 		sb.append(publish);
+		sb.append(", govAgencyCode=");
+		sb.append(govAgencyCode);
+		sb.append(", govAgencyName=");
+		sb.append(govAgencyName);
 		sb.append("}");
 
 		return sb.toString();
@@ -134,6 +138,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 		questionImpl.setPublish(publish);
 
+		if (govAgencyCode == null) {
+			questionImpl.setGovAgencyCode("");
+		}
+		else {
+			questionImpl.setGovAgencyCode(govAgencyCode);
+		}
+
+		if (govAgencyName == null) {
+			questionImpl.setGovAgencyName("");
+		}
+		else {
+			questionImpl.setGovAgencyName(govAgencyName);
+		}
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -153,6 +171,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		content = objectInput.readUTF();
 
 		publish = objectInput.readInt();
+		govAgencyCode = objectInput.readUTF();
+		govAgencyName = objectInput.readUTF();
 	}
 
 	@Override
@@ -188,6 +208,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		}
 
 		objectOutput.writeInt(publish);
+
+		if (govAgencyCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyCode);
+		}
+
+		if (govAgencyName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyName);
+		}
 	}
 
 	public long questionId;
@@ -199,4 +233,6 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String email;
 	public String content;
 	public int publish;
+	public String govAgencyCode;
+	public String govAgencyName;
 }

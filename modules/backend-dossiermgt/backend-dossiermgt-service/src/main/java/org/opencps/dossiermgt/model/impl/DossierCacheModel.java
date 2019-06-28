@@ -823,7 +823,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		modifiedDate = objectInput.readLong();
 		referenceUid = objectInput.readUTF();
 
-		counter = objectInput.readInt();
+		counter = objectInput.readLong();
 		registerBookCode = objectInput.readUTF();
 		registerBookName = objectInput.readUTF();
 		dossierRegister = objectInput.readUTF();
@@ -956,7 +956,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			objectOutput.writeUTF(referenceUid);
 		}
 
-		objectOutput.writeInt(counter);
+		objectOutput.writeLong(counter);
 
 		if (registerBookCode == null) {
 			objectOutput.writeUTF("");
@@ -1413,7 +1413,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public long createDate;
 	public long modifiedDate;
 	public String referenceUid;
-	public int counter;
+	public long counter;
 	public String registerBookCode;
 	public String registerBookName;
 	public String dossierRegister;

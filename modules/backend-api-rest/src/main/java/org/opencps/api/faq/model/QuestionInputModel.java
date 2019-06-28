@@ -43,7 +43,9 @@ import javax.xml.bind.annotation.XmlType;
     "fullname",
     "email",
     "content",
-    "publish"
+    "publish",
+    "govAgencyCode",
+    "govAgencyName"
 })
 @XmlRootElement(name = "QuestionInputModel")
 public class QuestionInputModel {
@@ -59,6 +61,10 @@ public class QuestionInputModel {
     protected String content;
     @FormParam("publish")
     protected int publish;
+    @FormParam("govAgencyCode")
+    protected String govAgencyCode;
+    @FormParam("govAgencyName")
+    protected String govAgencyName;
 
     /**
      * Gets the value of the fullname property.
@@ -147,5 +153,21 @@ public class QuestionInputModel {
     public void setPublish(int value) {
         this.publish = value;
     }
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 
 }

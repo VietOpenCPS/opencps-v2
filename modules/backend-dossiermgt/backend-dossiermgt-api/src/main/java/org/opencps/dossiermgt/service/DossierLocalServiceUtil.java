@@ -551,31 +551,6 @@ public class DossierLocalServiceUtil {
 		String postalAddress, String postalCityCode, String postalCityName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality,
-		com.liferay.portal.kernel.service.ServiceContext context)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .initDossier(groupId, dossierId, referenceUid, counter,
-			serviceCode, serviceName, govAgencyCode, govAgencyName,
-			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
-			address, cityCode, cityName, districtCode, districtName, wardCode,
-			wardName, contactName, contactTelNo, contactEmail,
-			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
-			applicantNote, originality, context);
-	}
-
-	public static org.opencps.dossiermgt.model.Dossier initDossier(
-		long groupId, long dossierId, String referenceUid, int counter,
-		String serviceCode, String serviceName, String govAgencyCode,
-		String govAgencyName, String applicantName, String applicantIdType,
-		String applicantIdNo, java.util.Date applicantIdDate, String address,
-		String cityCode, String cityName, String districtCode,
-		String districtName, String wardCode, String wardName,
-		String contactName, String contactTelNo, String contactEmail,
-		String dossierTemplateNo, String password, int viaPostal,
-		String postalAddress, String postalCityCode, String postalCityName,
-		String postalTelNo, boolean online, boolean notification,
-		String applicantNote, int originality,
 		org.opencps.dossiermgt.model.ServiceInfo service,
 		org.opencps.dossiermgt.model.ServiceProcess serviceProcess,
 		org.opencps.dossiermgt.model.ProcessOption processOption,
@@ -591,6 +566,31 @@ public class DossierLocalServiceUtil {
 			postalCityCode, postalCityName, postalTelNo, online, notification,
 			applicantNote, originality, service, serviceProcess, processOption,
 			context);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier initDossier(
+		long groupId, long dossierId, String referenceUid, long counter,
+		String serviceCode, String serviceName, String govAgencyCode,
+		String govAgencyName, String applicantName, String applicantIdType,
+		String applicantIdNo, java.util.Date applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, String password, int viaPostal,
+		String postalAddress, String postalCityCode, String postalCityName,
+		String postalTelNo, boolean online, boolean notification,
+		String applicantNote, int originality,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .initDossier(groupId, dossierId, referenceUid, counter,
+			serviceCode, serviceName, govAgencyCode, govAgencyName,
+			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
+			address, cityCode, cityName, districtCode, districtName, wardCode,
+			wardName, contactName, contactTelNo, contactEmail,
+			dossierTemplateNo, password, viaPostal, postalAddress,
+			postalCityCode, postalCityName, postalTelNo, online, notification,
+			applicantNote, originality, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(

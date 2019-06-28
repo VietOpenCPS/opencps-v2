@@ -171,7 +171,9 @@ create table opencps_question (
 	fullname VARCHAR(512) null,
 	email VARCHAR(255) null,
 	content TEXT null,
-	publish INTEGER
+	publish INTEGER,
+	govAgencyCode VARCHAR(75) null,
+	govAgencyName VARCHAR(75) null
 );
 
 create table opencps_resourcerole (

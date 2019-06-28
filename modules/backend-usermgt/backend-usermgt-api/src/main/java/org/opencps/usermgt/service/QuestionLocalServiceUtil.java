@@ -253,10 +253,11 @@ public class QuestionLocalServiceUtil {
 
 	public static org.opencps.usermgt.model.Question updateQuestion(
 		long companyId, long groupId, long questionId, String fullname,
-		String email, String content, int publish) {
+		String email, String content, int publish, String govAgencyCode,
+		String govAgencyName) {
 		return getService()
 				   .updateQuestion(companyId, groupId, questionId, fullname,
-			email, content, publish);
+			email, content, publish, govAgencyCode, govAgencyName);
 	}
 
 	/**
