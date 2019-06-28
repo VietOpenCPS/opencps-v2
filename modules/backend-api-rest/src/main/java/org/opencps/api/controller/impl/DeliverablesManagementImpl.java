@@ -1,5 +1,23 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,31 +41,18 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
@@ -548,6 +553,50 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response resolveConflictDeliverables(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long userId = user.getUserId();
+		DeliverableActions actions = new DeliverableActionsImpl();
+		Indexer<Deliverable> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(Deliverable.class);
+		
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		//JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, null,
+		//			-1, -1, serviceContext);
+		
+		
+		// get JSON data deliverable
+		JSONObject jsonData = actions.getListDeliverable(user.getUserId(), serviceContext.getCompanyId(), params,
+				null, -1, -1, serviceContext);
+		
+		long total = jsonData.getLong("total");
+//		JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+			for (Document document : lstDocuments) {
+				long deliverableId = GetterUtil.getLong(document.get(DeliverableTerm.DELIVERABLE_ID));
+				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				String uid = document.get(Field.UID);
+				Deliverable oldDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(deliverableId);
+				if (oldDeliverable == null) {
+					try {
+						indexer.delete(companyId, uid);
+					} catch (SearchException e) {
+						_log.error(e);
+					}
+				}
+			}
+		}
+
+		return Response.status(200).entity("{}").build();
 	}
 
 }

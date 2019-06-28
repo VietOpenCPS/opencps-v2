@@ -66,6 +66,8 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("email", getEmail());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
+		attributes.put("govAgencyCode", getGovAgencyCode());
+		attributes.put("govAgencyName", getGovAgencyName());
 
 		return attributes;
 	}
@@ -124,6 +126,18 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 
 		if (publish != null) {
 			setPublish(publish);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
+		}
+
+		String govAgencyName = (String)attributes.get("govAgencyName");
+
+		if (govAgencyName != null) {
+			setGovAgencyName(govAgencyName);
 		}
 	}
 
@@ -190,6 +204,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public String getFullname() {
 		return _question.getFullname();
+	}
+
+	/**
+	* Returns the gov agency code of this question.
+	*
+	* @return the gov agency code of this question
+	*/
+	@Override
+	public String getGovAgencyCode() {
+		return _question.getGovAgencyCode();
+	}
+
+	/**
+	* Returns the gov agency name of this question.
+	*
+	* @return the gov agency name of this question
+	*/
+	@Override
+	public String getGovAgencyName() {
+		return _question.getGovAgencyName();
 	}
 
 	/**
@@ -341,6 +375,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setFullname(String fullname) {
 		_question.setFullname(fullname);
+	}
+
+	/**
+	* Sets the gov agency code of this question.
+	*
+	* @param govAgencyCode the gov agency code of this question
+	*/
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_question.setGovAgencyCode(govAgencyCode);
+	}
+
+	/**
+	* Sets the gov agency name of this question.
+	*
+	* @param govAgencyName the gov agency name of this question
+	*/
+	@Override
+	public void setGovAgencyName(String govAgencyName) {
+		_question.setGovAgencyName(govAgencyName);
 	}
 
 	/**

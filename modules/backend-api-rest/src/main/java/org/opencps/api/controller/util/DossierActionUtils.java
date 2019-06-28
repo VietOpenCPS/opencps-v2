@@ -50,6 +50,8 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class DossierActionUtils {
 
@@ -433,7 +435,15 @@ public class DossierActionUtils {
 					}
 
 					modelUser.setUserId(userId);
-					modelUser.setUserName(user.getFullName());
+
+					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+					_log.info("employee1: "+employee);
+					if (employee != null) {
+						modelUser.setUserName(employee.getFullName());
+					} else {
+						modelUser.setUserName(user.getFullName());
+					}
+					
 					modelUser.setModerator(moderator);
 					modelUser.setAssigned(assigned);
 					boolean flag = true;

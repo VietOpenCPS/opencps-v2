@@ -204,7 +204,7 @@ public class DossierDetailModel {
     protected String createDate;
     protected String modifiedDate;
     protected String referenceUid;
-    protected Integer counter;
+    protected Long counter;
     protected String serviceCode;
     protected String serviceName;
     protected String govAgencyCode;
@@ -550,7 +550,7 @@ public class DossierDetailModel {
      *     {@link Integer }
      *     
      */
-    public Integer getCounter() {
+    public Long getCounter() {
         return counter;
     }
 
@@ -562,7 +562,7 @@ public class DossierDetailModel {
      *     {@link Integer }
      *     
      */
-    public void setCounter(Integer value) {
+    public void setCounter(Long value) {
         this.counter = value;
     }
 

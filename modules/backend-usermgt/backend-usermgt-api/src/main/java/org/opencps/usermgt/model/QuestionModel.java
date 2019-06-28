@@ -194,6 +194,36 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	 */
 	public void setPublish(int publish);
 
+	/**
+	 * Returns the gov agency code of this question.
+	 *
+	 * @return the gov agency code of this question
+	 */
+	@AutoEscape
+	public String getGovAgencyCode();
+
+	/**
+	 * Sets the gov agency code of this question.
+	 *
+	 * @param govAgencyCode the gov agency code of this question
+	 */
+	public void setGovAgencyCode(String govAgencyCode);
+
+	/**
+	 * Returns the gov agency name of this question.
+	 *
+	 * @return the gov agency name of this question
+	 */
+	@AutoEscape
+	public String getGovAgencyName();
+
+	/**
+	 * Sets the gov agency name of this question.
+	 *
+	 * @param govAgencyName the gov agency name of this question
+	 */
+	public void setGovAgencyName(String govAgencyName);
+
 	@Override
 	public boolean isNew();
 

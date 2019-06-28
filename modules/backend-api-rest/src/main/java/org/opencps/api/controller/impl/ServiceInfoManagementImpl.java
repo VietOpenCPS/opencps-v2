@@ -136,21 +136,22 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-		    
-			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				builder.tag(etag);
-				return builder.status(200).entity(results).cacheControl(cc).build();
-			}
-			else {
-				return Response.status(200).entity(results).build();				
-			}
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//		    
+//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				builder.tag(etag);
+//				return builder.status(200).entity(results).cacheControl(cc).build();
+//			}
+//			else {
+//				return Response.status(200).entity(results).build();				
+//			}
 
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -235,19 +236,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				builder.tag(etag);
-				return builder.status(200).entity(results).cacheControl(cc).build();
-			}
-			else {
-				return Response.status(200).entity(results).build();
-			}
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				builder.tag(etag);
+//				return builder.status(200).entity(results).cacheControl(cc).build();
+//			}
+//			else {
+//				return Response.status(200).entity(results).build();
+//			}
+		
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -530,20 +533,22 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
 			
 //			_log.info(results);
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-		    
-			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				builder.tag(etag);
-				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-			}
-			else {
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
-			}
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//		    
+//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				builder.tag(etag);
+//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+//			}
+//			else {
+//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
+//			}
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -571,19 +576,17 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
 			
 //			_log.info(results);
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				builder.tag(etag);
-				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-			}
-			else {
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-			}
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				builder.tag(etag);
+//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -615,19 +618,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomain(groupId, sorts, serviceContext);
 			}
 //			_log.info(results);
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				builder.tag(etag);
-				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-			}
-			else {
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-			}
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				builder.tag(etag);
+//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+//			}
+//			else {
+//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+//			}
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

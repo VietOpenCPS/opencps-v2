@@ -67,7 +67,9 @@ public class FaqManagementImpl implements FaqManagement {
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
 
-			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, 0l, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish());
+			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, 0l,
+					input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
+					input.getGovAgencyCode(), input.getGovAgencyName());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -76,6 +78,8 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setFullname(question.getFullname());
 				result.setPublish(question.getPublish());
 				result.setQuestionId(question.getQuestionId());
+				result.setGovAgencyCode(question.getGovAgencyCode());
+				result.setGovAgencyName(question.getGovAgencyName());
 				
 				return Response.status(200).entity(result).build();
 			}
@@ -226,7 +230,9 @@ public class FaqManagementImpl implements FaqManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long questionId = GetterUtil.getLong(id);
 		try {
-			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, questionId, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish());
+			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId,
+					questionId, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
+					input.getGovAgencyCode(), input.getGovAgencyName());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -235,6 +241,8 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setFullname(question.getFullname());
 				result.setPublish(question.getPublish());
 				result.setQuestionId(question.getQuestionId());
+				result.setGovAgencyCode(question.getGovAgencyCode());
+				result.setGovAgencyName(input.getGovAgencyName());
 				
 				return Response.status(200).entity(result).build();
 			}

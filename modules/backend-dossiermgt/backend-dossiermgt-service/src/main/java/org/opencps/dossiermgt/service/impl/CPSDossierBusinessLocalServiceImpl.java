@@ -3196,8 +3196,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 				input.getGovAgencyCode(), input.getDossierTemplateNo());
 
-		int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
+		//int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
 		String referenceUid = input.getReferenceUid();
+		int counter = 0;
 
 		// Create dossierNote
 		ServiceProcess process = null;
@@ -3536,13 +3537,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setRegisterBookCode(registerBookCode);
 				dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
-				
+
 				updateDelegateApplicant(dossier, input);
 				
 				if (process != null) {
 					dossier.setProcessNo(process.getProcessNo());
 				}
-				
 //					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");

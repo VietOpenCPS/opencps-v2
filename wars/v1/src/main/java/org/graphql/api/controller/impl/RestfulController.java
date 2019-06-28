@@ -143,7 +143,7 @@ public class RestfulController {
 			indexer.reindex(user);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -166,7 +166,7 @@ public class RestfulController {
 			indexer.reindex(user);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -190,7 +190,7 @@ public class RestfulController {
 			result.put("deactiveAccountFlag", user.getStatus());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -241,7 +241,7 @@ public class RestfulController {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		dataUser.put(result);
@@ -396,7 +396,7 @@ public class RestfulController {
 		}		
 		catch (Exception e) {
 			System.out.println("EXCEPTION");
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return "";
@@ -431,7 +431,7 @@ public class RestfulController {
 				result = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -545,7 +545,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -646,7 +646,7 @@ public class RestfulController {
 				resultArray.put(object);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -700,7 +700,7 @@ public class RestfulController {
 				resultArray.put(object);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -786,7 +786,7 @@ public class RestfulController {
 			DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -849,7 +849,7 @@ public class RestfulController {
 			}
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -872,7 +872,7 @@ public class RestfulController {
 			System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return "sdfds";
@@ -958,11 +958,11 @@ public class RestfulController {
 					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
 
 					object.put("name", name);
-					_log.debug("name: "+name);
+					//_log.debug("name: "+name);
 
 				} else {
 					object.put("name", objects[1]);
-					_log.debug("name: "+objects[1]);
+					//_log.debug("name: "+objects[1]);
 				}
 
 				result.put(object);
@@ -972,7 +972,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -1023,13 +1023,13 @@ public class RestfulController {
 			result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			result = StringPool.BLANK;
 		} finally {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 		}
 
@@ -1090,17 +1090,21 @@ public class RestfulController {
 
 					}
 
+					System.out.println("queryBuilderLike:" + queryBuilderLike);
+					System.out.println("queryBuilder:" + queryBuilder);
+
 					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + request.getParameter("start")
 							+ ", \"size\" : " + request.getParameter("end")
-							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
 							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
 							+ "}");
 
 					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
-							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
 							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
 							+ "}");
 
+					System.out.println("query:" + query);
 					JSONObject count = ElasticQueryWrapUtil.count(countQuery.toJSONString());
 
 					System.out.println("RestfulController.getDeliverable(count)" + count.toJSONString());
@@ -1110,13 +1114,13 @@ public class RestfulController {
 					result.getJSONObject("hits").put("total", count.getLong("count"));
 
 				} catch (JSONException e) {
-					e.printStackTrace();
+					_log.debug(e);
 				}
 
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -1150,13 +1154,13 @@ public class RestfulController {
 					result = ElasticQueryWrapUtil.query(query.toJSONString());
 
 				} catch (JSONException e) {
-					e.printStackTrace();
+					_log.debug(e);
 				}
 
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -1178,7 +1182,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result;
@@ -1221,7 +1225,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result;

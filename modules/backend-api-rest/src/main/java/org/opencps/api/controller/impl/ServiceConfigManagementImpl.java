@@ -61,6 +61,7 @@ import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -843,8 +844,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			jsonGuide.put(ApplicantTerm.CONTACTTELNO, search.getApplicantTelNo());
 			jsonGuide.put("employeeName", search.getEmployeeName());
 			jsonGuide.put(DossierTemplateTerm.TEMPLATE_NO, search.getTemplateNo());
+			jsonGuide.put(DossierTerm.APPLICANT_NOTE, search.getApplicantNote());
 			if (serviceConfig != null) {
 				jsonGuide.put(ServiceConfigTerm.SERVICE_INSTRUCTION, serviceConfig.getServiceInstruction());
+				jsonGuide.put(ServiceConfigTerm.GOVAGENCY_CODE, serviceConfig.getGovAgencyCode());
+				jsonGuide.put(ServiceConfigTerm.GOVAGENCY_NAME, serviceConfig.getGovAgencyName());
 			}
 
 //			List<ProcessOption> optionList = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfigId);
@@ -903,9 +907,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 //				}
 //			}
 			// Get dossierTemplate by dossierTemplateNo
-			String typeCode = search.getTypeCode();
-			jsonGuide.put("typeCode", typeCode);
-			if (Validator.isNotNull(typeCode) && typeCode.equalsIgnoreCase("completed")) {
+			String type = search.getType();
+			jsonGuide.put("type", type);
+			if (Validator.isNotNull(type) && type.equalsIgnoreCase("completed")) {
 				DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
 				JSONArray partArr = JSONFactoryUtil.createJSONArray();
 				if (template != null) {

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -49,6 +50,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.BackupDataManagementImpl;
 import org.opencps.api.controller.impl.BookingManagementImpl;
@@ -115,6 +117,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -234,11 +237,11 @@ public class BackendAPIRestApplication extends Application {
 
 	public Response getBarcode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("value") String value) {
+			@Context ServiceContext serviceContext, @QueryParam("value") String value, @QueryParam("font") String font) {
 		try {
 			Code128 barcode = new Code128();
 			barcode.setFontName("Monospaced");
-			barcode.setFontSize(16);
+			barcode.setFontSize(Validator.isNotNull(font) ? Integer.valueOf(font) : ConstantUtils.DEFAULT_FONT_SIZE);
 			barcode.setModuleWidth(2);
 			barcode.setBarHeight(50);
 			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);

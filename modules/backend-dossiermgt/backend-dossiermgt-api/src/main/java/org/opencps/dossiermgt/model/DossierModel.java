@@ -230,14 +230,14 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 *
 	 * @return the counter of this dossier
 	 */
-	public int getCounter();
+	public long getCounter();
 
 	/**
 	 * Sets the counter of this dossier.
 	 *
 	 * @param counter the counter of this dossier
 	 */
-	public void setCounter(int counter);
+	public void setCounter(long counter);
 
 	/**
 	 * Returns the register book code of this dossier.

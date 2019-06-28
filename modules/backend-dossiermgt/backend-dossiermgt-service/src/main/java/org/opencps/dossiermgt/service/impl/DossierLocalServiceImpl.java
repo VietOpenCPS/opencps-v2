@@ -144,7 +144,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
+	public Dossier initDossier(long groupId, long dossierId, String referenceUid, long counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,

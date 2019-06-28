@@ -68,4 +68,5 @@ public class ConstantUtils {
 	//
 	public static final String HTML_NEW_LINE = "<br/>";
 	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
+	public static final int DEFAULT_FONT_SIZE = 16;
 }

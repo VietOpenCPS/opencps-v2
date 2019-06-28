@@ -41,7 +41,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.QuestionLocalServiceUtil} to access the question local service.
 	 */
-	public Question updateQuestion(long companyId, long groupId, long questionId, String fullname, String email, String content, int publish) {
+	public Question updateQuestion(long companyId, long groupId, long questionId, String fullname, String email,
+			String content, int publish, String govAgencyCode, String govAgencyName) {
 		Question question = null;
 		Date now = new Date();
 		
@@ -50,22 +51,28 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 			question = questionPersistence.create(questionId);
 			
 			question.setCreateDate(now);
+			question.setModifiedDate(now);
 			question.setCompanyId(companyId);
 			question.setGroupId(groupId);
 			question.setFullname(fullname);
 			question.setEmail(email);
 			question.setContent(content);
 			question.setPublish(publish);
+			question.setGovAgencyCode(govAgencyCode);
+			question.setGovAgencyName(govAgencyName);
 		}
 		else {
 			question = questionPersistence.fetchByPrimaryKey(questionId);
-					
+			
+			question.setModifiedDate(now);
 			question.setCompanyId(companyId);
 			question.setGroupId(groupId);
 			question.setFullname(fullname);
 			question.setEmail(email);
 			question.setContent(content);
-			question.setPublish(publish);			
+			question.setPublish(publish);
+			question.setGovAgencyCode(govAgencyCode);
+			question.setGovAgencyName(govAgencyName);
 		}
 		return questionPersistence.update(question);
 	}

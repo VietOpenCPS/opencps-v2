@@ -71,7 +71,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			{ "fullname", Types.VARCHAR },
 			{ "email", Types.VARCHAR },
 			{ "content", Types.VARCHAR },
-			{ "publish", Types.INTEGER }
+			{ "publish", Types.INTEGER },
+			{ "govAgencyCode", Types.VARCHAR },
+			{ "govAgencyName", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -85,9 +87,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("publish", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";
@@ -155,6 +159,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		attributes.put("email", getEmail());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
+		attributes.put("govAgencyCode", getGovAgencyCode());
+		attributes.put("govAgencyName", getGovAgencyName());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -216,6 +222,18 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		if (publish != null) {
 			setPublish(publish);
+		}
+
+		String govAgencyCode = (String)attributes.get("govAgencyCode");
+
+		if (govAgencyCode != null) {
+			setGovAgencyCode(govAgencyCode);
+		}
+
+		String govAgencyName = (String)attributes.get("govAgencyName");
+
+		if (govAgencyName != null) {
+			setGovAgencyName(govAgencyName);
 		}
 	}
 
@@ -356,6 +374,36 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		return _originalPublish;
 	}
 
+	@Override
+	public String getGovAgencyCode() {
+		if (_govAgencyCode == null) {
+			return "";
+		}
+		else {
+			return _govAgencyCode;
+		}
+	}
+
+	@Override
+	public void setGovAgencyCode(String govAgencyCode) {
+		_govAgencyCode = govAgencyCode;
+	}
+
+	@Override
+	public String getGovAgencyName() {
+		if (_govAgencyName == null) {
+			return "";
+		}
+		else {
+			return _govAgencyName;
+		}
+	}
+
+	@Override
+	public void setGovAgencyName(String govAgencyName) {
+		_govAgencyName = govAgencyName;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -396,6 +444,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionImpl.setEmail(getEmail());
 		questionImpl.setContent(getContent());
 		questionImpl.setPublish(getPublish());
+		questionImpl.setGovAgencyCode(getGovAgencyCode());
+		questionImpl.setGovAgencyName(getGovAgencyName());
 
 		questionImpl.resetOriginalValues();
 
@@ -523,12 +573,28 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		questionCacheModel.publish = getPublish();
 
+		questionCacheModel.govAgencyCode = getGovAgencyCode();
+
+		String govAgencyCode = questionCacheModel.govAgencyCode;
+
+		if ((govAgencyCode != null) && (govAgencyCode.length() == 0)) {
+			questionCacheModel.govAgencyCode = null;
+		}
+
+		questionCacheModel.govAgencyName = getGovAgencyName();
+
+		String govAgencyName = questionCacheModel.govAgencyName;
+
+		if ((govAgencyName != null) && (govAgencyName.length() == 0)) {
+			questionCacheModel.govAgencyName = null;
+		}
+
 		return questionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{questionId=");
 		sb.append(getQuestionId());
@@ -548,6 +614,10 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		sb.append(getContent());
 		sb.append(", publish=");
 		sb.append(getPublish());
+		sb.append(", govAgencyCode=");
+		sb.append(getGovAgencyCode());
+		sb.append(", govAgencyName=");
+		sb.append(getGovAgencyName());
 		sb.append("}");
 
 		return sb.toString();
@@ -555,7 +625,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Question");
@@ -597,6 +667,14 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			"<column><column-name>publish</column-name><column-value><![CDATA[");
 		sb.append(getPublish());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyCode</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyCode());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyName</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyName());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -621,6 +699,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	private int _publish;
 	private int _originalPublish;
 	private boolean _setOriginalPublish;
+	private String _govAgencyCode;
+	private String _govAgencyName;
 	private long _columnBitmask;
 	private Question _escapedModel;
 }

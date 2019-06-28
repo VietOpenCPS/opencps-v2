@@ -242,6 +242,8 @@
 			<hint name="max-length">32767</hint>
 		</field>
 		<field name="publish" type="int" />
+		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyName" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />

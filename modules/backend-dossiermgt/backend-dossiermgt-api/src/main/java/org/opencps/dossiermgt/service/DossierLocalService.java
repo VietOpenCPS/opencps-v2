@@ -430,11 +430,13 @@ public interface DossierLocalService extends BaseLocalService,
 		int viaPostal, String postalAddress, String postalCityCode,
 		String postalCityName, String postalTelNo, boolean online,
 		boolean notification, String applicantNote, int originality,
-		ServiceContext context) throws PortalException;
+		ServiceInfo service, ServiceProcess serviceProcess,
+		ProcessOption processOption, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initDossier(long groupId, long dossierId,
-		String referenceUid, int counter, String serviceCode,
+		String referenceUid, long counter, String serviceCode,
 		String serviceName, String govAgencyCode, String govAgencyName,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		Date applicantIdDate, String address, String cityCode, String cityName,
@@ -444,9 +446,7 @@ public interface DossierLocalService extends BaseLocalService,
 		int viaPostal, String postalAddress, String postalCityCode,
 		String postalCityName, String postalTelNo, boolean online,
 		boolean notification, String applicantNote, int originality,
-		ServiceInfo service, ServiceProcess serviceProcess,
-		ProcessOption processOption, ServiceContext context)
-		throws PortalException;
+		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,

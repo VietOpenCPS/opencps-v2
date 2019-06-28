@@ -468,7 +468,7 @@
 		<!-- Other fields -->
 
 		<column name="referenceUid" type="String" />
-		<column name="counter" type="int" />
+		<column name="counter" type="long" />
 		<column name="registerBookCode" type="String"/>
 		<column name="registerBookName" type="String"/>
 		<column name="dossierRegister" type="String"/>

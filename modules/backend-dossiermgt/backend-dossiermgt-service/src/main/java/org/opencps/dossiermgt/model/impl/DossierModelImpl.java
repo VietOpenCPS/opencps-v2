@@ -77,7 +77,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "referenceUid", Types.VARCHAR },
-			{ "counter", Types.INTEGER },
+			{ "counter", Types.BIGINT },
 			{ "registerBookCode", Types.VARCHAR },
 			{ "registerBookName", Types.VARCHAR },
 			{ "dossierRegister", Types.VARCHAR },
@@ -173,7 +173,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("referenceUid", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("counter", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("counter", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("registerBookCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("registerBookName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dossierRegister", Types.VARCHAR);
@@ -258,7 +258,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("groupDossierId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter INTEGER,registerBookCode VARCHAR(75) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantName VARCHAR(75) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address VARCHAR(75) null,cityCode VARCHAR(75) null,cityName VARCHAR(75) null,districtCode VARCHAR(75) null,districtName VARCHAR(75) null,wardCode VARCHAR(75) null,wardName VARCHAR(75) null,contactName VARCHAR(75) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName VARCHAR(75) null,dossierNote VARCHAR(75) null,submissionNote VARCHAR(75) null,applicantNote VARCHAR(75) null,briefNote VARCHAR(75) null,dossierNo VARCHAR(75) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText VARCHAR(75) null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(75) null,postalServiceName VARCHAR(75) null,postalAddress VARCHAR(75) null,postalCityCode VARCHAR(75) null,postalCityName VARCHAR(75) null,postalDistrictCode VARCHAR(75) null,postalDistrictName VARCHAR(75) null,postalWardCode VARCHAR(75) null,postalWardName VARCHAR(75) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(75) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(75) null,originDossierNo VARCHAR(75) null,groupDossierId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter LONG,registerBookCode VARCHAR(75) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantName VARCHAR(75) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address VARCHAR(75) null,cityCode VARCHAR(75) null,cityName VARCHAR(75) null,districtCode VARCHAR(75) null,districtName VARCHAR(75) null,wardCode VARCHAR(75) null,wardName VARCHAR(75) null,contactName VARCHAR(75) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName VARCHAR(75) null,dossierNote VARCHAR(75) null,submissionNote VARCHAR(75) null,applicantNote VARCHAR(75) null,briefNote VARCHAR(75) null,dossierNo VARCHAR(75) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText VARCHAR(75) null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(75) null,postalServiceName VARCHAR(75) null,postalAddress VARCHAR(75) null,postalCityCode VARCHAR(75) null,postalCityName VARCHAR(75) null,postalDistrictCode VARCHAR(75) null,postalDistrictName VARCHAR(75) null,postalWardCode VARCHAR(75) null,postalWardName VARCHAR(75) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(75) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(75) null,originDossierNo VARCHAR(75) null,groupDossierId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -490,7 +490,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			setReferenceUid(referenceUid);
 		}
 
-		Integer counter = (Integer)attributes.get("counter");
+		Long counter = (Long)attributes.get("counter");
 
 		if (counter != null) {
 			setCounter(counter);
@@ -1197,12 +1197,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	}
 
 	@Override
-	public int getCounter() {
+	public long getCounter() {
 		return _counter;
 	}
 
 	@Override
-	public void setCounter(int counter) {
+	public void setCounter(long counter) {
 		_counter = counter;
 	}
 
@@ -3990,7 +3990,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private boolean _setModifiedDate;
 	private String _referenceUid;
 	private String _originalReferenceUid;
-	private int _counter;
+	private long _counter;
 	private String _registerBookCode;
 	private String _registerBookName;
 	private String _dossierRegister;

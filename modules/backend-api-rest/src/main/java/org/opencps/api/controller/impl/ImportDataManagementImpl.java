@@ -34,8 +34,6 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -44,6 +42,7 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ImportDataManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.controller.util.ImportDataUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
@@ -55,7 +54,6 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierMark;
@@ -66,6 +64,10 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.usermgt.model.Answer;
+import org.opencps.usermgt.model.Question;
+import org.opencps.usermgt.service.AnswerLocalServiceUtil;
+import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -498,7 +500,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 							Row currentRow = datatypeSheetOne.getRow(i);
 							if (currentRow != null) {
 
-								JSONObject dossierData = convertRowToDossier(currentRow);
+								JSONObject dossierData = ImportDataUtils.convertRowToDossier(currentRow);
 								if (dossierData != null) {
 									count ++;
 									dataArr.put(dossierData);
@@ -524,68 +526,119 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		}
 	}
 
-	public static JSONObject convertRowToDossier(Row currentRow) {
-		JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+	@SuppressWarnings("resource")
+	@Override
+	public Response uploadFileQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Attachment file) {
+		_log.info("uploadFileDossiers");
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long userId = user.getUserId();
+		InputStream fileInputStream = null;
+
 		try {
+			DataHandler dataHandle = file.getDataHandler();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			//DossierFileActions action = new DossierFileActionsImpl();
+			//action.uploadFileEntry(dataHandle.getName(), dataHandle.getInputStream(), serviceContext);
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			//
+			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(company.getCompanyId(), true);
+			String strGroupId = StringPool.BLANK;
+			if (groupList != null && groupList.size() > 0) {
+				List<String> groupIdList = new ArrayList<>();
+				for (Group group : groupList) {
+					if (group.isSite()) {
+						groupIdList.add(String.valueOf(group.getGroupId()));
+					}
+				}
+				if (groupIdList != null && groupIdList.size() > 0) {
+					strGroupId = String.join(StringPool.COMMA, groupIdList);
+				}
+			}
+			//Check group
+			if (!strGroupId.contains(String.valueOf(groupId))) {
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("GroupId not exits!").build();
+			}
 			
-			CellType typeApp = currentRow.getCell(1).getCellType();
-			if (typeApp == CellType.STRING) {
-				jsonData.put(DossierTerm.APPLICANT_ID_NO,
-						Validator.isNotNull(currentRow.getCell(1).getStringCellValue())
-								? currentRow.getCell(1).getStringCellValue().trim()
-								: StringPool.BLANK);
-				
-			} else if(typeApp == CellType.NUMERIC){
-				jsonData.put(DossierTerm.APPLICANT_ID_NO, currentRow.getCell(1).getNumericCellValue());
-			}
-			//jsonData.put(DossierTerm.APPLICANT_ID_NO, currentRow.getCell(1).getStringCellValue().trim());
+			//Process FILE
+			fileInputStream = dataHandle.getInputStream();
+			String fileName = dataHandle.getName();
+			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
+			_log.info("extFile: "+extFile);
+			if (Validator.isNotNull(extFile) && (extFile.equalsIgnoreCase("xlsx") || extFile.equalsIgnoreCase("xls"))) {
+				String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
+//				//delete folder if exits
+				File fileOld = new File(pathFile);
+				_log.info("fileOld: "+fileOld.getAbsolutePath());
+				if (fileOld.exists()) {
+					boolean flag = fileOld.delete() ? true : false;
+					_log.info("LamTV_Delete DONE: "+flag);
+				}
+				_log.info("LamTV_pathFolder: "+pathFile);
+				File excelFile = new File(pathFile);
+				FileOutputStream out = new FileOutputStream(excelFile);
+				IOUtils.copy(fileInputStream, out);
+				FileInputStream excelInputStream = new FileInputStream(excelFile);
+//					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
+				_log.info("excelFile: "+excelFile);
+				_log.info("LamTV_fileList: "+excelFile.getPath());
+				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				if (Validator.isNotNull(subFileName)) {
+					//String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
+					Workbook workbook = new XSSFWorkbook(excelInputStream);
+					//Dossier
+					Sheet datatypeSheetOne = workbook.getSheetAt(0);
+					//
+					//Map<Long, List<NameValuePair>> mapData = new HashMap<Long, List<NameValuePair>>();
+					
+					int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
+					System.out.println("nOfRows: "+nOfRows);
+					
+					if (nOfRows > 1) {
+						//int count = 0;
+						JSONArray dataArr = JSONFactoryUtil.createJSONArray();
+						for (int i = 1; i < nOfRows; i++) {
+							Row currentRow = datatypeSheetOne.getRow(i);
+							if (currentRow != null) {
 
-			jsonData.put(DossierTerm.APPLICANT_NAME, currentRow.getCell(2).getStringCellValue().trim());
-			
-			String appType = Validator.isNotNull(currentRow.getCell(3).getStringCellValue())
-					? currentRow.getCell(3).getStringCellValue().trim()
-					: StringPool.BLANK;
-			if ("CD".equalsIgnoreCase(appType)) {
-				jsonData.put(DossierTerm.APPLICANT_ID_TYPE, "citizen");
-			} else if ("DN".equalsIgnoreCase(appType)){
-				jsonData.put(DossierTerm.APPLICANT_ID_TYPE, "business");
-			} else {
-				jsonData.put(DossierTerm.APPLICANT_ID_TYPE, StringPool.BLANK);
+								JSONObject questionData = ImportDataUtils.convertRowToQuestion(currentRow);
+								if (questionData != null) {
+									//count ++;
+									Question question = QuestionLocalServiceUtil.updateQuestion(
+											serviceContext.getCompanyId(), groupId, 0l, "Hệ thống", "test@liferay.com",
+											questionData.getString("question"), 1, questionData.getString("govAgencyCode"), 
+											questionData.getString("govAgencyName"));
+									if (question != null) {
+										AnswerLocalServiceUtil.updateAnswer(userId, groupId, 0l,
+												question.getQuestionId(), questionData.getString("answer"), 1);
+									}
+								}
+								//_log.info("mapData: " +i +" : " + dossierData);
+							}
+						}
+//						if (count > 0) {
+//							result.put("total", count);
+//							result.put("data", dataArr);
+//							
+//						}
+					}
+				}
+				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			CellType typeDate = currentRow.getCell(4).getCellType();
-			if (typeDate == CellType.STRING) {
-				jsonData.put(DossierTerm.APPLICANT_ID_DATE,
-						Validator.isNotNull(currentRow.getCell(4).getStringCellValue())
-								? currentRow.getCell(4).getStringCellValue().trim()
-								: StringPool.BLANK);
-				
-			} else if(typeDate == CellType.NUMERIC){
-				jsonData.put(DossierTerm.APPLICANT_ID_DATE, currentRow.getCell(4).getNumericCellValue());
-			} else if (DateUtil.isCellDateFormatted(currentRow.getCell(4))) {
-				jsonData.put(DossierTerm.APPLICANT_ID_DATE,currentRow.getCell(4).getDateCellValue() != null
-						? currentRow.getCell(4).getDateCellValue().getTime() : 0);
-			}
-
-			//jsonData.put(DossierTerm.APPLICANT_ID_DATE, currentRow.getCell(4).getStringCellValue().trim());
-			jsonData.put(DossierTerm.ADDRESS, currentRow.getCell(5).getStringCellValue().trim());
-			jsonData.put(DossierTerm.CONTACT_EMAIL, currentRow.getCell(6).getStringCellValue().trim());
-			CellType typeTel = currentRow.getCell(7).getCellType();
-			if (typeTel == CellType.STRING) {
-				jsonData.put(DossierTerm.CONTACT_TEL_NO,
-						Validator.isNotNull(currentRow.getCell(7).getStringCellValue())
-								? currentRow.getCell(7).getStringCellValue().trim()
-								: StringPool.BLANK);
-				
-			} else if(typeTel == CellType.NUMERIC){
-				jsonData.put(DossierTerm.CONTACT_TEL_NO, currentRow.getCell(7).getNumericCellValue());
-			}
-			//jsonData.put(DossierTerm.CONTACT_TEL_NO, currentRow.getCell(7).getStringCellValue().trim());
+			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
 			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
 		}
-		
-		return jsonData;
 	}
+
 }

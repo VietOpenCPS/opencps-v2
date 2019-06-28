@@ -8,6 +8,7 @@
 
 package org.opencps.api.faq.model;
 
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,7 +47,9 @@ import javax.xml.bind.annotation.XmlType;
     "fullname",
     "email",
     "content",
-    "publish"
+    "publish",
+    "govAgencyCode",
+    "govAgencyName"
 })
 @XmlRootElement(name = "QuestionDetailModel")
 public class QuestionDetailModel {
@@ -61,6 +64,8 @@ public class QuestionDetailModel {
     @XmlElement(required = true)
     protected String content;
     protected int publish;
+    protected String govAgencyCode;
+    protected String govAgencyName;
 
     /**
      * Gets the value of the questionId property.
@@ -189,5 +194,21 @@ public class QuestionDetailModel {
     public void setPublish(int value) {
         this.publish = value;
     }
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 
 }
