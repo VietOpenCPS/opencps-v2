@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author trungnt
@@ -93,26 +94,28 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 
 		try {
 
-			String targetURL =
-				"https://openapi.zalo.me/v2.0/oa/message?access_token=" +
-					zaloAccessToken;
+			if (Validator.isNotNull(zaloUid)) {
 
-			JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(
-				"{\"recipient\":{\"user_id\":\"1893010867233038754\"}, \"message\":{\"text\":\"1893010867233038754\"}}");
-			JSONObject recipient = JSONFactoryUtil.createJSONObject();
-			JSONObject message = JSONFactoryUtil.createJSONObject();
+				String targetURL =
+					"https://openapi.zalo.me/v2.0/oa/message?access_token=" +
+						zaloAccessToken;
 
-			recipient.put("user_id", zaloUid);
+				JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(
+					"{\"recipient\":{\"user_id\":\"1893010867233038754\"}, \"message\":{\"text\":\"1893010867233038754\"}}");
+				JSONObject recipient = JSONFactoryUtil.createJSONObject();
+				JSONObject message = JSONFactoryUtil.createJSONObject();
 
-			message.put("text", textMessage);
+				recipient.put("user_id", zaloUid);
 
-			payloadJSON.put("recipient", recipient);
+				message.put("text", textMessage);
 
-			payloadJSON.put("message", message);
+				payloadJSON.put("recipient", recipient);
 
-			postMessZalo(targetURL, payloadJSON.toJSONString());
+				payloadJSON.put("message", message);
 
-			_log.info("=================>>>>>>>>>>> Sended to Zalo " + zaloUid);
+				postMessZalo(targetURL, payloadJSON.toJSONString());
+			}
+
 		}
 		catch (JSONException e) {
 			_log.error(e);

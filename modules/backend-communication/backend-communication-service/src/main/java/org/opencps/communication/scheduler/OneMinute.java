@@ -92,9 +92,11 @@ public class OneMinute extends BaseMessageListener {
 								notificationQueue, notificationtemplate,
 								serviceContext);
 						_log.debug("messageEntry: "+messageEntry);
+
 						//Process send SMS
-						boolean flagSend = false;
-						if(messageEntry.isSendSMS()){
+						Result resultSendSMS = new Result("Success", new Long(1));
+						if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
+
 							/** stop send sms 8369
 							_log.debug("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
 							String results = SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
@@ -103,16 +105,12 @@ public class OneMinute extends BaseMessageListener {
 									&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
 								flagSend = true;
 							} */
+
 							//Send viettel
-							Result result = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+							resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
 								messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-							if (Validator.isNotNull(result) && result.getResult() > 0) {
-								
-								flagSend = true;
-							}
-							_log.debug("END SEND SMS"+flagSend);
-						} else {
-							flagSend = true;
+
+							_log.debug("END SEND SMS");
 						}
 
 						if(messageEntry.isSendEmail()){
@@ -126,8 +124,11 @@ public class OneMinute extends BaseMessageListener {
 								messageEntry, messageEntry.getClassName(),
 								serviceContext);
 						}
-						// Remove queue when send SMS success
-						if (flagSend) {
+						/* Remove queue when send SMS success Or telNo is null
+						 * 
+						 * If Send SMS error, continue until expiredDate 
+						 * */
+						if (resultSendSMS.getResult() <= 0) {
 							NotificationQueueBusinessFactoryUtil.delete(
 									notificationQueue.getNotificationQueueId(),
 									serviceContext);

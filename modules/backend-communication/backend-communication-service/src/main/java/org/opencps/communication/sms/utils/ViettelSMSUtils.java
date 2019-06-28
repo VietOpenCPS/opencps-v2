@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import ws.bulkSms.impl.CcApi_PortType;
 import ws.bulkSms.impl.CcApi_ServiceLocator;
@@ -58,7 +59,8 @@ public class ViettelSMSUtils {
 				configObj.has(SendSMSTerm.REQUEST_ID) &&
 				configObj.has(SendSMSTerm.SERVICE_ID) &&
 				configObj.has(SendSMSTerm.USER) &&
-				configObj.has(SendSMSTerm.COUNTRY_CODE)) {
+				configObj.has(SendSMSTerm.COUNTRY_CODE) &&
+				Validator.isNotNull(toTelNo)) {
 
 				locator.setCcApiPortEndpointAddress(
 					configObj.getString(SendSMSTerm.CC_API_PORT_ADDRESS));

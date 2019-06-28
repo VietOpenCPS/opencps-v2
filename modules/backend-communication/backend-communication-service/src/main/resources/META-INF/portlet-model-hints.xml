@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<hint-collection name="LONGEST_TEXT">
+		<hint name="max-length">2000000</hint>
+	</hint-collection>
+	<hint-collection name="LONG_TEXT">
+		<hint name="max-length">4000</hint>
+	</hint-collection>
 	<model name="org.opencps.communication.model.NotificationQueue">
 		<field name="notificationQueueId" type="long" />
 		<field name="groupId" type="long" />
@@ -12,7 +18,9 @@
 		<field name="notificationType" type="String" />
 		<field name="className" type="String" />
 		<field name="classPK" type="String" />
-		<field name="payload" type="String" />
+		<field name="payload" type="String">
+			<hint-collection name="LONGEST_TEXT" />
+		</field>
 		<field name="fromUsername" type="String" />
 		<field name="toUsername" type="String" />
 		<field name="toUserId" type="long" />
@@ -30,10 +38,18 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="notificationType" type="String" />
-		<field name="emailSubject" type="String" />
-		<field name="emailBody" type="String" />
-		<field name="textMessage" type="String" />
-		<field name="notifyMessage" type="String" />
+		<field name="emailSubject" type="String">
+			<hint-collection name="LONG_TEXT" />
+		</field>
+		<field name="emailBody" type="String">
+			<hint-collection name="LONGEST_TEXT" />
+		</field>
+		<field name="textMessage" type="String">
+			<hint-collection name="LONG_TEXT" />
+		</field>
+		<field name="notifyMessage" type="String">
+			<hint-collection name="LONGEST_TEXT" />
+		</field>
 		<field name="sendSMS" type="boolean" />
 		<field name="sendEmail" type="boolean" />
 		<field name="sendNotification" type="boolean" />
@@ -52,7 +68,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="preferences" type="String" />
+		<field name="preferences" type="String">
+			<hint-collection name="LONGEST_TEXT" />
+		</field>
 	</model>
 	<model name="org.opencps.communication.model.ServerConfig">
 		<field name="serverConfigId" type="long" />
@@ -66,7 +84,9 @@
 		<field name="serverNo" type="String" />
 		<field name="serverName" type="String" />
 		<field name="protocol" type="String" />
-		<field name="configs" type="String" />
+		<field name="configs" type="String">
+			<hint-collection name="LONGEST_TEXT" />
+		</field>
 		<field name="lastSync" type="Date" />
 	</model>
 </model-hints>
