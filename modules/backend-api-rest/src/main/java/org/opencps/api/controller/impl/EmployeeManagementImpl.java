@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -48,6 +49,7 @@ import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
@@ -86,6 +88,13 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 			params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
 			params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
+
+			String jobposCode = query.getJobposCode();
+			String jobposCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(jobposCode)) {
+				jobposCodeSearch = SpecialCharacterUtils.splitSpecial(jobposCode);
+			}
+			params.put(EmployeeTerm.JOB_POS_CODE_SEARCH, jobposCodeSearch);
 
 			if(Validator.isNotNull(query.getActive())){
 				params.put(EmployeeTerm.ACTIVE,

@@ -52,7 +52,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = RegistrationSyncScheduler.class)
+//@Component(immediate = true, service = RegistrationSyncScheduler.class)
 public class RegistrationSyncScheduler extends BaseMessageListener {
 	private static volatile boolean isRunning = false;
 	@Override

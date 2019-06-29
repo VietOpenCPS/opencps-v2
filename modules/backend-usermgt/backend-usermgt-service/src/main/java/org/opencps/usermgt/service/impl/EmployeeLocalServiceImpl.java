@@ -344,6 +344,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
+		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -519,6 +520,14 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(jobposCodeSearch)) {
+			MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
+
+			query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -542,6 +551,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
+		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -711,6 +721,14 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(jobposCodeSearch)) {
+			MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
+
+			query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
