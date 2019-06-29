@@ -86,6 +86,14 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 				}
 			}
 		}
+		else if (messageEntry.isSendZalo()) {
+
+			// send to zalo
+			String zaloUid = messageEntry.getMappingZaloUid().get(new Long(0));
+			sendZalo(
+				messageEntry.getTextMessage(),
+				messageEntry.getZaloAccessToken(), zaloUid);
+		}
 
 	}
 

@@ -217,6 +217,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().fetchApplicantByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.usermgt.model.Applicant fetchBy_GTelNo(
+		Long groupId, String telNo) {
+		return getService().fetchBy_GTelNo(groupId, telNo);
+	}
+
 	public static org.opencps.usermgt.model.Applicant fetchByAppId(String appId) {
 		return getService().fetchByAppId(appId);
 	}

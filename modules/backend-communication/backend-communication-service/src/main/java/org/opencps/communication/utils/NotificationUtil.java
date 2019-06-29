@@ -1,6 +1,12 @@
 
 package org.opencps.communication.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +25,7 @@ import org.opencps.kernel.template.MessageDataModel;
 import org.opencps.kernel.template.freemarker.TemplateProcessor;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -26,6 +33,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -290,9 +298,10 @@ public class NotificationUtil {
 				messageEntry.setSendNotify(sendNotify);
 				messageEntry.setSendSMS(sendSMS);
 
-				if (queue.getToUserId() > 0 && sendMesZalo ) {
-					JSONObject checkZaloInfo =
-						_checkZaloInfo(queue.getGroupId(), queue.getToUserId());
+				if (sendMesZalo) {
+					JSONObject checkZaloInfo = _checkZaloInfo(
+						queue.getGroupId(), queue.getToUserId(),
+						queue.getToTelNo());
 					if (checkZaloInfo.has(ZALO_UID) &&
 						checkZaloInfo.has(ZALO_TOKEN)) {
 
@@ -319,20 +328,29 @@ public class NotificationUtil {
 		return messageEntry;
 	}
 
-	private static JSONObject _checkZaloInfo(long groupId, long toUserId) {
+	private static JSONObject _checkZaloInfo(
+		long groupId, long toUserId, String toTelNo) {
 
 		JSONObject sendZaloInfo = JSONFactoryUtil.createJSONObject();
+		Map<Long, String> mappingZaloUid = new HashMap<>();
 
 		try {
-			Preferences preferences =
-				PreferencesLocalServiceUtil.fetchByF_userId(groupId, toUserId);
-			JSONObject pref =
-				JSONFactoryUtil.createJSONObject(preferences.getPreferences());
-			String uID = pref.getString(SendSMSTerm.ZALO_UID);
-			JSONObject oZaloUid = JSONFactoryUtil.createJSONObject(uID);
-			Map<Long, String> mappingZaloUid = new HashMap<>();
+			if (toUserId > 0) {
+				Preferences preferences =
+					PreferencesLocalServiceUtil.fetchByF_userId(
+						groupId, toUserId);
+				JSONObject pref = JSONFactoryUtil.createJSONObject(
+					preferences.getPreferences());
+				String uID = pref.getString(SendSMSTerm.ZALO_UID);
+				JSONObject oZaloUid = JSONFactoryUtil.createJSONObject(uID);
 
-			mappingZaloUid.put(toUserId, oZaloUid.getString(SendSMSTerm.UID));
+				mappingZaloUid.put(
+					toUserId, oZaloUid.getString(SendSMSTerm.UID));
+			}
+			else if (Validator.isNotNull(toTelNo)) {
+
+				mappingZaloUid.put(new Long(0), _getZaloUid(groupId, toTelNo));
+			}
 
 			List<ServerConfig> lstScs =
 				ServerConfigLocalServiceUtil.getByProtocol(
@@ -355,9 +373,156 @@ public class NotificationUtil {
 		return sendZaloInfo;
 	}
 
+	private static String _getZaloUid(long groupId, String toTelNo) {
+
+		try {
+			_log.info(
+				"======================" +
+					SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_URLS);
+			List<ServerConfig> lstScs =
+				ServerConfigLocalServiceUtil.getByProtocol(
+					groupId, SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_URLS);
+			ServerConfig sc = lstScs.get(0);
+			JSONObject zaloConfig =
+				JSONFactoryUtil.createJSONObject(sc.getConfigs());
+
+			JSONArray zaloURLs =
+				zaloConfig.getJSONArray(SendSMSTerm.ZALO_URLS_URLS);
+
+			_log.info(zaloURLs);
+
+			for (int i = 0; i < zaloURLs.length(); i++) {
+
+				JSONObject zaloURL = zaloURLs.getJSONObject(i);
+
+				HashMap<String, String> properties =
+					new HashMap<String, String>();
+
+				// Call initDossier to SERVER
+
+				String endPoint =
+					zaloURL.getString(SendSMSTerm.ZALO_URLS_END_POINT) +
+						"?toTelNo=" + toTelNo;
+
+				// khong tac dung
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("toTelNo", toTelNo);
+
+				JSONObject resPostDossier = _callAPI(
+					zaloURL.getLong(SendSMSTerm.ZALO_URLS_GROUP_ID),
+					HttpMethods.GET, "application/json",
+					zaloURL.getString(SendSMSTerm.ZALO_URLS_PATH_BASE),
+					endPoint,
+					zaloURL.getString(SendSMSTerm.ZALO_URLS_USER_NAME),
+					zaloURL.getString(SendSMSTerm.ZALO_URLS_PASS_WORD),
+					properties);
+				_log.info(resPostDossier);
+				String uid = resPostDossier.getString("message");
+
+				if (Validator.isNotNull(uid)) {
+
+					return uid;
+				}
+
+			}
+		}
+		catch (Exception e) {
+
+			_log.info(e);
+		}
+		return StringPool.BLANK;
+	}
+
+	private static JSONObject _callAPI(
+		long groupId, String httpMethod, String accept, String pathBase,
+		String endPoint, String username, String password,
+		HashMap<String, String> properties) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		try {
+			String urlPath;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
+				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
+
+			String authString = username + ":" + password;
+
+			String authStringEnc = new String(
+				java.util.Base64.getEncoder().encodeToString(
+					authString.getBytes()));
+			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
+			conn.setRequestMethod(httpMethod);
+			conn.setRequestProperty("Accept", accept);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("groupId", String.valueOf(groupId));
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					conn.setRequestProperty(
+						m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			BufferedReader br = new BufferedReader(
+				new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+			conn.disconnect();
+
+		}
+		catch (MalformedURLException e) {
+			// e.printStackTrace();
+			_log.error(e);
+		}
+		catch (IOException e) {
+			_log.error(e);
+			// e.printStackTrace();
+
+		}
+
+		return response;
+	}
+
 	private static final String ZALO_UID = "zaloUid";
 	private static final String ZALO_TOKEN = "zaloToken";
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationUtil.class);
+
+}
+
+class RESTFulConfiguration {
+
+	public static final String STATUS = "status";
+	public static final String MESSAGE = "message";
+
+	public static final String SUBMIT = "submit";
+	public static final String TIMER = "timer";
+
+	public static final int TIME_OUT = 3000;
 
 }
