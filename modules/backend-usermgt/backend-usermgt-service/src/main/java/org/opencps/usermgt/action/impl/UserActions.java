@@ -805,7 +805,8 @@ public class UserActions implements UserInterface {
 		boolean flag =
 			getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
 		// _log.info("flag: "+flag);
-
+		String phone = StringPool.BLANK;
+		
 		if (flag) {
 			try {
 
@@ -828,6 +829,7 @@ public class UserActions implements UserInterface {
 						ApplicantLocalServiceUtil.fetchByMappingID(id);
 
 					email += applicant.getContactEmail();
+					phone = applicant.getContactTelNo();
 					// _log.info("email: "+email);
 				}
 
@@ -842,7 +844,7 @@ public class UserActions implements UserInterface {
 					user.getUserId(), groupId, Constants.USER_04,
 					User.class.getName(), String.valueOf(user.getUserId()),
 					payLoad.toJSONString(), "SYSTEM", user.getFullName(),
-					user.getUserId(), email, StringPool.BLANK, new Date(), null,
+					user.getUserId(), email, phone, new Date(), null,
 					serviceContext);
 				// _log.info("END addNotificationQueue: ");
 
