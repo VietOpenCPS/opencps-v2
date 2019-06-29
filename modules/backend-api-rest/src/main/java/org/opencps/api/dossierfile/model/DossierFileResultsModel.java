@@ -100,4 +100,10 @@ public class DossierFileResultsModel {
         return this.data;
     }
 
+	
+	public void setData(List<DossierFileModel> data) {
+	
+		this.data = data;
+	}
+
 }

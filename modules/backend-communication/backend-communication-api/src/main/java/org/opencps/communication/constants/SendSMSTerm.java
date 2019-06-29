@@ -42,4 +42,12 @@ public class SendSMSTerm {
 	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
 	public static final String ZALO_UID = "ZALO_UID";
 	public static final String UID = "uid";
+	
+	public static final String SERVER_CONFIG_PROTOCOL_ZALO_URLS = "ZALO_URLS";
+	public static final String ZALO_URLS_URLS = "urls";
+	public static final String ZALO_URLS_PATH_BASE = "pathBase";
+	public static final String ZALO_URLS_END_POINT = "endPoint";
+	public static final String ZALO_URLS_GROUP_ID = "groupId";
+	public static final String ZALO_URLS_USER_NAME = "userName";
+	public static final String ZALO_URLS_PASS_WORD = "password";
 }

@@ -203,6 +203,9 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public Applicant fetchApplicantByUuidAndGroupId(String uuid, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Applicant fetchBy_GTelNo(Long groupId, String telNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant fetchByAppId(String appId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
