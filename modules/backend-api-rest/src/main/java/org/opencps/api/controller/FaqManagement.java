@@ -64,11 +64,10 @@ public interface FaqManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getQuestions(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@QueryParam("start") Integer start,
-			@QueryParam("end") Integer end,
-			@QueryParam("publish") Integer publish,
-			@Context ServiceContext serviceContext);	
+			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
+			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword,
+			@Context ServiceContext serviceContext);
 
 	@PUT
 	@Path("/questions/{id}")

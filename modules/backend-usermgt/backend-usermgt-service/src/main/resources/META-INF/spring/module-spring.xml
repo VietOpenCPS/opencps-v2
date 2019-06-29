@@ -27,6 +27,7 @@
 	<bean class="org.opencps.usermgt.service.persistence.impl.PreferencesPersistenceImpl" id="org.opencps.usermgt.service.persistence.PreferencesPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.QuestionLocalServiceImpl" id="org.opencps.usermgt.service.QuestionLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.QuestionPersistenceImpl" id="org.opencps.usermgt.service.persistence.QuestionPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.QuestionFinderImpl" id="org.opencps.usermgt.service.persistence.QuestionFinder" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.ResourceRoleLocalServiceImpl" id="org.opencps.usermgt.service.ResourceRoleLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceRolePersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.ResourceUserLocalServiceImpl" id="org.opencps.usermgt.service.ResourceUserLocalService" />

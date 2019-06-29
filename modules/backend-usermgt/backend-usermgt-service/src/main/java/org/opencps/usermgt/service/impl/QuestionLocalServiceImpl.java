@@ -84,4 +84,13 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	public int countByG_PL(long groupId, int[] publishs) {
 		return questionPersistence.countByG_PL(groupId, publishs);
 	}
+
+	public List<Question> findByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish,
+			int start, int limit) {
+		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, start, limit);
+	}
+
+	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish) {
+		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish);
+	}
 }

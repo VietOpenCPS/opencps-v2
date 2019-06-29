@@ -60,6 +60,7 @@ import org.opencps.usermgt.service.persistence.JobPosPersistence;
 import org.opencps.usermgt.service.persistence.JobPosWorkPersistence;
 import org.opencps.usermgt.service.persistence.OfficeSitePersistence;
 import org.opencps.usermgt.service.persistence.PreferencesPersistence;
+import org.opencps.usermgt.service.persistence.QuestionFinder;
 import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
@@ -823,6 +824,24 @@ public abstract class VisibilityLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the question finder.
+	 *
+	 * @return the question finder
+	 */
+	public QuestionFinder getQuestionFinder() {
+		return questionFinder;
+	}
+
+	/**
+	 * Sets the question finder.
+	 *
+	 * @param questionFinder the question finder
+	 */
+	public void setQuestionFinder(QuestionFinder questionFinder) {
+		this.questionFinder = questionFinder;
+	}
+
+	/**
 	 * Returns the resource role local service.
 	 *
 	 * @return the resource role local service
@@ -1255,6 +1274,8 @@ public abstract class VisibilityLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.QuestionLocalService questionLocalService;
 	@BeanReference(type = QuestionPersistence.class)
 	protected QuestionPersistence questionPersistence;
+	@BeanReference(type = QuestionFinder.class)
+	protected QuestionFinder questionFinder;
 	@BeanReference(type = org.opencps.usermgt.service.ResourceRoleLocalService.class)
 	protected org.opencps.usermgt.service.ResourceRoleLocalService resourceRoleLocalService;
 	@BeanReference(type = ResourceRolePersistence.class)
