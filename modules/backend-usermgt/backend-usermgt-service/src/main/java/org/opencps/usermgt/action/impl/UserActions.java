@@ -45,7 +45,9 @@ import java.util.Locale;
 
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -766,6 +768,26 @@ public class UserActions implements UserInterface {
 						}
 					}
 
+					Date now = new Date();
+			        Calendar cal = Calendar.getInstance();
+			        cal.setTime(now);
+			        
+			        Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, Constants.USER_04);
+			        cal.add(Calendar.MINUTE, 10);
+			        Date expired = cal.getTime();
+					
+			        if (notiTemplate != null) {
+						if ("minutely".equals(notiTemplate.getInterval())) {
+							cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
+						} else if ("hourly".equals(notiTemplate.getInterval())) {
+							cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
+						} else {
+							cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
+						}
+					}
+					
+			        expired = cal.getTime();
+			        
 					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 					// _log.info("user.getScreenName():
 					// "+user.getScreenName()+"|user.getEmailAddress():
@@ -779,7 +801,7 @@ public class UserActions implements UserInterface {
 						User.class.getName(), String.valueOf(user.getUserId()),
 						payLoad.toJSONString(), "SYSTEM", user.getFullName(),
 						user.getUserId(), email, phone, new Date(),
-						null, serviceContext);
+						expired, serviceContext);
 					// _log.info("END addNotificationQueue: ");
 					flagNo = 2;
 				}
@@ -839,12 +861,32 @@ public class UserActions implements UserInterface {
 				payLoad.put("USEREMAIL", user.getEmailAddress());
 				payLoad.put("PASSWORD", newPassword);
 
+				Date now = new Date();
+		        Calendar cal = Calendar.getInstance();
+		        cal.setTime(now);
+		        
+		        Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, Constants.USER_04);
+		        cal.add(Calendar.MINUTE, 10);
+		        Date expired = cal.getTime();
+				
+		        if (notiTemplate != null) {
+					if ("minutely".equals(notiTemplate.getInterval())) {
+						cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
+					} else if ("hourly".equals(notiTemplate.getInterval())) {
+						cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
+					} else {
+						cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
+					}
+				}
+				
+		        expired = cal.getTime();
+		        
 				// _log.info("STRAT addNotificationQueue: ");
 				NotificationQueueLocalServiceUtil.addNotificationQueue(
 					user.getUserId(), groupId, Constants.USER_04,
 					User.class.getName(), String.valueOf(user.getUserId()),
 					payLoad.toJSONString(), "SYSTEM", user.getFullName(),
-					user.getUserId(), email, phone, new Date(), null,
+					user.getUserId(), email, phone, new Date(), expired,
 					serviceContext);
 				// _log.info("END addNotificationQueue: ");
 
