@@ -133,6 +133,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
+			//_log.info("jsonData.hit: "+jsonData.get("data"));
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
@@ -151,7 +152,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //				return Response.status(200).entity(results).build();				
 //			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -250,7 +251,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //				return Response.status(200).entity(results).build();
 //			}
 		
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

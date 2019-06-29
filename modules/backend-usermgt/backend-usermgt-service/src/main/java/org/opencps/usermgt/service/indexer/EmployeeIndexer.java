@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -124,7 +125,13 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);
 		
 		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
+
 		document.addTextSortable(EmployeeTerm.JOB_POS_CODE, jobPosCode);
+		if (Validator.isNotNull(jobPosCode)) {
+			String jobPosCodeSearch = splitSpecial(jobPosCode);
+			document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
+		}
+
 		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, employee.getMainJobPostId());
 		
 		Calendar cal = Calendar.getInstance();
@@ -210,6 +217,28 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		indexableActionableDynamicQuery.performActions();
+	}
+
+	private static String splitSpecial(String value) {
+		String[] charSpecialArr = new String[] { "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]",
+				"^", "~", "?", ":", "\\", "/", ".", "," };
+		String valueSplit = StringPool.BLANK;
+		for (int i = 0; i < charSpecialArr.length; i++) {
+			String specialCharacter = charSpecialArr[i];
+			if (i == 0) {
+				if (value.contains(specialCharacter)) {
+					valueSplit = value.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				} else {
+					valueSplit = value;
+				}
+			} else {
+				if (value.contains(specialCharacter)) {
+					valueSplit = valueSplit.replaceAll(Pattern.quote(specialCharacter), StringPool.UNDERLINE);
+				}
+			}
+		}
+
+		return valueSplit;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(EmployeeIndexer.class);

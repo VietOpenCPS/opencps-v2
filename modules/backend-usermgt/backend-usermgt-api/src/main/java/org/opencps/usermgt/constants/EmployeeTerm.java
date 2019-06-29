@@ -55,6 +55,8 @@ public class EmployeeTerm {
 
 	public static final String JOB_POS_CODE = "jobPosCode";
 
+	public static final String JOB_POS_CODE_SEARCH = "jobPosCodeSearch";
+
 	public static final String JOB_POS_ID = "jobPosId";
 	
 	public static final String MONTH = "month";

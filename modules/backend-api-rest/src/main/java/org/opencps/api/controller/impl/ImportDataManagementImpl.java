@@ -518,7 +518,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(result).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
 			_log.error(e);

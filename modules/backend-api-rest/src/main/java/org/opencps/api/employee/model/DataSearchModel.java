@@ -58,7 +58,8 @@ import javax.xml.bind.annotation.XmlType;
     "permission",
     "metadata",
     "month",
-    "employeeName"
+    "employeeName",
+    "jobposCode"
 })
 @XmlRootElement(name = "DataSearchModel")
 public class DataSearchModel {
@@ -91,6 +92,8 @@ public class DataSearchModel {
     protected String month;
 	@QueryParam(value = "employeeName")
     protected String employeeName;
+	@QueryParam(value = "jobposCode")
+    protected String jobposCode;
     /**
      * Gets the value of the keywords property.
      * 
@@ -353,6 +356,14 @@ public class DataSearchModel {
 
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
+	}
+
+	public String getJobposCode() {
+		return jobposCode;
+	}
+
+	public void setJobposCode(String jobposCode) {
+		this.jobposCode = jobposCode;
 	}
 
 }

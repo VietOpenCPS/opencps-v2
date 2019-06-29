@@ -68,7 +68,8 @@ import javax.xml.bind.annotation.XmlType;
     "employeeName",
     "partNo",
     "type",
-    "applicantNote"
+    "applicantNote",
+    "applicantIdType"
 })
 @XmlRootElement(name = "ServiceConfigSearchModel")
 public class ServiceConfigSearchModel {
@@ -117,6 +118,8 @@ public class ServiceConfigSearchModel {
     protected String type;
 	@QueryParam(value = "applicantNote")
     protected String applicantNote;
+    @QueryParam(value = "applicantIdType")
+    protected String applicantIdType;
 
     /**
      * Gets the value of the keyword property.
@@ -452,6 +455,14 @@ public class ServiceConfigSearchModel {
 
 	public void setApplicantNote(String applicantNote) {
 		this.applicantNote = applicantNote;
+	}
+
+	public String getApplicantIdType() {
+		return applicantIdType;
+	}
+
+	public void setApplicantIdType(String applicantIdType) {
+		this.applicantIdType = applicantIdType;
 	}
 
 }

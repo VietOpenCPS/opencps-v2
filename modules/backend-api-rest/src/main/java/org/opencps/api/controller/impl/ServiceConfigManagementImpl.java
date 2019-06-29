@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -76,6 +75,9 @@ import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
 import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class ServiceConfigManagementImpl implements ServiceConfigManagement {
@@ -837,8 +839,15 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			JSONObject jsonGuide = JSONFactoryUtil.createJSONObject();
 			jsonGuide.put(ServiceConfigTerm.SERVICE_CODE, search.getServiceCode());
 			jsonGuide.put(ServiceConfigTerm.SERVICE_NAME, search.getServiceName());
-			jsonGuide.put(ServiceConfigTerm.ACTION_USER, user.getFullName());
+			
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+			if (employee != null) {
+				jsonGuide.put(ServiceConfigTerm.ACTION_USER, employee.getFullName());
+			} else {
+				jsonGuide.put(ServiceConfigTerm.ACTION_USER, user.getFullName());
+			}
 			jsonGuide.put(ApplicantTerm.APPLICANTNAME, search.getApplicantName());
+			jsonGuide.put(ApplicantTerm.APPLICANTIDTYPE, search.getApplicantIdType());
 			jsonGuide.put(ApplicantTerm.ADDRESS, search.getApplicantAddress());
 			jsonGuide.put(ApplicantTerm.CONTACTEMAIL, search.getApplicantEmail());
 			jsonGuide.put(ApplicantTerm.CONTACTTELNO, search.getApplicantTelNo());

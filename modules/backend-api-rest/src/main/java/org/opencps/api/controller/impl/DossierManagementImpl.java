@@ -1304,8 +1304,13 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierAction dossierResult = null;
 		ErrorMsgModel errorModel = new ErrorMsgModel();
 		String actionUser = input.getActionUser();
-		if (Validator.isNull(actionUser)) {
-			actionUser = user.getFullName();
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+		if (employee != null) {
+			actionUser = employee.getFullName();
+		} else {
+			if (Validator.isNull(actionUser)) {
+				actionUser = user.getFullName();
+			}
 		}
 		
 		try {
