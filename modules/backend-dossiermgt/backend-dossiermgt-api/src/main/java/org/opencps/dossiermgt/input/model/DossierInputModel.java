@@ -66,6 +66,9 @@ public class DossierInputModel {
 	private String postalWardName;
 	private String originDossierNo;
 	private String dossierMarkArr;
+	private String dossierFileArr;
+	private String dossiers;
+	private String payment;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -873,6 +876,30 @@ public class DossierInputModel {
 
 	public void setDossierMarkArr(String dossierMarkArr) {
 		this.dossierMarkArr = dossierMarkArr;
+	}
+
+	public String getDossierFileArr() {
+		return dossierFileArr;
+	}
+
+	public void setDossierFileArr(String dossierFileArr) {
+		this.dossierFileArr = dossierFileArr;
+	}
+
+	public String getDossiers() {
+		return dossiers;
+	}
+
+	public void setDossiers(String dossiers) {
+		this.dossiers = dossiers;
+	}
+
+	public String getPayment() {
+		return payment;
+	}
+
+	public void setPayment(String payment) {
+		this.payment = payment;
 	}
 
 }

@@ -94,10 +94,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 	@Override
 	public Response getQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, 
-			Integer start,
-			Integer end,
-			Integer publish,
+			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -105,42 +102,44 @@ public class FaqManagementImpl implements FaqManagement {
 				start = QueryUtil.ALL_POS;
 				end = QueryUtil.ALL_POS;
 			}
-			List<Question> lstQuestions = null;
-			if (publish == null) {
-				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0, 1 }, start, end);
-			}
-			else {
-				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
-			}
+			//List<Question> lstQuestions = null;
+//			if (publish == null) {
+//				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { 0, 1 }, start, end);
+//			}
+//			else {
+//				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
+//			}
+			
+			List<Question> lstQuestions = QuestionLocalServiceUtil.findByQuerySearch(groupId, keyword, govAgencyCode,
+					publish, start, end);
 			
 			QuestionResultsModel result = new QuestionResultsModel();
-			if (publish == null) {
-				result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { 0, 1 }));
-			}
-			else {
-				result.setTotal(QuestionLocalServiceUtil.countByG_PL(groupId, new int[] { publish }));
-			}
+			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish));
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
-			for (Question q : lstQuestions) {
-				QuestionModel model = new QuestionModel();
-				model.setContent(q.getContent());
-				model.setCreateDate(APIDateTimeUtils.convertDateToString(q.getCreateDate()));
-				model.setEmail(q.getEmail());
-				model.setFullname(q.getFullname());
-				model.setPublish(q.getPublish());
-				model.setQuestionId(q.getQuestionId());
-				
-				int count = AnswerLocalServiceUtil.countByG_Q_PL(groupId, q.getQuestionId(), new int[] { 0, 1 } );
-				model.setAnswered(false);
-				
-				if (count > 0) {
-					model.setAnswered(true);
+			if (lstQuestions != null && lstQuestions.size() > 0) {
+				for (Question q : lstQuestions) {
+					QuestionModel model = new QuestionModel();
+					model.setContent(q.getContent());
+					model.setCreateDate(APIDateTimeUtils.convertDateToString(q.getCreateDate()));
+					model.setEmail(q.getEmail());
+					model.setFullname(q.getFullname());
+					model.setPublish(q.getPublish());
+					model.setQuestionId(q.getQuestionId());
+					model.setGovAgencyCode(q.getGovAgencyCode());
+					model.setGovAgencyName(q.getGovAgencyName());
+					
+					int count = AnswerLocalServiceUtil.countByG_Q_PL(groupId, q.getQuestionId(), new int[] { 0, 1 } );
+					model.setAnswered(false);
+					
+					if (count > 0) {
+						model.setAnswered(true);
+					}
+					lstModels.add(model);
 				}
-				lstModels.add(model);
+				result.getData().addAll(lstModels);
 			}
-			result.getData().addAll(lstModels);
-			
+
 			return Response.status(200).entity(result).build();
 		}
 		catch (Exception e) {

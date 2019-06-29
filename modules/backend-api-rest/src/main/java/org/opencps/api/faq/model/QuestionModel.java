@@ -46,7 +46,9 @@ import javax.xml.bind.annotation.XmlType;
     "email",
     "content",
     "publish",
-    "answered"
+    "answered",
+    "govAgencyCode",
+    "govAgencyName"
 })
 public class QuestionModel {
 
@@ -61,6 +63,8 @@ public class QuestionModel {
     protected String content;
     protected int publish;
     protected boolean answered;
+    protected String govAgencyCode;
+    protected String govAgencyName;
 
     /**
      * Gets the value of the questionId property.
@@ -205,5 +209,21 @@ public class QuestionModel {
     public void setAnswered(boolean value) {
         this.answered = value;
     }
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 
 }
