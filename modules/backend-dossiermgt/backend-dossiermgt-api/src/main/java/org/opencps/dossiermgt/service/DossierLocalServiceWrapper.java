@@ -629,6 +629,45 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier initMultipleDossier(
+		long groupId, long dossierId, String referenceUid, int counter,
+		String serviceCode, String serviceName, String govAgencyCode,
+		String govAgencyName, String applicantName, String applicantIdType,
+		String applicantIdNo, java.util.Date applicantIdDate, String address,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, String password, int viaPostal,
+		String postalServiceCode, String postalServiceName,
+		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalWardCode, String postalWardName, String postalTelNo,
+		boolean online, boolean notification, String applicantNote,
+		int originality, String delegateIdNo, String delegateName,
+		String delegateTelNo, String delegateEmail, String delegateAddress,
+		String delegateCityCode, String delegateCityName,
+		String delegateDistrictCode, String delegateDistrictName,
+		String delegateWardCode, String delegateWardName,
+		String registerBookCode, String registerBookName, int sampleCount,
+		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service,
+		org.opencps.dossiermgt.model.ServiceProcess process,
+		org.opencps.dossiermgt.model.ProcessOption option,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.initMultipleDossier(groupId, dossierId,
+			referenceUid, counter, serviceCode, serviceName, govAgencyCode,
+			govAgencyName, applicantName, applicantIdType, applicantIdNo,
+			applicantIdDate, address, contactName, contactTelNo, contactEmail,
+			dossierTemplateNo, password, viaPostal, postalServiceCode,
+			postalServiceName, postalAddress, postalCityCode, postalCityName,
+			postalDistrictCode, postalDistrictName, postalWardCode,
+			postalWardName, postalTelNo, online, notification, applicantNote,
+			originality, delegateIdNo, delegateName, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode, delegateCityName,
+			delegateDistrictCode, delegateDistrictName, delegateWardCode,
+			delegateWardName, registerBookCode, registerBookName, sampleCount,
+			dossierName, service, process, option, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier initUpdateDossier(
 		long groupId, long id, String applicantName, String applicantIdType,
 		String applicantIdNo, String applicantIdDate, String address,

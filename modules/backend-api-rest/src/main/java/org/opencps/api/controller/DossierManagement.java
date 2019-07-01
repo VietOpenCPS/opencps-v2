@@ -1,5 +1,9 @@
 package org.opencps.api.controller;
 
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
@@ -26,6 +30,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.dossier.model.DoActionModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierMultipleInputModel;
 import org.opencps.api.dossier.model.DossierPublishModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -37,10 +42,6 @@ import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.exception.model.ExceptionModel;
-
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -932,5 +933,5 @@ public interface DossierManagement {
 
 	public Response addFullDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam DossierInputModel input);
+			@Context ServiceContext serviceContext, @BeanParam DossierMultipleInputModel input);
 }
