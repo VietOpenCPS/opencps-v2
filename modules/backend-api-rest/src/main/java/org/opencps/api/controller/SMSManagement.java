@@ -17,7 +17,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.opencps.api.sms.model.IPacificInputSMS;
+import org.opencps.api.sms.model.IPacificSearchSMS;
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.exception.model.ExceptionModel;
 
@@ -53,7 +53,7 @@ public interface SMSManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @FormParam("body") String body,
 		@FormParam("toTelNo") String toTelNo);
-
+	
 	@GET
 	@Path("/inet")
 	@Consumes({
@@ -66,21 +66,21 @@ public interface SMSManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
-		@BeanParam IPacificInputSMS input, @FormParam("toTelNo") String toTelNo);
-
-	@POST
-	@Path("/inet")
+		@BeanParam IPacificSearchSMS query);
+	
+	@GET
+	@Path("/test/zaloid")
 	@Consumes({
 		MediaType.APPLICATION_FORM_URLENCODED
 	})
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
 	})
-	public Response postInetSMS(
+	public Response testGetZaloUIdByTelNoSMS(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
-		@BeanParam IPacificInputSMS input);
+		@FormParam("toTelNo") String toTelNo);
 	
 	@GET
 	@Path("/zaloid")
