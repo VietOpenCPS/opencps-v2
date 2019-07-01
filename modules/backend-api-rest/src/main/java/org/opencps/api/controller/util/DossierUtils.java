@@ -38,6 +38,7 @@ import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
+import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -1265,11 +1266,26 @@ public class DossierUtils {
 		model.setPostalWardCode(input.getPostalWardCode());
 		model.setPostalWardName(input.getPostalWardName());
 		model.setOriginDossierNo(input.getOriginDossierNo());
-		model.setDossierMarkArr(input.getDossierMarkArr());
-		
+
 		return model;
 	}
-	
+
+	//Process multiple dossier
+	public static DossierMultipleInputModel convertFormModelToMultipleInputModel(
+			org.opencps.api.dossier.model.DossierMultipleInputModel input) {
+		DossierMultipleInputModel model = new DossierMultipleInputModel();
+
+		model.setServiceCode(input.getServiceCode());
+		model.setGovAgencyCode(input.getGovAgencyCode());
+		model.setDossierTemplateNo(input.getDossierTemplateNo());
+		model.setOriginality(input.getOriginality());
+		model.setDossiers(input.getDossiers());
+		model.setDossierFileArr(input.getDossierFileArr());
+		model.setDossierMarkArr(input.getDossierMarkArr());
+
+		return model;
+	}
+
 	public static DossierPublishModel convertFormModelToPublishModel(org.opencps.api.dossier.model.DossierPublishModel input) {
 		DossierPublishModel model = new DossierPublishModel();
 		model.setAddress(input.getAddress());

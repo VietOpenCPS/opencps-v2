@@ -31,6 +31,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.exception.UnauthenticationException;
 
 import org.opencps.dossiermgt.input.model.DossierInputModel;
+import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -84,6 +85,20 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	public Dossier addDossierPublish(long groupId, Company company, User user,
 		ServiceContext serviceContext,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public Dossier addFullDossier(long groupId, Company company, User user,
+		ServiceContext serviceContext, DossierInputModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public Dossier addMultipleDossier(long groupId, Company company, User user,
+		ServiceContext serviceContext, DossierMultipleInputModel input)
 		throws UnauthenticationException, PortalException, Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
