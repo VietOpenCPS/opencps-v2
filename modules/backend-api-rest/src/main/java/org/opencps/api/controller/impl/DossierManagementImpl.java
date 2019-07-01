@@ -68,6 +68,7 @@ import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierInputModel;
+import org.opencps.api.dossier.model.DossierMultipleInputModel;
 import org.opencps.api.dossier.model.DossierPublishModel;
 import org.opencps.api.dossier.model.DossierResultPublishModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
@@ -164,6 +165,7 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
 import uk.org.okapibarcode.backend.Code128;
@@ -4940,16 +4942,23 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response addFullDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DossierInputModel input) {
+			User user, ServiceContext serviceContext, DossierMultipleInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			String applicantName = Validator.isNotNull(input.getApplicantName()) ? input.getApplicantName() : StringPool.BLANK;
-			String delegateName = Validator.isNotNull(input.getDelegateName()) ? input.getDelegateName() : StringPool.BLANK;
-			if (Boolean.valueOf(input.getImporting())) {
+			if (Validator.isNotNull(input.getDossiers())) {
+				JSONObject dossiers = JSONFactoryUtil.createJSONObject(input.getDossiers());
+				String applicantName = Validator.isNotNull(dossiers.getString(DossierTerm.APPLICANT_NAME))
+						? dossiers.getString(DossierTerm.APPLICANT_NAME)
+						: StringPool.BLANK;
+				String delegateName = Validator.isNotNull(dossiers.getString(DossierTerm.DELEGATE_NAME))
+						? dossiers.getString(DossierTerm.DELEGATE_NAME)
+						: StringPool.BLANK;
 				String[] statusArr = {StringPool.BLANK, DossierTerm.DOSSIER_STATUS_NEW};
 				List<Dossier> dossierList = DossierLocalServiceUtil.getByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
 						input.getGovAgencyCode(), input.getServiceCode(), input.getDossierTemplateNo(), statusArr,
-						input.getApplicantIdNo(), input.getApplicantIdType(), input.getDelegateIdNo(),
+						dossiers.getString(DossierTerm.APPLICANT_ID_NO),
+						dossiers.getString(DossierTerm.APPLICANT_ID_TYPE),
+						dossiers.getString(DossierTerm.DELEGATE_ID_NO),
 						Validator.isNotNull(input.getOriginality()) ? Integer.valueOf(input.getOriginality()) : 0);
 				if (dossierList != null && dossierList.size() > 0) {
 					for (Dossier dossierImport : dossierList) {
@@ -4961,11 +4970,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
-					DossierUtils.convertFormModelToInputModel(input));
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addMultipleDossier(groupId, company, user, serviceContext,
+					DossierUtils.convertFormModelToMultipleInputModel(input));
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 			return Response.status(HttpStatus.SC_OK).entity(result).build();
 		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

@@ -78,6 +78,7 @@ public class OneMinute extends BaseMessageListener {
 				.findByF_LessThan_ExpireDate(new Date());
 
 		if (notificationQueues != null) {
+	
 			_log.info("notificationQueues SIZE: "+notificationQueues.size());
 			for (NotificationQueue notificationQueue : notificationQueues) {
 				Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
@@ -123,7 +124,7 @@ public class OneMinute extends BaseMessageListener {
 							MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
 						}
 
-						if(messageEntry.isSendNotify()){
+						if(messageEntry.isSendNotify() || messageEntry.isSendZalo()){
 							_log.debug("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
 							MBNotificationSenderFactoryUtil.send(
 								messageEntry, messageEntry.getClassName(),

@@ -1094,13 +1094,15 @@ public class UserActions implements UserInterface {
 					EmployeeJobPosLocalServiceUtil.fetchEmployeeJobPos(
 						employee.getMainJobPostId());
 
-				if (Validator.isNotNull(employeeJobPos)) {
+				if (employeeJobPos != null) {
 					JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(
 						employeeJobPos.getJobPostId());
-					Role role = RoleLocalServiceUtil.fetchRole(
-						jobPos.getMappingRoleId());
-					result.put(
-						"employeeMainJobPostName", role.getTitleCurrentValue());
+					if (jobPos != null) {
+						Role role = RoleLocalServiceUtil.fetchRole(
+								jobPos.getMappingRoleId());
+						result.put(
+							"employeeMainJobPostName", role.getTitleCurrentValue());
+					}
 				}
 
 			}

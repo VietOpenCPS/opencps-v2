@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-	<xsd:element name="IPacificInputSMS">
+	<xsd:element name="IPacificSearchSMS">
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="userId" type="xsd:string" minOccurs="0" />
@@ -13,18 +13,7 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
-	<xsd:element name="IPacificOutputSMS">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="contentType" type="xsd:string" minOccurs="0" />
-				<xsd:element name="messageType" type="xsd:string" minOccurs="0" />
-				<xsd:element name="info" type="xsd:string" minOccurs="0" />
-				<xsd:element name="mobile" type="xsd:string" minOccurs="0" />
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	
+
 	<!-- TODO: not all field Zalo -->
 	<xsd:element name="ZaloInput">
 		<xsd:complexType>
