@@ -4938,4 +4938,36 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	@Override
+	public Response addFullDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+			String applicantName = Validator.isNotNull(input.getApplicantName()) ? input.getApplicantName() : StringPool.BLANK;
+			String delegateName = Validator.isNotNull(input.getDelegateName()) ? input.getDelegateName() : StringPool.BLANK;
+			if (Boolean.valueOf(input.getImporting())) {
+				String[] statusArr = {StringPool.BLANK, DossierTerm.DOSSIER_STATUS_NEW};
+				List<Dossier> dossierList = DossierLocalServiceUtil.getByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
+						input.getGovAgencyCode(), input.getServiceCode(), input.getDossierTemplateNo(), statusArr,
+						input.getApplicantIdNo(), input.getApplicantIdType(), input.getDelegateIdNo(),
+						Validator.isNotNull(input.getOriginality()) ? Integer.valueOf(input.getOriginality()) : 0);
+				if (dossierList != null && dossierList.size() > 0) {
+					for (Dossier dossierImport : dossierList) {
+						if (applicantName.equalsIgnoreCase(dossierImport.getApplicantName())
+								&& delegateName.equalsIgnoreCase(dossierImport.getDelegateName())) {
+							return Response.status(HttpStatus.SC_CONFLICT).entity("{CONFLICT}").build();
+						}
+					}
+				}
+			}
+
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
+					DossierUtils.convertFormModelToInputModel(input));
+			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+			return Response.status(HttpStatus.SC_OK).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }

@@ -611,20 +611,24 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 								JSONObject questionData = ImportDataUtils.convertRowToQuestion(currentRow);
 								if (questionData != null) {
 									//count ++;
-									Question question = QuestionLocalServiceUtil.updateQuestion(
-											serviceContext.getCompanyId(), groupId, 0l, "Hệ thống", "test@liferay.com",
-											questionData.getString("question"), 1, questionData.getString("govAgencyCode"), 
-											questionData.getString("govAgencyName"));
-									if (question != null) {
-										AnswerLocalServiceUtil.updateAnswer(userId, groupId, 0l,
-												question.getQuestionId(), questionData.getString("answer"), 1);
+									String content = questionData.getString("question");
+									String govAgencyCode = questionData.getString("govAgencyCode");
+									if (Validator.isNotNull(content) && Validator.isNotNull(govAgencyCode)) {
+										Question question = QuestionLocalServiceUtil.updateQuestion(
+												serviceContext.getCompanyId(), groupId, 0l, "Hệ thống", "test@liferay.com",
+												questionData.getString("question"), 1, questionData.getString("govAgencyCode"), 
+												questionData.getString("govAgencyName"));
+										if (question != null) {
+											AnswerLocalServiceUtil.updateAnswer(userId, groupId, 0l,
+													question.getQuestionId(), questionData.getString("answer"), 1);
+										}
 									}
 								}
 								//_log.info("mapData: " +i +" : " + dossierData);
 							}
 						}
 //						if (count > 0) {
-//							result.put("total", count);
+						result.put("total", nOfRows);
 //							result.put("data", dataArr);
 //							
 //						}
@@ -633,7 +637,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(result).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
 			_log.error(e);

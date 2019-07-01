@@ -58,6 +58,12 @@ public class QuestionLocalServiceUtil {
 		return getService().countByG_PL(groupId, publishs);
 	}
 
+	public static int countByQuerySearch(long groupId, String keyword,
+		String govAgencyCode, Integer publish) {
+		return getService()
+				   .countByQuerySearch(groupId, keyword, govAgencyCode, publish);
+	}
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*
@@ -188,6 +194,14 @@ public class QuestionLocalServiceUtil {
 	public static java.util.List<org.opencps.usermgt.model.Question> findByG_PL(
 		long groupId, int[] publishs, int start, int end) {
 		return getService().findByG_PL(groupId, publishs, start, end);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
+		long groupId, String keyword, String govAgencyCode, Integer publish,
+		int start, int limit) {
+		return getService()
+				   .findByQuerySearch(groupId, keyword, govAgencyCode, publish,
+			start, limit);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

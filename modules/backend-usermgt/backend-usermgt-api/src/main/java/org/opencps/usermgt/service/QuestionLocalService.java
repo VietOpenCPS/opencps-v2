@@ -72,6 +72,9 @@ public interface QuestionLocalService extends BaseLocalService,
 
 	public int countByG_PL(long groupId, int[] publishs);
 
+	public int countByQuerySearch(long groupId, String keyword,
+		String govAgencyCode, Integer publish);
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*
@@ -171,6 +174,9 @@ public interface QuestionLocalService extends BaseLocalService,
 
 	public List<Question> findByG_PL(long groupId, int[] publishs, int start,
 		int end);
+
+	public List<Question> findByQuerySearch(long groupId, String keyword,
+		String govAgencyCode, Integer publish, int start, int limit);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

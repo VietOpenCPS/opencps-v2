@@ -108,6 +108,9 @@ import javax.xml.bind.annotation.XmlType;
 	"postalWardCode",
 	"postalWardName",
 	"dossierMarkArr",
+	"dossierFileArr",
+	"dossiers",
+	"payment",
 	"importing"
 })
 @XmlRootElement(name = "DossierInputModel")
@@ -229,6 +232,12 @@ public class DossierInputModel {
 	@FormParam(value = "importing")
 	@DefaultValue("false")
 	private String importing;
+	@FormParam(value = "dossierFileArr")
+	private String dossierFileArr;
+	@FormParam(value = "dossiers")
+	private String dossiers;
+	@FormParam(value = "payment")
+	private String payment;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -1044,6 +1053,30 @@ public class DossierInputModel {
 
 	public void setImporting(String importing) {
 		this.importing = importing;
+	}
+
+	public String getDossierFileArr() {
+		return dossierFileArr;
+	}
+
+	public void setDossierFileArr(String dossierFileArr) {
+		this.dossierFileArr = dossierFileArr;
+	}
+
+	public String getDossiers() {
+		return dossiers;
+	}
+
+	public void setDossiers(String dossiers) {
+		this.dossiers = dossiers;
+	}
+
+	public String getPayment() {
+		return payment;
+	}
+
+	public void setPayment(String payment) {
+		this.payment = payment;
 	}
 
 }

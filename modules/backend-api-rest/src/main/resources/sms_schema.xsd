@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:element name="IPacificInputSMS">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="userId" type="xsd:string" minOccurs="0" />
+				<xsd:element name="serviceNumber" type="xsd:string" minOccurs="0" />
+				<xsd:element name="commandCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="info" type="xsd:string" minOccurs="0" />
+				<xsd:element name="user" type="xsd:string" minOccurs="0" />
+				<xsd:element name="password" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="IPacificOutputSMS">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="contentType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="messageType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="info" type="xsd:string" minOccurs="0" />
+				<xsd:element name="mobile" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<!-- TODO: not all field Zalo -->
+	<xsd:element name="ZaloInput">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fromuid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="phone" type="xsd:string" minOccurs="0" />
+				<xsd:element name="appid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="event" type="xsd:string" minOccurs="0" />
+				<xsd:element name="pageid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="oaid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="mac" type="xsd:string" minOccurs="0" />
+				<xsd:element name="timestamp" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

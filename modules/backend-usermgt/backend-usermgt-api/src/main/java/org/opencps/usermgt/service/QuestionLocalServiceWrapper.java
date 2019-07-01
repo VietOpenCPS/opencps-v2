@@ -50,6 +50,13 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 		return _questionLocalService.countByG_PL(groupId, publishs);
 	}
 
+	@Override
+	public int countByQuerySearch(long groupId, String keyword,
+		String govAgencyCode, Integer publish) {
+		return _questionLocalService.countByQuerySearch(groupId, keyword,
+			govAgencyCode, publish);
+	}
+
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
 	*
@@ -189,6 +196,14 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 	public java.util.List<org.opencps.usermgt.model.Question> findByG_PL(
 		long groupId, int[] publishs, int start, int end) {
 		return _questionLocalService.findByG_PL(groupId, publishs, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
+		long groupId, String keyword, String govAgencyCode, Integer publish,
+		int start, int limit) {
+		return _questionLocalService.findByQuerySearch(groupId, keyword,
+			govAgencyCode, publish, start, limit);
 	}
 
 	@Override

@@ -25,7 +25,8 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		MBMessageEntry messageEntry, String portletId,
 		ServiceContext... serviceContexts) {
 
-		if (messageEntry != null && messageEntry.isSendEmail()) {
+		if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
+			System.out.println("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
 			MailMessage mailMessage = new MailMessage();
 			mailMessage.setSubject(messageEntry.getEmailSubject());
 			mailMessage.setTo(messageEntry.getToAddress());
