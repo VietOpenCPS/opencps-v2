@@ -35,6 +35,8 @@ public class PropKeys {
 	public static final String PORTAL_DOMAIN = "portal.domain";
 	
 	public static final String MAIL_ADMIN_SERVER = "admin.email.from.address";
+	
+	public static final String NAME_ADMIN_SERVER = "admin.email.from.name";
 
 	public static final String PORTAL_DOCUMENT_EDITOR_PATH =
 		"portal.document.editor.path";

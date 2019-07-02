@@ -41,6 +41,9 @@ public class PropValues {
 	public static final String MAIL_ADMIN_SERVER =
 			PropsUtil.get(PropKeys.MAIL_ADMIN_SERVER);
 
+	public static final String NAME_ADMIN_SERVER =
+			PropsUtil.get(PropKeys.NAME_ADMIN_SERVER);
+
 	public static final String PORTAL_DOMAIN =
 		PropsUtil.get(PropKeys.PORTAL_DOMAIN);
 
