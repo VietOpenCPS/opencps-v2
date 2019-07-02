@@ -159,7 +159,11 @@ public class NotificationUtil {
 				dataModel.setClassPK(queue.getClassPK());
 				dataModel.setCreateDate(queue.getCreateDate());
 				dataModel.setExpireDate(queue.getExpireDate());
-				dataModel.setFromUsername(queue.getFromUsername());
+				if (Validator.isNotNull(PropValues.NAME_ADMIN_SERVER)) {
+					dataModel.setFromUsername(PropValues.NAME_ADMIN_SERVER);
+				} else {
+					dataModel.setFromUsername(queue.getFromUsername());
+				}
 				dataModel.setGroupId(queue.getGroupId());
 				dataModel.setModifiedDate(queue.getModifiedDate());
 				dataModel.setNotificationType(queue.getNotificationType());

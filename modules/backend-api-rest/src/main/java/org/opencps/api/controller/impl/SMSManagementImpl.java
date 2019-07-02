@@ -146,7 +146,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		}
 		catch (Exception e) {
-
+			_log.debug(e);
 			return Response.status(500).entity(StringPool.BLANK).build();
 		}
 
