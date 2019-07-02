@@ -500,7 +500,8 @@ create table opencps_dossiertemplate (
 	modifiedDate DATE null,
 	templateName VARCHAR(75) null,
 	description VARCHAR(75) null,
-	templateNo VARCHAR(75) null
+	templateNo VARCHAR(75) null,
+	newFormScript VARCHAR(75) null
 );
 
 create table opencps_dossieruser (

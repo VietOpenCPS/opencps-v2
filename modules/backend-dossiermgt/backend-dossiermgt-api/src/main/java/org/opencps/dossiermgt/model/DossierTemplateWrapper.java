@@ -71,6 +71,7 @@ public class DossierTemplateWrapper implements DossierTemplate,
 		attributes.put("templateName", getTemplateName());
 		attributes.put("description", getDescription());
 		attributes.put("templateNo", getTemplateNo());
+		attributes.put("newFormScript", getNewFormScript());
 
 		return attributes;
 	}
@@ -141,6 +142,12 @@ public class DossierTemplateWrapper implements DossierTemplate,
 
 		if (templateNo != null) {
 			setTemplateNo(templateNo);
+		}
+
+		String newFormScript = (String)attributes.get("newFormScript");
+
+		if (newFormScript != null) {
+			setNewFormScript(newFormScript);
 		}
 	}
 
@@ -217,6 +224,16 @@ public class DossierTemplateWrapper implements DossierTemplate,
 	@Override
 	public Date getModifiedDate() {
 		return _dossierTemplate.getModifiedDate();
+	}
+
+	/**
+	* Returns the new form script of this dossier template.
+	*
+	* @return the new form script of this dossier template
+	*/
+	@Override
+	public String getNewFormScript() {
+		return _dossierTemplate.getNewFormScript();
 	}
 
 	/**
@@ -403,6 +420,16 @@ public class DossierTemplateWrapper implements DossierTemplate,
 	@Override
 	public void setNew(boolean n) {
 		_dossierTemplate.setNew(n);
+	}
+
+	/**
+	* Sets the new form script of this dossier template.
+	*
+	* @param newFormScript the new form script of this dossier template
+	*/
+	@Override
+	public void setNewFormScript(String newFormScript) {
+		_dossierTemplate.setNewFormScript(newFormScript);
 	}
 
 	/**

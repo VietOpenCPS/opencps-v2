@@ -1,0 +1,430 @@
+{
+  "userName": "username",
+  "password": "***",
+  "createInvoice": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceWS/createInvoice/6400408806",
+    "method": "POST",
+    "accept": "application/json",
+    "contentType": "application/json",
+    "inputSchema": {
+      "generalInvoiceInfo": {
+        "invoiceType": "01GTKT",
+        "templateCode": "01GTKT0/001",
+        "invoiceSeries": "HD/19E",
+        "currencyCode": "VND",
+        "invoiceNote": "",
+        "adjustmentType": "1",
+        "paymentStatus": true,
+        "paymentType": "CK",
+        "paymentTypeName": "CK",
+        "cusGetInvoiceRight": true,
+        "userName": "test2"
+      },
+      "buyerInfo": {
+        "buyerName": "Lê Thị Thanh Minh_có mã KH_import CoopSmile",
+        "buyerLegalName": "Tên đơn vị",
+        "buyerTaxCode": "8008675383",
+        "buyerAddressLine": "An Khánh Hoài Đức Hà Nội",
+        "buyerPostalCode": "2342324323",
+        "buyerDistrictName": "Số 9, đường 11, VSIP Bắc Ninh, Thị xã Từ Sơn, Tỉnh",
+        "buyerCityName": "Thành Phố Hà Nội",
+        "buyerCountryCode": "84",
+        "buyerPhoneNumber": "987999999",
+        "buyerFaxNumber": "0458954",
+        "buyerEmail": "hainv71@viettel.com.vn; sonnt38@viettel.com; doanhnc2@viettel.com.vn; minhltt228@gmail.com; hieumai8x@gmail.com;sinvoice.viettel.vn@gmail.com;minhltt223@yahoo.com; minhltt@viettel.com.vn",
+        "buyerBankName": "Ngân hàng Quân đội MB",
+        "buyerBankAccount": "01578987871236547",
+        "buyerIdNo": "8888899999",
+        "buyerIdType": "3",
+        "buyerCode": "832472343b_b",
+        "buyerBirthDay": ""
+      },
+      "sellerInfo": {
+        "sellerCode": "MaCNbenban",
+        "sellerLegalName": "TẬP ĐOÀN VIỄN THÔNG QUÂN ĐỘI",
+        "sellerTaxCode": "6400408806",
+        "sellerAddressLine": "Số 21 Cát Linh, phường Cát Linh - Quận Ba Đình - Thành Phố Hà Nội - Việt Nam",
+        "sellerPhoneNumber": "(04) 57896512",
+        "sellerEmail": "hieuvtm@viettel.com.vn",
+        "sellerBankName": "Ngân hàng Quân Đội MB - CN huyện Yên Sơn; Ngân hàng Vietinbank",
+        "sellerBankAccount": "012564654654; 010057839922"
+      },
+      "extAttribute": [],
+      "payments": [
+        {
+          "paymentMethodName": "CK"
+        }
+      ],
+      "deliveryInfo": {},
+      "itemInfo": [
+        {
+          "lineNumber": 1,
+          "itemCode": "Thue0",
+          "itemName": "Có tính thuế",
+          "unitName": "KG",
+          "unitPrice": 65363.87,
+          "quantity": 0.5,
+          "itemTotalAmountWithoutTax": 32681.9,
+          "itemTotalAmountWithTax": 32681.9,
+          "itemTotalAmountAfterDiscount": 32681.9,
+          "taxPercentage": 0,
+          "taxAmount": 0,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 2,
+          "itemCode": "thue5",
+          "itemName": "thue5",
+          "unitName": "Cái",
+          "unitPrice": 2000000,
+          "quantity": 2,
+          "itemTotalAmountWithoutTax": 4000000,
+          "itemTotalAmountWithTax": 4200000,
+          "itemTotalAmountAfterDiscount": 4000000,
+          "taxPercentage": 5,
+          "taxAmount": 200000,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 3,
+          "itemCode": "Thue10",
+          "itemName": "Thuế 10",
+          "unitName": "Chiếc",
+          "unitPrice": 600000,
+          "quantity": 3,
+          "itemTotalAmountWithoutTax": 1800000,
+          "itemTotalAmountWithTax": 1980000,
+          "itemTotalAmountAfterDiscount": 1800000,
+          "taxPercentage": 10,
+          "taxAmount": 180000,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 4,
+          "itemCode": "thue15",
+          "itemName": "thue15",
+          "unitName": "Cái",
+          "unitPrice": 500000,
+          "quantity": 2,
+          "itemTotalAmountWithoutTax": 1000000,
+          "itemTotalAmountWithTax": 1150000,
+          "itemTotalAmountAfterDiscount": 1000000,
+          "taxPercentage": 15,
+          "taxAmount": 150000,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 5,
+          "itemCode": "KCT1",
+          "itemName": "kct",
+          "unitName": "chiec",
+          "unitPrice": 5000,
+          "quantity": 3,
+          "itemTotalAmountWithoutTax": 15000,
+          "itemTotalAmountWithTax": 15000,
+          "itemTotalAmountAfterDiscount": 15000,
+          "taxPercentage": -2,
+          "taxAmount": 0,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 6,
+          "itemCode": "KKK",
+          "itemName": "Không kê khai, tính thuế",
+          "unitName": "Cái",
+          "unitPrice": 250000,
+          "quantity": 3,
+          "itemTotalAmountWithoutTax": 750000,
+          "itemTotalAmountWithTax": 750000,
+          "itemTotalAmountAfterDiscount": 750000,
+          "taxPercentage": -1,
+          "taxAmount": 0,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        },
+        {
+          "lineNumber": 7,
+          "itemCode": "thue5",
+          "itemName": "thue5",
+          "unitName": "Cái",
+          "unitPrice": 2000000,
+          "quantity": 2,
+          "itemTotalAmountWithoutTax": 4000000,
+          "itemTotalAmountWithTax": 4200000,
+          "itemTotalAmountAfterDiscount": 4000000,
+          "taxPercentage": 5,
+          "taxAmount": 200000,
+          "discount": 0,
+          "itemDiscount": 0,
+          "itemNote": "",
+          "batchNo": "",
+          "expDate": ""
+        }
+      ],
+      "discountItemInfo": [],
+      "summarizeInfo": {
+        "sumOfTotalLineAmountWithoutTax": 11597682,
+        "totalAmountWithoutTax": 11597682,
+        "totalTaxAmount": 730000,
+        "totalAmountWithTax": 12327682,
+        "totalAmountAfterDiscount": 11597682,
+        "totalAmountWithTaxInWords": "Mười hai triệu ba trăm hai mươi bảy nghìn sáu trăm tám mươi mốt phẩy  chín đồng",
+        "discountAmount": 0
+      },
+      "taxBreakdowns": [
+        {
+          "taxPercentage": -2,
+          "taxableAmount": 15000,
+          "taxAmount": 0
+        },
+        {
+          "taxPercentage": -1,
+          "taxableAmount": 750000,
+          "taxAmount": 0
+        },
+        {
+          "taxPercentage": 0,
+          "taxableAmount": 32681.9,
+          "taxAmount": 0
+        },
+        {
+          "taxPercentage": 5,
+          "taxableAmount": 8000000,
+          "taxAmount": 400000
+        },
+        {
+          "taxPercentage": 10,
+          "taxableAmount": 1800000,
+          "taxAmount": 180000
+        },
+        {
+          "taxPercentage": 15,
+          "taxableAmount": 1000000,
+          "taxAmount": 150000
+        }
+      ],
+      "metadata": [],
+      "customFields": [],
+      "meterReading": [],
+      "invoiceFile": {
+        "fileContent": "RmlsZSBi4bqjbmcga8OqIMSRxrDhu6NjIGFkZCBsw6puIHThuqFpIHBo4bqnbiBs4bqtcCBow7NhIMSRxqFu",
+        "fileType": "1"
+      }
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "result": {
+        "supplierTaxCode": "6400408806",
+        "invoiceNo": "HD/19E0000002",
+        "transactionID": "1560841019378",
+        "reservationCode": "MU7ZYO6YKH"
+      }
+    }
+  },
+  "getInvoiceFile": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceUtilsWS/getInvoiceRepresentationFile",
+    "method": "POST",
+    "accept": "application/json",
+    "contentType": "application/json",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "invoiceNo": "HD/19E0000001",
+      "transactionUuid": "1560762754175",
+      "fileType": "PDF",
+      "templateCode": "01GTKT0/001",
+      "paid": false
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "fileName": "RY5Q3N9QLI-HD_19E0000001",
+      "fileToBytes": ""
+    }
+  },
+  "getInvoiceFilePortal": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceUtilsWS/getInvoiceFilePortal",
+    "accept": "application/json",
+    "contentType": "application/x-www-form-urlencoded",
+    "method": "POST",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "invoiceNo": "HD/19E0000001",
+      "buyerIdNo": "1560762754175",
+      "reservationCode": "RY5Q3N9QLI",
+      "fileType": "PDF",
+      "templateCode": "01GTKT0/001",
+      "strIssueDate": "yyyyMMddHHmmss"
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "fileName": "RY5Q3N9QLI-HD_19E0000001",
+      "fileToBytes": ""
+    }
+  },
+  "createExchangeInvoiceFile": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceWS/createExchangeInvoiceFile",
+    "accept": "application/json",
+    "contentType": "application/json",
+    "method": "GET",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "invoiceNo": "HD/19E0000001",
+      "templateCode": "01GTKT0/001",
+      "strIssueDate": "yyyyMMddHHmmss",
+      "exchangeUser": ""
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "fileName": "RY5Q3N9QLI-HD_19E0000001",
+      "fileToBytes": ""
+    }
+  },
+  "cancelTransactionInvoice": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceWS/cancelTransactionInvoice",
+    "accept": "application/json",
+    "contentType": "application/x-www-form-urlencoded",
+    "method": "POST",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "templateCode": "01GTKT0/001",
+      "invoiceNo": "HD/19E0000001",
+      "strIssueDate": "yyyyMMddHHmmss",
+      "additionalReferenceDesc": "RY5Q3N9QLI",
+      "additionalReferenceDate": ""
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": "CANCEL TRANSACTION INVOICE SUCCESS"
+    }
+  },
+  "updatePaymentStatus": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceWS/updatePaymentStatus",
+    "accept": "application/json",
+    "contentType": "application/x-www-form-urlencoded",
+    "method": "POST",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "invoiceNo": "HD/19E0000001",
+      "buyerEmailAddress": "RY5Q3N9QLI",
+      "strIssueDate": "01GTKT0/001",
+      "paymentType": "yyyyMMddHHmmss",
+      "paymentTypeName": "",
+      "cusGetInvoiceRight": true
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "result": true,
+      "paymentTime": null,
+      "paymentMethod": null
+    }
+  },
+  "cancelPaymentStatus": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceWS/cancelPaymentStatus",
+    "accept": "application/json",
+    "contentType": "application/x-www-form-urlencoded",
+    "method": "POST",
+    "inputSchema": {
+      "supplierTaxCode": "6400408806",
+      "invoiceNo": "HD/19E0000001",
+      "strIssueDate": "yyyyMMddHHmmss"
+    },
+    "responseSchema": {
+      "errorCode": null,
+      "description": null,
+      "result": true,
+      "paymentTime": null,
+      "paymentMethod": null
+    }
+  },
+  "getInvoices": {
+    "endpoint": "https://demo-sinvoice.viettel.vn:8443/InvoiceAPI/InvoiceUtilsWS/getInvoices/6400408806",
+    "method": "POST",
+    "accept": "application/json",
+    "contentType": "application/json",
+    "inputSchema": {
+      "invoiceNo": "",
+      "startDate": "yyyyMMddHHmmss",
+      "endDate": "yyyyMMddHHmmss",
+      "invoiceType": "",
+      "rowPerPage": 1,
+      "pageNum": 11,
+      "contractNo": 12222,
+      "customerId": 1000,
+      "contractId": 1000,
+      "buyerTaxCode": 1000,
+      "buyerIdNo": "",
+      "templateCode": "",
+      "invoiceSeri": "",
+      "getAll": true
+    },
+    "responseSchema": {
+      "invoices": [
+        {
+          "invoiceId": 213469,
+          "invoiceType": "02GTTT",
+          "adjustmentType": "1",
+          "templateCode": "02GTTT0/089",
+          "invoiceSeri": "QT/17E",
+          "invoiceNumber": "0000003",
+          "invoiceNo": "QT/17E0000003",
+          "currency": "VND",
+          "total": 3800000,
+          "issueDate": 1514281815000,
+          "issueDateStr": null,
+          "state": null,
+          "requestDate": null,
+          "description": null,
+          "buyerIdNo": null,
+          "stateCode": null,
+          "subscriberNumber": null,
+          "paymentStatus": 1,
+          "viewStatus": 1,
+          "downloadStatus": null,
+          "exchangeStatus": null,
+          "numOfExchange": null,
+          "createTime": 1514281826000,
+          "contractId": null,
+          "contractNo": null,
+          "supplierTaxCode": "0100109106",
+          "buyerTaxCode": "6200000230",
+          "totalBeforeTax": 3800000,
+          "taxAmount": 0,
+          "taxRate": null,
+          "paymentMethod": null,
+          "paymentTime": null,
+          "customerId": null,
+          "buyerName": "Trần Trung Dũng",
+          "no": null,
+          "paymentStatusName": null
+        }
+      ]
+    }
+  }
+}

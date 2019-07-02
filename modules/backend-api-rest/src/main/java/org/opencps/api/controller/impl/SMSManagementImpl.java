@@ -95,7 +95,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		if (Validator.isNull(toTelNo) && groupId <= 0) {
 
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(400).entity(StringPool.BLANK).build();
 		}
 
 		return Response.status(200).entity(
@@ -113,7 +113,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		if (Validator.isNull(toTelNo) && groupId <= 0) {
 
-			return Response.status(403).entity(StringPool.BLANK).build();
+			return Response.status(400).entity(StringPool.BLANK).build();
 		}
 
 		try {
@@ -135,6 +135,11 @@ public class SMSManagementImpl implements SMSManagement {
 				_log.info(zUIdJSON);
 
 				zUId = zUIdJSON.getString(SendSMSTerm.UID);
+
+			}
+			else {
+
+				return Response.status(404).entity(zUId).build();
 			}
 
 			return Response.status(200).entity(zUId).build();

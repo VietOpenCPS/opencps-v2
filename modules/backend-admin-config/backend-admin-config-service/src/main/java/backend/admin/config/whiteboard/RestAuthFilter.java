@@ -60,9 +60,10 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/*" };
+	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	
+	public final static String[] DISALLOW_METHODS = new String[] { "OPTIONS" };
 	@Override
 	public void destroy() {
 	}
@@ -79,6 +80,13 @@ public class RestAuthFilter implements Filter {
 			if (path.matches(pattern)) {
 				exclude = true;
 				break;
+			}
+		}
+		String method = httpRequest.getMethod();
+		for (String disallow : DISALLOW_METHODS) {
+			if (disallow.equals(method)) {
+				authFailure(servletResponse);
+				return;
 			}
 		}
 		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {

@@ -45,12 +45,17 @@ import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserResults;
 import org.opencps.api.user.model.UserRolesResults;
 import org.opencps.api.user.model.UserSitesResults;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -256,10 +261,17 @@ public class UserManagementImpl implements UserManagement {
 	public Response addChangepass(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
 		UserInterface actions = new UserActions();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		
 		try {
-
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
+				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			}
 			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
@@ -608,10 +620,18 @@ public class UserManagementImpl implements UserManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
 		
 		UserInterface actions = new UserActions();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		BackendAuth auth = new BackendAuthImpl();
 		
 		try {
 
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
+				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			}
 
 			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
@@ -630,10 +650,18 @@ public class UserManagementImpl implements UserManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
 		
 		UserInterface actions = new UserActions();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		BackendAuth auth = new BackendAuthImpl();
 		
 		try {
 
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
+				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			}
 
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 1,
 					serviceContext);

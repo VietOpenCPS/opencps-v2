@@ -63,7 +63,12 @@ public class OneMinute extends BaseMessageListener {
 		else {
 			return;
 		}
-		doProcessNotification(message);
+		try {
+			doProcessNotification(message);
+		}
+		catch (Exception e) {
+			
+		}
 		isRunning = false;
 	}
 
