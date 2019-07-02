@@ -12,11 +12,17 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="notificationType" type="String" />
-		<field name="className" type="String" />
+		<field name="notificationType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="className" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="classPK" type="String" />
 		<field name="payload" type="String">
 			<hint-collection name="LONGEST_TEXT" />
@@ -24,8 +30,12 @@
 		<field name="fromUsername" type="String" />
 		<field name="toUsername" type="String" />
 		<field name="toUserId" type="long" />
-		<field name="toEmail" type="String" />
-		<field name="toTelNo" type="String" />
+		<field name="toEmail" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="toTelNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="publicationDate" type="Date" />
 		<field name="expireDate" type="Date" />
 	</model>
@@ -37,7 +47,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="notificationType" type="String" />
+		<field name="notificationType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="emailSubject" type="String">
 			<hint-collection name="LONG_TEXT" />
 		</field>
@@ -54,9 +66,15 @@
 		<field name="sendEmail" type="boolean" />
 		<field name="sendNotification" type="boolean" />
 		<field name="expireDuration" type="int" />
-		<field name="userUrlPattern" type="String" />
-		<field name="guestUrlPattern" type="String" />
-		<field name="interval" type="String" />
+		<field name="userUrlPattern" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="guestUrlPattern" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="interval" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="grouping" type="boolean" />
 	</model>
 	<model name="org.opencps.communication.model.Preferences">
@@ -80,10 +98,18 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="govAgencyCode" type="String" />
-		<field name="serverNo" type="String" />
-		<field name="serverName" type="String" />
-		<field name="protocol" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serverNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serverName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="protocol" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="configs" type="String">
 			<hint-collection name="LONGEST_TEXT" />
 		</field>
