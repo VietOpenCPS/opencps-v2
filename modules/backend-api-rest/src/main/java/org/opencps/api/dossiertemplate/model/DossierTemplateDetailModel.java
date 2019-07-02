@@ -230,7 +230,7 @@ public class DossierTemplateDetailModel {
      *     
      */
     public void setNewFormScript(String value) {
-        this.templateNo = value;
+        this.newFormScript = value;
     }    
     
     /**
