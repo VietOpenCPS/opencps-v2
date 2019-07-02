@@ -69,6 +69,7 @@ public class DossierInputModel {
 	private String dossierFileArr;
 	private String dossiers;
 	private String payment;
+	private String serverNo;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -902,4 +903,12 @@ public class DossierInputModel {
 		this.payment = payment;
 	}
 
+	public String getServerNo() {
+		return serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		this.serverNo = serverNo;
+	}
+	
 }

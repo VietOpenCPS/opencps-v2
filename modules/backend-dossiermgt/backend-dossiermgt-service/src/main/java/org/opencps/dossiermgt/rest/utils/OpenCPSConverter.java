@@ -953,6 +953,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_ACTION_ID)) {
 			model.setDossierActionId(jsonObj.getInt(DossierTerm.DOSSIER_ACTION_ID));
 		}
+		if (jsonObj.has(DossierTerm.SERVER_NO)) {
+			model.setServerNo(jsonObj.getString(DossierTerm.SERVER_NO));
+		}
 
 		return model;
 	}	
@@ -1004,6 +1007,9 @@ public class OpenCPSConverter {
 			model.setPassword(dossier.getPassword());
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
+		if (Validator.isNotNull(dossier.getServerNo())) {
+			model.setServerNo(dossier.getServerNo());
+		}
 		return model;
 	}
 	
