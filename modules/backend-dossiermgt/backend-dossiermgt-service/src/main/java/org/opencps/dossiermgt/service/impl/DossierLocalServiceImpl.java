@@ -5352,4 +5352,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return null;
 	}
 
+	public List<Dossier> findByG_GDID(long groupId, long groupDossierId) {
+		return dossierPersistence.findByG_GDID(groupId, groupDossierId);
+	}
+	
 }

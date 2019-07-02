@@ -322,6 +322,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
+		long groupId, long groupDossierId) {
+		return _dossierLocalService.findByG_GDID(groupId, groupDossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(
 		long groupId, int start, int end) {
 		return _dossierLocalService.findByGID(groupId, start, end);

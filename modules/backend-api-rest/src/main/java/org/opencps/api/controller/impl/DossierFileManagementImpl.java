@@ -80,12 +80,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			if (dossier != null && dossier.getOriginDossierId() == 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
-	
+				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
+					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
+					dossierFiles.addAll(groupFiles);
+				}
 				results.setTotal(dossierFiles.size());
 				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
 			}
 			else if (dossier != null && dossier.getOriginDossierId() != 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getOriginDossierId());
+				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
+					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
+					dossierFiles.addAll(groupFiles);
+				}
 				
 				results.setTotal(dossierFiles.size());
 				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));

@@ -258,7 +258,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("groupDossierId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter LONG,registerBookCode VARCHAR(75) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantName VARCHAR(75) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address VARCHAR(75) null,cityCode VARCHAR(75) null,cityName VARCHAR(75) null,districtCode VARCHAR(75) null,districtName VARCHAR(75) null,wardCode VARCHAR(75) null,wardName VARCHAR(75) null,contactName VARCHAR(75) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName VARCHAR(75) null,dossierNote VARCHAR(75) null,submissionNote VARCHAR(75) null,applicantNote VARCHAR(75) null,briefNote VARCHAR(75) null,dossierNo VARCHAR(75) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText VARCHAR(75) null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText VARCHAR(75) null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(75) null,postalServiceName VARCHAR(75) null,postalAddress VARCHAR(75) null,postalCityCode VARCHAR(75) null,postalCityName VARCHAR(75) null,postalDistrictCode VARCHAR(75) null,postalDistrictName VARCHAR(75) null,postalWardCode VARCHAR(75) null,postalWardName VARCHAR(75) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(75) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(75) null,originDossierNo VARCHAR(75) null,groupDossierId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(75) null,cityName VARCHAR(255) null,districtCode VARCHAR(75) null,districtName VARCHAR(255) null,wardCode VARCHAR(75) null,wardName VARCHAR(255) null,contactName TEXT null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(255) null,postalAddress VARCHAR(255) null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(255) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(255) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(255) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -284,17 +284,18 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long DOSSIERSTATUS_COLUMN_BITMASK = 128L;
 	public static final long DOSSIERTEMPLATENO_COLUMN_BITMASK = 256L;
 	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 512L;
-	public static final long GROUPID_COLUMN_BITMASK = 1024L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 2048L;
-	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 4096L;
-	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 8192L;
-	public static final long ORIGINALITY_COLUMN_BITMASK = 16384L;
-	public static final long PROCESSNO_COLUMN_BITMASK = 32768L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 65536L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 131072L;
-	public static final long USERID_COLUMN_BITMASK = 262144L;
-	public static final long UUID_COLUMN_BITMASK = 524288L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 1048576L;
+	public static final long GROUPDOSSIERID_COLUMN_BITMASK = 1024L;
+	public static final long GROUPID_COLUMN_BITMASK = 2048L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 4096L;
+	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 8192L;
+	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 16384L;
+	public static final long ORIGINALITY_COLUMN_BITMASK = 32768L;
+	public static final long PROCESSNO_COLUMN_BITMASK = 65536L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 131072L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 262144L;
+	public static final long USERID_COLUMN_BITMASK = 524288L;
+	public static final long UUID_COLUMN_BITMASK = 1048576L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 2097152L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -2481,7 +2482,19 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setGroupDossierId(long groupDossierId) {
+		_columnBitmask |= GROUPDOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalGroupDossierId) {
+			_setOriginalGroupDossierId = true;
+
+			_originalGroupDossierId = _groupDossierId;
+		}
+
 		_groupDossierId = groupDossierId;
+	}
+
+	public long getOriginalGroupDossierId() {
+		return _originalGroupDossierId;
 	}
 
 	@Override
@@ -2734,6 +2747,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._setOriginalOriginDossierId = false;
 
 		dossierModelImpl._originalOriginDossierNo = dossierModelImpl._originDossierNo;
+
+		dossierModelImpl._originalGroupDossierId = dossierModelImpl._groupDossierId;
+
+		dossierModelImpl._setOriginalGroupDossierId = false;
 
 		dossierModelImpl._columnBitmask = 0;
 	}
@@ -4091,6 +4108,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _originDossierNo;
 	private String _originalOriginDossierNo;
 	private long _groupDossierId;
+	private long _originalGroupDossierId;
+	private boolean _setOriginalGroupDossierId;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }
