@@ -113,7 +113,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		if (Validator.isNull(toTelNo) && groupId <= 0) {
 
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(403).entity(StringPool.BLANK).build();
 		}
 
 		try {
@@ -141,8 +141,8 @@ public class SMSManagementImpl implements SMSManagement {
 
 		}
 		catch (Exception e) {
-
-			return Response.status(200).entity(StringPool.BLANK).build();
+			_log.debug(e);
+			return Response.status(500).entity(StringPool.BLANK).build();
 		}
 
 	}
