@@ -232,6 +232,7 @@
 		<column name="templateName" type="String" />
 		<column name="description" type="String" />
 		<column name="templateNo" type="String" />
+		<column name="newFormScript" type="String" />
 
 		<!-- Order -->
 

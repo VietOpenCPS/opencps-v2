@@ -570,6 +570,7 @@
 		<property name="templateName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="templateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="newFormScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierUserImpl" table="opencps_dossieruser">
 		<composite-id class="org.opencps.dossiermgt.service.persistence.DossierUserPK" name="primaryKey">

@@ -390,6 +390,8 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TIME, query.getTime());
 			params.put(DossierTerm.REGISTER, query.getRegister());
 			
+			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
+			
 			//Search theo tu tuong moi
 			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
 			if (Validator.isNotNull(originDossierId))
