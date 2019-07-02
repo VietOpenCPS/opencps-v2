@@ -36,6 +36,7 @@ public class DossierTemplateUtils {
 			model.setTemplateName(doc.get(DossierTemplateTerm.TEMPLATE_NAME));
 			model.setTemplateNo(doc.get(DossierTemplateTerm.TEMPLATE_NO));
 			model.setDescription(doc.get(DossierTemplateTerm.DESCRIPTION));
+			model.setNewFormScript(doc.get(DossierTemplateTerm.NEWFORM_SCRIPT));
 
 			outputs.add(model);
 		}
@@ -50,6 +51,7 @@ public class DossierTemplateUtils {
 		output.setDescription(dossierTemplate.getDescription());
 		output.setTemplateName(dossierTemplate.getTemplateName());
 		output.setTemplateNo(dossierTemplate.getTemplateNo());
+		output.setNewFormScript(dossierTemplate.getNewFormScript());
 
 		return output;
 	}
@@ -65,7 +67,8 @@ public class DossierTemplateUtils {
 				APIDateTimeUtils._NORMAL_PARTTERN));
 		output.setModifiedDate(APIDateTimeUtils.convertDateToString(dossierTemplate.getModifiedDate(),
 				APIDateTimeUtils._NORMAL_PARTTERN));
-
+		output.setNewFormScript(dossierTemplate.getNewFormScript());
+		
 		List<DossierTemplatePartDataModel> inputs = new ArrayList<DossierTemplatePartDataModel>();
 
 		try {

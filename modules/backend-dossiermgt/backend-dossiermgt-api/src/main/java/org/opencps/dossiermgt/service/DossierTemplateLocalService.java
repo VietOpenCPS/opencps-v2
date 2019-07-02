@@ -333,10 +333,12 @@ public interface DossierTemplateLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplate(long groupId,
 		long dossierTemplateId, String templateName, String templateNo,
-		String description, ServiceContext context) throws PortalException;
+		String description, String newFormScript, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplateDB(long userId, long groupId,
 		String templateNo, String templateName, String description,
-		ServiceContext serviceContext) throws PortalException;
+		String newFormScript, ServiceContext serviceContext)
+		throws PortalException;
 }

@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="templateName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="templateNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="newFormScript" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,7 +43,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierTemplateId",
     "templateName",
     "description",
-    "templateNo"
+    "templateNo",
+    "newFormScript"
 })
 @XmlRootElement(name = "DossierTemplateInputModel")
 public class DossierTemplateInputModel {
@@ -54,7 +56,9 @@ public class DossierTemplateInputModel {
 	protected String description;
 	@FormParam(value = "templateNo")
 	protected String templateNo;
-
+	@FormParam(value = "newFormScript")
+	protected String newFormScript;
+	
     /**
      * Gets the value of the dossierTemplateId property.
      * 
@@ -151,4 +155,27 @@ public class DossierTemplateInputModel {
         this.templateNo = value;
     }
 
+    /**
+     * Gets the value of the newFormScript property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getNewFormScript() {
+        return newFormScript;
+    }
+
+    /**
+     * Sets the value of the newFormScript property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNewFormScript(String value) {
+        this.newFormScript = value;
+    }
 }
