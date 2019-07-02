@@ -128,7 +128,7 @@ public class DossierTerm {
 	public static final int ORIGINALITY_DVCTT = 1;
 	public static final int ORIGINALITY_LIENTHONG = 2;
 	public static final int ORIGINALITY_MOTCUA = 3;
-	public static final int ORIGINALITY_HOSONHOM = 4;
+	public static final int ORIGINALITY_HOSONHOM = 9;
 		
 	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
 	public static final String POSTAL_SERVICE_NAME = "postalServiceName";
