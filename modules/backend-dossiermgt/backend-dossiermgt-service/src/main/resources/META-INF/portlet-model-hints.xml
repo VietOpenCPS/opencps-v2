@@ -484,6 +484,7 @@
 		<field name="templateName" type="String" />
 		<field name="description" type="String" />
 		<field name="templateNo" type="String" />
+		<field name="newFormScript" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">
 		<field name="uuid" type="String" />
