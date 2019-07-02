@@ -373,22 +373,22 @@ public class DossierTemplateLocalServiceUtil {
 
 	public static org.opencps.dossiermgt.model.DossierTemplate updateDossierTemplate(
 		long groupId, long dossierTemplateId, String templateName,
-		String templateNo, String description,
+		String templateNo, String description, String newFormScript,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateDossierTemplate(groupId, dossierTemplateId,
-			templateName, templateNo, description, context);
+			templateName, templateNo, description, newFormScript, context);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierTemplate updateDossierTemplateDB(
 		long userId, long groupId, String templateNo, String templateName,
-		String description,
+		String description, String newFormScript,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateDossierTemplateDB(userId, groupId, templateNo,
-			templateName, description, serviceContext);
+			templateName, description, newFormScript, serviceContext);
 	}
 
 	public static DossierTemplateLocalService getService() {

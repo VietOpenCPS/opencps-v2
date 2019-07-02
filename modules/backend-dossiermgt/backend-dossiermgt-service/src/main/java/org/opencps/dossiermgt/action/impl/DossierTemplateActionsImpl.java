@@ -54,10 +54,10 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 	@Override
 	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
-			String templateNo, String description, ServiceContext context) throws PortalException {
+			String templateNo, String description, String newFormScript, ServiceContext context) throws PortalException {
 
 		return DossierTemplateLocalServiceUtil.updateDossierTemplate(groupId, dossierTemplateId, templateName,
-				templateNo, description, context);
+				templateNo, description, newFormScript, context);
 	}
 
 	@Override
@@ -218,9 +218,9 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 	@Override
 	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
-			String description, ServiceContext serviceContext) throws PortalException {
+			String description, String newFormScript, ServiceContext serviceContext) throws PortalException {
 
-		DossierTemplateLocalServiceUtil.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description,
+		DossierTemplateLocalServiceUtil.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript,
 				serviceContext);
 	}
 

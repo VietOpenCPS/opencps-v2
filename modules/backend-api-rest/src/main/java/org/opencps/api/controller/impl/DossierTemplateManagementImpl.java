@@ -112,13 +112,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			String templateName = HtmlUtil.escape(input.getTemplateName());
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String description = HtmlUtil.escape(input.getDescription());
+			String newFormScript = input.getNewFormScript();
 			
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
 
 			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, 0l, templateName,
-					templateNo, description, serviceContext);
+					templateNo, description, newFormScript, serviceContext);
 
 			DossierTemplateInputModel result = DossierTemplateUtils.mappingForTemplatePOST(dossierTemplate);
 
@@ -190,13 +191,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			String templateName = HtmlUtil.escape(input.getTemplateName());
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String description = HtmlUtil.escape(input.getDescription());
+			String newFormScript = input.getNewFormScript();
 
 //			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
 //			}
 
 			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, id, templateName,
-					templateNo, description, serviceContext);
+					templateNo, description, newFormScript, serviceContext);
 
 			DossierTemplateDetailModel result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
 

@@ -256,7 +256,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 						DossierTemplateLocalServiceUtil.updateDossierTemplateDB(user.getUserId(), groupId,
 								"TT130_BVHTTDL",
 								"Cấp phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh thuộc thẩm quyền của Bộ Văn hóa, Thể thao và Du lịch",
-								"", serviceContext);
+								"", StringPool.BLANK, serviceContext);
 					}
 					
 					DossierPart part1 = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo, "TP1");

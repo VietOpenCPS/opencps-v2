@@ -59,6 +59,7 @@ public class DossierTemplateIndexer extends BaseIndexer<DossierTemplate> {
 		document.addTextSortable(DossierTemplateTerm.TEMPLATE_NAME, object.getTemplateName());
 		document.addTextSortable(DossierTemplateTerm.TEMPLATE_NO, object.getTemplateNo());
 		document.addTextSortable(DossierTemplateTerm.DESCRIPTION, object.getDescription());
+		document.addTextSortable(DossierTemplateTerm.NEWFORM_SCRIPT, object.getNewFormScript());
 
 		return document;
 
