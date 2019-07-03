@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
@@ -47,6 +49,7 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
+import org.opencps.statistic.rest.util.DossierStatisticConstants;
 //import org.opencps.systemmgt.constants.SchedulerRecordTerm;
 //import org.opencps.systemmgt.model.SchedulerRecord;
 //import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
@@ -80,8 +83,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		try {
 			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+			List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(DossierStatisticConstants.STATISTIC_PROTOCOL);
+			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-	
+			
 			List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();

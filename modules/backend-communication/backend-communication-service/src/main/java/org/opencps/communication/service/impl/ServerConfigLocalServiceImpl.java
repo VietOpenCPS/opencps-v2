@@ -317,4 +317,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 	}
 
+	public List<ServerConfig> getByProtocol(String protocol) {
+		return serverConfigPersistence.findByP(protocol);
+	}	
 }

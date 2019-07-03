@@ -36,4 +36,5 @@ public interface DossierStatisticConstants {
 	long STATISTIC_USER_ID = -1;
 	String STATISTIC_USER_NAME = "ADM";
 
+	String STATISTIC_PROTOCOL = "STATISTIC";
 }
