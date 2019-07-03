@@ -63,7 +63,9 @@ public class OpencpsCallServiceDomainRestFacadeImpl extends OpencpsRestFacade<Se
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
 			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			System.out.println("HTTP BASIC: " + "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));
 		}
+		System.out.println("END POINT: " + endPoint);
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, ServiceDomainResponse.class).getBody();
 
 	}
