@@ -1,6 +1,8 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
@@ -83,7 +86,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		long startTime = System.currentTimeMillis();
 		try {
 			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
-			List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(DossierStatisticConstants.STATISTIC_PROTOCOL);
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			
@@ -101,6 +103,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 			for (Group site : sites) {
+				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 				
 	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 	
@@ -110,7 +113,20 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				sdPayload.setGroupId(site.getGroupId());
 				sdPayload.setStart(QueryUtil.ALL_POS);
 				sdPayload.setEnd(QueryUtil.ALL_POS);
-				
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					if (lstScs.size() >= 1) {
+						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
+							sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
+						}						
+					}
+				}
 				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
 				ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
 				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
@@ -120,6 +136,20 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				payload.setGroupId(site.getGroupId());
 				payload.setStart(QueryUtil.ALL_POS);
 				payload.setEnd(QueryUtil.ALL_POS);
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					if (lstScs.size() >= 1) {
+						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					}
+				}
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
 				int yearCurrent = LocalDate.now().getYear();

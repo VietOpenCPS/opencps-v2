@@ -1007,7 +1007,8 @@ public class OpenCPSConverter {
 			model.setPassword(dossier.getPassword());
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
-		if (Validator.isNotNull(dossier.getServerNo())) {
+		if (Validator.isNotNull(dossier.getServerNo())
+				&& dossier.getServerNo().contains(";")) {
 			model.setServerNo(dossier.getServerNo());
 		}
 		return model;

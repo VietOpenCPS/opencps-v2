@@ -3,6 +3,7 @@ package org.opencps.statistic.rest.facade;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Base64;
 import java.util.HashMap;
 
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
@@ -38,7 +39,7 @@ public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAge
 		
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 		
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.GOV_AGENCY_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.GOV_AGENCY_ENDPOINT);
 		
 		//LOG.info(endPoint);
 		
@@ -58,6 +59,9 @@ public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAge
 //		else {
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
+		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
+			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+		}
 		
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GovAgencyResponse.class).getBody();
 

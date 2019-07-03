@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.HashMap;
 
 import org.opencps.statistic.rest.dto.GetDossierRequest;
@@ -113,7 +114,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		//System.out.println("year: "+urlQueryParams.get("year"));
 		//System.out.println("top: "+urlQueryParams.get("top"));
 		
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.DOSSIER_ENDPOINT);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 		// LOG.info(url);
@@ -129,6 +130,10 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 //		else {
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
+		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
+			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+		}
+
 		return (GetDossierResponse) this
 				.executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetDossierResponse.class).getBody();
 	}

@@ -64,7 +64,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 
 		urlQueryParams.add("className", "dossier");
 
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		//System.out.println("endPoint: "+endPoint);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
