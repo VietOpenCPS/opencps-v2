@@ -198,6 +198,7 @@ import javax.xml.bind.annotation.XmlType;
     "delegateDistrictName",
     "delegateWardCode",
     "delegateWardName",
+    "metaData"
 })
 public class DossierDataModel {
 
@@ -301,6 +302,7 @@ public class DossierDataModel {
     protected String delegateTelNo;
     protected String delegateWardCode;
     protected String delegateWardName;
+    protected String metaData;
 
 	public String getStatusReg() {
 		return statusReg;
@@ -2110,6 +2112,14 @@ public class DossierDataModel {
 
 	public void setDelegateWardName(String delegateWardName) {
 		this.delegateWardName = delegateWardName;
+	}
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
 	}
 
 }

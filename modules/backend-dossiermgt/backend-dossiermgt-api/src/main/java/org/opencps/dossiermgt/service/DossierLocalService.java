@@ -553,8 +553,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityName, String delegateDistrictCode,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
-		String dossierName, String processNo, ServiceContext context)
-		throws PortalException;
+		String dossierName, String processNo, String metaData,
+		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,

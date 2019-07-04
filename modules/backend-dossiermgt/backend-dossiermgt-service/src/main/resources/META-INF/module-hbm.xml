@@ -296,6 +296,7 @@
 		<property name="dossierName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="originDossierNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="groupDossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">

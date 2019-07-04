@@ -1473,6 +1473,21 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setGroupDossierId(long groupDossierId);
 
+	/**
+	 * Returns the meta data of this dossier.
+	 *
+	 * @return the meta data of this dossier
+	 */
+	@AutoEscape
+	public String getMetaData();
+
+	/**
+	 * Sets the meta data of this dossier.
+	 *
+	 * @param metaData the meta data of this dossier
+	 */
+	public void setMetaData(String metaData);
+
 	@Override
 	public boolean isNew();
 

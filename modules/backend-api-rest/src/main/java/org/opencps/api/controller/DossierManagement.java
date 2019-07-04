@@ -40,6 +40,8 @@ import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
+import org.opencps.api.serviceprocess.model.ServiceProcessResultsModel;
+import org.opencps.api.serviceprocess.model.ServiceProcessSearchModel;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
@@ -934,4 +936,18 @@ public interface DossierManagement {
 	public Response addFullDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierMultipleInputModel input);
+
+	@GET
+	@Path("/dueDate")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get dueDate by ServiceProcess", response = ServiceProcessResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServiceProcesses", response = ServiceProcessResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getDueDateByProcess(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam DossierSearchModel query);
 }

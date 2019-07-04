@@ -815,6 +815,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.DOSSIER_NAME)) {
 			model.setDossierName(jsonObj.getString(DossierTerm.DOSSIER_NAME));
 		}
+		if (jsonObj.has(DossierTerm.META_DATA)) {
+			model.setMetaData(jsonObj.getString(DossierTerm.META_DATA));
+		}
 		
 		return model;
 	}	
@@ -958,6 +961,10 @@ public class OpenCPSConverter {
 			model.setServerNo(jsonObj.getString(DossierTerm.SERVER_NO));
 		}
 		*/
+		if (jsonObj.has(DossierTerm.META_DATA)) {
+			model.setMetaData(jsonObj.getString(DossierTerm.META_DATA));
+		}
+
 		return model;
 	}	
 	

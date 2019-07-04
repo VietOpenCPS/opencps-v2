@@ -113,7 +113,8 @@ import javax.xml.bind.annotation.XmlType;
 	"dossiers",
 	"payment",
 	"importing",
-	"serverNo"
+	"serverNo",
+	"metaData"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -243,6 +244,9 @@ public class DossierInputModel {
 	@FormParam(value = "serverNo")
 	private String serverNo;
 	
+	@FormParam(value = "metaData")
+	private String metaData;
+
 	public Integer getViaPostal() {
 		return viaPostal;
 	}
@@ -1090,4 +1094,12 @@ public class DossierInputModel {
 	public void setServerNo(String serverNo) {
 		this.serverNo = serverNo;
 	}
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
+	}
+
 }
