@@ -2786,7 +2786,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			else {
 				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 					dossierAction.getPrimaryKey(), actionCode, ac.getActionName(), actionUser, actionNote,
-					syncType, ac.getInfoType(), payloadObject.toJSONString(), serviceProcess != null ? serviceProcess.getServerNo() : StringPool.BLANK, state);
+					syncType, ac.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
 			}
 		}
 		

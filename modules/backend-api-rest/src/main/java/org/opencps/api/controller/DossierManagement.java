@@ -42,7 +42,6 @@ import org.opencps.api.processsequence.model.DossierSequenceResultModel;
 import org.opencps.api.reassign.model.ReAssign;
 import org.opencps.api.reassign.model.ToUsers;
 import org.opencps.api.serviceprocess.model.ServiceProcessResultsModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessSearchModel;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
