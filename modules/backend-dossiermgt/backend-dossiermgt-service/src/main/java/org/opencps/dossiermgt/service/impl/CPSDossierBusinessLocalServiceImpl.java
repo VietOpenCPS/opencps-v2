@@ -3446,9 +3446,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			
+			/*
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
+			*/
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			return dossierLocalService.updateDossier(dossier);
 
@@ -3730,11 +3732,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
-			
+			/*
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
-			
+			*/
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
 			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
