@@ -4,12 +4,12 @@ package org.opencps.kernel.message.email;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.kernel.service.MailServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.Validator;
 
 import org.opencps.kernel.message.MBMessageEntry;
 import org.osgi.service.component.annotations.Component;
@@ -32,8 +32,14 @@ public class MBEmailSenderImpl implements MBEmailSender {
 			mailMessage.setTo(messageEntry.getToAddress());
 			mailMessage.setBody(messageEntry.getEmailBody());
 			mailMessage.setHTMLFormat(true);
-			mailMessage.setFrom(messageEntry.getFrom());
-
+			String smtpUser = PrefsPropsUtil.getString(
+					PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
+					StringPool.BLANK);
+			if (Validator.isNotNull(smtpUser)) {
+				messageEntry.getFrom().setAddress(smtpUser);				
+				mailMessage.setFrom(messageEntry.getFrom());
+				System.out.println("SEND EMAIL FROM: " + messageEntry.getFrom());
+			}
 			MailServiceUtil.sendEmail(mailMessage);
 
 		}
