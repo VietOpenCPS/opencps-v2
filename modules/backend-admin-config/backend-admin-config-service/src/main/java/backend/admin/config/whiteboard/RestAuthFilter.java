@@ -16,6 +16,8 @@ package backend.admin.config.whiteboard;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
@@ -51,16 +53,17 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/o/v1/opencps/users/*"
 		,
 		"url-pattern=/o/v1/opencps/login",
-		//"url-pattern=/o/rest/v2/*",
-		//"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
-
+	Log _log = LogFactoryUtil.getLog(RestAuthFilter.class);
+	
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid" };
+	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", /*"/o/rest/v2/dossiers",*/ "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	
 	public final static String[] DISALLOW_METHODS = new String[] { "OPTIONS" };
@@ -70,7 +73,7 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-//		System.out.println("RestAuthFilter.doFilter()");
+		_log.debug("RestAuthFilter.doFilter()");
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(P_AUTH);

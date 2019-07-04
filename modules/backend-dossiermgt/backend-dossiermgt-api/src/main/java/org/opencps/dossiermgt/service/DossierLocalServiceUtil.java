@@ -312,6 +312,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByDN_AN(dossierNo, applicantIdNo);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
+		long groupId, long groupDossierId) {
+		return getService().findByG_GDID(groupId, groupDossierId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(
 		long groupId, int start, int end) {
 		return getService().findByGID(groupId, start, end);

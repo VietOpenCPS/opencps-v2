@@ -1268,6 +1268,7 @@ public class DossierUtils {
 		model.setPostalWardCode(input.getPostalWardCode());
 		model.setPostalWardName(input.getPostalWardName());
 		model.setOriginDossierNo(input.getOriginDossierNo());
+		model.setServerNo(input.getServerNo());
 		model.setMetaData(input.getMetaData());
 
 		return model;

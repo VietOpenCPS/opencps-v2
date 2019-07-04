@@ -1,6 +1,8 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -28,6 +30,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
@@ -40,6 +45,7 @@ import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
+import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -81,12 +87,27 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 			}
 	
 			for (Group site : sites) {
+				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 	
 				GetPersonRequest payload = new GetPersonRequest();
 				
 				payload.setGroupId(site.getGroupId());
 				payload.setStart(QueryUtil.ALL_POS);
 				payload.setEnd(QueryUtil.ALL_POS);
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					if (lstScs.size() >= 1) {
+						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
+							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
+						}						
+					}
+				}
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
 				int yearCurrent = LocalDate.now().getYear();

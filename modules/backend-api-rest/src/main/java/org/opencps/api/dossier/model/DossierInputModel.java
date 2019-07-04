@@ -43,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="contactEmail" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="serverNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -112,6 +113,7 @@ import javax.xml.bind.annotation.XmlType;
 	"dossiers",
 	"payment",
 	"importing",
+	"serverNo",
 	"metaData"
 })
 @XmlRootElement(name = "DossierInputModel")
@@ -239,6 +241,9 @@ public class DossierInputModel {
 	private String dossiers;
 	@FormParam(value = "payment")
 	private String payment;
+	@FormParam(value = "serverNo")
+	private String serverNo;
+	
 	@FormParam(value = "metaData")
 	private String metaData;
 
@@ -1082,6 +1087,13 @@ public class DossierInputModel {
 		this.payment = payment;
 	}
 
+	public String getServerNo() {
+		return serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		this.serverNo = serverNo;
+	}
 	public String getMetaData() {
 		return metaData;
 	}

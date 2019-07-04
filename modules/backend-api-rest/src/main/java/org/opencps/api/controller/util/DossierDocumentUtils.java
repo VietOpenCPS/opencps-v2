@@ -29,6 +29,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
@@ -273,7 +274,38 @@ public class DossierDocumentUtils {
 			jsonData.put(PaymentFileTerm.SERVICE_AMOUNT, payment.getServiceAmount());
 			jsonData.put(PaymentFileTerm.SHIP_AMOUNT, payment.getShipAmount());
 		}
-
+		
+		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
+			JSONArray groupDossierArr = JSONFactoryUtil.createJSONArray();
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossier.getDossierId());
+			for (Dossier d : lstDossiers) {
+				JSONObject dObject = JSONFactoryUtil.createJSONObject();
+				dObject.put(DossierTerm.DOSSIER_NO, d.getDossierNo());
+				dObject.put(DossierTerm.APPLICANT_NAME, d.getApplicantName());
+				dObject.put(DossierTerm.ADDRESS, d.getAddress());
+				dObject.put(DossierTerm.CONTACT_TEL_NO, d.getContactTelNo());
+				dObject.put(DossierTerm.CONTACT_EMAIL, d.getContactEmail());
+				dObject.put(DossierTerm.CONTACT_NAME, d.getContactName());
+				dObject.put(DossierTerm.DELEGATE_ADDRESS, d.getDelegateAddress());
+				dObject.put(DossierTerm.SERVICE_CODE, d.getServiceCode());
+				dObject.put(DossierTerm.SERVICE_NAME, d.getServiceName());
+				dObject.put(DossierTerm.SAMPLE_COUNT, d.getSampleCount());
+				dObject.put(DossierTerm.DURATION_UNIT, d.getDurationUnit());
+				dObject.put(DossierTerm.DURATION_COUNT, d.getDurationCount());
+				dObject.put(DossierTerm.SECRET_KEY, d.getPassword());
+				dObject.put(DossierTerm.RECEIVE_DATE,
+						APIDateTimeUtils.convertDateToString(d.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+				dObject.put(DossierTerm.DELEGATE_NAME, d.getDelegateName());
+				dObject.put(DossierTerm.DELEGATE_EMAIL, d.getDelegateEmail());
+				dObject.put(DossierTerm.DELEGATE_TELNO, d.getDelegateTelNo());
+				dObject.put(DossierTerm.DOSSIER_NAME, d.getDossierName());
+				dObject.put(DossierTerm.VIA_POSTAL, d.getViaPostal());
+				dObject.put(DossierTerm.POSTAL_ADDRESS, d.getPostalAddress());
+	
+				groupDossierArr.put(dObject);
+			}
+			jsonData.put(DossierTerm.GROUP_DOSSIERS, groupDossierArr);
+		}
 		return jsonData;
 	}
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentUtils.class);

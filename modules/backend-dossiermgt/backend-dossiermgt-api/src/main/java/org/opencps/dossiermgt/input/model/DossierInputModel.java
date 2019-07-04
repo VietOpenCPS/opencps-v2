@@ -69,6 +69,7 @@ public class DossierInputModel {
 	private String dossierFileArr;
 	private String dossiers;
 	private String payment;
+	private String serverNo;
 	private String metaData;
 
 	public Integer getViaPostal() {
@@ -903,6 +904,14 @@ public class DossierInputModel {
 		this.payment = payment;
 	}
 
+	public String getServerNo() {
+		return serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		this.serverNo = serverNo;
+	}
+	
 	public String getMetaData() {
 		return metaData;
 	}

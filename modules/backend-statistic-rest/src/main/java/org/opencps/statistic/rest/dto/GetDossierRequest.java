@@ -305,5 +305,4 @@ public class GetDossierRequest extends CommonRequest {
 	private String dossierNo;
 	private String domain;
 	private String onlineStatistic;
-
 }

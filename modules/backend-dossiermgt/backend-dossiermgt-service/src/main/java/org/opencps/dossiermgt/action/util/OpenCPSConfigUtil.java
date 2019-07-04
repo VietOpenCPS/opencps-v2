@@ -16,6 +16,7 @@ public class OpenCPSConfigUtil {
 	public static final int DEFAULT_READ_TIMEOUT = 3 * 60000;
 	public static final String OPENCPS_REST_CONNECTION_TIMEOUT = "org.opencps.rest.connection.timeout";
 	public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
+	public static final String OPENCPS_STATISTIC_MUTIPLE_SERVER = "org.opencps.statistic.multiple.server.enable";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -60,4 +61,10 @@ public class OpenCPSConfigUtil {
 	    return Validator.isNotNull(readTimeoutProperty) ? Integer.parseInt(readTimeoutProperty) : DEFAULT_READ_TIMEOUT;
 		
 	}
+	
+	public static boolean isStatisticMultipleServerEnable() {
+		String statisticMultipleServerEnable = PropsUtil.get(OPENCPS_STATISTIC_MUTIPLE_SERVER);
+		return Validator.isNotNull(statisticMultipleServerEnable) ? Boolean.parseBoolean(statisticMultipleServerEnable) : false;
+	}
+	
 }
