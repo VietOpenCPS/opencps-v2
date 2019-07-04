@@ -83,7 +83,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		TABLE_COLUMNS_MAP.put("visited", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(75) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,primary key (dossierActionId, userId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,primary key (dossierActionId, userId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionuser";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.id.dossierActionId DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId DESC";

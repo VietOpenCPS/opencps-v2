@@ -553,6 +553,7 @@
 		<column name="dossierName" type ="String" />
 		<column name="originDossierNo" type="String" />
 		<column name="groupDossierId" type="long" />
+		<column name="metaData" type="String" />
 		
 		<!-- Order -->
 		

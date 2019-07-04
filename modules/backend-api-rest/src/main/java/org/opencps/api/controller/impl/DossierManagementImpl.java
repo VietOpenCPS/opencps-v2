@@ -38,6 +38,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -850,6 +851,14 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DossierTerm.SERVICE_NAME, serviceName);
 			params.put(PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			//
+			if (Validator.isNotNull(query.getAssigned())) {
+				if (query.getAssigned() == 1) {
+					params.put(DossierTerm.ASSIGNED_USER_ID, userId + "_assigned");
+				} else if(query.getAssigned() == 0){
+					params.put(DossierTerm.ASSIGNED_USER_ID, userId + "_follow");
+				}
+			}
 			
 			//Process follow StepCode
 			if (Validator.isNotNull(strStatusStep)) {
@@ -4947,6 +4956,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, DossierMultipleInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
+			_log.info("dossiers: "+input.getDossiers());
 			if (Validator.isNotNull(input.getDossiers())) {
 				JSONObject dossiers = JSONFactoryUtil.createJSONObject(input.getDossiers());
 				String applicantName = Validator.isNotNull(dossiers.getString(DossierTerm.APPLICANT_NAME))
@@ -4955,6 +4965,9 @@ public class DossierManagementImpl implements DossierManagement {
 				String delegateName = Validator.isNotNull(dossiers.getString(DossierTerm.DELEGATE_NAME))
 						? dossiers.getString(DossierTerm.DELEGATE_NAME)
 						: StringPool.BLANK;
+				
+				_log.info("applicantName: "+applicantName);
+				_log.info("delegateName: "+delegateName);
 				String[] statusArr = {StringPool.BLANK, DossierTerm.DOSSIER_STATUS_NEW};
 				List<Dossier> dossierList = DossierLocalServiceUtil.getByGID_GC_SC_DTN_DS_APP_DELEGATE(groupId,
 						input.getGovAgencyCode(), input.getServiceCode(), input.getDossierTemplateNo(), statusArr,
@@ -4980,6 +4993,51 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getDueDateByProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DossierSearchModel query) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+			JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+			String strReceiveDate = query.getFromReceiveDate();
+			Date receiveDate = null;
+			if (Validator.isNotNull(strReceiveDate)) {
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
+				receiveDate = sdf.parse(strReceiveDate);
+			} else {
+				receiveDate = new Date();
+			}
+			//
+			jsonData.put(DossierTerm.RECEIVE_DATE, receiveDate != null ? receiveDate.getTime() : (new Date()).getTime());
+			Date dueDate = null;
+			ProcessOption option = getProcessOption(query.getService(), query.getAgency(),
+					query.getTemplate(), groupId);
+			if (option != null) {
+				ServiceProcess process = ServiceProcessLocalServiceUtil
+						.fetchServiceProcess(option.getServiceProcessId());
+				if (process != null) {
+					Double durationCount = process.getDurationCount();
+					if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+						dueDate = HolidayUtils.getDueDate(receiveDate, process.getDurationCount(),
+								process.getDurationUnit(), groupId);
+						jsonData.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0);
+					} else {
+						jsonData.put(DossierTerm.DUE_DATE, 0);
+					}
+				} else {
+					jsonData.put(DossierTerm.DUE_DATE, 0);
+				}
+			} else {
+				jsonData.put(DossierTerm.DUE_DATE, 0);
+			}
+			return Response.status(HttpStatus.SC_OK).entity(JSONFactoryUtil.looseSerialize(jsonData)).build();
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity("No Content").build();
 	}
 
 }

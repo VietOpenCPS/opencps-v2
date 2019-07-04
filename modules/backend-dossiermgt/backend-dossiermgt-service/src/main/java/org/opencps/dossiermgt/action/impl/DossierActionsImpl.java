@@ -4186,13 +4186,13 @@ public class DossierActionsImpl implements DossierActions {
 							List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(dossier.getApplicantIdNo());
 							Applicant foundApplicant = (applicants.isEmpty() ? null : applicants.get(0));
 
-//							for (Applicant applicant : applicants) {
-//								long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
-//								if (toUserId != 0) {
-//									foundApplicant = applicant;
-//									break;
-//								}
-//							}
+							for (Applicant applicant : applicants) {
+								long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+								if (toUserId != 0) {
+									foundApplicant = applicant;
+									break;
+								}
+							}
 							if (foundApplicant != null) {
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
@@ -6968,7 +6968,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
-			int durationUnit, String dossierName, String processNo, ServiceContext context) throws PortalException {
+			int durationUnit, String dossierName, String processNo, String metaData, ServiceContext context) throws PortalException {
 
 		Date appIdDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -6990,7 +6990,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,
 					lockState, delegateName, delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-					delegateWardName, durationCount, durationUnit, dossierName, processNo, context);
+					delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, context);
 
 		} catch (Exception e) {
 			_log.debug(e);

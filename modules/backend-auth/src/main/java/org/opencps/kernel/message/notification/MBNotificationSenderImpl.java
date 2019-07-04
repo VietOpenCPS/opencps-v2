@@ -1,14 +1,6 @@
 
 package org.opencps.kernel.message.notification;
 
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-
-import org.opencps.kernel.message.MBMessageEntry;
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -19,6 +11,15 @@ import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.List;
+
+import org.opencps.kernel.message.MBMessageEntry;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author trungnt
@@ -44,9 +45,9 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		payloadJSON.put("data", messageEntry.getData());
 		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
 
-		if (messageEntry.getToUserIds() != null) {
+		List<Long> toUserList = messageEntry.getToUserIds();
+		if (toUserList != null && toUserList.size() > 0) {
 			for (Long toUserId : messageEntry.getToUserIds()) {
-
 				try {
 					/*
 					 * userNotificationEventLocalService.
@@ -58,22 +59,20 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 
 					// _log.info(serviceContext[0].getScopeGroupId());
 
-					UserNotificationEvent event =
-						UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
-							toUserId, portletId, (new Date()).getTime(),
-							UserNotificationDeliveryConstants.TYPE_WEBSITE,
-							toUserId, payloadJSON.toString(), false,
-							serviceContext[0]);
+					if (toUserId > 0) {
+						UserNotificationEvent event = UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+								toUserId, portletId, (new Date()).getTime(),
+								UserNotificationDeliveryConstants.TYPE_WEBSITE, toUserId, payloadJSON.toString(), false,
+								serviceContext[0]);
 
-					event.setDelivered(false);
+						event.setDelivered(false);
 
-					UserNotificationEventLocalServiceUtil.updateUserNotificationEvent(
-						event);
+						UserNotificationEventLocalServiceUtil.updateUserNotificationEvent(
+							event);
+					}
 				}
 				catch (Exception e) {
 					_log.debug(e);
-					// _log.error(e);
-					// continue;
 				}
 
 				// send to zalo

@@ -45,7 +45,8 @@ import javax.xml.bind.annotation.XmlType;
     "start",
     "end",
     "sort",
-    "order"
+    "order",
+    "receiveDate"
 })
 @XmlRootElement(name = "ServiceProcessSearchModel")
 public class ServiceProcessSearchModel {
@@ -59,6 +60,8 @@ public class ServiceProcessSearchModel {
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;
+	@QueryParam(value = "receiveDate")
+    protected String receiveDate;
 
     /**
      * Gets the value of the keyword property.
@@ -179,5 +182,13 @@ public class ServiceProcessSearchModel {
     public void setOrder(String value) {
         this.order = value;
     }
+
+	public String getReceiveDate() {
+		return receiveDate;
+	}
+
+	public void setReceiveDate(String receiveDate) {
+		this.receiveDate = receiveDate;
+	}
 
 }

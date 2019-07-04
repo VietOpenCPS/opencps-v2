@@ -492,4 +492,5 @@ public interface ServiceProcessManagement {
 	public Response getServiceProcessMermaidGraph(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") String id);
+
 }
