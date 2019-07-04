@@ -120,6 +120,8 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentConfigTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
@@ -3842,11 +3844,22 @@ public class CPSDossierBusinessLocalServiceImpl
 			String delegateAddress = jsonDossier.getString(DossierTerm.DELEGATE_ADDRESS);
 			//TODO
 			String delegateCityCode = jsonDossier.getString(DossierTerm.DELEGATE_CITYCODE);
-			String delegateCityName = jsonDossier.getString(DossierTerm.DELEGATE_CITYNAME);
+			String delegateCityName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateCityCode)) {
+				delegateCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateCityCode);
+			}
+
 			String delegateDistrictCode = jsonDossier.getString(DossierTerm.DELEGATE_DISTRICTCODE);
-			String delegateDistrictName = jsonDossier.getString(DossierTerm.DELEGATE_DISTRICTNAME);
+			String delegateDistrictName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateDistrictCode)) {
+				delegateDistrictName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateDistrictCode);
+			}
+
 			String delegateWardCode = jsonDossier.getString(DossierTerm.DELEGATE_WARDCODE);
-			String delegateWardName = jsonDossier.getString(DossierTerm.DELEGATE_WARDNAME);
+			String delegateWardName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateWardCode)) {
+				delegateWardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateWardCode);
+			}
 			//
 			String dossierName = Validator.isNotNull(jsonDossier.getString(DossierTerm.DOSSIER_NAME)) ? jsonDossier.getString(DossierTerm.DOSSIER_NAME) : serviceName;
 			
@@ -4008,7 +4021,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 				}
 			}
-			
+
 			/**Create dossier user */
 			List<DossierUser> lstDus = dossierUserLocalService.findByDID(dossier.getDossierId());
 			List<ServiceProcessRole> lstProcessRoles = serviceProcessRoleLocalService.findByS_P_ID(process.getServiceProcessId());
@@ -4739,7 +4752,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
-					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), serviceContext);
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), serviceContext);
 				
 				return dossier;
 			}

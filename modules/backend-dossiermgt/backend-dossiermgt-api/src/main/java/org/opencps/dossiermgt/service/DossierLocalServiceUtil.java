@@ -760,7 +760,7 @@ public class DossierLocalServiceUtil {
 		String delegateCityName, String delegateDistrictCode,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
-		String dossierName, String processNo,
+		String dossierName, String processNo, String metaData,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -780,7 +780,7 @@ public class DossierLocalServiceUtil {
 			delegateAddress, delegateCityCode, delegateCityName,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, durationCount, durationUnit, dossierName,
-			processNo, context);
+			processNo, metaData, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier publishImportDossier(

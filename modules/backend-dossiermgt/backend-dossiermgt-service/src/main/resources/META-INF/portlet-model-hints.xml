@@ -151,7 +151,7 @@
 		</field>
 		<field name="docSync" type="int" />
 		<field name="govAgencies" type="String">
-		<hint name="max-length">255</hint>
+			<hint name="max-length">255</hint>
 		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableTypeRole">
@@ -340,6 +340,9 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="groupDossierId" type="long" />
+		<field name="metaData" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -710,8 +713,8 @@
 		<field name="templateNo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="newFormScript" type="String" >
-		<hint name="max-length">65535</hint>
+		<field name="newFormScript" type="String">
+			<hint name="max-length">65535</hint>
 		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">

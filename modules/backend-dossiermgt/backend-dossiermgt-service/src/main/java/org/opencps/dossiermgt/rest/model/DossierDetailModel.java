@@ -167,7 +167,8 @@ import javax.xml.bind.annotation.XmlType;
     "originality",
     "dossierActionId",
     "dossierName",
-    "originDossierNo"
+    "originDossierNo",
+    "metaData"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -239,6 +240,7 @@ public class DossierDetailModel {
     protected Integer dossierActionId;
     protected String dossierName;
     protected String originDossierNo;
+    protected String metaData;
 
     /**
      * Gets the value of the dossierId property.
@@ -1847,5 +1849,13 @@ public class DossierDetailModel {
     public void setOriginDossierNo(String value) {
         this.originDossierNo = value;
     }
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
+	}
 
 }

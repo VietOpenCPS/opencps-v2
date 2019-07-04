@@ -77,6 +77,7 @@ public class DossierPublishModel {
 	protected Integer durationUnit;
 	protected Integer sampleCount;
 	protected String dossierName;
+	protected String metaData;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -1053,4 +1054,17 @@ public class DossierPublishModel {
 	public void setDossierName(String value) {
 		this.dossierName = value;
 	}
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
+	}
+
+	public void setCorrecttingDate(String correcttingDate) {
+		this.correcttingDate = correcttingDate;
+	}
+
 }

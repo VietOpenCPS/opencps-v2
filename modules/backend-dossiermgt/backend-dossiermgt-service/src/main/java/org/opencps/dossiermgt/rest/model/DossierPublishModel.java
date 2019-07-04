@@ -185,7 +185,8 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "durationCount",
     "durationUnit",
-    "sampleCount"
+    "sampleCount",
+    "metaData"
 })
 @XmlRootElement(name = "DossierPublishModel")
 public class DossierPublishModel {
@@ -266,6 +267,7 @@ public class DossierPublishModel {
     protected Double durationCount;
     protected Integer durationUnit;
     protected Long sampleCount;
+    protected String metaData;
 
     /**
      * Gets the value of the dossierId property.
@@ -2090,5 +2092,13 @@ public class DossierPublishModel {
     public void setSampleCount(Long value) {
         this.sampleCount = value;
     }
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
+	}
 
 }

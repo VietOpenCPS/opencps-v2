@@ -111,7 +111,8 @@ import javax.xml.bind.annotation.XmlType;
 	"dossierFileArr",
 	"dossiers",
 	"payment",
-	"importing"
+	"importing",
+	"metaData"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -238,6 +239,8 @@ public class DossierInputModel {
 	private String dossiers;
 	@FormParam(value = "payment")
 	private String payment;
+	@FormParam(value = "metaData")
+	private String metaData;
 
 	public Integer getViaPostal() {
 		return viaPostal;
@@ -1077,6 +1080,14 @@ public class DossierInputModel {
 
 	public void setPayment(String payment) {
 		this.payment = payment;
+	}
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
 	}
 
 }

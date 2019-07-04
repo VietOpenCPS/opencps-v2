@@ -116,7 +116,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		TABLE_COLUMNS_MAP.put("govAgencies", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(75) null,formScript VARCHAR(75) null,formReport VARCHAR(75) null,formScriptFileId LONG,formReportFileId LONG,codePattern VARCHAR(75) null,dataConfig VARCHAR(75) null,tableConfig VARCHAR(75) null,counter LONG,mappingData VARCHAR(75) null,docSync INTEGER,govAgencies VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(75) null,typeName VARCHAR(575) null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,codePattern VARCHAR(275) null,dataConfig TEXT null,tableConfig TEXT null,counter LONG,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverabletype";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableType.deliverableTypeId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverabletype.deliverableTypeId ASC";

@@ -134,7 +134,8 @@ public class OneMinute extends BaseMessageListener {
 						 * 
 						 * If Send SMS error, continue until expiredDate 
 						 * */
-						if (resultSendSMS.getResult() <= 0) {
+						//_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
+						if (resultSendSMS.getResult() > 0) {
 							NotificationQueueBusinessFactoryUtil.delete(
 									notificationQueue.getNotificationQueueId(),
 									serviceContext);
