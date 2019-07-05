@@ -32,4 +32,9 @@ dependencies {
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-service")
 	
+	compileOnly project(":modules:backend-feedback:backend-feedback-service")
+	compileOnly project(":modules:backend-feedback:backend-feedback-api")	
+	
+	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
+	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")	
 }
