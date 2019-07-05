@@ -434,8 +434,23 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					GetterUtil.getBoolean("true")) };
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(DossierTerm.YEAR, year);
-			params.put(DossierTerm.MONTH, month);
+			if (payload.isCalculate()) {
+				params.put(DossierTerm.YEAR, year);
+				params.put(DossierTerm.MONTH, month);				
+			}
+			else {
+				if (Validator.isNotNull(payload.getGovAgencyCode())) {
+					params.put("agency", payload.getGovAgencyCode());
+				}
+				if (Validator.isNotNull(payload.getFromStatisticDate())) {
+					params.put("fromStatisticDate", payload.getFromStatisticDate());
+				}
+				if (Validator.isNotNull(payload.getToStatisticDate())) {
+					params.put("toStatisticDate", payload.getToStatisticDate());
+				}				
+			}
+			params.put("top", "statistic");
+			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			long companyId = company.getCompanyId(); 
 			
