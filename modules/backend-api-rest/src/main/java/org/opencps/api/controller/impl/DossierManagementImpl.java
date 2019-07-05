@@ -5022,4 +5022,12 @@ public class DossierManagementImpl implements DossierManagement {
 		return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity("No Content").build();
 	}
 
+	@Override
+	public Response getOptionDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		return Response.status(HttpStatus.SC_OK)
+				.header("Allow", "")
+                .build();
+	}
+
 }
