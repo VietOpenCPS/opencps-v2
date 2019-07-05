@@ -42,7 +42,7 @@ public class ZaloMapSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setUId(model.getUId());
 		soapModel.setTelNo(model.getTelNo());
-		soapModel.setOAId(model.getOAId());
+		soapModel.setZaloOAId(model.getZaloOAId());
 		soapModel.setIsFollowed(model.getIsFollowed());
 		soapModel.setPayload(model.getPayload());
 
@@ -169,12 +169,12 @@ public class ZaloMapSoap implements Serializable {
 		_telNo = telNo;
 	}
 
-	public String getOAId() {
-		return _oAId;
+	public String getZaloOAId() {
+		return _zaloOAId;
 	}
 
-	public void setOAId(String oAId) {
-		_oAId = oAId;
+	public void setZaloOAId(String zaloOAId) {
+		_zaloOAId = zaloOAId;
 	}
 
 	public int getIsFollowed() {
@@ -202,7 +202,7 @@ public class ZaloMapSoap implements Serializable {
 	private Date _modifiedDate;
 	private String _uId;
 	private String _telNo;
-	private String _oAId;
+	private String _zaloOAId;
 	private int _isFollowed;
 	private String _payload;
 }

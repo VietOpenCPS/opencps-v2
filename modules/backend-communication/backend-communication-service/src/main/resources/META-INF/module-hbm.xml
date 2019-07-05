@@ -95,7 +95,7 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="uId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="oAId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="zaloOAId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="isFollowed" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>

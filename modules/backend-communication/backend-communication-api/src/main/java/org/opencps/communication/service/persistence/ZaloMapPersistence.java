@@ -256,134 +256,136 @@ public interface ZaloMapPersistence extends BasePersistence<ZaloMap> {
 	public int countByF_GID(long groupId);
 
 	/**
-	* Returns all the zalo maps where oAId = &#63;.
+	* Returns all the zalo maps where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @return the matching zalo maps
 	*/
-	public java.util.List<ZaloMap> findByF_OAId(String oAId);
+	public java.util.List<ZaloMap> findByF_ZALO_OAID(String zaloOAId);
 
 	/**
-	* Returns a range of all the zalo maps where oAId = &#63;.
+	* Returns a range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @return the range of matching zalo maps
 	*/
-	public java.util.List<ZaloMap> findByF_OAId(String oAId, int start, int end);
+	public java.util.List<ZaloMap> findByF_ZALO_OAID(String zaloOAId,
+		int start, int end);
 
 	/**
-	* Returns an ordered range of all the zalo maps where oAId = &#63;.
+	* Returns an ordered range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching zalo maps
 	*/
-	public java.util.List<ZaloMap> findByF_OAId(String oAId, int start,
-		int end,
+	public java.util.List<ZaloMap> findByF_ZALO_OAID(String zaloOAId,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator);
 
 	/**
-	* Returns an ordered range of all the zalo maps where oAId = &#63;.
+	* Returns an ordered range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching zalo maps
 	*/
-	public java.util.List<ZaloMap> findByF_OAId(String oAId, int start,
-		int end,
+	public java.util.List<ZaloMap> findByF_ZALO_OAID(String zaloOAId,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator,
 		boolean retrieveFromCache);
 
 	/**
-	* Returns the first zalo map in the ordered set where oAId = &#63;.
+	* Returns the first zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching zalo map
 	* @throws NoSuchZaloMapException if a matching zalo map could not be found
 	*/
-	public ZaloMap findByF_OAId_First(String oAId,
+	public ZaloMap findByF_ZALO_OAID_First(String zaloOAId,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator)
 		throws NoSuchZaloMapException;
 
 	/**
-	* Returns the first zalo map in the ordered set where oAId = &#63;.
+	* Returns the first zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching zalo map, or <code>null</code> if a matching zalo map could not be found
 	*/
-	public ZaloMap fetchByF_OAId_First(String oAId,
+	public ZaloMap fetchByF_ZALO_OAID_First(String zaloOAId,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator);
 
 	/**
-	* Returns the last zalo map in the ordered set where oAId = &#63;.
+	* Returns the last zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching zalo map
 	* @throws NoSuchZaloMapException if a matching zalo map could not be found
 	*/
-	public ZaloMap findByF_OAId_Last(String oAId,
+	public ZaloMap findByF_ZALO_OAID_Last(String zaloOAId,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator)
 		throws NoSuchZaloMapException;
 
 	/**
-	* Returns the last zalo map in the ordered set where oAId = &#63;.
+	* Returns the last zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching zalo map, or <code>null</code> if a matching zalo map could not be found
 	*/
-	public ZaloMap fetchByF_OAId_Last(String oAId,
+	public ZaloMap fetchByF_ZALO_OAID_Last(String zaloOAId,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator);
 
 	/**
-	* Returns the zalo maps before and after the current zalo map in the ordered set where oAId = &#63;.
+	* Returns the zalo maps before and after the current zalo map in the ordered set where zaloOAId = &#63;.
 	*
 	* @param zaloMapId the primary key of the current zalo map
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next zalo map
 	* @throws NoSuchZaloMapException if a zalo map with the primary key could not be found
 	*/
-	public ZaloMap[] findByF_OAId_PrevAndNext(long zaloMapId, String oAId,
+	public ZaloMap[] findByF_ZALO_OAID_PrevAndNext(long zaloMapId,
+		String zaloOAId,
 		com.liferay.portal.kernel.util.OrderByComparator<ZaloMap> orderByComparator)
 		throws NoSuchZaloMapException;
 
 	/**
-	* Removes all the zalo maps where oAId = &#63; from the database.
+	* Removes all the zalo maps where zaloOAId = &#63; from the database.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	*/
-	public void removeByF_OAId(String oAId);
+	public void removeByF_ZALO_OAID(String zaloOAId);
 
 	/**
-	* Returns the number of zalo maps where oAId = &#63;.
+	* Returns the number of zalo maps where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @return the number of matching zalo maps
 	*/
-	public int countByF_OAId(String oAId);
+	public int countByF_ZALO_OAID(String zaloOAId);
 
 	/**
 	* Caches the zalo map in the entity cache if it is enabled.

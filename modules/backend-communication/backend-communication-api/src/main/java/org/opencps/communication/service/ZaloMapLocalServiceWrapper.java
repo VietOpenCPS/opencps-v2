@@ -44,6 +44,17 @@ public class ZaloMapLocalServiceWrapper implements ZaloMapLocalService,
 		return _zaloMapLocalService.addZaloMap(zaloMap);
 	}
 
+	@Override
+	public org.opencps.communication.model.ZaloMap adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _zaloMapLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.communication.model.ZaloMap adminProcessDelete(Long id) {
+		return _zaloMapLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new zalo map with the primary key. Does not add the zalo map to the database.
 	*
@@ -185,6 +196,28 @@ public class ZaloMapLocalServiceWrapper implements ZaloMapLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.communication.model.ZaloMap> getByGroupId(
+		long groupId) {
+		return _zaloMapLocalService.getByGroupId(groupId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.communication.model.ZaloMap> getByOAId(
+		String oAId) {
+		return _zaloMapLocalService.getByOAId(oAId);
+	}
+
+	@Override
+	public org.opencps.communication.model.ZaloMap getByTelNo(String telNo) {
+		return _zaloMapLocalService.getByTelNo(telNo);
+	}
+
+	@Override
+	public org.opencps.communication.model.ZaloMap getByUId(String uId) {
+		return _zaloMapLocalService.getByUId(uId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _zaloMapLocalService.getIndexableActionableDynamicQuery();
 	}
@@ -244,6 +277,21 @@ public class ZaloMapLocalServiceWrapper implements ZaloMapLocalService,
 	@Override
 	public int getZaloMapsCount() {
 		return _zaloMapLocalService.getZaloMapsCount();
+	}
+
+	@Override
+	public org.opencps.communication.model.ZaloMap removeByPrimaryKey(
+		long zaloMapId) {
+		return _zaloMapLocalService.removeByPrimaryKey(zaloMapId);
+	}
+
+	@Override
+	public org.opencps.communication.model.ZaloMap updateZaloMap(
+		long zaloMapId, long groupId, String uId, String telNo, String oAId,
+		int isFollow, String payload)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _zaloMapLocalService.updateZaloMap(zaloMapId, groupId, uId,
+			telNo, oAId, isFollow, payload);
 	}
 
 	/**

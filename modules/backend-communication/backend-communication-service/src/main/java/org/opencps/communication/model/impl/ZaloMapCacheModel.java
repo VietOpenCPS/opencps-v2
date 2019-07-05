@@ -84,8 +84,8 @@ public class ZaloMapCacheModel implements CacheModel<ZaloMap>, Externalizable {
 		sb.append(uId);
 		sb.append(", telNo=");
 		sb.append(telNo);
-		sb.append(", oAId=");
-		sb.append(oAId);
+		sb.append(", zaloOAId=");
+		sb.append(zaloOAId);
 		sb.append(", isFollowed=");
 		sb.append(isFollowed);
 		sb.append(", payload=");
@@ -139,11 +139,11 @@ public class ZaloMapCacheModel implements CacheModel<ZaloMap>, Externalizable {
 			zaloMapImpl.setTelNo(telNo);
 		}
 
-		if (oAId == null) {
-			zaloMapImpl.setOAId("");
+		if (zaloOAId == null) {
+			zaloMapImpl.setZaloOAId("");
 		}
 		else {
-			zaloMapImpl.setOAId(oAId);
+			zaloMapImpl.setZaloOAId(zaloOAId);
 		}
 
 		zaloMapImpl.setIsFollowed(isFollowed);
@@ -174,7 +174,7 @@ public class ZaloMapCacheModel implements CacheModel<ZaloMap>, Externalizable {
 		modifiedDate = objectInput.readLong();
 		uId = objectInput.readUTF();
 		telNo = objectInput.readUTF();
-		oAId = objectInput.readUTF();
+		zaloOAId = objectInput.readUTF();
 
 		isFollowed = objectInput.readInt();
 		payload = objectInput.readUTF();
@@ -215,11 +215,11 @@ public class ZaloMapCacheModel implements CacheModel<ZaloMap>, Externalizable {
 			objectOutput.writeUTF(telNo);
 		}
 
-		if (oAId == null) {
+		if (zaloOAId == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(oAId);
+			objectOutput.writeUTF(zaloOAId);
 		}
 
 		objectOutput.writeInt(isFollowed);
@@ -241,7 +241,7 @@ public class ZaloMapCacheModel implements CacheModel<ZaloMap>, Externalizable {
 	public long modifiedDate;
 	public String uId;
 	public String telNo;
-	public String oAId;
+	public String zaloOAId;
 	public int isFollowed;
 	public String payload;
 }

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -69,6 +70,12 @@ public interface ZaloMapLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ZaloMap addZaloMap(ZaloMap zaloMap);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ZaloMap adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public ZaloMap adminProcessDelete(Long id);
 
 	/**
 	* Creates a new zalo map with the primary key. Does not add the zalo map to the database.
@@ -171,6 +178,18 @@ public interface ZaloMapLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ZaloMap> getByGroupId(long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ZaloMap> getByOAId(String oAId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ZaloMap getByTelNo(String telNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ZaloMap getByUId(String uId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -216,6 +235,14 @@ public interface ZaloMapLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getZaloMapsCount();
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ZaloMap removeByPrimaryKey(long zaloMapId);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ZaloMap updateZaloMap(long zaloMapId, long groupId, String uId,
+		String telNo, String oAId, int isFollow, String payload)
+		throws PortalException;
 
 	/**
 	* Updates the zalo map in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

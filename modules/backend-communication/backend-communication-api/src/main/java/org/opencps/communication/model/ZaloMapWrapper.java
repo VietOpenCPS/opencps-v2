@@ -66,7 +66,7 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("uId", getUId());
 		attributes.put("telNo", getTelNo());
-		attributes.put("oAId", getOAId());
+		attributes.put("zaloOAId", getZaloOAId());
 		attributes.put("isFollowed", getIsFollowed());
 		attributes.put("payload", getPayload());
 
@@ -129,10 +129,10 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 			setTelNo(telNo);
 		}
 
-		String oAId = (String)attributes.get("oAId");
+		String zaloOAId = (String)attributes.get("zaloOAId");
 
-		if (oAId != null) {
-			setOAId(oAId);
+		if (zaloOAId != null) {
+			setZaloOAId(zaloOAId);
 		}
 
 		Integer isFollowed = (Integer)attributes.get("isFollowed");
@@ -211,16 +211,6 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 	@Override
 	public Date getModifiedDate() {
 		return _zaloMap.getModifiedDate();
-	}
-
-	/**
-	* Returns the o a ID of this zalo map.
-	*
-	* @return the o a ID of this zalo map
-	*/
-	@Override
-	public String getOAId() {
-		return _zaloMap.getOAId();
 	}
 
 	/**
@@ -306,6 +296,16 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 	@Override
 	public long getZaloMapId() {
 		return _zaloMap.getZaloMapId();
+	}
+
+	/**
+	* Returns the zalo oa ID of this zalo map.
+	*
+	* @return the zalo oa ID of this zalo map
+	*/
+	@Override
+	public String getZaloOAId() {
+		return _zaloMap.getZaloOAId();
 	}
 
 	@Override
@@ -410,16 +410,6 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 	}
 
 	/**
-	* Sets the o a ID of this zalo map.
-	*
-	* @param oAId the o a ID of this zalo map
-	*/
-	@Override
-	public void setOAId(String oAId) {
-		_zaloMap.setOAId(oAId);
-	}
-
-	/**
 	* Sets the payload of this zalo map.
 	*
 	* @param payload the payload of this zalo map
@@ -502,6 +492,16 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 	@Override
 	public void setZaloMapId(long zaloMapId) {
 		_zaloMap.setZaloMapId(zaloMapId);
+	}
+
+	/**
+	* Sets the zalo oa ID of this zalo map.
+	*
+	* @param zaloOAId the zalo oa ID of this zalo map
+	*/
+	@Override
+	public void setZaloOAId(String zaloOAId) {
+		_zaloMap.setZaloOAId(zaloOAId);
 	}
 
 	@Override

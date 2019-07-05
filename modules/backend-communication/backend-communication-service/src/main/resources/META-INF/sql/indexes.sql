@@ -18,6 +18,6 @@ create index IX_14749CB0 on opencps_serverconfig (serverName[$COLUMN_LENGTH:4096
 create index IX_97108B26 on opencps_serverconfig (serverNo[$COLUMN_LENGTH:255$]);
 
 create index IX_8EDCA035 on opencps_zalomap (groupId);
-create index IX_31584F76 on opencps_zalomap (oAId[$COLUMN_LENGTH:75$]);
 create index IX_41837937 on opencps_zalomap (telNo[$COLUMN_LENGTH:75$]);
 create index IX_F16BEBAB on opencps_zalomap (uId[$COLUMN_LENGTH:75$]);
+create index IX_E7CA6F80 on opencps_zalomap (zaloOAId[$COLUMN_LENGTH:75$]);

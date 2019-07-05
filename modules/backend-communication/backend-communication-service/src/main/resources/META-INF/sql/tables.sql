@@ -80,7 +80,7 @@ create table opencps_zalomap (
 	modifiedDate DATE null,
 	uId VARCHAR(75) null,
 	telNo VARCHAR(75) null,
-	oAId VARCHAR(75) null,
+	zaloOAId VARCHAR(75) null,
 	isFollowed INTEGER,
 	payload VARCHAR(75) null
 );

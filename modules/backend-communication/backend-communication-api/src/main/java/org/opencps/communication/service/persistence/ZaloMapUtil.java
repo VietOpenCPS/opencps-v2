@@ -373,155 +373,163 @@ public class ZaloMapUtil {
 	}
 
 	/**
-	* Returns all the zalo maps where oAId = &#63;.
+	* Returns all the zalo maps where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @return the matching zalo maps
 	*/
-	public static List<ZaloMap> findByF_OAId(String oAId) {
-		return getPersistence().findByF_OAId(oAId);
+	public static List<ZaloMap> findByF_ZALO_OAID(String zaloOAId) {
+		return getPersistence().findByF_ZALO_OAID(zaloOAId);
 	}
 
 	/**
-	* Returns a range of all the zalo maps where oAId = &#63;.
+	* Returns a range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @return the range of matching zalo maps
 	*/
-	public static List<ZaloMap> findByF_OAId(String oAId, int start, int end) {
-		return getPersistence().findByF_OAId(oAId, start, end);
+	public static List<ZaloMap> findByF_ZALO_OAID(String zaloOAId, int start,
+		int end) {
+		return getPersistence().findByF_ZALO_OAID(zaloOAId, start, end);
 	}
 
 	/**
-	* Returns an ordered range of all the zalo maps where oAId = &#63;.
+	* Returns an ordered range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching zalo maps
 	*/
-	public static List<ZaloMap> findByF_OAId(String oAId, int start, int end,
-		OrderByComparator<ZaloMap> orderByComparator) {
-		return getPersistence().findByF_OAId(oAId, start, end, orderByComparator);
+	public static List<ZaloMap> findByF_ZALO_OAID(String zaloOAId, int start,
+		int end, OrderByComparator<ZaloMap> orderByComparator) {
+		return getPersistence()
+				   .findByF_ZALO_OAID(zaloOAId, start, end, orderByComparator);
 	}
 
 	/**
-	* Returns an ordered range of all the zalo maps where oAId = &#63;.
+	* Returns an ordered range of all the zalo maps where zaloOAId = &#63;.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ZaloMapModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param start the lower bound of the range of zalo maps
 	* @param end the upper bound of the range of zalo maps (not inclusive)
 	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the ordered range of matching zalo maps
 	*/
-	public static List<ZaloMap> findByF_OAId(String oAId, int start, int end,
-		OrderByComparator<ZaloMap> orderByComparator, boolean retrieveFromCache) {
+	public static List<ZaloMap> findByF_ZALO_OAID(String zaloOAId, int start,
+		int end, OrderByComparator<ZaloMap> orderByComparator,
+		boolean retrieveFromCache) {
 		return getPersistence()
-				   .findByF_OAId(oAId, start, end, orderByComparator,
+				   .findByF_ZALO_OAID(zaloOAId, start, end, orderByComparator,
 			retrieveFromCache);
 	}
 
 	/**
-	* Returns the first zalo map in the ordered set where oAId = &#63;.
+	* Returns the first zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching zalo map
 	* @throws NoSuchZaloMapException if a matching zalo map could not be found
 	*/
-	public static ZaloMap findByF_OAId_First(String oAId,
+	public static ZaloMap findByF_ZALO_OAID_First(String zaloOAId,
 		OrderByComparator<ZaloMap> orderByComparator)
 		throws org.opencps.communication.exception.NoSuchZaloMapException {
-		return getPersistence().findByF_OAId_First(oAId, orderByComparator);
+		return getPersistence()
+				   .findByF_ZALO_OAID_First(zaloOAId, orderByComparator);
 	}
 
 	/**
-	* Returns the first zalo map in the ordered set where oAId = &#63;.
+	* Returns the first zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the first matching zalo map, or <code>null</code> if a matching zalo map could not be found
 	*/
-	public static ZaloMap fetchByF_OAId_First(String oAId,
+	public static ZaloMap fetchByF_ZALO_OAID_First(String zaloOAId,
 		OrderByComparator<ZaloMap> orderByComparator) {
-		return getPersistence().fetchByF_OAId_First(oAId, orderByComparator);
+		return getPersistence()
+				   .fetchByF_ZALO_OAID_First(zaloOAId, orderByComparator);
 	}
 
 	/**
-	* Returns the last zalo map in the ordered set where oAId = &#63;.
+	* Returns the last zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching zalo map
 	* @throws NoSuchZaloMapException if a matching zalo map could not be found
 	*/
-	public static ZaloMap findByF_OAId_Last(String oAId,
+	public static ZaloMap findByF_ZALO_OAID_Last(String zaloOAId,
 		OrderByComparator<ZaloMap> orderByComparator)
 		throws org.opencps.communication.exception.NoSuchZaloMapException {
-		return getPersistence().findByF_OAId_Last(oAId, orderByComparator);
+		return getPersistence()
+				   .findByF_ZALO_OAID_Last(zaloOAId, orderByComparator);
 	}
 
 	/**
-	* Returns the last zalo map in the ordered set where oAId = &#63;.
+	* Returns the last zalo map in the ordered set where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the last matching zalo map, or <code>null</code> if a matching zalo map could not be found
 	*/
-	public static ZaloMap fetchByF_OAId_Last(String oAId,
+	public static ZaloMap fetchByF_ZALO_OAID_Last(String zaloOAId,
 		OrderByComparator<ZaloMap> orderByComparator) {
-		return getPersistence().fetchByF_OAId_Last(oAId, orderByComparator);
+		return getPersistence()
+				   .fetchByF_ZALO_OAID_Last(zaloOAId, orderByComparator);
 	}
 
 	/**
-	* Returns the zalo maps before and after the current zalo map in the ordered set where oAId = &#63;.
+	* Returns the zalo maps before and after the current zalo map in the ordered set where zaloOAId = &#63;.
 	*
 	* @param zaloMapId the primary key of the current zalo map
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next zalo map
 	* @throws NoSuchZaloMapException if a zalo map with the primary key could not be found
 	*/
-	public static ZaloMap[] findByF_OAId_PrevAndNext(long zaloMapId,
-		String oAId, OrderByComparator<ZaloMap> orderByComparator)
+	public static ZaloMap[] findByF_ZALO_OAID_PrevAndNext(long zaloMapId,
+		String zaloOAId, OrderByComparator<ZaloMap> orderByComparator)
 		throws org.opencps.communication.exception.NoSuchZaloMapException {
 		return getPersistence()
-				   .findByF_OAId_PrevAndNext(zaloMapId, oAId, orderByComparator);
+				   .findByF_ZALO_OAID_PrevAndNext(zaloMapId, zaloOAId,
+			orderByComparator);
 	}
 
 	/**
-	* Removes all the zalo maps where oAId = &#63; from the database.
+	* Removes all the zalo maps where zaloOAId = &#63; from the database.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	*/
-	public static void removeByF_OAId(String oAId) {
-		getPersistence().removeByF_OAId(oAId);
+	public static void removeByF_ZALO_OAID(String zaloOAId) {
+		getPersistence().removeByF_ZALO_OAID(zaloOAId);
 	}
 
 	/**
-	* Returns the number of zalo maps where oAId = &#63;.
+	* Returns the number of zalo maps where zaloOAId = &#63;.
 	*
-	* @param oAId the o a ID
+	* @param zaloOAId the zalo oa ID
 	* @return the number of matching zalo maps
 	*/
-	public static int countByF_OAId(String oAId) {
-		return getPersistence().countByF_OAId(oAId);
+	public static int countByF_ZALO_OAID(String zaloOAId) {
+		return getPersistence().countByF_ZALO_OAID(zaloOAId);
 	}
 
 	/**

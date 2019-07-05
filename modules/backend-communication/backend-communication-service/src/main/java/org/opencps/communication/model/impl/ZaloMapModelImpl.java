@@ -75,7 +75,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "uId", Types.VARCHAR },
 			{ "telNo", Types.VARCHAR },
-			{ "oAId", Types.VARCHAR },
+			{ "zaloOAId", Types.VARCHAR },
 			{ "isFollowed", Types.INTEGER },
 			{ "payload", Types.VARCHAR }
 		};
@@ -91,12 +91,12 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("uId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("oAId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("zaloOAId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("isFollowed", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,oAId VARCHAR(75) null,isFollowed INTEGER,payload VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,zaloOAId VARCHAR(75) null,isFollowed INTEGER,payload VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_zalomap";
 	public static final String ORDER_BY_JPQL = " ORDER BY zaloMap.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_zalomap.createDate ASC";
@@ -113,9 +113,9 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 				"value.object.column.bitmask.enabled.org.opencps.communication.model.ZaloMap"),
 			true);
 	public static final long GROUPID_COLUMN_BITMASK = 1L;
-	public static final long OAID_COLUMN_BITMASK = 2L;
-	public static final long TELNO_COLUMN_BITMASK = 4L;
-	public static final long UID_COLUMN_BITMASK = 8L;
+	public static final long TELNO_COLUMN_BITMASK = 2L;
+	public static final long UID_COLUMN_BITMASK = 4L;
+	public static final long ZALOOAID_COLUMN_BITMASK = 8L;
 	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.communication.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.communication.model.ZaloMap"));
@@ -166,7 +166,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("uId", getUId());
 		attributes.put("telNo", getTelNo());
-		attributes.put("oAId", getOAId());
+		attributes.put("zaloOAId", getZaloOAId());
 		attributes.put("isFollowed", getIsFollowed());
 		attributes.put("payload", getPayload());
 
@@ -232,10 +232,10 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 			setTelNo(telNo);
 		}
 
-		String oAId = (String)attributes.get("oAId");
+		String zaloOAId = (String)attributes.get("zaloOAId");
 
-		if (oAId != null) {
-			setOAId(oAId);
+		if (zaloOAId != null) {
+			setZaloOAId(zaloOAId);
 		}
 
 		Integer isFollowed = (Integer)attributes.get("isFollowed");
@@ -413,28 +413,28 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 	}
 
 	@Override
-	public String getOAId() {
-		if (_oAId == null) {
+	public String getZaloOAId() {
+		if (_zaloOAId == null) {
 			return "";
 		}
 		else {
-			return _oAId;
+			return _zaloOAId;
 		}
 	}
 
 	@Override
-	public void setOAId(String oAId) {
-		_columnBitmask |= OAID_COLUMN_BITMASK;
+	public void setZaloOAId(String zaloOAId) {
+		_columnBitmask |= ZALOOAID_COLUMN_BITMASK;
 
-		if (_originalOAId == null) {
-			_originalOAId = _oAId;
+		if (_originalZaloOAId == null) {
+			_originalZaloOAId = _zaloOAId;
 		}
 
-		_oAId = oAId;
+		_zaloOAId = zaloOAId;
 	}
 
-	public String getOriginalOAId() {
-		return GetterUtil.getString(_originalOAId);
+	public String getOriginalZaloOAId() {
+		return GetterUtil.getString(_originalZaloOAId);
 	}
 
 	@Override
@@ -502,7 +502,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		zaloMapImpl.setModifiedDate(getModifiedDate());
 		zaloMapImpl.setUId(getUId());
 		zaloMapImpl.setTelNo(getTelNo());
-		zaloMapImpl.setOAId(getOAId());
+		zaloMapImpl.setZaloOAId(getZaloOAId());
 		zaloMapImpl.setIsFollowed(getIsFollowed());
 		zaloMapImpl.setPayload(getPayload());
 
@@ -575,7 +575,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 
 		zaloMapModelImpl._originalTelNo = zaloMapModelImpl._telNo;
 
-		zaloMapModelImpl._originalOAId = zaloMapModelImpl._oAId;
+		zaloMapModelImpl._originalZaloOAId = zaloMapModelImpl._zaloOAId;
 
 		zaloMapModelImpl._columnBitmask = 0;
 	}
@@ -634,12 +634,12 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 			zaloMapCacheModel.telNo = null;
 		}
 
-		zaloMapCacheModel.oAId = getOAId();
+		zaloMapCacheModel.zaloOAId = getZaloOAId();
 
-		String oAId = zaloMapCacheModel.oAId;
+		String zaloOAId = zaloMapCacheModel.zaloOAId;
 
-		if ((oAId != null) && (oAId.length() == 0)) {
-			zaloMapCacheModel.oAId = null;
+		if ((zaloOAId != null) && (zaloOAId.length() == 0)) {
+			zaloMapCacheModel.zaloOAId = null;
 		}
 
 		zaloMapCacheModel.isFollowed = getIsFollowed();
@@ -677,8 +677,8 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		sb.append(getUId());
 		sb.append(", telNo=");
 		sb.append(getTelNo());
-		sb.append(", oAId=");
-		sb.append(getOAId());
+		sb.append(", zaloOAId=");
+		sb.append(getZaloOAId());
 		sb.append(", isFollowed=");
 		sb.append(getIsFollowed());
 		sb.append(", payload=");
@@ -733,8 +733,8 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		sb.append(getTelNo());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>oAId</column-name><column-value><![CDATA[");
-		sb.append(getOAId());
+			"<column><column-name>zaloOAId</column-name><column-value><![CDATA[");
+		sb.append(getZaloOAId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>isFollowed</column-name><column-value><![CDATA[");
@@ -768,8 +768,8 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 	private String _originalUId;
 	private String _telNo;
 	private String _originalTelNo;
-	private String _oAId;
-	private String _originalOAId;
+	private String _zaloOAId;
+	private String _originalZaloOAId;
 	private int _isFollowed;
 	private String _payload;
 	private long _columnBitmask;

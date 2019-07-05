@@ -54,6 +54,16 @@ public class ZaloMapLocalServiceUtil {
 		return getService().addZaloMap(zaloMap);
 	}
 
+	public static org.opencps.communication.model.ZaloMap adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.communication.model.ZaloMap adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new zalo map with the primary key. Does not add the zalo map to the database.
 	*
@@ -185,6 +195,25 @@ public class ZaloMapLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.communication.model.ZaloMap> getByGroupId(
+		long groupId) {
+		return getService().getByGroupId(groupId);
+	}
+
+	public static java.util.List<org.opencps.communication.model.ZaloMap> getByOAId(
+		String oAId) {
+		return getService().getByOAId(oAId);
+	}
+
+	public static org.opencps.communication.model.ZaloMap getByTelNo(
+		String telNo) {
+		return getService().getByTelNo(telNo);
+	}
+
+	public static org.opencps.communication.model.ZaloMap getByUId(String uId) {
+		return getService().getByUId(uId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
 	}
@@ -240,6 +269,20 @@ public class ZaloMapLocalServiceUtil {
 	*/
 	public static int getZaloMapsCount() {
 		return getService().getZaloMapsCount();
+	}
+
+	public static org.opencps.communication.model.ZaloMap removeByPrimaryKey(
+		long zaloMapId) {
+		return getService().removeByPrimaryKey(zaloMapId);
+	}
+
+	public static org.opencps.communication.model.ZaloMap updateZaloMap(
+		long zaloMapId, long groupId, String uId, String telNo, String oAId,
+		int isFollow, String payload)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateZaloMap(zaloMapId, groupId, uId, telNo, oAId,
+			isFollow, payload);
 	}
 
 	/**

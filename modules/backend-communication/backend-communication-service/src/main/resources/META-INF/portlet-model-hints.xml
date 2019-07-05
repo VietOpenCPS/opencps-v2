@@ -125,7 +125,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="uId" type="String" />
 		<field name="telNo" type="String" />
-		<field name="oAId" type="String" />
+		<field name="zaloOAId" type="String" />
 		<field name="isFollowed" type="int" />
 		<field name="payload" type="String" />
 	</model>

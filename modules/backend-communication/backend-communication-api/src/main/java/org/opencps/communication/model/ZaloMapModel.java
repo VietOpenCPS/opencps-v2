@@ -223,19 +223,19 @@ public interface ZaloMapModel extends BaseModel<ZaloMap>, GroupedModel,
 	public void setTelNo(String telNo);
 
 	/**
-	 * Returns the o a ID of this zalo map.
+	 * Returns the zalo oa ID of this zalo map.
 	 *
-	 * @return the o a ID of this zalo map
+	 * @return the zalo oa ID of this zalo map
 	 */
 	@AutoEscape
-	public String getOAId();
+	public String getZaloOAId();
 
 	/**
-	 * Sets the o a ID of this zalo map.
+	 * Sets the zalo oa ID of this zalo map.
 	 *
-	 * @param oAId the o a ID of this zalo map
+	 * @param zaloOAId the zalo oa ID of this zalo map
 	 */
-	public void setOAId(String oAId);
+	public void setZaloOAId(String zaloOAId);
 
 	/**
 	 * Returns the is followed of this zalo map.
