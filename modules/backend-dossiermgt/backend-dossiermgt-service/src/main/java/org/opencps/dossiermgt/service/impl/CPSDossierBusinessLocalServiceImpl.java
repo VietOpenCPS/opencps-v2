@@ -3345,6 +3345,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierName(serviceName);
 			}
 			dossier.setSampleCount(sampleCount);
+			if (Validator.isNotNull(input.getMetaData()))
+				dossier.setMetaData(input.getMetaData());
+
 			updateDelegateApplicant(dossier, input);
 			// Process update dossierNo
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -3598,6 +3601,8 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setRegisterBookCode(registerBookCode);
 				dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
+				if (Validator.isNotNull(input.getMetaData()))
+					dossier.setMetaData(input.getMetaData());
 
 				updateDelegateApplicant(dossier, input);
 				
@@ -3919,6 +3924,21 @@ public class CPSDossierBusinessLocalServiceImpl
 			//
 			String dossierName = Validator.isNotNull(jsonDossier.getString(DossierTerm.DOSSIER_NAME)) ? jsonDossier.getString(DossierTerm.DOSSIER_NAME) : serviceName;
 			
+			String strReceiveDate = jsonDossier.getString(DossierTerm.RECEIVE_DATE);
+			Date receiveDate = null;
+			SimpleDateFormat sf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
+			if (Validator.isNotNull(strReceiveDate)) {
+				receiveDate = sf.parse(strReceiveDate);
+			}
+
+			String strDueDate = jsonDossier.getString(DossierTerm.DUE_DATE);
+			Date dueDate = null;
+			if (Validator.isNotNull(strDueDate)) {
+				dueDate = sf.parse(strDueDate);
+			}
+			
+			String metaData = jsonDossier.getString(DossierTerm.META_DATA);
+
 			dossier = dossierLocalService.initMultipleDossier(groupId, 0l, referenceUid, counter,
 					input.getServiceCode(), serviceName, input.getGovAgencyCode(), govAgencyName, applicantName,
 					applicantIdType, applicantIdNo, appIdDate, address, contactName, contactTelNo, contactEmail,
@@ -3929,6 +3949,13 @@ public class CPSDossierBusinessLocalServiceImpl
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
 					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, service, process,
 					option, serviceContext);
+
+				if (receiveDate != null)
+					dossier.setReceiveDate(receiveDate);
+				if (dueDate != null)
+					dossier.setDueDate(dueDate);
+				if (Validator.isNotNull(metaData))
+					dossier.setMetaData(metaData);
 
 			//TODO: Process then
 			//updateDelegateApplicant(dossier, input);
@@ -4031,10 +4058,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (Validator.isNotNull(input.getDossierFileArr())) {
 				JSONArray dossierFileArr = JSONFactoryUtil.createJSONArray(input.getDossierFileArr());
 				if (dossierFileArr != null && dossierFileArr.length() > 0) {
-					
+
 					for (int j = 0; j < dossierFileArr.length(); j++) {
 						JSONObject jsonFile = dossierFileArr.getJSONObject(j);
+						System.out.println("jsonFile: "+jsonFile.getString("eform"));
 						boolean eform = Boolean.valueOf(jsonFile.getString("eform"));
+						System.out.println("eform"+eform);
 						if (eform) {
 							//EFORM
 							_log.info("In dossier file create by eform");

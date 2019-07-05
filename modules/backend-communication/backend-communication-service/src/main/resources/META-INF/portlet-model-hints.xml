@@ -115,4 +115,18 @@
 		</field>
 		<field name="lastSync" type="Date" />
 	</model>
+	<model name="org.opencps.communication.model.ZaloMap">
+		<field name="zaloMapId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="uId" type="String" />
+		<field name="telNo" type="String" />
+		<field name="oAId" type="String" />
+		<field name="isFollowed" type="int" />
+		<field name="payload" type="String" />
+	</model>
 </model-hints>
