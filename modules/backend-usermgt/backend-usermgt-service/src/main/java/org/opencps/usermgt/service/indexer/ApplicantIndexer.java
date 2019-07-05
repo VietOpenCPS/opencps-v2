@@ -75,11 +75,12 @@ public class ApplicantIndexer extends BaseIndexer<Applicant> {
 		document.addTextSortable(ApplicantTerm.WARDNAME, object.getWardName());
 
 		try {
-			User user = UserLocalServiceUtil.getUser(object.getMappingUserId());
-			document.addTextSortable(ApplicantTerm.LOCK, Boolean.toString(user.getLockout()));
+			if (object.getMappingUserId() > 0) {
+				User user = UserLocalServiceUtil.getUser(object.getMappingUserId());
+				document.addTextSortable(ApplicantTerm.LOCK, Boolean.toString(user.getLockout()));
+			}
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 		}
 
 		return document;

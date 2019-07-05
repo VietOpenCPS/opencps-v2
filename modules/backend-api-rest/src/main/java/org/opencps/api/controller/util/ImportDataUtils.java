@@ -7,6 +7,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -46,10 +49,16 @@ public class ImportDataUtils {
 
 			CellType typeDate = currentRow.getCell(4).getCellType();
 			if (typeDate == CellType.STRING) {
-				jsonData.put(DossierTerm.APPLICANT_ID_DATE,
-						Validator.isNotNull(currentRow.getCell(4).getStringCellValue())
-								? currentRow.getCell(4).getStringCellValue().trim()
-								: StringPool.BLANK);
+				
+				String strAppIdDate = Validator.isNotNull(currentRow.getCell(4).getStringCellValue())
+						? currentRow.getCell(4).getStringCellValue().trim() : StringPool.BLANK;
+				Date appIdDate = null;
+				if (Validator.isNotNull(strAppIdDate)) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					appIdDate = sdf.parse(strAppIdDate);
+				}
+				//
+				jsonData.put(DossierTerm.APPLICANT_ID_DATE, appIdDate != null ? appIdDate.getTime() : 0);
 				
 			} else if(typeDate == CellType.NUMERIC){
 				jsonData.put(DossierTerm.APPLICANT_ID_DATE, currentRow.getCell(4).getNumericCellValue());

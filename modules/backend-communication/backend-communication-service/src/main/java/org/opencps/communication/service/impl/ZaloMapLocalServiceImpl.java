@@ -14,6 +14,7 @@
 
 package org.opencps.communication.service.impl;
 
+import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
 import java.util.Date;
 import java.util.List;
 
@@ -32,24 +33,11 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-/**
- * The implementation of the zalo map local service. <p> All custom service
- * methods should be put in this class. Whenever methods are added, rerun
- * ServiceBuilder to copy their definitions into the
- * {@link org.opencps.communication.service.ZaloMapLocalService} interface. <p>
- * This is a local service. Methods of this service will not have security
- * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM. </p>
- *
- * @author khoavd
- * @see ZaloMapLocalServiceBaseImpl
- * @see org.opencps.communication.service.ZaloMapLocalServiceUtil
- */
 public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 	/*
-	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
-	 * {@link org.opencps.communication.service.ZaloMapLocalServiceUtil} to
-	 * access the zalo map local service.
+	 * NOTE FOR DEVELOPERS:
+	 *
+	 * Never reference this class directly. Always use {@link org.opencps.communication.service.ZaloMapLocalServiceUtil} to access the zalo map local service.
 	 */
 
 	private static Log _log =
