@@ -27,16 +27,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
-compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
-	compileOnly group: "javax.portlet", name: "portlet-api", version: "2.0"
-	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
-	compileOnly group: "jstl", name: "jstl", version: "1.2"
-	compileOnly group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
-	
- * */
-
-/**
  * @author thanhnv
  */
 @Component(immediate = true, property = {
