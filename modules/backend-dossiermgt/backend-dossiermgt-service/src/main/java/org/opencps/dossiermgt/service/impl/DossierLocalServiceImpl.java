@@ -5059,6 +5059,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
@@ -5183,6 +5184,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(dossierName)) {
 			dossier.setDossierName(dossierName);
 		}
+		System.out.println("Dossier name: " + dossierName);
 		dossier.setBriefNote(briefNote);
 		//Process add status of group dossier
 		if (dossier.getOriginality() == 9) {
