@@ -74,6 +74,19 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 
+		// MetaData
+		String metaData = dossier.getMetaData();
+		if (Validator.isNotNull(metaData)) {
+			try {
+				JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+				//
+				jsonData.put("newFormTemplate", Boolean.valueOf(jsonMetaData.getString("newFormTemplate")));
+				jsonData.put("dossierFileCustom", jsonMetaData.getString("dossierFileCustom"));
+			} catch (JSONException e) {
+				_log.debug(e);
+			}
+		}
+		
 		try {
 			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(), dossier.getServiceCode());
 			jsonData.put(ServiceInfoTerm.FEE_TEXT, service != null ? service.getFeeText() : StringPool.BLANK);

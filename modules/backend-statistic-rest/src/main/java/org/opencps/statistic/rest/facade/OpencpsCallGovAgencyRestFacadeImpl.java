@@ -1,6 +1,5 @@
 package org.opencps.statistic.rest.facade;
 
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Base64;
@@ -10,9 +9,6 @@ import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;

@@ -78,9 +78,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			Dossier groupDossier = null;
+			if (dossier != null && dossier.getGroupDossierId() != 0) {
+				groupDossier = DossierLocalServiceUtil.fetchDossier(dossier.getGroupDossierId());
+			}
 			if (dossier != null && dossier.getOriginDossierId() == 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
-				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
+				if (groupDossier != null) {
 					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
 					dossierFiles.addAll(groupFiles);
 				}
@@ -89,7 +93,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 			else if (dossier != null && dossier.getOriginDossierId() != 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getOriginDossierId());
-				if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
+				if (groupDossier != null) {
 					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
 					dossierFiles.addAll(groupFiles);
 				}
