@@ -43,6 +43,11 @@ public class SendSMSTerm {
 	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
 	public static final String ZALO_UID = "ZALO_UID";
 	public static final String UID = "uid";
+	public static final String ZALO_TEL_NO_EXITS_MES = "telNoExitsMes";
+	public static final String ZALO_TEL_NO_NOT_EXITS_MES = "telNoNotExitsMes";
+	public static final String ZALO_ADD_TEL_NO_SUCCESS_MES = "addTelNoSuccessMes";
+	public static final String ZALO_UPDATE_TEL_NO_SUCCESS_MES = "updateTelNoSuccessMes";
+	public static final String ZALO_REGISTRY_TEL_NO_SUCCESS_MES = "registryTelNoSuccessMes";
 	
 	// Config call api from MCDT to DVC
 	public static final String SERVER_CONFIG_PROTOCOL_ZALO_URLS = "ZALO_URLS";
