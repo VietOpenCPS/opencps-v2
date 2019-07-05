@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -40,7 +42,7 @@ public class OpencpsCallStatisticRestFacadeImpl extends OpencpsRestFacade<Dossie
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 //		buildUrlQueryParams(urlQueryParams, payload);
 		
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.STATISTIC_REPORT_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.STATISTIC_REPORT_ENDPOINT);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 		HttpHeaders httpHeaders = new HttpHeaders();

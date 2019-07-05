@@ -83,6 +83,7 @@ public class DossierTerm {
 	public static final String STEP_OVER_DUE = "stepOverdue";
 	public static final String DOSSIER_OVER_DUE = "dossierOverdue";
 	public static final String ACTION_USERIDS = "actionUserIds";
+	public static final String ASSIGNED_USER_ID = "assignedUserId";
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";
@@ -128,6 +129,7 @@ public class DossierTerm {
 	public static final int ORIGINALITY_DVCTT = 1;
 	public static final int ORIGINALITY_LIENTHONG = 2;
 	public static final int ORIGINALITY_MOTCUA = 3;
+	public static final int ORIGINALITY_HOSONHOM = 9;
 		
 	public static final String POSTAL_SERVICE_CODE = "postalServiceCode";
 	public static final String POSTAL_SERVICE_NAME = "postalServiceName";
@@ -250,4 +252,7 @@ public class DossierTerm {
 	public static final String GROUP_DOSSIER_ID = "groupDossierId";
 	public static final String APPLICANT_FOLLOW_ID_NO = "applicantFollowIdNo";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
+	
+	public static final String GROUP_DOSSIERS = "groupDossiers";
+	public static final String META_DATA = "metaData";
 }

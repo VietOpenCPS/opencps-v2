@@ -89,7 +89,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
-			String templateNo, String description, ServiceContext context) throws PortalException {
+			String templateNo, String description, String newFormScript, ServiceContext context) throws PortalException {
 
 		DossierTemplate dossierTemplate = null;
 
@@ -114,6 +114,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			dossierTemplate.setTemplateName(templateName);
 			dossierTemplate.setTemplateNo(templateNo);
 			dossierTemplate.setDescription(description);
+			dossierTemplate.setNewFormScript(newFormScript);
 
 		} else {
 			dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
@@ -137,7 +138,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 			if (Validator.isNotNull(description))
 				dossierTemplate.setDescription(description);
-
+			if (Validator.isNotNull(newFormScript)) {
+				dossierTemplate.setNewFormScript(newFormScript);
+			}
 		}
 
 		dossierTemplatePersistence.update(dossierTemplate);
@@ -320,7 +323,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	// LamTV_ Process output DossierTemplate to DB
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierTemplate updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
-			String description, ServiceContext serviceContext) throws PortalException {
+			String description, String newFormScript, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
@@ -341,6 +344,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			dossierTemplate.setTemplateName(templateName);
 			dossierTemplate.setTemplateNo(templateNo);
 			dossierTemplate.setDescription(description);
+			dossierTemplate.setNewFormScript(newFormScript);
 		} else {
 			dossierTemplate.setModifiedDate(now);
 			dossierTemplate.setUserId(userAction.getUserId());
@@ -352,6 +356,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 				dossierTemplate.setTemplateNo(templateNo);
 			if (Validator.isNotNull(description))
 				dossierTemplate.setDescription(description);
+			if (Validator.isNotNull(newFormScript)) {
+				dossierTemplate.setNewFormScript(newFormScript);
+			}
 		}
 
 		return dossierTemplatePersistence.update(dossierTemplate);
@@ -419,7 +426,8 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		object.setTemplateName(objectData.getString("templateName"));
 		object.setDescription(objectData.getString("description"));
 		object.setTemplateNo(objectData.getString("templateNo"));
-
+		object.setNewFormScript(objectData.getString("newFormScript"));
+		
 		dossierTemplatePersistence.update(object);
 
 		return object;

@@ -44,6 +44,7 @@ public class DossierTemplateSoap implements Serializable {
 		soapModel.setTemplateName(model.getTemplateName());
 		soapModel.setDescription(model.getDescription());
 		soapModel.setTemplateNo(model.getTemplateNo());
+		soapModel.setNewFormScript(model.getNewFormScript());
 
 		return soapModel;
 	}
@@ -186,6 +187,14 @@ public class DossierTemplateSoap implements Serializable {
 		_templateNo = templateNo;
 	}
 
+	public String getNewFormScript() {
+		return _newFormScript;
+	}
+
+	public void setNewFormScript(String newFormScript) {
+		_newFormScript = newFormScript;
+	}
+
 	private String _uuid;
 	private long _dossierTemplateId;
 	private long _groupId;
@@ -197,4 +206,5 @@ public class DossierTemplateSoap implements Serializable {
 	private String _templateName;
 	private String _description;
 	private String _templateNo;
+	private String _newFormScript;
 }

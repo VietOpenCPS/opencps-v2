@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.HashMap;
 
 import org.opencps.statistic.rest.dto.GetPersonRequest;
@@ -64,7 +65,7 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 
 		urlQueryParams.add("className", "employee");
 
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		//System.out.println("endPoint: "+endPoint);
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
@@ -82,6 +83,10 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 //		else {
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
+		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
+			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+		}
+		
 		return (GetPersonResponse) this
 				.executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GetPersonResponse.class)
 				.getBody();

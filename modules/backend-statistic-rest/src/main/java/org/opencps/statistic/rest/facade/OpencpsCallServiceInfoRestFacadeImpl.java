@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
+import java.util.Base64;
 import java.util.HashMap;
 
 import org.opencps.statistic.rest.dto.CommonRequest;
@@ -36,7 +37,7 @@ public class OpencpsCallServiceInfoRestFacadeImpl extends OpencpsRestFacade<Comm
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 
-		String endPoint = DossierStatisticConfig.get(DossierStatisticConstants.SERVICE_INFO_ENDPOINT);
+		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.SERVICE_INFO_ENDPOINT);
 
 		// get the params for EE
 		HashMap<String, String> urlPathSegments = new HashMap<>();
@@ -56,6 +57,9 @@ public class OpencpsCallServiceInfoRestFacadeImpl extends OpencpsRestFacade<Comm
 //		else {
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
+		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
+			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+		}
 		
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, ServiceInfoResponse.class).getBody();
 	}

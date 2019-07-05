@@ -119,7 +119,8 @@ import javax.xml.bind.annotation.XmlType;
 	"durationCount",
 	"durationUnit",
 	"sampleCount",
-	"dossierName"
+	"dossierName",
+	"mataData"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -259,6 +260,8 @@ public class DossierPublishModel {
 	protected Integer sampleCount;
 	@FormParam(value = "dossierName")
 	protected String dossierName;
+	@FormParam(value = "metaData")
+	protected String metaData;
 
 	public int getViaPostal() {
 		return viaPostal;
@@ -1235,4 +1238,17 @@ public class DossierPublishModel {
 	public void setDossierName(String value) {
 		this.dossierName = value;
 	}
+
+	public String getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
+	}
+
+	public void setCorrecttingDate(String correcttingDate) {
+		this.correcttingDate = correcttingDate;
+	}
+
 }

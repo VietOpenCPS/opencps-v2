@@ -2440,6 +2440,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
+		String strAssignedUser = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
 		//_log.info("follow: "+follow);
 		//_log.info("originality: "+originality);
 		//_log.info("applicantFollowIdNo: "+applicantFollowIdNo);
@@ -2473,7 +2474,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, strAssignedUser, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2551,6 +2552,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
+		String strAssignedUser = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2578,7 +2580,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, strAssignedUser, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2680,7 +2682,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			BooleanQuery booleanQuery) throws ParseException {
+			String strAssignedUser, BooleanQuery booleanQuery) throws ParseException {
 
 
 		if (Validator.isNotNull(status)) {
@@ -3383,6 +3385,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(permission)) {
 			MultiMatchQuery query = new MultiMatchQuery(permission);
 			query.addField(DossierTerm.MAPPING_PERMISSION);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strAssignedUser)) {
+			MultiMatchQuery query = new MultiMatchQuery(strAssignedUser);
+			query.addField(DossierTerm.ASSIGNED_USER_ID);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -4373,7 +4381,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
-			int durationUnit, String dossierName, String processNo, ServiceContext context) throws PortalException {
+			int durationUnit, String dossierName, String processNo, String metaData, ServiceContext context) throws PortalException {
 
 		long userId = context.getUserId();
 
@@ -4473,6 +4481,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDurationUnit(durationUnit);
 			dossier.setDossierName(dossierName);
 			dossier.setProcessNo(processNo);
+			dossier.setMetaData(metaData);
 
 			dossier = dossierPersistence.update(dossier);
 		} else {
@@ -4555,6 +4564,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setDossierName(dossierName);
 			if (Validator.isNotNull(processNo))
 				dossier.setProcessNo(processNo);
+			if (Validator.isNotNull(metaData))
+				dossier.setProcessNo(metaData);
 
 			dossier.setViaPostal(viaPostal);
 			if (viaPostal == 1) {
@@ -5048,6 +5059,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
@@ -5172,6 +5184,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(dossierName)) {
 			dossier.setDossierName(dossierName);
 		}
+		System.out.println("Dossier name: " + dossierName);
 		dossier.setBriefNote(briefNote);
 		//Process add status of group dossier
 		if (dossier.getOriginality() == 9) {
@@ -5352,4 +5365,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return null;
 	}
 
+	public List<Dossier> findByG_GDID(long groupId, long groupDossierId) {
+		return dossierPersistence.findByG_GDID(groupId, groupDossierId);
+	}
+	
 }

@@ -65,6 +65,5 @@ public class GetPersonRequest extends CommonRequest{
 	}
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
-	}
-
+	}	
 }

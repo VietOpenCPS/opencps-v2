@@ -255,6 +255,21 @@ public interface DossierTemplateModel extends BaseModel<DossierTemplate>,
 	 */
 	public void setTemplateNo(String templateNo);
 
+	/**
+	 * Returns the new form script of this dossier template.
+	 *
+	 * @return the new form script of this dossier template
+	 */
+	@AutoEscape
+	public String getNewFormScript();
+
+	/**
+	 * Sets the new form script of this dossier template.
+	 *
+	 * @param newFormScript the new form script of this dossier template
+	 */
+	public void setNewFormScript(String newFormScript);
+
 	@Override
 	public boolean isNew();
 

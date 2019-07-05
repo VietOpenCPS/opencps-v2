@@ -322,6 +322,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
+		long groupId, long groupDossierId) {
+		return _dossierLocalService.findByG_GDID(groupId, groupDossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(
 		long groupId, int start, int end) {
 		return _dossierLocalService.findByGID(groupId, start, end);
@@ -797,7 +803,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateCityName, String delegateDistrictCode,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
-		String dossierName, String processNo,
+		String dossierName, String processNo, String metaData,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.publishDossier(groupId, dossierId,
@@ -816,7 +822,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateTelNo, delegateEmail, delegateAddress, delegateCityCode,
 			delegateCityName, delegateDistrictCode, delegateDistrictName,
 			delegateWardCode, delegateWardName, durationCount, durationUnit,
-			dossierName, processNo, context);
+			dossierName, processNo, metaData, context);
 	}
 
 	@Override

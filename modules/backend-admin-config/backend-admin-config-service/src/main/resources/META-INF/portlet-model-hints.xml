@@ -26,9 +26,15 @@
 		<field name="sharing" type="int" />
 		<field name="reportName" type="String" />
 		<field name="reportCode" type="String" />
-		<field name="filterConfig" type="String" />
-		<field name="tableConfig" type="String" />
-		<field name="userConfig" type="String" />
+		<field name="filterConfig" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="tableConfig" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="userConfig" type="String">
+			<hint name="max-length">1000</hint>
+		</field>
 		<field name="reportType" type="String" />
 	</model>
 </model-hints>

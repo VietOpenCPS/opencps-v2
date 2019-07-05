@@ -256,6 +256,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
+	public List<Dossier> findByG_GDID(long groupId, long groupDossierId);
+
 	public List<Dossier> findByGID(long groupId, int start, int end);
 
 	public List<Dossier> findByNOT_ST_GT_MD(String[] statuses, Date d,
@@ -551,8 +553,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityName, String delegateDistrictCode,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
-		String dossierName, String processNo, ServiceContext context)
-		throws PortalException;
+		String dossierName, String processNo, String metaData,
+		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,

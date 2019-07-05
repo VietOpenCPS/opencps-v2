@@ -232,6 +232,7 @@
 		<column name="templateName" type="String" />
 		<column name="description" type="String" />
 		<column name="templateNo" type="String" />
+		<column name="newFormScript" type="String" />
 
 		<!-- Order -->
 
@@ -552,6 +553,7 @@
 		<column name="dossierName" type ="String" />
 		<column name="originDossierNo" type="String" />
 		<column name="groupDossierId" type="long" />
+		<column name="metaData" type="String" />
 		
 		<!-- Order -->
 		
@@ -725,6 +727,11 @@
             <finder-column name="dossierTemplateNo"></finder-column>
             <finder-column name="dossierStatus"></finder-column>
             <finder-column name="originality"></finder-column>
+        </finder>
+        
+        <finder name="G_GDID" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="groupDossierId"></finder-column>
         </finder>
 	</entity>
 

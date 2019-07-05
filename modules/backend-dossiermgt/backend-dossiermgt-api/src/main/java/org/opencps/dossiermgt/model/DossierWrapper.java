@@ -151,6 +151,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("dossierName", getDossierName());
 		attributes.put("originDossierNo", getOriginDossierNo());
 		attributes.put("groupDossierId", getGroupDossierId());
+		attributes.put("metaData", getMetaData());
 
 		return attributes;
 	}
@@ -712,6 +713,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (groupDossierId != null) {
 			setGroupDossierId(groupDossierId);
 		}
+
+		String metaData = (String)attributes.get("metaData");
+
+		if (metaData != null) {
+			setMetaData(metaData);
+		}
 	}
 
 	@Override
@@ -1267,6 +1274,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getLockState() {
 		return _dossier.getLockState();
+	}
+
+	/**
+	* Returns the meta data of this dossier.
+	*
+	* @return the meta data of this dossier
+	*/
+	@Override
+	public String getMetaData() {
+		return _dossier.getMetaData();
 	}
 
 	/**
@@ -2298,6 +2315,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setLockState(String lockState) {
 		_dossier.setLockState(lockState);
+	}
+
+	/**
+	* Sets the meta data of this dossier.
+	*
+	* @param metaData the meta data of this dossier
+	*/
+	@Override
+	public void setMetaData(String metaData) {
+		_dossier.setMetaData(metaData);
 	}
 
 	/**

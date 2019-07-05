@@ -22,10 +22,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public interface DossierActions {
-
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
-
 	public JSONObject getDossiersTest(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
@@ -50,19 +48,6 @@ public interface DossierActions {
 	public Dossier assignDossierToProcess(long dossierId, String dossierNote, String submissionNote, String briefNote,
 			String dossierNo, long folderId, long dossierActionId, String serverNo, ServiceContext context)
 			throws PortalException;
-
-	public Dossier addDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
-			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
-			String applicantIdType, String applicantIdNo, Date applicantIdDate, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String dossierNote,
-			String submissionNote, String applicantNote, String briefNote, String dossierNo, boolean submitting,
-			Date correctingDate, String dossierStatus, String dossierStatusText, String dossierSubStatus,
-			String dossierSubStatusText, long folderId, long dossierActionId, int viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String password, boolean notification,
-			boolean online, String serverNo, ServiceContext context) throws PortalException;
-
-	public Dossier getDossierDetail(long groupId, long dossierId, String referenceUid) throws PortalException;
 
 	public Dossier removeDossier(long groupId, long dossierId, String referenceUid) throws PortalException;
 
@@ -89,12 +74,6 @@ public interface DossierActions {
 
 	public JSONObject getContacts(long groupId, long dossierId, String referenceUid) throws PortalException;
 
-	public JSONObject getDossierActions(long dossierId, long groupId, Boolean owner, int start, int end, String sort,
-			String order, ServiceContext serviceContext) throws PortalException;
-
-	public JSONArray getNextActions(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
-			Sort[] sorts, int start, int end, ServiceContext serviceContext) throws PortalException;
-
 	public Dossier cloneDossier(long groupId, long dossierId, ServiceContext serviceContext) throws PortalException;
 
 	public JSONObject getDossierTodo(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -115,7 +94,6 @@ public interface DossierActions {
 	//LamTV: Process DossierTodo
 	public JSONObject getDossierProcessList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
-
 	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option,
 			ProcessAction proAction, String actionCode, String actionUser, String actionNote, String payload,
 			String assignUsers, String payment, int syncType, ServiceContext serviceContext, ErrorMsgModel errorModel) throws PortalException, Exception;
@@ -166,7 +144,7 @@ public interface DossierActions {
 			long dossierActionId, String submissionNote, String lockState, String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail, 
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode, String delegateDistrictName, 
 			String delegateWardCode, String delegateWardName, double durationCount, int durationUnit, String dossierName, String processNo,
-			ServiceContext context) throws PortalException;
+			String metaData, ServiceContext context) throws PortalException;
 
 	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps);
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);
