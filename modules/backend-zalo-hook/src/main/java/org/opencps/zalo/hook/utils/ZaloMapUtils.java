@@ -206,11 +206,11 @@ public class ZaloMapUtils {
 		if (Validator.isNotNull(zaloMap) &&
 			oAId.equals(zaloMap.getZaloOAId())) {
 
-			_sendZalo("sdt da duoc dang ky", uId);
+			_sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
 		}
 		else {
 
-			_sendZalo("sdt chua duoc dang ky", uId);
+			_sendZalo(SendSMSTerm.ZALO_TEL_NO_NOT_EXITS_MES, uId);
 		}
 
 		return _buildResponse(zaloMap);
@@ -228,7 +228,7 @@ public class ZaloMapUtils {
 		if (Validator.isNotNull(zaloMap) &&
 			oAId.equals(zaloMap.getZaloOAId())) {
 
-			_sendZalo("sdt da dang ky", uId);
+			_sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
 			return _buildResponse(zaloMap);
 		}
 		else {
@@ -260,7 +260,7 @@ public class ZaloMapUtils {
 					oAId, 1, zaloMap.getPayload());
 			}
 
-			_sendZalo("sdt da duoc cap nhat", uId);
+			_sendZalo(SendSMSTerm.ZALO_UPDATE_TEL_NO_SUCCESS_MES, uId);
 		}
 		catch (PortalException e) {
 
@@ -296,13 +296,14 @@ public class ZaloMapUtils {
 		return response;
 	}
 
-	private void _sendZalo(String textMessage, String zaloUid) {
+	private void _sendZalo(String messageCode, String zaloUid) {
 
 		try {
 
 			JSONObject zaloConfigInfo = _getZaloInfo();
 			String oAIdToken =
 				zaloConfigInfo.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
+			String textMessage = zaloConfigInfo.getString(messageCode);
 
 			if (Validator.isNotNull(textMessage) &&
 				Validator.isNotNull(zaloUid) &&
