@@ -155,10 +155,13 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImpl;
@@ -3743,7 +3746,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			else {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				Date appIdDate = null;
 
 				try {
@@ -4052,12 +4055,10 @@ public class CPSDossierBusinessLocalServiceImpl
 					? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
-			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+			Long appIdDateLong = jsonDossier.getLong(DossierTerm.APPLICANT_ID_DATE);
 			Date appIdDate = null;
-			try {
-				appIdDate = sdf.parse(jsonDossier.getString(DossierTerm.APPLICANT_ID_DATE));
-			} catch (Exception e) {
-				_log.debug(e);
+			if (appIdDateLong > 0) {
+				appIdDate = new Date(appIdDateLong);
 			}
 
 			// Params add dossier
@@ -4105,17 +4106,16 @@ public class CPSDossierBusinessLocalServiceImpl
 			//
 			String dossierName = Validator.isNotNull(jsonDossier.getString(DossierTerm.DOSSIER_NAME)) ? jsonDossier.getString(DossierTerm.DOSSIER_NAME) : serviceName;
 			
-			String strReceiveDate = jsonDossier.getString(DossierTerm.RECEIVE_DATE);
+			Long receiveDateTimeStamp = jsonDossier.getLong(DossierTerm.RECEIVE_DATE);
 			Date receiveDate = null;
-			SimpleDateFormat sf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
-			if (Validator.isNotNull(strReceiveDate)) {
-				receiveDate = sf.parse(strReceiveDate);
+			if (receiveDateTimeStamp > 0) {
+				receiveDate = new Date(receiveDateTimeStamp);
 			}
 
-			String strDueDate = jsonDossier.getString(DossierTerm.DUE_DATE);
+			Long dueDateTimeStamp = jsonDossier.getLong(DossierTerm.DUE_DATE);
 			Date dueDate = null;
-			if (Validator.isNotNull(strDueDate)) {
-				dueDate = sf.parse(strDueDate);
+			if (dueDateTimeStamp > 0) {
+				dueDate = new Date(dueDateTimeStamp);
 			}
 			
 			String metaData = jsonDossier.getString(DossierTerm.META_DATA);
@@ -4349,6 +4349,28 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
 			dossierLocalService.updateDossier(dossier);
 			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
+			
+			String payload = StringPool.BLANK;
+			String actionCode = "1100";
+			if (dossier.getReceiveDate() == null) {
+				JSONObject jsonDate = JSONFactoryUtil.createJSONObject();
+				jsonDate.put(DossierTerm.RECEIVE_DATE, (new Date()).getTime());
+				
+				Double durationCount = process.getDurationCount();
+				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+							process.getDurationUnit(), groupId);
+					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
+				}
+				if (Validator.isNotNull(jsonDate)) {
+					payload = jsonDate.toJSONString();
+				}
+			}
+			//
+			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+					serviceProcessId);
+			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+					payload, StringPool.BLANK, StringPool.BLANK, 0, serviceContext);
 
 		}
 		return dossier;
@@ -5576,6 +5598,69 @@ public class CPSDossierBusinessLocalServiceImpl
 	
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+
+	private static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+			long serviceProcessId) throws PortalException {
+
+		//_log.debug("GET PROCESS ACTION____");
+		ProcessAction action = null;
+		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		
+		try {
+			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
+					serviceProcessId);
+
+			//_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
+
+			String dossierStatus = dossier.getDossierStatus();
+			String dossierSubStatus = dossier.getDossierSubStatus();
+			String preStepCode;
+			for (ProcessAction act : actions) {
+
+				preStepCode = act.getPreStepCode();
+				//_log.debug("LamTV_preStepCode: "+preStepCode);
+
+				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
+//				_log.info("LamTV_ProcessStep: "+step);
+
+				if (Validator.isNull(step) && dossierAction == null) {
+					action = act;
+					break;
+				} else {
+					String stepStatus = step != null ? step.getDossierStatus() : StringPool.BLANK;
+					String stepSubStatus = step != null ?  step.getDossierSubStatus() : StringPool.BLANK;
+					boolean flagCheck = false;
+					
+					if (dossierAction != null) {
+						if (act.getPreStepCode().equals(dossierAction.getStepCode())) {
+							flagCheck = true;
+						}
+					}
+					else {
+						flagCheck = true;
+					}
+					//_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
+					if (stepStatus.contentEquals(dossierStatus)
+							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
+							&& flagCheck) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+							action = act;
+							break;							
+						}
+						else if (Validator.isNull(act.getPreCondition())) {
+							action = act;
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			//_log.debug("NOT PROCESS ACTION");
+			//_log.debug(e);
+		}
+
+		return action;
+	}
 
 	private Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
 }
