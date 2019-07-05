@@ -225,7 +225,59 @@
 			<finder-column name="protocol"/>
 		</finder>
 	</entity>
-	
+
+	<entity name="ZaloMap" local-service="true"
+		remote-service="false" table="opencps_zalomap">
+
+		<!-- PK fields -->
+
+		<column name="zaloMapId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<!-- UK fields -->
+		<column name="uId" type="String" />
+		<column name="telNo" type="String" />
+
+		<!-- Other fields -->
+		<column name="zaloOAId" type="String" />
+		<column name="isFollowed" type="int" />
+		<column name="payload" type="String" />
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<finder return-type="ZaloMap" name="F_UId">
+			<finder-column name="uId"/>
+		</finder>
+
+		<finder return-type="ZaloMap" name="F_TelNo">
+			<finder-column name="telNo"/>
+		</finder>
+
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId"/>
+		</finder>
+		
+		<finder return-type="Collection" name="F_ZALO_OAID">
+			<finder-column name="zaloOAId"/>
+		</finder>
+		
+	</entity>
+
 	<exceptions>
 		<exception>ServerNo</exception>
 		<exception>ServerName</exception>
