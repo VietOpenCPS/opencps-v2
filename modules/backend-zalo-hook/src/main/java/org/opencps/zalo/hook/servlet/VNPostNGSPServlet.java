@@ -1,4 +1,3 @@
-
 package org.opencps.zalo.hook.servlet;
 
 import java.io.IOException;
@@ -12,19 +11,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.opencps.communication.service.persistence.ZaloMapUtil;
-import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
-import org.opencps.zalo.hook.utils.ZaloMapUtils;
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
+
+import vn.mitc.ngsp.sdk.VNPost_N_GSP.IToken;
+import vn.mitc.ngsp.sdk.models.MToken;
 
 /**
 compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
@@ -41,20 +37,19 @@ compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", vers
  */
 @Component(immediate = true, property = {
 	"osgi.http.whiteboard.context.path=/",
-	"osgi.http.whiteboard.servlet.pattern=" + ZaloHookConstantKeys.SERVLET_URL
+	"osgi.http.whiteboard.servlet.pattern=/vnposttest/*"
 }, service = Servlet.class)
 
-public class ZaloHookServlet extends HttpServlet {
+public class VNPostNGSPServlet extends HttpServlet {
 
 	@Override
 	public void init()
 		throws ServletException {
 
 		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet init success");
-		}
-		else {
-			System.out.println("ZaloHookServlet init success sys");
+			_log.info("VNPostNGSPServlet init success");
+		} else {
+			System.out.println("VNPostNGSPServlet init success sys");
 		}
 
 		super.init();
@@ -65,69 +60,35 @@ public class ZaloHookServlet extends HttpServlet {
 		HttpServletRequest request, HttpServletResponse response)
 		throws IOException, ServletException {
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
 		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet doGet opencps");
-		}
-		else {
-			System.out.println("ZaloHookServlet doGet opencps Sys");
+			_log.info("VNPostNGSPServlet doGet");
+		} else {
+			System.out.println("VNPostNGSPServlet doGet sys");
 		}
 
 		try {
-
 			Enumeration<String> enumeration = request.getParameterNames();
-			Map<String, Object> zaloInfo = new HashMap<>();
+			Map<String, Object> modelMap = new HashMap<>();
 			while (enumeration.hasMoreElements()) {
 				String parameterName = enumeration.nextElement();
-				zaloInfo.put(
+				modelMap.put(
 					parameterName, request.getParameter(parameterName));
 				_log.info(
-					parameterName + "=" + request.getParameter(parameterName));
-				System.out.println(
-					parameterName + "=" + request.getParameter(parameterName));
+					parameterName +
+						"=" +
+						request.getParameter(parameterName));
 			}
-
-			ZaloMapUtils zaloMapUtils = new ZaloMapUtils(zaloInfo);
-			if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_UNFOLLOW)) {
-
-				result = zaloMapUtils.unfollow();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_FOLLOW)) {
-
-				result = zaloMapUtils.follow();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_SEND_MSG)) {
-
-				result = zaloMapUtils.sendmsg();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_ADD_PHONE)) {
-
-				result = zaloMapUtils.addPhone();
-			}
-			else {
-
-				_log.info("======action invalid======");
-			}
-
+			String tokenUrl = request.getParameter("tokenUrl");
+			String consumer_key = request.getParameter("consumer_key");
+			String secret_key = request.getParameter("secret_key");
+			System.out.println(tokenUrl + consumer_key + secret_key);
+			getToken(tokenUrl, consumer_key, secret_key);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
-		_writeSampleHTML(response, result);
+		_writeSampleHTML(response);
 	}
 
 	@Override
@@ -136,14 +97,22 @@ public class ZaloHookServlet extends HttpServlet {
 		throws IOException, ServletException {
 
 		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet doPost");
-		}
-		else {
-			System.out.println("ZaloHookServlet doPost Sys");
+			_log.info("VNPostNGSPServlet doPost");
+		} else {
+			System.out.println("VNPostNGSPServlet doPost sys");
 		}
 
 		doGet(request, response);
 
+	}
+	
+	public static void getToken(String tokenUrl, String consumer_key, String secret_key) throws Exception {
+
+		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
+
+		System.out.println("Access token:" + token.getAccessToken());
+		System.out.println("Token type:" + token.getTokenType());
+		System.out.println("Expires in: " + token.getExpiresIn() + " ms");
 	}
 
 	/**
@@ -156,9 +125,9 @@ public class ZaloHookServlet extends HttpServlet {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("<html>");
-		sb.append("<head><title>Zalo o Hook</title></head>");
+		sb.append("<head><title>VNPOST TEST</title></head>");
 		sb.append("<body>");
-		sb.append("<h2>ZaloHookServlet</h2>");
+		sb.append("<h2>VNPostNGSPServlet</h2>");
 		sb.append("</body>");
 		sb.append("</html>");
 
@@ -170,7 +139,7 @@ public class ZaloHookServlet extends HttpServlet {
 	 *
 	 * @param resp
 	 */
-	private void _writeSampleHTML(HttpServletResponse resp, JSONObject result) {
+	private void _writeSampleHTML(HttpServletResponse resp) {
 
 		resp.setCharacterEncoding(StringPool.UTF8);
 		resp.setContentType(ContentTypes.TEXT_HTML_UTF8);
@@ -187,7 +156,7 @@ public class ZaloHookServlet extends HttpServlet {
 	}
 
 	private static final Log _log =
-		LogFactoryUtil.getLog(ZaloHookServlet.class);
+		LogFactoryUtil.getLog(VNPostNGSPServlet.class);
 
 	private static final long serialVersionUID = 1L;
 

@@ -17,7 +17,9 @@ import org.opencps.api.controller.SMSManagement;
 import org.opencps.api.sms.model.IPacificSearchSMS;
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.communication.service.ZaloMapLocalServiceUtil;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
@@ -119,6 +121,8 @@ public class SMSManagementImpl implements SMSManagement {
 		try {
 
 			String zUId = StringPool.BLANK;
+			/** 
+			 * only use when has applicant
 			Applicant applicant =
 				ApplicantLocalServiceUtil.fetchBy_GTelNo(groupId, toTelNo);
 
@@ -136,6 +140,14 @@ public class SMSManagementImpl implements SMSManagement {
 
 				zUId = zUIdJSON.getString(SendSMSTerm.UID);
 
+			}*/
+
+			ZaloMap zaloMap = ZaloMapLocalServiceUtil.getByTelNo(toTelNo);
+
+			if (Validator.isNotNull(zaloMap) &&
+							zaloMap.getIsFollowed() > 0) {
+				
+				zUId = zaloMap.getUId();
 			}
 			else {
 
