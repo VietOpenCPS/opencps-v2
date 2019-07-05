@@ -50,6 +50,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -118,7 +119,14 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 						}
 					}
 
-					ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+					ServiceDomainResponse serviceDomainResponse = null;
+					if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+						serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+					}
+					else {
+						serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
+					}
+
 					/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
 	
 					// Get dossier by groupId - START
@@ -193,7 +201,13 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 		payload.setCalculate(true);
 		// System.out.println("payload: "+payload);
 
-		GetVotingResultResponse votingResultResponse = callVotingResultService.callRestService(payload);
+		GetVotingResultResponse votingResultResponse = null;
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			votingResultResponse = callVotingResultService.callRestService(payload);
+		}
+		else {
+			votingResultResponse = StatisticDataUtil.getLocalVotingResponse(payload);
+		}
 		// System.out.println("votingResultResponse: "+votingResultResponse);
 		// System.out.println("getGroupId: "+payload.getGroupId());
 		if (votingResultResponse != null) {

@@ -46,6 +46,7 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -156,7 +157,13 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 		payload.setStart(QueryUtil.ALL_POS);
 		payload.setEnd(QueryUtil.ALL_POS);
 		
-		GetPersonResponse personResponse = callPersonResultService.callRestService(payload);
+		GetPersonResponse personResponse = null;
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			personResponse = callPersonResultService.callRestService(payload);
+		}
+		else {
+			personResponse = StatisticDataUtil.getLocalPersonResponse(payload);
+		}
 		if (personResponse != null) {
 			List<GetPersonData> personDataList = personResponse.getData();
 			if (personDataList != null && personDataList.size() > 0) {
