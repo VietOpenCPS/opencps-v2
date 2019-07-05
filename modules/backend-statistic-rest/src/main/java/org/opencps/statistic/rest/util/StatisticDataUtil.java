@@ -236,6 +236,9 @@ public class StatisticDataUtil {
 				data.setGovAgencyName(doc.get(VotingTerm.GOV_AGENCY_NAME));
 				data.setVotingCode(doc.get(VotingTerm.VOTING_CODE));
 				data.setVotingSubject(doc.get(VotingTerm.VOTING_SUBJECT));
+				data.setDomain(doc.get(VotingTerm.DOMAIN_CODE));
+				data.setDomainName(doc.get(VotingTerm.DOMAIN_NAME));
+				
 				lstDatas.add(data);
 			}
 			
