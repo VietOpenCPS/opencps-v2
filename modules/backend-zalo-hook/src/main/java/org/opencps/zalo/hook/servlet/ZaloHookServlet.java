@@ -12,14 +12,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opencps.communication.service.persistence.ZaloMapUtil;
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
+import org.opencps.zalo.hook.utils.ZaloMapUtils;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
 compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
@@ -48,6 +53,9 @@ public class ZaloHookServlet extends HttpServlet {
 		if (_log.isInfoEnabled()) {
 			_log.info("ZaloHookServlet init success");
 		}
+		else {
+			System.out.println("ZaloHookServlet init success sys");
+		}
 
 		super.init();
 	}
@@ -57,44 +65,69 @@ public class ZaloHookServlet extends HttpServlet {
 		HttpServletRequest request, HttpServletResponse response)
 		throws IOException, ServletException {
 
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
 		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet doGet");
+			_log.info("ZaloHookServlet doGet opencps");
+		}
+		else {
+			System.out.println("ZaloHookServlet doGet opencps Sys");
 		}
 
 		try {
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
+
 			Enumeration<String> enumeration = request.getParameterNames();
-			Map<String, Object> modelMap = new HashMap<>();
+			Map<String, Object> zaloInfo = new HashMap<>();
 			while (enumeration.hasMoreElements()) {
 				String parameterName = enumeration.nextElement();
-				modelMap.put(
+				zaloInfo.put(
 					parameterName, request.getParameter(parameterName));
 				_log.info(
-					parameterName +
-						"============================================================" +
-						request.getParameter(parameterName));
+					parameterName + "=" + request.getParameter(parameterName));
+				System.out.println(
+					parameterName + "=" + request.getParameter(parameterName));
 			}
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
-			_log.info(
-				"============================================================");
+
+			ZaloMapUtils zaloMapUtils = new ZaloMapUtils(zaloInfo);
+			if (Validator.isNotNull(
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+					ZaloHookConstantKeys.ZALO_ACTION_UNFOLLOW)) {
+
+				result = zaloMapUtils.unfollow();
+			}
+			else if (Validator.isNotNull(
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+					ZaloHookConstantKeys.ZALO_ACTION_FOLLOW)) {
+
+				result = zaloMapUtils.follow();
+			}
+			else if (Validator.isNotNull(
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+					ZaloHookConstantKeys.ZALO_ACTION_SEND_MSG)) {
+
+				result = zaloMapUtils.sendmsg();
+			}
+			else if (Validator.isNotNull(
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+					ZaloHookConstantKeys.ZALO_ACTION_ADD_PHONE)) {
+
+				result = zaloMapUtils.addPhone();
+			}
+			else {
+
+				_log.info("======action invalid======");
+			}
+
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		_writeSampleHTML(response);
+		_writeSampleHTML(response, result);
 	}
 
 	@Override
@@ -104,6 +137,9 @@ public class ZaloHookServlet extends HttpServlet {
 
 		if (_log.isInfoEnabled()) {
 			_log.info("ZaloHookServlet doPost");
+		}
+		else {
+			System.out.println("ZaloHookServlet doPost Sys");
 		}
 
 		doGet(request, response);
@@ -120,7 +156,7 @@ public class ZaloHookServlet extends HttpServlet {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("<html>");
-		sb.append("<head><title>Zalo Hook</title></head>");
+		sb.append("<head><title>Zalo o Hook</title></head>");
 		sb.append("<body>");
 		sb.append("<h2>ZaloHookServlet</h2>");
 		sb.append("</body>");
@@ -134,7 +170,7 @@ public class ZaloHookServlet extends HttpServlet {
 	 *
 	 * @param resp
 	 */
-	private void _writeSampleHTML(HttpServletResponse resp) {
+	private void _writeSampleHTML(HttpServletResponse resp, JSONObject result) {
 
 		resp.setCharacterEncoding(StringPool.UTF8);
 		resp.setContentType(ContentTypes.TEXT_HTML_UTF8);
