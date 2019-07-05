@@ -4184,9 +4184,10 @@ public class CPSDossierBusinessLocalServiceImpl
 							mapMarks.put(dm.getDossierPartNo(), dm);
 						}
 
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[markArr.length()];
 						for (int i = 0; i < markArr.length(); i++) {
 							JSONObject jsonMark = markArr.getJSONObject(i);
-							org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[markArr.length()];
+							//System.out.println("jsonMark: "+jsonMark);
 
 							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
 							model.setDossierId(dossier.getDossierId());
@@ -4197,8 +4198,8 @@ public class CPSDossierBusinessLocalServiceImpl
 							model.setRecordCount(StringPool.BLANK);
 							marks[i] = model;
 
-							dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
 						}
+						dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
 					}
 				} else if (Validator.isNotNull(templateNo)) {
 					List<DossierPart> partList = dossierPartLocalService.getByTemplateNo(groupId, templateNo);
