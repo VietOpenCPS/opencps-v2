@@ -1,7 +1,6 @@
 package org.opencps.communication.scheduler;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -19,13 +18,9 @@ import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-import ws.bulkSms.impl.Result;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
@@ -40,13 +35,14 @@ import org.opencps.kernel.context.MBServiceContextFactoryUtil;
 import org.opencps.kernel.message.MBMessageEntry;
 import org.opencps.kernel.message.email.MBEmailSenderFactoryUtil;
 import org.opencps.kernel.message.notification.MBNotificationSenderFactoryUtil;
-import org.opencps.kernel.message.sms.SendMTConverterUtils;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+
+import ws.bulkSms.impl.Result;
 
 /**
  * @author trungnt
