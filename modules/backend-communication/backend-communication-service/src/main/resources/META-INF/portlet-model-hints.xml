@@ -2,10 +2,10 @@
 
 <model-hints>
 	<hint-collection name="LONGEST_TEXT">
-		<hint name="max-length">8192</hint>
+		<hint name="max-length">2000000</hint>
 	</hint-collection>
 	<hint-collection name="LONG_TEXT">
-		<hint name="max-length">2048</hint>
+		<hint name="max-length">4096</hint>
 	</hint-collection>
 	<model name="org.opencps.communication.model.NotificationQueue">
 		<field name="notificationQueueId" type="long" />
