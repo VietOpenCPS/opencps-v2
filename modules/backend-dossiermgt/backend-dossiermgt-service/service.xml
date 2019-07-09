@@ -622,15 +622,15 @@
 			<finder-column name="govAgencyCode"></finder-column>
 		</finder>
 
-		<finder name="GID_GC_SC_DTN_DS_APP_DELEGATE" return-type="Collection">
+		<finder name="GID_GC_SC_DTN_DS_APP_ORI" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="govAgencyCode" />
 			<finder-column name="serviceCode" />
 			<finder-column name="dossierTemplateNo" />
 			<finder-column name="dossierStatus" arrayable-operator="OR"/>
-			<finder-column name="applicantIdNo" />
+<!-- 			<finder-column name="applicantIdNo" /> -->
 			<finder-column name="applicantIdType" />
-			<finder-column name="delegateIdNo" />
+<!-- 			<finder-column name="delegateIdNo" /> -->
 			<finder-column name="originality" />
 		</finder>
 

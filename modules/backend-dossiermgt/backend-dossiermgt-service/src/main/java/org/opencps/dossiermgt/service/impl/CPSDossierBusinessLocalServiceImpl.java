@@ -15,6 +15,8 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.exception.FileNameException;
+import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -30,6 +32,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -95,10 +98,12 @@ import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -129,6 +134,7 @@ import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -154,6 +160,7 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -3940,6 +3947,456 @@ public class CPSDossierBusinessLocalServiceImpl
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public Dossier addMultipleDossier(long groupId, Company company, User user, ServiceContext serviceContext,
+			DossierMultipleInputModel input) throws UnauthenticationException, PortalException, Exception {
+
+		BackendAuth auth = new BackendAuthImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+
+		long start = System.currentTimeMillis();
+		
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+
+		ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+				input.getDossierTemplateNo(), groupId);
+		long serviceProcessId = 0;
+		if (option != null) {
+			serviceProcessId = option.getServiceProcessId();
+		}
+
+		boolean flag = false;
+		long userId = serviceContext.getUserId();
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		if (employee != null) {
+			long employeeId = employee.getEmployeeId();
+			if (employeeId > 0) {
+				List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+				if (empJobList != null && empJobList.size() > 0) {
+					for (EmployeeJobPos employeeJobPos : empJobList) {
+						long jobPosId = employeeJobPos.getJobPostId();
+						if (jobPosId > 0) {
+							JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
+							if (job != null) {
+								ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
+											job.getMappingRoleId());
+								ServiceProcessRole role = serviceProcessRoleLocalService
+											.fetchServiceProcessRole(pk);
+								if (role != null && role.getModerator()) {
+									flag = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			flag = true;
+		}
+	
+		if (!flag) {
+			throw new UnauthenticationException("No permission create dossier");
+		}
+		_log.debug("CREATE DOSSIER 1: " + (System.currentTimeMillis() - start) + " ms");
+		dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
+				input.getGovAgencyCode(), input.getDossierTemplateNo());
+
+		Dossier dossier = null;
+		if (Validator.isNotNull(input.getDossiers())) {
+			JSONObject jsonDossier = JSONFactoryUtil.createJSONObject(input.getDossiers());
+			//Get params input dossier
+			String referenceUid = jsonDossier.getString(DossierTerm.REFERENCE_UID);
+			if (Validator.isNull(referenceUid) || referenceUid.trim().length() == 0)
+				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+			int counter = 0;
+			//boolean online = GetterUtil.getBoolean(input.getOnline());
+			boolean online = false;
+			int originality = input.getOriginality();
+			int viaPostal = Validator.isNotNull(jsonDossier.getString(DossierTerm.VIA_POSTAL))
+					? GetterUtil.getInteger(jsonDossier.getString(DossierTerm.VIA_POSTAL)): 0;
+			ServiceConfig config = serviceConfigLocalService.getBySICodeAndGAC(groupId, input.getServiceCode(),
+					input.getGovAgencyCode());
+			if (config != null && Validator.isNotNull(viaPostal)) {
+				viaPostal = config.getPostService() ? (viaPostal == 0 ? 1 : viaPostal) : 0;
+			} else if (config != null) {
+				viaPostal = config.getPostService() ? 1 : 0;
+			}
+			//Get service process
+			ServiceProcess process = null;
+			if (option != null) {
+				process = serviceProcessLocalService.getServiceProcess(serviceProcessId);
+				if (process == null) {
+					throw new NotFoundException("Cant find process");
+				}
+			}
+
+			ServiceInfo service = serviceInfoLocalService.getByCode(groupId, input.getServiceCode());
+			String serviceName = service != null ? service.getServiceName(): StringPool.BLANK;
+
+			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+
+			//DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ADMINISTRATIVE_REGION, groupId);
+			//String cityName = getDictItemName(groupId, dc, input.getCityCode());
+			//String districtName = getDictItemName(groupId, dc, input.getDistrictCode());
+			//String wardName = getDictItemName(groupId, dc, input.getWardCode());
+//				_log.info("Service code: " + input.getServiceCode());
+			//_log.debug("===ADD DOSSIER CITY NAME:" + cityName);
+			String password = StringPool.BLANK;
+			if (Validator.isNotNull(jsonDossier.getString("password"))) {
+				password = jsonDossier.getString("password");
+			} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
+				password = PwdGenerator.getPinNumber();
+			}
+
+			String postalCityName = StringPool.BLANK;
+			if (Validator.isNotNull(jsonDossier.getString(DossierTerm.POSTAL_CITY_CODE))) {
+				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, jsonDossier.getString(DossierTerm.POSTAL_CITY_CODE));
+			}
+			int sampleCount = (option != null ? (int) option.getSampleCount() : 1);
+
+			String registerBookCode = (option != null
+					? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode()
+							: StringPool.BLANK) : StringPool.BLANK);
+			String registerBookName = (Validator.isNotNull(registerBookCode)
+					? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
+			
+			Long appIdDateLong = jsonDossier.getLong(DossierTerm.APPLICANT_ID_DATE);
+			Date appIdDate = null;
+			if (appIdDateLong > 0) {
+				appIdDate = new Date(appIdDateLong);
+			}
+
+			// Params add dossier
+			String applicantName = jsonDossier.getString(DossierTerm.APPLICANT_NAME);
+			String applicantIdType = jsonDossier.getString(DossierTerm.APPLICANT_ID_TYPE);
+			String applicantIdNo = jsonDossier.getString(DossierTerm.APPLICANT_ID_NO);
+			String address = jsonDossier.getString(DossierTerm.ADDRESS);
+			String contactName = jsonDossier.getString(DossierTerm.CONTACT_NAME);
+			String contactTelNo = jsonDossier.getString(DossierTerm.CONTACT_TEL_NO);
+			String contactEmail = jsonDossier.getString(DossierTerm.CONTACT_EMAIL);
+			//
+			String postalServiceCode = jsonDossier.getString(DossierTerm.POSTAL_SERVICE_CODE);
+			String postalServiceName = jsonDossier.getString(DossierTerm.POSTAL_SERVICE_NAME);
+			String postalAddress = jsonDossier.getString(DossierTerm.POSTAL_ADDRESS);
+			String postalCityCode = jsonDossier.getString(DossierTerm.POSTAL_CITY_CODE);
+			String postalDistrictCode = jsonDossier.getString(DossierTerm.POSTAL_DISTRICT_CODE);
+			String postalDistrictName = jsonDossier.getString(DossierTerm.POSTAL_DISTRICT_NAME);
+			String postalWardCode = jsonDossier.getString(DossierTerm.POSTAL_WARD_CODE);
+			String postalWardName = jsonDossier.getString(DossierTerm.POSTAL_WARD_NAME);
+			String postalTelNo = jsonDossier.getString(DossierTerm.POSTAL_TEL_NO);
+			String applicantNote = jsonDossier.getString(DossierTerm.APPLICANT_NOTE);
+			String delegateIdNo = jsonDossier.getString(DossierTerm.DELEGATE_ID_NO);
+			String delegateName = jsonDossier.getString(DossierTerm.DELEGATE_NAME);
+			String delegateTelNo = jsonDossier.getString(DossierTerm.DELEGATE_TELNO);
+			String delegateEmail = jsonDossier.getString(DossierTerm.DELEGATE_EMAIL);
+			String delegateAddress = jsonDossier.getString(DossierTerm.DELEGATE_ADDRESS);
+			//TODO
+			String delegateCityCode = jsonDossier.getString(DossierTerm.DELEGATE_CITYCODE);
+			String delegateCityName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateCityCode)) {
+				delegateCityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateCityCode);
+			}
+
+			String delegateDistrictCode = jsonDossier.getString(DossierTerm.DELEGATE_DISTRICTCODE);
+			String delegateDistrictName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateDistrictCode)) {
+				delegateDistrictName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateDistrictCode);
+			}
+
+			String delegateWardCode = jsonDossier.getString(DossierTerm.DELEGATE_WARDCODE);
+			String delegateWardName = StringPool.BLANK;
+			if (Validator.isNotNull(delegateWardCode)) {
+				delegateWardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, delegateWardCode);
+			}
+			//
+			String dossierName = Validator.isNotNull(jsonDossier.getString(DossierTerm.DOSSIER_NAME)) ? jsonDossier.getString(DossierTerm.DOSSIER_NAME) : serviceName;
+			
+			Long receiveDateTimeStamp = jsonDossier.getLong(DossierTerm.RECEIVE_DATE);
+			Date receiveDate = null;
+			if (receiveDateTimeStamp > 0) {
+				receiveDate = new Date(receiveDateTimeStamp);
+			}
+
+			Long dueDateTimeStamp = jsonDossier.getLong(DossierTerm.DUE_DATE);
+			Date dueDate = null;
+			if (dueDateTimeStamp > 0) {
+				dueDate = new Date(dueDateTimeStamp);
+			}
+			
+			String metaData = jsonDossier.getString(DossierTerm.META_DATA);
+
+			dossier = dossierLocalService.initMultipleDossier(groupId, 0l, referenceUid, counter,
+					input.getServiceCode(), serviceName, input.getGovAgencyCode(), govAgencyName, applicantName,
+					applicantIdType, applicantIdNo, appIdDate, address, contactName, contactTelNo, contactEmail,
+					input.getDossierTemplateNo(), password, viaPostal, postalServiceCode, postalServiceName,
+					postalAddress, postalCityCode, postalCityName, postalDistrictCode, postalDistrictName,
+					postalWardCode, postalWardName, postalTelNo, online, process.getDirectNotification(), applicantNote,
+					input.getOriginality(), delegateIdNo, delegateName, delegateTelNo, delegateEmail, delegateAddress,
+					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
+					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, service, process,
+					option, serviceContext);
+
+				if (receiveDate != null)
+					dossier.setReceiveDate(receiveDate);
+				if (dueDate != null)
+					dossier.setDueDate(dueDate);
+				if (Validator.isNotNull(metaData))
+					dossier.setMetaData(metaData);
+
+			//TODO: Process then
+			//updateDelegateApplicant(dossier, input);
+			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
+
+			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				if (applicant != null) {
+					updateApplicantInfo(dossier, 
+							applicant.getApplicantIdDate(),
+							applicant.getApplicantIdNo(),
+							applicant.getApplicantIdType(),
+							applicant.getApplicantName(),
+							applicant.getAddress(),
+							applicant.getCityCode(),
+							applicant.getCityName(),
+							applicant.getDistrictCode(),
+							applicant.getDistrictName(),
+							applicant.getWardCode(),
+							applicant.getWardName(),
+							applicant.getContactEmail(),
+							applicant.getContactTelNo()
+							);
+				}
+			}
+			if (Validator.isNull(dossier)) {
+				throw new NotFoundException("Cant add DOSSIER");
+			}
+
+			_log.debug("CREATE DOSSIER 4: " + (System.currentTimeMillis() - start) + " ms");
+			//TODO
+			/** Create DossierMark */
+			//_log.debug("flagOldDossier: "+flagOldDossier);
+			_log.debug("originality: "+originality);
+			String templateNo = dossier.getDossierTemplateNo();
+			_log.debug("templateNo: "+templateNo);
+			long dossierId = dossier.getDossierId();
+			if (originality == DossierTerm.ORIGINALITY_MOTCUA || originality == DossierTerm.ORIGINALITY_LIENTHONG) {
+				if (Validator.isNotNull(input.getDossierMarkArr())) {
+					JSONArray markArr = JSONFactoryUtil.createJSONArray(input.getDossierMarkArr());
+					if (markArr != null && markArr.length() > 0) {
+						List<DossierMark> lstMarks = dossierMarkLocalService.getDossierMarks(groupId, dossierId);
+						Map<String, DossierMark> mapMarks = new HashMap<>();
+						for (DossierMark dm : lstMarks) {
+							mapMarks.put(dm.getDossierPartNo(), dm);
+						}
+
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[markArr.length()];
+						for (int i = 0; i < markArr.length(); i++) {
+							JSONObject jsonMark = markArr.getJSONObject(i);
+							//System.out.println("jsonMark: "+jsonMark);
+
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							model.setDossierId(dossier.getDossierId());
+							model.setDossierPartNo(jsonMark.getString("partNo"));
+							model.setFileCheck(0);
+							model.setFileMark(jsonMark.getInt("fileMark"));
+							model.setFileComment(StringPool.BLANK);
+							model.setRecordCount(StringPool.BLANK);
+							marks[i] = model;
+
+						}
+						dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+					}
+				} else if (Validator.isNotNull(templateNo)) {
+					List<DossierPart> partList = dossierPartLocalService.getByTemplateNo(groupId, templateNo);
+//							_log.info("partList: "+partList);
+					if (partList != null && partList.size() > 0) {
+						_log.debug("partList.size(): "+partList.size());
+						_log.debug("CREATE DOSSIER 4.1: " + (System.currentTimeMillis() - start) + " ms");
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
+						int count = 0;
+						List<DossierMark> lstMarks = dossierMarkLocalService.getDossierMarks(groupId, dossierId);
+						Map<String, DossierMark> mapMarks = new HashMap<>();
+						for (DossierMark dm : lstMarks) {
+							mapMarks.put(dm.getDossierPartNo(), dm);
+						}
+						for (DossierPart dossierPart : partList) {
+							int fileMark = dossierPart.getFileMark();
+							String dossierPartNo = dossierPart.getPartNo();
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							model.setDossierId(dossier.getDossierId());
+							model.setDossierPartNo(dossierPartNo);
+							model.setFileCheck(0);
+							model.setFileMark(fileMark);
+							model.setFileComment(StringPool.BLANK);
+							model.setRecordCount(StringPool.BLANK);
+							marks[count++] = model;
+						}
+						
+						dossierMarkLocalService.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+						
+						_log.debug("CREATE DOSSIER 4.2: " + (System.currentTimeMillis() - start) + " ms");
+					}
+				}
+			}
+
+			/** 
+			 * Add dossier file
+			 */
+			String strDossierFileId = input.getDossierFileArr();
+			if (Validator.isNotNull(strDossierFileId)) {
+				String[] splitDossierFileId = strDossierFileId.split(StringPool.COMMA);
+				if (splitDossierFileId != null && splitDossierFileId.length > 0) {
+					for (String strFileId : splitDossierFileId) {
+						processCloneDossierFile(Long.valueOf(strFileId), dossier.getDossierId(), userId);
+					}
+				}
+			}
+
+			/**Create dossier user */
+			List<DossierUser> lstDus = dossierUserLocalService.findByDID(dossier.getDossierId());
+			List<ServiceProcessRole> lstProcessRoles = serviceProcessRoleLocalService.findByS_P_ID(process.getServiceProcessId());
+			if (lstDus.size() == 0) {
+				DossierUserActions duActions = new DossierUserActionsImpl();
+				duActions.initDossierUser(groupId, dossier, process, lstProcessRoles);
+			}
+
+			if (originality == DossierTerm.ORIGINALITY_DVCTT) {
+				dossierUserLocalService.addDossierUser(groupId, dossier.getDossierId(), userId, 1, true);
+			}
+			_log.debug("CREATE DOSSIER 5: " + (System.currentTimeMillis() - start) + " ms");
+
+//			if (dossier != null) {
+//				//
+//				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+//
+//				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+//				//Process add notification queue
+//				Date now = new Date();
+//
+//				Calendar cal = Calendar.getInstance();
+//				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+//				
+//				queue.setCreateDate(now);
+//				queue.setModifiedDate(now);
+//				queue.setGroupId(groupId);
+//				queue.setCompanyId(company.getCompanyId());
+//				
+//				queue.setNotificationType(NotificationType.DOSSIER_01);
+//				queue.setClassName(Dossier.class.getName());
+//				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+//				queue.setToUsername(dossier.getUserName());
+//				queue.setToUserId(dossier.getUserId());
+//				queue.setToEmail(dossier.getContactEmail());
+//				queue.setToTelNo(dossier.getContactTelNo());
+//				
+//				JSONObject payload = JSONFactoryUtil.createJSONObject();
+//				try {
+////							_log.info("START PAYLOAD: ");
+//					payload.put(
+//						"Dossier", JSONFactoryUtil.createJSONObject(
+//							JSONFactoryUtil.looseSerialize(dossier)));
+//				}
+//				catch (JSONException parse) {
+//					_log.error(parse);
+//				}
+////						_log.info("payloadTest: "+payload.toJSONString());
+//				queue.setPayload(payload.toJSONString());
+//				queue.setExpireDate(cal.getTime());
+//
+//				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+//			}
+	
+			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
+			//Add to dossier user based on service process role
+			createDossierUsers(groupId, dossier, process, lstProcessRoles);
+			
+			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
+			dossierLocalService.updateDossier(dossier);
+			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
+			
+			String payload = StringPool.BLANK;
+			String actionCode = "1100";
+			if (dossier.getReceiveDate() == null) {
+				JSONObject jsonDate = JSONFactoryUtil.createJSONObject();
+				jsonDate.put(DossierTerm.RECEIVE_DATE, (new Date()).getTime());
+				
+				Double durationCount = process.getDurationCount();
+				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+							process.getDurationUnit(), groupId);
+					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
+				}
+				if (Validator.isNotNull(jsonDate)) {
+					payload = jsonDate.toJSONString();
+				}
+			}
+			//
+			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+					serviceProcessId);
+			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+					payload, StringPool.BLANK, StringPool.BLANK, 0, serviceContext);
+
+		}
+		return dossier;
+	}
+
+	private void processCloneDossierFile(Long dossierFileId, long dossierId, long userId) throws PortalException {
+
+		DossierFile dossierFileParent = dossierFileLocalService.fetchDossierFile(dossierFileId);
+
+		if (dossierFileParent != null) {
+
+			long dossierFileChildrenId = counterLocalService.increment(DossierFile.class.getName());
+
+			DossierFile object = dossierFilePersistence.create(dossierFileChildrenId);
+
+			_log.debug("****End uploadFile file at:" + new Date());
+
+			Date now = new Date();
+			User userAction = null;
+			if (userId != 0) {
+				userAction = userLocalService.getUser(userId);
+			}
+
+			// Add audit fields
+			object.setCompanyId(dossierFileParent.getCompanyId());
+			object.setGroupId(dossierFileParent.getGroupId());
+			object.setCreateDate(now);
+			object.setModifiedDate(now);
+			object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+			object.setUserName(userAction != null ? userAction.getFullName() : StringPool.BLANK);
+
+			// Add other fields
+			object.setDossierId(dossierId);
+			object.setReferenceUid(PortalUUIDUtil.generate());
+			object.setDossierTemplateNo(dossierFileParent.getDossierTemplateNo());
+			object.setFileEntryId(dossierFileParent.getFileEntryId());
+			object.setDossierPartNo(dossierFileParent.getDossierPartNo());
+			object.setFileTemplateNo(dossierFileParent.getFileTemplateNo());
+			object.setDossierPartType(dossierFileParent.getDossierPartType());
+
+			_log.debug("****Start autofill file at:" + new Date());
+
+			object.setDisplayName(dossierFileParent.getDisplayName());
+			object.setOriginal(false);
+			object.setIsNew(true);
+			object.setFormData(dossierFileParent.getFormData());
+			object.setEForm(dossierFileParent.getEForm());
+			object.setRemoved(false);
+			object.setSignCheck(dossierFileParent.getSignCheck());
+			object.setFormScript(dossierFileParent.getFormScript());
+			object.setFormReport(dossierFileParent.getFormReport());
+			object.setFormSchema(dossierFileParent.getFormSchema());
+
+			dossierFilePersistence.update(object);
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
+			Exception.class })
+	public Dossier addFullDossier(long groupId, Company company, User user, ServiceContext serviceContext,
 			DossierMultipleInputModel input) throws UnauthenticationException, PortalException, Exception {
 
 		BackendAuth auth = new BackendAuthImpl();

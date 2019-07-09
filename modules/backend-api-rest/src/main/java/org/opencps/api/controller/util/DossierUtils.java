@@ -40,7 +40,6 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -60,7 +59,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -76,11 +74,44 @@ public class DossierUtils {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 
-	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId) {
+	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, Integer assigned) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
+			//LamTV: Process Assigned dossier
+			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
+			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
+			User user = UserLocalServiceUtil.fetchUser(userId);
+			boolean isAdministratorData = false;
+			int assignedCheck = 0;
+			if (user != null) {
+				List<Role> userRoles = user.getRoles();
+				for (Role r : userRoles) {
+					if (r.getName().startsWith("Administrator")) {
+						isAdministratorData = true;
+						break;
+					}
+				}
+			}
+
+			if (isAdministratorData) {
+				assignedCheck = 1;
+			} else if (Validator.isNotNull(assigned)) {
+				if (dau != null && dau.getAssigned() != assigned) {
+					continue;
+				}
+				assignedCheck = assigned;
+			} else {
+				if (dau == null) {
+					continue;
+				}
+				assignedCheck = dau.getAssigned();
+			}
+
+			//Process add dossier in result
 			DossierDataModel model = new DossierDataModel();
+
+			model.setAssigned(assignedCheck);
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
@@ -164,7 +195,6 @@ public class DossierUtils {
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			//Check lockState
 			if (checkWaiting(lockState, dossierStatus)){
 				model.setDossierOverdue("Tạm dừng xử lý");
@@ -262,29 +292,6 @@ public class DossierUtils {
 				}
 			}
 
-			//LamTV: Process Assigned dossier
-			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
-			User user = UserLocalServiceUtil.fetchUser(userId);
-			boolean isAdministratorData = false;
-			if (user != null) {
-				List<Role> userRoles = user.getRoles();
-				for (Role r : userRoles) {
-					if (r.getName().startsWith("Administrator")) {
-						isAdministratorData = true;
-						break;
-					}
-				}				
-			}
-//			_log.info("ASSIGNED" + dau);
-			if (dau != null) {
-				model.setAssigned(dau.getAssigned());
-			} else {
-				model.setAssigned(ConstantsTerm.NO_ASSINED);
-			}
-			
-			if (isAdministratorData) {
-				model.setAssigned(1);
-			}
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));

@@ -286,10 +286,9 @@ public interface DossierLocalService extends BaseLocalService,
 		String dossierTemplateNo, long originDossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_DELEGATE(long groupId,
+	public List<Dossier> getByGID_GC_SC_DTN_DS_APP_ORI(long groupId,
 		String govAgencyCode, String serviceCode, String dossierTemplateNo,
-		String[] statusArr, String applicantIdNo, String applicantIdType,
-		String delegateIdNo, int originality);
+		String[] statusArr, String applicantIdType, int originality);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Dossier> getByGroupAndOriginDossierNo(long groupId,
@@ -451,6 +450,28 @@ public interface DossierLocalService extends BaseLocalService,
 		ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier initFullDossier(long groupId, long dossierId,
+		String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String contactName,
+		String contactTelNo, String contactEmail, String dossierTemplateNo,
+		String password, int viaPostal, String postalServiceCode,
+		String postalServiceName, String postalAddress, String postalCityCode,
+		String postalCityName, String postalDistrictCode,
+		String postalDistrictName, String postalWardCode,
+		String postalWardName, String postalTelNo, boolean online,
+		boolean notification, String applicantNote, int originality,
+		String delegateIdNo, String delegateName, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, String registerBookCode,
+		String registerBookName, int sampleCount, String dossierName,
+		ServiceInfo service, ServiceProcess process, ProcessOption option,
+		ServiceContext context) throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initMultipleDossier(long groupId, long dossierId,
 		String referenceUid, int counter, String serviceCode,
 		String serviceName, String govAgencyCode, String govAgencyName,
@@ -501,6 +522,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateWardCode, Long sampleCount, String dossierName,
 		ServiceContext serviceContext);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
