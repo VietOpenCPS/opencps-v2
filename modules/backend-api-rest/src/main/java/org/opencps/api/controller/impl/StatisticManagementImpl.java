@@ -16,16 +16,30 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.opencps.adminconfig.model.DynamicReport;
+import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
+import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
 import org.opencps.api.statistic.model.StatisticDossierResults;
 import org.opencps.api.statistic.model.StatisticDossierSearchModel;
@@ -382,6 +396,105 @@ public class StatisticManagementImpl implements StatisticManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response exportDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query, String reportCode) {
+		BackendAuth auth = new BackendAuthImpl();
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, reportCode);
+			ScriptEngineManager manager = new ScriptEngineManager(null);
+			ScriptEngine engine = manager.getEngineByExtension("js");
+			engine.put("jsonObject", dynamicReport.getTableConfig());
+			engine.eval("var json = " + dynamicReport.getTableConfig() + " ; var contentArr = json.docDefinition.content; var bodyArray = [];\n" + 
+					"var headerRows;\n" + 
+					"\n" + 
+					"for (i = 0; i < contentArr.length; i++) {\n" + 
+					"	if (contentArr[i].hasOwnProperty('table')) {\n" + 
+					"    	headerRows = contentArr[i].table.headerRows;\n" + 
+					"        bodyArray = JSON.stringify(contentArr[i].table.body);\n" + 
+					"        break;\n" + 
+					"    }\n" + 
+					"}");
+			_log.debug("EXPORT STATISTIC SCRIPT: " + engine.get("bodyArray"));
+			
+			JSONArray contentArr = JSONFactoryUtil.createJSONArray(engine.get("bodyArray").toString());
+			
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet mainSheet = workbook.createSheet("report");
+			_log.debug("EXPORT STATISTIC SCRIPT LENGTH: " + contentArr.length());
+			for (int i = 0; i < contentArr.length(); i++) {
+				JSONObject contentObj = contentArr.getJSONObject(i);
+				if (contentObj.has("table")) {
+					JSONObject tableObj = contentObj.getJSONObject("table");
+					JSONArray bodyArr = tableObj.getJSONArray("body");
+					int headerRows = tableObj.getInt("headerRows");
+					int startRow = 0;
+					int maxRow = 1;
+					for (int tempi = 0; tempi < headerRows; tempi++) {
+						JSONArray tempObj = bodyArr.getJSONArray(tempi);
+						int startCol = 0;
+						
+						for (int tempj = 0; tempj < tempObj.length(); tempj++) {
+							JSONObject columnObj = tempObj.getJSONObject(tempj);
+							HSSFRow row = mainSheet.createRow(startRow);
+							int spanCol = 0;
+							int spanRow = 0;
+							if (columnObj.has("rowSpan")) {
+								if (maxRow < columnObj.getInt("rowSpan")) {
+									maxRow = columnObj.getInt("rowSpan");
+								}
+								spanRow = columnObj.getInt("rowSpan");
+							}
+							row.createCell(startCol).setCellValue(columnObj.getString("text"));
+							if (columnObj.has("colSpan")) {
+								startCol += columnObj.getInt("colSpan");
+								spanCol = columnObj.getInt("colSpan");
+							}
+							mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow, startCol, startCol + spanCol));								
+						}
+						
+						startRow = maxRow;
+					}
+					
+				}
+			}
+			File exportDir = new File("exported");
+			if (!exportDir.exists()) {
+				exportDir.mkdirs();
+			}
+			File xlsFile = new File(exportDir.getAbsolutePath() + "/" + (new Date()).getTime() + ".xls");
+			String fileName = (new Date()).getTime() + ".xls";
+			
+			try { 
+				FileOutputStream out = new FileOutputStream(new File(exportDir.getAbsolutePath() + "/" + (new Date()).getTime() + ".xls")); 
+				workbook.write(out); 
+				out.close();
+				workbook.close();
+			} 
+			catch (Exception e) { 
+				e.printStackTrace(); 
+			}   
+			
+			ResponseBuilder responseBuilder = Response.ok((Object) xlsFile);
+			responseBuilder.header("Content-Disposition",
+					"attachment; filename=\"" + fileName + "\"");
+			responseBuilder.header("Content-Type", "application/vnd.ms-excel");
+
+			return responseBuilder.build();			
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
 	}
 
 }

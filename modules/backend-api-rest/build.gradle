@@ -43,6 +43,9 @@ dependencies {
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-service")
 	
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
 	compileOnly project(":modules:backend-auth")
 	// https://mvnrepository.com/artifact/uk.org.okapibarcode/okapibarcode
 	compile group: 'uk.org.okapibarcode', name: 'okapibarcode', version: '0.1.7'	

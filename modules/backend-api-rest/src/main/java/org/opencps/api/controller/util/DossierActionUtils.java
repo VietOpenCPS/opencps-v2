@@ -301,6 +301,7 @@ public class DossierActionUtils {
 				model.setAutoEvent(jsonObject.getString(ProcessActionTerm.AUTO_EVENT));
 				model.setPreCondition(jsonObject.getString(ProcessActionTerm.PRE_CONDITION));
 				model.setEnable(Integer.valueOf(jsonObject.getString(ProcessActionTerm.ENABLE)));
+				model.setAllowDelegacyUser(jsonObject.getString(ProcessActionTerm.ALLOW_ASSIGN_USER));
 
 				outputs.add(model);
 			}
