@@ -9,9 +9,18 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -19,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,12 +46,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.rest.dto.DossierResponse;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticModel;
@@ -85,6 +101,9 @@ import org.opencps.statistic.rest.service.PersonStatisticFinderService;
 import org.opencps.statistic.rest.service.PersonStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.service.VotingStatisticFinderService;
 import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
+import org.opencps.statistic.rest.util.DossierConstants;
+import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
@@ -226,8 +245,80 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setDossierNo(dossierIdNo);
 				payload.setOnlineStatistic(query.getOnline());
 				
-				GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+				GetDossierResponse dossierResponse = new GetDossierResponse();
+						
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					dossierResponse = callDossierRestService.callRestService(payload);
+				}
+				else {
+					DossierActions actions = new DossierActionsImpl();
+					Sort[] sorts = null;
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+							GetterUtil.getBoolean("true")) };
+					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+					params.put(Field.GROUP_ID, String.valueOf(groupId));
+					if (payload.isCalculate()) {
+						params.put(DossierTerm.YEAR, year);
+						params.put(DossierTerm.MONTH, month);				
+					}
+					else {
+						if (Validator.isNotNull(payload.getGovAgencyCode())) {
+							params.put("agency", payload.getGovAgencyCode());
+						}
+						if (Validator.isNotNull(payload.getFromStatisticDate())) {
+							params.put("fromStatisticDate", payload.getFromStatisticDate());
+						}
+						if (Validator.isNotNull(payload.getToStatisticDate())) {
+							params.put("toStatisticDate", payload.getToStatisticDate());
+						}				
+					}
+					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());
+					params.put(DossierConstants.DOSSIER_SUB_STATUS, payload.getSubstatus());
+					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+					params.put(DossierConstants.ONLINE, payload.getOnlineStatistic());
+					params.put(DossierConstants.ORIGINALITY, payload.getOriginality());
+					params.put(DossierConstants.TEMPLATE, payload.getTemplate());
+					params.put(DossierConstants.STEP, payload.getStep());
+					params.put(DossierConstants.DOSSIER_NO, payload.getDossierNo());
 
+					params.put("top", "statistic");
+					
+					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+					long companyId = company.getCompanyId(); 
+					
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
+					List<Document> datas = (List<Document>) jsonData.get("data");
+					List<GetDossierData> dossierData = new ArrayList<>();
+					_log.debug("GET DOSSIER SIZE: " + datas.size());
+					for (Document doc : datas) {
+						GetDossierData model = new GetDossierData();
+						model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+						model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+						model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+						model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+						if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+							Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+							model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+						} else {
+							model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+						}
+						model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+						model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+						model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+						model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+						model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+						model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+						model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+						model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+						model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
+						model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+						
+						dossierData.add(model);
+					}
+					
+					dossierResponse.setTotal(datas.size());
+					dossierResponse.setData(dossierData);
+				}
 				if (dossierResponse != null && fromCalDate != null && toCalDate != null) {
 					List<GetDossierData> dossierDataList = dossierResponse.getData();
 					List<DossierStatisticData> statisticDataList = new ArrayList<>();
@@ -368,8 +459,29 @@ public class OpencpsStatisticRestApplication extends Application {
 					Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
 					toCalDate = StatisticUtils.getEndDay(toDate);
 				}
-
-				GetVotingResultResponse votingResponse = callVotingRestService.callRestService(payload);
+				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
+				
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					if (lstScs.size() >= 1) {
+						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
+							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
+						}						
+					}
+				}
+				GetVotingResultResponse votingResponse = null;
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					votingResponse = callVotingRestService.callRestService(payload);
+				}
+				else {
+					votingResponse = StatisticDataUtil.getLocalVotingResponse(payload);
+				}
 				if (votingResponse != null && fromCalDate != null && toCalDate != null) {
 					List<GetVotingResultData> votingDataList = votingResponse.getData();
 					List<VotingResultStatisticData> statisticDataList = new ArrayList<>();
@@ -492,7 +604,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			//
 			OpencpsCallRestFacade<GetPersonRequest, GetPersonResponse> callPersonRestService = new OpencpsCallPersonRestFacadeImpl();
-
+			List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
+			
 			try {
 				GetPersonRequest payload = new GetPersonRequest();
 				if ("all".equals(govAgencyCode)) {
@@ -506,9 +619,30 @@ public class OpencpsStatisticRestApplication extends Application {
 				payload.setFromStatisticDate(fromStatisticDate);
 				payload.setToStatisticDate(toStatisticDate);
 				payload.setCalculate(calculate);
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					if (lstScs.size() >= 1) {
+						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
+							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
+						}						
+					}
+				}			
+				
 				//
-				GetPersonResponse personResponse = callPersonRestService.callRestService(payload);
-
+				GetPersonResponse personResponse = null;
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					personResponse = callPersonRestService.callRestService(payload);
+				}
+				else {
+					personResponse = StatisticDataUtil.getLocalPersonResponse(payload);
+				}
+				
 				if (personResponse != null && fromCalDate != null && toCalDate != null) {
 					List<GetPersonData> personDataList = personResponse.getData();
 					List<PersonStatisticData> statisticDataList = new ArrayList<>();
@@ -640,7 +774,28 @@ public class OpencpsStatisticRestApplication extends Application {
 		// Get service domain to groupId
 		ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 		sdPayload.setGroupId(groupId);
-		ServiceDomainResponse serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+		List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			if (lstScs.size() >= 1) {
+				JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+				if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+					sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+				}
+				if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+					sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+				}
+				if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
+					sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
+				}						
+			}
+		}
+		ServiceDomainResponse serviceDomainResponse = null;
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+		}
+		else {
+			serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
+		}
 		// Get dossier to groupId
 		GetDossierRequest payload = new GetDossierRequest();
 		payload.setGroupId(groupId);
@@ -650,8 +805,83 @@ public class OpencpsStatisticRestApplication extends Application {
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
 		payload.setCalculate(true);
-
-		GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			if (lstScs.size() >= 1) {
+				JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+				if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+					payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+				}
+				if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+					payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+				}
+				if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+					payload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+				}						
+			}
+		}
+		
+		GetDossierResponse dossierResponse = null;
+		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+			dossierResponse = callDossierRestService.callRestService(payload);
+		}
+		else {
+			dossierResponse = new GetDossierResponse();
+			DossierActions actions = new DossierActionsImpl();
+			Sort[] sorts = null;
+			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+					GetterUtil.getBoolean("true")) };
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			if (payload.isCalculate()) {
+				params.put(DossierTerm.YEAR, year);
+				params.put(DossierTerm.MONTH, month);				
+			}
+			else {
+				if (Validator.isNotNull(payload.getGovAgencyCode())) {
+					params.put("agency", payload.getGovAgencyCode());
+				}
+				if (Validator.isNotNull(payload.getFromStatisticDate())) {
+					params.put("fromStatisticDate", payload.getFromStatisticDate());
+				}
+				if (Validator.isNotNull(payload.getToStatisticDate())) {
+					params.put("toStatisticDate", payload.getToStatisticDate());
+				}				
+			}
+			params.put("top", "statistic");
+			
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
+			List<Document> datas = (List<Document>) jsonData.get("data");
+			dossierResponse.setTotal(datas.size());
+			List<GetDossierData> dossierData = new ArrayList<>();
+			_log.debug("GET DOSSIER SIZE: " + datas.size());
+			for (Document doc : datas) {
+				GetDossierData model = new GetDossierData();
+				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+					Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+					model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+				} else {
+					model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+				}
+				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+				model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+				model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+				model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+				model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+				model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
+				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+				
+				dossierData.add(model);
+			}	
+			
+			dossierResponse.setData(dossierData);
+		}
 		if (dossierResponse != null) {
 			List<GetDossierData> dossierDataList = dossierResponse.getData();
 			if (dossierDataList != null && dossierDataList.size() > 0) {
