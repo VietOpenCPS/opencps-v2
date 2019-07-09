@@ -76,7 +76,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 			{ "notificationType", Types.VARCHAR },
 			{ "className", Types.VARCHAR },
 			{ "classPK", Types.VARCHAR },
-			{ "payload", Types.CLOB },
+			{ "payload", Types.VARCHAR },
 			{ "fromUsername", Types.VARCHAR },
 			{ "toUsername", Types.VARCHAR },
 			{ "toUserId", Types.BIGINT },
@@ -98,7 +98,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		TABLE_COLUMNS_MAP.put("notificationType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("classPK", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fromUsername", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("toUsername", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("toUserId", Types.BIGINT);

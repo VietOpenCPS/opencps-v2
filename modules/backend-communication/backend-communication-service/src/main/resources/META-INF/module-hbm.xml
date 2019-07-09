@@ -20,7 +20,7 @@
 		<property name="notificationType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="classPK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fromUsername" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="toUsername" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="toUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
@@ -41,9 +41,9 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="notificationType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="emailSubject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="emailBody" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="emailBody" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="textMessage" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="notifyMessage" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="notifyMessage" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="sendSMS" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="sendEmail" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="sendNotification" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -64,7 +64,7 @@
 		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDate" type="org.hibernate.type.TimestampType" />
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.communication.model.impl.ServerConfigImpl" table="opencps_serverconfig">
 		<id name="serverConfigId" type="long">
@@ -80,7 +80,7 @@
 		<property name="serverNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="serverName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="protocol" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="configs" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property name="configs" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="lastSync" type="org.hibernate.type.TimestampType" />
 	</class>
 	<class name="org.opencps.communication.model.impl.ZaloMapImpl" table="opencps_zalomap">

@@ -77,7 +77,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 			{ "serverNo", Types.VARCHAR },
 			{ "serverName", Types.VARCHAR },
 			{ "protocol", Types.VARCHAR },
-			{ "configs", Types.CLOB },
+			{ "configs", Types.VARCHAR },
 			{ "lastSync", Types.TIMESTAMP }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -94,7 +94,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		TABLE_COLUMNS_MAP.put("serverNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serverName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("protocol", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("configs", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("configs", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lastSync", Types.TIMESTAMP);
 	}
 

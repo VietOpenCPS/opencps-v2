@@ -74,9 +74,9 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "notificationType", Types.VARCHAR },
 			{ "emailSubject", Types.VARCHAR },
-			{ "emailBody", Types.CLOB },
+			{ "emailBody", Types.VARCHAR },
 			{ "textMessage", Types.VARCHAR },
-			{ "notifyMessage", Types.CLOB },
+			{ "notifyMessage", Types.VARCHAR },
 			{ "sendSMS", Types.BOOLEAN },
 			{ "sendEmail", Types.BOOLEAN },
 			{ "sendNotification", Types.BOOLEAN },
@@ -98,9 +98,9 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("notificationType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("emailSubject", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("emailBody", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("emailBody", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("textMessage", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("notifyMessage", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("notifyMessage", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sendSMS", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("sendEmail", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("sendNotification", Types.BOOLEAN);
@@ -111,7 +111,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		TABLE_COLUMNS_MAP.put("grouping", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject STRING null,emailBody TEXT null,textMessage STRING null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject VARCHAR(2048) null,emailBody TEXT null,textMessage VARCHAR(2048) null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notificationtemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY notificationtemplate.notificationType ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationtemplate.notificationType ASC";

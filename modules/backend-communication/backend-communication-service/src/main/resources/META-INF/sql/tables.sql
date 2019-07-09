@@ -28,9 +28,9 @@ create table opencps_notificationtemplate (
 	createDate DATE null,
 	modifiedDate DATE null,
 	notificationType VARCHAR(255) null,
-	emailSubject STRING null,
+	emailSubject VARCHAR(2048) null,
 	emailBody TEXT null,
-	textMessage STRING null,
+	textMessage VARCHAR(2048) null,
 	notifyMessage TEXT null,
 	sendSMS BOOLEAN,
 	sendEmail BOOLEAN,
@@ -82,5 +82,5 @@ create table opencps_zalomap (
 	telNo VARCHAR(75) null,
 	zaloOAId VARCHAR(75) null,
 	isFollowed INTEGER,
-	payload VARCHAR(75) null
+	payload TEXT null
 );

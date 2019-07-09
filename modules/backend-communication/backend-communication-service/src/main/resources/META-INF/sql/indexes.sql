@@ -2,7 +2,7 @@ create index IX_63B47ACA on opencps_notificationqueue (expireDate);
 create index IX_7C529721 on opencps_notificationqueue (groupId);
 create index IX_B4D26F83 on opencps_notificationqueue (notificationType[$COLUMN_LENGTH:255$], expireDate);
 
-create index IX_E7D9C8D2 on opencps_notificationtemplate (emailSubject[$COLUMN_LENGTH:4000$]);
+create index IX_E7D9C8D2 on opencps_notificationtemplate (emailSubject[$COLUMN_LENGTH:2048$]);
 create index IX_DE33B5F5 on opencps_notificationtemplate (expireDuration);
 create index IX_E0577FD5 on opencps_notificationtemplate (groupId, notificationType[$COLUMN_LENGTH:255$], interval_[$COLUMN_LENGTH:255$]);
 create index IX_54F70B3C on opencps_notificationtemplate (interval_[$COLUMN_LENGTH:255$]);
