@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 *         &lt;element name="assignUserId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
 *         &lt;element name="toUsers" type="{}DossierActionNextActiontoUser" maxOccurs="unbounded" minOccurs="0"/>
 *         &lt;element name="createFiles" type="{}DossierActionNextActioncreateFiles" maxOccurs="unbounded" minOccurs="0"/>
+*         &lt;element name="allowDelegacyUser" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
 *       &lt;/sequence>
 *     &lt;/restriction>
 *   &lt;/complexContent>
@@ -51,7 +52,8 @@ import javax.xml.bind.annotation.XmlType;
  "postStepCode",
  "autoEvent",
  "preCondition",
- "enable"
+ "enable",
+ "allowDelegacyUser"
 })
 public class DossierNextActionModel {
 
@@ -63,8 +65,17 @@ public class DossierNextActionModel {
 	protected String autoEvent;
 	protected String preCondition;
 	protected Integer enable;
+	protected String allowDelegacyUser;
 
- /**
+ public String getAllowDelegacyUser() {
+		return allowDelegacyUser;
+	}
+
+	public void setAllowDelegacyUser(String allowDelegacyUser) {
+		this.allowDelegacyUser = allowDelegacyUser;
+	}
+
+/**
   * Gets the value of the processActionId property.
   * 
   * @return

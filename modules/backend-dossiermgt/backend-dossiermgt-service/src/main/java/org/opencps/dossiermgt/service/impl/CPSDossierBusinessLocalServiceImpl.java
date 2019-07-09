@@ -227,18 +227,41 @@ public class CPSDossierBusinessLocalServiceImpl
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String createDossiers = proAction.getCreateDossiers();
 			String govAgencyCode = StringPool.BLANK;
-
+			String serviceCode = dossier.getServiceCode();
+			
 			if (createDossiers.contains(StringPool.POUND)) {
 				String[] splitCDs = createDossiers.split(StringPool.POUND);
 				if (splitCDs.length == 2) {
-					govAgencyCode = splitCDs[0];
+					if (splitCDs[0].contains(":")) {
+						if (splitCDs[0].split(":").length != 2) {
+							throw new PortalException("Cross dossier config error");
+						}
+						else {
+							govAgencyCode = splitCDs[0].split(":")[0];
+							serviceCode = splitCDs[0].split(":")[1];
+						}
+					}
+					else {
+						govAgencyCode = splitCDs[0];
+					}
 				}
 			}
 			else {
-				govAgencyCode = createDossiers;
+				if (createDossiers.contains(":")) {
+					if (createDossiers.split(":").length != 2) {
+						throw new PortalException("Cross dossier config error");
+					}
+					else {
+						govAgencyCode = createDossiers.split(":")[0];
+						serviceCode = createDossiers.split(":")[1];
+					}
+				}
+				else {
+					govAgencyCode = createDossiers;
+				}
 			}
 			
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
 			
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -278,7 +301,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
 					
 					Dossier hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
-							dossier.getCounter(), dossier.getServiceCode(),
+							dossier.getCounter(), serviceCode,
 							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
 							dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
