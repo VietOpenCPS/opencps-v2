@@ -77,7 +77,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 			{ "telNo", Types.VARCHAR },
 			{ "zaloOAId", Types.VARCHAR },
 			{ "isFollowed", Types.INTEGER },
-			{ "payload", Types.VARCHAR }
+			{ "payload", Types.CLOB }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -93,10 +93,10 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("zaloOAId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("isFollowed", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,zaloOAId VARCHAR(75) null,isFollowed INTEGER,payload VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,zaloOAId VARCHAR(75) null,isFollowed INTEGER,payload TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_zalomap";
 	public static final String ORDER_BY_JPQL = " ORDER BY zaloMap.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_zalomap.createDate ASC";

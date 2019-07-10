@@ -97,6 +97,6 @@
 		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="zaloOAId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="isFollowed" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
 	</class>
 </hibernate-mapping>

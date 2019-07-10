@@ -111,7 +111,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		TABLE_COLUMNS_MAP.put("grouping", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject STRING null,emailBody TEXT null,textMessage STRING null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject TEXT null,emailBody TEXT null,textMessage TEXT null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notificationtemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY notificationtemplate.notificationType ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationtemplate.notificationType ASC";
