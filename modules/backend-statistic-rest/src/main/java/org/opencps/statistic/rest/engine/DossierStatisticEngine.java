@@ -160,13 +160,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (lstScs.size() >= 1) {
 						JSONObject scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
-							sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
-							sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+							payload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					}
 				}

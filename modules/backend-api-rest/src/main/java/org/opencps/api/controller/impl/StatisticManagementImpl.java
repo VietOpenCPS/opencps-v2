@@ -33,13 +33,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
-import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
 import org.opencps.api.statistic.model.StatisticDossierResults;
 import org.opencps.api.statistic.model.StatisticDossierSearchModel;
@@ -400,9 +398,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	@Override
 	public Response exportDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query, String reportCode) {
+			Locale locale, User user, ServiceContext serviceContext, String data) {
 		BackendAuth auth = new BackendAuthImpl();
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -410,7 +407,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, reportCode);
+			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, "STATISTIC_01");
 			ScriptEngineManager manager = new ScriptEngineManager(null);
 			ScriptEngine engine = manager.getEngineByExtension("js");
 			engine.put("jsonObject", dynamicReport.getTableConfig());
@@ -424,49 +421,48 @@ public class StatisticManagementImpl implements StatisticManagement {
 					"        break;\n" + 
 					"    }\n" + 
 					"}");
-			_log.debug("EXPORT STATISTIC SCRIPT: " + engine.get("bodyArray"));
+//			_log.debug("EXPORT STATISTIC SCRIPT: " + engine.get("bodyArray"));
 			
-			JSONArray contentArr = JSONFactoryUtil.createJSONArray(engine.get("bodyArray").toString());
+			JSONArray bodyArr = JSONFactoryUtil.createJSONArray(engine.get("bodyArray").toString());
 			
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet mainSheet = workbook.createSheet("report");
-			_log.debug("EXPORT STATISTIC SCRIPT LENGTH: " + contentArr.length());
-			for (int i = 0; i < contentArr.length(); i++) {
-				JSONObject contentObj = contentArr.getJSONObject(i);
-				if (contentObj.has("table")) {
-					JSONObject tableObj = contentObj.getJSONObject("table");
-					JSONArray bodyArr = tableObj.getJSONArray("body");
-					int headerRows = tableObj.getInt("headerRows");
-					int startRow = 0;
-					int maxRow = 1;
-					for (int tempi = 0; tempi < headerRows; tempi++) {
-						JSONArray tempObj = bodyArr.getJSONArray(tempi);
-						int startCol = 0;
-						
-						for (int tempj = 0; tempj < tempObj.length(); tempj++) {
-							JSONObject columnObj = tempObj.getJSONObject(tempj);
-							HSSFRow row = mainSheet.createRow(startRow);
-							int spanCol = 0;
-							int spanRow = 0;
-							if (columnObj.has("rowSpan")) {
-								if (maxRow < columnObj.getInt("rowSpan")) {
-									maxRow = columnObj.getInt("rowSpan");
-								}
-								spanRow = columnObj.getInt("rowSpan");
-							}
-							row.createCell(startCol).setCellValue(columnObj.getString("text"));
-							if (columnObj.has("colSpan")) {
-								startCol += columnObj.getInt("colSpan");
-								spanCol = columnObj.getInt("colSpan");
-							}
-							mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow, startCol, startCol + spanCol));								
-						}
-						
-						startRow = maxRow;
+			int headerRows = Integer.parseInt(engine.get("headerRows").toString());
+			
+			int startRow = 0;
+			for (int tempi = 0; tempi <= headerRows; tempi++) {
+				JSONArray tempObj = bodyArr.getJSONArray(tempi);
+				int startCol = 0;
+				
+				HSSFRow row = mainSheet.createRow(startRow);
+
+				for (int tempj = 0; tempj < tempObj.length(); tempj++) {
+					JSONObject columnObj = tempObj.getJSONObject(tempj);
+					_log.debug("EXPORT STATISTIC ROW: " + startRow + ", COLUMN: " + startCol);
+					int spanCol = 1;
+					int spanRow = 1;
+					if (columnObj == null) {
 					}
-					
+					if (columnObj != null && columnObj.has("rowSpan")) {
+						spanRow = columnObj.getInt("rowSpan");
+					}
+					if (columnObj != null) {
+						row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
+						if (columnObj != null && columnObj.has("colSpan")) {
+							spanCol = columnObj.getInt("colSpan");
+						}
+						else {
+						}
+						if (spanRow > 1 || spanCol > 1) {
+							mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
+							_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
+						}
+					}
+					startCol++;
 				}
+				startRow++;
 			}
+					
 			File exportDir = new File("exported");
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
