@@ -221,17 +221,20 @@ public class CPSDossierBusinessLocalServiceImpl
 			String createDossiers = proAction.getCreateDossiers();
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
+			String dossierTemplateNo = dossier.getDossierTemplateNo();
 			
 			if (createDossiers.contains(StringPool.POUND)) {
 				String[] splitCDs = createDossiers.split(StringPool.POUND);
 				if (splitCDs.length == 2) {
-					if (splitCDs[0].contains(":")) {
-						if (splitCDs[0].split(":").length != 2) {
+					govAgencyCode = splitCDs[0];
+					
+					if (splitCDs[1].contains(StringPool.AT)) {
+						if (splitCDs[1].split(StringPool.AT).length != 2) {
 							throw new PortalException("Cross dossier config error");
 						}
 						else {
-							govAgencyCode = splitCDs[0].split(":")[0];
-							serviceCode = splitCDs[0].split(":")[1];
+							dossierTemplateNo = splitCDs[1].split(StringPool.AT)[0];
+							serviceCode = splitCDs[1].split(StringPool.AT)[1];
 						}
 					}
 					else {
@@ -240,13 +243,13 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			else {
-				if (createDossiers.contains(":")) {
-					if (createDossiers.split(":").length != 2) {
+				if (createDossiers.contains(StringPool.AT)) {
+					if (createDossiers.split(StringPool.AT).length != 2) {
 						throw new PortalException("Cross dossier config error");
 					}
 					else {
-						govAgencyCode = createDossiers.split(":")[0];
-						serviceCode = createDossiers.split(":")[1];
+						govAgencyCode = createDossiers.split(StringPool.AT)[0];
+						serviceCode = createDossiers.split(StringPool.AT)[1];
 					}
 				}
 				else {
@@ -262,15 +265,11 @@ public class CPSDossierBusinessLocalServiceImpl
 
 				ProcessOption foundOption = null;
 				if (createDossiers.contains(StringPool.POUND)) {
-					String[] splitCDs = createDossiers.split(StringPool.POUND);
-					if (splitCDs.length == 2) {
-						String dossierTemplateNo = splitCDs[1];
-						for (ProcessOption po : lstOptions) {
-							DossierTemplate dt = dossierTemplateLocalService.fetchDossierTemplate(po.getDossierTemplateId());
-							if (dt.getTemplateNo().equals(dossierTemplateNo)) {
-								foundOption = po;
-								break;
-							}
+					for (ProcessOption po : lstOptions) {
+						DossierTemplate dt = dossierTemplateLocalService.fetchDossierTemplate(po.getDossierTemplateId());
+						if (dt.getTemplateNo().equals(dossierTemplateNo)) {
+							foundOption = po;
+							break;
 						}
 					}
 				}
