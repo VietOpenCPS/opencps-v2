@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -53,10 +54,10 @@ public interface StatisticManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
 	
-	@GET
+	@POST
 	@Path("/dossiers/export")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	public Response exportDossierStatistic(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam DossierSearchModel query, @FormParam("reportCode") String reportCode);
+			@Context ServiceContext serviceContext, @FormParam("data") String data);
 }

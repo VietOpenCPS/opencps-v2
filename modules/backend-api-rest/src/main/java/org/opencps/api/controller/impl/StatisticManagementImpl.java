@@ -33,13 +33,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
-import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
 import org.opencps.api.statistic.model.StatisticDossierResults;
 import org.opencps.api.statistic.model.StatisticDossierSearchModel;
@@ -400,9 +398,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	@Override
 	public Response exportDossierStatistic(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query, String reportCode) {
+			Locale locale, User user, ServiceContext serviceContext, String data) {
 		BackendAuth auth = new BackendAuthImpl();
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -410,7 +407,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, reportCode);
+			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, "STATISTIC_01");
 			ScriptEngineManager manager = new ScriptEngineManager(null);
 			ScriptEngine engine = manager.getEngineByExtension("js");
 			engine.put("jsonObject", dynamicReport.getTableConfig());
