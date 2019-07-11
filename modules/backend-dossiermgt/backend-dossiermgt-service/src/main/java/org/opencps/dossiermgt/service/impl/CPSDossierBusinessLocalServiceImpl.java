@@ -3574,20 +3574,19 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			updateDelegateApplicant(dossier, input);
 			// Process update dossierNo
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-			params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-			params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-			params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+//			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//			params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+//			params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+//			params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
+//			params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 			if (option != null) {
 				//Process submition note
 				dossier.setSubmissionNote(option.getSubmissionNote());
 
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-						dossier.getDossierId(), option.getProcessOptionId(), process.getDossierGroupPattern(), params);
-
-				dossier.setDossierNo(dossierRef.trim());
+//				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
+//						dossier.getDossierId(), option.getProcessOptionId(), process.getDossierGroupPattern(), params);
+//				dossier.setDossierNo(dossierRef.trim());
 			}
 			dossier.setViaPostal(1);
 

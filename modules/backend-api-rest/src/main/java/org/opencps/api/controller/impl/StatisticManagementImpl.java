@@ -273,7 +273,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 							}
 						}
 
-						System.out.println("params: "+params);
+						//System.out.println("params: "+params);
 //						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);

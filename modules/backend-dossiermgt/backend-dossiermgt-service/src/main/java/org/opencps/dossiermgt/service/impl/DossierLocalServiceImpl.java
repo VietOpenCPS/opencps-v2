@@ -531,114 +531,42 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				ProcessOption option = processOption;
 				if (option != null) {
 					dossier.setSampleCount(option.getSampleCount());
+					dossier.setSubmissionNote(option.getSubmissionNote());
 				}
-				
+				dossier.setServerNo(serviceProcess.getServerNo());
+
+				Double durationCount;
+				Integer durationUnit = 0;
+				if (serviceProcess != null ) {
+					durationCount = serviceProcess.getDurationCount();
+					durationUnit = serviceProcess.getDurationUnit();
+					dossier.setDurationCount(durationCount);
+					dossier.setDurationUnit(durationUnit);
+				}
+					
+				dossier.setViaPostal(viaPostal);
+				if (viaPostal == 1) {
+					dossier.setPostalAddress(StringPool.BLANK);
+					dossier.setPostalCityCode(StringPool.BLANK);
+					dossier.setPostalTelNo(StringPool.BLANK);
+
+				} else if (viaPostal == 2) {
+					if (Validator.isNotNull(postalAddress))
+						dossier.setPostalAddress(postalAddress);
+					if (Validator.isNotNull(postalCityCode))
+						dossier.setPostalCityCode(postalCityCode);
+					if (Validator.isNotNull(postalTelNo))
+						dossier.setPostalTelNo(postalTelNo);
+					if (Validator.isNotNull(postalCityName))
+						dossier.setPostalCityName(postalCityName);
+
+				} else {
+					dossier.setPostalAddress(StringPool.BLANK);
+					dossier.setPostalCityCode(StringPool.BLANK);
+					dossier.setPostalTelNo(StringPool.BLANK);
+				}
+
 				dossierPersistence.update(dossier);
-
-				// create DossierFile if it is eForm
-
-//				List<DossierPart> dossierParts = new ArrayList<DossierPart>();
-	//
-//				dossierParts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplateNo);
-
-//				for (DossierPart part : dossierParts) {
-//					if (Validator.isNotNull(part.getFormScript()) && part.getPartType() != 2) {
-//						String dossierFileUUID = PortalUUIDUtil.generate();
-
-						// TODO HotFix
-
-//						if (groupId != 55301) {
-//						if (originality == DossierTerm.ORIGINALITY_DVCTT || originality == DossierTerm.ORIGINALITY_MOTCUA) {
-//							dossierFileLocalService.addDossierFile(groupId, dossierId, dossierFileUUID, dossierTemplateNo,
-//									part.getPartNo(), part.getFileTemplateNo(), part.getPartName(), StringPool.BLANK, 0l,
-//									null, StringPool.BLANK, StringPool.TRUE, context);
-//						}
-//					}
-//				}
-
-//				if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
-					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-					params.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
-					params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
-					params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
-					params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-
-//					ServiceProcess serviceProcess = null;
-//					_log.debug("option: "+option);
-					if (option != null) {
-						//Process submition note
-//						_log.debug("option: "+option.getSubmissionNote());
-						dossier.setSubmissionNote(option.getSubmissionNote());
-//						_log.debug("option: "+true);
-//						long serviceProcessId = option.getServiceProcessId();
-//						serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-
-						String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, dossier.getCompanyId(),
-								dossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-
-						dossier.setDossierNo(dossierRef.trim());
-						
-						dossier.setServerNo(serviceProcess.getServerNo());
-					}
-					
-					//Update submit date
-//					now = new Date();
-//					dossier.setSubmitDate(now);
-					Double durationCount;
-					Integer durationUnit = 0;
-					if (serviceProcess != null ) {
-						durationCount = serviceProcess.getDurationCount();
-						durationUnit = serviceProcess.getDurationUnit();
-//						_log.debug("durationCount: "+durationCount);
-//						_log.debug("durationUnit: "+durationUnit);
-//						int durationDays = 0;
-	//
-//						if (durationUnit == 0) {
-//							durationDays = durationCount;
-//						} else {
-//							durationDays = Math.round(durationCount / 8);
-//						}
-//						Date dueDate = null;
-//						if (Validator.isNotNull(durationCount) && durationCount > 0) {
-//							dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, groupId);
-//						}
-//						
-//						_log.debug("dueDate: "+dueDate);
-//						if (durationDays > 0) {
-//							dueDate = DossierOverDueUtils.calculateEndDate(now, durationDays);
-//						}
-
-//						dossier.setDueDate(dueDate);
-//						dossier.setReceiveDate(now);
-						dossier.setDurationCount(durationCount);
-						dossier.setDurationUnit(durationUnit);
-//					}
-					}
-					
-					dossier.setViaPostal(viaPostal);
-
-					if (viaPostal == 1) {
-						dossier.setPostalAddress(StringPool.BLANK);
-						dossier.setPostalCityCode(StringPool.BLANK);
-						dossier.setPostalTelNo(StringPool.BLANK);
-
-					} else if (viaPostal == 2) {
-						if (Validator.isNotNull(postalAddress))
-							dossier.setPostalAddress(postalAddress);
-						if (Validator.isNotNull(postalCityCode))
-							dossier.setPostalCityCode(postalCityCode);
-						if (Validator.isNotNull(postalTelNo))
-							dossier.setPostalTelNo(postalTelNo);
-						if (Validator.isNotNull(postalCityName))
-							dossier.setPostalCityName(postalCityName);
-
-					} else {
-						dossier.setPostalAddress(StringPool.BLANK);
-						dossier.setPostalCityCode(StringPool.BLANK);
-						dossier.setPostalTelNo(StringPool.BLANK);
-					}
-					
-					dossierPersistence.update(dossier);
 			} else {
 
 				dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
