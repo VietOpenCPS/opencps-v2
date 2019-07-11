@@ -44,4 +44,5 @@ public interface DossierStatisticConstants {
 	String PASSWORD_KEY = "password";
 	
 	String SERVICE_DOMAIN_CODE = "SERVICE_DOMAIN";
+	String GOV_AGENCY_CODE = "SERVICE_DOMAIN";
 }

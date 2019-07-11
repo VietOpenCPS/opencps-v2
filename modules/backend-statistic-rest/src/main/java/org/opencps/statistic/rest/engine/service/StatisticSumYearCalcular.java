@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.statistic.rest.dto.DomainResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
@@ -21,12 +24,16 @@ import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -48,7 +55,8 @@ public class StatisticSumYearCalcular {
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
-
+		List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
+		
 		dossierStatisticRequest.setMonth(-1);
 		dossierStatisticRequest.setYear(year);
 		dossierStatisticRequest.setGroupId(groupId);
@@ -150,8 +158,32 @@ public class StatisticSumYearCalcular {
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 
 			agencyRequest.setGroupId(groupId);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+					}
+				}
+			}
 
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
 
@@ -202,7 +234,32 @@ public class StatisticSumYearCalcular {
 
 			agencyRequest.setGroupId(groupId);
 
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+					}
+				}
+			}
+
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
 

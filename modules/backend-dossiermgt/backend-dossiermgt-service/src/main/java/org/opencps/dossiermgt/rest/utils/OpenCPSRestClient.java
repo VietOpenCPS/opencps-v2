@@ -177,7 +177,7 @@ public class OpenCPSRestClient {
 	}
 	
 	public ExecuteOneAction postDossierAction(String dossierId, ExecuteOneAction model) {
-		ExecuteOneAction result = new ExecuteOneAction();
+		ExecuteOneAction result = null;
 
 		try {
 
