@@ -302,13 +302,6 @@ public class CPSDossierBusinessLocalServiceImpl
 							dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 							dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 							dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
-					if (ltProcess.getServerNo().contains(StringPool.COMMA)) {
-						if (!serviceCode.equals(dossier.getServiceCode())) {
-							String serverNoProcess = ltProcess.getServerNo().split(StringPool.COMMA)[0];
-							hsltDossier.setServerNo(serverNoProcess + StringPool.AT + serviceCode + StringPool.COMMA + ltProcess.getServerNo().split(StringPool.COMMA)[1]);
-							hsltDossier = dossierLocalService.updateDossier(hsltDossier);
-						}
-					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 
 					if (wu != null) {
@@ -358,7 +351,16 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (hsltDossier != null) {
 						//Set HSLT dossierId to origin dossier
 						hsltDossier.setOriginDossierId(dossier.getDossierId());
-						hsltDossier.setServerNo(ltProcess.getServerNo());
+						if (ltProcess.getServerNo().contains(StringPool.COMMA)) {
+							if (!serviceCode.equals(dossier.getServiceCode())) {
+								String serverNoProcess = ltProcess.getServerNo().split(StringPool.COMMA)[0];
+								hsltDossier.setServerNo(serverNoProcess + StringPool.AT + serviceCode + StringPool.COMMA + ltProcess.getServerNo().split(StringPool.COMMA)[1]);
+								hsltDossier = dossierLocalService.updateDossier(hsltDossier);
+							}
+						}
+						else {
+							hsltDossier.setServerNo(ltProcess.getServerNo());
+						}
 						//Update DossierName
 						hsltDossier.setDossierName(dossier.getDossierName());
 						hsltDossier.setOriginDossierNo(dossier.getDossierNo());

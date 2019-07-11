@@ -211,12 +211,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				//Recalculate data
 				for (int month = 1; month <= monthCurrent; month ++) {
 					if (mapFlag.get(month)) {
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
-						}
-						catch (Exception e) {
-							
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+//						}
+//						catch (Exception e) {
+//							
+//						}
 						if (calculateData.get(month) != null) {
 							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 							
@@ -250,12 +250,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlag.get(lastMonth)) {
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
-						}
-						catch (Exception e) {
-							
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
+//						}
+//						catch (Exception e) {
+//							
+//						}
 						if (calculateData.get(lastMonth) != null) {
 							statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
 						}
@@ -264,24 +264,24 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	
 				/* Update summary */
 				//Delete record
-				try {
-					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
-				}
-				catch (Exception e) {
-					
-				}
+//				try {
+//					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+//				}
+//				catch (Exception e) {
+//					
+//				}
 				//
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				//TODO: Calculator again last year
 				//Delete record
-				try {
-					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
-				}
-				catch (Exception e) {
-					
-				}
+//				try {
+//					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+//				}
+//				catch (Exception e) {
+//					
+//				}
 				//
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 	
