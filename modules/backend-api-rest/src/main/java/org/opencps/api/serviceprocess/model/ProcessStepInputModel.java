@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="instructionNote" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="customProcessUrl" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="editable" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="checkInput" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -60,7 +61,8 @@ import javax.xml.bind.annotation.XmlType;
     "briefNote",
     "customProcessUrl",
     "editable",
-    "lockState"
+    "lockState",
+    "checkInput"
 })
 @XmlRootElement(name = "ProcessStepInputModel")
 public class ProcessStepInputModel {
@@ -92,8 +94,18 @@ public class ProcessStepInputModel {
     protected String editable;
 	@FormParam("lockState")
     protected String lockState;
+	@FormParam("checkInput")
+    protected Integer checkInput;
+	
+    public Integer getCheckInput() {
+		return checkInput;
+	}
 
-    public String getLockState() {
+	public void setCheckInput(Integer checkInput) {
+		this.checkInput = checkInput;
+	}
+
+	public String getLockState() {
 		return lockState;
 	}
 

@@ -58,7 +58,8 @@ import javax.xml.bind.annotation.XmlType;
     "briefNote",
     "customProcessUrl",
     "editable",
-    "lockState"
+    "lockState",
+    "checkInput"
 })
 public class ProcessStepDataModel {
 
@@ -75,8 +76,17 @@ public class ProcessStepDataModel {
     protected String customProcessUrl;
     protected String editable;
     protected String lockState;
+    protected Integer checkInput;
 
-    public String getLockState() {
+    public Integer getCheckInput() {
+		return checkInput;
+	}
+
+	public void setCheckInput(Integer checkInput) {
+		this.checkInput = checkInput;
+	}
+
+	public String getLockState() {
 		return lockState;
 	}
 

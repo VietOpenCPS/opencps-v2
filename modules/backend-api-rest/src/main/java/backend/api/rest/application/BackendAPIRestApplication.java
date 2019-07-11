@@ -231,6 +231,13 @@ public class BackendAPIRestApplication extends Application {
 	}
 
 	@GET
+	@Path("ping")
+	@Produces("text/plain")
+	public String ping() {
+		return "ok";
+	}
+	
+	@GET
 	@Path("/barcode")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

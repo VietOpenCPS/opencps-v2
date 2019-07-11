@@ -520,12 +520,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String briefNote = HtmlUtil.escape(input.getBriefNote());
 			String editable = HtmlUtil.escape(String.valueOf(input.getEditable()));
 			String lockState = HtmlUtil.escape(input.getLockState());
+			Integer checkInput = input.getCheckInput();
 			
 			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, stepCode,
 					stepName, id, sequenceNo, dossierStatus,
 					dossierSubStatus, GetterUtil.getInteger(durationCount),
 					customProcessUrl, stepInstruction, briefNote,
-					GetterUtil.getBoolean(editable), lockState, serviceContext);
+					GetterUtil.getBoolean(editable), lockState, checkInput, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
@@ -580,12 +581,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String briefNote = HtmlUtil.escape(input.getBriefNote());
 			String editable = HtmlUtil.escape(String.valueOf(input.getEditable()));
 			String lockState = HtmlUtil.escape(input.getLockState());
+			Integer checkInput = input.getCheckInput();
 			
 			ProcessStep step = actions.updateProcessStep(groupId, code, stepCode, stepName, id,
 					sequenceNo, dossierStatus, dossierSubStatus,
 					GetterUtil.getInteger(durationCount), customProcessUrl,
 					stepInstruction, briefNote, GetterUtil.getBoolean(editable),
-					lockState, serviceContext);
+					lockState, checkInput, serviceContext);
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 

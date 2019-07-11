@@ -405,13 +405,13 @@ public class ProcessStepLocalServiceWrapper implements ProcessStepLocalService,
 		long serviceProcessId, String sequenceNo, String dossierStatus,
 		String dossierSubStatus, int durationCount, String customProcessUrl,
 		String stepInstruction, String briefNote, boolean editable,
-		String lockState,
+		String lockState, Integer checkInput,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processStepLocalService.updateProcessStep(groupId,
 			processStepId, stepCode, stepName, serviceProcessId, sequenceNo,
 			dossierStatus, dossierSubStatus, durationCount, customProcessUrl,
-			stepInstruction, briefNote, editable, lockState, context);
+			stepInstruction, briefNote, editable, lockState, checkInput, context);
 	}
 
 	/**
