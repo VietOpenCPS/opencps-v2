@@ -506,5 +506,182 @@ public class DossierNumberGenerator {
 
 	}
 
+	public static String generateDossierNumber(long groupId, String dossierNoPattern, String serviceCode, String govAgencyCode, String templateNo, String serviceProcessCode) {
+
+		String dossierNumber = StringPool.BLANK;
+		String codePatternGov = "\\{(a+|A+)\\}";
+		String codePatternDate = "\\{(n+|N+)\\}";
+		String codePatternMonth = "\\{(p+|P+)\\}";
+		String codePatternYear = "\\{(q+|Q+)\\}";
+		String codePatternService = "\\{(r+|R+)\\}";
+		String dayPattern = "\\{(d{2}|D{2})\\}";
+		String monthPattern = "\\{(m{2}|M{2})\\}";
+		String yearPattern = "\\{(y+|Y+)\\}";
+		String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+		String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+		String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
+				codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
+
+		Date now = new Date();
+
+		String day = String.valueOf(DateTimeUtils.getDayFromDate(now));
+		// LamTV_Process month = monthCalendar + 1
+		String month = String.valueOf(DateTimeUtils.getMonthFromDate(now) + 1);
+		String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
+
+		for (String pattern : patterns) {
+			Pattern r = Pattern.compile(pattern);
+
+			Matcher m = r.matcher(dossierNoPattern);
+
+			while (m.find()) {
+				String tmp = m.group(1);
+//					_log.info("tmp11: "+tmp);
+
+				// Pattern follow serviceProcess
+				if (r.toString().equals(codePatternDate)) {
+					// String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
+					String number = countByNumber(key, tmp);
+
+					// String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+					_log.debug(
+							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), number);
+
+					// Pattern follow GovAgencyCode
+				} else if (r.toString().equals(codePatternMonth)) {
+					// String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
+					String number = countByNumber(key, tmp);
+
+					// String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+					_log.debug(
+							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), number);
+
+					// Pattern follow GovAgencyCode
+				} else if (r.toString().equals(codePatternYear)) {
+					// String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
+					String number = countByNumber(key, tmp);
+
+					// String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+					_log.debug(
+							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), number);
+
+					// Pattern follow GovAgencyCode
+				} else if (r.toString().equals(codePatternService)) {
+					// String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + serviceCode;
+					String number = countByNumber(key, tmp);
+
+					// String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+					_log.debug(
+							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), number);
+
+					// Pattern follow GovAgencyCode
+				} else if (r.toString().equals(codePatternGov)) {
+//						_log.info("codePatternGov: "+ true);
+					// String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+
+					String number = countByInit(govAgencyCode, 0, tmp, groupId);
+
+					_log.debug("//////////////////////////////////////////////////////////// " + number
+							+ "|processOtionId= " + number);
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), number);
+
+				} else if (r.toString().equals(datetimePattern)) {
+//						System.out.println(tmp);
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), "OK");
+
+				} else if (r.toString().equals(dayPattern)) {
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (day.length() < tmp.length()) {
+						day = tmp.substring(0, tmp.length() - day.length()).concat(day);
+					} else if (day.length() > tmp.length()) {
+						day = day.substring(day.length() - tmp.length(), day.length());
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), day);
+
+				} else if (r.toString().equals(monthPattern)) {
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (month.length() < tmp.length()) {
+						month = tmp.substring(0, tmp.length() - month.length()).concat(month);
+					} else if (month.length() > tmp.length()) {
+						month = month.substring(month.length() - tmp.length(), month.length());
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), month);
+
+				} else if (r.toString().equals(yearPattern)) {
+
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+					if (year.length() < tmp.length()) {
+						year = tmp.substring(0, tmp.length() - year.length()).concat(year);
+					} else if (year.length() > tmp.length()) {
+						year = year.substring(year.length() - tmp.length(), year.length());
+					}
+
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), year);
+				} 
+
+				m = r.matcher(dossierNoPattern);
+
+			}
+		}
+
+		dossierNumber = dossierNoPattern;
+		return dossierNumber;
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());
 }

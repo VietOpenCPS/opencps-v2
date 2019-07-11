@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -33,9 +31,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.opencps.adminconfig.model.DynamicReport;
-import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
@@ -469,68 +467,214 @@ public class StatisticManagementImpl implements StatisticManagement {
 			Locale locale, User user, ServiceContext serviceContext, String data) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchByCode(groupId, "STATISTIC_01");
-			ScriptEngineManager manager = new ScriptEngineManager(null);
-			ScriptEngine engine = manager.getEngineByExtension("js");
-			engine.put("jsonObject", dynamicReport.getTableConfig());
-			engine.eval("var json = " + dynamicReport.getTableConfig() + " ; var contentArr = json.docDefinition.content; var bodyArray = [];\n" + 
-					"var headerRows;\n" + 
-					"\n" + 
-					"for (i = 0; i < contentArr.length; i++) {\n" + 
-					"	if (contentArr[i].hasOwnProperty('table')) {\n" + 
-					"    	headerRows = contentArr[i].table.headerRows;\n" + 
-					"        bodyArray = JSON.stringify(contentArr[i].table.body);\n" + 
-					"        break;\n" + 
-					"    }\n" + 
-					"}");
-//			_log.debug("EXPORT STATISTIC SCRIPT: " + engine.get("bodyArray"));
 			
-			JSONArray bodyArr = JSONFactoryUtil.createJSONArray(engine.get("bodyArray").toString());
-			
+			JSONObject docDefinition = JSONFactoryUtil.createJSONObject(data);
+			JSONArray contentArr = docDefinition.getJSONArray("content");
+			JSONArray bodyArr = null;
+			int headerRows = 0;
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet mainSheet = workbook.createSheet("report");
-			int headerRows = Integer.parseInt(engine.get("headerRows").toString());
+			int maxCol = 0;
+	
+			for (int i = 0; i < contentArr.length(); i++) {
+				if (contentArr.getJSONObject(i).has("table")) {
+					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
+					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
+					
+					for (int tempi = headerRows + 1; tempi < bodyArr.length(); tempi++) {
+						JSONArray tempObj = bodyArr.getJSONArray(tempi);
+						
+						if (maxCol < tempObj.length()) {
+							maxCol = tempObj.length();
+						}
+					}		
+				}
+			}
 			
 			int startRow = 0;
-			for (int tempi = 0; tempi <= headerRows; tempi++) {
-				JSONArray tempObj = bodyArr.getJSONArray(tempi);
-				int startCol = 0;
-				
-				HSSFRow row = mainSheet.createRow(startRow);
+			for (int i = 0; i < contentArr.length(); i++) {
+				if (contentArr.getJSONObject(i).has("table")) {
+					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
+					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
+					for (int tempi = 0; tempi <= headerRows; tempi++) {
+						JSONArray tempObj = bodyArr.getJSONArray(tempi);
+						int startCol = 0;
+						
+						HSSFRow row = mainSheet.createRow(startRow);
 
-				for (int tempj = 0; tempj < tempObj.length(); tempj++) {
-					JSONObject columnObj = tempObj.getJSONObject(tempj);
-					_log.debug("EXPORT STATISTIC ROW: " + startRow + ", COLUMN: " + startCol);
-					int spanCol = 1;
-					int spanRow = 1;
-					if (columnObj == null) {
+						for (int tempj = 0; tempj < tempObj.length(); tempj++) {
+							JSONObject columnObj = tempObj.getJSONObject(tempj);
+							
+							_log.debug("EXPORT STATISTIC ROW: " + startRow + ", COLUMN: " + startCol);
+							int spanCol = 1;
+							int spanRow = 1;
+							if (columnObj == null) {
+							}
+							if (columnObj != null && columnObj.has("rowSpan")) {
+								spanRow = columnObj.getInt("rowSpan");
+							}
+							if (columnObj != null) {
+								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
+								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
+								cellStyle.setWrapText(true);
+								if (columnObj.has("alignment")) {
+									String alignment = columnObj.getString("alignment");
+									if ("left".equals(alignment)) {
+										cellStyle.setAlignment(HorizontalAlignment.LEFT);
+									}
+									else if ("right".equals(alignment)) {
+										cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+									}
+									else {
+										cellStyle.setAlignment(HorizontalAlignment.CENTER);
+									}
+									row.getCell(startCol).setCellStyle(cellStyle);
+								}
+								if (columnObj != null && columnObj.has("colSpan")) {
+									spanCol = columnObj.getInt("colSpan");
+								}
+								else {
+								}
+								if (spanRow > 1 || spanCol > 1) {
+									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
+									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
+								}
+							}
+							startCol++;
+						}
+						
+						startRow++;
 					}
-					if (columnObj != null && columnObj.has("rowSpan")) {
-						spanRow = columnObj.getInt("rowSpan");
+					
+					for (int tempi = headerRows + 1; tempi < bodyArr.length(); tempi++) {
+						JSONArray tempObj = bodyArr.getJSONArray(tempi);
+						int startCol = 0;
+						
+						HSSFRow row = mainSheet.createRow(startRow);
+						if (maxCol < tempObj.length()) {
+							maxCol = tempObj.length();
+						}
+						for (int tempj = 0; tempj < tempObj.length(); tempj++) {
+							JSONObject columnObj = tempObj.getJSONObject(tempj);
+							
+							_log.debug("EXPORT STATISTIC ROW: " + startRow + ", COLUMN: " + startCol);
+							int spanCol = 1;
+							int spanRow = 1;
+							if (columnObj == null) {
+							}
+							if (columnObj != null && columnObj.has("rowSpan")) {
+								spanRow = columnObj.getInt("rowSpan");
+							}
+							if (columnObj != null) {
+								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
+								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
+								cellStyle.setWrapText(true);
+								if (columnObj.has("alignment")) {
+									String alignment = columnObj.getString("alignment");
+									if ("left".equals(alignment)) {
+										cellStyle.setAlignment(HorizontalAlignment.LEFT);
+									}
+									else if ("right".equals(alignment)) {
+										cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+									}
+									else {
+										cellStyle.setAlignment(HorizontalAlignment.CENTER);
+									}
+									row.getCell(startCol).setCellStyle(cellStyle);
+								}
+								if (columnObj != null && columnObj.has("colSpan")) {
+									spanCol = columnObj.getInt("colSpan");
+								}
+								else {
+								}
+								if (spanRow > 1 || spanCol > 1) {
+									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
+									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
+								}
+							}
+							startCol++;
+						}
+						startRow++;
+					}			
+				} else if (contentArr.getJSONObject(i).has("text")) {
+					HSSFRow row = mainSheet.createRow(startRow);
+					JSONArray textArr = contentArr.getJSONObject(i).getJSONArray("text");
+					String text = StringPool.BLANK;
+					if (textArr == null) {
+						text = contentArr.getJSONObject(i).getString("text");
 					}
-					if (columnObj != null) {
-						row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
-						if (columnObj != null && columnObj.has("colSpan")) {
-							spanCol = columnObj.getInt("colSpan");
+					else {
+						StringBuilder textBd = new StringBuilder();
+						for (int tempi = 0; tempi < textArr.length(); tempi++) {
+							textBd.append(textArr.getJSONObject(tempi).getString("text"));
+						}
+						text = textBd.toString();
+					}
+					row.createCell(0).setCellValue(text);	
+					CellStyle cellStyle = row.getCell(0).getCellStyle();
+					cellStyle.setWrapText(true);
+					if (contentArr.getJSONObject(i).has("alignment")) {
+						String alignment = contentArr.getJSONObject(i).getString("alignment");
+						if ("left".equals(alignment)) {
+							cellStyle.setAlignment(HorizontalAlignment.LEFT);
+						}
+						else if ("right".equals(alignment)) {
+							cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 						}
 						else {
+							cellStyle.setAlignment(HorizontalAlignment.CENTER);
 						}
-						if (spanRow > 1 || spanCol > 1) {
-							mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
-							_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
-						}
+						row.getCell(0).setCellStyle(cellStyle);
 					}
-					startCol++;
+					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol));		
+					startRow++;
 				}
-				startRow++;
-			}
+				else if (contentArr.getJSONObject(i).has("columns")) {
+					HSSFRow row = mainSheet.createRow(startRow);
+					JSONArray columnArr = contentArr.getJSONObject(i).getJSONArray("columns");
+					int mergeColumn = maxCol / columnArr.length();
+					String text = StringPool.BLANK;
 					
+					for (int tempi = 0; tempi < columnArr.length(); tempi++) {
+						JSONArray textArr = columnArr.getJSONObject(tempi).getJSONArray("text");
+						if (textArr == null) {
+							text = columnArr.getJSONObject(tempi).getString("text");
+						}
+						else {
+							StringBuilder textBd = new StringBuilder();
+							for (int tempj = 0; tempj < textArr.length(); tempj++) {
+								textBd.append(textArr.getJSONObject(tempj).getString("text"));
+							}
+							text = textBd.toString();							
+						}						
+						row.createCell(tempi * mergeColumn).setCellValue(text);	
+						CellStyle cellStyle = row.getCell(tempi * mergeColumn).getCellStyle();
+						cellStyle.setWrapText(true);
+						if (contentArr.getJSONObject(i).has("alignment")) {
+							String alignment = contentArr.getJSONObject(i).getString("alignment");
+							if ("left".equals(alignment)) {
+								cellStyle.setAlignment(HorizontalAlignment.LEFT);
+							}
+							else if ("right".equals(alignment)) {
+								cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+							}
+							else {
+								cellStyle.setAlignment(HorizontalAlignment.CENTER);
+							}
+							row.getCell(0).setCellStyle(cellStyle);
+						}
+						mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, tempi * mergeColumn, tempi * mergeColumn + mergeColumn - 1));		
+					}
+					startRow++;
+				}
+			}
+			
+						
 			File exportDir = new File("exported");
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();

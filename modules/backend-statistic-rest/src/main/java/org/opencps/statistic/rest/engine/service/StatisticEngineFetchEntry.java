@@ -44,7 +44,7 @@ public class StatisticEngineFetchEntry {
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		if (dossierData.getDossierStatus().contentEquals("denied")) {
-			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);
+			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
 			// tiep nhan xu ly
 			statisticData.setProcessCount(statisticData.getProcessCount() + 1);
@@ -63,8 +63,6 @@ public class StatisticEngineFetchEntry {
 				statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
 			}
 			
-			
-
 			if (releaseDate == null || releaseDate.after(toStatisticDate)) {
 				// hồ sơ đang xử lý 
 				if (dossierData.getDossierStatus().contentEquals("waiting") || 
@@ -101,15 +99,15 @@ public class StatisticEngineFetchEntry {
 					// ho so da bi rut trong thang
 					statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 				} else {
-					// hồ sơ đã hoàn thành trong tháng			
-					statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);
+					// hồ sơ đã hoàn thành trong tháng	
+					statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);						
 					if (dossierData.getDossierStatus().contentEquals("unresolved")) {
 						// từ chối giải quyết => không tính hạn xử lý
 						statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
 					} else { 
 						if (finishDate != null) {
 							// số đã trả kết quả
-							statisticData.setDoneCount(statisticData.getDoneCount() + 1);
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);								
 						} else {
 							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 						}
@@ -123,6 +121,7 @@ public class StatisticEngineFetchEntry {
 						if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
 						//Or check finishDate < dueDate
 						if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
+						
 						//Check overTime condition releaseDate > dueDate
 						if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
 					}

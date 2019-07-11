@@ -65,8 +65,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 	@Override
 	public Response getDossierFilesByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, long id, String password) {
-
+			Locale locale, User user, ServiceContext serviceContext, String id, String password) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DossierFileResultsModel results = new DossierFileResultsModel();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -76,14 +76,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			long dossierId = Long.valueOf(id);
+			
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
 			Dossier groupDossier = null;
 			if (dossier != null && dossier.getGroupDossierId() != 0) {
 				groupDossier = DossierLocalServiceUtil.fetchDossier(dossier.getGroupDossierId());
 			}
 			if (dossier != null && dossier.getOriginDossierId() == 0) {
-				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(id);
+				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getDossierId());
 				if (groupDossier != null) {
 					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
 					dossierFiles.addAll(groupFiles);

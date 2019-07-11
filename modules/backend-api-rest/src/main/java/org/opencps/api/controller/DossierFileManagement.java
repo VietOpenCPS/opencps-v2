@@ -55,7 +55,7 @@ public interface DossierFileManagement {
 	public Response getDossierFilesByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "password for access dossier file", required = false) @PathParam("password") String password);
 
 	@POST

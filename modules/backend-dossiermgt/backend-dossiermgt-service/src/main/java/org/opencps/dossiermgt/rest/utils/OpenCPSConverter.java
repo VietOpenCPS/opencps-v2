@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -49,6 +50,7 @@ import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -1016,8 +1018,16 @@ public class OpenCPSConverter {
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
 		if (Validator.isNotNull(dossier.getServerNo())
-				&& dossier.getServerNo().contains(";")) {
-			model.setServerNo(dossier.getServerNo());
+				&& dossier.getServerNo().contains(StringPool.COMMA)) {
+			if (dossier.getServerNo().contains(StringPool.AT)) {
+				String serverNoProcess = dossier.getServerNo().split(StringPool.COMMA)[0];
+				String serviceCode = serverNoProcess.split(StringPool.AT)[1];
+				model.setServiceCode(serviceCode);
+				model.setServerNo(dossier.getServerNo().split(StringPool.COMMA)[1]);
+			}
+			else {
+				model.setServerNo(dossier.getServerNo());				
+			}
 		}
 		return model;
 	}
@@ -1041,9 +1051,16 @@ public class OpenCPSConverter {
 	}
 
 	public static ExecuteOneAction convertProcessAction(JSONObject jsonObj) {
-		ExecuteOneAction result = new ExecuteOneAction();
-		
-		return result;
+		int status = Integer.parseInt(Validator.isNotNull(jsonObj.getString(RESTFulConfiguration.STATUS)) ? jsonObj.getString(RESTFulConfiguration.STATUS) : HttpURLConnection.HTTP_OK + ""
+				);
+		if (status == HttpURLConnection.HTTP_OK) {
+			ExecuteOneAction result = new ExecuteOneAction();
+			
+			return result;
+		}
+		else {
+			return null;
+		}
 	}
 	
 	public static HashMap<String, String> convertDossierFileHttpParams(DossierFileModel model) {

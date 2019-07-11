@@ -31,6 +31,9 @@ import org.opencps.statistic.rest.dto.GetPersonResponse;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
+import org.opencps.statistic.rest.dto.GovAgencyData;
+import org.opencps.statistic.rest.dto.GovAgencyRequest;
+import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
@@ -243,6 +246,51 @@ public class StatisticDataUtil {
 			}
 			
 			response.setData(lstDatas);
+		}
+		catch (Exception e) {
+			
+		}
+		return response;
+	}	
+	
+	public static GovAgencyResponse getLocalGovAgency(GovAgencyRequest payload) {
+		GovAgencyResponse response = new GovAgencyResponse();
+
+		try {
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			
+			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(company.getCompanyId());
+			
+			long groupId = GetterUtil.getLong(payload.getGroupId());
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put("groupId", groupId);
+			params.put("keywords", StringPool.BLANK);
+			params.put("itemLv", StringPool.BLANK);
+			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.GOV_AGENCY_CODE);
+
+			Sort[] sorts = null;
+			
+			sorts = new Sort[] {
+				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+			
+
+			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
+					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
+			response.setTotal(jsonData.getInt("total"));
+			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			List<GovAgencyData> lstSDatas = new ArrayList<>();
+			for (Document doc : lstDocs) {
+				GovAgencyData sd = new GovAgencyData();
+				sd.setItemCode(doc.get(DictItemTerm.ITEM_CODE));
+				sd.setItemName(doc.get(DictItemTerm.ITEM_NAME));				
+				
+				lstSDatas.add(sd);
+			}
+			response.setData(lstSDatas);
 		}
 		catch (Exception e) {
 			

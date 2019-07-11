@@ -305,7 +305,6 @@ public class InvokeREST {
 			}
 
 			List<String> res = multipart.finish();
-
 			StringBuilder sb = new StringBuilder();
 
 			for (String line : res) {
