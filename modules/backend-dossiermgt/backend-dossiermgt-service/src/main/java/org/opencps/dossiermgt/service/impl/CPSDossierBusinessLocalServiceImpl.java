@@ -4359,7 +4359,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-					payload, StringPool.BLANK, StringPool.BLANK, 0, serviceContext);
+					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
 
 		}
 		return dossier;
@@ -4851,7 +4851,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
-					payload, StringPool.BLANK, StringPool.BLANK, 0, serviceContext);
+					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
 
 		}
 		return dossier;

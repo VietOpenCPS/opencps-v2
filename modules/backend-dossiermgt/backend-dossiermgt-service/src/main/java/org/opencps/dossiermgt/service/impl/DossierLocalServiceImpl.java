@@ -2514,6 +2514,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
+		String assignedUserId = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2544,7 +2545,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2622,6 +2623,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String register = GetterUtil.getString(params.get(DossierTerm.REGISTER));
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
+		String assignedUserId = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
 
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2649,7 +2651,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2665,7 +2667,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String[] subQuerieArr = new String[] { DossierTerm.SERVICE_NAME_SEARCH, DossierTerm.APPLICANT_NAME,
 					DossierTerm.DOSSIER_NO_SEARCH, DossierTerm.DOSSIER_ID_CTN, DossierTerm.BRIEF_NOTE,
 					DossierTerm.DOSSIER_NAME_SEARCH, DossierTerm.CURRENT_ACTION_USER,
-					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH, ServiceInfoTerm.SERVICE_CODE_SEARCH };
+					DossierTerm.ORIGIN_DOSSIER_NO_SEARCH, ServiceInfoTerm.SERVICE_CODE_SEARCH,
+					DossierTerm.DELEGATE_NAME_SEARCH};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -2751,7 +2754,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			BooleanQuery booleanQuery) throws ParseException {
+			String assignedUserId, BooleanQuery booleanQuery) throws ParseException {
 
 
 		if (Validator.isNotNull(status)) {
@@ -3295,6 +3298,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(assigned));
 			query.addField(DossierTerm.ASSIGNED);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		// LamTV: Process originality and assigned
+		if (Validator.isNotNull(assignedUserId)) {
+			String[] assignedArr = StringUtil.split(assignedUserId);
+
+			if (assignedArr != null && assignedArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < assignedArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(assignedArr[i]);
+					query.addField(DossierTerm.ASSIGNED_USER_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(assignedUserId);
+				query.addFields(DossierTerm.ASSIGNED_USER_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		//_log.debug("originality: "+originality);

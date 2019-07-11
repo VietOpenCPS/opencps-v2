@@ -382,10 +382,22 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 					Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-					// if (Validator.isNotNull(stepDuedate)) {
 					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
-					// }
+					
+					//Index assigned in step
+					List<String> userAssignedList = new ArrayList<>();
+					if (object.getDossierId() > 0) {
+						List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil
+								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
+						if (dauList != null && dauList.size() > 0) {
+							for (DossierActionUser dau : dauList) {
+								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+							}
+						}
+					}
+					document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(userAssignedList, StringPool.SPACE));
+
 					//Index userNote
 					String actionCode = dossierAction.getActionCode();
 //					_log.info("actionCode: "+actionCode);
@@ -434,25 +446,13 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH, StringPool.BLANK);
 			}
-//			if (Validator.isNotNull(object.getGovAgencyCode())) {
-				document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
-//			}
-//			if (Validator.isNotNull(object.getGovAgencyName())) {
-				document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
-//			}
-//			if (Validator.isNotNull(object.getApplicantName())) {
-				document.addTextSortable(DossierTerm.APPLICANT_NAME, object.getApplicantName());
-//			}
 
-//			if (Validator.isNotNull(object.getApplicantIdType())) {
-				document.addTextSortable(DossierTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
-//			}
-//			if (Validator.isNotNull(object.getApplicantIdNo())) {
-				document.addTextSortable(DossierTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
-//			}
-//			if (Validator.isNotNull(object.getAddress())) {
-				document.addTextSortable(DossierTerm.ADDRESS, object.getAddress());
-//			}
+			document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+			document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
+			document.addTextSortable(DossierTerm.APPLICANT_NAME, object.getApplicantName());
+			document.addTextSortable(DossierTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
+			document.addTextSortable(DossierTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
+			document.addTextSortable(DossierTerm.ADDRESS, object.getAddress());
 			document.addTextSortable(DossierTerm.CITY_CODE, object.getCityCode());
 			document.addTextSortable(DossierTerm.CITY_NAME, object.getCityName());
 			document.addTextSortable(DossierTerm.DISTRICT_CODE, object.getDistrictCode());
@@ -460,11 +460,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.WARD_CODE, object.getWardCode());
 			document.addTextSortable(DossierTerm.WARD_NAME, object.getWardName());
 			document.addTextSortable(DossierTerm.CONTACT_NAME, object.getContactName());
-
-			if (Validator.isNull(object.getContactTelNo())) {
-				// Get ContactTelNo from Applicant
-			}
-
 			document.addTextSortable(DossierTerm.CONTACT_TEL_NO, object.getContactTelNo());
 			document.addTextSortable(DossierTerm.CONTACT_EMAIL, object.getContactEmail());
 			document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());
@@ -654,6 +649,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.REGISTER, object.getRegisterBookCode());
 			//Info user create dossier
 			document.addTextSortable(DossierTerm.DELEGATE_NAME, object.getDelegateName());
+			if (Validator.isNotNull(object.getDelegateName())) {
+				String delegateNameSearch = SpecialCharacterUtils.splitSpecial(object.getDelegateName());
+				document.addTextSortable(DossierTerm.DELEGATE_NAME_SEARCH, delegateNameSearch);
+			} else {
+				document.addTextSortable(DossierTerm.DELEGATE_NAME_SEARCH, StringPool.BLANK);
+			}
 			document.addTextSortable(DossierTerm.DELEGATE_ID_NO, object.getDelegateIdNo());
 			document.addTextSortable(DossierTerm.DELEGATE_EMAIL, object.getDelegateEmail());
 			document.addTextSortable(DossierTerm.DELEGATE_TELNO, object.getDelegateTelNo());

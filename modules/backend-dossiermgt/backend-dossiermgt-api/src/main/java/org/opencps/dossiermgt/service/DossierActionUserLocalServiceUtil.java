@@ -224,6 +224,11 @@ public class DossierActionUserLocalServiceUtil {
 			asArr);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID_DAID(
+		long dossierId, long dossierActionId) {
+		return getService().getByDID_DAID(dossierId, dossierActionId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDOSSIER_UID(
 		long dossierId, long userId) {
 		return getService().getByDOSSIER_UID(dossierId, userId);

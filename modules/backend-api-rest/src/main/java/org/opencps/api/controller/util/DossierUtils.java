@@ -40,6 +40,7 @@ import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -79,6 +80,7 @@ public class DossierUtils {
 
 		for (Document doc : docs) {
 			//LamTV: Process Assigned dossier
+			int originality = GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY));
 			long dossierActionId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ACTION_ID));
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 			User user = UserLocalServiceUtil.fetchUser(userId);
@@ -94,24 +96,34 @@ public class DossierUtils {
 				}
 			}
 
-			if (isAdministratorData) {
-				assignedCheck = 1;
-			} else if (Validator.isNotNull(assigned)) {
-				if (dau != null && dau.getAssigned() != assigned) {
-					continue;
-				}
-				assignedCheck = assigned;
-			} else {
-				if (dau == null) {
-					continue;
-				}
-				assignedCheck = dau.getAssigned();
-			}
+//			if (isAdministratorData || originality == 9) {
+//				assignedCheck = 1;
+//			} else if (Validator.isNotNull(assigned)) {
+//				if (dau != null && dau.getAssigned() != assigned) {
+//					continue;
+//				}
+//				assignedCheck = assigned;
+//			} else {
+//				if (dau == null) {
+//					continue;
+//				}
+//				assignedCheck = dau.getAssigned();
+//			}
 
 			//Process add dossier in result
 			DossierDataModel model = new DossierDataModel();
 
-			model.setAssigned(assignedCheck);
+			//model.setAssigned(assignedCheck);
+			if (dau != null) {
+				model.setAssigned(dau.getAssigned());
+			} else {
+				model.setAssigned(ConstantsTerm.NO_ASSINED);
+			}
+			
+			if (isAdministratorData) {
+				model.setAssigned(1);
+			}
+
 			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
 			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
 			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
@@ -153,7 +165,7 @@ public class DossierUtils {
 			model.setSubmissionNote(doc.get(DossierTerm.SUBMISSION_NOTE));
 			model.setBriefNote(doc.get(DossierTerm.BRIEF_NOTE));
 			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setOriginality(GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY)));
+			model.setOriginality(originality);
 //			model.setSubmitDate(doc.get(DossierTerm.SUBMIT_DATE));
 //			_log.info("SUBMIT_DATE: "+doc.get(DossierTerm.SUBMIT_DATE));
 			if (Validator.isNotNull(doc.get(DossierTerm.SUBMIT_DATE))) {

@@ -14,9 +14,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -80,8 +82,26 @@ public class DossierDocumentUtils {
 			try {
 				JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
 				//
-				jsonData.put("newFormTemplate", Boolean.valueOf(jsonMetaData.getString("newFormTemplate")));
-				jsonData.put("dossierFileCustom", jsonMetaData.getString("dossierFileCustom"));
+				Iterator<String> keys = jsonMetaData.keys();
+
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = jsonMetaData.getString(key);
+					if (Validator.isNotNull(value)) {
+						try {
+							JSONArray valueObject = JSONFactoryUtil.createJSONArray(value);
+							jsonData.put(key, valueObject);
+						} catch (JSONException e) {
+							try {
+								JSONObject valueObject = JSONFactoryUtil.createJSONObject(value);
+								jsonData.put(key, valueObject);
+							} catch (JSONException e1) {
+								jsonData.put(key, value);
+							}
+						}
+						
+					}
+				}
 			} catch (JSONException e) {
 				_log.debug(e);
 			}
@@ -321,5 +341,85 @@ public class DossierDocumentUtils {
 		}
 		return jsonData;
 	}
+
+	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
+
+//		List<Object[]> objects = new ArrayList<Object[]>();
+		if (json != null) {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONArray valueObject = JSONFactoryUtil.createJSONArray(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = key;
+					if (Validator.isNotNull(valueObject.toString())) {
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+					} else {
+						keyValue[1] = valueObject.toString();
+					}
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
+				} catch (JSONException e) {
+					//_log.error(e);
+					// string
+					Object[] keyValue = new Object[2];
+					keyValue[0] = key;
+					if (Validator.isNotNull(strObject.toString())) {
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+					} else {
+						keyValue[1] = strObject.toString();
+					}
+					keyValues.add(keyValue);
+				}
+			}
+		}
+
+		return keyValues;
+	}
+
+	protected List<Object[]> parseJSONObjectIndex(List<Object[]> keyValues, JSONObject json, String keyJson) {
+
+		if (json != null) {
+			Iterator<String> itr = json.keys();
+			while (itr.hasNext()) {
+				String key = itr.next();
+				String strObject = String.valueOf(json.get(key));
+				// check json
+				try {
+					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					if (Validator.isNotNull(valueObject.toString())) {
+//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
+					} else {
+						keyValue[1] = valueObject.toString();
+					}
+					keyValues.add(keyValue);
+					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
+				} catch (JSONException e) {
+					_log.error(e);
+					// string
+					Object[] keyValue = new Object[2];
+					keyValue[0] = keyJson + "@" + key;
+					if (Validator.isNotNull(strObject.toString())) {
+//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
+						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
+					} else {
+						keyValue[1] = strObject.toString();
+					}
+					keyValues.add(keyValue);
+				}
+			}
+		}
+
+		return keyValues;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentUtils.class);
 }

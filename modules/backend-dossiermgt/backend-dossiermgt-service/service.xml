@@ -1629,22 +1629,27 @@
 		<finder return-type="Collection" name = "UID">
 			<finder-column name="userId" />
 		</finder>
-        <finder name="DID_SC" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-            <finder-column name="stepCode"></finder-column>
-        </finder>
-        <finder name="DID__DAI_SC_AS" return-type="Collection">
-            <finder-column name="dossierId"></finder-column>
-            <finder-column name="dossierActionId"></finder-column>
-            <finder-column name="stepCode"></finder-column>
-            <finder-column name="assigned" comparator="=" arrayable-operator="OR"></finder-column>
-        </finder>
-        <finder return-type="Collection" name = "DOSSIER_UID">
+		<finder name="DID_SC" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="stepCode"></finder-column>
+		</finder>
+		<finder name="DID__DAI_SC_AS" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="dossierActionId"></finder-column>
+			<finder-column name="stepCode"></finder-column>
+			<finder-column name="assigned" comparator="="
+				arrayable-operator="OR"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="DOSSIER_UID">
 			<finder-column name="dossierId" />
 			<finder-column name="userId" />
 		</finder>
-        <finder return-type="Collection" name = "DSID">
+		<finder return-type="Collection" name="DSID">
 			<finder-column name="dossierId" />
+		</finder>
+		<finder return-type="Collection" name = "DID_DAID">
+			<finder-column name="dossierId" />
+			<finder-column name="dossierActionId" />
 		</finder>
 	</entity>
 

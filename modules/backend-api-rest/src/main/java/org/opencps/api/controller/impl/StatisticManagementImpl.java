@@ -53,8 +53,10 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -220,6 +222,18 @@ public class StatisticManagementImpl implements StatisticManagement {
 								String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 								params.put(DossierTerm.MAPPING_PERMISSION, permission);
 							}
+							//Process MenuConfig
+							String menuGroup = stepConfig.getMenuGroup();
+							if (Validator.isNotNull(menuGroup)) {
+								MenuConfig menu = MenuConfigLocalServiceUtil.getByG_MENU(groupId, menuGroup);
+								if (menu != null) {
+									String queryParams = menu.getQueryParams();
+									if (Validator.isNotNull(queryParams)) {
+										params = processAddQueryParams(queryParams, user.getUserId(), stepCode, params);
+									}
+								}
+							}
+
 //							_log.info("START");
 							long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId,
 									params, null, serviceContext);
@@ -238,7 +252,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			} else {
 				List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 				if (stepList != null && stepList.size() > 0) {
-//					_log.info("length: "+stepList.size());
+					_log.debug("length: "+stepList.size());
 					for (StepConfig step: stepList) {
 						params.put(DossierTerm.STATUS, step.getDossierStatus());
 						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
@@ -249,6 +263,19 @@ public class StatisticManagementImpl implements StatisticManagement {
 							String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 							params.put(DossierTerm.MAPPING_PERMISSION, permission);
 						}
+						//Process MenuConfig
+						String menuGroup = step.getMenuGroup();
+						if (Validator.isNotNull(menuGroup)) {
+							MenuConfig menu = MenuConfigLocalServiceUtil.getByG_MENU(groupId, menuGroup);
+							if (menu != null) {
+								String queryParams = menu.getQueryParams();
+								if (Validator.isNotNull(queryParams)) {
+									params = processAddQueryParams(queryParams, user.getUserId(), step.getStepCode(), params);
+								}
+							}
+						}
+
+						System.out.println("params: "+params);
 //						_log.info("DossierStatus: "+step.getDossierStatus());
 						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 								null, serviceContext);
@@ -284,6 +311,47 @@ public class StatisticManagementImpl implements StatisticManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	private LinkedHashMap<String, Object> processAddQueryParams(String queryParams, long userId, String stepCode, LinkedHashMap<String, Object> params) {
+		int length = queryParams.lastIndexOf("?");
+
+		if (length > 0) {
+			String subQuery = queryParams.substring(length + 1);
+			if (Validator.isNotNull(subQuery)) {
+				String[] elementParams = subQuery.split("&");
+				for (String param : elementParams) {
+					if (Validator.isNotNull(param) && param.contains("=")) {
+						String[] paramSplit = param.split("=");
+						if (Validator.isNotNull(paramSplit[1])) {
+							if (paramSplit[0].equalsIgnoreCase("assigned")) {
+								if (stepCode.contains("x")) {
+									StringBuilder sbParams = new StringBuilder();
+									for (int i = 0; i < 9; i++) {
+										if (i == 0) {
+											sbParams.append(userId + "_" + stepCode.replace("x", String.valueOf(i)) + "_" + paramSplit[1]);
+										} else {
+											sbParams.append(StringPool.COMMA);
+											sbParams.append(userId + "_" + stepCode.replace("x", String.valueOf(i)) + "_" + paramSplit[1]);
+										}
+									}
+									params.put(DossierTerm.ASSIGNED_USER_ID,
+											sbParams.toString());
+								} else {
+									params.put(DossierTerm.ASSIGNED_USER_ID,
+											userId + "_" + stepCode + "_" + paramSplit[1]);
+								}
+							} else if (!paramSplit[0].equalsIgnoreCase("step")
+									&& !paramSplit[0].equalsIgnoreCase("order")) {
+								params.put(paramSplit[0], paramSplit[1]);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return params;
 	}
 
 	@Override

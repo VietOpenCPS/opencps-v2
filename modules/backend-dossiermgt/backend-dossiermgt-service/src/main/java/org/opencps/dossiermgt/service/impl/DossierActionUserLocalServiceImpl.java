@@ -69,7 +69,11 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDOSSIER_UID(long dossierId, long userId) {
 		return dossierActionUserPersistence.findByDOSSIER_UID(dossierId, userId);
 	}
-	
+
+	public List<DossierActionUser> getByDID_DAID(long dossierId, long dossierActionId) {
+		return dossierActionUserPersistence.findByDID_DAID(dossierId, dossierActionId);
+	}
+
 //	@Indexable(type = IndexableType.REINDEX)
 	public void deleteByDossierAndStepCode(long dossierId, String stepCode) {
 		dossierActionUserPersistence.removeByDID_SC(dossierId, stepCode);

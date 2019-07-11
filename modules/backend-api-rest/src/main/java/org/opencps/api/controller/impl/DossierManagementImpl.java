@@ -328,6 +328,28 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
+			String permission = query.getPermission();
+			if (Validator.isNotNull(permission)) {
+				String permissionUserId = StringPool.BLANK;
+				if (permission.contains(StringPool.COMMA)) {
+					String[] permissionArr = permission.split(StringPool.COMMA);
+					if (permissionArr != null && permissionArr.length > 0) {
+						List<String> permissionList = new ArrayList<>();
+						for (String permissionDetail : permissionArr) {
+							if (Validator.isNotNull(permissionDetail)) {
+								permissionList.add(user.getUserId() + StringPool.UNDERLINE + permissionDetail.toLowerCase());
+							}
+						}
+						//
+						permissionUserId = StringUtil.merge(permissionList, StringPool.COMMA);
+					}
+				} else {
+					permissionUserId = user.getUserId() + StringPool.UNDERLINE + permission.toLowerCase();
+				}
+
+				params.put(DossierTerm.MAPPING_PERMISSION, permissionUserId);
+			}
+
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -528,6 +550,53 @@ public class DossierManagementImpl implements DossierManagement {
 				}
  			}
 
+			Integer assigned = query.getAssigned();
+			StringBuilder strAssignedUserId = null;
+			if (assigned != null && Validator.isNotNull(step)) {
+				String[] stepArr = step.split(StringPool.COMMA);
+				strAssignedUserId = new StringBuilder();
+				if (stepArr != null && stepArr.length > 0) {
+					for (int i = 0; i < stepArr.length; i++) {
+						if (i == 0) {
+							StringBuilder sbParams = new StringBuilder();
+							if (stepArr[i].contains("x")) {
+								for (int j = 0; j < 9; j++) {
+									if (j == 0) {
+										sbParams.append(userId + "_" + stepArr[i].replace("x", String.valueOf(j)) + "_" + assigned);
+									} else {
+										sbParams.append(StringPool.COMMA);
+										sbParams.append(userId + "_" + stepArr[i].replace("x", String.valueOf(j)) + "_" + assigned);
+									}
+								}
+							} else {
+								sbParams.append(userId + "_" + stepArr[i] + "_" + assigned);
+							}
+							//
+							strAssignedUserId.append(sbParams.toString());
+						} else {
+							strAssignedUserId.append(StringPool.COMMA);
+							//
+							StringBuilder sbParams = new StringBuilder();
+							if (stepArr[i].contains("x")) {
+								for (int j = 0; j < 9; j++) {
+									if (j == 0) {
+										sbParams.append(userId + "_" + stepArr[i].replace("x", String.valueOf(j)) + "_" + assigned);
+									} else {
+										sbParams.append(StringPool.COMMA);
+										sbParams.append(userId + "_" + stepArr[i].replace("x", String.valueOf(j)) + "_" + assigned);
+									}
+								}
+							} else {
+								sbParams.append(userId + "_" + stepArr[i] + "_" + assigned);
+							}
+							//
+							strAssignedUserId.append(sbParams.toString());
+						}
+					}
+				}
+				params.put(DossierTerm.ASSIGNED_USER_ID, strAssignedUserId.toString());
+			}
+
 			String agency = query.getAgency();
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
@@ -659,27 +728,13 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.DOSSIER_SUBSTATUS_STEP, StringPool.BLANK);
 			}
 			//if (auth2.isAdmin(serviceContext, "admin")) {
-			String permission = query.getPermission();
-			if (!isAdmin && Validator.isNotNull(permission)) {
-				String permissionUserId = StringPool.BLANK;
-				if (permission.contains(StringPool.COMMA)) {
-					String[] permissionArr = permission.split(StringPool.COMMA);
-					if (permissionArr != null && permissionArr.length > 0) {
-						List<String> permissionList = new ArrayList<>();
-						for (String permissionDetail : permissionArr) {
-							if (Validator.isNotNull(permissionDetail)) {
-								permissionList.add(user.getUserId() + StringPool.UNDERLINE + permissionDetail.toLowerCase());
-							}
-						}
-						//
-						permissionUserId = StringUtil.merge(permissionList, StringPool.COMMA);
-					}
-				} else {
-					permissionUserId = user.getUserId() + StringPool.UNDERLINE + permission.toLowerCase();
-				}
-
-				params.put(DossierTerm.MAPPING_PERMISSION, permissionUserId);
+			if (isAdmin) {
 			}
+			else {
+				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+				params.put(DossierTerm.MAPPING_PERMISSION, permission);
+			}
+
 			// Add param original
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());

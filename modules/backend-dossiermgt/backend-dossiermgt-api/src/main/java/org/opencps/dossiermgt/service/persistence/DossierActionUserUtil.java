@@ -1488,6 +1488,192 @@ public class DossierActionUserUtil {
 	}
 
 	/**
+	* Returns all the dossier action users where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the matching dossier action users
+	*/
+	public static List<DossierActionUser> findByDID_DAID(long dossierId,
+		long dossierActionId) {
+		return getPersistence().findByDID_DAID(dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns a range of all the dossier action users where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionUserModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier action users
+	* @param end the upper bound of the range of dossier action users (not inclusive)
+	* @return the range of matching dossier action users
+	*/
+	public static List<DossierActionUser> findByDID_DAID(long dossierId,
+		long dossierActionId, int start, int end) {
+		return getPersistence()
+				   .findByDID_DAID(dossierId, dossierActionId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier action users where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionUserModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier action users
+	* @param end the upper bound of the range of dossier action users (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier action users
+	*/
+	public static List<DossierActionUser> findByDID_DAID(long dossierId,
+		long dossierActionId, int start, int end,
+		OrderByComparator<DossierActionUser> orderByComparator) {
+		return getPersistence()
+				   .findByDID_DAID(dossierId, dossierActionId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier action users where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierActionUserModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param start the lower bound of the range of dossier action users
+	* @param end the upper bound of the range of dossier action users (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier action users
+	*/
+	public static List<DossierActionUser> findByDID_DAID(long dossierId,
+		long dossierActionId, int start, int end,
+		OrderByComparator<DossierActionUser> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_DAID(dossierId, dossierActionId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action user
+	* @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser findByDID_DAID_First(long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierActionUser> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
+		return getPersistence()
+				   .findByDID_DAID_First(dossierId, dossierActionId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser fetchByDID_DAID_First(long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierActionUser> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_DAID_First(dossierId, dossierActionId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action user
+	* @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser findByDID_DAID_Last(long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierActionUser> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
+		return getPersistence()
+				   .findByDID_DAID_Last(dossierId, dossierActionId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public static DossierActionUser fetchByDID_DAID_Last(long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierActionUser> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_DAID_Last(dossierId, dossierActionId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the dossier action users before and after the current dossier action user in the ordered set where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierActionUserPK the primary key of the current dossier action user
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier action user
+	* @throws NoSuchDossierActionUserException if a dossier action user with the primary key could not be found
+	*/
+	public static DossierActionUser[] findByDID_DAID_PrevAndNext(
+		DossierActionUserPK dossierActionUserPK, long dossierId,
+		long dossierActionId,
+		OrderByComparator<DossierActionUser> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierActionUserException {
+		return getPersistence()
+				   .findByDID_DAID_PrevAndNext(dossierActionUserPK, dossierId,
+			dossierActionId, orderByComparator);
+	}
+
+	/**
+	* Removes all the dossier action users where dossierId = &#63; and dossierActionId = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	*/
+	public static void removeByDID_DAID(long dossierId, long dossierActionId) {
+		getPersistence().removeByDID_DAID(dossierId, dossierActionId);
+	}
+
+	/**
+	* Returns the number of dossier action users where dossierId = &#63; and dossierActionId = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @return the number of matching dossier action users
+	*/
+	public static int countByDID_DAID(long dossierId, long dossierActionId) {
+		return getPersistence().countByDID_DAID(dossierId, dossierActionId);
+	}
+
+	/**
 	* Caches the dossier action user in the entity cache if it is enabled.
 	*
 	* @param dossierActionUser the dossier action user
