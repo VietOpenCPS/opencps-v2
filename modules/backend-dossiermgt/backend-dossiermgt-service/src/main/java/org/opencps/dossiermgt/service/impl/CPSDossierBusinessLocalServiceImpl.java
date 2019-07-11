@@ -581,7 +581,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			if (Validator.isNotNull(dossier.getServerNo())
 					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[1];
+				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
 				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
