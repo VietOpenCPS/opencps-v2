@@ -306,6 +306,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						if (!serviceCode.equals(dossier.getServiceCode())) {
 							String serverNoProcess = ltProcess.getServerNo().split(StringPool.COMMA)[0];
 							hsltDossier.setServerNo(serverNoProcess + StringPool.AT + serviceCode + StringPool.COMMA + ltProcess.getServerNo().split(StringPool.COMMA)[1]);
+							hsltDossier = dossierLocalService.updateDossier(hsltDossier);
 						}
 					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -577,8 +578,8 @@ public class CPSDossierBusinessLocalServiceImpl
 //			_log.info("Flag changed: " + flagChanged);
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(";").length > 1) {
-				String serverNo = dossier.getServerNo().split(";")[1];
+					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[1];
 				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
