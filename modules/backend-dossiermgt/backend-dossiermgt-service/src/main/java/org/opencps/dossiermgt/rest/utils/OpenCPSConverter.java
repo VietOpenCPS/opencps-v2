@@ -1051,7 +1051,8 @@ public class OpenCPSConverter {
 	}
 
 	public static ExecuteOneAction convertProcessAction(JSONObject jsonObj) {
-		int status = Integer.parseInt(jsonObj.getString(RESTFulConfiguration.STATUS));
+		int status = Integer.parseInt(Validator.isNotNull(jsonObj.getString(RESTFulConfiguration.STATUS)) ? jsonObj.getString(RESTFulConfiguration.STATUS) : HttpURLConnection.HTTP_OK + ""
+				);
 		if (status == HttpURLConnection.HTTP_OK) {
 			ExecuteOneAction result = new ExecuteOneAction();
 			
