@@ -819,7 +819,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			String postStepCode = proAction.getPostStepCode();
 			
 			//Xử lý phiếu thanh toán
-			processPaymentFile(groupId, userId, paymentFee, option, proAction, previousAction, dossier, context);
+			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 			
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(postStepCode)) {
