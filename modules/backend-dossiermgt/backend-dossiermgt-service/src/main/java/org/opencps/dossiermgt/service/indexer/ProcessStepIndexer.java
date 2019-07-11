@@ -86,6 +86,7 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		document.addTextSortable(ProcessStepTerm.BRIEF_NOTE, object.getBriefNote());
 		document.addTextSortable(ProcessStepTerm.EDITABLE, Boolean.toString(object.getEditable()));
 		document.addTextSortable(ProcessStepTerm.LOCK_STATE, object.getLockState());
+		document.addNumber(ProcessStepTerm.CHECK_INPUT, object.getCheckInput());
 
 		// add extra fields (ProcessStepRole)
 		List<ProcessStepRole> roles = ProcessStepRoleLocalServiceUtil.findByP_S_ID(object.getPrimaryKey());

@@ -588,7 +588,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
 			if (Validator.isNotNull(dossier.getServerNo())
 					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[1];
+				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
 				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
 						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
@@ -826,7 +826,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			String postStepCode = proAction.getPostStepCode();
 			
 			//Xử lý phiếu thanh toán
-			processPaymentFile(groupId, userId, paymentFee, option, proAction, previousAction, dossier, context);
+			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 			
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(postStepCode)) {

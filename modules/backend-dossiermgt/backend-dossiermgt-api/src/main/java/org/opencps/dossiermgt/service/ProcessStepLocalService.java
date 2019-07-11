@@ -332,7 +332,7 @@ public interface ProcessStepLocalService extends BaseLocalService,
 		String sequenceNo, String dossierStatus, String dossierSubStatus,
 		int durationCount, String customProcessUrl, String stepInstruction,
 		String briefNote, boolean editable, String lockState,
-		ServiceContext context) throws PortalException;
+		Integer checkInput, ServiceContext context) throws PortalException;
 
 	/**
 	* Updates the process step in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
