@@ -257,7 +257,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
 			
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -293,7 +293,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
 					
 					Dossier hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
-							dossier.getCounter(), serviceCode,
+							dossier.getCounter(), dossier.getServiceCode(),
 							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
 							dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
@@ -302,6 +302,12 @@ public class CPSDossierBusinessLocalServiceImpl
 							dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 							dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 							dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
+					if (ltProcess.getServerNo().contains(StringPool.COMMA)) {
+						if (!serviceCode.equals(dossier.getServiceCode())) {
+							String serverNoProcess = ltProcess.getServerNo().split(StringPool.COMMA)[0];
+							hsltDossier.setServerNo(serverNoProcess + StringPool.AT + serviceCode + StringPool.COMMA + ltProcess.getServerNo().split(StringPool.COMMA)[1]);
+						}
+					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 
 					if (wu != null) {
@@ -3659,8 +3665,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
 			
-			if (Validator.isNotNull(input.getServerNo())
-					&& input.getServerNo().split(";").length > 1) {
+			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");
@@ -3946,8 +3951,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
-			if (Validator.isNotNull(input.getServerNo())
-					&& input.getServerNo().split(";").length > 1) {
+			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
 			_log.debug("CREATE DOSSIER 7: " + (System.currentTimeMillis() - start) + " ms");

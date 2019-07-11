@@ -266,10 +266,10 @@ public class OpencpsStatisticRestApplication extends Application {
 							params.put("agency", payload.getGovAgencyCode());
 						}
 						if (Validator.isNotNull(payload.getFromStatisticDate())) {
-							params.put("fromStatisticDate", payload.getFromStatisticDate());
+							params.put("fromStatisticDate", APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getFromStatisticDate()));
 						}
 						if (Validator.isNotNull(payload.getToStatisticDate())) {
-							params.put("toStatisticDate", payload.getToStatisticDate());
+							params.put("toStatisticDate", APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getToStatisticDate()));
 						}				
 					}
 					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());

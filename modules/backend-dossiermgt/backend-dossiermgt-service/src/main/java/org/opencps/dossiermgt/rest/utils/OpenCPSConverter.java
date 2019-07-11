@@ -1018,8 +1018,16 @@ public class OpenCPSConverter {
 		}
 		model.setOnline(String.valueOf(dossier.getOnline()));
 		if (Validator.isNotNull(dossier.getServerNo())
-				&& dossier.getServerNo().contains(";")) {
-			model.setServerNo(dossier.getServerNo());
+				&& dossier.getServerNo().contains(StringPool.COMMA)) {
+			if (dossier.getServerNo().contains(StringPool.AT)) {
+				String serverNoProcess = dossier.getServerNo().split(StringPool.COMMA)[0];
+				String serviceCode = serverNoProcess.split(StringPool.AT)[1];
+				model.setServiceCode(serviceCode);
+				model.setServerNo(dossier.getServerNo().split(StringPool.COMMA)[1]);
+			}
+			else {
+				model.setServerNo(dossier.getServerNo());				
+			}
 		}
 		return model;
 	}
