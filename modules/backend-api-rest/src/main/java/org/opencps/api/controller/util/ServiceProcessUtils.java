@@ -219,7 +219,9 @@ public class ServiceProcessUtils {
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
 			model.setEditable(doc.get(ProcessStepTerm.EDITABLE));
 			model.setLockState(doc.get(ProcessStepTerm.LOCK_STATE));
-			model.setCheckInput(Integer.valueOf(doc.get(ProcessStepTerm.CHECK_INPUT)));
+			if (Validator.isNotNull(doc.get(ProcessStepTerm.CHECK_INPUT))) {
+				model.setCheckInput(Integer.valueOf(doc.get(ProcessStepTerm.CHECK_INPUT)));
+			}
 
 			outputs.add(model);
 		}
