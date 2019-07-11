@@ -219,6 +219,7 @@ public class ServiceProcessUtils {
 			model.setCustomProcessUrl(doc.get(ProcessStepTerm.CUSTOM_PROCESS_URL));
 			model.setEditable(doc.get(ProcessStepTerm.EDITABLE));
 			model.setLockState(doc.get(ProcessStepTerm.LOCK_STATE));
+			model.setCheckInput(Integer.valueOf(doc.get(ProcessStepTerm.CHECK_INPUT)));
 
 			outputs.add(model);
 		}
@@ -297,6 +298,7 @@ public class ServiceProcessUtils {
 		model.setBriefNote(step.getBriefNote());
 		model.setCustomProcessUrl(step.getCustomProcessUrl());
 		model.setEditable(Boolean.toString(step.getEditable()));
+		model.setCheckInput(step.getCheckInput());
 
 		return model;
 	}

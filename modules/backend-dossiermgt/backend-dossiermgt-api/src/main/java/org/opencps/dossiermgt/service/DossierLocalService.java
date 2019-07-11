@@ -501,6 +501,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateWardCode, Long sampleCount, String dossierName,
 		ServiceContext serviceContext);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
 		String applicantName, String applicantIdType, String applicantIdNo,
 		String applicantIdDate, String address, String cityCode,
