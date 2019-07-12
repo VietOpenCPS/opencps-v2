@@ -2,6 +2,9 @@
 package org.opencps.api.controller.impl;
 
 import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,13 +24,12 @@ import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.communication.service.ZaloMapLocalServiceUtil;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.UserActions;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -121,32 +123,23 @@ public class SMSManagementImpl implements SMSManagement {
 		try {
 
 			String zUId = StringPool.BLANK;
-			/** 
-			 * only use when has applicant
-			Applicant applicant =
-				ApplicantLocalServiceUtil.fetchBy_GTelNo(groupId, toTelNo);
-
-			if (Validator.isNotNull(applicant) &&
-				Validator.isNotNull(applicant.getMappingUserId())) {
-
-				String preferences = actions.getPreferenceByKey(
-					applicant.getMappingUserId(), groupId, SendSMSTerm.ZALO_UID,
-					serviceContext);
-
-				JSONObject zUIdJSON =
-					JSONFactoryUtil.createJSONObject(preferences);
-
-				_log.info(zUIdJSON);
-
-				zUId = zUIdJSON.getString(SendSMSTerm.UID);
-
-			}*/
+			/**
+			 * only use when has applicant Applicant applicant =
+			 * ApplicantLocalServiceUtil.fetchBy_GTelNo(groupId, toTelNo); if
+			 * (Validator.isNotNull(applicant) &&
+			 * Validator.isNotNull(applicant.getMappingUserId())) { String
+			 * preferences = actions.getPreferenceByKey(
+			 * applicant.getMappingUserId(), groupId, SendSMSTerm.ZALO_UID,
+			 * serviceContext); JSONObject zUIdJSON =
+			 * JSONFactoryUtil.createJSONObject(preferences);
+			 * _log.info(zUIdJSON); zUId = zUIdJSON.getString(SendSMSTerm.UID);
+			 * }
+			 */
 
 			ZaloMap zaloMap = ZaloMapLocalServiceUtil.getByTelNo(toTelNo);
 
-			if (Validator.isNotNull(zaloMap) &&
-							zaloMap.getIsFollowed() > 0) {
-				
+			if (Validator.isNotNull(zaloMap) && zaloMap.getIsFollowed() > 0) {
+
 				zUId = zaloMap.getUId();
 			}
 			else {
@@ -337,6 +330,31 @@ public class SMSManagementImpl implements SMSManagement {
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 		return pattern.matcher(temp).replaceAll("").replaceAll(
 			"Đ", "D").replaceAll("đ", "d");
+	}
+
+	@Override
+	public Response getZaloUIdByTelNo(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		String startDate, double durationCount, int durationUnit,
+		long groupId) {
+		
+		try {
+			
+			Date startDateS = new SimpleDateFormat("dd-MM-yyyy-HH-mm").parse(startDate);
+			String dueDate2 = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(startDateS);
+			System.out.println(startDateS);
+			System.out.println(dueDate2);
+			DueDateUtils dueDateUtils = new DueDateUtils(startDateS, durationCount, durationUnit, groupId);
+			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(dueDateUtils.getDueDate());
+			return Response.status(200).entity(dueDate).build();
+		}
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return Response.status(500).entity(StringPool.BLANK).build();
 	}
 
 	Log _log = LogFactoryUtil.getLog(SMSManagementImpl.class.getName());
