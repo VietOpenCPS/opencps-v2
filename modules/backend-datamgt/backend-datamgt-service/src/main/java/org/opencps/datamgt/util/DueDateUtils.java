@@ -202,12 +202,18 @@ public class DueDateUtils {
 			_log.debug(
 				"========this.workTimes.size()========" +
 					this.workTimes.size());
-			int index = IntStream.range(0, this.workTimes.size()).filter(
-				workTimeInd -> this.workTimes.get(
-					workTimeInd).getDay() == dayOfStartDate).findFirst().orElse(
-						-1);
-			_log.debug(dayOfStartDate + "========index==========" + index);
-			this.isHolidayType0 = (index == -1);
+			boolean isWeekend = false;
+			for (WorkTime workTime : this.workTimes) {
+
+				if (workTime.getDay() == dayOfStartDate) {
+
+					isWeekend = true;
+					break;
+				}
+			}
+			_log.debug(
+				dayOfStartDate + "========isWeekend==========" + isWeekend);
+			this.isHolidayType0 = isWeekend && this.workTimes.size() > 0;
 		}
 
 		// neu la ngay nghi thi next ngay tiep theo
@@ -268,32 +274,39 @@ public class DueDateUtils {
 
 	private void _setHourTimeWorkingByDay(int day) {
 
-		String startAM = "07:30";
-		String endAM = "11:30";
-		String startPM = "13:30";
-		String endPM = "17:30";
+		String startAM = "00:00";
+		String endAM = "00:00";
+		String startPM = "00:00";
+		String endPM = "00:00";
 
-		int checkDay = day % Calendar.DAY_OF_WEEK;
+		try {
 
-		for (WorkTime workTime : this.workTimes) {
+			int checkDay = day % Calendar.DAY_OF_WEEK;
 
-			if (workTime.getDay() == Calendar.MONDAY ||
-				workTime.getDay() == checkDay) {
+			for (WorkTime workTime : this.workTimes) {
 
-				_log.debug(
-					"workTime.getDay() == checkDay===========" +
-						(workTime.getDay() == checkDay));
-				// workTime.hours = 07:00-11:30,13:30-17:00
-				String am = workTime.getHours().split(StringPool.COMMA)[0];
-				String pm = workTime.getHours().split(StringPool.COMMA)[1];
-				startAM = am.split(StringPool.DASH)[0];
-				endAM = am.split(StringPool.DASH)[1];
-				startPM = pm.split(StringPool.DASH)[0];
-				endPM = pm.split(StringPool.DASH)[1];
-				if (workTime.getDay() == checkDay) {
-					break;
+				if (workTime.getDay() == Calendar.MONDAY ||
+					workTime.getDay() == checkDay) {
+
+					_log.debug(
+						"workTime.getDay() == checkDay===========" +
+							(workTime.getDay() == checkDay));
+					// workTime.hours = 07:00-11:30,13:30-17:00
+					String am = workTime.getHours().split(StringPool.COMMA)[0];
+					String pm = workTime.getHours().split(StringPool.COMMA)[1];
+					startAM = am.split(StringPool.DASH)[0];
+					endAM = am.split(StringPool.DASH)[1];
+					startPM = pm.split(StringPool.DASH)[0];
+					endPM = pm.split(StringPool.DASH)[1];
+					if (workTime.getDay() == checkDay) {
+						break;
+					}
 				}
 			}
+		}
+		catch (Exception e) {
+
+			_log.error(e);
 		}
 
 		this.startAMStr = startAM;

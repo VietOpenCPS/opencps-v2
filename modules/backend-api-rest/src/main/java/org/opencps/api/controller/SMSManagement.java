@@ -2,6 +2,7 @@
 package org.opencps.api.controller;
 
 import java.net.HttpURLConnection;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +54,7 @@ public interface SMSManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @FormParam("body") String body,
 		@FormParam("toTelNo") String toTelNo);
-	
+
 	@GET
 	@Path("/inet")
 	@Consumes({
@@ -67,7 +68,7 @@ public interface SMSManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
 		@BeanParam IPacificSearchSMS query);
-	
+
 	@GET
 	@Path("/test/zaloid")
 	@Consumes({
@@ -81,13 +82,36 @@ public interface SMSManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
 		@FormParam("toTelNo") String toTelNo);
-	
+
 	@GET
 	@Path("/zaloid")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getZaloUIdByTelNo(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@FormParam("toTelNo") String toTelNo);
-	
+	@Consumes({
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response getZaloUIdByTelNo(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@FormParam("toTelNo") String toTelNo);
+
+	@GET
+	@Path("/chaos")
+	@Consumes({
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response getZaloUIdByTelNo(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@FormParam("startDate") String startDate,
+		@FormParam("durationCount") double durationCount,
+		@FormParam("durationUnit") int durationUnit,
+		@FormParam("groupId") long groupId);
+
 }
