@@ -3550,6 +3550,8 @@ public class CPSDossierBusinessLocalServiceImpl
 			postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 		}
 		Long sampleCount = (option != null ? option.getSampleCount() : 1l);
+		String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
+		String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 
 		
 		// Process group dossier
@@ -3706,8 +3708,6 @@ public class CPSDossierBusinessLocalServiceImpl
 				online = true;
 			}
 			boolean flagOldDossier = false;
-			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
-			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			if (oldRefDossier != null) {
@@ -3833,17 +3833,17 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setPostalWardName(input.getPostalWardName());
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
 
-				dossier.setRegisterBookCode(registerBookCode);
-				dossier.setRegisterBookName(registerBookName);
+				//dossier.setRegisterBookCode(registerBookCode);
+				//dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
 				if (Validator.isNotNull(input.getMetaData()))
 					dossier.setMetaData(input.getMetaData());
 
 				updateDelegateApplicant(dossier, input);
 				
-				if (process != null) {
-					dossier.setProcessNo(process.getProcessNo());
-				}
+				//if (process != null) {
+				//	dossier.setProcessNo(process.getProcessNo());
+				//}
 //					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
@@ -3864,7 +3864,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							applicant.getWardCode(),
 							applicant.getWardName(),
 							applicant.getContactEmail(),
-							applicant.getContactTelNo()							
+							applicant.getContactTelNo()
 							);
 				}
 			}
