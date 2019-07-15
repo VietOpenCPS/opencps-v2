@@ -2,7 +2,6 @@
 package org.opencps.api.controller;
 
 import java.net.HttpURLConnection;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,20 +69,6 @@ public interface SMSManagement {
 		@BeanParam IPacificSearchSMS query);
 
 	@GET
-	@Path("/test/zaloid")
-	@Consumes({
-		MediaType.APPLICATION_FORM_URLENCODED
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	public Response testGetZaloUIdByTelNoSMS(
-		@Context HttpServletRequest request, @Context HttpHeaders header,
-		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext,
-		@FormParam("toTelNo") String toTelNo);
-
-	@GET
 	@Path("/zaloid")
 	@Consumes({
 		MediaType.APPLICATION_FORM_URLENCODED
@@ -98,14 +83,14 @@ public interface SMSManagement {
 		@FormParam("toTelNo") String toTelNo);
 
 	@GET
-	@Path("/chaos")
+	@Path("/test/calculate/duedate")
 	@Consumes({
 		MediaType.APPLICATION_FORM_URLENCODED
 	})
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
 	})
-	public Response getZaloUIdByTelNo(
+	public Response calculateDueDate(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
