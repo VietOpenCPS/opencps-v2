@@ -287,6 +287,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				DossierActionUserPK pk = new DossierActionUserPK();
 				long userIdAssigned = subUser.getLong("userId");
+				int assigned = subUser.has("assigned") ? subUser.getInt("assigned") : 0;
 				
 				pk.setDossierActionId(dossierAction.getDossierActionId());
 				
@@ -343,6 +344,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				}
 				else {
 					dau.setModerator(1);
+					dau.setAssigned(assigned);
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 				}
 			}
