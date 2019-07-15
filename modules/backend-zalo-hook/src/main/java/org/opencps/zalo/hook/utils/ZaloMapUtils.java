@@ -332,7 +332,7 @@ public class ZaloMapUtils {
 			if (Validator.isNull(dossier)) {
 
 				message =
-					zaloConfig.getString(SendSMSTerm.EPACIFIC_D_NOT_FOUND_MES);
+					zaloConfig.getString(SendSMSTerm.ZALO_DOSSIER_NOT_FOUND_MES);
 
 			}
 			else if (!dossier.getPassword().equalsIgnoreCase(password)) {
@@ -344,15 +344,15 @@ public class ZaloMapUtils {
 			else {
 
 				message =
-					zaloConfig.getString(SendSMSTerm.EPACIFIC_SUCCESS_MES);
+					zaloConfig.getString(SendSMSTerm.ZALO_DOSSIER_SUCCESS_MES);
 				message =
 					message.replaceAll(
 						zaloConfig.getString(
-							SendSMSTerm.EPACIFIC_DOSSIER_NO_REPLACE),
+							SendSMSTerm.ZALO_DOSSIER_NO_REPLACE),
 						dossierNo);
 				message = message.replaceAll(
 					zaloConfig.getString(
-						SendSMSTerm.EPACIFIC_DOSSIER_STATUS_REPLACE),
+						SendSMSTerm.ZALO_DOSSIER_STATUS_REPLACE),
 					dossier.getDossierStatusText());
 			}
 

@@ -60,6 +60,7 @@ public class SendSMSTerm {
 	public static final String ZALO_DOSSIER_NO_REPLACE = "dossierNoReplace";
 	public static final String ZALO_DOSSIER_STATUS_REPLACE =
 		"dossierStatusReplace";
+	public static final String ZALO_DOSSIER_SUCCESS_MES = "successMes";
 
 	// Config call api from MCDT to DVC
 	// public static final String SERVER_CONFIG_PROTOCOL_ZALO_URLS =
