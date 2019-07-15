@@ -289,10 +289,17 @@ public class CPSDossierBusinessLocalServiceImpl
 					String delegateEmail = dossier.getDelegateEmail();
 					String delegateIdNo = dossier.getGovAgencyCode();
 					
-//					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo());
-//					long hsltDossierId = (oldHslt != null ? oldHslt.getDossierId() : 0l);
+					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
+					Dossier hsltDossier = null;
 					
-					Dossier hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
+					if (oldHslt != null) {
+						if (oldHslt.getOriginality() < 0) {
+							oldHslt.setOriginality(-oldHslt.getOriginality());
+						}
+						hsltDossier = oldHslt;
+					}
+					if (hsltDossier == null) {
+						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
 							dossier.getCounter(), dossier.getServiceCode(),
 							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
 							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
@@ -302,6 +309,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
 							dossier.getPostalCityName(), dossier.getPostalTelNo(), 
 							dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
+					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 
 					if (wu != null) {
@@ -2766,11 +2774,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			dossier = dossierLocalService.updateDossier(dossier);
 		}
 
-		ServiceProcess serviceProcess = null;
-		if (option != null) {
-			long serviceProcessId = option.getServiceProcessId();
-			serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
-		}
+//		ServiceProcess serviceProcess = null;
+//		if (option != null) {
+//			long serviceProcessId = option.getServiceProcessId();
+//			serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
+//		}
 		
 		dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 //		ActionConfig ac = actionConfigLocalService.getByCode(groupId, actionCode);
@@ -2786,7 +2794,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		}
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
-			if (dossierAction != null && dossierAction.isRollbackable()) {
+			Dossier hslt = dossierLocalService.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
+			
+			if (dossierAction != null && (dossierAction.isRollbackable() || hslt.getOriginality() < 0)) {
 				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
 				DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
@@ -2798,6 +2808,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				else {
 					dossierActionLocalService.removeAction(dossierAction.getDossierActionId());
 					dossier.setDossierActionId(0);
+					dossier.setOriginality(-dossier.getOriginality());
 					dossierLocalService.updateDossier(dossier);
 				}
 			}
@@ -2869,6 +2880,20 @@ public class CPSDossierBusinessLocalServiceImpl
 				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
 						hslt.getDossierTemplateNo(), groupId);
 				String actionUserHslt = actionUser;
+				if (dossier.getOriginDossierId() != 0) {
+					Dossier originDossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+					if (originDossier != null) {
+						DossierAction lastAction = dossierActionLocalService.fetchDossierAction(originDossier.getDossierActionId());
+						ActionConfig mappingAction = actionConfigLocalService.getByCode(groupId, lastAction.getActionCode());
+						if (Validator.isNotNull(mappingAction.getMappingAction())) {
+							DossierAction previousOriginAction = dossierActionLocalService.fetchDossierAction(lastAction.getPreviousActionId());
+							dossierActionLocalService.updateState(previousOriginAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
+							dossierActionLocalService.updateNextActionId(previousOriginAction.getDossierActionId(), 0);
+							dossierLocalService.rollback(originDossier, previousOriginAction);
+						}
+					}
+				}
+
 				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
 					Date now = new Date();
 					hslt.setSubmitDate(now);
@@ -2882,7 +2907,11 @@ public class CPSDossierBusinessLocalServiceImpl
 						_log.debug(e);
 					}
 				}
-				doAction(groupId, userId, hslt, optionHslt, null, DossierActionTerm.OUTSIDE_ACTION_ROLLBACK, actionUserHslt, actionNote, payload, assignUsers, payment, 0, context);
+				DossierAction lastAction = dossierActionLocalService.fetchDossierAction(hslt.getDossierActionId());
+				ActionConfig mappingAction = actionConfigLocalService.getByCode(groupId, lastAction.getActionCode());
+				if (Validator.isNotNull(mappingAction.getMappingAction())) {
+					doAction(groupId, userId, hslt, optionHslt, null, DossierActionTerm.OUTSIDE_ACTION_ROLLBACK, actionUserHslt, actionNote, payload, assignUsers, payment, 0, context);
+				}
 			}
 		}
 		
@@ -3691,8 +3720,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			if (oldRefDossier != null) {
+				//Check old cross dossier rollback
+				if (oldRefDossier.getOriginality() < 0 && Validator.isNotNull(input.getOriginDossierNo())) {
+					oldRefDossier.setOriginality(-oldRefDossier.getOriginality());
+				}
 				dossier = oldRefDossier;
 				dossier.setSubmitDate(new Date());
+				dossier.setReceiveDate(new Date());
 				ServiceProcess serviceProcess = process;
 				
 				double durationCount = 0;

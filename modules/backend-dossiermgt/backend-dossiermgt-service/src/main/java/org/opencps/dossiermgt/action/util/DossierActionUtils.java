@@ -12,7 +12,9 @@ import com.liferay.portal.kernel.util.Validator;
 public class DossierActionUtils {
 	public static int getSyncState(int syncType, Dossier dossier) {
 		int state = DossierSyncTerm.STATE_NOT_SYNC;
-		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+		int originality = (dossier.getOriginality() > 0 ? dossier.getOriginality() : -dossier.getOriginality());
+		
+		if (originality == DossierTerm.ORIGINALITY_DVCTT) {
 			if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
 				state = DossierSyncTerm.STATE_WAITING_SYNC;
 			}
@@ -20,10 +22,10 @@ public class DossierActionUtils {
 				state = DossierSyncTerm.STATE_NOT_SYNC;
 			}
 		}
-		else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA) {
+		else if (originality == DossierTerm.ORIGINALITY_MOTCUA) {
 			state = DossierSyncTerm.STATE_NOT_SYNC;
 		}
-		else if (dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
+		else if (originality == DossierTerm.ORIGINALITY_LIENTHONG) {
 			if (syncType == DossierSyncTerm.SYNCTYPE_REQUEST) {
 				state = DossierSyncTerm.STATE_NOT_SYNC;
 			}
