@@ -1,7 +1,11 @@
 package org.opencps.dossiermgt.action.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class OpenCPSConfigUtil {
 	public static final String OPENCPS_NOTIFICATION_ENABLE = "org.opencps.notification.enable";
@@ -17,6 +21,7 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_REST_CONNECTION_TIMEOUT = "org.opencps.rest.connection.timeout";
 	public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
 	public static final String OPENCPS_STATISTIC_MUTIPLE_SERVER = "org.opencps.statistic.multiple.server.enable";
+	public static final String OPENCPS_AI_MODE = "org.opencps.ai.mode";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -67,4 +72,18 @@ public class OpenCPSConfigUtil {
 		return Validator.isNotNull(statisticMultipleServerEnable) ? Boolean.parseBoolean(statisticMultipleServerEnable) : false;
 	}
 	
+	public static String getHostAddress() {
+		try {
+			InetAddress inetAddress = InetAddress.getLocalHost();
+			return inetAddress.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		
+		return StringPool.BLANK;
+	}
+	
+	public static boolean isAiMode() {
+		String isAiMode = PropsUtil.get(OPENCPS_AI_MODE);
+		return Validator.isNotNull(isAiMode) ? Boolean.parseBoolean(isAiMode) : false;		
+	}
 }
