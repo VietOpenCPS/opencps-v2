@@ -87,20 +87,28 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (dossier != null && dossier.getGroupDossierId() != 0) {
 				groupDossier = DossierLocalServiceUtil.fetchDossier(dossier.getGroupDossierId());
 			}
+			List<DossierFile> fileResults = new ArrayList<>();
+			
 			if (dossier != null && dossier.getOriginDossierId() == 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getDossierId());
+				if (dossierFiles != null)
+					fileResults.addAll(dossierFiles);
 				if (groupDossier != null) {
 					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
-					dossierFiles.addAll(groupFiles);
+					if (groupFiles != null)
+						fileResults.addAll(groupFiles);
 				}
 				results.setTotal(dossierFiles.size());
 				results.getData().addAll(DossierFileUtils.mappingToDossierFileData(dossierFiles));
 			}
 			else if (dossier != null && dossier.getOriginDossierId() != 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getOriginDossierId());
+				if (dossierFiles != null)
+					fileResults.addAll(dossierFiles);
 				if (groupDossier != null) {
 					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
-					dossierFiles.addAll(groupFiles);
+					if (groupFiles != null)
+						fileResults.addAll(groupFiles);
 				}
 				
 				results.setTotal(dossierFiles.size());
@@ -109,6 +117,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
