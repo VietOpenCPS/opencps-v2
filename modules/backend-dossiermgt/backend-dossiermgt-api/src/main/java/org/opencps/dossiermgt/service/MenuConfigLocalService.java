@@ -200,6 +200,9 @@ public interface MenuConfigLocalService extends BaseLocalService,
 	public MenuConfig getByCode(String menuGroup);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public MenuConfig getByG_MENU(long groupId, String menuGroup);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MenuConfig> getByGroupId(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

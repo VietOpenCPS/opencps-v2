@@ -221,6 +221,11 @@ public class MenuConfigLocalServiceUtil {
 		return getService().getByCode(menuGroup);
 	}
 
+	public static org.opencps.dossiermgt.model.MenuConfig getByG_MENU(
+		long groupId, String menuGroup) {
+		return getService().getByG_MENU(groupId, menuGroup);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.MenuConfig> getByGroupId(
 		long groupId) {
 		return getService().getByGroupId(groupId);

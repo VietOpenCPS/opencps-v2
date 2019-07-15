@@ -224,6 +224,10 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		return menuConfigPersistence.findByF_A_MID(menuConfigIds);
 	}
 
+	public MenuConfig getByG_MENU(long groupId, String menuGroup) {
+		return menuConfigPersistence.fetchByF_BY_G_MENU(groupId, menuGroup);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public MenuConfig adminProcessDelete(Long id) {

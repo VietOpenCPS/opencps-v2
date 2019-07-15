@@ -231,6 +231,12 @@ public class MenuConfigLocalServiceWrapper implements MenuConfigLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.MenuConfig getByG_MENU(long groupId,
+		String menuGroup) {
+		return _menuConfigLocalService.getByG_MENU(groupId, menuGroup);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.MenuConfig> getByGroupId(
 		long groupId) {
 		return _menuConfigLocalService.getByGroupId(groupId);

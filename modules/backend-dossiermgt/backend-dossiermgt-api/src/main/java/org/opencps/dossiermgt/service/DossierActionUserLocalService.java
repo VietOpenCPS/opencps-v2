@@ -196,6 +196,10 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 		long dossierActionId, String stepCode, int[] asArr);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierActionUser> getByDID_DAID(long dossierId,
+		long dossierActionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierActionUser> getByDOSSIER_UID(long dossierId, long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

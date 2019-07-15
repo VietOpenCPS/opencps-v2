@@ -253,7 +253,7 @@ public class NotificationUtil {
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-				if (queue.getToUserId() > 0) {
+//				if (queue.getToUserId() > 0) {
 					// Preferences preferences =
 					// PreferencesLocalServiceUtil.fetchByF_userId(
 					// serviceContext.getScopeGroupId(),
@@ -281,17 +281,17 @@ public class NotificationUtil {
 					// //_log.error(e);
 					// }
 					// }
-					if (template != null) {
-						// sendEmail = template.getSendEmail();
-						sendNotify = template.getSendNotification();
-						// sendSMS = template.getSendSMS();
-						sendMesZalo = template.getSendNotification();
-					}
-				}
-				else {
-					sendNotify = false;
-					sendMesZalo = false;
-				}
+//					if (template != null) {
+//						// sendEmail = template.getSendEmail();
+//						sendNotify = template.getSendNotification();
+//						// sendSMS = template.getSendSMS();
+//						sendMesZalo = template.getSendNotification();
+//					}
+//				}
+//				else {
+//					sendNotify = false;
+//					sendMesZalo = false;
+//				}
 
 				if (template != null) {
 					sendEmail = template.getSendEmail();
@@ -330,8 +330,8 @@ public class NotificationUtil {
 			}
 			catch (Exception e) {
 				// _log.warn("Can't not create MBMessageEntry " + e);
-				e.printStackTrace();
-				_log.error(e);
+				//e.printStackTrace();
+				_log.debug(e);
 			}
 		}
 
@@ -440,7 +440,7 @@ public class NotificationUtil {
 		}
 		catch (Exception e) {
 
-			_log.info(e);
+			_log.debug(e);
 		}
 		return StringPool.BLANK;
 	}

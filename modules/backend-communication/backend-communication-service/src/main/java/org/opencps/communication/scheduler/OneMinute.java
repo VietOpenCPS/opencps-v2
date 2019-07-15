@@ -1,6 +1,7 @@
 package org.opencps.communication.scheduler;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -130,7 +131,7 @@ public class OneMinute extends BaseMessageListener {
 						 * 
 						 * If Send SMS error, continue until expiredDate 
 						 * */
-						//_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
+						_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
 						if (resultSendSMS.getResult() > 0) {
 							NotificationQueueBusinessFactoryUtil.delete(
 									notificationQueue.getNotificationQueueId(),

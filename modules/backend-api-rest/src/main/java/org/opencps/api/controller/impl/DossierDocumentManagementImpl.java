@@ -105,6 +105,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
+					_log.info("jsonData: "+jsonData);
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());

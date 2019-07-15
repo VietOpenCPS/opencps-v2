@@ -94,6 +94,17 @@ public class CPSDossierBusinessLocalServiceUtil {
 				   .addFullDossier(groupId, company, user, serviceContext, input);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier addFullDossier(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierMultipleInputModel input)
+		throws org.opencps.auth.api.exception.UnauthenticationException,
+			com.liferay.portal.kernel.exception.PortalException, Exception {
+		return getService()
+				   .addFullDossier(groupId, company, user, serviceContext, input);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier addMultipleDossier(
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.model.User user,

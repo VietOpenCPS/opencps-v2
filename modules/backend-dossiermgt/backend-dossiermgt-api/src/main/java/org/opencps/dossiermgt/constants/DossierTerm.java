@@ -161,6 +161,7 @@ public class DossierTerm {
 	public static final String SAMPLE_COUNT = "sampleCount";
 	public static final String DELEGATE_ADDRESS = "delegateAddress";
 	public static final String DELEGATE_NAME = "delegateName";
+	public static final String DELEGATE_NAME_SEARCH = "delegateNameSearch";
 	public static final String DELEGATE_EMAIL = "delegateEmail";
 	public static final String DELEGATE_TELNO = "delegateTelNo";
 	public static final String DELEGATE_ID_NO = "delegateIdNo";

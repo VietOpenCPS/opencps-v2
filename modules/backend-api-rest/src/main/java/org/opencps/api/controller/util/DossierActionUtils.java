@@ -420,46 +420,49 @@ public class DossierActionUtils {
 				boolean moderator = false;
 				int assigned = 0;
 				for (User user: lstUser) {
-					modelUser = new DossierActionNextActiontoUser();
-					Map<String, Object> attr = user.getModelAttributes();
-					long userId = GetterUtil.getLong(user.getUserId());
-
-					moderator = false;
-					assigned = 0;
-					if (attr != null) {
-						if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
-							moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
-						}
-						if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
-							assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
-						}
-					}
-
-					modelUser.setUserId(userId);
-
+					long userId = user.getUserId();
 					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-					_log.info("employee1: "+employee);
-					if (employee != null) {
-						modelUser.setUserName(employee.getFullName());
-					} else {
-						modelUser.setUserName(user.getFullName());
-					}
-					
-					modelUser.setModerator(moderator);
-					modelUser.setAssigned(assigned);
-					boolean flag = true;
-					if (outputUsers != null && !outputUsers.isEmpty()) {
-						for (DossierActionNextActiontoUser doUserAct : outputUsers) {
-							if (userId == doUserAct.getUserId()) {
-								flag = false;
-								break;
+					_log.debug("employee1: "+employee);
+					if (employee != null && employee.getWorkingStatus() == 1) {
+						modelUser = new DossierActionNextActiontoUser();
+						Map<String, Object> attr = user.getModelAttributes();
+	
+						moderator = false;
+						assigned = 0;
+						if (attr != null) {
+							if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+								moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+							}
+							if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+								assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
 							}
 						}
-						if (flag) {
+	
+						modelUser.setUserId(userId);
+	
+						if (employee != null) {
+							modelUser.setUserName(employee.getFullName());
+						}
+						//else {
+						//	modelUser.setUserName(user.getFullName());
+						//}
+						
+						modelUser.setModerator(moderator);
+						modelUser.setAssigned(assigned);
+						boolean flag = true;
+						if (outputUsers != null && !outputUsers.isEmpty()) {
+							for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+								if (userId == doUserAct.getUserId()) {
+									flag = false;
+									break;
+								}
+							}
+							if (flag) {
+								outputUsers.add(modelUser);
+							}
+						} else {
 							outputUsers.add(modelUser);
 						}
-					} else {
-						outputUsers.add(modelUser);
 					}
 				}
 			}

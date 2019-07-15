@@ -396,6 +396,9 @@ public class AdminEndpoind extends Endpoint {
 				
 				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
 						HttpMethod.GET, entity, String.class);
+				//BNG
+//				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+//						HttpMethod.GET, entity, String.class);
 
 				String resultString = response.getBody();
 
@@ -414,7 +417,7 @@ public class AdminEndpoind extends Endpoint {
 			messageData.put(CMD, message.getString(CMD));
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			messageData.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
 			messageData.put(RESPONE, message.getString(RESPONE));
 			messageData.put(CMD, message.getString(CMD));

@@ -17,23 +17,16 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
-import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -66,9 +59,6 @@ import org.osgi.service.component.annotations.Component;
 )
 public class DossierIndexer extends BaseIndexer<Dossier> {
 	public static final String CLASS_NAME = Dossier.class.getName();
-
-	//private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	//private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
 	@Override
 	public String getClassName() {
@@ -354,7 +344,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					// }
 					
 					String currentActionUserStr = StringPool.BLANK;
-					String assignedUser = StringPool.BLANK;
 					try {
 						List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
 						List<Long> lstUsers = new ArrayList<>();
@@ -393,10 +382,22 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 					Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-					// if (Validator.isNotNull(stepDuedate)) {
 					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
 							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
-					// }
+					
+					//Index assigned in step
+					List<String> userAssignedList = new ArrayList<>();
+					if (object.getDossierId() > 0) {
+						List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil
+								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
+						if (dauList != null && dauList.size() > 0) {
+							for (DossierActionUser dau : dauList) {
+								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+							}
+						}
+					}
+					document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(userAssignedList, StringPool.SPACE));
+
 					//Index userNote
 					String actionCode = dossierAction.getActionCode();
 //					_log.info("actionCode: "+actionCode);
@@ -445,25 +446,13 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH, StringPool.BLANK);
 			}
-//			if (Validator.isNotNull(object.getGovAgencyCode())) {
-				document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
-//			}
-//			if (Validator.isNotNull(object.getGovAgencyName())) {
-				document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
-//			}
-//			if (Validator.isNotNull(object.getApplicantName())) {
-				document.addTextSortable(DossierTerm.APPLICANT_NAME, object.getApplicantName());
-//			}
 
-//			if (Validator.isNotNull(object.getApplicantIdType())) {
-				document.addTextSortable(DossierTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
-//			}
-//			if (Validator.isNotNull(object.getApplicantIdNo())) {
-				document.addTextSortable(DossierTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
-//			}
-//			if (Validator.isNotNull(object.getAddress())) {
-				document.addTextSortable(DossierTerm.ADDRESS, object.getAddress());
-//			}
+			document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+			document.addTextSortable(DossierTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
+			document.addTextSortable(DossierTerm.APPLICANT_NAME, object.getApplicantName());
+			document.addTextSortable(DossierTerm.APPLICANT_ID_TYPE, object.getApplicantIdType());
+			document.addTextSortable(DossierTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
+			document.addTextSortable(DossierTerm.ADDRESS, object.getAddress());
 			document.addTextSortable(DossierTerm.CITY_CODE, object.getCityCode());
 			document.addTextSortable(DossierTerm.CITY_NAME, object.getCityName());
 			document.addTextSortable(DossierTerm.DISTRICT_CODE, object.getDistrictCode());
@@ -471,11 +460,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.WARD_CODE, object.getWardCode());
 			document.addTextSortable(DossierTerm.WARD_NAME, object.getWardName());
 			document.addTextSortable(DossierTerm.CONTACT_NAME, object.getContactName());
-
-			if (Validator.isNull(object.getContactTelNo())) {
-				// Get ContactTelNo from Applicant
-			}
-
 			document.addTextSortable(DossierTerm.CONTACT_TEL_NO, object.getContactTelNo());
 			document.addTextSortable(DossierTerm.CONTACT_EMAIL, object.getContactEmail());
 			document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());
@@ -601,65 +585,22 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
 			}
 
-			// Indexing Assigned dossierActionUser
-			//assigned
-			//follow
-			List<String> assignedList = new ArrayList<>();
-			try {
-				List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil.getByDossierId(dossierId);
-
-				if (dauList != null && dauList.size() > 0) {
-					Map<Long, String> mapAssigned = new HashMap<>();
-					int length = dauList.size() - 1;
-					for (int i = length; i >= 0; i--) {
-						DossierActionUser dau = dauList.get(i);
-						String strAssigned = StringPool.BLANK;
-						if (dau.getAssigned() == 1) {
-							strAssigned = dau.getUserId() + "_assigned";
-						} else if (dau.getAssigned() == 0) {
-							strAssigned = dau.getUserId() + "_follow";
-						}
-						mapAssigned.put(dau.getUserId(), strAssigned);
-						}
-					for (Map.Entry<Long, String> entry : mapAssigned.entrySet()) {
-						assignedList.add(entry.getValue());
-					}
-					}
-
-			} catch (Exception e) {
-				_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
-			}
-
-//			_log.info("Action user:" + StringUtil.merge(actionUserIds, StringPool.SPACE));
-			document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(assignedList, StringPool.SPACE));
 			document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
 
 			// binhth index dossierId CTN
-			// TODO
-
-			MessageDigest md5 = null;
-
-			byte[] ba = null;
-
-			try {
-
-				md5 = MessageDigest.getInstance("SHA-256");
-
-				ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
-
-			} catch (Exception e) {
-				_log.error(e);
-			}
-
-			DateFormat df = new SimpleDateFormat("yy");
-
-			String formattedDate = df.format(Calendar.getInstance().getTime());
-
-			String dossierIDCTN;
-
-			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
-
-			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
+//			MessageDigest md5 = null;
+//			byte[] ba = null;
+//			try {
+//				md5 = MessageDigest.getInstance("SHA-256");
+//				ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DateFormat df = new SimpleDateFormat("yy");
+//			String formattedDate = df.format(Calendar.getInstance().getTime());
+//			String dossierIDCTN;
+//			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
+//			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
 
 			document.addTextSortable(DossierTerm.ENDORSEMENT_DATE, APIDateTimeUtils
 					.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
@@ -708,6 +649,12 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.REGISTER, object.getRegisterBookCode());
 			//Info user create dossier
 			document.addTextSortable(DossierTerm.DELEGATE_NAME, object.getDelegateName());
+			if (Validator.isNotNull(object.getDelegateName())) {
+				String delegateNameSearch = SpecialCharacterUtils.splitSpecial(object.getDelegateName());
+				document.addTextSortable(DossierTerm.DELEGATE_NAME_SEARCH, delegateNameSearch);
+			} else {
+				document.addTextSortable(DossierTerm.DELEGATE_NAME_SEARCH, StringPool.BLANK);
+			}
 			document.addTextSortable(DossierTerm.DELEGATE_ID_NO, object.getDelegateIdNo());
 			document.addTextSortable(DossierTerm.DELEGATE_EMAIL, object.getDelegateEmail());
 			document.addTextSortable(DossierTerm.DELEGATE_TELNO, object.getDelegateTelNo());

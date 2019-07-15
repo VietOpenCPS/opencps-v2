@@ -97,6 +97,13 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
+	public Dossier addFullDossier(long groupId, Company company, User user,
+		ServiceContext serviceContext, DossierMultipleInputModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
 	public Dossier addMultipleDossier(long groupId, Company company, User user,
 		ServiceContext serviceContext, DossierMultipleInputModel input)
 		throws UnauthenticationException, PortalException, Exception;
