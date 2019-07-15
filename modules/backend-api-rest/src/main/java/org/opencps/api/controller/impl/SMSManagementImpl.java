@@ -1,38 +1,35 @@
 
 package org.opencps.api.controller.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.SMSManagement;
 import org.opencps.api.sms.model.IPacificSearchSMS;
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.communication.service.ZaloMapLocalServiceUtil;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.usermgt.action.UserInterface;
-import org.opencps.usermgt.action.impl.UserActions;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -90,132 +87,29 @@ public class SMSManagementImpl implements SMSManagement {
 	}
 
 	@Override
-	public Response testGetZaloUIdByTelNoSMS(
-		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext,
-		String toTelNo) {
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
-		if (Validator.isNull(toTelNo) && groupId <= 0) {
-
-			return Response.status(400).entity(StringPool.BLANK).build();
-		}
-
-		return Response.status(200).entity(
-			_getZaloUid(groupId, toTelNo, serviceContext)).build();
-	}
-
-	@Override
 	public Response getZaloUIdByTelNo(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
 		String toTelNo) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		UserInterface actions = new UserActions();
-
-		if (Validator.isNull(toTelNo) && groupId <= 0) {
-
-			return Response.status(400).entity(StringPool.BLANK).build();
-		}
-
 		try {
+			JSONObject zaloConfig = _getZaloInfo();
+			String zaloAccessToken =
+				zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
+			JSONObject resultApi = JSONFactoryUtil.createJSONObject(
+				_getZaloUidByTelNo(zaloAccessToken, toTelNo));
+			String uid = "not found";
+			if (resultApi.has("data")) {
 
-			String zUId = StringPool.BLANK;
-			/**
-			 * only use when has applicant Applicant applicant =
-			 * ApplicantLocalServiceUtil.fetchBy_GTelNo(groupId, toTelNo); if
-			 * (Validator.isNotNull(applicant) &&
-			 * Validator.isNotNull(applicant.getMappingUserId())) { String
-			 * preferences = actions.getPreferenceByKey(
-			 * applicant.getMappingUserId(), groupId, SendSMSTerm.ZALO_UID,
-			 * serviceContext); JSONObject zUIdJSON =
-			 * JSONFactoryUtil.createJSONObject(preferences);
-			 * _log.info(zUIdJSON); zUId = zUIdJSON.getString(SendSMSTerm.UID);
-			 * }
-			 */
-
-			ZaloMap zaloMap = ZaloMapLocalServiceUtil.getByTelNo(toTelNo);
-
-			if (Validator.isNotNull(zaloMap) && zaloMap.getIsFollowed() > 0) {
-
-				zUId = zaloMap.getUId();
+				uid = resultApi.getJSONObject("data").getString("user_id");
 			}
-			else {
-
-				return Response.status(404).entity(zUId).build();
-			}
-
-			return Response.status(200).entity(zUId).build();
-
+			return Response.status(200).entity(uid).build();
 		}
 		catch (Exception e) {
-			_log.debug(e);
-			return Response.status(500).entity(StringPool.BLANK).build();
+			// TODO: handle exception
+			return Response.status(500).entity("").build();
 		}
 
-	}
-
-	private String _getZaloUid(
-		long groupId, String toTelNo, ServiceContext serviceContext) {
-
-		try {
-			_log.info("====" + SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_URLS);
-			List<ServerConfig> lstScs =
-				ServerConfigLocalServiceUtil.getByProtocol(
-					groupId, SendSMSTerm.SERVER_CONFIG_PROTOCOL_ZALO_URLS);
-			ServerConfig sc = lstScs.get(0);
-			JSONObject zaloConfig =
-				JSONFactoryUtil.createJSONObject(sc.getConfigs());
-
-			JSONArray zaloURLs =
-				zaloConfig.getJSONArray(SendSMSTerm.ZALO_URLS_URLS);
-
-			_log.info(zaloURLs);
-
-			for (int i = 0; i < zaloURLs.length(); i++) {
-
-				JSONObject zaloURL = zaloURLs.getJSONObject(i);
-
-				InvokeREST rest = new InvokeREST();
-
-				HashMap<String, String> properties =
-					new HashMap<String, String>();
-
-				// Call initDossier to SERVER
-
-				String endPoint =
-					zaloURL.getString(SendSMSTerm.ZALO_URLS_END_POINT) +
-						"?toTelNo=" + toTelNo;
-
-				// khong tac dung
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("toTelNo", toTelNo);
-
-				JSONObject resPostDossier = rest.callAPI(
-					zaloURL.getLong(SendSMSTerm.ZALO_URLS_GROUP_ID),
-					HttpMethods.GET, MediaType.APPLICATION_JSON,
-					zaloURL.getString(SendSMSTerm.ZALO_URLS_PATH_BASE),
-					endPoint,
-					zaloURL.getString(SendSMSTerm.ZALO_URLS_USER_NAME),
-					zaloURL.getString(SendSMSTerm.ZALO_URLS_PASS_WORD),
-					properties, serviceContext);
-				_log.info(resPostDossier);
-				String uid = resPostDossier.getString("message");
-
-				if (Validator.isNotNull(uid)) {
-
-					return uid;
-				}
-
-			}
-		}
-		catch (Exception e) {
-
-			_log.info(e);
-		}
-		return StringPool.BLANK;
 	}
 
 	private String _buiderResponseSMS(IPacificSearchSMS iPacific) {
@@ -333,23 +227,27 @@ public class SMSManagementImpl implements SMSManagement {
 	}
 
 	@Override
-	public Response getZaloUIdByTelNo(
+	public Response calculateDueDate(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
 		String startDate, double durationCount, int durationUnit,
 		long groupId) {
-		
+
 		try {
-			
-			Date startDateS = new SimpleDateFormat("dd-MM-yyyy-HH-mm").parse(startDate);
-			String dueDate2 = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(startDateS);
-			System.out.println(startDateS);
-			System.out.println(dueDate2);
-			DueDateUtils dueDateUtils = new DueDateUtils(startDateS, durationCount, durationUnit, groupId);
-			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(dueDateUtils.getDueDate());
+
+			Date startDateS =
+				new SimpleDateFormat("dd-MM-yyyy-HH-mm").parse(startDate);
+			String dueDate2 =
+				new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(startDateS);
+			_log.info(startDateS);
+			_log.info(dueDate2);
+			DueDateUtils dueDateUtils = new DueDateUtils(
+				startDateS, durationCount, durationUnit, groupId);
+			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(
+				dueDateUtils.getDueDate());
 			return Response.status(200).entity(dueDate).build();
 		}
-		catch (ParseException e) {
+		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -357,6 +255,147 @@ public class SMSManagementImpl implements SMSManagement {
 		return Response.status(500).entity(StringPool.BLANK).build();
 	}
 
+	private String _getZaloUidByTelNo(String token, String toTelNo) {
+
+		try {
+
+			HashMap<String, String> properties = new HashMap<String, String>();
+
+			JSONObject data = JSONFactoryUtil.createJSONObject();
+
+			data.put("user_id", toTelNo);
+
+			String endPoint = "/v2.0/oa/getprofile?access_token=" + token +
+				"&data=" + data.toJSONString();
+			_log.info("end point=========" + endPoint);
+
+			JSONObject resPostDossier = _callAPI(
+				HttpMethods.GET, "application/json", "https://openapi.zalo.me",
+				endPoint, StringPool.BLANK, StringPool.BLANK, properties);
+			String uid = resPostDossier.getString("message");
+
+			if (Validator.isNotNull(uid)) {
+
+				return uid;
+			}
+		}
+		catch (Exception e) {
+
+			// _log.info(e);
+			e.printStackTrace();
+		}
+		return StringPool.BLANK;
+	}
+
+	private static JSONObject _getZaloInfo() {
+
+		JSONObject zaloInfoConfig = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(
+				SendSMSTerm.SERVER_CONFIG_SERVERNO_ZALO);
+
+			zaloInfoConfig = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		return zaloInfoConfig;
+	}
+
+	private static JSONObject _callAPI(
+		String httpMethod, String accept, String pathBase, String endPoint,
+		String username, String password, HashMap<String, String> properties) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+
+		try {
+			String urlPath;
+			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+				String endPoint2 = endPoint.substring(1);
+				urlPath = pathBase + endPoint2;
+			}
+			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
+				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+				urlPath = pathBase + endPoint;
+			}
+			else {
+				urlPath = pathBase + "/" + endPoint;
+			}
+			URL url = new URL(urlPath);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
+
+			conn.setRequestMethod(httpMethod);
+			conn.setRequestProperty("Accept", accept);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("groupId", StringPool.BLANK);
+
+			if (Validator.isNotNull(username) &&
+				Validator.isNotNull(password)) {
+
+				String authString = username + ":" + password;
+
+				String authStringEnc = new String(
+					java.util.Base64.getEncoder().encodeToString(
+						authString.getBytes()));
+				conn.setRequestProperty(
+					"Authorization", "Basic " + authStringEnc);
+			}
+
+			if (!properties.isEmpty()) {
+				for (Map.Entry m : properties.entrySet()) {
+					conn.setRequestProperty(
+						m.getKey().toString(), m.getValue().toString());
+				}
+			}
+
+			BufferedReader br = new BufferedReader(
+				new InputStreamReader((conn.getInputStream())));
+
+			String output;
+
+			StringBuilder sb = new StringBuilder();
+
+			while ((output = br.readLine()) != null) {
+				sb.append(output);
+			}
+
+			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
+			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+
+			conn.disconnect();
+
+		}
+		catch (MalformedURLException e) {
+			e.printStackTrace();
+			// _log.error(e);
+		}
+		catch (IOException e) {
+			// _log.error(e);
+			e.printStackTrace();
+
+		}
+
+		return response;
+	}
+
 	Log _log = LogFactoryUtil.getLog(SMSManagementImpl.class.getName());
+
+}
+
+class RESTFulConfiguration {
+
+	public static final String STATUS = "status";
+	public static final String MESSAGE = "message";
+
+	public static final String SUBMIT = "submit";
+	public static final String TIMER = "timer";
+
+	public static final int TIME_OUT = 3000;
 
 }

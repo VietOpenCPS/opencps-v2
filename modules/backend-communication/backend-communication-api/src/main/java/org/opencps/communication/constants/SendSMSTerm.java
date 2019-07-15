@@ -38,39 +38,56 @@ public class SendSMSTerm {
 	/**
 	 * Zalo Preference to send message zalo
 	 */
-	public static final String SERVER_CONFIG_PROTOCOL_ZALO_INF = "ZALO_INF";
+	// public static final String SERVER_CONFIG_PROTOCOL_ZALO_INF = "ZALO_INF";
 	public static final String SERVER_CONFIG_SERVERNO_ZALO = "ZALO";
 	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
-	public static final String ZALO_UID = "ZALO_UID";
-	public static final String UID = "uid";
-	public static final String ZALO_TEL_NO_EXITS_MES = "telNoExitsMes";
-	public static final String ZALO_TEL_NO_NOT_EXITS_MES = "telNoNotExitsMes";
-	public static final String ZALO_ADD_TEL_NO_SUCCESS_MES = "addTelNoSuccessMes";
-	public static final String ZALO_UPDATE_TEL_NO_SUCCESS_MES = "updateTelNoSuccessMes";
-	public static final String ZALO_REGISTRY_TEL_NO_SUCCESS_MES = "registryTelNoSuccessMes";
-	
+	public static final String ZALO_GROUPID = "groupId";
+	// public static final String ZALO_UID = "ZALO_UID";
+	// public static final String UID = "uid";
+	// public static final String ZALO_TEL_NO_EXITS_MES = "telNoExitsMes";
+	// public static final String ZALO_TEL_NO_NOT_EXITS_MES =
+	// "telNoNotExitsMes";
+	// public static final String ZALO_ADD_TEL_NO_SUCCESS_MES =
+	// "addTelNoSuccessMes";
+	// public static final String ZALO_UPDATE_TEL_NO_SUCCESS_MES =
+	// "updateTelNoSuccessMes";
+	// public static final String ZALO_REGISTRY_TEL_NO_SUCCESS_MES =
+	// "registryTelNoSuccessMes";
+	public static final String ZALO_DOSSIER_NOT_FOUND_MES =
+		"dossierNotFoundMes";
+	public static final String ZALO_DOSSIER_ERROR_PASSWORD_MES =
+		"dossierErrorPasswordMes";
+	public static final String ZALO_DOSSIER_NO_REPLACE = "dossierNoReplace";
+	public static final String ZALO_DOSSIER_STATUS_REPLACE =
+		"dossierStatusReplace";
+	public static final String ZALO_DOSSIER_SUCCESS_MES = "successMes";
+
 	// Config call api from MCDT to DVC
-	public static final String SERVER_CONFIG_PROTOCOL_ZALO_URLS = "ZALO_URLS";
-	public static final String ZALO_URLS_URLS = "urls";
-	public static final String ZALO_URLS_PATH_BASE = "pathBase";
-	public static final String ZALO_URLS_END_POINT = "endPoint";
-	public static final String ZALO_URLS_GROUP_ID = "groupId";
-	public static final String ZALO_URLS_USER_NAME = "userName";
-	public static final String ZALO_URLS_PASS_WORD = "password";
-	
-	public static final String SERVER_CONFIG_SERVERNO_EPACIFIC = "SMS_EPACIFIC_SERVER";
+	// public static final String SERVER_CONFIG_PROTOCOL_ZALO_URLS =
+	// "ZALO_URLS";
+	// public static final String ZALO_URLS_URLS = "urls";
+	// public static final String ZALO_URLS_PATH_BASE = "pathBase";
+	// public static final String ZALO_URLS_END_POINT = "endPoint";
+	// public static final String ZALO_URLS_GROUP_ID = "groupId";
+	// public static final String ZALO_URLS_USER_NAME = "userName";
+	// public static final String ZALO_URLS_PASS_WORD = "password";
+
+	public static final String SERVER_CONFIG_SERVERNO_EPACIFIC =
+		"SMS_EPACIFIC_SERVER";
 	public static final String EPACIFIC_GROUPID = "groupId";
 	public static final String EPACIFIC_MINE = "mine";
 	public static final String EPACIFIC_USER = "user";
 	public static final String EPACIFIC_PASSWORD = "password";
 	public static final String EPACIFIC_SYNTAX_ERROR_MES = "syntaxErrorMes";
-	public static final String EPACIFIC_D_PASSWORD_ERROR_MES = "dPasswordErrorMes";
+	public static final String EPACIFIC_D_PASSWORD_ERROR_MES =
+		"dPasswordErrorMes";
 	public static final String EPACIFIC_D_NOT_FOUND_MES = "dNotFoundMes";
 	public static final String EPACIFIC_MINE_ERROR_MES = "mineErrorMes";
 	public static final String EPACIFIC_USER_ERROR_MES = "userErrorMes";
 	public static final String EPACIFIC_PASSWORD_ERROR_MES = "passwordErrorMes";
 	public static final String EPACIFIC_SUCCESS_MES = "successMes";
 	public static final String EPACIFIC_DOSSIER_NO_REPLACE = "dossierNoReplace";
-	public static final String EPACIFIC_DOSSIER_STATUS_REPLACE = "dossierStatusReplace";
+	public static final String EPACIFIC_DOSSIER_STATUS_REPLACE =
+		"dossierStatusReplace";
 
 }
