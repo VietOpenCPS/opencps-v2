@@ -3247,7 +3247,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				for (User user : users) {
-					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(user.getUserId());
 					//_log.debug("Employee : " + employee);
 					if (employee != null && employee.getWorkingStatus() == 1) {
 						List<DossierAction> lstDoneActions = dossierActionLocalService
