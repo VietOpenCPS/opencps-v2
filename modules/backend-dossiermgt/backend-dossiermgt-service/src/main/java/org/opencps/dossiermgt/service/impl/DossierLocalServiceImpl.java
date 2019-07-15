@@ -462,6 +462,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setApplicantNote(applicantNote);
 				dossier.setOriginality(originality);
 				dossier.setSampleCount(processOption != null ? processOption.getSampleCount(): 0);
+				String registerBookCode = processOption != null ? processOption.getRegisterBookCode() : StringPool.BLANK;
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, "REGISTER_BOOK", registerBookCode) : StringPool.BLANK);
+				dossier.setProcessNo(serviceProcess != null ? serviceProcess.getProcessNo() : StringPool.BLANK);
 
 				dossierPersistence.update(dossier);
 
@@ -526,6 +530,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setApplicantNote(applicantNote);
 //				dossier.setServerNo(getServerNo(groupId));
 				dossier.setOriginality(originality);
+				String registerBookCode = processOption != null ? processOption.getRegisterBookCode() : StringPool.BLANK;
+				dossier.setRegisterBookCode(registerBookCode);
+				dossier.setRegisterBookName(Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, "REGISTER_BOOK", registerBookCode) : StringPool.BLANK);
+				dossier.setProcessNo(serviceProcess != null ? serviceProcess.getProcessNo() : StringPool.BLANK);
 				//Update sampleCount
 //				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
 				ProcessOption option = processOption;
