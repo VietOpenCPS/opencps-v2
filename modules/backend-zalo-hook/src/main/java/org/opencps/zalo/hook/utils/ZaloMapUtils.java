@@ -15,6 +15,8 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.communication.service.ZaloMapLocalServiceUtil;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -145,6 +147,11 @@ public class ZaloMapUtils {
 
 				result = _updateTelNo(messages[1]);
 			}
+			else if (messages[0].equalsIgnoreCase(
+				ZaloHookConstantKeys.ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER)) {
+
+				result = _searchDossier(messages[1], messages[2]);
+			}
 		}
 		catch (Exception e) {
 
@@ -181,8 +188,48 @@ public class ZaloMapUtils {
 			else {
 
 				zaloMap = ZaloMapLocalServiceUtil.updateZaloMap(
-					zaloMap.getZaloMapId(), groupId, uId,
-					telNo, oAId, 1, payload);
+					zaloMap.getZaloMapId(), groupId, uId, telNo, oAId, 1,
+					payload);
+			}
+
+		}
+		catch (PortalException e) {
+
+			e.printStackTrace();
+			_log.error(e);
+		}
+
+		return _buildResponse(zaloMap);
+	}
+
+	public JSONObject searchDossier() {
+
+		try {
+
+			String uId =
+				(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
+			String oAId =
+				(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_OAID);
+			String telNo =
+				(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_C_PARAM_TEL_NO);
+			long groupId = Long.parseLong(
+				(String) zaloInfo.get(
+					ZaloHookConstantKeys.ZALO_C_PARAM_GROUP_ID));
+			String payload = (String) zaloInfo.get(
+				ZaloHookConstantKeys.ZALO_C_PARAM_PAYLOAD);
+
+			zaloMap = ZaloMapLocalServiceUtil.getByUId(uId);
+
+			if (Validator.isNull(zaloMap)) {
+
+				zaloMap = ZaloMapLocalServiceUtil.updateZaloMap(
+					0, groupId, uId, telNo, oAId, 1, payload);
+			}
+			else {
+
+				zaloMap = ZaloMapLocalServiceUtil.updateZaloMap(
+					zaloMap.getZaloMapId(), groupId, uId, telNo, oAId, 1,
+					payload);
 			}
 
 		}
@@ -206,11 +253,11 @@ public class ZaloMapUtils {
 		if (Validator.isNotNull(zaloMap) &&
 			oAId.equals(zaloMap.getZaloOAId())) {
 
-			_sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
+			// _sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
 		}
 		else {
 
-			_sendZalo(SendSMSTerm.ZALO_TEL_NO_NOT_EXITS_MES, uId);
+			// _sendZalo(SendSMSTerm.ZALO_TEL_NO_NOT_EXITS_MES, uId);
 		}
 
 		return _buildResponse(zaloMap);
@@ -228,7 +275,7 @@ public class ZaloMapUtils {
 		if (Validator.isNotNull(zaloMap) &&
 			oAId.equals(zaloMap.getZaloOAId())) {
 
-			_sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
+			// _sendZalo(SendSMSTerm.ZALO_TEL_NO_EXITS_MES, uId);
 			return _buildResponse(zaloMap);
 		}
 		else {
@@ -260,9 +307,58 @@ public class ZaloMapUtils {
 					oAId, 1, zaloMap.getPayload());
 			}
 
-			_sendZalo(SendSMSTerm.ZALO_UPDATE_TEL_NO_SUCCESS_MES, uId);
+			// _sendZalo(SendSMSTerm.ZALO_UPDATE_TEL_NO_SUCCESS_MES, uId);
 		}
 		catch (PortalException e) {
+
+			e.printStackTrace();
+			_log.error(e);
+		}
+
+		return _buildResponse(zaloMap);
+	}
+
+	private JSONObject _searchDossier(String dossierNo, String password) {
+
+		try {
+			String uId =
+				(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
+
+			JSONObject zaloConfig = _getZaloInfo();
+			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(
+				zaloConfig.getLong(SendSMSTerm.ZALO_GROUPID), dossierNo);
+			String message = StringPool.BLANK;
+
+			if (Validator.isNull(dossier)) {
+
+				message =
+					zaloConfig.getString(SendSMSTerm.EPACIFIC_D_NOT_FOUND_MES);
+
+			}
+			else if (!dossier.getPassword().equalsIgnoreCase(password)) {
+
+				message = zaloConfig.getString(
+					SendSMSTerm.ZALO_DOSSIER_ERROR_PASSWORD_MES);
+
+			}
+			else {
+
+				message =
+					zaloConfig.getString(SendSMSTerm.EPACIFIC_SUCCESS_MES);
+				message =
+					message.replaceAll(
+						zaloConfig.getString(
+							SendSMSTerm.EPACIFIC_DOSSIER_NO_REPLACE),
+						dossierNo);
+				message = message.replaceAll(
+					zaloConfig.getString(
+						SendSMSTerm.EPACIFIC_DOSSIER_STATUS_REPLACE),
+					dossier.getDossierStatusText());
+			}
+
+			_sendZalo(message, uId, zaloConfig);
+		}
+		catch (Exception e) {
 
 			e.printStackTrace();
 			_log.error(e);
@@ -296,14 +392,21 @@ public class ZaloMapUtils {
 		return response;
 	}
 
-	private void _sendZalo(String messageCode, String zaloUid) {
+	private void _sendZalo(
+		String messageCode, String zaloUid, JSONObject zaloConfig) {
 
 		try {
 
-			JSONObject zaloConfigInfo = _getZaloInfo();
+			JSONObject zaloConfigInfo = zaloConfig;
+			if (Validator.isNull(zaloConfig)) {
+				zaloConfigInfo = _getZaloInfo();
+			}
 			String oAIdToken =
 				zaloConfigInfo.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
 			String textMessage = zaloConfigInfo.getString(messageCode);
+
+			textMessage =
+				Validator.isNotNull(textMessage) ? textMessage : messageCode;
 
 			if (Validator.isNotNull(textMessage) &&
 				Validator.isNotNull(zaloUid) &&

@@ -15,6 +15,9 @@ dependencies {
 	
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-communication:backend-communication-service")
+
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-service")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	
 	compile name : "VNPostNGSPSDK", transitive:false
 	compile name : "gson-2.8.0", transitive:false
