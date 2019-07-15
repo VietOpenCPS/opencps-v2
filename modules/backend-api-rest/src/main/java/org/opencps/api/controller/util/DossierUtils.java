@@ -1305,6 +1305,7 @@ public class DossierUtils {
 		model.setDossiers(input.getDossiers());
 		model.setDossierFileArr(input.getDossierFileArr());
 		model.setDossierMarkArr(input.getDossierMarkArr());
+		model.setPayment(input.getPayment());
 
 		return model;
 	}

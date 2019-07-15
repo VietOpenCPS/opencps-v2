@@ -15,8 +15,6 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.document.library.kernel.exception.FileNameException;
-import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -32,7 +30,6 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -98,12 +95,10 @@ import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
-import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -134,7 +129,6 @@ import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -160,7 +154,6 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -1372,12 +1365,27 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 				}
 				
+				if (Validator.isNotNull(payment)) {
+					try {
+						JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
+						if (paymentObj.has("paymentNote")) {
+							oldPaymentFile.setPaymentNote(paymentObj.getString("paymentNote"));
+							String epaymentProfile = oldPaymentFile.getEpaymentProfile();
+							if (Validator.isNotNull(epaymentProfile)) {
+								JSONObject jsonEpayment = JSONFactoryUtil.createJSONObject(epaymentProfile);
+								jsonEpayment.put("paymentNote", paymentObj.getString("paymentNote"));
+								oldPaymentFile.setEpaymentProfile(jsonEpayment.toJSONString());
+							}
+						}
+					} catch (JSONException e) {
+						_log.debug(e);
+					}
+					
+				}
+
 				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
-				
 				paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 			}
-			
-			
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 			int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
@@ -3238,8 +3246,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
-					for (User user : users) {
-						List<DossierAction> lstDoneActions = dossierActionLocalService.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
+				for (User user : users) {
+					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+					//_log.debug("Employee : " + employee);
+					if (employee != null && employee.getWorkingStatus() == 1) {
+						List<DossierAction> lstDoneActions = dossierActionLocalService
+								.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
 						if (!lstStepActions.isEmpty()) {
 							if (!lstDoneActions.isEmpty())
 								mod = 1;
@@ -3247,9 +3259,11 @@ public class CPSDossierBusinessLocalServiceImpl
 								mod = 0;
 						}
 						updateDossierUser(dossier, processStepRole, user);
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId());
+						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+								dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId());
 					}
-			}			
+				}
+			}
 		}
 		else {
 			//Get role from service process
