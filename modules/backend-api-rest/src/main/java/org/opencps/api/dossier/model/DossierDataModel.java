@@ -198,7 +198,8 @@ import javax.xml.bind.annotation.XmlType;
     "delegateDistrictName",
     "delegateWardCode",
     "delegateWardName",
-    "metaData"
+    "metaData",
+    "groupDossierId"
 })
 public class DossierDataModel {
 
@@ -303,6 +304,15 @@ public class DossierDataModel {
     protected String delegateWardCode;
     protected String delegateWardName;
     protected String metaData;
+    protected Long groupDossierId;
+
+	public Long getGroupDossierId() {
+		return groupDossierId;
+	}
+
+	public void setGroupDossierId(Long groupDossierId) {
+		this.groupDossierId = groupDossierId;
+	}
 
 	public String getStatusReg() {
 		return statusReg;

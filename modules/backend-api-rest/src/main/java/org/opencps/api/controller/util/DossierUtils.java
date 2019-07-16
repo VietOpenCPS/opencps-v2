@@ -428,6 +428,7 @@ public class DossierUtils {
 			model.setDelegateWardCode(doc.get(DossierTerm.DELEGATE_WARDCODE));
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
+			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
 			
 			ouputs.add(model);
 		}
@@ -900,6 +901,7 @@ public class DossierUtils {
 		model.setOriginDossierId(input.getOriginDossierId());
 		model.setOriginDossierNo(input.getOriginDossierNo());
 		model.setMetaData(input.getMetaData());
+		model.setGroupDossierId(input.getGroupDossierId());
 
 		return model;
 	}

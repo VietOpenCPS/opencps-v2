@@ -194,7 +194,8 @@ import javax.xml.bind.annotation.XmlType;
     "originality",
     "originDossierId",
     "originDossierNo",
-    "metaData"
+    "metaData",
+    "groupDossierId"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -296,8 +297,17 @@ public class DossierDetailModel {
 	protected Long originDossierId;
 	protected String originDossierNo;
 	protected String metaData;
+	protected Long groupDossierId;
+	
+    public Long getGroupDossierId() {
+		return groupDossierId;
+	}
 
-    public String getPaymentFee() {
+	public void setGroupDossierId(Long groupDossierId) {
+		this.groupDossierId = groupDossierId;
+	}
+
+	public String getPaymentFee() {
 		return paymentFee;
 	}
 

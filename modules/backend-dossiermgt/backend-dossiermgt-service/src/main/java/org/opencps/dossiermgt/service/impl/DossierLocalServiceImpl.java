@@ -941,12 +941,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (dc == null) return StringPool.BLANK;
 				
 		_log.debug("COLLECTION UPDATE DOSSIER: " + dc + "," + collectionCode);
-		_log.debug("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
-		DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-		_log.debug("ITEM: " + itemCode + "," + it);
-		if (it == null) return null;
-		return it.getItemName();
-
+		if (dc != null) {
+			_log.debug("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if (it == null) return StringPool.BLANK;
+			_log.debug("ITEM: " + itemCode + "," + it);
+			return it.getItemName();
+		}
+		
+		return StringPool.BLANK;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
