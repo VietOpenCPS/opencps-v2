@@ -496,8 +496,8 @@ public class NotificationUtil {
 		return response;
 	}
 
-	private static final String ZALO_PATH_BASE = "zaloUid";
-	private static final String ZALO_ENDPOID_GET_USER_INFO = "zaloUid";
+	private static final String ZALO_PATH_BASE = "https://openapi.zalo.me";
+	private static final String ZALO_ENDPOID_GET_USER_INFO = "/v2.0/oa/getprofile";
 	private static final String ZALO_UID = "zaloUid";
 	private static final String ZALO_TOKEN = "zaloToken";
 
