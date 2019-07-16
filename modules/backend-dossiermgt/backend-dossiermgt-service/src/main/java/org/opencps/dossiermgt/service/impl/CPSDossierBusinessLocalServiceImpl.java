@@ -724,7 +724,10 @@ public class CPSDossierBusinessLocalServiceImpl
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 			
 			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
-			flagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, serviceProcess, context);
+			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, serviceProcess, context);
+			for (Map.Entry<String, Boolean> entry : resultFlagChanged.entrySet()) {
+				flagChanged.put(entry.getKey(), entry.getValue());
+			}
 			dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
 
@@ -765,7 +768,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			ServiceContext context) throws PortalException, SystemException, Exception {
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
-		Map<String, Boolean> flagChanged = null;
+		Map<String, Boolean> flagChanged = new HashMap<>();
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject();
 		User user = userLocalService.fetchUser(userId);
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
@@ -783,7 +786,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			employee = (Employee) employeeCache;
 		}		
 		try {
-			JSONFactoryUtil.createJSONObject(payload);
+			payloadObject = JSONFactoryUtil.createJSONObject(payload);
 		}
 		catch (JSONException e) {
 			_log.debug(e);
