@@ -337,10 +337,11 @@ public class DossierActionUserImpl implements DossierActionUser {
 					if (dAction != null) {
 						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
 								dAction.getStepCode(), dossier.getDossierId());
-					} else {
-						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
-								StringPool.BLANK, dossier.getDossierId());
-					}
+					} 
+//					else {
+//						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
+//								StringPool.BLANK, dossier.getDossierId());
+//					}
 				}
 				else {
 					dau.setModerator(1);
