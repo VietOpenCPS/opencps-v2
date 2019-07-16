@@ -939,11 +939,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
 		_log.debug("COLLECTION UPDATE DOSSIER: " + dc + "," + collectionCode);
-		_log.debug("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
-		DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-		_log.debug("ITEM: " + itemCode + "," + it);
-		return it.getItemName();
-
+		if (dc != null) {
+			_log.debug("COLLECTION UPDATE DOSSIER: " + dc.getCollectionCode() + "," + dc.getDictCollectionId() + "," + dc.getPrimaryKey());
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			_log.debug("ITEM: " + itemCode + "," + it);
+			return it.getItemName();
+		}
+		
+		return StringPool.BLANK;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
