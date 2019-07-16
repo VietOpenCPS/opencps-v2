@@ -152,6 +152,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getOnline())) {
 	    	params.put(DossierTerm.ONLINE, model.getOnline());	    	
 	    }
+	    if (Validator.isNotNull(model.getServerNo())) {
+	    	params.put(DossierTerm.SERVER_NO, model.getServerNo());
+	    }
 	    
 	    return params;
 	}
