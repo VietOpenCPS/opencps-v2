@@ -3628,11 +3628,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (DossierTerm.STATISTIC.equals(top) && Validator.isNotNull(fromStatisticDate)
 				&& Validator.isNotNull(toStatisticDate) && Validator.isNotNull(time)) {
-			String fromStatisDateFilter = fromStatisticDate + ConstantsTerm.HOUR_START;
-			String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_END;
-			TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
-					fromStatisDateFilter, toStatisDateFilter, true, true);
-			booleanQuery.add(termRangeRelease, BooleanClauseOccur.MUST);			
+			if (!DossierTerm.OVER_DUE.equals(time)) {
+				String fromStatisDateFilter = fromStatisticDate + ConstantsTerm.HOUR_START;
+				String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_END;
+				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
+						fromStatisDateFilter, toStatisDateFilter, true, true);
+				booleanQuery.add(termRangeRelease, BooleanClauseOccur.MUST);				
+			}
 		}
 		return booleanQuery;
 	}
