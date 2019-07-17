@@ -116,7 +116,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
+			
 			for (Group site : sites) {
+				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 				
 	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
@@ -173,7 +175,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
 				int yearCurrent = LocalDate.now().getYear();
-				Map<Integer, Boolean> mapFlag = new HashMap<>();
+				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
@@ -191,8 +193,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						if (flagStatistic) {
 							try {
+//								Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 									engineUpdateAction, serviceDomainResponse, calculateData);
+								calculateDatas.put(yearCurrent, calculateData);
 							}
 							catch (Exception e) {
 							}
@@ -200,36 +204,23 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
 					} else {
 						try {
+//							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse, calculateData);
+							calculateDatas.put(yearCurrent, calculateData);
 						}
 						catch (Exception e) {
 						}
 					}
-					mapFlag.put(month, flagStatistic);
+					mapFlagCurrent.put(month, flagStatistic);
 				}
-				//Recalculate data
-				for (int month = 1; month <= monthCurrent; month ++) {
-					if (mapFlag.get(month)) {
-//						try {
-//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
-//						}
-//						catch (Exception e) {
-//							
-//						}
-						if (calculateData.get(month) != null) {
-							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-							
-							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
-						}
-					}
-				}			
-				
+
+				//Recalculate data				
 				//TODO: Calculator again year ago
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = true;
+				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
 				calculateData = new HashMap<>();
-				mapFlag = new HashMap<>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
@@ -238,26 +229,52 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 					if (flagLastYear) {
 						try {
+//							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse, calculateData);
+							calculateDatas.put(lastYear, calculateData);
 						}
 						catch (Exception e) {
 							
 						}
 					}
-					mapFlag.put(lastMonth, flagLastYear);
+					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
+
+				for (int month = 1; month <= monthCurrent; month ++) {
+					if (mapFlagCurrent.get(month)) {
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+//						}
+//						catch (Exception e) {
+//							
+//						}
+						if (calculateDatas.get(yearCurrent) != null &&
+								calculateDatas.get(yearCurrent).get(month) != null) {
+//						if (calculateData.get(month) != null) {
+							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//							_log.debug("DOSSIER CAL MEMORY SIZE CURRENT: " + calculateDatas.get(yearCurrent).get(month).size());
+							statisticEngineUpdate.updateStatisticData(calculateDatas.get(yearCurrent).get(month));
+//							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
+						}
+					}
+				}			
+				
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
-					if (mapFlag.get(lastMonth)) {
+					if (mapFlagPrev.get(lastMonth)) {
 //						try {
 //							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
 //						}
 //						catch (Exception e) {
 //							
 //						}
-						if (calculateData.get(lastMonth) != null) {
-							statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
+//						if (calculateData.get(lastMonth) != null) {
+						if (calculateDatas.get(lastYear) != null &&
+								calculateDatas.get(lastYear).get(lastMonth) != null) {
+//							_log.debug("DOSSIER CAL MEMORY SIZE PREV: " + calculateDatas.get(lastYear).get(lastMonth).size());
+							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
+//							statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
 						}
 					}
 				}			
@@ -625,7 +642,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 2, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
