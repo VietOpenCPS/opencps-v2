@@ -3303,8 +3303,19 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						
 						updateDossierUser(dossier, processStepRole, user);
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+						DossierActionUserPK dauPk = new DossierActionUserPK();
+						dauPk.setDossierActionId(dossierAction.getDossierActionId());
+						dauPk.setUserId(user.getUserId());
+						DossierActionUser dau = dossierActionUserLocalService.fetchDossierActionUser(dauPk);
+						if (dau == null) {
+							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
 								dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), assigned);
+						}
+						else if (dau.getAssigned() == DossierActionUserTerm.NOT_ASSIGNED) {
+							dau.setAssigned(assigned);
+							dau.setModerator(mod);
+							dossierActionUserLocalService.updateDossierActionUser(dau);
+						}
 					}
 				}
 			}
