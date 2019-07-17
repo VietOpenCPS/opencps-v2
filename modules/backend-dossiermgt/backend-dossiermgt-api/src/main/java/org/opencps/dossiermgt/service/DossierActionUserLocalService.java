@@ -213,6 +213,10 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierActionUser> getByDossierId(long dossierId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierActionUser> getByDossierUserAndStepCode(long dossierId,
+		long userId, String stepCode);
+
 	/**
 	* Returns the dossier action user with the primary key.
 	*

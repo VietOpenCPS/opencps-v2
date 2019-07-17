@@ -150,5 +150,7 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDID(long dossierActionId) {
 		return dossierActionUserPersistence.findByDID(dossierActionId);
 	}
-	
+	public List<DossierActionUser> getByDossierUserAndStepCode(long dossierId, long userId, String stepCode) {
+		return dossierActionUserPersistence.findByDID_UID_SC(dossierId, userId, stepCode);
+	}
 }

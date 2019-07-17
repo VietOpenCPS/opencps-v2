@@ -249,6 +249,12 @@ public class DossierActionUserLocalServiceUtil {
 		return getService().getByDossierId(dossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDossierUserAndStepCode(
+		long dossierId, long userId, String stepCode) {
+		return getService()
+				   .getByDossierUserAndStepCode(dossierId, userId, stepCode);
+	}
+
 	/**
 	* Returns the dossier action user with the primary key.
 	*
