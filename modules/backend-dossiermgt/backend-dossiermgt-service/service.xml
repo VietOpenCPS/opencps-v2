@@ -1656,7 +1656,12 @@
 			<finder-column name="userId"></finder-column>
 			<finder-column name="stepCode"></finder-column>
 		</finder>
-		
+		<finder name="DID__DAI_UID_SC" return-type="DossierActionUser">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="dossierActionId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="stepCode"></finder-column>
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"

@@ -1,5 +1,15 @@
 package org.opencps.statistic.rest.engine.service;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,26 +27,12 @@ import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
-import org.opencps.statistic.rest.engine.DossierStatisticEngine;
 import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;

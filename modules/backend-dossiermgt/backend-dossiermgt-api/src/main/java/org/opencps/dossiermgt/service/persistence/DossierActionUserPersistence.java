@@ -1492,6 +1492,71 @@ public interface DossierActionUserPersistence extends BasePersistence<DossierAct
 	public int countByDID_UID_SC(long dossierId, long userId, String stepCode);
 
 	/**
+	* Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or throws a {@link NoSuchDossierActionUserException} if it could not be found.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the matching dossier action user
+	* @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	*/
+	public DossierActionUser findByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode)
+		throws NoSuchDossierActionUserException;
+
+	/**
+	* Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public DossierActionUser fetchByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode);
+
+	/**
+	* Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	*/
+	public DossierActionUser fetchByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the dossier action user that was removed
+	*/
+	public DossierActionUser removeByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode)
+		throws NoSuchDossierActionUserException;
+
+	/**
+	* Returns the number of dossier action users where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param dossierActionId the dossier action ID
+	* @param userId the user ID
+	* @param stepCode the step code
+	* @return the number of matching dossier action users
+	*/
+	public int countByDID__DAI_UID_SC(long dossierId, long dossierActionId,
+		long userId, String stepCode);
+
+	/**
 	* Caches the dossier action user in the entity cache if it is enabled.
 	*
 	* @param dossierActionUser the dossier action user

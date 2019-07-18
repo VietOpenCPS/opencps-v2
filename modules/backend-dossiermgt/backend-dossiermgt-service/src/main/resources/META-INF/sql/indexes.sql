@@ -77,6 +77,7 @@ create unique index IX_4DC64575 on opencps_dossieractionsync (uuid_[$COLUMN_LENG
 
 create index IX_662474BD on opencps_dossieractionuser (dossierActionId);
 create index IX_607DAE14 on opencps_dossieractionuser (dossierId, dossierActionId, stepCode[$COLUMN_LENGTH:255$], assigned);
+create index IX_D187820C on opencps_dossieractionuser (dossierId, dossierActionId, userId, stepCode[$COLUMN_LENGTH:255$]);
 create index IX_D10B6FB4 on opencps_dossieractionuser (dossierId, stepCode[$COLUMN_LENGTH:255$]);
 create index IX_E334306E on opencps_dossieractionuser (dossierId, userId, stepCode[$COLUMN_LENGTH:255$]);
 create index IX_ECE52C69 on opencps_dossieractionuser (userId);

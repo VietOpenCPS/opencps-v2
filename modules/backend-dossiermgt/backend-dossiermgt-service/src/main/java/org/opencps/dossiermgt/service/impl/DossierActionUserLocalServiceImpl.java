@@ -153,4 +153,7 @@ public class DossierActionUserLocalServiceImpl
 	public List<DossierActionUser> getByDossierUserAndStepCode(long dossierId, long userId, String stepCode) {
 		return dossierActionUserPersistence.findByDID_UID_SC(dossierId, userId, stepCode);
 	}
+	public DossierActionUser getByD_DID_UID_SC(long dossierId, long dossierActionId, long userId, String stepCode) {
+		return dossierActionUserPersistence.fetchByDID__DAI_UID_SC(dossierId, dossierActionId, userId, stepCode);
+	}
 }

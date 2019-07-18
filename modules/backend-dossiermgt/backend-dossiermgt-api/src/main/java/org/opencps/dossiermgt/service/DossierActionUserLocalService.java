@@ -189,6 +189,10 @@ public interface DossierActionUserLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierActionUser getByD_DID_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DossierActionUser> getByDID(long dossierActionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

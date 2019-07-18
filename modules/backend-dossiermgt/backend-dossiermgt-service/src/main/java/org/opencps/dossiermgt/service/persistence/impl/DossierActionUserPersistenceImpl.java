@@ -5763,6 +5763,324 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 	private static final String _FINDER_COLUMN_DID_UID_SC_STEPCODE_1 = "dossierActionUser.stepCode IS NULL";
 	private static final String _FINDER_COLUMN_DID_UID_SC_STEPCODE_2 = "dossierActionUser.stepCode = ?";
 	private static final String _FINDER_COLUMN_DID_UID_SC_STEPCODE_3 = "(dossierActionUser.stepCode IS NULL OR dossierActionUser.stepCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_DID__DAI_UID_SC = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionUserModelImpl.FINDER_CACHE_ENABLED,
+			DossierActionUserImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByDID__DAI_UID_SC",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			},
+			DossierActionUserModelImpl.DOSSIERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.DOSSIERACTIONID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.USERID_COLUMN_BITMASK |
+			DossierActionUserModelImpl.STEPCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_DID__DAI_UID_SC = new FinderPath(DossierActionUserModelImpl.ENTITY_CACHE_ENABLED,
+			DossierActionUserModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByDID__DAI_UID_SC",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or throws a {@link NoSuchDossierActionUserException} if it could not be found.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param stepCode the step code
+	 * @return the matching dossier action user
+	 * @throws NoSuchDossierActionUserException if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser findByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode)
+		throws NoSuchDossierActionUserException {
+		DossierActionUser dossierActionUser = fetchByDID__DAI_UID_SC(dossierId,
+				dossierActionId, userId, stepCode);
+
+		if (dossierActionUser == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("dossierId=");
+			msg.append(dossierId);
+
+			msg.append(", dossierActionId=");
+			msg.append(dossierActionId);
+
+			msg.append(", userId=");
+			msg.append(userId);
+
+			msg.append(", stepCode=");
+			msg.append(stepCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierActionUserException(msg.toString());
+		}
+
+		return dossierActionUser;
+	}
+
+	/**
+	 * Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param stepCode the step code
+	 * @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser fetchByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode) {
+		return fetchByDID__DAI_UID_SC(dossierId, dossierActionId, userId,
+			stepCode, true);
+	}
+
+	/**
+	 * Returns the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param stepCode the step code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier action user, or <code>null</code> if a matching dossier action user could not be found
+	 */
+	@Override
+	public DossierActionUser fetchByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				dossierId, dossierActionId, userId, stepCode
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC,
+					finderArgs, this);
+		}
+
+		if (result instanceof DossierActionUser) {
+			DossierActionUser dossierActionUser = (DossierActionUser)result;
+
+			if ((dossierId != dossierActionUser.getDossierId()) ||
+					(dossierActionId != dossierActionUser.getDossierActionId()) ||
+					(userId != dossierActionUser.getUserId()) ||
+					!Objects.equals(stepCode, dossierActionUser.getStepCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_DOSSIERACTIONUSER_WHERE);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERID_2);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERACTIONID_2);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_USERID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				qPos.add(dossierActionId);
+
+				qPos.add(userId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				List<DossierActionUser> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierActionUserPersistenceImpl.fetchByDID__DAI_UID_SC(long, long, long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DossierActionUser dossierActionUser = list.get(0);
+
+					result = dossierActionUser;
+
+					cacheResult(dossierActionUser);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DossierActionUser)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier action user where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63; from the database.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param stepCode the step code
+	 * @return the dossier action user that was removed
+	 */
+	@Override
+	public DossierActionUser removeByDID__DAI_UID_SC(long dossierId,
+		long dossierActionId, long userId, String stepCode)
+		throws NoSuchDossierActionUserException {
+		DossierActionUser dossierActionUser = findByDID__DAI_UID_SC(dossierId,
+				dossierActionId, userId, stepCode);
+
+		return remove(dossierActionUser);
+	}
+
+	/**
+	 * Returns the number of dossier action users where dossierId = &#63; and dossierActionId = &#63; and userId = &#63; and stepCode = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param dossierActionId the dossier action ID
+	 * @param userId the user ID
+	 * @param stepCode the step code
+	 * @return the number of matching dossier action users
+	 */
+	@Override
+	public int countByDID__DAI_UID_SC(long dossierId, long dossierActionId,
+		long userId, String stepCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_DID__DAI_UID_SC;
+
+		Object[] finderArgs = new Object[] {
+				dossierId, dossierActionId, userId, stepCode
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_DOSSIERACTIONUSER_WHERE);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERID_2);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERACTIONID_2);
+
+			query.append(_FINDER_COLUMN_DID__DAI_UID_SC_USERID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				qPos.add(dossierActionId);
+
+				qPos.add(userId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERID_2 = "dossierActionUser.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_DOSSIERACTIONID_2 =
+		"dossierActionUser.id.dossierActionId = ? AND ";
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_USERID_2 = "dossierActionUser.id.userId = ? AND ";
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_1 = "dossierActionUser.stepCode IS NULL";
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_2 = "dossierActionUser.stepCode = ?";
+	private static final String _FINDER_COLUMN_DID__DAI_UID_SC_STEPCODE_3 = "(dossierActionUser.stepCode IS NULL OR dossierActionUser.stepCode = '')";
 
 	public DossierActionUserPersistenceImpl() {
 		setModelClass(DossierActionUser.class);
@@ -5801,6 +6119,13 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			new Object[] {
 				dossierActionUser.getDossierActionId(),
 				dossierActionUser.getUserId()
+			}, dossierActionUser);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC,
+			new Object[] {
+				dossierActionUser.getDossierId(),
+				dossierActionUser.getDossierActionId(),
+				dossierActionUser.getUserId(), dossierActionUser.getStepCode()
 			}, dossierActionUser);
 
 		dossierActionUser.resetOriginalValues();
@@ -5886,6 +6211,18 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_DID_UID, args,
 			dossierActionUserModelImpl, false);
+
+		args = new Object[] {
+				dossierActionUserModelImpl.getDossierId(),
+				dossierActionUserModelImpl.getDossierActionId(),
+				dossierActionUserModelImpl.getUserId(),
+				dossierActionUserModelImpl.getStepCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_DID__DAI_UID_SC, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC, args,
+			dossierActionUserModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -5910,6 +6247,31 @@ public class DossierActionUserPersistenceImpl extends BasePersistenceImpl<Dossie
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_UID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID_UID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dossierActionUserModelImpl.getDossierId(),
+					dossierActionUserModelImpl.getDossierActionId(),
+					dossierActionUserModelImpl.getUserId(),
+					dossierActionUserModelImpl.getStepCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID__DAI_UID_SC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC, args);
+		}
+
+		if ((dossierActionUserModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_DID__DAI_UID_SC.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierActionUserModelImpl.getOriginalDossierId(),
+					dossierActionUserModelImpl.getOriginalDossierActionId(),
+					dossierActionUserModelImpl.getOriginalUserId(),
+					dossierActionUserModelImpl.getOriginalStepCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID__DAI_UID_SC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DID__DAI_UID_SC, args);
 		}
 	}
 

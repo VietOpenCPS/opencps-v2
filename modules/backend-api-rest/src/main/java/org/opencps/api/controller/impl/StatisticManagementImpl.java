@@ -631,7 +631,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 						}
 						row.getCell(0).setCellStyle(cellStyle);
 					}
-					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol));		
+					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol - 1));		
 					startRow++;
 				}
 				else if (contentArr.getJSONObject(i).has("columns")) {
