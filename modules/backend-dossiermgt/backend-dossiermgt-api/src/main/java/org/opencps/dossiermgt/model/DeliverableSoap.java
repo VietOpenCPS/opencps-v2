@@ -52,6 +52,8 @@ public class DeliverableSoap implements Serializable {
 		soapModel.setFormData(model.getFormData());
 		soapModel.setFormScript(model.getFormScript());
 		soapModel.setFormReport(model.getFormReport());
+		soapModel.setFormScriptFileId(model.getFormScriptFileId());
+		soapModel.setFormReportFileId(model.getFormReportFileId());
 		soapModel.setExpireDate(model.getExpireDate());
 		soapModel.setIssueDate(model.getIssueDate());
 		soapModel.setRevalidate(model.getRevalidate());
@@ -263,6 +265,22 @@ public class DeliverableSoap implements Serializable {
 		_formReport = formReport;
 	}
 
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
 	public Date getExpireDate() {
 		return _expireDate;
 	}
@@ -338,6 +356,8 @@ public class DeliverableSoap implements Serializable {
 	private String _formData;
 	private String _formScript;
 	private String _formReport;
+	private long _formScriptFileId;
+	private long _formReportFileId;
 	private Date _expireDate;
 	private Date _issueDate;
 	private Date _revalidate;

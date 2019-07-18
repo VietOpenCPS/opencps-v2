@@ -118,6 +118,8 @@
 		<property name="formData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="formReport" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="formScriptFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="formReportFileId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="expireDate" type="org.hibernate.type.TimestampType" />
 		<property name="issueDate" type="org.hibernate.type.TimestampType" />
 		<property name="revalidate" type="org.hibernate.type.TimestampType" />

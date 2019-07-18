@@ -15,11 +15,16 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -45,20 +50,33 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalService;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -1026,36 +1044,67 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		Deliverable object = null;
 
-		if (objectData.getLong("deliverableId") > 0) {
+		long deliverableId = objectData.getLong("deliverableId");
+		long groupId = objectData.getLong("groupId");
+		if (deliverableId > 0) {
 
-			object = deliverablePersistence.fetchByPrimaryKey(objectData.getLong("deliverableId"));
-
-			object.setModifiedDate(new Date());
+			object = deliverablePersistence.fetchByPrimaryKey(deliverableId);
 
 		} else {
 
-			long id = CounterLocalServiceUtil.increment(Deliverable.class.getName());
+			deliverableId = CounterLocalServiceUtil.increment(Deliverable.class.getName());
+			object = deliverablePersistence.create(deliverableId);
 
-			object = deliverablePersistence.create(id);
-
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(groupId);
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
 		}
 
+		object.setModifiedDate(new Date());
 		object.setUserId(objectData.getLong("userId"));
 		object.setUserName(objectData.getString("userName"));
 
 		object.setDeliverableCode(objectData.getString("deliverableCode"));
 		object.setDeliverableName(objectData.getString("deliverableName"));
-		object.setDeliverableType(objectData.getString("deliverableType"));
+		//
+		String deliverableType = objectData.getString("deliverableType");
+		object.setDeliverableType(deliverableType);
 		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
-		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
+		//
+		String govAgencyName = objectData.getString("govAgencyName");
+		if (Validator.isNull(govAgencyName)) {
+			govAgencyName = getDictItemName(groupId, "GOVERNMENT_AGENCY", objectData.getString("govAgencyCode"));
+		}
+
+		object.setGovAgencyName(govAgencyName);
+		//applicant
+		String applicantIdNo = objectData.getString("applicantIdNo");
+		String applicantIdName = objectData.getString("applicantName");
+		object.setApplicantIdNo(applicantIdNo);
+
+		if (Validator.isNull(applicantIdName)) {
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, applicantIdNo);
+			if (applicant != null) {
+				applicantIdName = applicant.getApplicantName();
+			}
+		}
 		object.setApplicantName(objectData.getString("applicantName"));
 		object.setSubject(objectData.getString("subject"));
 		object.setFormData(objectData.getString("formData"));
+		//
+		long formScriptFileId = 0;
+		long formReportFileId = 0;
+		if (Validator.isNotNull(deliverableType)) {
+			DeliverableType deliType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableType);
+			if (deliType != null) {
+				formScriptFileId = deliType.getFormScriptFileId();
+				formReportFileId = deliType.getFormReportFileId();
+			}
+		}
+		object.setFormScriptFileId(formScriptFileId);
+		object.setFormReportFileId(formReportFileId);
+
 		object.setFormScript(objectData.getString("formScript"));
 		object.setFormReport(objectData.getString("formReport"));
 		object.setExpireDate(new Date(objectData.getLong("expireDate")));
@@ -1063,9 +1112,61 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setRevalidate(new Date(objectData.getLong("revalidate")));
 		object.setDeliverableState(objectData.getInt("deliverableState"));
 
-		deliverablePersistence.update(object);
+		object = deliverablePersistence.update(object);
+
+		String result = StringPool.BLANK;
+		if (formReportFileId > 0) {
+			InputStream is = null;
+
+			try {
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
+
+				is = dlFileEntry.getContentStream();
+
+				result = IOUtils.toString(is, StandardCharsets.UTF_8);
+
+			} catch (Exception e) {
+				_log.debug(e);
+				result = StringPool.BLANK;
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
+		//Process update deliverable file Id
+		Message message = new Message();
+//		_log.info("Document script: " + dt.getDocumentScript());
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		msgData.put("className", Deliverable.class.getName());
+		msgData.put("classPK", object.getDeliverableId());
+		msgData.put("jrxmlTemplate", result);
+		msgData.put("formData", objectData.getString("formData"));
+		msgData.put("userId", objectData.getLong("userId"));
+
+		message.put("msgToEngine", msgData);
+		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
 		return object;
+	}
+
+	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+
+		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
+		} else {
+			return StringPool.BLANK;
+		}
+
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);

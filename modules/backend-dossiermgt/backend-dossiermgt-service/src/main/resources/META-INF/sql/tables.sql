@@ -65,6 +65,8 @@ create table opencps_deliverable (
 	formData TEXT null,
 	formScript TEXT null,
 	formReport TEXT null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
 	expireDate DATE null,
 	issueDate DATE null,
 	revalidate DATE null,

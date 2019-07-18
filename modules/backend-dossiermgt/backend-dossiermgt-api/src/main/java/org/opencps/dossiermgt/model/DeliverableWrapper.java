@@ -79,6 +79,8 @@ public class DeliverableWrapper implements Deliverable,
 		attributes.put("formData", getFormData());
 		attributes.put("formScript", getFormScript());
 		attributes.put("formReport", getFormReport());
+		attributes.put("formScriptFileId", getFormScriptFileId());
+		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("expireDate", getExpireDate());
 		attributes.put("issueDate", getIssueDate());
 		attributes.put("revalidate", getRevalidate());
@@ -204,6 +206,18 @@ public class DeliverableWrapper implements Deliverable,
 
 		if (formReport != null) {
 			setFormReport(formReport);
+		}
+
+		Long formScriptFileId = (Long)attributes.get("formScriptFileId");
+
+		if (formScriptFileId != null) {
+			setFormScriptFileId(formScriptFileId);
+		}
+
+		Long formReportFileId = (Long)attributes.get("formReportFileId");
+
+		if (formReportFileId != null) {
+			setFormReportFileId(formReportFileId);
 		}
 
 		Date expireDate = (Date)attributes.get("expireDate");
@@ -415,6 +429,16 @@ public class DeliverableWrapper implements Deliverable,
 	}
 
 	/**
+	* Returns the form report file ID of this deliverable.
+	*
+	* @return the form report file ID of this deliverable
+	*/
+	@Override
+	public long getFormReportFileId() {
+		return _deliverable.getFormReportFileId();
+	}
+
+	/**
 	* Returns the form script of this deliverable.
 	*
 	* @return the form script of this deliverable
@@ -422,6 +446,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public String getFormScript() {
 		return _deliverable.getFormScript();
+	}
+
+	/**
+	* Returns the form script file ID of this deliverable.
+	*
+	* @return the form script file ID of this deliverable
+	*/
+	@Override
+	public long getFormScriptFileId() {
+		return _deliverable.getFormScriptFileId();
 	}
 
 	/**
@@ -746,6 +780,16 @@ public class DeliverableWrapper implements Deliverable,
 	}
 
 	/**
+	* Sets the form report file ID of this deliverable.
+	*
+	* @param formReportFileId the form report file ID of this deliverable
+	*/
+	@Override
+	public void setFormReportFileId(long formReportFileId) {
+		_deliverable.setFormReportFileId(formReportFileId);
+	}
+
+	/**
 	* Sets the form script of this deliverable.
 	*
 	* @param formScript the form script of this deliverable
@@ -753,6 +797,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public void setFormScript(String formScript) {
 		_deliverable.setFormScript(formScript);
+	}
+
+	/**
+	* Sets the form script file ID of this deliverable.
+	*
+	* @param formScriptFileId the form script file ID of this deliverable
+	*/
+	@Override
+	public void setFormScriptFileId(long formScriptFileId) {
+		_deliverable.setFormScriptFileId(formScriptFileId);
 	}
 
 	/**

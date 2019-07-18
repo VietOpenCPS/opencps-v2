@@ -1964,6 +1964,8 @@
 		<column name="formData" type="String" />
 		<column name="formScript" type="String" />
 		<column name="formReport" type="String" />
+		<column name="formScriptFileId" type="long" />
+		<column name="formReportFileId" type="long" />
 		<column name="expireDate" type="Date" />
 		<column name="issueDate" type="Date" />
 		<column name="revalidate" type="Date" />

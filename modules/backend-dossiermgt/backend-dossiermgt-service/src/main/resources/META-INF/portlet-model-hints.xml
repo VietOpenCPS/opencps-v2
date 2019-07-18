@@ -80,6 +80,8 @@
 		<field name="formReport" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="formScriptFileId" type="long" />
+		<field name="formReportFileId" type="long" />
 		<field name="expireDate" type="Date" />
 		<field name="issueDate" type="Date" />
 		<field name="revalidate" type="Date" />
