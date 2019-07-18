@@ -87,6 +87,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			{ "formData", Types.VARCHAR },
 			{ "formScript", Types.VARCHAR },
 			{ "formReport", Types.VARCHAR },
+			{ "formScriptFileId", Types.BIGINT },
+			{ "formReportFileId", Types.BIGINT },
 			{ "expireDate", Types.TIMESTAMP },
 			{ "issueDate", Types.TIMESTAMP },
 			{ "revalidate", Types.TIMESTAMP },
@@ -117,6 +119,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("formData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formScript", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("formReport", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formScriptFileId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("formReportFileId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("expireDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("issueDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("revalidate", Types.TIMESTAMP);
@@ -126,7 +130,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(75) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState INTEGER,fileEntryId LONG,dossierId LONG,docSync INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(75) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState INTEGER,fileEntryId LONG,dossierId LONG,docSync INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverable";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverable.deliverableId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverable.deliverableId ASC";
@@ -210,6 +214,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		attributes.put("formData", getFormData());
 		attributes.put("formScript", getFormScript());
 		attributes.put("formReport", getFormReport());
+		attributes.put("formScriptFileId", getFormScriptFileId());
+		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("expireDate", getExpireDate());
 		attributes.put("issueDate", getIssueDate());
 		attributes.put("revalidate", getRevalidate());
@@ -338,6 +344,18 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 		if (formReport != null) {
 			setFormReport(formReport);
+		}
+
+		Long formScriptFileId = (Long)attributes.get("formScriptFileId");
+
+		if (formScriptFileId != null) {
+			setFormScriptFileId(formScriptFileId);
+		}
+
+		Long formReportFileId = (Long)attributes.get("formReportFileId");
+
+		if (formReportFileId != null) {
+			setFormReportFileId(formReportFileId);
 		}
 
 		Date expireDate = (Date)attributes.get("expireDate");
@@ -745,6 +763,26 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	}
 
 	@Override
+	public long getFormScriptFileId() {
+		return _formScriptFileId;
+	}
+
+	@Override
+	public void setFormScriptFileId(long formScriptFileId) {
+		_formScriptFileId = formScriptFileId;
+	}
+
+	@Override
+	public long getFormReportFileId() {
+		return _formReportFileId;
+	}
+
+	@Override
+	public void setFormReportFileId(long formReportFileId) {
+		_formReportFileId = formReportFileId;
+	}
+
+	@Override
 	public Date getExpireDate() {
 		return _expireDate;
 	}
@@ -882,6 +920,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		deliverableImpl.setFormData(getFormData());
 		deliverableImpl.setFormScript(getFormScript());
 		deliverableImpl.setFormReport(getFormReport());
+		deliverableImpl.setFormScriptFileId(getFormScriptFileId());
+		deliverableImpl.setFormReportFileId(getFormReportFileId());
 		deliverableImpl.setExpireDate(getExpireDate());
 		deliverableImpl.setIssueDate(getIssueDate());
 		deliverableImpl.setRevalidate(getRevalidate());
@@ -1116,6 +1156,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			deliverableCacheModel.formReport = null;
 		}
 
+		deliverableCacheModel.formScriptFileId = getFormScriptFileId();
+
+		deliverableCacheModel.formReportFileId = getFormReportFileId();
+
 		Date expireDate = getExpireDate();
 
 		if (expireDate != null) {
@@ -1156,7 +1200,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(53);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1196,6 +1240,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		sb.append(getFormScript());
 		sb.append(", formReport=");
 		sb.append(getFormReport());
+		sb.append(", formScriptFileId=");
+		sb.append(getFormScriptFileId());
+		sb.append(", formReportFileId=");
+		sb.append(getFormReportFileId());
 		sb.append(", expireDate=");
 		sb.append(getExpireDate());
 		sb.append(", issueDate=");
@@ -1217,7 +1265,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(82);
+		StringBundler sb = new StringBundler(88);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Deliverable");
@@ -1300,6 +1348,14 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		sb.append(getFormReport());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>formScriptFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormScriptFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>formReportFileId</column-name><column-value><![CDATA[");
+		sb.append(getFormReportFileId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>expireDate</column-name><column-value><![CDATA[");
 		sb.append(getExpireDate());
 		sb.append("]]></column-value></column>");
@@ -1368,6 +1424,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	private String _formData;
 	private String _formScript;
 	private String _formReport;
+	private long _formScriptFileId;
+	private long _formReportFileId;
 	private Date _expireDate;
 	private Date _issueDate;
 	private Date _revalidate;

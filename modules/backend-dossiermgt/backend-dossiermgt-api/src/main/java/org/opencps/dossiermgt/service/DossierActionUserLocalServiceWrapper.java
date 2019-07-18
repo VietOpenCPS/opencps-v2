@@ -57,6 +57,17 @@ public class DossierActionUserLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionUserLocalService.addDossierActionUser(userId,
+			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
+			visited, delegacy);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
 		long userId, long groupId, long dossierActionId, long dossierId,
 		String stepCode, int moderator, int assigned, boolean visited)
@@ -64,6 +75,17 @@ public class DossierActionUserLocalServiceWrapper
 		return _dossierActionUserLocalService.addOrUpdateDossierActionUser(userId,
 			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
 			visited);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionUserLocalService.addOrUpdateDossierActionUser(userId,
+			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
+			visited, delegacy);
 	}
 
 	/**
@@ -377,6 +399,17 @@ public class DossierActionUserLocalServiceWrapper
 		return _dossierActionUserLocalService.updateDossierActionUser(userId,
 			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
 			visited);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierActionUser updateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierActionUserLocalService.updateDossierActionUser(userId,
+			groupId, dossierActionId, dossierId, stepCode, moderator, assigned,
+			visited, delegacy);
 	}
 
 	@Override

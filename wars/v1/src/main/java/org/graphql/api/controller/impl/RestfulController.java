@@ -1131,39 +1131,32 @@ public class RestfulController {
 	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("id") Long id) {
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+		//JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
+			//long userId = 0;
+			//if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 
-			long userId = 0;
-			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+				//long groupId = 0;
+				//if (Validator.isNotNull(request.getHeader("groupId"))) {
+				//}
 
-				long groupId = 0;
+				//JSONObject query = JSONFactoryUtil.createJSONObject(
+				//		" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+				//				+ groupId + " AND entryClassPK: " + id + " )\" }}}");
+				//result = ElasticQueryWrapUtil.query(query.toJSONString());
 
-				if (Validator.isNotNull(request.getHeader("groupId"))) {
-					groupId = Long.valueOf(request.getHeader("groupId"));
-				}
-
-				try {
-
-					JSONObject query = JSONFactoryUtil.createJSONObject(
-							" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
-									+ groupId + " AND entryClassPK: " + id + " )\" }}}");
-
-					result = ElasticQueryWrapUtil.query(query.toJSONString());
-
-				} catch (JSONException e) {
-					_log.debug(e);
-				}
-
+			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
+			if (deliverable != null) {
+				return JSONFactoryUtil.looseSerialize(deliverable);
 			}
 
 		} catch (Exception e) {
 			_log.debug(e);
 		}
 
-		return result.toJSONString();
+		return StringPool.BLANK;
 	}
 
 	@RequestMapping(value = "/deliverable/file/{id}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")

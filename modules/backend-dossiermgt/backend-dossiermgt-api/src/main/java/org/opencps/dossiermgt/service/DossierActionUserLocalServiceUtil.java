@@ -63,6 +63,16 @@ public class DossierActionUserLocalServiceUtil {
 			dossierId, stepCode, moderator, assigned, visited);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addDossierActionUser(userId, groupId, dossierActionId,
+			dossierId, stepCode, moderator, assigned, visited, delegacy);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
 		long userId, long groupId, long dossierActionId, long dossierId,
 		String stepCode, int moderator, int assigned, boolean visited)
@@ -70,6 +80,17 @@ public class DossierActionUserLocalServiceUtil {
 		return getService()
 				   .addOrUpdateDossierActionUser(userId, groupId,
 			dossierActionId, dossierId, stepCode, moderator, assigned, visited);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addOrUpdateDossierActionUser(userId, groupId,
+			dossierActionId, dossierId, stepCode, moderator, assigned, visited,
+			delegacy);
 	}
 
 	/**
@@ -347,6 +368,16 @@ public class DossierActionUserLocalServiceUtil {
 		return getService()
 				   .updateDossierActionUser(userId, groupId, dossierActionId,
 			dossierId, stepCode, moderator, assigned, visited);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierActionUser updateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateDossierActionUser(userId, groupId, dossierActionId,
+			dossierId, stepCode, moderator, assigned, visited, delegacy);
 	}
 
 	public static DossierActionUserLocalService getService() {

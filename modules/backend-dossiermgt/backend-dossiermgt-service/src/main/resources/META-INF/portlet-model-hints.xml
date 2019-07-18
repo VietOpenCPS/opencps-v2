@@ -80,6 +80,8 @@
 		<field name="formReport" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="formScriptFileId" type="long" />
+		<field name="formReportFileId" type="long" />
 		<field name="expireDate" type="Date" />
 		<field name="issueDate" type="Date" />
 		<field name="revalidate" type="Date" />
@@ -441,6 +443,8 @@
 		<field name="moderator" type="int" />
 		<field name="assigned" type="int" />
 		<field name="visited" type="boolean" />
+		<field name="roleId" type="long" />
+		<field name="delegacy" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierDocument">
 		<field name="uuid" type="String" />
@@ -723,6 +727,7 @@
 		<field name="userId" type="long" />
 		<field name="moderator" type="int" />
 		<field name="visited" type="boolean" />
+		<field name="roleId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DynamicReport">
 		<field name="uuid" type="String" />

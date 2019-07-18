@@ -65,6 +65,8 @@ create table opencps_deliverable (
 	formData TEXT null,
 	formScript TEXT null,
 	formReport TEXT null,
+	formScriptFileId LONG,
+	formReportFileId LONG,
 	expireDate DATE null,
 	issueDate DATE null,
 	revalidate DATE null,
@@ -302,6 +304,8 @@ create table opencps_dossieractionuser (
 	moderator INTEGER,
 	assigned INTEGER,
 	visited BOOLEAN,
+	roleId LONG,
+	delegacy INTEGER,
 	primary key (dossierActionId, userId)
 );
 
@@ -511,6 +515,7 @@ create table opencps_dossieruser (
 	userId LONG not null,
 	moderator INTEGER,
 	visited BOOLEAN,
+	roleId LONG,
 	primary key (dossierId, userId)
 );
 

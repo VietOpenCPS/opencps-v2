@@ -154,6 +154,20 @@ public interface DossierUserModel extends BaseModel<DossierUser> {
 	 */
 	public void setVisited(boolean visited);
 
+	/**
+	 * Returns the role ID of this dossier user.
+	 *
+	 * @return the role ID of this dossier user
+	 */
+	public long getRoleId();
+
+	/**
+	 * Sets the role ID of this dossier user.
+	 *
+	 * @param roleId the role ID of this dossier user
+	 */
+	public void setRoleId(long roleId);
+
 	@Override
 	public boolean isNew();
 

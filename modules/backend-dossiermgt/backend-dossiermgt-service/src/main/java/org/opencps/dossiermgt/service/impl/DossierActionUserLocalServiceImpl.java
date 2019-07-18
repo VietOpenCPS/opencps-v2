@@ -156,4 +156,66 @@ public class DossierActionUserLocalServiceImpl
 	public DossierActionUser getByD_DID_UID_SC(long dossierId, long dossierActionId, long userId, String stepCode) {
 		return dossierActionUserPersistence.fetchByDID__DAI_UID_SC(dossierId, dossierActionId, userId, stepCode);
 	}
+	
+	public DossierActionUser addDossierActionUser(long userId, long groupId, 
+			long dossierActionId,
+			long dossierId, String stepCode, int moderator, 
+			int assigned, boolean visited, int delegacy) throws PortalException {
+		User user = userLocalService.getUser(userId);
+		
+		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+		
+		DossierActionUser dau = dossierActionUserPersistence.create(pk);
+		dau.setAssigned(assigned);
+		dau.setStepCode(stepCode);
+		dau.setModerator(moderator);
+		dau.setVisited(visited);
+		dau.setDossierId(dossierId);
+		dau.setDelegacy(delegacy);
+
+		return dossierActionUserPersistence.update(dau);
+	}	
+	
+	public DossierActionUser updateDossierActionUser(long userId, long groupId, 
+			long dossierActionId,
+			long dossierId, String stepCode, int moderator, 
+			int assigned, boolean visited, int delegacy) throws PortalException {
+		User user = userLocalService.getUser(userId);
+		
+		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+		
+		DossierActionUser dau = dossierActionUserPersistence.fetchByPrimaryKey(pk);
+		
+		dau.setAssigned(assigned);
+		dau.setStepCode(stepCode);
+		dau.setModerator(moderator);
+		dau.setVisited(visited);
+		dau.setDossierId(dossierId);
+		dau.setNew(false);
+		dau.setDelegacy(delegacy);
+				
+		return dossierActionUserPersistence.update(dau);
+	}
+
+	public DossierActionUser addOrUpdateDossierActionUser(long userId, long groupId, 
+			long dossierActionId,
+			long dossierId, String stepCode, int moderator, 
+			int assigned, boolean visited, int delegacy) throws PortalException {
+		User user = userLocalService.getUser(userId);
+		
+		DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, user.getUserId());
+		DossierActionUser dau = dossierActionUserPersistence.fetchByPrimaryKey(pk);
+		if (dau == null) {
+			dau = dossierActionUserPersistence.create(pk);			
+		}
+		dau.setAssigned(assigned);
+		dau.setStepCode(stepCode);
+		dau.setModerator(moderator);
+		dau.setVisited(visited);
+		dau.setDossierId(dossierId);
+		dau.setDelegacy(delegacy);
+
+		return dossierActionUserPersistence.update(dau);
+	}
+	
 }

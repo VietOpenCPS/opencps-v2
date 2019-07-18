@@ -65,7 +65,7 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(53);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -105,6 +105,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		sb.append(formScript);
 		sb.append(", formReport=");
 		sb.append(formReport);
+		sb.append(", formScriptFileId=");
+		sb.append(formScriptFileId);
+		sb.append(", formReportFileId=");
+		sb.append(formReportFileId);
 		sb.append(", expireDate=");
 		sb.append(expireDate);
 		sb.append(", issueDate=");
@@ -238,6 +242,9 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 			deliverableImpl.setFormReport(formReport);
 		}
 
+		deliverableImpl.setFormScriptFileId(formScriptFileId);
+		deliverableImpl.setFormReportFileId(formReportFileId);
+
 		if (expireDate == Long.MIN_VALUE) {
 			deliverableImpl.setExpireDate(null);
 		}
@@ -294,6 +301,10 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		formData = objectInput.readUTF();
 		formScript = objectInput.readUTF();
 		formReport = objectInput.readUTF();
+
+		formScriptFileId = objectInput.readLong();
+
+		formReportFileId = objectInput.readLong();
 		expireDate = objectInput.readLong();
 		issueDate = objectInput.readLong();
 		revalidate = objectInput.readLong();
@@ -412,6 +423,9 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 			objectOutput.writeUTF(formReport);
 		}
 
+		objectOutput.writeLong(formScriptFileId);
+
+		objectOutput.writeLong(formReportFileId);
 		objectOutput.writeLong(expireDate);
 		objectOutput.writeLong(issueDate);
 		objectOutput.writeLong(revalidate);
@@ -444,6 +458,8 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 	public String formData;
 	public String formScript;
 	public String formReport;
+	public long formScriptFileId;
+	public long formReportFileId;
 	public long expireDate;
 	public long issueDate;
 	public long revalidate;

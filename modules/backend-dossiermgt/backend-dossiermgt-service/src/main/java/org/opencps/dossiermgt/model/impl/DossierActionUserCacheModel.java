@@ -65,7 +65,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -83,6 +83,10 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		sb.append(assigned);
 		sb.append(", visited=");
 		sb.append(visited);
+		sb.append(", roleId=");
+		sb.append(roleId);
+		sb.append(", delegacy=");
+		sb.append(delegacy);
 		sb.append("}");
 
 		return sb.toString();
@@ -113,6 +117,8 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		dossierActionUserImpl.setModerator(moderator);
 		dossierActionUserImpl.setAssigned(assigned);
 		dossierActionUserImpl.setVisited(visited);
+		dossierActionUserImpl.setRoleId(roleId);
+		dossierActionUserImpl.setDelegacy(delegacy);
 
 		dossierActionUserImpl.resetOriginalValues();
 
@@ -135,6 +141,10 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		assigned = objectInput.readInt();
 
 		visited = objectInput.readBoolean();
+
+		roleId = objectInput.readLong();
+
+		delegacy = objectInput.readInt();
 
 		dossierActionUserPK = new DossierActionUserPK(dossierActionId, userId);
 	}
@@ -167,6 +177,10 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 		objectOutput.writeInt(assigned);
 
 		objectOutput.writeBoolean(visited);
+
+		objectOutput.writeLong(roleId);
+
+		objectOutput.writeInt(delegacy);
 	}
 
 	public String uuid;
@@ -177,5 +191,7 @@ public class DossierActionUserCacheModel implements CacheModel<DossierActionUser
 	public int moderator;
 	public int assigned;
 	public boolean visited;
+	public long roleId;
+	public int delegacy;
 	public transient DossierActionUserPK dossierActionUserPK;
 }

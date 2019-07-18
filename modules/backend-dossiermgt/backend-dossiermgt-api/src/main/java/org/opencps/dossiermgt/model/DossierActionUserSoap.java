@@ -42,6 +42,8 @@ public class DossierActionUserSoap implements Serializable {
 		soapModel.setModerator(model.getModerator());
 		soapModel.setAssigned(model.getAssigned());
 		soapModel.setVisited(model.isVisited());
+		soapModel.setRoleId(model.getRoleId());
+		soapModel.setDelegacy(model.getDelegacy());
 
 		return soapModel;
 	}
@@ -166,6 +168,22 @@ public class DossierActionUserSoap implements Serializable {
 		_visited = visited;
 	}
 
+	public long getRoleId() {
+		return _roleId;
+	}
+
+	public void setRoleId(long roleId) {
+		_roleId = roleId;
+	}
+
+	public int getDelegacy() {
+		return _delegacy;
+	}
+
+	public void setDelegacy(int delegacy) {
+		_delegacy = delegacy;
+	}
+
 	private String _uuid;
 	private long _dossierActionId;
 	private long _userId;
@@ -174,4 +192,6 @@ public class DossierActionUserSoap implements Serializable {
 	private int _moderator;
 	private int _assigned;
 	private boolean _visited;
+	private long _roleId;
+	private int _delegacy;
 }

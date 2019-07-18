@@ -68,7 +68,7 @@ public class Engine implements MessageListener {
 					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
 				}				
 			}
-			else if ("org.opencps.dossiermgt.Deliverable".equals(className)) {
+			else if ("org.opencps.dossiermgt.model.Deliverable".equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
