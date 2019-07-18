@@ -4790,18 +4790,40 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateDossierInGroup(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long groupDossierId, long dossierId) {
+			User user, ServiceContext serviceContext, long groupDossierId, String dossierIds) {
 
 		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			if (dossier != null) {
-				dossier.setGroupDossierId(groupDossierId);
-				DossierLocalServiceUtil.updateDossier(dossier);
+			if (dossierIds.contains(StringPool.COMMA)) {
+				String[] dossierArr = dossierIds.split(StringPool.COMMA);
+				DossierResultsModel results = new DossierResultsModel();
+
+				results.setTotal(dossierArr.length);
+
+				
+				for (String dossierStr : dossierArr) {
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(dossierStr));
+					if (dossier != null) {
+						dossier.setGroupDossierId(groupDossierId);
+						DossierLocalServiceUtil.updateDossier(dossier);
+					}
+					DossierDataModel dataModel = new DossierDataModel();
+					dataModel.setDossierNo(dossier.getDossierNo());
+					results.getData().add(dataModel);
+				}
+				//
+				return Response.status(200).entity(results).build();
 			}
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
-			//
-			return Response.status(200).entity(result).build();
+			else {
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(dossierIds));
+				if (dossier != null) {
+					dossier.setGroupDossierId(groupDossierId);
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+				//
+				return Response.status(200).entity(result).build();				
+			}
 		} catch (Exception e) {
 			_log.info(e);
 			return Response.status(500).entity("{error}").build();

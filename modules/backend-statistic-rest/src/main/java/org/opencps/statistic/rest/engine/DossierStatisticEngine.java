@@ -532,11 +532,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										
 									}
 									else {
-										try {
-											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-										} catch (NoSuchOpencpsDossierStatisticException e) {
-											
-										}
+//										try {
+//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//										} catch (NoSuchOpencpsDossierStatisticException e) {
+//											
+//										}
 									}
 								}
 								for (GetDossierData dd : dossierData) {
@@ -551,22 +551,22 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										
 									}
 									else {
-										try {
-											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
-										} catch (NoSuchOpencpsDossierStatisticException e) {
-											
-										}
+//										try {
+//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
+//										} catch (NoSuchOpencpsDossierStatisticException e) {
+//											
+//										}
 									}
 								}
 							}
 						}
 						else {
-							try {
-								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-							}
-							catch (NoSuchOpencpsDossierStatisticException e) {
-								
-							}
+//							try {
+//								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//							}
+//							catch (NoSuchOpencpsDossierStatisticException e) {
+//								
+//							}
 						}
 						
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -585,19 +585,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
 						if (serviceDomainData != null) {
 							for (ServiceDomainData sdd : serviceDomainData) {
-								try {
-									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-								} catch (NoSuchOpencpsDossierStatisticException e) {
-										
-								}
+//								try {
+//									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//								} catch (NoSuchOpencpsDossierStatisticException e) {
+//										
+//								}
 							}
 						}	
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-						}
-						catch (NoSuchOpencpsDossierStatisticException e) {
-							
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//						}
+//						catch (NoSuchOpencpsDossierStatisticException e) {
+//							
+//						}
 					}
 				}
 	//			else {
@@ -642,7 +642,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 2, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

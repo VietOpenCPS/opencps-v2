@@ -3671,7 +3671,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			termRangeFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
 			subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
 			/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
-			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
+//			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
 			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
 			/** Check condition dueDate != null &&  subQueryTwo **/
 			subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
@@ -3733,7 +3733,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			subQueryThree.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
 			// Check releaseDate < dueDate
 			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
-					String.valueOf(2), String.valueOf(3), true, true);
+					String.valueOf(2), String.valueOf(2), true, true);
 			subQueryThree.add(queryCompareRelease, BooleanClauseOccur.MUST);
 
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - START **/
@@ -3752,7 +3752,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					String.valueOf(1), String.valueOf(2), true, true);
 			subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
-			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+//			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
 			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
 
 			/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/

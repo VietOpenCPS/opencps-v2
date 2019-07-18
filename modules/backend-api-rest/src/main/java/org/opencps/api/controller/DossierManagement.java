@@ -906,7 +906,7 @@ public interface DossierManagement {
 	public Response updateDossierInGroup(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("groupDossierId") long groupDossierId,
-			@FormParam("dossierId") long dossierId);
+			@FormParam("dossierId") String dossierIds);
 
 	@POST
 	@Path("/import/all")

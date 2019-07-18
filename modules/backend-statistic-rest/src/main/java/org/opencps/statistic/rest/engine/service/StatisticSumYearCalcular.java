@@ -65,7 +65,7 @@ public class StatisticSumYearCalcular {
 
 			DossierStatisticResponse dossierStatisticResponse;
 
-			List<DomainResponse> domainResponses = getDomain(groupId);
+			List<DomainResponse> domainResponses = getDomain(groupId, year);
 			
 			//DossierStatisticUtils.logAsFormattedJson(LOG, domainResponses);
 
@@ -259,7 +259,7 @@ public class StatisticSumYearCalcular {
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
 
-			List<DomainResponse> domainResponses = getDomain(groupId);
+			List<DomainResponse> domainResponses = getDomain(groupId, year);
 
 			govDataList.ifPresent(source -> {
 				for (GovAgencyData data : source) {
@@ -309,13 +309,13 @@ public class StatisticSumYearCalcular {
 
 	}
 
-	private List<DomainResponse> getDomain(long groupId) {
+	private List<DomainResponse> getDomain(long groupId, int year) {
 		List<DomainResponse> domainResponses = new ArrayList<DomainResponse>();
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 
 		dossierStatisticRequest.setMonth(-1);
-		dossierStatisticRequest.setYear(LocalDate.now().getYear());
+		dossierStatisticRequest.setYear(year);
 		dossierStatisticRequest.setGroupId(groupId);
 		dossierStatisticRequest.setStart(QueryUtil.ALL_POS);
 		dossierStatisticRequest.setEnd(QueryUtil.ALL_POS);
