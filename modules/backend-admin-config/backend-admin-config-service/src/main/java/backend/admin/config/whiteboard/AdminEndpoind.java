@@ -394,11 +394,11 @@ public class AdminEndpoind extends Endpoint {
 				
 				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 				
-				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
-						HttpMethod.GET, entity, String.class);
-				//BNG
-//				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+//				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
 //						HttpMethod.GET, entity, String.class);
+				//BNG
+				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+						HttpMethod.GET, entity, String.class);
 
 				String resultString = response.getBody();
 

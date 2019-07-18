@@ -376,6 +376,34 @@ public interface DeliverableModel extends BaseModel<Deliverable>, GroupedModel,
 	public void setFormReport(String formReport);
 
 	/**
+	 * Returns the form script file ID of this deliverable.
+	 *
+	 * @return the form script file ID of this deliverable
+	 */
+	public long getFormScriptFileId();
+
+	/**
+	 * Sets the form script file ID of this deliverable.
+	 *
+	 * @param formScriptFileId the form script file ID of this deliverable
+	 */
+	public void setFormScriptFileId(long formScriptFileId);
+
+	/**
+	 * Returns the form report file ID of this deliverable.
+	 *
+	 * @return the form report file ID of this deliverable
+	 */
+	public long getFormReportFileId();
+
+	/**
+	 * Sets the form report file ID of this deliverable.
+	 *
+	 * @param formReportFileId the form report file ID of this deliverable
+	 */
+	public void setFormReportFileId(long formReportFileId);
+
+	/**
 	 * Returns the expire date of this deliverable.
 	 *
 	 * @return the expire date of this deliverable

@@ -137,7 +137,22 @@ public class Engine implements MessageListener {
 			    }
 			}
 			else if (engineClass.isAssignableFrom(Deliverable.class)) {
+				Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
 				
+    			ServiceContext serviceContext = new ServiceContext();
+    			serviceContext.setUserId(deliverable.getUserId());
+    
+    			long fileEntryId = 0;
+    
+    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, deliverable.getGroupId(), file, filePath,
+    					serviceContext);
+    
+    			fileEntryId = fileEntry.getFileEntryId();
+    
+    			deliverable.setFileEntryId(fileEntryId);
+    
+    			DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+    
 			}
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
@@ -160,24 +175,25 @@ public class Engine implements MessageListener {
     
     			indexer.reindex(dossierDocument);
 				
-			} else if (engineClass.isAssignableFrom(Deliverable.class)) {
-				Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
-				
-    			ServiceContext serviceContext = new ServiceContext();
-    			serviceContext.setUserId(openCPSDeliverable.getUserId());
-    
-    			long fileEntryId = 0;
-    
-    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, openCPSDeliverable.getGroupId(), file, filePath,
-    					serviceContext);
-    
-    			fileEntryId = fileEntry.getFileEntryId();
-    
-    			openCPSDeliverable.setFileEntryId(fileEntryId);
-    
-    			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
-    
 			}
+//			else if (engineClass.isAssignableFrom(Deliverable.class)) {
+//				Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
+//				
+//    			ServiceContext serviceContext = new ServiceContext();
+//    			serviceContext.setUserId(openCPSDeliverable.getUserId());
+//    
+//    			long fileEntryId = 0;
+//    
+//    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, openCPSDeliverable.getGroupId(), file, filePath,
+//    					serviceContext);
+//    
+//    			fileEntryId = fileEntry.getFileEntryId();
+//    
+//    			openCPSDeliverable.setFileEntryId(fileEntryId);
+//    
+//    			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
+//    
+//			}
 
 		} catch (Exception e) {
 		    _log.error(e);
