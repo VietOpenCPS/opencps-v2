@@ -125,7 +125,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 								mod = 0;
 						}
 						updateDossierUser(dossier, processStepRole, user);
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), 0);
+						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), 0, 0);
 					}
 //				} else {
 //					for (User user : users) {
@@ -211,7 +211,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 						}
 						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), 0);
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), 0, 0);
 					}
 				}				
 			}
@@ -222,7 +222,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 	
 	@Override
-	public void assignDossierActionUser(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignUserId, JSONArray assignedUsers)
+	public void assignDossierActionUser(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignUserId, JSONArray assignedUsers, Integer delegacy)
 			throws PortalException {
 		// Get list user
 		// TODO insert to actionUser
@@ -336,7 +336,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 					DossierAction dAction = dossierAction;
 					if (dAction != null) {
 						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
-								dAction.getStepCode(), dossier.getDossierId(), 1);
+								dAction.getStepCode(), dossier.getDossierId(), delegacy, assigned);
 					} 
 //					else {
 //						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
@@ -346,7 +346,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 				else {
 					dau.setModerator(1);
 					dau.setAssigned(assigned);
-					dau.setDelegacy(1);
+					dau.setDelegacy(delegacy);
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 				}
 			}
@@ -355,17 +355,25 @@ public class DossierActionUserImpl implements DossierActionUser {
 				//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				DossierActionUserPK pk = new DossierActionUserPK();
 				int assigned = subUser.has("assigned") ? subUser.getInt("assigned") : 0;
+				long userIdAssigned = subUser.getLong("userId");
 				
 				pk.setDossierActionId(dossierAction.getDossierActionId());
 				pk.setUserId(subUser.getLong("userId"));
 	
 				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
 				if (Validator.isNull(dau)) {
+					dau = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
+					dau.setModerator(0);
+					dau.setAssigned(assigned);
+					dau.setDelegacy(0);
+					dau.setDossierActionId(dossier.getDossierActionId());
+					dau.setUserId(userIdAssigned);
+					DossierActionUserLocalServiceUtil.addDossierActionUser(dau);
 				}				
 				else {
 					dau.setModerator(0);
 					dau.setAssigned(assigned);
-					dau.setDelegacy(1);
+					dau.setDelegacy(0);
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 				}
 			}
@@ -373,10 +381,9 @@ public class DossierActionUserImpl implements DossierActionUser {
 	}
 
 	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator,
-			boolean visited, String stepCode, long dossierId, int delegacy) {
+			boolean visited, String stepCode, long dossierId, int delegacy, int assigned) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 	
-		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
 		model.setVisited(visited);
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);

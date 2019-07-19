@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -670,7 +671,7 @@ public interface DossierManagement {
 
 	public Response assignUsers(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") String id, @FormParam(value="assignUsers") String assignUsers);	
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @FormParam(value="assignUsers") String assignUsers, @DefaultValue("1") @FormParam("delegacy") Integer delegacy);	
 	
 	@POST
 	@Path("/{id}/refresh")

@@ -1965,7 +1965,7 @@ public class DossierActionsImpl implements DossierActions {
 			if (Validator.isNotNull(subUsers)) {
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
 				dossierActionUser.assignDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction, userId, groupId,
-						assignUserId, subUsersArray);
+						assignUserId, subUsersArray, 0);
 			} else {
 				dossierActionUser.initDossierActionUser(processAction, dossier, processAction.getAllowAssignUser(), dossierAction, userId, groupId,
 						assignUserId);
@@ -2027,7 +2027,7 @@ public class DossierActionsImpl implements DossierActions {
 				_log.info("PROCESS subUsers != null");
 				JSONArray subUsersArray = JSONFactoryUtil.createJSONArray(subUsers);
 				dossierActionUser.assignDossierActionUser(dossier, processAction.getAllowAssignUser(), dossierAction, userId, groupId,
-						assignUserId, subUsersArray);
+						assignUserId, subUsersArray, 0);
 			} else {
 				_log.info("PROCESS subUsers == null");
 				dossierActionUser.initDossierActionUser(processAction, dossier, processAction.getAllowAssignUser(), dossierAction, userId, groupId,

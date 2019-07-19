@@ -363,7 +363,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				ProcessAction pa = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getLong(actionId));
 				
 				DossierActionUser dau = DossierActionUserLocalServiceUtil.getByD_DID_UID_SC(dossierId, dossier.getDossierActionId(), user.getUserId(), pa.getPreStepCode());
-				if (dau != null && dau.getDelegacy() == 1) {
+				if (dau != null && dau.getDelegacy() == 1 && (pa.getAllowAssignUser() > 2)) {
 					result.setAllowAssignUser(2);
 				}
 			}
