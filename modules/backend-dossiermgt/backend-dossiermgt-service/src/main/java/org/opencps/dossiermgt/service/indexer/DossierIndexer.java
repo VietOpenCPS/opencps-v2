@@ -190,6 +190,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
 			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
 			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
+			long hourMiliseconds = 60 * 60 * 1000;
 			
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
@@ -203,7 +204,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (valueCompareRelease > 0) {
 						// OverTime
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
-					} else if (valueCompareRelease == 0) {
+					} else if (valueCompareRelease > -hourMiliseconds) {
 						// OnTime
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
 					} else {
@@ -218,7 +219,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (valueCompareFinish > 0) {
 						// OverTime
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
-					} else if (valueCompareFinish == 0) {
+					} else if (valueCompareFinish > -hourMiliseconds) {
 						// OnTime
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
 					} else {

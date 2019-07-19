@@ -197,6 +197,34 @@ public interface DossierActionUserModel extends BaseModel<DossierActionUser> {
 	 */
 	public void setVisited(boolean visited);
 
+	/**
+	 * Returns the role ID of this dossier action user.
+	 *
+	 * @return the role ID of this dossier action user
+	 */
+	public long getRoleId();
+
+	/**
+	 * Sets the role ID of this dossier action user.
+	 *
+	 * @param roleId the role ID of this dossier action user
+	 */
+	public void setRoleId(long roleId);
+
+	/**
+	 * Returns the delegacy of this dossier action user.
+	 *
+	 * @return the delegacy of this dossier action user
+	 */
+	public int getDelegacy();
+
+	/**
+	 * Sets the delegacy of this dossier action user.
+	 *
+	 * @param delegacy the delegacy of this dossier action user
+	 */
+	public void setDelegacy(int delegacy);
+
 	@Override
 	public boolean isNew();
 

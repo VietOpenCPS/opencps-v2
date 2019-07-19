@@ -68,7 +68,9 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 			{ "stepCode", Types.VARCHAR },
 			{ "moderator", Types.INTEGER },
 			{ "assigned", Types.INTEGER },
-			{ "visited", Types.BOOLEAN }
+			{ "visited", Types.BOOLEAN },
+			{ "roleId", Types.BIGINT },
+			{ "delegacy", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -81,9 +83,11 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		TABLE_COLUMNS_MAP.put("moderator", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("assigned", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("visited", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("roleId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("delegacy", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,primary key (dossierActionId, userId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieractionuser (uuid_ VARCHAR(75) null,dossierActionId LONG not null,userId LONG not null,dossierId LONG,stepCode VARCHAR(255) null,moderator INTEGER,assigned INTEGER,visited BOOLEAN,roleId LONG,delegacy INTEGER,primary key (dossierActionId, userId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieractionuser";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierActionUser.id.dossierActionId DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieractionuser.dossierActionId DESC";
@@ -154,6 +158,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		attributes.put("moderator", getModerator());
 		attributes.put("assigned", getAssigned());
 		attributes.put("visited", isVisited());
+		attributes.put("roleId", getRoleId());
+		attributes.put("delegacy", getDelegacy());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -209,6 +215,18 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		if (visited != null) {
 			setVisited(visited);
+		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
+		}
+
+		Integer delegacy = (Integer)attributes.get("delegacy");
+
+		if (delegacy != null) {
+			setDelegacy(delegacy);
 		}
 	}
 
@@ -389,6 +407,26 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		_visited = visited;
 	}
 
+	@Override
+	public long getRoleId() {
+		return _roleId;
+	}
+
+	@Override
+	public void setRoleId(long roleId) {
+		_roleId = roleId;
+	}
+
+	@Override
+	public int getDelegacy() {
+		return _delegacy;
+	}
+
+	@Override
+	public void setDelegacy(int delegacy) {
+		_delegacy = delegacy;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -415,6 +453,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		dossierActionUserImpl.setModerator(getModerator());
 		dossierActionUserImpl.setAssigned(getAssigned());
 		dossierActionUserImpl.setVisited(isVisited());
+		dossierActionUserImpl.setRoleId(getRoleId());
+		dossierActionUserImpl.setDelegacy(getDelegacy());
 
 		dossierActionUserImpl.resetOriginalValues();
 
@@ -542,12 +582,16 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 		dossierActionUserCacheModel.visited = isVisited();
 
+		dossierActionUserCacheModel.roleId = getRoleId();
+
+		dossierActionUserCacheModel.delegacy = getDelegacy();
+
 		return dossierActionUserCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -565,6 +609,10 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 		sb.append(getAssigned());
 		sb.append(", visited=");
 		sb.append(isVisited());
+		sb.append(", roleId=");
+		sb.append(getRoleId());
+		sb.append(", delegacy=");
+		sb.append(getDelegacy());
 		sb.append("}");
 
 		return sb.toString();
@@ -572,7 +620,7 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierActionUser");
@@ -610,6 +658,14 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 			"<column><column-name>visited</column-name><column-value><![CDATA[");
 		sb.append(isVisited());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>roleId</column-name><column-value><![CDATA[");
+		sb.append(getRoleId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>delegacy</column-name><column-value><![CDATA[");
+		sb.append(getDelegacy());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -638,6 +694,8 @@ public class DossierActionUserModelImpl extends BaseModelImpl<DossierActionUser>
 	private int _originalAssigned;
 	private boolean _setOriginalAssigned;
 	private boolean _visited;
+	private long _roleId;
+	private int _delegacy;
 	private long _columnBitmask;
 	private DossierActionUser _escapedModel;
 }

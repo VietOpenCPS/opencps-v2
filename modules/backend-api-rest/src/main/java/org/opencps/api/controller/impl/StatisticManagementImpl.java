@@ -31,9 +31,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
@@ -499,6 +503,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			int startRow = 0;
 			for (int i = 0; i < contentArr.length(); i++) {
 				if (contentArr.getJSONObject(i).has("table")) {
+					int startBorderRow = startRow;
 					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
 					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
 					for (int tempi = 0; tempi <= headerRows; tempi++) {
@@ -600,7 +605,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 							startCol++;
 						}
 						startRow++;
-					}			
+					}	
+					
 				} else if (contentArr.getJSONObject(i).has("text")) {
 					HSSFRow row = mainSheet.createRow(startRow);
 					JSONArray textArr = contentArr.getJSONObject(i).getJSONArray("text");
@@ -631,7 +637,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 						}
 						row.getCell(0).setCellStyle(cellStyle);
 					}
-					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol));		
+					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol - 1));		
 					startRow++;
 				}
 				else if (contentArr.getJSONObject(i).has("columns")) {
@@ -705,4 +711,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	}
 
+	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {
+        RegionUtil.setBorderBottom(BorderStyle.MEDIUM, region, sheet);
+        RegionUtil.setBorderLeft(BorderStyle.MEDIUM, region, sheet);
+        RegionUtil.setBorderRight(BorderStyle.MEDIUM, region, sheet);
+        RegionUtil.setBorderTop(BorderStyle.MEDIUM, region, sheet);
+    }	
 }

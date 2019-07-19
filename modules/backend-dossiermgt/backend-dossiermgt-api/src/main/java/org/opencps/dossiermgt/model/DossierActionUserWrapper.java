@@ -65,6 +65,8 @@ public class DossierActionUserWrapper implements DossierActionUser,
 		attributes.put("moderator", getModerator());
 		attributes.put("assigned", getAssigned());
 		attributes.put("visited", isVisited());
+		attributes.put("roleId", getRoleId());
+		attributes.put("delegacy", getDelegacy());
 
 		return attributes;
 	}
@@ -118,6 +120,18 @@ public class DossierActionUserWrapper implements DossierActionUser,
 		if (visited != null) {
 			setVisited(visited);
 		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
+		}
+
+		Integer delegacy = (Integer)attributes.get("delegacy");
+
+		if (delegacy != null) {
+			setDelegacy(delegacy);
+		}
 	}
 
 	@Override
@@ -138,6 +152,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	@Override
 	public int getAssigned() {
 		return _dossierActionUser.getAssigned();
+	}
+
+	/**
+	* Returns the delegacy of this dossier action user.
+	*
+	* @return the delegacy of this dossier action user
+	*/
+	@Override
+	public int getDelegacy() {
+		return _dossierActionUser.getDelegacy();
 	}
 
 	/**
@@ -188,6 +212,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _dossierActionUser.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the role ID of this dossier action user.
+	*
+	* @return the role ID of this dossier action user
+	*/
+	@Override
+	public long getRoleId() {
+		return _dossierActionUser.getRoleId();
 	}
 
 	/**
@@ -291,6 +325,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	}
 
 	/**
+	* Sets the delegacy of this dossier action user.
+	*
+	* @param delegacy the delegacy of this dossier action user
+	*/
+	@Override
+	public void setDelegacy(int delegacy) {
+		_dossierActionUser.setDelegacy(delegacy);
+	}
+
+	/**
 	* Sets the dossier action ID of this dossier action user.
 	*
 	* @param dossierActionId the dossier action ID of this dossier action user
@@ -355,6 +399,16 @@ public class DossierActionUserWrapper implements DossierActionUser,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_dossierActionUser.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the role ID of this dossier action user.
+	*
+	* @param roleId the role ID of this dossier action user
+	*/
+	@Override
+	public void setRoleId(long roleId) {
+		_dossierActionUser.setRoleId(roleId);
 	}
 
 	/**

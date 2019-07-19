@@ -2,8 +2,6 @@ package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import java.time.LocalDate;
-
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
@@ -22,7 +20,6 @@ public class StatisticSumYearService {
 		//LOG.info("RUN#1" + groupId + "year" + year);
 		/* filter all */
 		calcular1.filterSumYear(companyId, groupId, year, false, false);
-
 		//LOG.info("RUN#2" + groupId + "year" + year);
 		/* filter domain, agency = null */
 		calcular2.filterSumYear(companyId, groupId, year, true, false);

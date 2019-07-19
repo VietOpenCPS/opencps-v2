@@ -62,6 +62,7 @@ public class DossierUserWrapper implements DossierUser,
 		attributes.put("userId", getUserId());
 		attributes.put("moderator", getModerator());
 		attributes.put("visited", isVisited());
+		attributes.put("roleId", getRoleId());
 
 		return attributes;
 	}
@@ -96,6 +97,12 @@ public class DossierUserWrapper implements DossierUser,
 
 		if (visited != null) {
 			setVisited(visited);
+		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
 		}
 	}
 
@@ -147,6 +154,16 @@ public class DossierUserWrapper implements DossierUser,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _dossierUser.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the role ID of this dossier user.
+	*
+	* @return the role ID of this dossier user
+	*/
+	@Override
+	public long getRoleId() {
+		return _dossierUser.getRoleId();
 	}
 
 	/**
@@ -284,6 +301,16 @@ public class DossierUserWrapper implements DossierUser,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_dossierUser.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the role ID of this dossier user.
+	*
+	* @param roleId the role ID of this dossier user
+	*/
+	@Override
+	public void setRoleId(long roleId) {
+		_dossierUser.setRoleId(roleId);
 	}
 
 	/**

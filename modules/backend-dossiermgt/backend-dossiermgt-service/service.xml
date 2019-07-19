@@ -1589,6 +1589,7 @@
 		<column name="userId" type="long" primary="true" />
 		<column name="moderator" type="int" />
 		<column name="visited" type="boolean" />
+		<column name="roleId" type="long" />
 
 		<finder return-type="Collection" name="DID">
 			<finder-column name="dossierId" />
@@ -1612,7 +1613,9 @@
 		<column name="moderator" type="int" />
 		<column name="assigned" type="int" />
 		<column name="visited" type="boolean" />
-	
+		<column name="roleId" type="long" />
+		<column name="delegacy" type="int" />
+		
 		<!-- Filter -->
 		<order by="desc">
 			<order-column name="dossierActionId" order-by="desc" />
@@ -1651,6 +1654,17 @@
 			<finder-column name="dossierId" />
 			<finder-column name="dossierActionId" />
 		</finder>
+		<finder name="DID_UID_SC" return-type="Collection">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="stepCode"></finder-column>
+		</finder>
+		<finder name="DID__DAI_UID_SC" return-type="DossierActionUser">
+			<finder-column name="dossierId"></finder-column>
+			<finder-column name="dossierActionId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="stepCode"></finder-column>
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
