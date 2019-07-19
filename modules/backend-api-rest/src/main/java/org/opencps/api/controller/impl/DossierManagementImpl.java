@@ -3416,7 +3416,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response assignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String assignUsers) {
+			User user, ServiceContext serviceContext, String id, String assignUsers, Integer delegacy) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		org.opencps.dossiermgt.action.DossierActionUser actions = new DossierActionUserImpl();
@@ -3432,7 +3432,7 @@ public class DossierManagementImpl implements DossierManagement {
 				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray(assignUsers);
 				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 				
-				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr);
+				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr, delegacy);
 				//Reindex dossier
 				Indexer<Dossier> indexer = IndexerRegistryUtil
 						.nullSafeGetIndexer(Dossier.class);
@@ -5041,7 +5041,7 @@ public class DossierManagementImpl implements DossierManagement {
 							for (DossierActionUser dau : assignedUsers) {
 								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
 								if (u != null) {
-									if (!u.isLockout() && u.isActive()) {
+									if (!u.isLockout() && u.isActive() && !lstIds.contains(u.getUserId())) {
 										lstUser.add(u);
 										lstIds.add(u.getUserId());
 									}
