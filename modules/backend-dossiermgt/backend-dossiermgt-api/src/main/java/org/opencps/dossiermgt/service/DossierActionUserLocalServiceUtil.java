@@ -63,6 +63,16 @@ public class DossierActionUserLocalServiceUtil {
 			dossierId, stepCode, moderator, assigned, visited);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierActionUser addDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addDossierActionUser(userId, groupId, dossierActionId,
+			dossierId, stepCode, moderator, assigned, visited, delegacy);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
 		long userId, long groupId, long dossierActionId, long dossierId,
 		String stepCode, int moderator, int assigned, boolean visited)
@@ -70,6 +80,17 @@ public class DossierActionUserLocalServiceUtil {
 		return getService()
 				   .addOrUpdateDossierActionUser(userId, groupId,
 			dossierActionId, dossierId, stepCode, moderator, assigned, visited);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierActionUser addOrUpdateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addOrUpdateDossierActionUser(userId, groupId,
+			dossierActionId, dossierId, stepCode, moderator, assigned, visited,
+			delegacy);
 	}
 
 	/**
@@ -212,6 +233,13 @@ public class DossierActionUserLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.DossierActionUser getByD_DID_UID_SC(
+		long dossierId, long dossierActionId, long userId, String stepCode) {
+		return getService()
+				   .getByD_DID_UID_SC(dossierId, dossierActionId, userId,
+			stepCode);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDID(
 		long dossierActionId) {
 		return getService().getByDID(dossierActionId);
@@ -247,6 +275,12 @@ public class DossierActionUserLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDossierId(
 		long dossierId) {
 		return getService().getByDossierId(dossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.DossierActionUser> getByDossierUserAndStepCode(
+		long dossierId, long userId, String stepCode) {
+		return getService()
+				   .getByDossierUserAndStepCode(dossierId, userId, stepCode);
 	}
 
 	/**
@@ -334,6 +368,16 @@ public class DossierActionUserLocalServiceUtil {
 		return getService()
 				   .updateDossierActionUser(userId, groupId, dossierActionId,
 			dossierId, stepCode, moderator, assigned, visited);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierActionUser updateDossierActionUser(
+		long userId, long groupId, long dossierActionId, long dossierId,
+		String stepCode, int moderator, int assigned, boolean visited,
+		int delegacy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateDossierActionUser(userId, groupId, dossierActionId,
+			dossierId, stepCode, moderator, assigned, visited, delegacy);
 	}
 
 	public static DossierActionUserLocalService getService() {

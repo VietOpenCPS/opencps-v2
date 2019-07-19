@@ -65,7 +65,8 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 			{ "dossierId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "moderator", Types.INTEGER },
-			{ "visited", Types.BOOLEAN }
+			{ "visited", Types.BOOLEAN },
+			{ "roleId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -75,9 +76,10 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("moderator", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("visited", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("roleId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossieruser (uuid_ VARCHAR(75) null,dossierId LONG not null,userId LONG not null,moderator INTEGER,visited BOOLEAN,primary key (dossierId, userId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossieruser (uuid_ VARCHAR(75) null,dossierId LONG not null,userId LONG not null,moderator INTEGER,visited BOOLEAN,roleId LONG,primary key (dossierId, userId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossieruser";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierUser.id.dossierId ASC, dossierUser.id.userId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossieruser.dossierId ASC, opencps_dossieruser.userId ASC";
@@ -142,6 +144,7 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 		attributes.put("userId", getUserId());
 		attributes.put("moderator", getModerator());
 		attributes.put("visited", isVisited());
+		attributes.put("roleId", getRoleId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -179,6 +182,12 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 
 		if (visited != null) {
 			setVisited(visited);
+		}
+
+		Long roleId = (Long)attributes.get("roleId");
+
+		if (roleId != null) {
+			setRoleId(roleId);
 		}
 	}
 
@@ -290,6 +299,16 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 		_visited = visited;
 	}
 
+	@Override
+	public long getRoleId() {
+		return _roleId;
+	}
+
+	@Override
+	public void setRoleId(long roleId) {
+		_roleId = roleId;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -313,6 +332,7 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 		dossierUserImpl.setUserId(getUserId());
 		dossierUserImpl.setModerator(getModerator());
 		dossierUserImpl.setVisited(isVisited());
+		dossierUserImpl.setRoleId(getRoleId());
 
 		dossierUserImpl.resetOriginalValues();
 
@@ -402,12 +422,14 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 
 		dossierUserCacheModel.visited = isVisited();
 
+		dossierUserCacheModel.roleId = getRoleId();
+
 		return dossierUserCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -419,6 +441,8 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 		sb.append(getModerator());
 		sb.append(", visited=");
 		sb.append(isVisited());
+		sb.append(", roleId=");
+		sb.append(getRoleId());
 		sb.append("}");
 
 		return sb.toString();
@@ -426,7 +450,7 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(22);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierUser");
@@ -452,6 +476,10 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 			"<column><column-name>visited</column-name><column-value><![CDATA[");
 		sb.append(isVisited());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>roleId</column-name><column-value><![CDATA[");
+		sb.append(getRoleId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -472,6 +500,7 @@ public class DossierUserModelImpl extends BaseModelImpl<DossierUser>
 	private boolean _setOriginalUserId;
 	private int _moderator;
 	private boolean _visited;
+	private long _roleId;
 	private long _columnBitmask;
 	private DossierUser _escapedModel;
 }

@@ -21,7 +21,7 @@ public interface DossierActionUser {
 
 	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignedUserId) throws PortalException;
 	
-	public void assignDossierActionUser(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignUserId, JSONArray subUsers) throws PortalException;
+	public void assignDossierActionUser(Dossier dossier, int allowAssignUser, DossierAction dossierAction, long userId, long groupId, long assignUserId, JSONArray subUsers, Integer delegacy) throws PortalException;
 
 	public void copyRoleAsStep(ProcessStep curStep, Dossier dossier);
 }

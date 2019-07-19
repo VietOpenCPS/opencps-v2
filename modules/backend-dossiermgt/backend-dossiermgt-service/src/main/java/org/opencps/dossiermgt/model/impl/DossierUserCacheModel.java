@@ -64,7 +64,7 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -76,6 +76,8 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 		sb.append(moderator);
 		sb.append(", visited=");
 		sb.append(visited);
+		sb.append(", roleId=");
+		sb.append(roleId);
 		sb.append("}");
 
 		return sb.toString();
@@ -96,6 +98,7 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 		dossierUserImpl.setUserId(userId);
 		dossierUserImpl.setModerator(moderator);
 		dossierUserImpl.setVisited(visited);
+		dossierUserImpl.setRoleId(roleId);
 
 		dossierUserImpl.resetOriginalValues();
 
@@ -113,6 +116,8 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 		moderator = objectInput.readInt();
 
 		visited = objectInput.readBoolean();
+
+		roleId = objectInput.readLong();
 
 		dossierUserPK = new DossierUserPK(dossierId, userId);
 	}
@@ -134,6 +139,8 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 		objectOutput.writeInt(moderator);
 
 		objectOutput.writeBoolean(visited);
+
+		objectOutput.writeLong(roleId);
 	}
 
 	public String uuid;
@@ -141,5 +148,6 @@ public class DossierUserCacheModel implements CacheModel<DossierUser>,
 	public long userId;
 	public int moderator;
 	public boolean visited;
+	public long roleId;
 	public transient DossierUserPK dossierUserPK;
 }

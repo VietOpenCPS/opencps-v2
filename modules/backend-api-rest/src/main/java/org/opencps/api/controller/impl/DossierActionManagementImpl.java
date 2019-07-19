@@ -357,6 +357,16 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			DossierDetailNextActionModel result = DossierActionUtils.mappingToDetailNextActions(jsonData);
+			//Check if user is delegate user
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier != null) {
+				ProcessAction pa = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getLong(actionId));
+				
+				DossierActionUser dau = DossierActionUserLocalServiceUtil.getByD_DID_UID_SC(dossierId, dossier.getDossierActionId(), user.getUserId(), pa.getPreStepCode());
+				if (dau != null && dau.getDelegacy() == 1 && (pa.getAllowAssignUser() > 2)) {
+					result.setAllowAssignUser(2);
+				}
+			}
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {

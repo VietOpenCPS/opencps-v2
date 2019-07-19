@@ -3101,7 +3101,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					DossierAction dAction = dossierAction;
 					if (dAction != null) {
 						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
-								dAction.getStepCode(), dossier.getDossierId(), assigned);
+								dAction.getStepCode(), dossier.getDossierId(), assigned, 0);
 					} 
 //					else {
 //						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
@@ -3134,7 +3134,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	}
 	
 	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator,
-			boolean visited, String stepCode, long dossierId, int assigned) {
+			boolean visited, String stepCode, long dossierId, int assigned, int delegacy) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 	
 //		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
@@ -3142,6 +3142,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		model.setDossierId(dossierId);
 		model.setStepCode(stepCode);
 		model.setAssigned(assigned);
+		model.setDelegacy(delegacy);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 		_log.debug("Employee : " + employee);
@@ -3307,8 +3308,22 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						
 						updateDossierUser(dossier, processStepRole, user);
-						addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
-								dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), assigned);
+						List<DossierActionUser> lstDau = dossierActionUserLocalService.getByDossierUserAndStepCode(dossier.getDossierId(), user.getUserId(), stepCode);
+						DossierActionUser lastDau = (lstDau.size() > 0 ? lstDau.get(0) : null);
+						for (DossierActionUser dau : lstDau) {
+							if (dau.getDossierActionId() > lastDau.getDossierActionId()) {
+								lastDau = dau;
+							}
+						}
+						
+						if (lastDau != null) {
+							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+								dossierAction.getDossierActionId(), lastDau.getModerator(), false, stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());	
+						}
+						else {
+							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+									dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), assigned, 0);							
+						}
 					}
 				}
 			}
@@ -3362,7 +3377,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						dau.setAssigned(assigned);
 						dossierActionUserLocalService.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), assigned);
+						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), assigned, 0);
 					}
 				}				
 			}

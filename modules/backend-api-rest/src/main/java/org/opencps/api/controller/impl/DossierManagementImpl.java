@@ -117,6 +117,8 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -135,6 +137,7 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -157,6 +160,8 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalService;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -3382,7 +3387,16 @@ public class DossierManagementImpl implements DossierManagement {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
 					userObj.put("userId", u.getUserId());
 					userObj.put("userName", u.getFullName());
-					userObj.put("assigned", 0);
+					DossierActionUserPK pk = new DossierActionUserPK();
+					pk.setDossierActionId(dossier.getDossierActionId());
+					pk.setUserId(u.getUserId());
+					DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+					if (dau != null) {
+						userObj.put("assigned", dau.getAssigned());
+					}
+					else {
+						userObj.put("assigned", 0);
+					}
 					
 					userArr.put(userObj);
 				}
@@ -3402,7 +3416,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response assignUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String assignUsers) {
+			User user, ServiceContext serviceContext, String id, String assignUsers, Integer delegacy) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		org.opencps.dossiermgt.action.DossierActionUser actions = new DossierActionUserImpl();
@@ -3418,7 +3432,7 @@ public class DossierManagementImpl implements DossierManagement {
 				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray(assignUsers);
 				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 				
-				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr);
+				actions.assignDossierActionUser(dossier, 1, da, user.getUserId(), groupId, 0, assignUserArr, delegacy);
 				//Reindex dossier
 				Indexer<Dossier> indexer = IndexerRegistryUtil
 						.nullSafeGetIndexer(Dossier.class);
@@ -4776,18 +4790,40 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response updateDossierInGroup(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long groupDossierId, long dossierId) {
+			User user, ServiceContext serviceContext, long groupDossierId, String dossierIds) {
 
 		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			if (dossier != null) {
-				dossier.setGroupDossierId(groupDossierId);
-				DossierLocalServiceUtil.updateDossier(dossier);
+			if (dossierIds.contains(StringPool.COMMA)) {
+				String[] dossierArr = dossierIds.split(StringPool.COMMA);
+				DossierResultsModel results = new DossierResultsModel();
+
+				results.setTotal(dossierArr.length);
+
+				
+				for (String dossierStr : dossierArr) {
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(dossierStr));
+					if (dossier != null) {
+						dossier.setGroupDossierId(groupDossierId);
+						DossierLocalServiceUtil.updateDossier(dossier);
+					}
+					DossierDataModel dataModel = new DossierDataModel();
+					dataModel.setDossierNo(dossier.getDossierNo());
+					results.getData().add(dataModel);
+				}
+				//
+				return Response.status(200).entity(results).build();
 			}
-			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
-			//
-			return Response.status(200).entity(result).build();
+			else {
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(GetterUtil.getLong(dossierIds));
+				if (dossier != null) {
+					dossier.setGroupDossierId(groupDossierId);
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+				//
+				return Response.status(200).entity(result).build();				
+			}
 		} catch (Exception e) {
 			_log.info(e);
 			return Response.status(500).entity("{error}").build();
@@ -4956,6 +4992,149 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		} catch (PortalException e) {
 			return BusinessExceptionImpl.processException(e);
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDelegacyUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, String id, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			long dossierId = 0;
+			dossierId = GetterUtil.getLong(id);
+			Dossier dossier = null;
+			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
+			if (dossier != null) {
+				long lastActionId = dossier.getDossierActionId();
+				DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(lastActionId);
+				if (da != null) {
+					DossierActionUser checkDau = DossierActionUserLocalServiceUtil.getByD_DID_UID_SC(dossier.getDossierId(), da.getPreviousActionId(), user.getUserId(), da.getFromStepCode());
+					if (checkDau == null || checkDau.getAssigned() != DossierActionUserTerm.ASSIGNED_TH) {
+						return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+					}
+					
+					ProcessAction pa = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(groupId, da.getServiceProcessId(), da.getActionCode(), da.getFromStepCode(), da.getStepCode());
+					if (pa != null) {
+						result.put(ProcessActionTerm.ALLOW_ASSIGN_USER, pa.getAllowAssignUser());
+						
+						ProcessStep processStep = ProcessStepLocalServiceUtil.fetchBySC_GID(da.getStepCode(), groupId,
+								da.getServiceProcessId());
+						List<User> lstUser = new ArrayList<>();
+						List<Long> lstIds = new ArrayList<>();
+						
+						if (processStep != null) {	
+							List<DossierActionUser> assignedUsers = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossierId, processStep.getStepCode());
+							for (DossierActionUser dau : assignedUsers) {
+								User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
+								if (u != null) {
+									if (!u.isLockout() && u.isActive() && !lstIds.contains(u.getUserId())) {
+										lstUser.add(u);
+										lstIds.add(u.getUserId());
+									}
+								}
+							}
+							
+							if (processStep != null) {
+								List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
+										.findByP_S_ID(processStep.getProcessStepId());
+								if (processStepRoleList != null && !processStepRoleList.isEmpty()) {
+									List<ProcessStepRole> lstStepRoles = new ArrayList<>();
+									for (ProcessStepRole psr : processStepRoleList) {
+										if (Validator.isNotNull(psr.getCondition())) {
+											String[] conditions = StringUtil.split(psr.getCondition());
+		
+											if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+												lstStepRoles.add(psr);
+											}
+										}
+										else {
+											lstStepRoles.add(psr);
+										}
+									}
+									
+									for (ProcessStepRole role : processStepRoleList) {
+										List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
+										for (User u : lstUsers) {
+											if (!u.isLockout() && u.isActive()) {
+												HashMap<String, Object> assigned = new HashMap<>();
+												assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
+												HashMap<String, Object> moderator = new HashMap<>();
+												moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
+												u.setModelAttributes(moderator);
+												u.setModelAttributes(assigned);
+	
+												if (!lstIds.contains(u.getUserId())) {
+													lstUser.add(u);
+													lstIds.add(u.getUserId());
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						
+						JSONArray outputUserArr = JSONFactoryUtil.createJSONArray();
+	
+						if (lstUser != null && lstUser.size() > 0) {
+							boolean moderator = false;
+							int assigned = 0;
+							for (User u: lstUser) {
+								if (!u.isLockout() && u.isActive()) {
+									JSONObject userObj = JSONFactoryUtil.createJSONObject();
+									
+									Map<String, Object> attr = u.getModelAttributes();
+									long userId = GetterUtil.getLong(u.getUserId());
+									moderator = false;
+									assigned = 0;
+									if (attr != null) {
+										if (attr.containsKey(ProcessStepRoleTerm.MODERATOR)) {
+											moderator = GetterUtil.getBoolean(attr.get(ProcessStepRoleTerm.MODERATOR));
+										}
+										if (attr.containsKey(ProcessStepRoleTerm.ASSIGNED)) {
+											assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
+										}
+									}
+									userObj.put("userId", userId);
+									Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+									if (emp != null) {
+										userObj.put("fullName", emp.getFullName() != null ? emp.getFullName().toUpperCase()
+												: StringPool.BLANK);
+									} else {
+										userObj.put("fullName",
+												u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
+									}
+									
+									userObj.put("moderator", moderator);
+									userObj.put("assigned", assigned);
+									
+									outputUserArr.put(userObj);							
+								}
+							}
+						}
+						
+						result.put("toUsers", outputUserArr);
+					}
+				}
+			}
+			else {
+				
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
