@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.XmlType;
     "dossierSubStatus",
 //    "level",
 //    "statusName",
-    "totalCount"
+    "totalCount",
+    "menuGroup"
 })
 @XmlRootElement(name = "StatisticDossierModel")
 public class StatisticDossierModel {
@@ -60,8 +61,17 @@ public class StatisticDossierModel {
     @XmlElement(required = true)
     protected String dossierSubStatus;
     protected long totalCount;
+    protected String menuGroup;
 
-    public String getStepCode() {
+    public String getMenuGroup() {
+		return menuGroup;
+	}
+
+	public void setMenuGroup(String menuGroup) {
+		this.menuGroup = menuGroup;
+	}
+
+	public String getStepCode() {
 		return stepCode;
 	}
 

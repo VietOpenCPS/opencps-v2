@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.constants;
 public class DeliverableTerm {
 	public static final String DELIVERABLE_ID = "deliverableId";
 	public static final String DELIVERABLE_CODE = "deliverableCode";
+	public static final String DELIVERABLE_CODE_SEARCH = "deliverableCodeSearch";
 	public static final String DELIVERABLE_NAME = "deliverableName";
 	public static final String DELIVERABLE_TYPE = "deliverableType";
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";

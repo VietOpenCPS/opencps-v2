@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -47,24 +46,10 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
@@ -237,7 +222,13 @@ public class DossierMgtUtils {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
 						assignUserObj.put("userId", dau.getUserId());
-						assignUserObj.put("userName", u.getFullName());
+						//
+						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
+						if (employee != null) {
+							assignUserObj.put("userName", employee.getFullName());
+						} else {
+							assignUserObj.put("userName", u.getFullName());
+						}
 						
 						assignUserArr.put(assignUserObj);					
 					}					
@@ -248,7 +239,13 @@ public class DossierMgtUtils {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
 					assignUserObj.put("userId", da.getUserId());
-					assignUserObj.put("userName", da.getUserName());
+
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
+					if (employee != null) {
+						assignUserObj.put("userName", employee.getFullName());
+					} else {
+						assignUserObj.put("userName", da.getUserName());
+					}
 					
 					assignUserArr.put(assignUserObj);					
 				}
