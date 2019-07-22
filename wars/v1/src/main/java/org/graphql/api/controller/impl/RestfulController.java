@@ -62,6 +62,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.QueryParam;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
@@ -76,6 +77,8 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -1040,7 +1043,8 @@ public class RestfulController {
 	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("type") String type) {
+			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
+			@QueryParam("keyword") String keyword) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -1057,37 +1061,54 @@ public class RestfulController {
 				}
 
 				try {
-
-					DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
-
-					DeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
-							new ServiceContext());
-
-					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
-
+					String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
+							DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+							DeliverableTerm.DELIVERABLE_CODE_SEARCH };
 					String queryBuilder = StringPool.BLANK;
 					String queryBuilderLike = StringPool.BLANK;
-
-					for (int i = 0; i < filterData.length(); i++) {
-
-						if (Validator
-								.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
-
-							if (filterData.getJSONObject(i).getString("compare").equals("like")) {
-
-								queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
-										+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
-										+ "*";
-
+					StringBuilder sbBuilder = new StringBuilder();
+					if (Validator.isNotNull(keyword)) {
+						//LamTV_Process search LIKE
+						String keySearch = SpecialCharacterUtils.splitSpecial(keyword);
+						sbBuilder.append(" AND (");
+						int length = subQuerieArr.length;
+						for (int i = 0; i < length; i++) {
+							sbBuilder.append(subQuerieArr[i] + ": *" + keySearch + "*");
+							if (i < length - 1) {
+								sbBuilder.append(" OR ");
 							} else {
+								sbBuilder.append(" ) ");
+							}
+						}
+					} else {
+						DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
-								queryBuilder += " AND " + filterData.getJSONObject(i).getString("fieldName") + ":"
-										+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"));
+						DeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
+								new ServiceContext());
+
+						JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
+
+						for (int i = 0; i < filterData.length(); i++) {
+
+							if (Validator
+									.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
+
+								if (filterData.getJSONObject(i).getString("compare").equals("like")) {
+
+									queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
+											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
+											+ "*";
+
+								} else {
+
+									queryBuilder += " AND " + filterData.getJSONObject(i).getString("fieldName") + ":"
+											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"));
+
+								}
 
 							}
 
 						}
-
 					}
 
 					System.out.println("queryBuilderLike:" + queryBuilderLike);
@@ -1096,12 +1117,12 @@ public class RestfulController {
 					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + request.getParameter("start")
 							+ ", \"size\" : " + request.getParameter("end")
 							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
 
 					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
 							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
 
 					System.out.println("query:" + query);

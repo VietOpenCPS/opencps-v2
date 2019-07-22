@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -27,6 +28,7 @@ import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ModelKeysDeliverable;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
@@ -77,9 +79,15 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		}
 
 		// add text fields
-		if (Validator.isNotNull(object.getDeliverableCode())) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, object.getDeliverableCode());			
+		String deliverableCode = object.getDeliverableCode();
+		if (Validator.isNotNull(deliverableCode)) {
+			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, SpecialCharacterUtils.splitSpecial(deliverableCode));
+		} else {
+			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
 		}
+		
 		if (Validator.isNotNull(object.getDeliverableName())) {
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());			
 		}

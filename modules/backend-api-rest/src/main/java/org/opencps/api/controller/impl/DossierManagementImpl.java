@@ -4847,7 +4847,7 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				_log.info("applicantName: "+applicantName);
 				_log.info("delegateName: "+delegateName);
-				String[] statusArr = {StringPool.BLANK, DossierTerm.DOSSIER_STATUS_NEW};
+				String[] statusArr = {StringPool.BLANK};
 				List<Dossier> dossierList = DossierLocalServiceUtil.getByGID_GC_SC_DTN_DS_APP_ORI(groupId,
 						input.getGovAgencyCode(), input.getServiceCode(), input.getDossierTemplateNo(), statusArr,
 						dossiers.getString(DossierTerm.APPLICANT_ID_TYPE),

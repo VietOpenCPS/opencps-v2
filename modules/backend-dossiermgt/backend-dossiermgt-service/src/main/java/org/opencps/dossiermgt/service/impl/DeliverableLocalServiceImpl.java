@@ -247,7 +247,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME };
+					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+					DeliverableTerm.DELIVERABLE_CODE_SEARCH };
 
 			// query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
 			// booleanQuery.add(query, BooleanClauseOccur.MUST);
