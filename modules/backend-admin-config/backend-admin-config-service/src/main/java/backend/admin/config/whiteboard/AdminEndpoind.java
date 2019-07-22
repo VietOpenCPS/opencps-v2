@@ -127,7 +127,7 @@ public class AdminEndpoind extends Endpoint {
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 
 		JSONObject message = JSONFactoryUtil.createJSONObject(text);
-
+		_log.debug("SOCKET MESSAGE: " + message.toJSONString());
 		try {
 			
 			if (message.getString(TYPE).equals(ADMIN)) {
