@@ -29,6 +29,7 @@ public class StatisticUtils {
 					ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
 					ett.setStepCode(statistic.getString("stepCode"));
 					ett.setStepName(statistic.getString("stepName"));
+					ett.setMenuGroup(statistic.getString("menuGroup"));
 					results.add(ett);
 				}
 			}
