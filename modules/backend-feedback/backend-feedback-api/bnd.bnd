@@ -1,9 +1,0 @@
-Bundle-Name: backend-feedback-api
-Bundle-SymbolicName: backend.feedback.api
-Bundle-Version: 1.0.0
-Export-Package:\
-	backend.feedback.exception,\
-	backend.feedback.model,\
-	backend.feedback.service,\
-	backend.feedback.service.persistence
--includeresource: META-INF/service.xml=../backend-feedback-service/service.xml

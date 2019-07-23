@@ -62,6 +62,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.QueryParam;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
@@ -74,11 +75,15 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.deliverable.model.OpenCPSDeliverable;
-import org.opencps.deliverable.model.OpenCPSDeliverableType;
-import org.opencps.deliverable.service.OpenCPSDeliverableLocalServiceUtil;
-import org.opencps.deliverable.service.OpenCPSDeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
@@ -104,7 +109,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import backend.admin.config.whiteboard.BundleLoader;
-import backend.deliverable.action.impl.DeliverableTypeActions;
 import backend.utils.FileUploadUtils;
 import io.swagger.annotations.ApiParam;
 
@@ -142,7 +146,7 @@ public class RestfulController {
 			indexer.reindex(user);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -165,7 +169,7 @@ public class RestfulController {
 			indexer.reindex(user);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -189,7 +193,7 @@ public class RestfulController {
 			result.put("deactiveAccountFlag", user.getStatus());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -244,7 +248,7 @@ public class RestfulController {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		dataUser.put(result);
@@ -399,7 +403,7 @@ public class RestfulController {
 		}		
 		catch (Exception e) {
 			System.out.println("EXCEPTION");
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return "";
@@ -434,7 +438,7 @@ public class RestfulController {
 				result = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -501,8 +505,8 @@ public class RestfulController {
 					EmployeeLocalServiceUtil.updateEmployee(employee);
 				} else if (code.equals("opencps_deliverabletype")) {
 
-					OpenCPSDeliverableType openCPSDeliverableType = OpenCPSDeliverableTypeLocalServiceUtil
-							.fetchOpenCPSDeliverableType(Long.valueOf(pk));
+					DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
+							.fetchDeliverableType(Long.valueOf(pk));
 
 					if (className.endsWith("FORM")) {
 						openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
@@ -510,7 +514,7 @@ public class RestfulController {
 						openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
 					}
 
-					OpenCPSDeliverableTypeLocalServiceUtil.updateOpenCPSDeliverableType(openCPSDeliverableType);
+					DeliverableTypeLocalServiceUtil.updateDeliverableType(openCPSDeliverableType);
 
 				} else if (code.equals("opencps_applicant")) {
 
@@ -535,12 +539,12 @@ public class RestfulController {
 
 				} else if (code.equals("opencps_deliverable")) {
 
-					OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil
-							.fetchOpenCPSDeliverable(Long.valueOf(pk));
+					Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
+							.fetchDeliverable(Long.valueOf(pk));
 
 					openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 
-					OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+					DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 
 				}
 
@@ -548,7 +552,73 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
+		}
+
+	}
+
+	@RequestMapping(value = "/users/upload/{code}/{className}/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.POST)
+	public void uploadServiceFileAttachment(MultipartHttpServletRequest request, @PathVariable("code") String code,
+			@PathVariable("className") String className, @PathVariable("serviceInfoId") String serviceInfoId,
+			@PathVariable("fileTemplateNo") String fileTemplateNo) {
+
+		CommonsMultipartFile multipartFile = null;
+
+		Iterator<String> iterator = request.getFileNames();
+
+		while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+			// create multipartFile array if you upload multiple files
+			multipartFile = (CommonsMultipartFile) request.getFile(key);
+		}
+
+		long userId = 0;
+		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+		}
+		long groupId = 0;
+		if (Validator.isNotNull(request.getHeader("groupId"))) {
+			groupId = Long.valueOf(request.getHeader("groupId"));
+		}
+		long companyId = CompanyThreadLocal.getCompanyId();
+		String desc = "FileAttach file upload";
+		String destination = "FileAttach/";
+
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setUserId(userId);
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(groupId);
+
+		try {
+
+			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
+					UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+					multipartFile.getOriginalFilename()
+							.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+					multipartFile.getSize(), destination, desc, serviceContext);
+
+				User user = UserLocalServiceUtil.fetchUser(userId);
+
+				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, serviceInfoId+ "_"+fileTemplateNo,
+						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
+						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
+
+				if (code.equals("opencps_services_filetemplates")) {
+
+					ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
+							.fetchByF_serviceInfoId_fileTemplateNo(Long.valueOf(serviceInfoId), fileTemplateNo);
+
+					if (className.endsWith("FORM")) {
+						fileTemplate.setFormScriptFileId(fileAttach.getFileEntryId());
+					} else if (className.endsWith("JASPER")) {
+						fileTemplate.setFormReportFileId(fileAttach.getFileEntryId());
+					}
+
+					ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(fileTemplate);
+				}
+
+		} catch (Exception e) {
+			_log.error(e);
 		}
 
 	}
@@ -583,7 +653,7 @@ public class RestfulController {
 				resultArray.put(object);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -637,7 +707,7 @@ public class RestfulController {
 				resultArray.put(object);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 
 		}
@@ -670,12 +740,12 @@ public class RestfulController {
 		}
 
 		if (code.equals("opencps_deliverable")) {
-			OpenCPSDeliverable openCPSDeliverable = OpenCPSDeliverableLocalServiceUtil
-					.fetchOpenCPSDeliverable(Long.valueOf(pk));
+			Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
+					.fetchDeliverable(Long.valueOf(pk));
 
 			openCPSDeliverable.setFileEntryId(0);
 
-			OpenCPSDeliverableLocalServiceUtil.updateOpenCPSDeliverable(openCPSDeliverable);
+			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 		}
 
 		return result.toJSONString();
@@ -723,7 +793,7 @@ public class RestfulController {
 			DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -786,7 +856,7 @@ public class RestfulController {
 			}
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -809,7 +879,7 @@ public class RestfulController {
 			System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return "sdfds";
@@ -895,11 +965,11 @@ public class RestfulController {
 					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
 
 					object.put("name", name);
-					//_log.info("name: "+name);
+					//_log.debug("name: "+name);
 
 				} else {
 					object.put("name", objects[1]);
-					//_log.info("name: "+objects[1]);
+					//_log.debug("name: "+objects[1]);
 				}
 
 				result.put(object);
@@ -909,7 +979,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -960,13 +1030,13 @@ public class RestfulController {
 			result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			result = StringPool.BLANK;
 		} finally {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 		}
 
@@ -977,7 +1047,8 @@ public class RestfulController {
 	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("type") String type) {
+			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
+			@QueryParam("keyword") String keyword) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -994,50 +1065,71 @@ public class RestfulController {
 				}
 
 				try {
-
-					DeliverableTypeActions actions = new DeliverableTypeActions();
-
-					OpenCPSDeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
-							new ServiceContext());
-
-					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
-
+					String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
+							DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+							DeliverableTerm.DELIVERABLE_CODE_SEARCH };
 					String queryBuilder = StringPool.BLANK;
 					String queryBuilderLike = StringPool.BLANK;
-
-					for (int i = 0; i < filterData.length(); i++) {
-
-						if (Validator
-								.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
-
-							if (filterData.getJSONObject(i).getString("compare").equals("like")) {
-
-								queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
-										+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
-										+ "*";
-
+					StringBuilder sbBuilder = new StringBuilder();
+					if (Validator.isNotNull(keyword)) {
+						//LamTV_Process search LIKE
+						String keySearch = SpecialCharacterUtils.splitSpecial(keyword);
+						sbBuilder.append(" AND (");
+						int length = subQuerieArr.length;
+						for (int i = 0; i < length; i++) {
+							sbBuilder.append(subQuerieArr[i] + ": *" + keySearch + "*");
+							if (i < length - 1) {
+								sbBuilder.append(" OR ");
 							} else {
+								sbBuilder.append(" ) ");
+							}
+						}
+					} else {
+						DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
-								queryBuilder += " AND " + filterData.getJSONObject(i).getString("fieldName") + ":"
-										+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"));
+						DeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
+								new ServiceContext());
+
+						JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
+
+						for (int i = 0; i < filterData.length(); i++) {
+
+							if (Validator
+									.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
+
+								if (filterData.getJSONObject(i).getString("compare").equals("like")) {
+
+									queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
+											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
+											+ "*";
+
+								} else {
+
+									queryBuilder += " AND " + filterData.getJSONObject(i).getString("fieldName") + ":"
+											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"));
+
+								}
 
 							}
 
 						}
-
 					}
+
+					System.out.println("queryBuilderLike:" + queryBuilderLike);
+					System.out.println("queryBuilder:" + queryBuilder);
 
 					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + request.getParameter("start")
 							+ ", \"size\" : " + request.getParameter("end")
-							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
+							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
 
 					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
-							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + " )\" }}"
+							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
 
+					System.out.println("query:" + query);
 					JSONObject count = ElasticQueryWrapUtil.count(countQuery.toJSONString());
 
 					System.out.println("RestfulController.getDeliverable(count)" + count.toJSONString());
@@ -1047,13 +1139,13 @@ public class RestfulController {
 					result.getJSONObject("hits").put("total", count.getLong("count"));
 
 				} catch (JSONException e) {
-					e.printStackTrace();
+					_log.debug(e);
 				}
 
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result.toJSONString();
@@ -1064,39 +1156,32 @@ public class RestfulController {
 	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("id") Long id) {
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+		//JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
+			//long userId = 0;
+			//if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 
-			long userId = 0;
-			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+				//long groupId = 0;
+				//if (Validator.isNotNull(request.getHeader("groupId"))) {
+				//}
 
-				long groupId = 0;
+				//JSONObject query = JSONFactoryUtil.createJSONObject(
+				//		" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
+				//				+ groupId + " AND entryClassPK: " + id + " )\" }}}");
+				//result = ElasticQueryWrapUtil.query(query.toJSONString());
 
-				if (Validator.isNotNull(request.getHeader("groupId"))) {
-					groupId = Long.valueOf(request.getHeader("groupId"));
-				}
-
-				try {
-
-					JSONObject query = JSONFactoryUtil.createJSONObject(
-							" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
-									+ groupId + " AND entryClassPK: " + id + " )\" }}}");
-
-					result = ElasticQueryWrapUtil.query(query.toJSONString());
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-
+			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
+			if (deliverable != null) {
+				return JSONFactoryUtil.looseSerialize(deliverable);
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
-		return result.toJSONString();
+		return StringPool.BLANK;
 	}
 
 	@RequestMapping(value = "/deliverable/file/{id}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
@@ -1115,7 +1200,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result;
@@ -1158,7 +1243,7 @@ public class RestfulController {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return result;

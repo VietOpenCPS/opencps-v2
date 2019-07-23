@@ -1,8 +1,0 @@
-Bundle-Name: backend-cache-builder-service
-Bundle-SymbolicName: org.opencps.cache.service
-Bundle-Version: 1.0.0
-Liferay-Require-SchemaVersion: 1.0.0
-Liferay-Service: true
-Export-Package: \
-	org.opencps.cache.actions,\
-	org.opencps.cache.actions.impl

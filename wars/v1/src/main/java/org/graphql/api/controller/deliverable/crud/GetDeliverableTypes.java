@@ -7,20 +7,18 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.graphql.api.controller.utils.WebKeys;
-import org.opencps.deliverable.model.OpenCPSDeliverableType;
-import org.opencps.deliverable.model.OpenCPSDeliverableTypeRole;
-import org.opencps.deliverable.service.OpenCPSDeliverableTypeRoleLocalServiceUtil;
+import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import backend.deliverable.action.impl.DeliverableTypeActions;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -28,7 +26,7 @@ import graphql.schema.DataFetchingEnvironment;
  * Created binhth
  */
 @Component
-public class GetDeliverableTypes implements DataFetcher<List<OpenCPSDeliverableType>> {
+public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 
 	@Autowired
 	private final HttpServletRequest request;
@@ -39,9 +37,9 @@ public class GetDeliverableTypes implements DataFetcher<List<OpenCPSDeliverableT
 	}
 
 	@Override
-	public List<OpenCPSDeliverableType> get(DataFetchingEnvironment dataFetchingEnvironment) {
+	public List<DeliverableType> get(DataFetchingEnvironment dataFetchingEnvironment) {
 
-		DeliverableTypeActions actions = new DeliverableTypeActions();
+		DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
 		int start = dataFetchingEnvironment.getArgument(WebKeys.START);
 		int end = dataFetchingEnvironment.getArgument(WebKeys.END);
@@ -57,11 +55,11 @@ public class GetDeliverableTypes implements DataFetcher<List<OpenCPSDeliverableT
 			userId = (long) request.getAttribute(WebKeys.USER_ID);
 		}
 		
-		List<OpenCPSDeliverableType> results = new ArrayList<>();
+		List<DeliverableType> results = new ArrayList<>();
 		
 		if (userId > 0) {
 			
-			List<OpenCPSDeliverableType> resultsTemp = actions.getDeliverableTypes(groupId, start, end);
+			List<DeliverableType> resultsTemp = actions.getDeliverableTypesList(groupId, start, end);
 			
 			try {
 				
@@ -72,7 +70,7 @@ public class GetDeliverableTypes implements DataFetcher<List<OpenCPSDeliverableT
 				
 				List<Long> rIds = new ArrayList<>();
 				
-				for (OpenCPSDeliverableType openCPSDeliverableType : resultsTemp) {
+				for (DeliverableType openCPSDeliverableType : resultsTemp) {
 					
 					rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
 					

@@ -1,2 +1,0 @@
-contextPath=/rest/v2
-jaxRsApplicationFilterStrings=(component.name=backend.api.rest.application.BackendAPIRestApplication)

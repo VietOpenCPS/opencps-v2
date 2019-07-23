@@ -1,6 +1,9 @@
 package org.graphql.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.io.IOException;
 
@@ -36,7 +39,7 @@ public class DeliverableService {
 		String schema = StringPool.BLANK;
 
 		schema = GraphQLUtils.readGrapQL("deliverable.graphql");
-		
+
 		TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(schema);
 
 		RuntimeWiring runtimeWiring = initWiring();

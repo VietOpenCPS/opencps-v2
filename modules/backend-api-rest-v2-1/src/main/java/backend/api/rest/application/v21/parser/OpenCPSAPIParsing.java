@@ -209,6 +209,7 @@ public class OpenCPSAPIParsing {
 			//List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
 			if (arrMenuConfigIds != null && arrMenuConfigIds.length > 0) {
 				List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds);
+<<<<<<< HEAD
 				List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
 
 				if (lstMenus != null && lstMenus.size() > 0) {
@@ -227,12 +228,32 @@ public class OpenCPSAPIParsing {
 										menuConfigStepsItems.add(menuConfigStepsItem);
 									}
 								}
+=======
+			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+
+				if (lstMenus != null && lstMenus.size() > 0) {
+			for (MenuConfig menuConfig : lstMenus) {
+				if (menuConfig.getMenuType() > 0) {
+					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+					MenuConfigStepsItem menuConfigStepsItem;
+					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+					
+					for (StepConfig stepConfig : lstSteps) {
+						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
+								&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
+							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+								
+										menuConfigStepsItems.add(menuConfigStepsItem);
+>>>>>>> opencps/release-candidate-2.2
 							}
 							menuConfigItem.getSteps().addAll(menuConfigStepsItems);
 							data.add(menuConfigItem);
 						}
 					}
 				}
+			}
+		}
 			}
 		}
 		
@@ -250,6 +271,7 @@ public class OpenCPSAPIParsing {
 		menuConfigItem.setQueryParams(menuConfig.getQueryParams());
 		menuConfigItem.setButtonConfig(menuConfig.getButtonConfig());
 		menuConfigItem.setTableConfig(menuConfig.getTableConfig());
+		menuConfigItem.setIcon(menuConfig.getIcon());
 		
 		return menuConfigItem;
 	}

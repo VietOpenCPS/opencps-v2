@@ -1,8 +1,8 @@
-package org.opencps.rest.application.model;
+package org.opencps.rest.opencps.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.opencps.rest.application.model.MenuConfigStepsItem;
+import org.opencps.rest.opencps.model.MenuConfigStepsItem;
 import javax.validation.constraints.*;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -194,6 +194,23 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
  /**
+   * Get icon
+   * @return icon
+  **/
+  public String getIcon() {
+    return icon;
+  }
+
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
+
+  public MenuConfigItem icon(String icon) {
+    this.icon = icon;
+    return this;
+  }
+
+ /**
    * Get steps
    * @return steps
   **/
@@ -216,15 +233,7 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
 
-  public String getIcon() {
-	return icon;
-}
-
-public void setIcon(String icon) {
-	this.icon = icon;
-}
-
-@Override
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class MenuConfigItem {\n");
@@ -238,6 +247,7 @@ public void setIcon(String icon) {
     sb.append("    queryParams: ").append(toIndentedString(queryParams)).append("\n");
     sb.append("    tableConfig: ").append(toIndentedString(tableConfig)).append("\n");
     sb.append("    buttonConfig: ").append(toIndentedString(buttonConfig)).append("\n");
+    sb.append("    icon: ").append(toIndentedString(icon)).append("\n");
     sb.append("    steps: ").append(toIndentedString(steps)).append("\n");
     sb.append("}");
     return sb.toString();
