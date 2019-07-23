@@ -301,7 +301,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										if (Validator.isNotNull(obj[lengColumns - 1])) {
 											long userIdMapping = (long) obj[lengColumns - 1];
 											User user = UserLocalServiceUtil.fetchUser(userIdMapping);
-											obj[lengColumns - 1] = convertDateToString(user.getLoginDate());
+											if (user != null && user.getLoginDate() != null) {
+												obj[lengColumns - 1] = convertDateToString(user.getLoginDate());												
+											}
 										}
 										
 									}
