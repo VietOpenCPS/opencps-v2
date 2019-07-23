@@ -184,7 +184,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 						DeliverableLocalServiceUtil.updateDeliverable(model);
 					} catch (Exception e) {
-						// TODO: handle exception
+						_log.debug(e);
 					}
 
 				}
@@ -192,8 +192,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			}
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			_log.error(e);
+			_log.debug(e);
 		}
 
 		if (!modelBeforeUpdate.getFormData().equals(model.getFormData()) && isAttact) {
@@ -224,7 +223,6 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			modelBeforeUpdate = DeliverableLocalServiceUtil.getDeliverable(model.getDeliverableId());
 		} catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 		}
 	}
 
@@ -246,13 +244,13 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			result = StringPool.BLANK;
 		} finally {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 		}
 

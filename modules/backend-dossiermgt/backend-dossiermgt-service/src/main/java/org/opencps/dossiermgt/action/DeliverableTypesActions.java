@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DeliverableTypeRole;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -31,7 +32,11 @@ public interface DeliverableTypesActions extends DeliverableTypeInterface {
 	public DeliverableType updateDeliverableTypeMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws SystemException, PortalException;
 
-	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
-			Integer docSync, String mappingData, String govAgencies, String formReport, String formScript);
+	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName,
+			String codePattern, Integer docSync, String mappingData, String govAgencies, String formReport,
+			String formScript, String dataConfig, String tableConfig, long reportFileEntryId, long scriptFileEntryId);
+
+	public DeliverableTypeRole updateDeliverableTypeRoleDB(long userId, long groupId, long deliverableTypeId, long mappingRoleId,
+			boolean moderator);
 
 }

@@ -2918,6 +2918,266 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	private static final String _FINDER_COLUMN_FB_DCODE_DELIVERABLECODE_1 = "deliverable.deliverableCode IS NULL";
 	private static final String _FINDER_COLUMN_FB_DCODE_DELIVERABLECODE_2 = "deliverable.deliverableCode = ?";
 	private static final String _FINDER_COLUMN_FB_DCODE_DELIVERABLECODE_3 = "(deliverable.deliverableCode IS NULL OR deliverable.deliverableCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_DCODE = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_DCODE",
+			new String[] { Long.class.getName(), String.class.getName() },
+			DeliverableModelImpl.GROUPID_COLUMN_BITMASK |
+			DeliverableModelImpl.DELIVERABLECODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_DCODE = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_DCODE",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableCode the deliverable code
+	 * @return the matching deliverable
+	 * @throws NoSuchDeliverableException if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable findByF_GID_DCODE(long groupId, String deliverableCode)
+		throws NoSuchDeliverableException {
+		Deliverable deliverable = fetchByF_GID_DCODE(groupId, deliverableCode);
+
+		if (deliverable == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", deliverableCode=");
+			msg.append(deliverableCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDeliverableException(msg.toString());
+		}
+
+		return deliverable;
+	}
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableCode the deliverable code
+	 * @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable fetchByF_GID_DCODE(long groupId, String deliverableCode) {
+		return fetchByF_GID_DCODE(groupId, deliverableCode, true);
+	}
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableCode the deliverable code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable fetchByF_GID_DCODE(long groupId, String deliverableCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, deliverableCode };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_DCODE,
+					finderArgs, this);
+		}
+
+		if (result instanceof Deliverable) {
+			Deliverable deliverable = (Deliverable)result;
+
+			if ((groupId != deliverable.getGroupId()) ||
+					!Objects.equals(deliverableCode,
+						deliverable.getDeliverableCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DELIVERABLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DCODE_GROUPID_2);
+
+			boolean bindDeliverableCode = false;
+
+			if (deliverableCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_1);
+			}
+			else if (deliverableCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_3);
+			}
+			else {
+				bindDeliverableCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDeliverableCode) {
+					qPos.add(deliverableCode);
+				}
+
+				List<Deliverable> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DCODE,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DeliverablePersistenceImpl.fetchByF_GID_DCODE(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Deliverable deliverable = list.get(0);
+
+					result = deliverable;
+
+					cacheResult(deliverable);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DCODE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Deliverable)result;
+		}
+	}
+
+	/**
+	 * Removes the deliverable where groupId = &#63; and deliverableCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableCode the deliverable code
+	 * @return the deliverable that was removed
+	 */
+	@Override
+	public Deliverable removeByF_GID_DCODE(long groupId, String deliverableCode)
+		throws NoSuchDeliverableException {
+		Deliverable deliverable = findByF_GID_DCODE(groupId, deliverableCode);
+
+		return remove(deliverable);
+	}
+
+	/**
+	 * Returns the number of deliverables where groupId = &#63; and deliverableCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableCode the deliverable code
+	 * @return the number of matching deliverables
+	 */
+	@Override
+	public int countByF_GID_DCODE(long groupId, String deliverableCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_DCODE;
+
+		Object[] finderArgs = new Object[] { groupId, deliverableCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DELIVERABLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DCODE_GROUPID_2);
+
+			boolean bindDeliverableCode = false;
+
+			if (deliverableCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_1);
+			}
+			else if (deliverableCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_3);
+			}
+			else {
+				bindDeliverableCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDeliverableCode) {
+					qPos.add(deliverableCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_DCODE_GROUPID_2 = "deliverable.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_1 = "deliverable.deliverableCode IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_2 = "deliverable.deliverableCode = ?";
+	private static final String _FINDER_COLUMN_F_GID_DCODE_DELIVERABLECODE_3 = "(deliverable.deliverableCode IS NULL OR deliverable.deliverableCode = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_FB_DCODE_STATE = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
 			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByFB_DCODE_STATE",
@@ -3231,6 +3491,11 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_DCODE,
 			new Object[] { deliverable.getDeliverableCode() }, deliverable);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DCODE,
+			new Object[] {
+				deliverable.getGroupId(), deliverable.getDeliverableCode()
+			}, deliverable);
+
 		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_DCODE_STATE,
 			new Object[] {
 				deliverable.getDeliverableCode(),
@@ -3343,6 +3608,16 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 			deliverableModelImpl, false);
 
 		args = new Object[] {
+				deliverableModelImpl.getGroupId(),
+				deliverableModelImpl.getDeliverableCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_DCODE, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DCODE, args,
+			deliverableModelImpl, false);
+
+		args = new Object[] {
 				deliverableModelImpl.getDeliverableCode(),
 				deliverableModelImpl.getDeliverableState()
 			};
@@ -3431,6 +3706,27 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_DCODE, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_DCODE, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					deliverableModelImpl.getGroupId(),
+					deliverableModelImpl.getDeliverableCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DCODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DCODE, args);
+		}
+
+		if ((deliverableModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_DCODE.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					deliverableModelImpl.getOriginalGroupId(),
+					deliverableModelImpl.getOriginalDeliverableCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DCODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DCODE, args);
 		}
 
 		if (clearCurrent) {

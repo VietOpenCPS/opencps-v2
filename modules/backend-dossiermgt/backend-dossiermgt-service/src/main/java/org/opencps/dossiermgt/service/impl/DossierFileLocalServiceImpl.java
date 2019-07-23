@@ -235,6 +235,124 @@ public class DossierFileLocalServiceImpl extends DossierFileLocalServiceBaseImpl
 		return dossierFilePersistence.update(object);
 	}
 
+	//
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, String formScript, String formReport,
+			boolean eForm, String formData, ServiceContext serviceContext) throws PortalException, SystemException {
+
+		long userId = serviceContext.getUserId();
+		
+		_log.debug("****Start add file at:" + new Date());
+
+		validateAddDossierFile(groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo);
+		
+		_log.debug("****End validator file at:" + new Date());
+
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo + ", groupId: " + groupId);
+		DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(groupId, dossierTemplateNo, dossierPartNo);
+		_log.debug("Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " + dossierPartNo);
+		long fileEntryId = 0;
+		try {
+			DLValidatorUtil.validateFileName(sourceFileName);
+		}
+		catch (FileNameException e) {
+			sourceFileName = displayName;
+			_log.debug(e);
+		}
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, inputStream, sourceFileName,
+						fileType, fileSize, serviceContext);
+	
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			} catch (Exception e) {
+				_log.debug(e);
+			}
+		}
+		_log.debug("****End uploadFile file at:" + new Date());
+
+		Date now = new Date();
+		User userAction = null;
+		if (userId != 0) {
+			userAction = userLocalService.getUser(userId);
+		}
+
+		DossierFile object = dossierFilePersistence.fetchByGID_DID_PART_EFORM(groupId, dossierId, dossierPartNo, eForm, false);
+		
+		if (object == null) {
+			long dossierFileId = counterLocalService.increment(DossierFile.class.getName());
+
+			object = dossierFilePersistence.create(dossierFileId);
+			object.setCreateDate(now);
+		}
+
+		// Add audit fields
+		object.setCompanyId(serviceContext.getCompanyId());
+		object.setGroupId(groupId);
+		object.setModifiedDate(now);
+		object.setUserId(userAction != null ? userAction.getUserId() : 0l);
+		object.setUserName(userAction != null ? userAction.getFullName() : StringPool.BLANK);
+
+		// Add other fields
+
+		object.setDossierId(dossierId);
+		if (Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+
+		object.setReferenceUid(referenceUid);
+		object.setDossierTemplateNo(dossierTemplateNo);
+		object.setFileEntryId(fileEntryId);
+		object.setDossierPartNo(dossierPartNo);
+		object.setFileTemplateNo(fileTemplateNo);
+		object.setDossierPartType(dossierPart.getPartType());
+		object.setEForm(eForm);
+		object.setFormScript(formScript);
+		object.setFormReport(formReport);
+
+		if (Validator.isNull(displayName)) {
+			displayName = sourceFileName;
+		}
+
+		_log.debug("****Start autofill file at:" + new Date());
+
+		_log.debug("****End autofill file at:" + new Date());
+
+		object.setDisplayName(displayName);
+		object.setOriginal(false);
+		
+		if (Boolean.parseBoolean(isSync)) {
+			object.setIsNew(true);
+		}
+		
+//		String deliverableCode = PwdGenerator.getPassword(10);
+//		
+//		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+//			object.setDeliverableCode(deliverableCode);
+//		}
+		String deliverableCode = StringPool.BLANK;
+		
+		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByCode(groupId, dossierPart.getDeliverableType());
+			
+			if (Validator.isNotNull(deliverableType)) {
+				deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, serviceContext.getCompanyId(), deliverableType.getDeliverableTypeId());
+				object.setDeliverableCode(deliverableCode);
+			}
+		}
+
+		JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
+		formDataObj.put("LicenceNo", deliverableCode);
+		formData = formDataObj.toJSONString();
+		object.setFormData(formData);
+
+		return dossierFilePersistence.update(object);
+	}
+
 	//Process EForm
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFileEForm(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,

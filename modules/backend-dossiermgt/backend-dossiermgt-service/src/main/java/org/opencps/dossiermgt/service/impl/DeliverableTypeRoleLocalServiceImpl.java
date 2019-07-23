@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -108,6 +109,35 @@ public class DeliverableTypeRoleLocalServiceImpl
 		deliverableTypeRolePersistence.update(object);
 
 		return object;
+	}
+
+	public DeliverableTypeRole updateDeliverableTypeRoleDB(long userId, long groupId, long deliverableTypeId, long mappingRoleId,
+			boolean moderator) {
+
+		DeliverableTypeRole object = deliverableTypeRolePersistence.fetchByF_GID_DID_RID(groupId, deliverableTypeId,
+				mappingRoleId);
+
+		if (object == null) {
+			long typeRoleId = CounterLocalServiceUtil.increment(DeliverableTypeRole.class.getName());
+			object = deliverableTypeRolePersistence.create(typeRoleId);
+			object.setCreateDate(new Date());
+		}
+		//
+		User user = userPersistence.fetchByPrimaryKey(userId);
+		if (user != null) {
+			object.setCompanyId(user.getCompanyId());
+			object.setUserName(user.getFullName());
+		}
+
+		object.setCompanyId(20099l);
+		object.setUserId(userId);
+		object.setModifiedDate(new Date());
+
+		object.setDeliverableTypeId(deliverableTypeId);
+		object.setRoleId(mappingRoleId);
+		object.setModerator(moderator);
+
+		return deliverableTypeRolePersistence.update(object);
 	}
 
 	class ModelKeys {

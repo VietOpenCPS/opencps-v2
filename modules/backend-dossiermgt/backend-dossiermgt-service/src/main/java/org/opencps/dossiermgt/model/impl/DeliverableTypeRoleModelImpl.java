@@ -116,8 +116,9 @@ public class DeliverableTypeRoleModelImpl extends BaseModelImpl<DeliverableTypeR
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DELIVERABLETYPEID_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
+	public static final long ROLEID_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DeliverableTypeRole"));
 
@@ -421,7 +422,19 @@ public class DeliverableTypeRoleModelImpl extends BaseModelImpl<DeliverableTypeR
 
 	@Override
 	public void setRoleId(long roleId) {
+		_columnBitmask |= ROLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalRoleId) {
+			_setOriginalRoleId = true;
+
+			_originalRoleId = _roleId;
+		}
+
 		_roleId = roleId;
+	}
+
+	public long getOriginalRoleId() {
+		return _originalRoleId;
 	}
 
 	@Override
@@ -563,6 +576,10 @@ public class DeliverableTypeRoleModelImpl extends BaseModelImpl<DeliverableTypeR
 		deliverableTypeRoleModelImpl._originalDeliverableTypeId = deliverableTypeRoleModelImpl._deliverableTypeId;
 
 		deliverableTypeRoleModelImpl._setOriginalDeliverableTypeId = false;
+
+		deliverableTypeRoleModelImpl._originalRoleId = deliverableTypeRoleModelImpl._roleId;
+
+		deliverableTypeRoleModelImpl._setOriginalRoleId = false;
 
 		deliverableTypeRoleModelImpl._columnBitmask = 0;
 	}
@@ -733,6 +750,8 @@ public class DeliverableTypeRoleModelImpl extends BaseModelImpl<DeliverableTypeR
 	private long _originalDeliverableTypeId;
 	private boolean _setOriginalDeliverableTypeId;
 	private long _roleId;
+	private long _originalRoleId;
+	private boolean _setOriginalRoleId;
 	private boolean _moderator;
 	private long _columnBitmask;
 	private DeliverableTypeRole _escapedModel;

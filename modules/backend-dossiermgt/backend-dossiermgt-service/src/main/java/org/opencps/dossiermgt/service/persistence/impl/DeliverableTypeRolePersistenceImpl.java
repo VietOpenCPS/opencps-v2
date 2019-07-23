@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -2014,6 +2015,266 @@ public class DeliverableTypeRolePersistenceImpl extends BasePersistenceImpl<Deli
 
 	private static final String _FINDER_COLUMN_F_DELIVERABLETYPEID_DELIVERABLETYPEID_2 =
 		"deliverableTypeRole.deliverableTypeId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_DID_RID = new FinderPath(DeliverableTypeRoleModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableTypeRoleModelImpl.FINDER_CACHE_ENABLED,
+			DeliverableTypeRoleImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByF_GID_DID_RID",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName()
+			},
+			DeliverableTypeRoleModelImpl.GROUPID_COLUMN_BITMASK |
+			DeliverableTypeRoleModelImpl.DELIVERABLETYPEID_COLUMN_BITMASK |
+			DeliverableTypeRoleModelImpl.ROLEID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_DID_RID = new FinderPath(DeliverableTypeRoleModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableTypeRoleModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_DID_RID",
+			new String[] {
+				Long.class.getName(), Long.class.getName(), Long.class.getName()
+			});
+
+	/**
+	 * Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or throws a {@link NoSuchDeliverableTypeRoleException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableTypeId the deliverable type ID
+	 * @param roleId the role ID
+	 * @return the matching deliverable type role
+	 * @throws NoSuchDeliverableTypeRoleException if a matching deliverable type role could not be found
+	 */
+	@Override
+	public DeliverableTypeRole findByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId)
+		throws NoSuchDeliverableTypeRoleException {
+		DeliverableTypeRole deliverableTypeRole = fetchByF_GID_DID_RID(groupId,
+				deliverableTypeId, roleId);
+
+		if (deliverableTypeRole == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", deliverableTypeId=");
+			msg.append(deliverableTypeId);
+
+			msg.append(", roleId=");
+			msg.append(roleId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDeliverableTypeRoleException(msg.toString());
+		}
+
+		return deliverableTypeRole;
+	}
+
+	/**
+	 * Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableTypeId the deliverable type ID
+	 * @param roleId the role ID
+	 * @return the matching deliverable type role, or <code>null</code> if a matching deliverable type role could not be found
+	 */
+	@Override
+	public DeliverableTypeRole fetchByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId) {
+		return fetchByF_GID_DID_RID(groupId, deliverableTypeId, roleId, true);
+	}
+
+	/**
+	 * Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableTypeId the deliverable type ID
+	 * @param roleId the role ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching deliverable type role, or <code>null</code> if a matching deliverable type role could not be found
+	 */
+	@Override
+	public DeliverableTypeRole fetchByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, deliverableTypeId, roleId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID,
+					finderArgs, this);
+		}
+
+		if (result instanceof DeliverableTypeRole) {
+			DeliverableTypeRole deliverableTypeRole = (DeliverableTypeRole)result;
+
+			if ((groupId != deliverableTypeRole.getGroupId()) ||
+					(deliverableTypeId != deliverableTypeRole.getDeliverableTypeId()) ||
+					(roleId != deliverableTypeRole.getRoleId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_DELIVERABLETYPEROLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_DELIVERABLETYPEID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_ROLEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(deliverableTypeId);
+
+				qPos.add(roleId);
+
+				List<DeliverableTypeRole> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DeliverableTypeRolePersistenceImpl.fetchByF_GID_DID_RID(long, long, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DeliverableTypeRole deliverableTypeRole = list.get(0);
+
+					result = deliverableTypeRole;
+
+					cacheResult(deliverableTypeRole);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DeliverableTypeRole)result;
+		}
+	}
+
+	/**
+	 * Removes the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableTypeId the deliverable type ID
+	 * @param roleId the role ID
+	 * @return the deliverable type role that was removed
+	 */
+	@Override
+	public DeliverableTypeRole removeByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId)
+		throws NoSuchDeliverableTypeRoleException {
+		DeliverableTypeRole deliverableTypeRole = findByF_GID_DID_RID(groupId,
+				deliverableTypeId, roleId);
+
+		return remove(deliverableTypeRole);
+	}
+
+	/**
+	 * Returns the number of deliverable type roles where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param deliverableTypeId the deliverable type ID
+	 * @param roleId the role ID
+	 * @return the number of matching deliverable type roles
+	 */
+	@Override
+	public int countByF_GID_DID_RID(long groupId, long deliverableTypeId,
+		long roleId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_DID_RID;
+
+		Object[] finderArgs = new Object[] { groupId, deliverableTypeId, roleId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_DELIVERABLETYPEROLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_DELIVERABLETYPEID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_RID_ROLEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(deliverableTypeId);
+
+				qPos.add(roleId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_DID_RID_GROUPID_2 = "deliverableTypeRole.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DID_RID_DELIVERABLETYPEID_2 =
+		"deliverableTypeRole.deliverableTypeId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DID_RID_ROLEID_2 = "deliverableTypeRole.roleId = ?";
 
 	public DeliverableTypeRolePersistenceImpl() {
 		setModelClass(DeliverableTypeRole.class);
@@ -2051,6 +2312,13 @@ public class DeliverableTypeRolePersistenceImpl extends BasePersistenceImpl<Deli
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] {
 				deliverableTypeRole.getUuid(), deliverableTypeRole.getGroupId()
+			}, deliverableTypeRole);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID,
+			new Object[] {
+				deliverableTypeRole.getGroupId(),
+				deliverableTypeRole.getDeliverableTypeId(),
+				deliverableTypeRole.getRoleId()
 			}, deliverableTypeRole);
 
 		deliverableTypeRole.resetOriginalValues();
@@ -2137,6 +2405,17 @@ public class DeliverableTypeRolePersistenceImpl extends BasePersistenceImpl<Deli
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			deliverableTypeRoleModelImpl, false);
+
+		args = new Object[] {
+				deliverableTypeRoleModelImpl.getGroupId(),
+				deliverableTypeRoleModelImpl.getDeliverableTypeId(),
+				deliverableTypeRoleModelImpl.getRoleId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_DID_RID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID, args,
+			deliverableTypeRoleModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -2161,6 +2440,29 @@ public class DeliverableTypeRolePersistenceImpl extends BasePersistenceImpl<Deli
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					deliverableTypeRoleModelImpl.getGroupId(),
+					deliverableTypeRoleModelImpl.getDeliverableTypeId(),
+					deliverableTypeRoleModelImpl.getRoleId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID_RID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID, args);
+		}
+
+		if ((deliverableTypeRoleModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_DID_RID.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					deliverableTypeRoleModelImpl.getOriginalGroupId(),
+					deliverableTypeRoleModelImpl.getOriginalDeliverableTypeId(),
+					deliverableTypeRoleModelImpl.getOriginalRoleId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID_RID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID_RID, args);
 		}
 	}
 

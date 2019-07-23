@@ -353,6 +353,14 @@ public class DeliverableTypeRoleLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DeliverableTypeRole updateDeliverableTypeRoleDB(
+		long userId, long groupId, long deliverableTypeId, long mappingRoleId,
+		boolean moderator) {
+		return _deliverableTypeRoleLocalService.updateDeliverableTypeRoleDB(userId,
+			groupId, deliverableTypeId, mappingRoleId, moderator);
+	}
+
+	@Override
 	public DeliverableTypeRoleLocalService getWrappedService() {
 		return _deliverableTypeRoleLocalService;
 	}

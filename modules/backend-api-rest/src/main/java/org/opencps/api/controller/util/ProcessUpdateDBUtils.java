@@ -7,7 +7,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -29,6 +28,8 @@ import org.opencps.api.v21.model.Configs;
 import org.opencps.api.v21.model.Configs.ServiceConfig;
 import org.opencps.api.v21.model.DeliverableTypeList;
 import org.opencps.api.v21.model.DeliverableTypeList.DeliverableType;
+import org.opencps.api.v21.model.DeliverableTypeRoleList;
+import org.opencps.api.v21.model.DeliverableTypeRoleList.DeliverableTypeRole;
 import org.opencps.api.v21.model.DictCollection;
 import org.opencps.api.v21.model.DocumentTypeList;
 import org.opencps.api.v21.model.DocumentTypeList.DocumentType;
@@ -107,7 +108,6 @@ import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
@@ -115,6 +115,7 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class ProcessUpdateDBUtils {
 
@@ -281,6 +282,8 @@ public class ProcessUpdateDBUtils {
 						String codePattern = deliType.getCodePattern();
 						Integer docSync = deliType.getDocSync();
 						String mappingData = deliType.getMappingData();
+						String dataConfig = deliType.getDataConfig();
+						String tableConfig = deliType.getTableConfig();
 						String govAgencies = deliType.getGovAgencies();
 						if (Validator.isNotNull(typeCode)) {
 							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
@@ -297,10 +300,43 @@ public class ProcessUpdateDBUtils {
 							if (jsonFile.exists() && !jsonFile.isDirectory()) {
 								formScript = ReadXMLFileUtils.convertFiletoString(jsonFile);
 							}
+							
+							// Process file Report
+							FileEntry fileEntryReport = FileUploadUtils.uploadDossierFile(userId, groupId, xmlFile, 
+									UUID.randomUUID() + "_" + xmlFile.getName(), serviceContext);
+							
+							FileEntry fileEntryScript = FileUploadUtils.uploadDossierFile(userId, groupId, jsonFile, 
+									UUID.randomUUID() + "_" + jsonFile.getName(), serviceContext);
+
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
-							actions.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync, mappingData,
-									govAgencies, formReport, formScript);
+							org.opencps.dossiermgt.model.DeliverableType deliverableType = actions
+									.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern, docSync,
+											mappingData, govAgencies, formReport, formScript, dataConfig, tableConfig,
+											fileEntryReport != null ? fileEntryReport.getFileEntryId() : 0,
+											fileEntryScript != null ? fileEntryScript.getFileEntryId() : 0);
+							if (deliverableType != null) {
+								DeliverableTypeRoleList roleList = deliType.getDeliverableTypeRoleList();
+								if (roleList != null) {
+									List<DeliverableTypeRole> deliRoleList = roleList.getDeliverableTypeRole();
+									if (deliRoleList != null && deliRoleList.size() > 0) {
+										for (DeliverableTypeRole roleType : deliRoleList) {
+											String roleCode = roleType.getRoleCode();
+											String moderator = roleType.getModerator();
+											boolean moderatorBool = Validator.isNotNull(moderator) ? Boolean.valueOf(moderator) : false;
+											if (Validator.isNotNull(roleCode)) {
+												org.opencps.usermgt.model.JobPos jobPos = JobPosLocalServiceUtil
+														.getByJobCode(groupId, roleCode);
+												if (jobPos != null) {
+													actions.updateDeliverableTypeRoleDB(userId, groupId,
+															deliverableType.getDeliverableTypeId(),
+															jobPos.getMappingRoleId(), moderatorBool);
+												}
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}

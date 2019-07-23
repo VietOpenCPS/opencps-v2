@@ -416,10 +416,13 @@ public class DeliverableTypeLocalServiceWrapper
 	public org.opencps.dossiermgt.model.DeliverableType updateDeliverableTypeDB(
 		long userId, long groupId, String typeCode, String typeName,
 		String codePattern, Integer docSync, String mappingData,
-		String govAgencies, String formReport, String formScript) {
+		String govAgencies, String formReport, String formScript,
+		String dataConfig, String tableConfig, long reportFileEntryId,
+		long scriptFileEntryId) {
 		return _deliverableTypeLocalService.updateDeliverableTypeDB(userId,
 			groupId, typeCode, typeName, codePattern, docSync, mappingData,
-			govAgencies, formReport, formScript);
+			govAgencies, formReport, formScript, dataConfig, tableConfig,
+			reportFileEntryId, scriptFileEntryId);
 	}
 
 	@Override

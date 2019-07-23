@@ -327,7 +327,8 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	public DeliverableType updateDeliverableTypeDB(long userId, long groupId,
 		String typeCode, String typeName, String codePattern, Integer docSync,
 		String mappingData, String govAgencies, String formReport,
-		String formScript);
+		String formScript, String dataConfig, String tableConfig,
+		long reportFileEntryId, long scriptFileEntryId);
 
 	public DeliverableType updateFormReport(long groupId,
 		long deliverableTypeId, String formReport, ServiceContext serviceContext)

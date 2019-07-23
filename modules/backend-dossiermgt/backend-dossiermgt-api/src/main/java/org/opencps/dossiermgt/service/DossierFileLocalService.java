@@ -94,6 +94,14 @@ public interface DossierFileLocalService extends BaseLocalService,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile addDossierFile(long groupId, long dossierId,
+		String referenceUid, String dossierTemplateNo, String dossierPartNo,
+		String fileTemplateNo, String displayName, String sourceFileName,
+		long fileSize, InputStream inputStream, String fileType, String isSync,
+		String formScript, String formReport, boolean eForm, String formData,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFileEForm(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,

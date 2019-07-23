@@ -275,14 +275,14 @@
 							<xsd:element name="dataConfig">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="1000"></xsd:maxLength>
+										<xsd:maxLength value="10000"></xsd:maxLength>
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="tableConfig">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="1000"></xsd:maxLength>
+										<xsd:maxLength value="10000"></xsd:maxLength>
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
@@ -311,6 +311,34 @@
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
 										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element ref="deliverableTypeRoleList" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+		<xsd:element name="deliverableTypeRoleList">
+		<xsd:complexType>
+			<xsd:sequence >
+				<xsd:element name="deliverableTypeRole" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence >
+							<xsd:element name="roleCode">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="moderator">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="75"></xsd:maxLength>
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
