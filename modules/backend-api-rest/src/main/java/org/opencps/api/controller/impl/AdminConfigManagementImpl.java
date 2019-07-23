@@ -18,12 +18,15 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +39,12 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.controller.AdminConfigManagement;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import backend.admin.config.whiteboard.AdminEndpoind;
 import backend.admin.config.whiteboard.BundleLoader;
@@ -97,6 +105,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		_log.debug("SOCKET WEB: " + groupId);
+		String portalURL = PortalUtil.getPortalURL(request);
+		
 		try {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
 			_log.debug("SOCKET MESSAGE: " + message.toJSONString());
@@ -336,6 +346,50 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						}
 	
 					}
+				} else if (message.getString(TYPE).equals(API)) {
+
+					RestTemplate restTemplate = new RestTemplate();
+
+					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+
+					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+					JSONObject headerObject = message.getJSONObject("headers");
+
+					JSONArray keys = headerObject.names();
+
+					for (int i = 0; i < keys.length(); ++i) {
+
+						String key = keys.getString(i);
+						String value = headerObject.getString(key);
+
+						headers.set(key, value);
+
+					}
+					headers.set("localaccess", headerObject.getString("Token"));
+					headers.set("userid", headerObject.getString("USER_ID"));
+					
+					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+					
+//					HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
+//							HttpMethod.GET, entity, String.class);
+					//BNG
+					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+							HttpMethod.GET, entity, String.class);
+
+					String resultString = response.getBody();
+
+					JSONArray responeData = JSONFactoryUtil.createJSONArray();
+					try {
+						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
+					} catch (Exception e) {
+						responeData = JSONFactoryUtil.createJSONArray(resultString);
+					}
+					messageData.put(message.getString(RESPONE), responeData);
+
+					messageData.put(STATUS, HttpStatus.OK);
 				}
 	
 				messageData.put(RESPONE, message.getString(RESPONE));
