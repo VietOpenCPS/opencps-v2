@@ -330,6 +330,14 @@ public class DeliverableTypeRoleLocalServiceUtil {
 		return getService().updateDeliverableTypeRole(deliverableTypeRole);
 	}
 
+	public static org.opencps.dossiermgt.model.DeliverableTypeRole updateDeliverableTypeRoleDB(
+		long userId, long groupId, long deliverableTypeId, long mappingRoleId,
+		boolean moderator) {
+		return getService()
+				   .updateDeliverableTypeRoleDB(userId, groupId,
+			deliverableTypeId, mappingRoleId, moderator);
+	}
+
 	public static DeliverableTypeRoleLocalService getService() {
 		return _serviceTracker.getService();
 	}

@@ -298,4 +298,8 @@ public interface DeliverableTypeRoleLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public DeliverableTypeRole updateDeliverableTypeRole(
 		DeliverableTypeRole deliverableTypeRole);
+
+	public DeliverableTypeRole updateDeliverableTypeRoleDB(long userId,
+		long groupId, long deliverableTypeId, long mappingRoleId,
+		boolean moderator);
 }

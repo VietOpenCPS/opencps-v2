@@ -1027,7 +1027,6 @@ public class DossierActionsImpl implements DossierActions {
 																					"createDate", Date.class));
 														} catch (Exception e) {
 															_log.debug(e);
-															//_log.error(e);
 														}
 														if (Validator.isNull(dossierFile)) {
 
@@ -1308,30 +1307,26 @@ public class DossierActionsImpl implements DossierActions {
 			_log.info("dossierFile create:" + dossierFile);
 			if (Validator.isNull(dossierFile)) {
 				DossierFileActions actions = new DossierFileActionsImpl();
+//				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
+//						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
+//						null, StringPool.BLANK, String.valueOf(false), serviceContext);
+				//
 				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
 						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
-						null, StringPool.BLANK, String.valueOf(false), serviceContext);
-				dossierFile.setFormScript(dossierPart.getFormScript());
-				dossierFile.setFormReport(dossierPart.getFormReport());
-				dossierFile.setEForm(dossierPart.getEForm());
-				dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);				
+						null, StringPool.BLANK, String.valueOf(false), dossierPart.getFormScript(), dossierPart.getFormReport(),
+						dossierPart.getEForm(), formData, serviceContext);
+
 				_log.info("dossierFile create:" + dossierFile.getDossierPartNo() + "Timer create :" + new Date());
 			}
 
 			docFileReferenceUid = dossierFile.getReferenceUid();
 			dossierFileId = dossierFile.getDossierFileId();
-			//Update DossierFile
-			formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
-			formData = formDataObj.toJSONString();
-			dossierFile.setFormData(formData);
-			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 		} catch (Exception e) {
 			_log.debug(e);
 			//_log.error(e);
 		}
 		createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
-		createFile.put(DossierFileTerm.FORM_DATA, formData);
+		createFile.put(DossierFileTerm.FORM_DATA, dossierFile.getFormData());
 		createFile.put(DossierFileTerm.REFERENCE_UID, docFileReferenceUid);
 		createFile.put(DossierFileTerm.FILE_ENTRY_ID, 0l);
 

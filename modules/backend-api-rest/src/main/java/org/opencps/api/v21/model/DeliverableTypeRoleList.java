@@ -27,16 +27,22 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="WorkingTime" maxOccurs="unbounded">
+ *         &lt;element name="deliverableTypeRole" maxOccurs="unbounded">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="workTimeDay" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *                   &lt;element name="workTimeHours">
+ *                   &lt;element name="roleCode">
  *                     &lt;simpleType>
  *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                         &lt;maxLength value="255"/>
+ *                       &lt;/restriction>
+ *                     &lt;/simpleType>
+ *                   &lt;/element>
+ *                   &lt;element name="moderator">
+ *                     &lt;simpleType>
+ *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *                         &lt;maxLength value="75"/>
  *                       &lt;/restriction>
  *                     &lt;/simpleType>
  *                   &lt;/element>
@@ -55,41 +61,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "workingTime"
+    "deliverableTypeRole"
 })
-@XmlRootElement(name = "WorkingTimeList")
-public class WorkingTimeList {
+@XmlRootElement(name = "deliverableTypeRoleList")
+public class DeliverableTypeRoleList {
 
-    @XmlElement(name = "WorkingTime", required = true)
-    protected List<WorkingTimeList.WorkingTime> workingTime;
+    @XmlElement(required = true)
+    protected List<DeliverableTypeRoleList.DeliverableTypeRole> deliverableTypeRole;
 
     /**
-     * Gets the value of the workingTime property.
+     * Gets the value of the deliverableTypeRole property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the workingTime property.
+     * This is why there is not a <CODE>set</CODE> method for the deliverableTypeRole property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getWorkingTime().add(newItem);
+     *    getDeliverableTypeRole().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link WorkingTimeList.WorkingTime }
+     * {@link DeliverableTypeRoleList.DeliverableTypeRole }
      * 
      * 
      */
-    public List<WorkingTimeList.WorkingTime> getWorkingTime() {
-        if (workingTime == null) {
-            workingTime = new ArrayList<WorkingTimeList.WorkingTime>();
+    public List<DeliverableTypeRoleList.DeliverableTypeRole> getDeliverableTypeRole() {
+        if (deliverableTypeRole == null) {
+            deliverableTypeRole = new ArrayList<DeliverableTypeRoleList.DeliverableTypeRole>();
         }
-        return this.workingTime;
+        return this.deliverableTypeRole;
     }
 
 
@@ -103,11 +109,17 @@ public class WorkingTimeList {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="workTimeDay" type="{http://www.w3.org/2001/XMLSchema}int"/>
-     *         &lt;element name="workTimeHours">
+     *         &lt;element name="roleCode">
      *           &lt;simpleType>
      *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *               &lt;maxLength value="255"/>
+     *             &lt;/restriction>
+     *           &lt;/simpleType>
+     *         &lt;/element>
+     *         &lt;element name="moderator">
+     *           &lt;simpleType>
+     *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+     *               &lt;maxLength value="75"/>
      *             &lt;/restriction>
      *           &lt;/simpleType>
      *         &lt;/element>
@@ -121,53 +133,62 @@ public class WorkingTimeList {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "workTimeDay",
-        "workTimeHours"
+        "roleCode",
+        "moderator"
     })
-    public static class WorkingTime {
+    public static class DeliverableTypeRole {
 
-        protected int workTimeDay;
         @XmlElement(required = true)
-        protected String workTimeHours;
+        protected String roleCode;
+        @XmlElement(required = true)
+        protected String moderator;
 
         /**
-         * Gets the value of the workTimeDay property.
-         * 
-         */
-        public int getWorkTimeDay() {
-            return workTimeDay;
-        }
-
-        /**
-         * Sets the value of the workTimeDay property.
-         * 
-         */
-        public void setWorkTimeDay(int value) {
-            this.workTimeDay = value;
-        }
-
-        /**
-         * Gets the value of the workTimeHours property.
+         * Gets the value of the roleCode property.
          * 
          * @return
          *     possible object is
          *     {@link String }
          *     
          */
-        public String getWorkTimeHours() {
-            return workTimeHours;
+        public String getRoleCode() {
+            return roleCode;
         }
 
         /**
-         * Sets the value of the workTimeHours property.
+         * Sets the value of the roleCode property.
          * 
          * @param value
          *     allowed object is
          *     {@link String }
          *     
          */
-        public void setWorkTimeHours(String value) {
-            this.workTimeHours = value;
+        public void setRoleCode(String value) {
+            this.roleCode = value;
+        }
+
+        /**
+         * Gets the value of the moderator property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getModerator() {
+            return moderator;
+        }
+
+        /**
+         * Sets the value of the moderator property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setModerator(String value) {
+            this.moderator = value;
         }
 
     }

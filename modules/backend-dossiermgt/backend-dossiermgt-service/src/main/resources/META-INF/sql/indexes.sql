@@ -8,6 +8,7 @@ create unique index IX_F25BDDF2 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], g
 
 create index IX_62C6C2A0 on opencps_deliverable (deliverableCode[$COLUMN_LENGTH:75$], deliverableState);
 create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode[$COLUMN_LENGTH:75$], deliverableType[$COLUMN_LENGTH:75$], applicantIdNo[$COLUMN_LENGTH:75$]);
+create index IX_6113CEF4 on opencps_deliverable (groupId, deliverableCode[$COLUMN_LENGTH:75$]);
 create index IX_CBA1DBE2 on opencps_deliverable (groupId, deliverableId);
 create index IX_59547196 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_7586598 on opencps_deliverable (uuid_[$COLUMN_LENGTH:75$], groupId);
@@ -21,6 +22,7 @@ create index IX_A47511D0 on opencps_deliverabletype (uuid_[$COLUMN_LENGTH:75$], 
 create unique index IX_2CB7CC52 on opencps_deliverabletype (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_1F0A1772 on opencps_deliverabletyperole (deliverableTypeId);
+create index IX_A059E5D1 on opencps_deliverabletyperole (groupId, deliverableTypeId, roleId);
 create index IX_396D0046 on opencps_deliverabletyperole (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_8A4E048 on opencps_deliverabletyperole (uuid_[$COLUMN_LENGTH:75$], groupId);
 

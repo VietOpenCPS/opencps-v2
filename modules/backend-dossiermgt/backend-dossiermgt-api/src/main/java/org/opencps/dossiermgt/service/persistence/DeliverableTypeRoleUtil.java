@@ -679,6 +679,81 @@ public class DeliverableTypeRoleUtil {
 	}
 
 	/**
+	* Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or throws a {@link NoSuchDeliverableTypeRoleException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param deliverableTypeId the deliverable type ID
+	* @param roleId the role ID
+	* @return the matching deliverable type role
+	* @throws NoSuchDeliverableTypeRoleException if a matching deliverable type role could not be found
+	*/
+	public static DeliverableTypeRole findByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeRoleException {
+		return getPersistence()
+				   .findByF_GID_DID_RID(groupId, deliverableTypeId, roleId);
+	}
+
+	/**
+	* Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param deliverableTypeId the deliverable type ID
+	* @param roleId the role ID
+	* @return the matching deliverable type role, or <code>null</code> if a matching deliverable type role could not be found
+	*/
+	public static DeliverableTypeRole fetchByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId) {
+		return getPersistence()
+				   .fetchByF_GID_DID_RID(groupId, deliverableTypeId, roleId);
+	}
+
+	/**
+	* Returns the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param deliverableTypeId the deliverable type ID
+	* @param roleId the role ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching deliverable type role, or <code>null</code> if a matching deliverable type role could not be found
+	*/
+	public static DeliverableTypeRole fetchByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_DID_RID(groupId, deliverableTypeId, roleId,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the deliverable type role where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param deliverableTypeId the deliverable type ID
+	* @param roleId the role ID
+	* @return the deliverable type role that was removed
+	*/
+	public static DeliverableTypeRole removeByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeRoleException {
+		return getPersistence()
+				   .removeByF_GID_DID_RID(groupId, deliverableTypeId, roleId);
+	}
+
+	/**
+	* Returns the number of deliverable type roles where groupId = &#63; and deliverableTypeId = &#63; and roleId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param deliverableTypeId the deliverable type ID
+	* @param roleId the role ID
+	* @return the number of matching deliverable type roles
+	*/
+	public static int countByF_GID_DID_RID(long groupId,
+		long deliverableTypeId, long roleId) {
+		return getPersistence()
+				   .countByF_GID_DID_RID(groupId, deliverableTypeId, roleId);
+	}
+
+	/**
 	* Caches the deliverable type role in the entity cache if it is enabled.
 	*
 	* @param deliverableTypeRole the deliverable type role

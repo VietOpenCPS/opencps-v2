@@ -2294,7 +2294,13 @@ public class DossierManagementImpl implements DossierManagement {
 					toUsers.setUserId(dau.getUserId());
 					User u = UserLocalServiceUtil.fetchUser(toUsers.getUserId());
 					toUsers.setModerator(dau.getModerator() == 1 ? true : false);
-					toUsers.setUserName(u.getFullName());
+					//
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
+					if (employee != null) {
+						toUsers.setUserName(employee.getFullName());
+					} else {
+						toUsers.setUserName(u.getFullName());
+					}
 					lstUsers.add(toUsers);
 				}
 			}
@@ -2385,7 +2391,12 @@ public class DossierManagementImpl implements DossierManagement {
 								tu.setUserId(dau.getUserId());
 								User u = UserLocalServiceUtil.fetchUser(tu.getUserId());
 								tu.setModerator(dau.getModerator() == 1 ? true : false);
-								tu.setUserName(u.getFullName());
+								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
+								if (employee != null) {
+									tu.setUserName(employee.getFullName());
+								} else {
+									tu.setUserName(u.getFullName());
+								}
 								lstUsers.add(tu);
 							}
 							reAssign.getToUsers().addAll(lstUsers);
@@ -3386,7 +3397,13 @@ public class DossierManagementImpl implements DossierManagement {
 				for (User u : lstUsers) {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
 					userObj.put("userId", u.getUserId());
-					userObj.put("userName", u.getFullName());
+					//userObj.put("userName", u.getFullName());
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
+					if (employee != null) {
+						userObj.put("userName", employee.getFullName());
+					} else {
+						userObj.put("userName", u.getFullName());
+					}
 					DossierActionUserPK pk = new DossierActionUserPK();
 					pk.setDossierActionId(dossier.getDossierActionId());
 					pk.setUserId(u.getUserId());

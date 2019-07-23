@@ -89,6 +89,14 @@ public interface DeliverableLocalService extends BaseLocalService,
 		String deliverableCode, String govAgencyCode, String govAgencyName,
 		String applicationIdNo, String applicationName, String subject,
 		String issueDate, String expireDate, String revalidate,
+		String deliverableState, long dossierId, long fileEntryId,
+		ServiceContext serviceContext);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Deliverable addDeliverable(long groupId, String deliverableType,
+		String deliverableCode, String govAgencyCode, String govAgencyName,
+		String applicationIdNo, String applicationName, String subject,
+		String issueDate, String expireDate, String revalidate,
 		String deliverableState, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -220,6 +228,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable getByCodeAndState(String deliverableCode, int state);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode);
 
 	/**
 	* Returns the deliverable with the primary key.

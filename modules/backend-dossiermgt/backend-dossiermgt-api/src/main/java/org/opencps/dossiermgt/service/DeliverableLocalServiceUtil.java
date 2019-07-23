@@ -59,6 +59,20 @@ public class DeliverableLocalServiceUtil {
 		String govAgencyCode, String govAgencyName, String applicationIdNo,
 		String applicationName, String subject, String issueDate,
 		String expireDate, String revalidate, String deliverableState,
+		long dossierId, long fileEntryId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .addDeliverable(groupId, deliverableType, deliverableCode,
+			govAgencyCode, govAgencyName, applicationIdNo, applicationName,
+			subject, issueDate, expireDate, revalidate, deliverableState,
+			dossierId, fileEntryId, serviceContext);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable addDeliverable(
+		long groupId, String deliverableType, String deliverableCode,
+		String govAgencyCode, String govAgencyName, String applicationIdNo,
+		String applicationName, String subject, String issueDate,
+		String expireDate, String revalidate, String deliverableState,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .addDeliverable(groupId, deliverableType, deliverableCode,
@@ -241,6 +255,11 @@ public class DeliverableLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.Deliverable getByCodeAndState(
 		String deliverableCode, int state) {
 		return getService().getByCodeAndState(deliverableCode, state);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable getByF_GID_DCODE(
+		long groupId, String deliverableCode) {
+		return getService().getByF_GID_DCODE(groupId, deliverableCode);
 	}
 
 	/**
