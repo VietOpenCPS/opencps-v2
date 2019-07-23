@@ -682,6 +682,56 @@ public interface DeliverablePersistence extends BasePersistence<Deliverable> {
 	public int countByFB_DCODE(String deliverableCode);
 
 	/**
+	* Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param deliverableCode the deliverable code
+	* @return the matching deliverable
+	* @throws NoSuchDeliverableException if a matching deliverable could not be found
+	*/
+	public Deliverable findByF_GID_DCODE(long groupId, String deliverableCode)
+		throws NoSuchDeliverableException;
+
+	/**
+	* Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param deliverableCode the deliverable code
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public Deliverable fetchByF_GID_DCODE(long groupId, String deliverableCode);
+
+	/**
+	* Returns the deliverable where groupId = &#63; and deliverableCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param deliverableCode the deliverable code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public Deliverable fetchByF_GID_DCODE(long groupId, String deliverableCode,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the deliverable where groupId = &#63; and deliverableCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param deliverableCode the deliverable code
+	* @return the deliverable that was removed
+	*/
+	public Deliverable removeByF_GID_DCODE(long groupId, String deliverableCode)
+		throws NoSuchDeliverableException;
+
+	/**
+	* Returns the number of deliverables where groupId = &#63; and deliverableCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param deliverableCode the deliverable code
+	* @return the number of matching deliverables
+	*/
+	public int countByF_GID_DCODE(long groupId, String deliverableCode);
+
+	/**
 	* Returns the deliverable where deliverableCode = &#63; and deliverableState = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
 	*
 	* @param deliverableCode the deliverable code

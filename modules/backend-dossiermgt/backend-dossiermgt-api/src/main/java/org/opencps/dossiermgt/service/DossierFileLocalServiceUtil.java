@@ -72,6 +72,22 @@ public class DossierFileLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile addDossierFile(
+		long groupId, long dossierId, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+		String displayName, String sourceFileName, long fileSize,
+		java.io.InputStream inputStream, String fileType, String isSync,
+		String formScript, String formReport, boolean eForm, String formData,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .addDossierFile(groupId, dossierId, referenceUid,
+			dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName,
+			sourceFileName, fileSize, inputStream, fileType, isSync,
+			formScript, formReport, eForm, formData, serviceContext);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierFile addDossierFileEForm(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,

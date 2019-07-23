@@ -55,4 +55,9 @@ public interface DossierFileActions {
 			InputStream inputStream, String fileType, String isSync, ServiceContext serviceContext)
 		throws SystemException, PortalException ;
 
+	public DossierFile addDossierFile(long groupId, long dossierId, String referenceUid, String dossierTemplateNo,
+			String dossierPartNo, String fileTemplateNo, String displayName, String sourceFileName, long fileSize,
+			InputStream inputStream, String fileType, String isSync, String formScript, String formReport,
+			boolean eForm, String formData, ServiceContext serviceContext) throws SystemException, PortalException;
+
 }

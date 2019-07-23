@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DeliverableTypeRole;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeRoleLocalServiceUtil;
 
@@ -90,11 +91,13 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	}
 
 	@Override
-	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName, String codePattern,
-			Integer docSync, String mappingData, String govAgencies, String formReport, String formScript) {
+	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName,
+			String codePattern, Integer docSync, String mappingData, String govAgencies, String formReport,
+			String formScript, String dataConfig, String tableConfig, long reportFileEntryId, long scriptFileEntryId) {
 
 		return DeliverableTypeLocalServiceUtil.updateDeliverableTypeDB(userId, groupId, typeCode, typeName, codePattern,
-				docSync, mappingData, govAgencies, formReport, formScript);
+				docSync, mappingData, govAgencies, formReport, formScript, dataConfig, tableConfig, reportFileEntryId,
+				scriptFileEntryId);
 	}
 
 	@Override
@@ -110,5 +113,13 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	@Override
 	public List<Long> getRoleIdByTypes(long deliverableTypeId) {
 		return DeliverableTypeRoleLocalServiceUtil.getRoleIdByTypes(deliverableTypeId);
+	}
+
+	@Override
+	public DeliverableTypeRole updateDeliverableTypeRoleDB(long userId, long groupId, long deliverableTypeId, long mappingRoleId,
+			boolean moderator) {
+
+		return DeliverableTypeRoleLocalServiceUtil.updateDeliverableTypeRoleDB(userId, groupId, deliverableTypeId, mappingRoleId,
+				moderator);
 	}
 }

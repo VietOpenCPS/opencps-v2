@@ -158,12 +158,60 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setApplicantName(applicationName);
 		object.setSubject(subject);
 		if (Validator.isNotNull(issueDate)) {
-			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
 		} else {
 			object.setIssueDate(now);
 		}
-		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
-		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
+		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setDeliverableState(Integer.valueOf(deliverableState));
+
+		return deliverablePersistence.update(object);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
+			String govAgencyCode, String govAgencyName, String applicationIdNo, String applicationName, String subject,
+			String issueDate, String expireDate, String revalidate, String deliverableState,
+			long dossierId, long fileEntryId, ServiceContext serviceContext) {
+		// TODO Add RegistrationForm
+		long userId = serviceContext.getUserId();
+
+		Date now = new Date();
+
+		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
+
+		Deliverable object = deliverablePersistence.create(deliverableId);
+
+		DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+
+		/// Add audit fields
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userId);
+
+		// Add other fields
+		if (Validator.isNotNull(dlvType)) {
+			object.setDeliverableName(dlvType.getTypeName());
+		}
+		object.setDeliverableId(deliverableId);
+		object.setDeliverableType(deliverableType);
+		object.setDeliverableCode(deliverableCode);
+		object.setGovAgencyCode(govAgencyCode);
+		object.setGovAgencyName(govAgencyName);
+		object.setApplicantIdNo(applicationIdNo);
+		object.setApplicantName(applicationName);
+		object.setSubject(subject);
+		object.setDossierId(dossierId);
+		object.setFileEntryId(fileEntryId);
+		if (Validator.isNotNull(issueDate)) {
+			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
+		} else {
+			object.setIssueDate(now);
+		}
+		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
 		object.setDeliverableState(Integer.valueOf(deliverableState));
 
 		return deliverablePersistence.update(object);
@@ -1085,12 +1133,12 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setApplicantIdNo(applicantIdNo);
 
 		if (Validator.isNull(applicantIdName)) {
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, applicantIdNo);
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicantIdNo);
 			if (applicant != null) {
 				applicantIdName = applicant.getApplicantName();
 			}
 		}
-		object.setApplicantName(objectData.getString("applicantName"));
+		object.setApplicantName(applicantIdName);
 		object.setSubject(objectData.getString("subject"));
 		object.setFormData(objectData.getString("formData"));
 		//
@@ -1108,9 +1156,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		object.setFormScript(objectData.getString("formScript"));
 		object.setFormReport(objectData.getString("formReport"));
-		object.setExpireDate(new Date(objectData.getLong("expireDate")));
-		object.setIssueDate(new Date(objectData.getLong("issueDate")));
-		object.setRevalidate(new Date(objectData.getLong("revalidate")));
+
+		if (objectData.getLong("expireDate") > 0)
+			object.setExpireDate(new Date(objectData.getLong("expireDate")));
+		if (objectData.getLong("issueDate") > 0)
+			object.setIssueDate(new Date(objectData.getLong("issueDate")));
+		if (objectData.getLong("revalidate") > 0)
+			object.setRevalidate(new Date(objectData.getLong("revalidate")));
+
 		object.setDeliverableState(objectData.getInt("deliverableState"));
 
 		object = deliverablePersistence.update(object);
@@ -1151,6 +1204,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
 		return object;
+	}
+
+	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode) {
+		return deliverablePersistence.fetchByF_GID_DCODE(groupId, deliverableCode);
 	}
 
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {

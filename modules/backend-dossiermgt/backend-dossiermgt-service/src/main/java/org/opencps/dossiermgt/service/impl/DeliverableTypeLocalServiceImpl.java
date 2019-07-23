@@ -227,7 +227,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	// LamTV_ Process output DeliverableType to DB
 	public DeliverableType updateDeliverableTypeDB(long userId, long groupId, String typeCode, String typeName,
 			String codePattern, Integer docSync, String mappingData, String govAgencies, String formReport,
-			String formScript) {
+			String formScript, String dataConfig, String tableConfig, long reportFileEntryId, long scriptFileEntryId) {
 
 		Date now = new Date();
 		User userAction = userPersistence.fetchByPrimaryKey(userId);
@@ -253,9 +253,13 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			object.setFormScript(formScript);
 			object.setFormReport(formReport);
 			object.setMappingData(mappingData);
+			object.setDataConfig(dataConfig);
+			object.setTableConfig(tableConfig);
 			object.setCodePattern(codePattern);
 			object.setDocSync(docSync);
 			object.setGovAgencies(govAgencies);
+			object.setFormReportFileId(reportFileEntryId);
+			object.setFormScriptFileId(scriptFileEntryId);
 
 		} else {
 			object.setModifiedDate(now);
@@ -281,9 +285,19 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			if (Validator.isNotNull(docSync)) {
 				object.setDocSync(docSync);
 			}
-			 if (Validator.isNotNull(govAgencies)) {
-			 object.setGovAgencies(govAgencies);
-			 }
+			if (Validator.isNotNull(govAgencies)) {
+				object.setGovAgencies(govAgencies);
+			}
+			if (Validator.isNotNull(dataConfig)) {
+				object.setDataConfig(dataConfig);
+			}
+			if (Validator.isNotNull(tableConfig)) {
+				object.setTableConfig(tableConfig);
+			}
+			if (reportFileEntryId > 0)
+				object.setFormReportFileId(reportFileEntryId);
+			if (scriptFileEntryId > 0)
+				object.setFormScriptFileId(scriptFileEntryId);
 		}
 
 		return deliverableTypePersistence.update(object);

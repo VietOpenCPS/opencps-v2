@@ -1113,9 +1113,17 @@ public class RestfulController {
 
 					System.out.println("queryBuilderLike:" + queryBuilderLike);
 					System.out.println("queryBuilder:" + queryBuilder);
+					int size = 0;
+					if (Validator.isNull(end) || end == 0) {
+						start = -1;
+						end = -1;
+						size = -1;
+					} else {
+						size = end - start;
+					}
 
-					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + request.getParameter("start")
-							+ ", \"size\" : " + request.getParameter("end")
+					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + start
+							+ ", \"size\" : " + size
 							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
 							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
