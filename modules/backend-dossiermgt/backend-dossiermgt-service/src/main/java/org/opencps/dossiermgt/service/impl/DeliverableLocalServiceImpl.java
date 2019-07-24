@@ -19,6 +19,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -53,6 +54,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -1114,7 +1116,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setUserId(objectData.getLong("userId"));
 		object.setUserName(objectData.getString("userName"));
 
-		object.setDeliverableCode(objectData.getString("deliverableCode"));
+		//
+		String deliverableCode = objectData.getString("deliverableCode");
+		object.setDeliverableCode(deliverableCode);
 		object.setDeliverableName(objectData.getString("deliverableName"));
 		//
 		String deliverableType = objectData.getString("deliverableType");
@@ -1140,7 +1144,55 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		object.setApplicantName(applicantIdName);
 		object.setSubject(objectData.getString("subject"));
-		object.setFormData(objectData.getString("formData"));
+		long expireDateLong = objectData.getLong("expireDate");
+		long issueDateLong = objectData.getLong("issueDate");
+		long revalidateLong = objectData.getLong("revalidate");
+		if (expireDateLong > 0)
+			object.setExpireDate(new Date(expireDateLong));
+		if (issueDateLong > 0)
+			object.setIssueDate(new Date(issueDateLong));
+		if (revalidateLong > 0)
+			object.setRevalidate(new Date(revalidateLong));
+		//
+		JSONObject jsonData = null;
+		try {
+			jsonData = JSONFactoryUtil.createJSONObject(objectData.getString("formData"));
+			if (Validator.isNotNull(deliverableCode)) {
+				jsonData.put("deliverableCode", deliverableCode);
+			}
+			if (Validator.isNotNull(applicantIdName)) {
+				jsonData.put("applicantName", applicantIdName);
+			}
+			if (Validator.isNotNull(applicantIdName)) {
+				jsonData.put("applicantIdName", applicantIdName);
+			}
+
+			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+			String strExpireDate = StringPool.BLANK;
+			String strIssueDate = StringPool.BLANK;
+			String strRevalidate = StringPool.BLANK;
+			if (expireDateLong > 0) {
+				strExpireDate = sdf.format(new Date(expireDateLong));
+			}
+			if (issueDateLong > 0) {
+				strIssueDate = sdf.format(new Date(issueDateLong));
+			}
+			if (revalidateLong > 0) {
+				strRevalidate = sdf.format(new Date(revalidateLong));
+			}
+			jsonData.put("expireDate", strExpireDate);
+			jsonData.put("issueDate", strIssueDate);
+			jsonData.put("revalidate", strRevalidate);
+		} catch (JSONException e1) {
+			_log.debug(e1);
+		}
+		
+		if (jsonData != null) {
+			object.setFormData(jsonData.toJSONString());
+		} else {
+			object.setFormData(StringPool.BLANK);
+		}
+		
 		//
 		long formScriptFileId = 0;
 		long formReportFileId = 0;
@@ -1156,13 +1208,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		object.setFormScript(objectData.getString("formScript"));
 		object.setFormReport(objectData.getString("formReport"));
-
-		if (objectData.getLong("expireDate") > 0)
-			object.setExpireDate(new Date(objectData.getLong("expireDate")));
-		if (objectData.getLong("issueDate") > 0)
-			object.setIssueDate(new Date(objectData.getLong("issueDate")));
-		if (objectData.getLong("revalidate") > 0)
-			object.setRevalidate(new Date(objectData.getLong("revalidate")));
 
 		object.setDeliverableState(objectData.getInt("deliverableState"));
 
@@ -1197,7 +1242,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		msgData.put("className", Deliverable.class.getName());
 		msgData.put("classPK", object.getDeliverableId());
 		msgData.put("jrxmlTemplate", result);
-		msgData.put("formData", objectData.getString("formData"));
+		msgData.put("formData", jsonData!= null ? jsonData.toJSONString(): StringPool.BLANK);
 		msgData.put("userId", objectData.getLong("userId"));
 
 		message.put("msgToEngine", msgData);

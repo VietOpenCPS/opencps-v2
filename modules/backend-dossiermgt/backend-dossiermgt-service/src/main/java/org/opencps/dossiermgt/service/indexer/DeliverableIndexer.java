@@ -127,35 +127,35 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addNumberSortable(ModelKeysDeliverable.DOSSIERID, object.getDossierId());
 		
 		// add form data detail
-//		String formData = object.getFormData();
-//		if (Validator.isNotNull(formData)) {
-//			List<Object[]> keyValues = new ArrayList<Object[]>();
-//
-//			keyValues = getKeyValues(formData, keyValues);
-//
-//			if (keyValues != null) {
-//				for (Object[] keyValue : keyValues) {
-////					_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
-//                    document.addKeyword(
-//                        keyValue[0].toString(), keyValue[1].toString());
-//					document.addKeyword(keyValue[0].toString().toLowerCase(),
-//							keyValue[1].toString().toLowerCase());
-//				}
-//			}
-//		}
+		String formData = object.getFormData();
+		if (Validator.isNotNull(formData)) {
+			List<Object[]> keyValues = new ArrayList<Object[]>();
 
-//		try {
-//			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
-//
-//			Iterator<String> keys = jsonObject.keys();
-//
-//			while(keys.hasNext()) {
-//			    String key = keys.next();
-//			    document.addTextSortable(key, jsonObject.getString(key));
-//			}
-//		} catch (Exception e) {
-//			_log.error(e);
-//		}
+			keyValues = getKeyValues(formData, keyValues);
+
+			if (keyValues != null) {
+				for (Object[] keyValue : keyValues) {
+//					_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
+//                    document.addKeyword(
+//                        keyValue[0].toString() + "_data", keyValue[1].toString());
+					document.addKeyword(keyValue[0].toString().toLowerCase()+ "_data",
+							keyValue[1].toString().toLowerCase());
+				}
+			}
+		}
+
+		try {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getFormData());
+
+			Iterator<String> keys = jsonObject.keys();
+
+			while(keys.hasNext()) {
+			    String key = keys.next();
+			    document.addTextSortable(key+ "_data", jsonObject.getString(key));
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
 		
 		if (Validator.isNotNull(object.getFormScript())) {
 			document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());			

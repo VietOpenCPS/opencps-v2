@@ -4788,31 +4788,30 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		desDossier.setDelegateIdNo(srcDossier.getDelegateIdNo());
 		desDossier.setDelegateTelNo(srcDossier.getDelegateTelNo());
 		desDossier.setDossierName(srcDossier.getDossierName());
+		desDossier.setRegisterBookCode(srcDossier.getRegisterBookCode());
+		desDossier.setProcessNo(srcDossier.getProcessNo());
 		
-		dossierPersistence.update(desDossier);
-		
-		ServiceProcess serviceProcess = null;
-		ProcessOption option = getProcessOption(srcDossier.getServiceCode(), srcDossier.getGovAgencyCode(), srcDossier.getDossierTemplateNo(), srcDossier.getGroupId());
-		_log.debug("Process option: " + option);
-		if (option != null) {
-			long serviceProcessId = option.getServiceProcessId();
-			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+		//dossierPersistence.update(desDossier);
+		//ServiceProcess serviceProcess = null;
+		//ProcessOption option = getProcessOption(srcDossier.getServiceCode(), srcDossier.getGovAgencyCode(), srcDossier.getDossierTemplateNo(), srcDossier.getGroupId());
+		//_log.debug("Process option: " + option);
+//		if (option != null) {
+//			long serviceProcessId = option.getServiceProcessId();
+//			serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+//			String dossierRef = DossierNumberGenerator.generateDossierNumber(srcDossier.getGroupId(), srcDossier.getCompanyId(),
+//					desDossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
+//			_log.debug("Dossier no: " + dossierRef);
+//			desDossier.setDossierNo(dossierRef.trim());
+//		}
 
-			String dossierRef = DossierNumberGenerator.generateDossierNumber(srcDossier.getGroupId(), srcDossier.getCompanyId(),
-					desDossierId, option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-			_log.debug("Dossier no: " + dossierRef);
-			desDossier.setDossierNo(dossierRef.trim());
-		}
-		
 		// set dueDate
 		desDossier.setDueDate(srcDossier.getDueDate());
-
 		// set receivedDate
 		desDossier.setReceiveDate(srcDossier.getReceiveDate());
-		
+
 		return dossierPersistence.update(desDossier);
 	}
-	
+
 	public Dossier getByDossierNo(long groupId, String dossierNo) {
 		return dossierPersistence.fetchByG_DN(groupId, dossierNo);
 	}
