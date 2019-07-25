@@ -242,14 +242,14 @@ public class SMSManagementImpl implements SMSManagement {
 			_log.info(startDateS);
 			_log.info(dueDate2);
 			DueDateUtils dueDateUtils = new DueDateUtils(
-				startDateS, durationCount, durationUnit, groupId);
+				startDateS, (int)durationCount, durationUnit, groupId);
 			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(
 				dueDateUtils.getDueDate());
 			return Response.status(200).entity(dueDate).build();
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			_log.error(e);
 		}
 
 		return Response.status(500).entity(StringPool.BLANK).build();
@@ -305,7 +305,7 @@ public class SMSManagementImpl implements SMSManagement {
 		return zaloInfoConfig;
 	}
 
-	private static JSONObject _callAPI(
+	private JSONObject _callAPI(
 		String httpMethod, String accept, String pathBase, String endPoint,
 		String username, String password, HashMap<String, String> properties) {
 
@@ -372,13 +372,12 @@ public class SMSManagementImpl implements SMSManagement {
 
 		}
 		catch (MalformedURLException e) {
-			e.printStackTrace();
-			// _log.error(e);
+
+			 _log.error(e);
 		}
 		catch (IOException e) {
-			// _log.error(e);
-			e.printStackTrace();
 
+			 _log.error(e);
 		}
 
 		return response;
