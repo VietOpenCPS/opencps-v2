@@ -306,6 +306,12 @@
 			<finder-column name="groupId" />
 			<finder-column name="holidayType" />
 		</finder>
+
+		<finder return-type="Collection" name="F_NEWER_THAN">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="holidayDate" comparator="&gt;="></finder-column>
+		</finder>
+
 	</entity>
 	
 	<entity name="Comment" uuid="true" local-service="true"

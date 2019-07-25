@@ -33,6 +33,6 @@ public class ZaloHookConstantKeys {
 	public static final String ZALO_MESSAGE_SYNTAX_CHECK_TEL_NO = "phone";
 	public static final String ZALO_MESSAGE_SYNTAX_REGISTRY_TEL_NO = "registry";
 	public static final String ZALO_MESSAGE_SYNTAX_UPDATE_TEL_NO = "update";
-	public static final String ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER = "search";
+	public static final String ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER = "tracuu";
 
 }

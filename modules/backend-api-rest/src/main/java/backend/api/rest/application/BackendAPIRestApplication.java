@@ -51,6 +51,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.BackupDataManagementImpl;
 import org.opencps.api.controller.impl.BookingManagementImpl;
@@ -211,6 +212,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ImportDataManagementImpl());
 		singletons.add(new EFormManagementImpl());
 		singletons.add(new BookingManagementImpl());
+		singletons.add(new AdminConfigManagementImpl());
 		
 		singletons.add(this);
 		

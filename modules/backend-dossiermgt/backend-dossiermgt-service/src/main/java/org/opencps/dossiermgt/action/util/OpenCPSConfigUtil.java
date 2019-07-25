@@ -22,6 +22,7 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_REST_READ_TIMEOUT = "org.opencps.rest.read.timeout";
 	public static final String OPENCPS_STATISTIC_MUTIPLE_SERVER = "org.opencps.statistic.multiple.server.enable";
 	public static final String OPENCPS_AI_MODE = "org.opencps.ai.mode";
+	public static final String OPENCPS_PERMISSION_ROLE_MODE = "org.opencps.permission.role.mode";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -85,5 +86,10 @@ public class OpenCPSConfigUtil {
 	public static boolean isAiMode() {
 		String isAiMode = PropsUtil.get(OPENCPS_AI_MODE);
 		return Validator.isNotNull(isAiMode) ? Boolean.parseBoolean(isAiMode) : false;		
+	}
+
+	public static boolean isPermissionRoleMode() {
+		String isPermissionRoleMode = PropsUtil.get(OPENCPS_PERMISSION_ROLE_MODE);
+		return Validator.isNotNull(isPermissionRoleMode) ? Boolean.parseBoolean(isPermissionRoleMode) : false;		
 	}
 }
