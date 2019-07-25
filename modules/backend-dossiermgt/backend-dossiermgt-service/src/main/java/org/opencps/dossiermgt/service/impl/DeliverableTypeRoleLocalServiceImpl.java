@@ -131,6 +131,7 @@ public class DeliverableTypeRoleLocalServiceImpl
 
 		object.setCompanyId(20099l);
 		object.setUserId(userId);
+		object.setGroupId(groupId);
 		object.setModifiedDate(new Date());
 
 		object.setDeliverableTypeId(deliverableTypeId);

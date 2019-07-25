@@ -971,7 +971,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							    buffer.close();		
 				    		}
 				    		catch (Exception e) {
-				    			
+				    			_log.debug(e);
 				    		}
 				    	}
 				    }

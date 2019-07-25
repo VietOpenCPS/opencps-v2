@@ -204,13 +204,12 @@ public class SystemManagementImpl implements SystemManagement {
 			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 			
-			JSONArray verifyCriticalArr = JSONFactoryUtil.createJSONArray();
 			JSONArray verifyWarninglArr = JSONFactoryUtil.createJSONArray();
 			JSONArray verifyServiceConfigArr = verifyCriticalServiceConfig(groupId);
 			JSONArray verifyErrorArr = JSONFactoryUtil.createJSONArray();
 			
 			if (groupId != 0) {
-				verifyCriticalArr = verifyCriticalConfig(groupId);
+				JSONArray verifyCriticalArr = verifyCriticalConfig(groupId);
 				verifyWarninglArr = verifyWarningConfig(groupId);
 				for (int i = 0; i < verifyCriticalArr.length(); i++) {
 					verifyErrorArr.put(verifyCriticalArr.get(i));

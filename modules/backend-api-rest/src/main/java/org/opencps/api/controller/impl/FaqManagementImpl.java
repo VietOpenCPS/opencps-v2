@@ -2,6 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -40,6 +42,7 @@ import backend.auth.api.exception.ErrorMsgModel;
 
 public class FaqManagementImpl implements FaqManagement {
 
+	private static final Log _log = LogFactoryUtil.getLog(FaqManagementImpl.class);
 	@Override
 	public Response addQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, QuestionInputModel input, String jCaptchaResponse) {
@@ -59,6 +62,7 @@ public class FaqManagementImpl implements FaqManagement {
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
+	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
         		error.setMessage("Captcha incorrect");
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
@@ -264,6 +268,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 			return Response.status(200).entity("Delete question is success!").build();
 		} catch (PortalException e) {
+			_log.debug(e);
 			return Response.status(500).entity("Delete question is false!").build();
 		}
 	}
@@ -304,6 +309,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 			return Response.status(200).entity("Delete Answer is success!").build();
 		} catch (PortalException e) {
+			_log.debug(e);
 			return Response.status(500).entity("Delete Answer is false!").build();
 		}
 	}

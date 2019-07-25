@@ -577,7 +577,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			applicantId = id;
 			
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			try {
 				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
 				
@@ -586,7 +586,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 			} catch (Exception e2) {
 				// TODO: handle exception
-				_log.error(e2);
+				_log.debug(e2);
 			}
 			
 		}
@@ -646,6 +646,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				access_token = token.getAccessToken();				
 			}
 		} catch (Exception e) {
+			_log.debug(e);
 		}
 		
 //		String msdn = "0100109106";
@@ -681,6 +682,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				access_token = token.getAccessToken();				
 			}
 		} catch (Exception e) {
+			_log.debug(e);
 		}
 		
 		try {
@@ -746,6 +748,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					return responseBuilder.build();
 				    
 				} catch (IOException e) {
+					_log.debug(e);
 				}
 			}
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
@@ -802,6 +805,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        	}
 		        } catch (CaptchaServiceException e) {
+		        	_log.debug(e);
 	        		ErrorMsgModel error = new ErrorMsgModel();
 	        		error.setMessage("Captcha incorrect");
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);

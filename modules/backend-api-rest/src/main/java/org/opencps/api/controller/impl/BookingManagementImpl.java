@@ -51,7 +51,7 @@ public class BookingManagementImpl implements BookingManagement{
 	public Response getBokkingListByClassName(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String className, BookingSearchModel search) {
 
-		BackendAuth auth = new BackendAuthImpl();
+		//BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
@@ -126,8 +126,7 @@ public class BookingManagementImpl implements BookingManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = serviceContext.getUserId();
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 			BookingActions actions = new BookingActionsImpl();
 

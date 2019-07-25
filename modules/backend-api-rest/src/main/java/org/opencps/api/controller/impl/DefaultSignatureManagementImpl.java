@@ -447,11 +447,11 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 		String[] signFieldNameArr = Validator.isNotNull(signFieldNames) ? StringUtil.split(signFieldNames): new String[fileEntryIdArr.length];
 		String[] fileNameArr = Validator.isNotNull(fileNames) ? StringUtil.split(fileNames): new String[fileEntryIdArr.length];
 		String actionCode = input.getActionCode();
-		String actionUser = input.getActionUser();
-		String actionNote = input.getActionNote();
-		String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
-		long assignUserId = Long.valueOf(strAssignUserId);
-		String subUsers = input.getSubUsers();
+		//String actionUser = input.getActionUser();
+		//String actionNote = input.getActionNote();
+		//String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
+		//long assignUserId = Long.valueOf(strAssignUserId);
+		//String subUsers = input.getSubUsers();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		boolean signOk = true;
 		
@@ -662,11 +662,11 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 		//_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
 		String actionCode = input.getActionCode();
-		String actionUser = input.getActionUser();
-		String actionNote = input.getActionNote();
-		String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
-		long assignUserId = Long.valueOf(strAssignUserId);
-		String subUsers = input.getSubUsers();
+		//String actionUser = input.getActionUser();
+		//String actionNote = input.getActionNote();
+		//String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
+		//long assignUserId = Long.valueOf(strAssignUserId);
+		//String subUsers = input.getSubUsers();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		boolean signOk = true;
 		
@@ -826,11 +826,11 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 		//_log.info("Sign: " + signs + ", field name: " + signFieldNames + ", file name: " + fileNames + ", file entry id: " + fileEntryIds);
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
 		String actionCode = input.getActionCode();
-		String actionUser = input.getActionUser();
-		String actionNote = input.getActionNote();
-		String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
-		long assignUserId = Long.valueOf(strAssignUserId);
-		String subUsers = input.getSubUsers();
+		//String actionUser = input.getActionUser();
+		//String actionNote = input.getActionNote();
+		//String strAssignUserId = input.getAssignUserId() != null ? input.getAssignUserId(): "0";
+		//long assignUserId = Long.valueOf(strAssignUserId);
+		//String subUsers = input.getSubUsers();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		boolean signOk = true;
 		

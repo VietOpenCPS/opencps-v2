@@ -918,7 +918,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			// Get dossierTemplate by dossierTemplateNo
 			String type = search.getType();
 			jsonGuide.put("type", type);
-			if (Validator.isNotNull(type) && type.equalsIgnoreCase("completed")) {
+			if (Validator.isNotNull(type) && "completed".equalsIgnoreCase(type)) {
 				DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
 				JSONArray partArr = JSONFactoryUtil.createJSONArray();
 				if (template != null) {

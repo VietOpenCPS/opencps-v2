@@ -512,9 +512,10 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		   formData = dossierFile.getFormScript();
 
-		  } catch (Exception e) {
-		   _log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
-		  }
+		} catch (Exception e) {
+			_log.debug(e);
+			_log.info("Cant get formdata with fileTemplateNo_" + fileTemplateNo);
+		}
 
 		  return formData;
 

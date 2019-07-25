@@ -64,7 +64,6 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
@@ -426,7 +425,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		long userId = user.getUserId();
+		//long userId = user.getUserId();
 		InputStream fileInputStream = null;
 
 		try {
@@ -464,7 +463,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: "+extFile);
-			if (Validator.isNotNull(extFile) && (extFile.equalsIgnoreCase("xlsx") || extFile.equalsIgnoreCase("xls"))) {
+			if (Validator.isNotNull(extFile) && ("xlsx".equalsIgnoreCase(extFile) || "xls".equalsIgnoreCase(extFile))) {
 				String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 //				//delete folder if exits
 				File fileOld = new File(pathFile);
@@ -572,7 +571,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: "+extFile);
-			if (Validator.isNotNull(extFile) && (extFile.equalsIgnoreCase("xlsx") || extFile.equalsIgnoreCase("xls"))) {
+			if (Validator.isNotNull(extFile) && ("xlsx".equalsIgnoreCase(extFile) || "xls".equalsIgnoreCase(extFile))) {
 				String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 //				//delete folder if exits
 				File fileOld = new File(pathFile);
@@ -603,7 +602,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 					
 					if (nOfRows > 1) {
 						//int count = 0;
-						JSONArray dataArr = JSONFactoryUtil.createJSONArray();
+						//JSONArray dataArr = JSONFactoryUtil.createJSONArray();
 						for (int i = 1; i < nOfRows; i++) {
 							Row currentRow = datatypeSheetOne.getRow(i);
 							if (currentRow != null) {
