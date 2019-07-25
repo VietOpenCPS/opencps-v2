@@ -81,6 +81,9 @@ dependencies {
 	compileInclude name : "commons-collections4-4.1", transitive:false
 	compileInclude name : "commons-compress-1.18", transitive:false
 
+	compileOnly group: 'org.springframework', name: 'spring-dao', version: '2.0.8'
+	compileOnly group: "org.springframework", name: "spring-webmvc-portlet", version: "4.1.9.RELEASE"
+
 }
 
 repositories {

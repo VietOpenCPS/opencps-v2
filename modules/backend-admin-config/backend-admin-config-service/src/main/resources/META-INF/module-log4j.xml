@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <category name="backend.admin.config.service.whiteboard">
+        <priority value="INFO" />
+    </category>
+    <category name="org.opencps.admin.config">
+        <priority value="INFO" />
+    </category>    
+</log4j:configuration>

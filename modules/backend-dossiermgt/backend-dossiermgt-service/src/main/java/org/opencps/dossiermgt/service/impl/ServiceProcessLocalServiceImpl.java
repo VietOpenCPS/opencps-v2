@@ -871,16 +871,16 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 					throw new DataConflictException("Have dossiers use this service process");
 				}
 				List<Dossier> dossierList = dossierPersistence.findByGID_PNO(groupId, processNo);
-				if (dossierList == null) {
+				if (dossierList == null || dossierList.size() == 0) {
 					boolean flagProRole = deleteAllProcessRole(id);
 					boolean flagStep = deleteAllProcessStep(id);
 					boolean flagProAction = deleteAllProcessAction(id);
 					boolean flagSequence = deleteAllProcessSequence(process.getGroupId(), id);
-
 					if (flagProRole && flagStep && flagProAction && flagSequence) {
 						try {
 							return ServiceProcessLocalServiceUtil.removeServiceProcess(id, groupId);
 						} catch (Exception e) {
+							_log.debug(e);
 							return null;
 						}
 					}
