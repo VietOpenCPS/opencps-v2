@@ -35,12 +35,14 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.statistic.dto.DossierStatisticData;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for OpencpsDossierStatistic. Methods of this
@@ -375,4 +377,11 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount)
 		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public void updateStatisticData(
+		Map<String, DossierStatisticData> statisticData)
+		throws SystemException, PortalException;
 }

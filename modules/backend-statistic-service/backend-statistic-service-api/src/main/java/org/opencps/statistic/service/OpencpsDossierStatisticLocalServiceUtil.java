@@ -476,6 +476,13 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			insideCount);
 	}
 
+	public static void updateStatisticData(
+		java.util.Map<String, org.opencps.statistic.dto.DossierStatisticData> statisticData)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		getService().updateStatisticData(statisticData);
+	}
+
 	public static OpencpsDossierStatisticLocalService getService() {
 		return _serviceTracker.getService();
 	}

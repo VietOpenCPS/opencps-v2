@@ -14,19 +14,24 @@
 
 package org.opencps.statistic.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
-import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.statistic.dto.DossierStatisticData;
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
+import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
 
 /**
  * The implementation of the opencps dossier statistic local service.
@@ -47,6 +52,9 @@ import com.liferay.portal.kernel.util.Validator;
  * @see OpencpsDossierStatisticLocalServiceBaseImpl
  * @see org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil
  */
+@Transactional(isolation = Isolation.PORTAL, rollbackFor = {
+		PortalException.class, SystemException.class
+})
 public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStatisticLocalServiceBaseImpl {
 	public OpencpsDossierStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain) {
 		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency);
@@ -324,6 +332,37 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return dossierStatistic;
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public void updateStatisticData(Map<String, DossierStatisticData> statisticData) throws SystemException, PortalException {
+		for (Map.Entry<String, DossierStatisticData> me : statisticData.entrySet()) {
+			DossierStatisticData payload = (DossierStatisticData) me.getValue();
+			
+			if (Validator.isNull(payload.getDomainCode())) {
+				payload.setDomainCode((String) null);
+			}
+
+			if (Validator.isNull(payload.getGovAgencyCode())) {
+				payload.setGovAgencyCode((String) null);
+			}
+
+			byte pausingCount = 0;
+
+			opencpsDossierStatisticLocalService.createOrUpdateStatistic(payload.getCompanyId(),
+						payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
+						payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
+						payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
+						payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
+						payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
+						payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
+						payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
+						payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
+						payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
+						payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+						payload.getInsideCount());
+		}
+	}
+
+	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
 
 }

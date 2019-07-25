@@ -503,6 +503,14 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public void updateStatisticData(
+		java.util.Map<String, org.opencps.statistic.dto.DossierStatisticData> statisticData)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		_opencpsDossierStatisticLocalService.updateStatisticData(statisticData);
+	}
+
+	@Override
 	public OpencpsDossierStatisticLocalService getWrappedService() {
 		return _opencpsDossierStatisticLocalService;
 	}
