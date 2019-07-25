@@ -2539,6 +2539,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		} catch (PortalException e) {
+			_log.debug(e);
 		}
 		Map<Long, JSONArray> mapFiles = new HashMap<>();
 		
@@ -2550,11 +2551,12 @@ public class DossierManagementImpl implements DossierManagement {
 					mapFiles.put(payload.getLong("dossierActionId"), payload.getJSONArray("files"));
 				}
 			} catch (JSONException e) {
+				_log.debug(e);
 			}
 		}
 		
 		List<DossierAction> dossierActionListCheck = DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
-		if (dossierActionListCheck != null && dossierActionListCheck.size() == 1 && dossierActionListCheck.get(0).getStepCode().equals("400")) {
+		if (dossierActionListCheck != null && dossierActionListCheck.size() == 1 && "400".equals(dossierActionListCheck.get(0).getStepCode())) {
 		} else {
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();

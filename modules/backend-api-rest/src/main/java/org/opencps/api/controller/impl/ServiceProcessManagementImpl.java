@@ -2,6 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -23,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.interceptor.ServiceInvokerInterceptor;
 import org.opencps.api.controller.ServiceProcessManagement;
 import org.opencps.api.controller.util.ProcessSequenceUtils;
 import org.opencps.api.controller.util.ServiceProcessUtils;
@@ -46,8 +47,6 @@ import org.opencps.api.serviceprocess.model.ServiceProcessSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
@@ -71,7 +70,7 @@ import backend.auth.api.exception.NotFoundException;
 
 public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
-//	private static Log _log = LogFactoryUtil.getLog(ServiceProcessManagementImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(ServiceProcessManagementImpl.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -338,8 +337,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException("UnauthenticationException");
@@ -371,8 +369,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException("UnauthenticationException");
@@ -405,8 +402,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, long roleid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException("UnauthenticationException");
@@ -604,8 +600,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, String code) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
@@ -678,8 +673,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException("UnauthenticationException");
@@ -1283,8 +1277,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, long actionid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -1333,7 +1326,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				serviceProcess = actions.getServiceProcessDetail(serviceProcessId);
 			}
 			catch (NoSuchServiceProcessException e) {
-				
+				_log.debug(e);
 			}
 			if (serviceProcess == null) {
 				serviceProcess = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, id);

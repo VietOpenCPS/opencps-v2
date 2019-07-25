@@ -821,8 +821,8 @@ public class DataManagementImpl implements DataManagement {
 			try {
 				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS);
-				DictItem item = dictItemDataUtil.getDictItemByItemCode(code, input.getItemCode(), groupId,
-						serviceContext);
+				//DictItem item = dictItemDataUtil.getDictItemByItemCode(code, input.getItemCode(), groupId,
+				//		serviceContext);
 
 				for (ServerConfig sc : lstServers) {
 					String configs = sc.getConfigs();

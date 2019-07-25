@@ -31,13 +31,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.StatisticUtils;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
@@ -158,7 +154,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			User user, ServiceContext serviceContext, StatisticDossierSearchModel query, String owner) {
 		BackendAuth auth = new BackendAuthImpl();
 		StatisticActions actions = new StatisticActionsImpl();
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		//backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 		
 		try {
 
@@ -389,7 +385,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				if (Validator.isNotNull(param) && param.contains("=")) {
 					String[] paramSplit = param.split("=");
 					if (Validator.isNotNull(paramSplit[1])) {
-						if (paramSplit[0].equalsIgnoreCase("assigned")) {
+						if ("assigned".equalsIgnoreCase(paramSplit[0])) {
 							if (stepCode.contains("x")) {
 								StringBuilder sbParams = new StringBuilder();
 								for (int i = 0; i < 9; i++) {
@@ -406,8 +402,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 								params.put(DossierTerm.ASSIGNED_USER_ID,
 										userId + "_" + stepCode + "_" + paramSplit[1]);
 							}
-						} else if (!paramSplit[0].equalsIgnoreCase("step")
-								&& !paramSplit[0].equalsIgnoreCase("order")) {
+						} else if (!"step".equalsIgnoreCase(paramSplit[0])
+								&& !"order".equalsIgnoreCase(paramSplit[0])) {
 							params.put(paramSplit[0], paramSplit[1]);
 						}
 					}
@@ -565,7 +561,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			int startRow = 0;
 			for (int i = 0; i < contentArr.length(); i++) {
 				if (contentArr.getJSONObject(i).has("table")) {
-					int startBorderRow = startRow;
+					//int startBorderRow = startRow;
 					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
 					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
 					for (int tempi = 0; tempi <= headerRows; tempi++) {
@@ -672,7 +668,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				} else if (contentArr.getJSONObject(i).has("text")) {
 					HSSFRow row = mainSheet.createRow(startRow);
 					JSONArray textArr = contentArr.getJSONObject(i).getJSONArray("text");
-					String text = StringPool.BLANK;
+					String text = null;
 					if (textArr == null) {
 						text = contentArr.getJSONObject(i).getString("text");
 					}
@@ -683,7 +679,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 						}
 						text = textBd.toString();
 					}
-					row.createCell(0).setCellValue(text);	
+					row.createCell(0).setCellValue(text != null ? text : StringPool.BLANK);	
 					CellStyle cellStyle = row.getCell(0).getCellStyle();
 					cellStyle.setWrapText(true);
 					if (contentArr.getJSONObject(i).has("alignment")) {
@@ -706,7 +702,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					HSSFRow row = mainSheet.createRow(startRow);
 					JSONArray columnArr = contentArr.getJSONObject(i).getJSONArray("columns");
 					int mergeColumn = maxCol / columnArr.length();
-					String text = StringPool.BLANK;
+					String text = null;
 					
 					for (int tempi = 0; tempi < columnArr.length(); tempi++) {
 						JSONArray textArr = columnArr.getJSONObject(tempi).getJSONArray("text");
@@ -720,7 +716,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 							}
 							text = textBd.toString();							
 						}						
-						row.createCell(tempi * mergeColumn).setCellValue(text);	
+						row.createCell(tempi * mergeColumn).setCellValue(text != null ? text : StringPool.BLANK);	
 						CellStyle cellStyle = row.getCell(tempi * mergeColumn).getCellStyle();
 						cellStyle.setWrapText(true);
 						if (contentArr.getJSONObject(i).has("alignment")) {
@@ -757,7 +753,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				workbook.close();
 			} 
 			catch (Exception e) { 
-				e.printStackTrace(); 
+				_log.debug(e);
 			}   
 			
 			ResponseBuilder responseBuilder = Response.ok((Object) xlsFile);
@@ -773,10 +769,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	}
 
-	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {
-        RegionUtil.setBorderBottom(BorderStyle.MEDIUM, region, sheet);
-        RegionUtil.setBorderLeft(BorderStyle.MEDIUM, region, sheet);
-        RegionUtil.setBorderRight(BorderStyle.MEDIUM, region, sheet);
-        RegionUtil.setBorderTop(BorderStyle.MEDIUM, region, sheet);
-    }	
+//	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {
+//        RegionUtil.setBorderBottom(BorderStyle.MEDIUM, region, sheet);
+//        RegionUtil.setBorderLeft(BorderStyle.MEDIUM, region, sheet);
+//        RegionUtil.setBorderRight(BorderStyle.MEDIUM, region, sheet);
+//        RegionUtil.setBorderTop(BorderStyle.MEDIUM, region, sheet);
+//    }	
 }

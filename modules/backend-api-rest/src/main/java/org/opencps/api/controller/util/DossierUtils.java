@@ -943,6 +943,7 @@ public class DossierUtils {
 			try {
 				doc = indexer.getDocument(dossier);
 			} catch (SearchException e) {
+				_log.debug(e);
 			}
 			
 			if (doc == null) return StringPool.BLANK;

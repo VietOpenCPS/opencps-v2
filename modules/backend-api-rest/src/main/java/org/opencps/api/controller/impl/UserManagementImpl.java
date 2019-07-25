@@ -328,6 +328,7 @@ public class UserManagementImpl implements UserManagement {
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
+	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
         		error.setMessage("Captcha incorrect");
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
@@ -370,6 +371,7 @@ public class UserManagementImpl implements UserManagement {
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
+	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
         		error.setMessage("Captcha incorrect");
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
@@ -691,11 +693,11 @@ public class UserManagementImpl implements UserManagement {
 				result.put("role", StringPool.BLANK);
 				result.put("deactiveAccountFlag", 0);
 
-				if (role.getName().equals("Administrator")) {
+				if ("Administrator".equalsIgnoreCase(role.getName())) {
 					roleName = "Administrator";
 				}
 
-				if (role.getName().equals("Administrator_data")) {
+				if ("Administrator_data".equalsIgnoreCase(role.getName())) {
 					roleName = "Administrator_data";
 				}
 
@@ -707,6 +709,7 @@ public class UserManagementImpl implements UserManagement {
 			}
 
 		} catch (Exception e) {
+			_log.debug(e);
 		}
 
 		return Response.status(200).entity(dataUser.toJSONString()).build();

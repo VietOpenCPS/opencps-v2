@@ -709,7 +709,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response processingKeyPay(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String dossierUUid, String paymentFileUUid) {
 		// TODO Auto-generated method stub
-		URI uri = null;
+		//URI uri = null;
 		try {
 			
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -734,7 +734,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 			return Response.noContent().build();
 		}
 		

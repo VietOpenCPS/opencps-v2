@@ -44,7 +44,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 			User user, ServiceContext serviceContext, NotificationSearchModel query, Boolean archived) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
-		JSONObject record = JSONFactoryUtil.createJSONObject();
+		//JSONObject record = JSONFactoryUtil.createJSONObject();
 		DateFormat dateFormatDateTime = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
 //		ThemeDisplay themeDisplay =
@@ -77,7 +77,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 			for (UserNotificationEvent event : events) {
 
-				record = JSONFactoryUtil.createJSONObject(event.getPayload());
+				JSONObject record = JSONFactoryUtil.createJSONObject(event.getPayload());
 				record.put("notificationDate",
 					dateFormatDateTime.format(event.getTimestamp()));
 //				record.put(
@@ -107,7 +107,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 					}
 				}
 				catch (Exception e) {
-					
+					_log.debug(e);
 				}
 				
 				data.put(record);
@@ -125,23 +125,23 @@ public class NotificationManagementImpl implements NotificationManagement{
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
 
-	private void markAsReadAll(long userId) throws IOException {
-
-		try {
-			List<UserNotificationEvent> events = UserNotificationEventLocalServiceUtil
-					.getArchivedUserNotificationEvents(userId, false, false, -1, -1);
-
-			for (UserNotificationEvent event : events) {
-				updateArchived(event.getUserNotificationEventId());
-			}
-
-			_log.info(">>>>>>>markAsReadAll is OK>>>>>>>>");
-		} catch (Exception e) {
-			_log.error(e);
-			_log.info(">>>>>>>markAsReadAll is ERR>>>>>>>>");
-		}
-
-	}
+//	private void markAsReadAll(long userId) throws IOException {
+//
+//		try {
+//			List<UserNotificationEvent> events = UserNotificationEventLocalServiceUtil
+//					.getArchivedUserNotificationEvents(userId, false, false, -1, -1);
+//
+//			for (UserNotificationEvent event : events) {
+//				updateArchived(event.getUserNotificationEventId());
+//			}
+//
+//			_log.info(">>>>>>>markAsReadAll is OK>>>>>>>>");
+//		} catch (Exception e) {
+//			_log.error(e);
+//			_log.info(">>>>>>>markAsReadAll is ERR>>>>>>>>");
+//		}
+//
+//	}
 
 	public void markAsRead(long userNotificationEventId) throws IOException {
 
@@ -190,7 +190,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 			result.put("total", userNotificationEventsCount);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			result.put("total", 0);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
 		}
@@ -211,7 +211,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 			UserNotificationEventLocalServiceUtil.deleteUserNotificationEvent(userNotificationEventId);
 			result.put("success", true);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			result.put("success", false);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
 		}
@@ -242,6 +242,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 				result.put("avatar", profilePath);
 				result.put("userName", findUser.getFullName());			
 			} catch (PortalException e) {
+				_log.debug(e);
 			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();	
 		}
