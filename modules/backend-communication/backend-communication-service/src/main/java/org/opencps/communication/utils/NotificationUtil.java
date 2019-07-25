@@ -294,7 +294,7 @@ public class NotificationUtil {
 					sendEmail = template.getSendEmail();
 					sendSMS = template.getSendSMS();
 					sendNotify = template.getSendNotification();
-					sendMesZalo = template.getSendSMS();
+					sendMesZalo = template.getSendNotification();
 				}
 
 				messageEntry.setSendEmail(sendEmail);

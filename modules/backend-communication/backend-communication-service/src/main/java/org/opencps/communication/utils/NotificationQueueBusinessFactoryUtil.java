@@ -85,4 +85,17 @@ public class NotificationQueueBusinessFactoryUtil {
 			notificationType, date);
 	}
 
+	public static NotificationQueue update(
+		NotificationQueue notificationQueue, ServiceContext serviceContext)
+		throws NoSuchNotificationQueueException {
+
+		try {
+			return getNotificationQueueBusiness().update(notificationQueue, serviceContext);
+		}
+		catch (SystemException | PortalException e) {
+			
+			return null;
+		}
+	}
+
 }

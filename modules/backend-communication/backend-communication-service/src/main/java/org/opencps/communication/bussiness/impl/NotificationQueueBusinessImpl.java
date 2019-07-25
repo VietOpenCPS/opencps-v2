@@ -101,6 +101,13 @@ public class NotificationQueueBusinessImpl
 			notificationType, date);
 	}
 
+	public NotificationQueue update(
+		NotificationQueue notificationQueue, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		return NotificationQueueLocalServiceUtil.updateNotificationQueue(notificationQueue);
+	}
+
 	public Log _log =
 		LogFactoryUtil.getLog(NotificationQueueBusinessImpl.class);
 

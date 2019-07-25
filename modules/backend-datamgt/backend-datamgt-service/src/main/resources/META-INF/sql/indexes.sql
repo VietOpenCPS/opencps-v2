@@ -35,6 +35,7 @@ create unique index IX_337D36EF on opencps_dictitemgroup (uuid_[$COLUMN_LENGTH:7
 
 create index IX_A0188CE7 on opencps_holiday (groupId, holidayDate);
 create index IX_BCB67973 on opencps_holiday (groupId, holidayType);
+create index IX_2B17050F on opencps_holiday (holidayDate, groupId);
 create index IX_FFAC65EF on opencps_holiday (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_93A39C31 on opencps_holiday (uuid_[$COLUMN_LENGTH:75$], groupId);
 

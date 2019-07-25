@@ -136,6 +136,11 @@ public class OneMinute extends BaseMessageListener {
 							NotificationQueueBusinessFactoryUtil.delete(
 									notificationQueue.getNotificationQueueId(),
 									serviceContext);
+						} else {
+
+							// hot fix: stop send noti (spam mail)
+							notificationQueue.setExpireDate(notificationQueue.getCreateDate());
+							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 						}
 					}
 					catch (Exception e) {
