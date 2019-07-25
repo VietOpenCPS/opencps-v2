@@ -362,6 +362,10 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		return holidayPersistence.findByF_GID_TYPE(groupId, holidayType);
 	}
 
+	public List<Holiday> getHolidayGtThan(long groupId, Date holidayDate) {
+		return holidayPersistence.findByF_NEWER_THAN(groupId, holidayDate);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Holiday adminProcessDelete(Long id) {
