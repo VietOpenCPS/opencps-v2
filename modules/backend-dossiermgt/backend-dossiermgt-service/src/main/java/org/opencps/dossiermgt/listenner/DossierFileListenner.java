@@ -203,6 +203,28 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		return returnOBJ;
 	}
 
+	private JSONObject mappingContent(JSONObject mappingSrc, JSONObject srcFormData) {
+		JSONObject returnOBJ;
+
+		// dossierId
+
+		// subject
+
+		// deliverableCode
+
+		Map<String, Object> jsonMap = jsonToMap(mappingSrc);
+
+		for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+
+			String entryValue = GetterUtil.getString(entry.getValue());
+			entry.setValue(srcFormData.getString(entryValue));
+		}
+
+		returnOBJ = convertToJSON(jsonMap);
+
+		return returnOBJ;
+	}
+
 	public enum SpecialKey {
 		APPLICANTNAME, APPLICANTIDNO, RECEIVEDATE, DOSSIERIDCNT, DOSSIERNO, SUBMITDATE
 	};
@@ -407,7 +429,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 	@Override
 	public void onAfterUpdate(DossierFile model) throws ModelListenerException {
-		_log.debug("Update DossierFile_________-");
+		_log.info("Update DossierFile_________-");
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -454,6 +476,38 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					deliverableState = "1";
 				}
 
+				// update deliverable
+				try {
+
+					if (Validator.isNotNull(dlvType.getMappingData())) {
+						JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
+						_log.info("jsMappingData: "+jsMappingData);
+
+						JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+
+						if (Validator.isNotNull(model.getFormData()))
+							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
+						_log.info("jsFormData: "+jsFormData);
+
+						if (jsMappingData.has("deliverables") && Validator.isNotNull(jsMappingData.get("deliverbles"))) {
+							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
+						}
+						else if (jsMappingData.has("deliverables")){
+							formDataContent = mappingContent(jsMappingData, jsFormData);
+						}
+					}
+
+				} catch (Exception e) {
+					_log.debug(e);
+					_log.error("Parser JSONDATA error_DELIVERABLE");
+				}
+
+				String formData = StringPool.BLANK;
+
+				if (Validator.isNotNull(formDataContent)) {
+					formData = formDataContent.toString();
+
+				}
 				if (Validator.isNotNull(formDataContent)) {
 					subject = formDataContent.getString("subject");
 					issueDate = formDataContent.getString("issueDate");
@@ -485,37 +539,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				if (dlv != null) {
 					dlv.setFileEntryId(model.getFileEntryId());
 					DeliverableLocalServiceUtil.updateDeliverable(dlv);
-				}
-
-				// update deliverable
-				try {
-
-					if (Validator.isNotNull(dlvType.getMappingData())) {
-						JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
-
-						JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
-
-						if (Validator.isNotNull(model.getFormData()))
-							jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
-
-						if (jsMappingData.has("deliverables") && Validator.isNotNull(jsMappingData.get("deliverbles"))) {
-							formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
-						}
-						else {
-							formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());
-						}
-					}
-
-				} catch (Exception e) {
-					_log.debug(e);
-					_log.error("Parser JSONDATA error_DELIVERABLE");
-				}
-
-				String formData = StringPool.BLANK;
-
-				if (Validator.isNotNull(formDataContent)) {
-					formData = formDataContent.toString();
-
 				}
 
 				//_log.info("Update deliverable form data: " + formData);

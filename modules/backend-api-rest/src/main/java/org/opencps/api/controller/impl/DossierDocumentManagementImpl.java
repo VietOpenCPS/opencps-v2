@@ -87,9 +87,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (dossierActionId != 0) {
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-					String payload = StringPool.BLANK;
+					//String payload = StringPool.BLANK;
 					if (dAction != null) {
-						payload = dAction.getPayload();
+						String payload = dAction.getPayload();
 						if (Validator.isNotNull(payload)) {
 							jsonData = JSONFactoryUtil.createJSONObject(payload);
 						}
@@ -368,8 +368,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
 			}
 			// Process get Next sequence Role
-			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
-					serviceProcessId);
+			//List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+			//		serviceProcessId);
 			//TODO: Using cache
 //			List<ProcessSequence> sequenceList = null;
 //			Serializable data = CacheLocalServiceUtil.getFromCache("ProcessSequence", groupId +"_"+serviceProcessId);
@@ -385,7 +385,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 //							(int) Time.MINUTE * 30);
 //				}
 //			}
-			sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
+			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
 					serviceProcessId);
 			String[] sequenceArr = null;
 			if (sequenceList != null && !sequenceList.isEmpty()) {

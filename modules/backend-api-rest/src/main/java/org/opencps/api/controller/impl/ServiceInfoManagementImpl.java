@@ -742,14 +742,14 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		//String emailLogin = user.getEmailAddress();
-		DossierActions actions = new DossierActionsImpl();
+		//DossierActions actions = new DossierActionsImpl();
 
 		try {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			// LamTV_Process search LIKE
 			String owner = StringPool.BLANK;
-			if (Validator.isNotNull(search.getTop()) && search.getTop().equalsIgnoreCase("recently")) {
+			if (Validator.isNotNull(search.getTop()) && "recently".equalsIgnoreCase(search.getTop())) {
 				owner = "true";
 			}
 

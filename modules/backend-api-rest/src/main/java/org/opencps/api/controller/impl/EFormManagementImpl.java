@@ -132,8 +132,7 @@ public class EFormManagementImpl implements EFormManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = serviceContext.getUserId();
 
-		BackendAuth auth = new BackendAuthImpl();
-
+		//BackendAuth auth = new BackendAuthImpl();
 		//EFormInputModel eFromInputModel = new EFormInputModel();
 		try {
 //			if (!auth.isAuth(serviceContext)) {

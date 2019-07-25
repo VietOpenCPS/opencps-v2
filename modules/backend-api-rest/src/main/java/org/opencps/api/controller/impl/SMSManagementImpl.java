@@ -106,7 +106,7 @@ public class SMSManagementImpl implements SMSManagement {
 			return Response.status(200).entity(uid).build();
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			_log.debug(e);
 			return Response.status(500).entity("").build();
 		}
 
@@ -205,12 +205,11 @@ public class SMSManagementImpl implements SMSManagement {
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
-
-			result =
-				epacifConfig.getString(SendSMSTerm.EPACIFIC_SYNTAX_ERROR_MES);
+			_log.debug(e);
+			result = epacifConfig.getString(SendSMSTerm.EPACIFIC_SYNTAX_ERROR_MES);
 		}
 		catch (Exception e) {
-
+			_log.debug(e);
 			result = "0;72;He thong chua cau hinh;";
 		}
 
@@ -248,8 +247,7 @@ public class SMSManagementImpl implements SMSManagement {
 			return Response.status(200).entity(dueDate).build();
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return Response.status(500).entity(StringPool.BLANK).build();
@@ -280,9 +278,7 @@ public class SMSManagementImpl implements SMSManagement {
 			}
 		}
 		catch (Exception e) {
-
-			// _log.info(e);
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		return StringPool.BLANK;
 	}
@@ -299,7 +295,7 @@ public class SMSManagementImpl implements SMSManagement {
 			zaloInfoConfig = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			_log.debug(e);
 		}
 
 		return zaloInfoConfig;
@@ -372,20 +368,17 @@ public class SMSManagementImpl implements SMSManagement {
 
 		}
 		catch (MalformedURLException e) {
-			e.printStackTrace();
-			// _log.error(e);
+			_log.debug(e);
 		}
-		catch (IOException e) {
-			// _log.error(e);
-			e.printStackTrace();
+		catch (IOException e1) {
+			_log.debug(e1);
 
 		}
 
 		return response;
 	}
 
-	Log _log = LogFactoryUtil.getLog(SMSManagementImpl.class.getName());
-
+	static Log _log = LogFactoryUtil.getLog(SMSManagementImpl.class.getName());
 }
 
 class RESTFulConfiguration {

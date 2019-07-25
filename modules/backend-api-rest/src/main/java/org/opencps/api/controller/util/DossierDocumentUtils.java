@@ -92,10 +92,12 @@ public class DossierDocumentUtils {
 							JSONArray valueObject = JSONFactoryUtil.createJSONArray(value);
 							jsonData.put(key, valueObject);
 						} catch (JSONException e) {
+							_log.debug(e);
 							try {
 								JSONObject valueObject = JSONFactoryUtil.createJSONObject(value);
 								jsonData.put(key, valueObject);
 							} catch (JSONException e1) {
+								_log.debug(e1);
 								jsonData.put(key, value);
 							}
 						}
@@ -364,7 +366,7 @@ public class DossierDocumentUtils {
 					keyValues.add(keyValue);
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), key);
 				} catch (JSONException e) {
-					//_log.error(e);
+					_log.debug(e);
 					// string
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;

@@ -456,6 +456,7 @@ public class PaymentFileUtils {
 		try {
 			num = Integer.parseInt(a);
 		} catch (Exception ex) {
+			_log.debug(ex);
 		}
 		if (num == 0)
 			return kq;

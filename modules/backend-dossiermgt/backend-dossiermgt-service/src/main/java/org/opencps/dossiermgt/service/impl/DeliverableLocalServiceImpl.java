@@ -1163,9 +1163,6 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			if (Validator.isNotNull(applicantIdName)) {
 				jsonData.put("applicantName", applicantIdName);
 			}
-			if (Validator.isNotNull(applicantIdName)) {
-				jsonData.put("applicantIdName", applicantIdName);
-			}
 
 			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
 			String strExpireDate = StringPool.BLANK;
