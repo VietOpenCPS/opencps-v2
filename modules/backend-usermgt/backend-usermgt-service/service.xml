@@ -653,6 +653,7 @@
 		<column name="publish" type="int" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
+		<column name="questionType" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
@@ -662,7 +663,17 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
-		
+        <finder name="G_PL_QT" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+            <finder-column name="questionType"></finder-column>
+        </finder>
+		<finder name="G_PL_QT_GC" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+            <finder-column name="questionType"></finder-column>
+            <finder-column name="govAgencyCode"></finder-column>
+        </finder>
 	</entity>
 	
 	<entity name="Answer" uuid="false" local-service="true"

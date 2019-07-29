@@ -45,7 +45,7 @@ create unique index IX_A55BFF69 on opencps_preferences (groupId, userId);
 create index IX_158E960F on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_A6935451 on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-create index IX_45F6CC84 on opencps_question (groupId, publish);
+create index IX_B1131CB8 on opencps_question (groupId, publish, questionType[$COLUMN_LENGTH:75$], govAgencyCode[$COLUMN_LENGTH:75$]);
 
 create index IX_91CAEB92 on opencps_resourcerole (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$], roleId);
 create index IX_6858DC81 on opencps_resourcerole (uuid_[$COLUMN_LENGTH:75$], companyId);
