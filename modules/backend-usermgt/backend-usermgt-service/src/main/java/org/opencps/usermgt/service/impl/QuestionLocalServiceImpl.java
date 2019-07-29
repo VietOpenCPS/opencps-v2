@@ -17,7 +17,6 @@ package org.opencps.usermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.usermgt.exception.NoSuchQuestionException;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.base.QuestionLocalServiceBaseImpl;
 
