@@ -52,7 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = PublishEventScheduler.class)
 public class PublishEventScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -98,7 +98,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		isRunning = false;
 	}

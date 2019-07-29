@@ -927,6 +927,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 						} catch (NoSuchOpencpsDossierStatisticException e) {
 
+							_log.debug(e);
 						}
 					}
 				}
@@ -962,7 +963,9 @@ public class OpencpsStatisticRestApplication extends Application {
 					input.getOutsideCount(), input.getInsideCount());
 			input.setDomainCode(statistic.getDomainCode());
 		} catch (SystemException e) {
+			_log.debug(e);
 		} catch (PortalException e) {
+			_log.debug(e);
 		}
 		
 		return input;
@@ -1037,12 +1040,15 @@ public class OpencpsStatisticRestApplication extends Application {
 								request.setWaitingCount(statistic.getWaitingCount());
 								request.setYear(statistic.getYear());
 								DossierStatisticModel model = callReportService.callRestService(request);
+								_log.debug(model);
 							}
 						}
 						catch (JSONException e) {
-							
+							_log.debug(e);
 						} catch (UpstreamServiceTimedOutException e) {
+							_log.debug(e);
 						} catch (UpstreamServiceFailedException e) {
+							_log.debug(e);
 						}
 					}
 				}

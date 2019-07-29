@@ -3,36 +3,20 @@ package org.opencps.dossiermgt.action.util;
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 public class EFormNumberGenerator {
 
@@ -43,7 +27,7 @@ public class EFormNumberGenerator {
 			String seriNumberPattern, SearchContext... searchContext)
 			throws ParseException, SearchException {
 
-		String eFormNo = StringPool.BLANK;
+		//String eFormNo = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
 		String codePatternGov = "\\{(a+|A+)\\}";
 		String codePatternDate = "\\{(n+|N+)\\}";
@@ -68,8 +52,8 @@ public class EFormNumberGenerator {
 		String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
 		//Process Pattern
-		String serviceProcessCode = StringPool.BLANK;
-		String govAgencyCode = StringPool.BLANK;
+		//String serviceProcessCode = StringPool.BLANK;
+		//String govAgencyCode = StringPool.BLANK;
 //		try {
 //			ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId);
 //			

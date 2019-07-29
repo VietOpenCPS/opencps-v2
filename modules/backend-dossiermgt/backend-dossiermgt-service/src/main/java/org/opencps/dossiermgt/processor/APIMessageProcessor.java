@@ -298,7 +298,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 				//_log.debug("SONDT SYNC INFORM REQUESTPAYMENT = 2 PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 				//_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-				String paymentFee = StringPool.BLANK; String paymentNote = StringPool.BLANK;
+				String paymentFee = null; 
+				String paymentNote = null;
 				
 				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
 				//_log.debug("SONDT SYNC INFORM Payment object: " + paymentObj);
@@ -319,8 +320,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
 				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
 				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-				pfiModel.setPaymentFee(paymentFee);
-				pfiModel.setPaymentNote(paymentNote);
+				pfiModel.setPaymentFee(paymentFee != null ? paymentFee : StringPool.BLANK);
+				pfiModel.setPaymentNote(paymentNote != null ? paymentNote : StringPool.BLANK);
 				pfiModel.setReferenceUid(dossier.getReferenceUid());
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());

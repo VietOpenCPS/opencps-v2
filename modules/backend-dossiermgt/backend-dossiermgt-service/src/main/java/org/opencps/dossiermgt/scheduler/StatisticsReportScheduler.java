@@ -44,14 +44,13 @@ import org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 //@Component(immediate = true, service = StatisticsReportScheduler.class)
 public class StatisticsReportScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
@@ -121,7 +120,7 @@ public class StatisticsReportScheduler extends BaseMessageListener {
 			_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		isRunning = false;
 	}

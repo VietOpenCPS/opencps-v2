@@ -283,11 +283,11 @@ public class CPSDossierBusinessLocalServiceImpl
 					
 					DossierTemplate dossierTemplate = dossierTemplateLocalService.fetchDossierTemplate(foundOption.getDossierTemplateId());
 //					String delegateName = dossier.getDelegateName();
-					String delegateName = dossier.getGovAgencyName();
-					String delegateAddress = dossier.getDelegateAddress();
-					String delegateTelNo = dossier.getDelegateTelNo();
-					String delegateEmail = dossier.getDelegateEmail();
-					String delegateIdNo = dossier.getGovAgencyCode();
+					//String delegateName = dossier.getGovAgencyName();
+					//String delegateAddress = dossier.getDelegateAddress();
+					//String delegateTelNo = dossier.getDelegateTelNo();
+					//String delegateEmail = dossier.getDelegateEmail();
+					//String delegateIdNo = dossier.getGovAgencyCode();
 					
 					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
 					Dossier hsltDossier = null;
@@ -312,6 +312,11 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 
+					String delegateName = null;
+					String delegateAddress = null;
+					String delegateTelNo = null;
+					String delegateEmail = null;
+					String delegateIdNo = null;
 					if (wu != null) {
 						delegateName = wu.getName();
 						delegateAddress = wu.getAddress();
@@ -319,33 +324,22 @@ public class CPSDossierBusinessLocalServiceImpl
 						delegateEmail = wu.getEmail();
 						delegateIdNo = wu.getGovAgencyCode();
 
-						if (hsltDossier != null) {
-							hsltDossier.setDelegateName(delegateName);
-							hsltDossier.setDelegateAddress(delegateAddress);
-							hsltDossier.setDelegateTelNo(delegateTelNo);
-							hsltDossier.setDelegateEmail(delegateEmail);
-							hsltDossier.setDelegateIdNo(delegateIdNo);
-							hsltDossier.setNew(false);
-							hsltDossier = dossierLocalService.updateDossier(hsltDossier);
-						}							
 					}
-					else if (user != null) {
-						if (employee != null) {
-							delegateName = employee.getFullName();
-							delegateAddress = dossier.getGovAgencyName();
-							delegateTelNo = employee.getTelNo();
-							delegateEmail = employee.getEmail();
+					else if (user != null && employee != null) {
+						delegateName = employee.getFullName();
+						delegateAddress = dossier.getGovAgencyName();
+						delegateTelNo = employee.getTelNo();
+						delegateEmail = employee.getEmail();
+					}
 
-							if (hsltDossier != null) {
-								hsltDossier.setDelegateName(delegateName);
-								hsltDossier.setDelegateAddress(delegateAddress);
-								hsltDossier.setDelegateTelNo(delegateTelNo);
-								hsltDossier.setDelegateEmail(delegateEmail);
-								hsltDossier.setDelegateIdNo(delegateIdNo);
-								hsltDossier.setNew(false);
-								hsltDossier = dossierLocalService.updateDossier(hsltDossier);
-							}
-						}
+					if (hsltDossier != null) {
+						hsltDossier.setDelegateName(delegateName != null ? delegateName : StringPool.BLANK);
+						hsltDossier.setDelegateAddress(delegateAddress != null ? delegateAddress : StringPool.BLANK);
+						hsltDossier.setDelegateTelNo(delegateTelNo != null ? delegateTelNo : StringPool.BLANK);
+						hsltDossier.setDelegateEmail(delegateEmail != null ? delegateEmail : StringPool.BLANK);
+						hsltDossier.setDelegateIdNo(delegateIdNo != null ? delegateIdNo : StringPool.BLANK);
+						hsltDossier.setNew(false);
+						hsltDossier = dossierLocalService.updateDossier(hsltDossier);
 					}
 
 					//
@@ -896,7 +890,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, payload, assignUsers, payment, context);
 		
-		dossier = dossierLocalService.updateDossier(dossier);
+		//Update dossier
+		dossierLocalService.updateDossier(dossier);
 		
 //		Indexer<Dossier> indexer = IndexerRegistryUtil
 //				.nullSafeGetIndexer(Dossier.class);
@@ -1011,10 +1006,7 @@ public class CPSDossierBusinessLocalServiceImpl
 										context);								
 							}
 						} catch (NoSuchUserException e) {
-//							e.printStackTrace();
-							_log.error(e);
-							//_log.error(e);
-//							e.printStackTrace();
+							_log.debug(e);
 						}
 					}
 				}

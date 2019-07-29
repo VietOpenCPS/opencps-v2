@@ -363,7 +363,7 @@ public class NotificationUtil {
 			}
 		}
 		catch (Exception e) {
-
+			_log.debug(e);
 			// TODO: not send zalo
 		}
 		return sendZaloInfo;

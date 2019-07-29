@@ -50,7 +50,7 @@ public class GarbageCollectorScheduler extends BaseMessageListener {
 				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 			}
 			catch (PortalException pe) {
-				
+				_log.debug(pe);
 			}
 		}
 		

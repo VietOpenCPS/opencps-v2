@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
@@ -63,7 +63,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 			_log.info("OpenCPS SYNC DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		isRunning = false;
 	}

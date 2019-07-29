@@ -65,7 +65,7 @@ import backend.auth.api.exception.ErrorMsgModel;
 
 @Component(immediate = true, service = TimerScheduler.class)
 public class TimerScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {

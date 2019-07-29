@@ -55,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	//private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
 
 	public static final int GROUP_TYPE_SITE = 1;

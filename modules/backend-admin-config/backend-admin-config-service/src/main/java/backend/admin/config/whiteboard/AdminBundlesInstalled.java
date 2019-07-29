@@ -33,7 +33,7 @@ public class AdminBundlesInstalled {
 
 	public static String getBundleState(String symbolicName) {
 
-		String stateName = "UNINSTALLED";
+		String stateName;
 		
 		if (AdminBundlesInstalled.getBundles().containsKey(symbolicName)) {
 			Bundle bundle = AdminBundlesInstalled.getBundles().get(symbolicName);
@@ -75,12 +75,12 @@ public class AdminBundlesInstalled {
 		return stateName;
 	}
 
-	public void setBundleContext(BundleContext bundleContext) {
+	public static void setBundleContext(BundleContext bundleContext) {
 
 		AdminBundlesInstalled._bundleContext = bundleContext;
 	}
 
-	public void setBundles(LinkedHashMap<String, Bundle> bundles) {
+	public static void setBundles(LinkedHashMap<String, Bundle> bundles) {
 
 		AdminBundlesInstalled._bundles = bundles;
 	}
@@ -94,12 +94,12 @@ public class AdminBundlesInstalled {
 				mapBundles.put(bundle.getSymbolicName(), bundle);
 			}
 		}
-		this.setBundleContext(bundleContext);
-		this.setBundleIds(mapIds);
-		this.setBundles(mapBundles);	
+		AdminBundlesInstalled.setBundleContext(bundleContext);
+		AdminBundlesInstalled.setBundleIds(mapIds);
+		AdminBundlesInstalled.setBundles(mapBundles);	
 	}
 
-	public void setBundleIds(LinkedHashMap<String, Long> bundleIdentify) {
+	public static void setBundleIds(LinkedHashMap<String, Long> bundleIdentify) {
 
 		AdminBundlesInstalled._bundleIds = bundleIdentify;
 	}

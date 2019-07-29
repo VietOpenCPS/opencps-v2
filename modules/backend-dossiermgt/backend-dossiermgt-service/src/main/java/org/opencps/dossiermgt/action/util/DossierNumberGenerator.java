@@ -28,12 +28,10 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 public class DossierNumberGenerator {
@@ -75,14 +73,13 @@ public class DossierNumberGenerator {
 			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
 
 			//Process Pattern
-			String serviceProcessCode = StringPool.BLANK;
+			//String serviceProcessCode = StringPool.BLANK;
 			String govAgencyCode = StringPool.BLANK;
 			try {
 				ProcessOption processOption = ProcessOptionLocalServiceUtil.getProcessOption(processOtionId);
 				
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
-				
-				serviceProcessCode = serviceProcess.getProcessNo();
+				//ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(processOption.getServiceProcessId());
+				//serviceProcessCode = serviceProcess.getProcessNo();
 				
 				ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.fetchServiceConfig(processOption.getServiceConfigId());
 				if (serviceConfig != null) {
@@ -508,7 +505,7 @@ public class DossierNumberGenerator {
 
 	public static String generateDossierNumber(long groupId, String dossierNoPattern, String serviceCode, String govAgencyCode, String templateNo, String serviceProcessCode) {
 
-		String dossierNumber = StringPool.BLANK;
+		//String dossierNumber = StringPool.BLANK;
 		String codePatternGov = "\\{(a+|A+)\\}";
 		String codePatternDate = "\\{(n+|N+)\\}";
 		String codePatternMonth = "\\{(p+|P+)\\}";
@@ -679,8 +676,7 @@ public class DossierNumberGenerator {
 			}
 		}
 
-		dossierNumber = dossierNoPattern;
-		return dossierNumber;
+		return dossierNoPattern;
 	}
 	
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());

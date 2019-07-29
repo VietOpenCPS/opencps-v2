@@ -77,8 +77,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		}
 	}
 	
-	private static String TYPE_KYSO = ""; //la cac actionCode KYSO
-	private static String TYPE_DONGDAU = ""; //la cac actionCode KYSO
+	private String TYPE_KYSO = ""; //la cac actionCode KYSO
+	private String TYPE_DONGDAU = ""; //la cac actionCode KYSO
 
 	@Override
 	public JSONObject createHashSignature(String email, long fileEntryId, String typeSignature, String postStepCode, long groupId) {

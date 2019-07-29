@@ -15,7 +15,7 @@ public class DictItemCompareModel {
 	}
 
 	/* Comparator for sorting the list by Student Name */
-	public static Comparator<DictItemCompareModel> SiblingComparator = new Comparator<DictItemCompareModel>() {
+	public static final Comparator<DictItemCompareModel> SiblingComparator = new Comparator<DictItemCompareModel>() {
 
 		public int compare(DictItemCompareModel item1, DictItemCompareModel item2) {
 			int sibling1 = item1.getSibling();

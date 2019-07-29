@@ -44,7 +44,7 @@ public class BookingActionsImpl implements BookingActions {
 			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 		}
 
 		return result;
@@ -60,7 +60,7 @@ public class BookingActionsImpl implements BookingActions {
 			return BookingLocalServiceUtil.updateBooking(userId, groupId, bookingId, className, classPK, serviceCode,
 					codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceContext);
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 		}
 
 		return null;
@@ -71,6 +71,7 @@ public class BookingActionsImpl implements BookingActions {
 		try {
 			return BookingLocalServiceUtil.deleteBooking(id);
 		} catch (Exception e) {
+			_log.debug(e);
 			return null;
 		}
 	}

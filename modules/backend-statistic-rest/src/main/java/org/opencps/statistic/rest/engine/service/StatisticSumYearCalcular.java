@@ -169,6 +169,7 @@ public class StatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
+						_log.error(e);
 					}
 				}
 			}
@@ -245,6 +246,7 @@ public class StatisticSumYearCalcular {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
 						}						
 					} catch (JSONException e) {
+						_log.error(e);
 					}
 				}
 			}
