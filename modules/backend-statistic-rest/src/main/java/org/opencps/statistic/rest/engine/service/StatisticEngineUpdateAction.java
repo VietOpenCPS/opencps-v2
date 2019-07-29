@@ -86,17 +86,17 @@ public class StatisticEngineUpdateAction {
 		}
 	}
 	
-	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
-	}
-
-	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByMonthYear(groupId, month, year);
-	}
-
-	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByYear(companyId, groupId, month, year);
-	}
+//	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
+//	}
+//
+//	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByMonthYear(groupId, month, year);
+//	}
+//
+//	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByYear(companyId, groupId, month, year);
+//	}
 
 	//Get list dossierStatistic by groupId, month, year
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
@@ -109,10 +109,10 @@ public class StatisticEngineUpdateAction {
 	}
 
 	//Remove record by domain and govAgencyCode
-	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
-			throws NoSuchOpencpsDossierStatisticException {
-		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
-	}
+//	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
+//			throws NoSuchOpencpsDossierStatisticException {
+//		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
+//	}
 
 	//Get list statistic by year
 	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
@@ -227,4 +227,50 @@ public class StatisticEngineUpdateAction {
 	public void removePersonStatisticByYear(long companyId, long groupId, int month, int year) {
 		OpencpsPersonStatisticLocalServiceUtil.removePersonStatisticByYear(companyId, groupId, month, year);
 	}
+	
+	public OpencpsDossierStatistic createStatistic(DossierStatisticData payload) {
+		byte pausingCount = 0;
+
+		try {
+			return OpencpsDossierStatisticLocalServiceUtil.createOnlyStatistic(payload.getCompanyId(),
+					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
+					payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
+					payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
+					payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
+					payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
+					payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
+					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
+					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
+					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
+					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+					payload.getInsideCount());
+		} catch (PortalException | SystemException e) {
+			_log.error(e);
+			return null;
+		}
+	}
+	
+	
+	public OpencpsDossierStatistic updateOnlyStatistic(OpencpsDossierStatistic statistic, DossierStatisticData payload) {
+		byte pausingCount = 0;
+
+		try {
+			return OpencpsDossierStatisticLocalServiceUtil.updateOnlyStatistic(statistic, payload.getCompanyId(),
+					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
+					payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
+					payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
+					payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
+					payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
+					payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
+					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
+					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
+					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
+					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+					payload.getInsideCount());
+		} catch (PortalException | SystemException e) {
+			_log.error(e);
+			return null;
+		}
+	}	
+	
 }

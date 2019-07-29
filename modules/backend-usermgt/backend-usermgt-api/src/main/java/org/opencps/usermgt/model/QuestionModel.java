@@ -224,6 +224,21 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	 */
 	public void setGovAgencyName(String govAgencyName);
 
+	/**
+	 * Returns the question type of this question.
+	 *
+	 * @return the question type of this question
+	 */
+	@AutoEscape
+	public String getQuestionType();
+
+	/**
+	 * Sets the question type of this question.
+	 *
+	 * @param questionType the question type of this question
+	 */
+	public void setQuestionType(String questionType);
+
 	@Override
 	public boolean isNew();
 

@@ -17,7 +17,6 @@ package org.opencps.usermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.usermgt.exception.NoSuchQuestionException;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.base.QuestionLocalServiceBaseImpl;
 
@@ -86,11 +85,12 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	}
 
 	public List<Question> findByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish,
+			String questionType, 
 			int start, int limit) {
-		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, start, limit);
+		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, start, limit);
 	}
 
-	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish) {
-		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish);
+	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType) {
+		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType);
 	}
 }

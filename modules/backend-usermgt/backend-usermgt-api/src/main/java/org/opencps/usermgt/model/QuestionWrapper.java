@@ -68,6 +68,7 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("publish", getPublish());
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
+		attributes.put("questionType", getQuestionType());
 
 		return attributes;
 	}
@@ -138,6 +139,12 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 
 		if (govAgencyName != null) {
 			setGovAgencyName(govAgencyName);
+		}
+
+		String questionType = (String)attributes.get("questionType");
+
+		if (questionType != null) {
+			setQuestionType(questionType);
 		}
 	}
 
@@ -279,6 +286,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public long getQuestionId() {
 		return _question.getQuestionId();
+	}
+
+	/**
+	* Returns the question type of this question.
+	*
+	* @return the question type of this question
+	*/
+	@Override
+	public String getQuestionType() {
+		return _question.getQuestionType();
 	}
 
 	@Override
@@ -455,6 +472,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setQuestionId(long questionId) {
 		_question.setQuestionId(questionId);
+	}
+
+	/**
+	* Sets the question type of this question.
+	*
+	* @param questionType the question type of this question
+	*/
+	@Override
+	public void setQuestionType(String questionType) {
+		_question.setQuestionType(questionType);
 	}
 
 	@Override

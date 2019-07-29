@@ -117,6 +117,9 @@
 			<finder-column name="year"/>
 			<finder-column name="reporting"/>
 		</finder>
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId"></finder-column>
+		</finder>		
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"

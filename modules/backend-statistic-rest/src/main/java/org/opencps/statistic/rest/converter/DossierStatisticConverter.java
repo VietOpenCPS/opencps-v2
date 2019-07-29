@@ -29,6 +29,7 @@ public class DossierStatisticConverter {
 
 				DossierStatisticData dossierStatisticData = new DossierStatisticData();
 
+				dossierStatisticData.setGroupId(dossierStatistic.getGroupId());
 				dossierStatisticData.setMonth(dossierStatistic.getMonth());
 				dossierStatisticData.setYear(dossierStatistic.getYear());
 				dossierStatisticData.setTotalCount(dossierStatistic.getTotalCount());

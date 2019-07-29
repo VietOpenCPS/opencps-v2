@@ -66,7 +66,7 @@ public interface FaqManagement {
 	public Response getQuestions(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
-			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword,
+			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword, @QueryParam("questionType") String questionType,
 			@Context ServiceContext serviceContext);
 
 	@PUT

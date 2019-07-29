@@ -67,6 +67,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
+import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 //import org.opencps.systemmgt.constants.SchedulerRecordTerm;
 //import org.opencps.systemmgt.model.SchedulerRecord;
 //import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
@@ -174,6 +175,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
+//				int monthCurrent = 4;
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -222,7 +224,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				int lastYear = LocalDate.now().getYear() - 1;
 				boolean flagLastYear = true;
 				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
-				calculateData = new HashMap<>();
+				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
@@ -231,10 +233,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 					if (flagLastYear) {
 						try {
-//							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse, calculateData);
-							calculateDatas.put(lastYear, calculateData);
+								engineUpdateAction, serviceDomainResponse, calculateLastData);
+							calculateDatas.put(lastYear, calculateLastData);
 						}
 						catch (Exception e) {
 							_log.debug(e);
@@ -243,8 +244,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
 
+//				List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(site.getGroupId());
+//				if (allSiteDatas.size() == 0 && site.getGroupId() == 52737) {
+//					System.out.println("STATISTIC SIZE 0: " + site.getGroupId());
+//				}
 				for (int month = 1; month <= monthCurrent; month ++) {
-					if (mapFlagCurrent.get(month)) {
+					if (mapFlagCurrent.get(month)) {						
 //						try {
 //							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
 //						}
@@ -256,8 +261,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //						if (calculateData.get(month) != null) {
 							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 //							_log.debug("DOSSIER CAL MEMORY SIZE CURRENT: " + calculateDatas.get(yearCurrent).get(month).size());
-							statisticEngineUpdate.updateStatisticData(calculateDatas.get(yearCurrent).get(month));
-//							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
+//							statisticEngineUpdate.updateStatisticData(calculateDatas.get(yearCurrent).get(month), allSiteDatas);
+							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
 						}
 					}
 				}			
@@ -265,18 +270,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlagPrev.get(lastMonth)) {
-//						try {
-//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), lastMonth, lastYear);
-//						}
-//						catch (Exception e) {
-//							
-//						}
-//						if (calculateData.get(lastMonth) != null) {
 						if (calculateDatas.get(lastYear) != null &&
 								calculateDatas.get(lastYear).get(lastMonth) != null) {
-//							_log.debug("DOSSIER CAL MEMORY SIZE PREV: " + calculateDatas.get(lastYear).get(lastMonth).size());
+//							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth), allSiteDatas);
 							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
-//							statisticEngineUpdate.updateStatisticData(calculateData.get(lastMonth));
 						}
 					}
 				}			

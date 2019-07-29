@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -88,6 +88,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(govAgencyCode);
 		sb.append(", govAgencyName=");
 		sb.append(govAgencyName);
+		sb.append(", questionType=");
+		sb.append(questionType);
 		sb.append("}");
 
 		return sb.toString();
@@ -152,6 +154,13 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 			questionImpl.setGovAgencyName(govAgencyName);
 		}
 
+		if (questionType == null) {
+			questionImpl.setQuestionType("");
+		}
+		else {
+			questionImpl.setQuestionType(questionType);
+		}
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -173,6 +182,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		publish = objectInput.readInt();
 		govAgencyCode = objectInput.readUTF();
 		govAgencyName = objectInput.readUTF();
+		questionType = objectInput.readUTF();
 	}
 
 	@Override
@@ -222,6 +232,13 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		else {
 			objectOutput.writeUTF(govAgencyName);
 		}
+
+		if (questionType == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(questionType);
+		}
 	}
 
 	public long questionId;
@@ -235,4 +252,5 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public int publish;
 	public String govAgencyCode;
 	public String govAgencyName;
+	public String questionType;
 }

@@ -173,7 +173,8 @@ create table opencps_question (
 	content TEXT null,
 	publish INTEGER,
 	govAgencyCode VARCHAR(75) null,
-	govAgencyName VARCHAR(75) null
+	govAgencyName VARCHAR(75) null,
+	questionType VARCHAR(75) null
 );
 
 create table opencps_resourcerole (
