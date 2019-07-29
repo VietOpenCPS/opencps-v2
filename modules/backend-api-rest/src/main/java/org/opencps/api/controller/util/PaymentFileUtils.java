@@ -465,16 +465,19 @@ public class PaymentFileUtils {
 		try {
 			hang_tram = Integer.parseInt(a.substring(0, 1));
 		} catch (Exception ex) {
+			_log.debug(ex);
 		}
 		int hang_chuc = -1;
 		try {
 			hang_chuc = Integer.parseInt(a.substring(1, 2));
 		} catch (Exception ex) {
+			_log.debug(ex);
 		}
 		int hang_dv = -1;
 		try {
 			hang_dv = Integer.parseInt(a.substring(2, 3));
 		} catch (Exception ex) {
+			_log.debug(ex);
 		}
 
 		// xét hàng trăm

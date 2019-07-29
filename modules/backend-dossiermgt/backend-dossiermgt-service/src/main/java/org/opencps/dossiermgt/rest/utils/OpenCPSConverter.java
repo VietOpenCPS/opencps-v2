@@ -1285,7 +1285,7 @@ public class OpenCPSConverter {
 			result.put("ReturnedDate", convertToUTCDate(new Date(model.getDueDate())));
 		}
 		result.put("ReturnNote", StringPool.BLANK);
-		if (model.getViaPostal().equals("0")) {
+		if ("0".equalsIgnoreCase(model.getViaPostal())) {
 			result.put("ReturnedType", 0);
 		}
 		else {
@@ -1352,6 +1352,7 @@ public class OpenCPSConverter {
 			}
 		}
 		catch (Exception e) {
+			_log.debug(e);
 		}
 		result.put("DocFees", docFeesArr);
 		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());

@@ -1292,7 +1292,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processAction = actions.getProcessActionDetail(actionid);
 			}
 			catch (Exception e)  {
-				
+				_log.debug(e);
 			}
 			
 			ProcessActionReturnModel results;

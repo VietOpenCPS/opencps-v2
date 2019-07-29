@@ -66,7 +66,7 @@ public class ViettelSMSUtils {
 					configObj.getString(SendSMSTerm.CC_API_PORT_ADDRESS));
 				portType = locator.getCcApiPort();
 
-				String toTelNoRpl = toTelNo.substring(0, 1).equals("0")
+				String toTelNoRpl = "0".equals(toTelNo.substring(0, 1))
 					? configObj.getString(SendSMSTerm.COUNTRY_CODE) +
 						toTelNo.substring(1)
 					: toTelNo;

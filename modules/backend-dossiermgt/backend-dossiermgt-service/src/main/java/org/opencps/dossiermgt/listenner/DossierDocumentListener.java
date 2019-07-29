@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.List;
 
@@ -77,6 +76,7 @@ public class DossierDocumentListener extends BaseModelListener<DossierDocument> 
 					
 				}
 			} catch (PortalException e) {
+				_log.debug(e);
 			}
 			
 		}

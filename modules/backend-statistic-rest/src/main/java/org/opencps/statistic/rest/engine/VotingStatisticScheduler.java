@@ -59,7 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	protected Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	

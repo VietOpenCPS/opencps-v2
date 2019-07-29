@@ -114,7 +114,7 @@ public class ZaloHookServlet extends HttpServlet {
 
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 		}
 
 		_writeSampleHTML(response, result);
@@ -132,7 +132,12 @@ public class ZaloHookServlet extends HttpServlet {
 			System.out.println("ZaloHookServlet doPost Sys");
 		}
 
+		try {
 		doGet(request, response);
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
 
 	}
 

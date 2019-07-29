@@ -231,7 +231,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				domainCode);
 		Date now = new Date();
 		long dossierStatisticId = 0l;
-		
+		_log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);

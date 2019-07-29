@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -427,6 +428,8 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		//long userId = user.getUserId();
 		InputStream fileInputStream = null;
+		FileInputStream excelInputStream = null;
+		Workbook workbook = null;
 
 		try {
 			DataHandler dataHandle = file.getDataHandler();
@@ -476,14 +479,14 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				File excelFile = new File(pathFile);
 				FileOutputStream out = new FileOutputStream(excelFile);
 				IOUtils.copy(fileInputStream, out);
-				FileInputStream excelInputStream = new FileInputStream(excelFile);
+				excelInputStream = new FileInputStream(excelFile);
 //					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
 				_log.info("excelFile: "+excelFile);
 				_log.info("LamTV_fileList: "+excelFile.getPath());
 				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 				if (Validator.isNotNull(subFileName)) {
 					//String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
-					Workbook workbook = new XSSFWorkbook(excelInputStream);
+					workbook = new XSSFWorkbook(excelInputStream);
 					//Dossier
 					Sheet datatypeSheetOne = workbook.getSheetAt(0);
 					//
@@ -522,6 +525,21 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		} catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (excelInputStream != null) {
+				try {
+					excelInputStream.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
 		}
 	}
 
@@ -535,6 +553,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 		InputStream fileInputStream = null;
+		Workbook workbook = null;
 
 		try {
 			DataHandler dataHandle = file.getDataHandler();
@@ -591,7 +610,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
 				if (Validator.isNotNull(subFileName)) {
 					//String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
-					Workbook workbook = new XSSFWorkbook(excelInputStream);
+					workbook = new XSSFWorkbook(excelInputStream);
 					//Dossier
 					Sheet datatypeSheetOne = workbook.getSheetAt(0);
 					//
@@ -641,6 +660,14 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 		} catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
 		}
 	}
 

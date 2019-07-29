@@ -754,7 +754,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 			} 
 			catch (Exception e) { 
 				_log.debug(e);
-			}   
+			} finally {
+				if (workbook != null) {
+					workbook.close();
+				}
+			}
 			
 			ResponseBuilder responseBuilder = Response.ok((Object) xlsFile);
 			responseBuilder.header("Content-Disposition",

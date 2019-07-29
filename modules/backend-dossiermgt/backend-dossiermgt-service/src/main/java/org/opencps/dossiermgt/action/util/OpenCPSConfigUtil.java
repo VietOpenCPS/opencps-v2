@@ -1,6 +1,8 @@
 package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -78,6 +80,7 @@ public class OpenCPSConfigUtil {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 			return inetAddress.getHostAddress();
 		} catch (UnknownHostException e) {
+			_log.debug(e);
 		}
 		
 		return StringPool.BLANK;
@@ -92,4 +95,6 @@ public class OpenCPSConfigUtil {
 		String isPermissionRoleMode = PropsUtil.get(OPENCPS_PERMISSION_ROLE_MODE);
 		return Validator.isNotNull(isPermissionRoleMode) ? Boolean.parseBoolean(isPermissionRoleMode) : false;		
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(OpenCPSConfigUtil.class);
 }

@@ -118,9 +118,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
 	
-					String bunderStr = StringPool.BLANK;
-					String modelStr = StringPool.BLANK;
-					String serviceUtilStr = StringPool.BLANK;
+					String bunderStr;
+					String modelStr;
+					String serviceUtilStr;
 	
 					if (Validator.isNull(adminConfig)) {
 						bunderStr = message.getString(BUNDLE_NAME);
@@ -132,8 +132,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						serviceUtilStr = adminConfig.getServiceUtilName();
 					}
 	
-					BundleLoader bundleLoader = new BundleLoader(bunderStr);
-					Class<?> model = bundleLoader.getClassLoader().loadClass(modelStr);
+					BundleLoader bundleLoader = new BundleLoader(bunderStr != null ? bunderStr : StringPool.BLANK);
+					Class<?> model = bundleLoader.getClassLoader().loadClass(modelStr != null ? modelStr : StringPool.BLANK);
 	
 					Method method = null;
 	
@@ -141,11 +141,11 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					
 					if (message.getString(CMD).equals(GET)) {
 	
-						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery");
+						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr != null ? serviceUtilStr : StringPool.BLANK).getMethod("dynamicQuery");
 	
 						DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 	
-						if (Validator.isNotNull(adminConfig) && !message.getString("responeType").equals("detail")) {
+						if (Validator.isNotNull(adminConfig) && !"detail".equalsIgnoreCase(message.getString("responeType"))) {
 	
 							String columns = adminConfig.getColumns();
 	
@@ -165,7 +165,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 								}
 								
-								if (message.getString(RESPONE).equals("listTableMenu")) {
+								if ("listTableMenu".equalsIgnoreCase(message.getString(RESPONE))) {
 									projectionList.add(ProjectionFactoryUtil.property("publicManager"));
 								}
 	
@@ -173,7 +173,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 							}
 	
-						} else if (message.getString("responeType").equals("menu")) {
+						} else if ("menu".equalsIgnoreCase(message.getString("responeType"))) {
 							ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 	
 							projectionList.add(ProjectionFactoryUtil.property("code"));
@@ -192,8 +192,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 								if (Validator.isNotNull(filter.getString("value_filter"))
 										&& filter.getString("value_filter").length() > 0) {
 	
-									if (filter.getString(COMPARE).equals("=")) {
-										if (filter.getString("type").equals("number") || filter.getString("type").equals("autocomplete")) {
+									if ("=".equals(filter.getString(COMPARE))) {
+										if ("number".equalsIgnoreCase(filter.getString("type")) || "autocomplete".equalsIgnoreCase(filter.getString("type"))) {
 											if (filter.getBoolean("int")) {
 												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 														.eq(filter.getInt("value_filter")));
@@ -202,8 +202,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 														.eq(filter.getLong("value_filter")));
 											}
 											
-										} else if (filter.getString("type").equals("checkbox")) {
-											if (filter.getString("data_type").equals("int")) {
+										} else if ("checkbox".equalsIgnoreCase(filter.getString("type"))) {
+											if ("int".equalsIgnoreCase(filter.getString("data_type"))) {
 												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 														.eq(filter.getBoolean("value_filter") ? 1 : 0));
 											} else {
@@ -214,20 +214,20 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 													.eq(filter.getString("value_filter")));
 										}
-									} else if (filter.getString(COMPARE).equals("like")) {
+									} else if ("like".equalsIgnoreCase(filter.getString(COMPARE))) {
 										dynamicQuery.add(
 												PropertyFactoryUtil.forName(filter.getString("key")).like(StringPool.PERCENT
 														+ filter.getString("value_filter") + StringPool.PERCENT));
-									} else if (filter.getString(COMPARE).equals("lt")) {
+									} else if ("lt".equalsIgnoreCase(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 												.lt(filter.getLong("value_filter")));
-									} else if (filter.getString(COMPARE).equals("le")) {
+									} else if ("le".equalsIgnoreCase(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 												.le(filter.getLong("value_filter")));
-									} else if (filter.getString(COMPARE).equals("gt")) {
+									} else if ("gt".equalsIgnoreCase(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 												.gt(filter.getLong("value_filter")));
-									} else if (filter.getString(COMPARE).equals("ge")) {
+									} else if ("ge".equalsIgnoreCase(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 												.ge(filter.getLong("value_filter")));
 									}
@@ -241,7 +241,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						if (groupId > 0 && adminConfig.getGroupFilter()) {
 							Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 							if (Validator.isNotNull(code)
-									&& (code.equals("opencps_workingunit") || code.equals("opencps_applicant"))) {
+									&& ("opencps_workingunit".equalsIgnoreCase(code)) || "opencps_applicant".equalsIgnoreCase(code)) {
 								disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
 							} else {
 								disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
@@ -258,7 +258,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 	
 	//					System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + code.equals("opencps_employee"));
+						_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
 						
 						if (message.getBoolean(CONFIG)) {
 	
@@ -287,9 +287,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 							
 	//						System.out.println("code: " + code.equals("opencps_employee"));
-							_log.debug("code: " + code.equals("opencps_employee"));
+							_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
 							_log.debug("lengColumns: " + lengColumns);
-							if (code.equals("opencps_employee")) {
+							if ("opencps_employee".equalsIgnoreCase(code)) {
 								
 								List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 	
@@ -387,6 +387,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					try {
 						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
 					} catch (Exception e) {
+						_log.debug(e);
 						responeData = JSONFactoryUtil.createJSONArray(resultString);
 					}
 					messageData.put(message.getString(RESPONE), responeData);

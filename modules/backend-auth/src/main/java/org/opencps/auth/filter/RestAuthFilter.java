@@ -16,6 +16,8 @@ package org.opencps.auth.filter;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
@@ -62,9 +64,10 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	public final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/dossiers", "/o/rest/v2/serviceinfos", "/o/rest/statistics/reports" };
+	protected final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/dossiers", "/o/rest/v2/serviceinfos", "/o/rest/statistics/reports" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	public final static String LIFERAY_GZIP_FILTER = "com.liferay.portal.servlet.filters.gzip.GZipFilter";
+	private static final Log _log = LogFactoryUtil.getLog(RestAuthFilter.class);
 	
 	@Override
 	public void destroy() {
@@ -87,7 +90,7 @@ public class RestAuthFilter implements Filter {
 			pAuth = httpRequest.getParameter("Token");
 		}
 		String ipAddress = HttpUtil.getIpAddress(httpRequest);
-		boolean checkLocal = (ipAddress.equals("localhost") || ipAddress.equals("127.0.0.1"));
+		boolean checkLocal = ("localhost".equals(ipAddress) || "127.0.0.1".equals(ipAddress));
 		
 		if (checkLocal || exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
@@ -140,6 +143,7 @@ public class RestAuthFilter implements Filter {
 					authOK(servletRequest, servletResponse, filterChain, userId);
 					
 				} catch (PortalException e) {
+					_log.debug(e);
 					authFailure(servletResponse);
 				}
 

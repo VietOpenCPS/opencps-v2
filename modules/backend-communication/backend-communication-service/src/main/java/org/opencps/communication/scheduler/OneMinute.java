@@ -50,7 +50,7 @@ import ws.bulkSms.impl.Result;
  */
 @Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -64,7 +64,7 @@ public class OneMinute extends BaseMessageListener {
 			doProcessNotification(message);
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		isRunning = false;
 	}

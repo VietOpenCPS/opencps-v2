@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = Daily.class)
 public class Daily extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) {

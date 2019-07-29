@@ -75,7 +75,6 @@ public class ZaloMapUtils {
 		}
 		catch (PortalException e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -111,7 +110,6 @@ public class ZaloMapUtils {
 		}
 		catch (PortalException e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -155,7 +153,6 @@ public class ZaloMapUtils {
 		}
 		catch (Exception e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -195,7 +192,6 @@ public class ZaloMapUtils {
 		}
 		catch (PortalException e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -235,7 +231,6 @@ public class ZaloMapUtils {
 		}
 		catch (PortalException e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -248,8 +243,8 @@ public class ZaloMapUtils {
 		String oAId =
 			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_OAID);
 
-		String uId =
-			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
+//		String uId =
+//			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
 		if (Validator.isNotNull(zaloMap) &&
 			oAId.equals(zaloMap.getZaloOAId())) {
 
@@ -265,8 +260,8 @@ public class ZaloMapUtils {
 
 	private JSONObject _registryTelNo(String telNo) {
 
-		String uId =
-			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
+//		String uId =
+//			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_FROM_UID);
 		String oAId =
 			(String) zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_OAID);
 
@@ -311,7 +306,6 @@ public class ZaloMapUtils {
 		}
 		catch (PortalException e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -327,7 +321,7 @@ public class ZaloMapUtils {
 			JSONObject zaloConfig = _getZaloInfo();
 			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(
 				zaloConfig.getLong(SendSMSTerm.ZALO_GROUPID), dossierNo);
-			String message = StringPool.BLANK;
+			String message;
 
 			if (Validator.isNull(dossier)) {
 
@@ -360,7 +354,6 @@ public class ZaloMapUtils {
 		}
 		catch (Exception e) {
 
-			e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -379,7 +372,7 @@ public class ZaloMapUtils {
 			zaloInfoConfig = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
 		}
 
 		return zaloInfoConfig;

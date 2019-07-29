@@ -422,7 +422,7 @@ public class DossierActionsImpl implements DossierActions {
 		List<Role> userRolesAdminCheck = user.getRoles();
 		boolean isAdministratorData = false;
 		for (Role r : userRolesAdminCheck) {
-			if (r.getName().equals("Administrator")) {
+			if ("Administrator".equalsIgnoreCase(r.getName())) {
 				isAdministratorData = true;
 				break;
 			}
@@ -742,9 +742,13 @@ public class DossierActionsImpl implements DossierActions {
 					Date receiveDate = new Date();
 					receivingObj.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate() != null ? dossier.getReceiveDate().getTime() : receiveDate.getTime());
 					Date dueDate = null;
-					Double durationCount = serviceProcess.getDurationCount();
-					if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
-						dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
+					if (dossier.getDueDate() != null) {
+						dueDate = dossier.getDueDate();
+					} else {
+						Double durationCount = serviceProcess.getDurationCount();
+						if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+							dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
+						}
 					}
 
 					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);
@@ -1302,7 +1306,7 @@ public class DossierActionsImpl implements DossierActions {
 						2, false, new DossierFileComparator(false, "createDate", Date.class));
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 			_log.info("dossierFile create:" + dossierFile);
 			if (Validator.isNull(dossierFile)) {
@@ -1353,7 +1357,7 @@ public class DossierActionsImpl implements DossierActions {
 							2, false, new DossierFileComparator(false, "createDate", Date.class));
 				}
 				catch (Exception e) {
-					
+					_log.debug(e);
 				}
 				if (Validator.isNull(dossierFile)) {
 					DossierFileActions actions = new DossierFileActionsImpl();
