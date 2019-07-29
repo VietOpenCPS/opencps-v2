@@ -163,7 +163,8 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		else if (this.startDateTimeNum > this.endPM) {
+		//else if (this.startDateTimeNum > this.endPM) {
+		else {
 
 			// set to startAM
 			Calendar calStartDate = Calendar.getInstance();
@@ -179,11 +180,11 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		else {
+		//else {
 
-			this.startDate = startDate;
-			_log.info("other case");
-		}
+		//	this.startDate = startDate;
+		//	_log.info("other case");
+		//}
 
 		_log.info(
 			"ngay tiep nhan ho so=====" + SupportUtils._dateToString(
@@ -275,7 +276,8 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		else if (this.startDateTimeNum > this.endPM) {
+		//else if (this.startDateTimeNum > this.endPM) {
+		else {
 
 			// set to startAM
 			this.startDateTimeStr = DEFAULT_START_AM_STR;
@@ -284,10 +286,9 @@ public class DueDateUtils {
 			// case 3
 			this._setNextWorkDay();
 		}
-		else {
-
-			_log.info("other case");
-		}
+//		else {
+//			_log.info("other case");
+//		}
 	}
 
 	private void _findAWorkingDayNSetDueDate(Date date) {

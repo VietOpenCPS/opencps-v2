@@ -7,11 +7,15 @@
 
 package ws.bulkSms.impl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements ws.bulkSms.impl.CcApi_PortType {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
+    private static Log _log = LogFactoryUtil.getLog(CcApiPortBindingStub.class);
 
     static org.apache.axis.description.OperationDesc [] _operations;
 
@@ -607,6 +611,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
             }
         }
@@ -641,6 +646,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.ResultCp) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.ResultCp) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.ResultCp.class);
             }
         }
@@ -683,6 +689,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (com.viettel.smsbrand.CpBalance) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (com.viettel.smsbrand.CpBalance) org.apache.axis.utils.JavaUtils.convert(_resp, com.viettel.smsbrand.CpBalance.class);
             }
         }
@@ -717,6 +724,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.Result) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.Result) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.Result.class);
             }
         }
@@ -751,6 +759,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.Result) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.Result) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.Result.class);
             }
         }
@@ -785,6 +794,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.ResultMultiReceiver) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.ResultMultiReceiver) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.ResultMultiReceiver.class);
             }
         }
@@ -819,6 +829,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.ReportHourBO[]) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.ReportHourBO[]) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.ReportHourBO[].class);
             }
         }
@@ -861,6 +872,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.ReportDailyBO[]) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.ReportDailyBO[]) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.ReportDailyBO[].class);
             }
         }
@@ -903,6 +915,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.ReportMonthBO[]) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.ReportMonthBO[]) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.ReportMonthBO[].class);
             }
         }
@@ -945,6 +958,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.FailSubReponse) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.FailSubReponse) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.FailSubReponse.class);
             }
         }
@@ -979,6 +993,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.CreateMtResult) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.CreateMtResult) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.CreateMtResult.class);
             }
         }
@@ -1013,6 +1028,7 @@ public class CcApiPortBindingStub extends org.apache.axis.client.Stub implements
             try {
                 return (ws.bulkSms.impl.Result) _resp;
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return (ws.bulkSms.impl.Result) org.apache.axis.utils.JavaUtils.convert(_resp, ws.bulkSms.impl.Result.class);
             }
         }

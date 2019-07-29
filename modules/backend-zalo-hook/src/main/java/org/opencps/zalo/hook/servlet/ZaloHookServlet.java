@@ -12,18 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.opencps.communication.service.persistence.ZaloMapUtil;
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
 import org.opencps.zalo.hook.utils.ZaloMapUtils;
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -133,7 +132,7 @@ public class ZaloHookServlet extends HttpServlet {
 		}
 
 		try {
-		doGet(request, response);
+			doGet(request, response);
 		}
 		catch (Exception e) {
 			_log.error(e);

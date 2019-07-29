@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.StringPool;
 
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IToken;
 import vn.mitc.ngsp.sdk.models.MToken;
@@ -102,7 +102,12 @@ public class VNPostNGSPServlet extends HttpServlet {
 			System.out.println("VNPostNGSPServlet doPost sys");
 		}
 
-		doGet(request, response);
+		try {
+			doGet(request, response);
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
 
 	}
 	

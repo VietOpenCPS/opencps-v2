@@ -12,10 +12,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 
-import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.EFormActions;
 import org.opencps.dossiermgt.action.util.EFormNumberGenerator;
 import org.opencps.dossiermgt.model.EForm;
@@ -84,7 +82,7 @@ public class EFormActionsImpl implements EFormActions{
 			if (Validator.isNull(eFormNo)) {
 				_log.info("START GENERATE EFORM");
 				eFormNo = EFormNumberGenerator.generateServiceFileNumber(groupId, serviceContext.getCompanyId(),
-						service.getServiceCode(), eFormNoPattern);
+						service != null ? service.getServiceCode() : StringPool.BLANK, eFormNoPattern);
 			}
 			if (Validator.isNull(secret)) {
 				secret = PwdGenerator.getPinNumber();

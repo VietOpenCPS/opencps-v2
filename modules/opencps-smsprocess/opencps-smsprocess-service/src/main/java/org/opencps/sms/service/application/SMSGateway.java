@@ -101,6 +101,7 @@ public class SMSGateway {
             receiveMOResponseType.setReceiveMOResult(200);
        }
          catch (AxisFault e) {
+        	_log.debug(e);
              SMSLogAction.updateSMSGatewayLogFail(smsGatewayLog.getSmsId());
 
         }
@@ -113,8 +114,8 @@ public class SMSGateway {
             _log.info(e);
         }
         catch (UpstreamServiceTimedOutException | UpstreamServiceFailedException e) {
+        	_log.debug(e);
             SMSLogAction.updateSMSGatewayLogFail(smsGatewayLog.getSmsId());
-            e.printStackTrace();
         } 
 
         return receiveMOResponseType;
@@ -140,7 +141,7 @@ public class SMSGateway {
             src = src.replace("+84", "0");
         }
 
-        if ( src.substring(0, 2).equals("84")) {
+        if ("84".equals(src.substring(0, 2))) {
            StringBuilder sb = new StringBuilder(src);
            sb.replace(0, 2, "0");
            
@@ -227,7 +228,7 @@ public class SMSGateway {
 
         if (Validator.isNotNull(data)) {
             
-            applicationName = data.getApplicantName();
+            //applicationName = data.getApplicantName();
             
             replyContent = buildSMSContent(data);
         }

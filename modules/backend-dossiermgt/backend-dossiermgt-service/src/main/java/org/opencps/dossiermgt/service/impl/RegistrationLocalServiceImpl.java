@@ -688,8 +688,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			}
 
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		
 		registrationPersistence.update(object);

@@ -82,7 +82,7 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 				}
 				long userId = 0;
 				
-				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, da.getServiceProcessId());
+				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, da != null? da.getServiceProcessId() : 0);
 				if (!dossier.getDossierStatus().equals(ps.getDossierStatus())
 						|| !dossier.getDossierSubStatus().equals(ps.getDossierSubStatus())) {
 					dossier.setDossierStatus(ps.getDossierStatus());

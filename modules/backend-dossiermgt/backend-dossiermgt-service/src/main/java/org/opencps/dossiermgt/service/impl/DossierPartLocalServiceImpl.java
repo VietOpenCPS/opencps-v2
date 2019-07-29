@@ -574,7 +574,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		try {
 			return dossierPartPersistence.findByTP_NO_PART_ESIGN(templateNo, partNo, partType, eSign);
 		} catch (NoSuchDossierPartException e) {
-			// _log.debug(e);
+			 _log.debug(e);
 			return null;
 		}
 	}

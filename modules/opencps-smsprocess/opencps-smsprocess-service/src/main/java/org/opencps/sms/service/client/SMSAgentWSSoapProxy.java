@@ -1,8 +1,12 @@
 package org.opencps.sms.service.client;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 public class SMSAgentWSSoapProxy implements org.opencps.sms.service.client.SMSAgentWSSoap {
   private String _endpoint = null;
   private org.opencps.sms.service.client.SMSAgentWSSoap sMSAgentWSSoap = null;
+  private static Log _log = LogFactoryUtil.getLog(SMSAgentWSSoapProxy.class);
   
   public SMSAgentWSSoapProxy() {
     _initSMSAgentWSSoapProxy();
@@ -24,7 +28,9 @@ public class SMSAgentWSSoapProxy implements org.opencps.sms.service.client.SMSAg
       }
       
     }
-    catch (javax.xml.rpc.ServiceException serviceException) {}
+    catch (javax.xml.rpc.ServiceException serviceException) {
+    	_log.debug(serviceException);
+    }
   }
   
   public String getEndpoint() {

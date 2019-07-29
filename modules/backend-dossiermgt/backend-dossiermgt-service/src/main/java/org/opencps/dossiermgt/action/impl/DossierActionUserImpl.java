@@ -331,7 +331,7 @@ public class DossierActionUserImpl implements DossierActionUser {
 					dau = mapDaus.get(dossierAction.getDossierActionId()).get(userIdAssigned);
 				}
 				
-				if (Validator.isNull(dau)) {
+				if (dau == null) {
 //					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					DossierAction dAction = dossierAction;
 					if (dAction != null) {
