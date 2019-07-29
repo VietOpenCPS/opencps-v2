@@ -174,7 +174,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 					//
 					//TODO: Calculator again last year
 					//Delete record
-//					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+					engineUpdateAction.removeVotingStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
 					
 					statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 				}

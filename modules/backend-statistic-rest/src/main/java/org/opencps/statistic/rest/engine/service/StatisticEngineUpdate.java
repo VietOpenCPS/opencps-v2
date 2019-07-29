@@ -1,8 +1,5 @@
 package org.opencps.statistic.rest.engine.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +9,6 @@ import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
-import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 
 public class StatisticEngineUpdate {
 	public void updateStatisticData(Map<String, DossierStatisticData> statisticData, List<OpencpsDossierStatistic> datas) {
@@ -24,11 +20,6 @@ public class StatisticEngineUpdate {
 			DossierStatisticData payload = (DossierStatisticData) me.getValue();
 			OpencpsDossierStatistic checkData = DossierStatisticUtils.checkExists(payload.getMonth(), payload.getYear(), payload.getDomainCode(), payload.getGovAgencyCode(), datas);
 			if (checkData == null) {
-//				if (payload.getGroupId() == 52737 && payload.getDomainCode() != null && payload.getDomainCode().equals("SCT_ATTP") && payload.getMonth() == 4) {
-//					System.out.println("Data size: " + datas.size());
-//					System.out.println("Not found: " + payload.getGroupId() + "," + payload.getMonth() + "," + payload.getYear() + "," + payload.getDomainCode() + "," + payload.getGovAgencyCode());
-//					engineUpdateAction.createStatistic(payload);
-//				}
 				engineUpdateAction.createStatistic(payload);
 			}
 			else {

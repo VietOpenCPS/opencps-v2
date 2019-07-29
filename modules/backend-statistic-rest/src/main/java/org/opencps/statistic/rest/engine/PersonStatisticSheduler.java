@@ -125,16 +125,16 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 	
 				/* Update summary */
 				//Delete record
-//				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+				engineUpdateAction.removePersonStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
 				//
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+				statisticSumYearService.personCalculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				//TODO: Calculator again last year
 				//Delete record
-//				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+				engineUpdateAction.removePersonStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
 				//
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
+				statisticSumYearService.personCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 	
 			}
 		}

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.statistic.dto.DossierStatisticData;
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
@@ -71,7 +70,6 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		OpencpsDossierStatistic dossierStatistic = null;
 		Date now = new Date();
 		if (dossierStatisticId == 0L) {
-			System.out.println("UPDATE STATISTIC DATA: " + dossierStatisticId + "," + now);
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
 			dossierStatistic.setCreateDate(now);
@@ -242,7 +240,6 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		long dossierStatisticId = 0l;
 		_log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
-			System.out.println("UPDATE STATISTIC DATA CREATE OR UPDATE: " + dossierStatisticId + "," + now + "," + groupId + "," + month + "," + year + "," + govAgencyCode + "," + domainCode);
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
 			dossierStatistic.setCreateDate(now);
@@ -374,7 +371,6 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int insideCount) throws PortalException, SystemException {
 		Date now = new Date();
 		long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
-		_log.info("CREATE ONLY");
 		OpencpsDossierStatistic dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
 		dossierStatistic.setCreateDate(now);
 		dossierStatistic.setModifiedDate(now);
@@ -435,7 +431,6 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount) throws PortalException, SystemException {
 		Date now = new Date();
-		_log.info("UPDATE ONLY");
 		dossierStatistic.setCreateDate(now);
 		dossierStatistic.setModifiedDate(now);
 		dossierStatistic.setCompanyId(companyId);
