@@ -504,6 +504,19 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile updateDossierFile(DossierFile dossierFile);
 
 	/**
+	* @POST @Path("/dossierfiles")
+	*/
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile updateDossierFile(long dossierFileId, long groupId,
+		long companyId, long userId, String userName, long dossierId,
+		String referenceUid, String dossierTemplateNo, String dossierPartNo,
+		int dossierPartType, String fileTemplateNo, String displayName,
+		String formData, long fileEntryId, Boolean original, Boolean eForm,
+		Boolean isNew, Boolean removed, int signCheck, String signInfo,
+		String formScript, String formReport, String formSchema,
+		String deliverableCode);
+
+	/**
 	* POST /dossiers/{id|referenceUid}/files/{referenceUid}
 	*/
 	@Indexable(type = IndexableType.REINDEX)

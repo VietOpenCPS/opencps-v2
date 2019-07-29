@@ -89,19 +89,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
-			Dossier groupDossier = null;
-			if (dossier != null && dossier.getGroupDossierId() != 0) {
-				groupDossier = DossierLocalServiceUtil.fetchDossier(dossier.getGroupDossierId());
-			}
+//			Dossier groupDossier = null;
+//			if (dossier != null && dossier.getGroupDossierId() != 0) {
+//				groupDossier = DossierLocalServiceUtil.fetchDossier(dossier.getGroupDossierId());
+//			}
 			List<DossierFile> fileResults = new ArrayList<>();
 			
 			if (dossier != null && dossier.getOriginDossierId() == 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getDossierId());
-				if (groupDossier != null) {
-					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
-					if (groupFiles != null)
-						fileResults.addAll(groupFiles);
-				}
+//				if (groupDossier != null) {
+//					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
+//					if (groupFiles != null)
+//						fileResults.addAll(groupFiles);
+//				}
 				if (dossierFiles != null && dossierFiles.size() > 0) {
 					fileResults.addAll(dossierFiles);
 					results.setTotal(dossierFiles.size());
@@ -112,11 +112,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 			else if (dossier != null && dossier.getOriginDossierId() != 0) {
 				List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getOriginDossierId());
-				if (groupDossier != null) {
-					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
-					if (groupFiles != null)
-						fileResults.addAll(groupFiles);
-				}
+//				if (groupDossier != null) {
+//					List<DossierFile> groupFiles = DossierFileLocalServiceUtil.getDossierFilesByDossierId(dossier.getGroupDossierId());
+//					if (groupFiles != null)
+//						fileResults.addAll(groupFiles);
+//				}
 				if (dossierFiles != null && dossierFiles.size() > 0) {
 					fileResults.addAll(dossierFiles);
 
@@ -923,6 +923,100 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(results).build();
 
 		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
+
+	@Override
+	public Response addDossierFiles(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		String dossierIds, String referenceUid, String dossierTemplateNo,
+		String dossierPartNo, int dossierPartType, String fileTemplateNo,
+		String displayName, String formData, long fileEntryId, Boolean original,
+		Boolean eForm, Boolean isNew, Boolean removed, int signCheck,
+		String signInfo, String formScript, String formReport,
+		String formSchema, String deliverableCode) {
+
+		try {
+
+			BackendAuth auth = new BackendAuthImpl();
+			DossierFileResultsModel results = new DossierFileResultsModel();
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			if (!auth.isAuth(serviceContext)) {
+
+				throw new UnauthenticationException();
+			}
+
+			List<DossierFile> dossierFiles = new ArrayList<>();
+			String[] dossierIdList = dossierIds.split(StringPool.COMMA);
+			for (String dossierIdStr : dossierIdList) {
+
+				try {
+
+					long dossierId = GetterUtil.getLong(dossierIdStr);
+					if (dossierId > 0) {
+						DossierFile dossierFile =
+							DossierFileLocalServiceUtil.updateDossierFile(
+								0, groupId, company.getCompanyId(),
+								user.getUserId(), user.getFullName(), dossierId,
+								referenceUid, dossierTemplateNo, dossierPartNo,
+								dossierPartType, fileTemplateNo, displayName,
+								formData, fileEntryId, original, eForm, isNew,
+								removed, signCheck, signInfo, formScript,
+								formReport, formSchema, deliverableCode);
+
+						dossierFiles.add(dossierFile);
+					}
+				}
+				catch (Exception e) {
+
+					_log.error(e);
+				}
+			}
+
+			results.setTotal(dossierFiles.size());
+			results.getData().addAll(
+				DossierFileUtils.mappingToDossierFileData(dossierFiles));
+			return Response.status(200).entity(results).build();
+		}
+		catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response cleanDossierFile(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		long dossierFileId) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFileModel results = null;
+			DossierFile dossierFile =
+				DossierFileLocalServiceUtil.permanentDeleteDossierFile(
+					dossierFileId);
+
+			if (dossierFile != null) {
+				results =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			}
+
+			return Response.status(200).entity(results).build();
+
+		}
+		catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}

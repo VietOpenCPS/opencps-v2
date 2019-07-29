@@ -666,6 +666,25 @@ public class DossierFileLocalServiceUtil {
 	}
 
 	/**
+	* @POST @Path("/dossierfiles")
+	*/
+	public static org.opencps.dossiermgt.model.DossierFile updateDossierFile(
+		long dossierFileId, long groupId, long companyId, long userId,
+		String userName, long dossierId, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, int dossierPartType,
+		String fileTemplateNo, String displayName, String formData,
+		long fileEntryId, Boolean original, Boolean eForm, Boolean isNew,
+		Boolean removed, int signCheck, String signInfo, String formScript,
+		String formReport, String formSchema, String deliverableCode) {
+		return getService()
+				   .updateDossierFile(dossierFileId, groupId, companyId,
+			userId, userName, dossierId, referenceUid, dossierTemplateNo,
+			dossierPartNo, dossierPartType, fileTemplateNo, displayName,
+			formData, fileEntryId, original, eForm, isNew, removed, signCheck,
+			signInfo, formScript, formReport, formSchema, deliverableCode);
+	}
+
+	/**
 	* POST /dossiers/{id|referenceUid}/files/{referenceUid}
 	*/
 	public static org.opencps.dossiermgt.model.DossierFile updateDossierFile(
