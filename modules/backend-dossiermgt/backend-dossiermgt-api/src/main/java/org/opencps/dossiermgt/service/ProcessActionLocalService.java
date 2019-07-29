@@ -220,6 +220,10 @@ public interface ProcessActionLocalService extends BaseLocalService,
 		long serviceProcessId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ProcessAction> getByG_SID_ACS(long groupId,
+		long serviceProcessId, String[] actionCodes);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ProcessAction> getByGroupAndAutoEvent(long groupId,
 		String autoEvent, int start, int end);
 

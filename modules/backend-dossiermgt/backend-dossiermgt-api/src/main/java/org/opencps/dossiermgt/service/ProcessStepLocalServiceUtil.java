@@ -225,6 +225,11 @@ public class ProcessStepLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ProcessStep> getByG_SP_SCS(
+		long groupId, long serviceProcessId, String[] scs) {
+		return getService().getByG_SP_SCS(groupId, serviceProcessId, scs);
+	}
+
 	public static org.opencps.dossiermgt.model.ProcessStep getByProcessAndStatus(
 		long groupId, long serviceProcessId, String dossierStatus,
 		String dossierSubStatus) {

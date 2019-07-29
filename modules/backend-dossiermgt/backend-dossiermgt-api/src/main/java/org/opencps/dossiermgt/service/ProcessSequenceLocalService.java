@@ -204,6 +204,10 @@ public interface ProcessSequenceLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ProcessSequence> getByG_SID_SNOS(long groupId,
+		long serviceProcessId, String[] sns);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ProcessSequence> getByServiceProcess(long groupId,
 		long serviceProcessId);
 

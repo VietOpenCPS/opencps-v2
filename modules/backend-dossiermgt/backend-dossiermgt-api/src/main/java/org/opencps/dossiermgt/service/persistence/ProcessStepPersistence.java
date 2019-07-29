@@ -1091,6 +1091,250 @@ public interface ProcessStepPersistence extends BasePersistence<ProcessStep> {
 		String dossierStatus, String dossierSubStatus);
 
 	/**
+	* Returns all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @return the matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode);
+
+	/**
+	* Returns a range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @return the range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end);
+
+	/**
+	* Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching process step
+	* @throws NoSuchProcessStepException if a matching process step could not be found
+	*/
+	public ProcessStep findByG_SP_SCS_First(long groupId,
+		long serviceProcessId, String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException;
+
+	/**
+	* Returns the first process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching process step, or <code>null</code> if a matching process step could not be found
+	*/
+	public ProcessStep fetchByG_SP_SCS_First(long groupId,
+		long serviceProcessId, String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator);
+
+	/**
+	* Returns the last process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching process step
+	* @throws NoSuchProcessStepException if a matching process step could not be found
+	*/
+	public ProcessStep findByG_SP_SCS_Last(long groupId, long serviceProcessId,
+		String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException;
+
+	/**
+	* Returns the last process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching process step, or <code>null</code> if a matching process step could not be found
+	*/
+	public ProcessStep fetchByG_SP_SCS_Last(long groupId,
+		long serviceProcessId, String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator);
+
+	/**
+	* Returns the process steps before and after the current process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param processStepId the primary key of the current process step
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next process step
+	* @throws NoSuchProcessStepException if a process step with the primary key could not be found
+	*/
+	public ProcessStep[] findByG_SP_SCS_PrevAndNext(long processStepId,
+		long groupId, long serviceProcessId, String stepCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException;
+
+	/**
+	* Returns all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCodes the step codes
+	* @return the matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes);
+
+	/**
+	* Returns a range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCodes the step codes
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @return the range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end);
+
+	/**
+	* Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCodes the step codes
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of process steps
+	* @param end the upper bound of the range of process steps (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching process steps
+	*/
+	public java.util.List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ProcessStep> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	*/
+	public void removeByG_SP_SCS(long groupId, long serviceProcessId,
+		String stepCode);
+
+	/**
+	* Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCode the step code
+	* @return the number of matching process steps
+	*/
+	public int countByG_SP_SCS(long groupId, long serviceProcessId,
+		String stepCode);
+
+	/**
+	* Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceProcessId the service process ID
+	* @param stepCodes the step codes
+	* @return the number of matching process steps
+	*/
+	public int countByG_SP_SCS(long groupId, long serviceProcessId,
+		String[] stepCodes);
+
+	/**
 	* Caches the process step in the entity cache if it is enabled.
 	*
 	* @param processStep the process step

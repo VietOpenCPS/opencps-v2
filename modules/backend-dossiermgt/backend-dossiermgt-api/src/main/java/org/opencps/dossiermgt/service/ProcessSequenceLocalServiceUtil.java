@@ -225,6 +225,11 @@ public class ProcessSequenceLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ProcessSequence> getByG_SID_SNOS(
+		long groupId, long serviceProcessId, String[] sns) {
+		return getService().getByG_SID_SNOS(groupId, serviceProcessId, sns);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ProcessSequence> getByServiceProcess(
 		long groupId, long serviceProcessId) {
 		return getService().getByServiceProcess(groupId, serviceProcessId);

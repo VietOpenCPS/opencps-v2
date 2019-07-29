@@ -1215,6 +1215,11 @@
 			<finder-column name="dossierStatus"/>
 			<finder-column name="dossierSubStatus"/>
 		</finder>
+        <finder name="G_SP_SCS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="serviceProcessId"></finder-column>
+            <finder-column name="stepCode" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 
 	</entity>
 	
@@ -1301,6 +1306,11 @@
             <finder-column name="groupId" />
             <finder-column name="serviceProcessId" />
             <finder-column name="sequenceNo" />
+        </finder>
+        <finder name="F_GID_SID_SNOS" return-type="Collection">
+            <finder-column name="groupId" />
+            <finder-column name="serviceProcessId" />
+            <finder-column name="sequenceNo" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
 	</entity>	
 	
@@ -1454,6 +1464,11 @@
 			<finder-column name="serviceProcessId" />
 			<finder-column name="preStepCode" />
 			<finder-column name="createDossiers" />
+		</finder>
+		<finder return-type="Collection" name="F_GID_SID_ACS">
+			<finder-column name="groupId" />
+			<finder-column name="serviceProcessId" />
+            <finder-column name="actionCode" comparator="=" arrayable-operator="OR"></finder-column>
 		</finder>
 	</entity>
 
@@ -2197,6 +2212,10 @@
 		<finder return-type="ActionConfig" name="F_BY_ActionCode">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="actionCode"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="G_ET">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="eventType"></finder-column>
 		</finder>
 		
 	</entity>

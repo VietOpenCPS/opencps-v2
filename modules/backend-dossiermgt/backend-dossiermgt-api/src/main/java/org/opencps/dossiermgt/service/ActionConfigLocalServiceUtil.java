@@ -308,6 +308,11 @@ public class ActionConfigLocalServiceUtil {
 		return getService().getByCode(groupId, actionCode);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ActionConfig> getByG_ET(
+		long groupId, int eventType) {
+		return getService().getByG_ET(groupId, eventType);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ActionConfig> getByGroupId(
 		long groupId) {
 		return getService().getByGroupId(groupId);

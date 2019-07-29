@@ -254,6 +254,13 @@ public class ProcessActionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ProcessAction> getByG_SID_ACS(
+		long groupId, long serviceProcessId, String[] actionCodes) {
+		return _processActionLocalService.getByG_SID_ACS(groupId,
+			serviceProcessId, actionCodes);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ProcessAction> getByGroupAndAutoEvent(
 		long groupId, String autoEvent, int start, int end) {
 		return _processActionLocalService.getByGroupAndAutoEvent(groupId,

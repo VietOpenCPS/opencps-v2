@@ -275,6 +275,9 @@ public interface ActionConfigLocalService extends BaseLocalService,
 	public ActionConfig getByCode(long groupId, String actionCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ActionConfig> getByG_ET(long groupId, int eventType);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ActionConfig> getByGroupId(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

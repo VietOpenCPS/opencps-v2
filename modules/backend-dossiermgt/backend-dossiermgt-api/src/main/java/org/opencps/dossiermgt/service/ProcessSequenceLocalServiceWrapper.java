@@ -241,6 +241,13 @@ public class ProcessSequenceLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ProcessSequence> getByG_SID_SNOS(
+		long groupId, long serviceProcessId, String[] sns) {
+		return _processSequenceLocalService.getByG_SID_SNOS(groupId,
+			serviceProcessId, sns);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ProcessSequence> getByServiceProcess(
 		long groupId, long serviceProcessId) {
 		return _processSequenceLocalService.getByServiceProcess(groupId,

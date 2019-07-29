@@ -719,4 +719,8 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public ProcessAction fetchByF_GID_SID_AC_PRE_POST(long groupId, long serviceProcessId, String actionCode, String preStepCode, String postStepCode) {
 		return processActionPersistence.fetchByF_GID_SID_AC_PRE_POST(groupId, serviceProcessId, actionCode, preStepCode, postStepCode);
 	}
+	
+	public List<ProcessAction> getByG_SID_ACS(long groupId, long serviceProcessId, String[] actionCodes) {
+		return processActionPersistence.findByF_GID_SID_ACS(groupId, serviceProcessId, actionCodes);
+	}
 }

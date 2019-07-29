@@ -208,4 +208,8 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 
 		return object;
 	}
+	
+	public List<ProcessSequence> getByG_SID_SNOS(long groupId, long serviceProcessId, String[] sns) {
+		return processSequencePersistence.findByF_GID_SID_SNOS(groupId, serviceProcessId, sns);				
+	}
 }

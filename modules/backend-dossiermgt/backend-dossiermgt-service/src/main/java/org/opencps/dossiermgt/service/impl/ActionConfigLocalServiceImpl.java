@@ -338,4 +338,8 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		return object;
 	}
+	
+	public List<ActionConfig> getByG_ET(long groupId, int eventType) {
+		return actionConfigPersistence.findByG_ET(groupId, eventType);
+	}
 }
