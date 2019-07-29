@@ -1,3 +1,4 @@
+
 dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
 	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
@@ -12,6 +13,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "5.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.log", version: "1.4.0"
+	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
 	
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-communication:backend-communication-service")

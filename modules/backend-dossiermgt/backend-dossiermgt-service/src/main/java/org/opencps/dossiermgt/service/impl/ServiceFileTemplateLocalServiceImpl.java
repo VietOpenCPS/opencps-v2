@@ -224,6 +224,7 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 		try {
 			return serviceFileTemplatePersistence.findByF_SCID_FORM(serviceInfoId, eForm, start, end);
 		} catch (Exception e) {
+			_log.debug(e);
 			return null;
 		}
 	}
@@ -232,6 +233,7 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 		try {
 			return serviceFileTemplatePersistence.findByServiceInfoId(serviceInfoId, start, end);
 		} catch (Exception e) {
+			_log.debug(e);
 			return null;
 		}
 	}

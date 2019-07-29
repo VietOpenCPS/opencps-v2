@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -529,6 +530,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			Locale locale, User user, ServiceContext serviceContext, String data) {
 		BackendAuth auth = new BackendAuthImpl();
 
+		HSSFWorkbook workbook = null;
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -539,7 +541,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			JSONArray contentArr = docDefinition.getJSONArray("content");
 			JSONArray bodyArr = null;
 			int headerRows = 0;
-			HSSFWorkbook workbook = new HSSFWorkbook();
+			workbook = new HSSFWorkbook();
 			HSSFSheet mainSheet = workbook.createSheet("report");
 			int maxCol = 0;
 	
@@ -754,10 +756,6 @@ public class StatisticManagementImpl implements StatisticManagement {
 			} 
 			catch (Exception e) { 
 				_log.debug(e);
-			} finally {
-				if (workbook != null) {
-					workbook.close();
-				}
 			}
 			
 			ResponseBuilder responseBuilder = Response.ok((Object) xlsFile);
@@ -765,10 +763,18 @@ public class StatisticManagementImpl implements StatisticManagement {
 					"attachment; filename=\"" + fileName + "\"");
 			responseBuilder.header("Content-Type", "application/vnd.ms-excel");
 
-			return responseBuilder.build();			
+			return responseBuilder.build();
 		} catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
+		}  finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
 		}
 
 	}

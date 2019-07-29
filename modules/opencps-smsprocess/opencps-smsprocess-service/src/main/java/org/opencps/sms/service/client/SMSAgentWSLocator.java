@@ -7,7 +7,12 @@
 
 package org.opencps.sms.service.client;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 public class SMSAgentWSLocator extends org.apache.axis.client.Service implements org.opencps.sms.service.client.SMSAgentWS {
+
+	private static Log _log = LogFactoryUtil.getLog(SMSAgentWSLocator.class);
 
     public SMSAgentWSLocator() {
     }
@@ -57,6 +62,7 @@ public class SMSAgentWSLocator extends org.apache.axis.client.Service implements
             return _stub;
         }
         catch (org.apache.axis.AxisFault e) {
+        	_log.debug(e);
             return null;
         }
     }

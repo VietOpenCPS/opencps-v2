@@ -17,13 +17,13 @@ package org.opencps.dossiermgt.service.impl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +31,6 @@ import java.util.List;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.base.StepConfigLocalServiceBaseImpl;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * The implementation of the step config local service.
@@ -60,6 +58,9 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.StepConfigLocalServiceUtil} to access the step
 	 * config local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(StepConfigLocalServiceImpl.class);
+
 	@Indexable(type = IndexableType.REINDEX)
 	public StepConfig addStepConfig(long userId, long groupId, String stepCode, String stepName, Integer stepType,
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
@@ -276,6 +277,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 				validate(objectData.getLong("groupId"), objectData.getString("stepCode"),
 						objectData.getLong("stepConfigId"));
 			} catch (PortalException e) {
+				_log.debug(e);
 				return null;
 			}
 

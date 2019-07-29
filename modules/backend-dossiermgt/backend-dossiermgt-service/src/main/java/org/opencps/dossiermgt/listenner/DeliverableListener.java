@@ -231,7 +231,6 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 				.getByTypeCode(model.getDeliverableType(), model.getGroupId());
 
 		InputStream is = null;
-
 		try {
 
 			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil
@@ -245,10 +244,12 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			_log.debug(e);
 			result = StringPool.BLANK;
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				_log.debug(e);
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
 			}
 		}
 

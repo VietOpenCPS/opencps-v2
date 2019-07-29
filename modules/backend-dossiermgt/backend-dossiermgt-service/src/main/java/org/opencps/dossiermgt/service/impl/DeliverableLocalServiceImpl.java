@@ -1225,10 +1225,12 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				_log.debug(e);
 				result = StringPool.BLANK;
 			} finally {
-				try {
-					is.close();
-				} catch (IOException e) {
-					_log.debug(e);
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						_log.debug(e);
+					}
 				}
 			}
 		}

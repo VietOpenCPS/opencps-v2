@@ -69,7 +69,6 @@ public class TimerScheduler extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		// TODO Auto-generated method stub
 		if (!isRunning) {
 			isRunning = true;
 		}

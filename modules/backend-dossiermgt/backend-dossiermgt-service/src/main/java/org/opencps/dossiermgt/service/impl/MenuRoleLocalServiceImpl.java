@@ -16,6 +16,8 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -51,6 +53,8 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 	 * org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil} to access the menu
 	 * role local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(MenuRoleLocalServiceImpl.class);
 
 	public List<MenuRole> getByRoles(long[] roleIds) {
 		return menuRolePersistence.findByF_RID(roleIds);
@@ -94,6 +98,7 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 				object = menuRolePersistence.remove(object);
 			}
 		} catch (Exception e) {
+			_log.debug(e);
 		}
 
 		return object;

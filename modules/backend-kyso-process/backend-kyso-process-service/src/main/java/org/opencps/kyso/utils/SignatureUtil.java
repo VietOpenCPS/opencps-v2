@@ -26,11 +26,11 @@ import java.util.List;
 import org.opencps.pki.PdfPkcs7Signer;
 import org.opencps.pki.PdfSigner;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import kysovanban.signature.DocContent;

@@ -118,8 +118,8 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		JobPos jobPos = Validator.isNotNull(employeeJobPos)
 				? JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId())
 				: null;
-		String jobPosTitle = Validator.isNotNull(jobPos)?jobPos.getTitle():StringPool.BLANK;
-		String jobPosCode = Validator.isNotNull(jobPos)?jobPos.getJobPosCode():StringPool.BLANK;
+		String jobPosTitle = jobPos != null ? jobPos.getTitle():StringPool.BLANK;
+		String jobPosCode = jobPos != null ? jobPos.getJobPosCode():StringPool.BLANK;
 		
 		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
 		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);

@@ -28,9 +28,9 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.apache.pdfbox.util.TextPosition;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * @author trungnt
@@ -146,7 +146,7 @@ public class ExtractTextLocations extends PDFTextStripper {
 
 		
 
-		if (text.getCharacter().equals(StringPool.POUND) && text.getFontSize() == 1L) {
+		if (text.getCharacter().equals(StringPool.POUND) && Float.compare(text.getFontSize(), 1f) == 0) {
 			setFound(true);
 			
 			System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSize()

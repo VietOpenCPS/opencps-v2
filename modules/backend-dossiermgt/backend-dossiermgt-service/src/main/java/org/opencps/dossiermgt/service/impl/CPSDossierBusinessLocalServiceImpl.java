@@ -1019,8 +1019,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 //		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 		Serializable emplCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ "EMPL-01");
+		//Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 		Notificationtemplate emplTemplate = null;
-		emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 		if (emplCache == null) {
 			emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-01");
 			if (emplTemplate != null) {
@@ -1202,7 +1202,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
 			String paymentNote = StringPool.BLANK;
 			long advanceAmount = 0l;
-			long paymentAmount = 0l;
+			//long paymentAmount = 0l;
 			String epaymentProfile = StringPool.BLANK;
 			String bankInfo = StringPool.BLANK;
 			int paymentStatus = 0;
@@ -1267,7 +1267,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					_log.debug(e);
 				}
 			} else {
-				paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
+				long paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 				
 				PaymentFile paymentFile = paymentFileLocalService.createPaymentFiles(userId, groupId,
 							dossier.getDossierId(), dossier.getReferenceUid(), paymentFee, advanceAmount, feeAmount,
@@ -1962,7 +1962,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 						dossier.setDossierNo(dossierRef.trim());
 					} catch (Exception e) {
-						//_log.debug(e);
+						_log.debug(e);
 					}
 				}
 				
@@ -1989,7 +1989,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							params);
 					dossier.setDossierNo(dossierRef.trim());
 				} catch (Exception e) {
-					// _log.debug(e);
+					_log.debug(e);
 				}
 			}
 		}
@@ -3089,7 +3089,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					dau = mapDaus.get(dossierAction.getDossierActionId()).get(userIdAssigned);
 				}
 				
-				if (Validator.isNull(dau)) {
+				if (dau == null) {
 //					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					DossierAction dAction = dossierAction;
 					if (dAction != null) {
@@ -3138,7 +3138,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		model.setDelegacy(delegacy);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-		_log.debug("Employee : " + employee);
+		//_log.debug("Employee : " + employee);
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
@@ -3264,7 +3264,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		ProcessStep processStep = processStepLocalService.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 		
 		long processStepId = processStep.getProcessStepId();
-		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
+		int assigned;
 		
 		// Get List ProcessStepRole
 		List<ProcessStepRole> listProcessStepRole = processStepRoleLocalService.findByP_S_ID(processStepId);
@@ -4725,7 +4725,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 
 			_log.debug("CREATE DOSSIER 4: " + (System.currentTimeMillis() - start) + " ms");
-			//TODO
 			/** Create DossierMark */
 			//_log.debug("flagOldDossier: "+flagOldDossier);
 			_log.debug("originality: "+originality);
@@ -4835,7 +4834,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								_log.info("__Start update dossier file at:" + new Date());
 								DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
-								dossierFile = dossierFileLocalService.updateFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData,
+								dossierFileLocalService.updateFormData(groupId, dossierId, dossierFile.getReferenceUid(), formData,
 										serviceContext);
 								_log.info("__End update dossier file at:" + new Date());
 
@@ -5399,37 +5398,37 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		Dossier dossier = dossierLocalService.fetchDossier(id);
+		DossierFile dossierFile = null;
 		if (dossier != null) {
 			if (dossier.getOriginDossierId() != 0) {
 				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
-				id = dossier.getOriginDossierId();
+				//id = dossier.getOriginDossierId();
+			}
+			dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossier.getDossierId(), referenceUid);
+			
+			String defaultData = StringPool.BLANK;
+	
+			if (Validator.isNotNull(dossierFile)) {
+				DossierPart part = dossierPartLocalService.getByFileTemplateNo(groupId,
+						dossierFile.getFileTemplateNo());
+	
+				defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier.getDossierId(), serviceContext);
+				dossierFile = dossierFileLocalService.getByReferenceUid(referenceUid).get(0);
+				JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
+				defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
+				defaultData = defaultDataObj.toJSONString();
+			}
+	
+			dossierFile = dossierFileLocalService.updateFormData(groupId, dossier.getDossierId(), referenceUid, defaultData,
+					serviceContext);
+			
+			String deliverableCode = dossierFile.getDeliverableCode();
+			
+			if (Validator.isNotNull(deliverableCode)) {
+				Deliverable deliverable = deliverableLocalService.getByCode(deliverableCode);
+				deliverableLocalService.deleteDeliverable(deliverable);
 			}
 		}
-		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossier.getDossierId(), referenceUid);
-		
-		String defaultData = StringPool.BLANK;
-
-		if (Validator.isNotNull(dossierFile)) {
-			DossierPart part = dossierPartLocalService.getByFileTemplateNo(groupId,
-					dossierFile.getFileTemplateNo());
-
-			defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier.getDossierId(), serviceContext);
-			dossierFile = dossierFileLocalService.getByReferenceUid(referenceUid).get(0);
-			JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
-			defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
-			defaultData = defaultDataObj.toJSONString();
-		}
-
-		dossierFile = dossierFileLocalService.updateFormData(groupId, dossier.getDossierId(), referenceUid, defaultData,
-				serviceContext);
-		
-		String deliverableCode = dossierFile.getDeliverableCode();
-		
-		if (Validator.isNotNull(deliverableCode)) {
-			Deliverable deliverable = deliverableLocalService.getByCode(deliverableCode);
-			deliverableLocalService.deleteDeliverable(deliverable);
-		}
-
 		return dossierFile;
 	}
 	
@@ -5439,10 +5438,12 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		BackendAuth auth = new BackendAuthImpl();
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-			Dossier dossier = getDossier(id, groupId);
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+		Dossier dossier = getDossier(id, groupId);
+		PaymentFile paymentFile = null;
+		if (dossier != null) {
 			long dossierId = dossier.getPrimaryKey();
 
 			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
@@ -5452,7 +5453,6 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 			String referenceUid = input.getReferenceUid();
-			PaymentFile paymentFile = null;
 			if (Validator.isNull(referenceUid)) {
 				referenceUid = PortalUUIDUtil.generate();
 			}
@@ -5494,8 +5494,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
 			}
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
+		}
 
-			return paymentFile;
+		return paymentFile;
 	}
 	
 	private Dossier getDossier(String id, long groupId) throws PortalException {
@@ -6218,12 +6219,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 		} catch (Exception e) {
-			//_log.debug("NOT PROCESS ACTION");
-			//_log.debug(e);
+			_log.debug(e);
 		}
 
 		return action;
 	}
 
-	private Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
+	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
 }
