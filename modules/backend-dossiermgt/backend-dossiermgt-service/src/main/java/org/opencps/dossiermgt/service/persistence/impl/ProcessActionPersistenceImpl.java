@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -8500,6 +8502,998 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 		"processAction.createDossiers = ?";
 	private static final String _FINDER_COLUMN_G_SPID_PRESC_DOS_CREATEDOSSIERS_3 =
 		"(processAction.createDossiers IS NULL OR processAction.createDossiers = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID_ACS =
+		new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED,
+			ProcessActionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_GID_SID_ACS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS =
+		new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED,
+			ProcessActionImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_GID_SID_ACS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			},
+			ProcessActionModelImpl.GROUPID_COLUMN_BITMASK |
+			ProcessActionModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessActionModelImpl.ACTIONCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_SID_ACS = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_SID_ACS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_SID_ACS =
+		new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_GID_SID_ACS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @return the matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String actionCode) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @return the range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String actionCode, int start, int end) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCode,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String actionCode, int start, int end,
+		OrderByComparator<ProcessAction> orderByComparator) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCode,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String actionCode, int start, int end,
+		OrderByComparator<ProcessAction> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS;
+			finderArgs = new Object[] { groupId, serviceProcessId, actionCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID_ACS;
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, actionCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ProcessAction> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ProcessAction>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ProcessAction processAction : list) {
+					if ((groupId != processAction.getGroupId()) ||
+							(serviceProcessId != processAction.getServiceProcessId()) ||
+							!Objects.equals(actionCode,
+								processAction.getActionCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2);
+
+			boolean bindActionCode = false;
+
+			if (actionCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1);
+			}
+			else if (actionCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3);
+			}
+			else {
+				bindActionCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ProcessActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindActionCode) {
+					qPos.add(actionCode);
+				}
+
+				if (!pagination) {
+					list = (List<ProcessAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ProcessAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first process action in the ordered set where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching process action
+	 * @throws NoSuchProcessActionException if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction findByF_GID_SID_ACS_First(long groupId,
+		long serviceProcessId, String actionCode,
+		OrderByComparator<ProcessAction> orderByComparator)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = fetchByF_GID_SID_ACS_First(groupId,
+				serviceProcessId, actionCode, orderByComparator);
+
+		if (processAction != null) {
+			return processAction;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceProcessId=");
+		msg.append(serviceProcessId);
+
+		msg.append(", actionCode=");
+		msg.append(actionCode);
+
+		msg.append("}");
+
+		throw new NoSuchProcessActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first process action in the ordered set where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchByF_GID_SID_ACS_First(long groupId,
+		long serviceProcessId, String actionCode,
+		OrderByComparator<ProcessAction> orderByComparator) {
+		List<ProcessAction> list = findByF_GID_SID_ACS(groupId,
+				serviceProcessId, actionCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last process action in the ordered set where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching process action
+	 * @throws NoSuchProcessActionException if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction findByF_GID_SID_ACS_Last(long groupId,
+		long serviceProcessId, String actionCode,
+		OrderByComparator<ProcessAction> orderByComparator)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = fetchByF_GID_SID_ACS_Last(groupId,
+				serviceProcessId, actionCode, orderByComparator);
+
+		if (processAction != null) {
+			return processAction;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceProcessId=");
+		msg.append(serviceProcessId);
+
+		msg.append(", actionCode=");
+		msg.append(actionCode);
+
+		msg.append("}");
+
+		throw new NoSuchProcessActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last process action in the ordered set where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchByF_GID_SID_ACS_Last(long groupId,
+		long serviceProcessId, String actionCode,
+		OrderByComparator<ProcessAction> orderByComparator) {
+		int count = countByF_GID_SID_ACS(groupId, serviceProcessId, actionCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ProcessAction> list = findByF_GID_SID_ACS(groupId,
+				serviceProcessId, actionCode, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the process actions before and after the current process action in the ordered set where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param processActionId the primary key of the current process action
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next process action
+	 * @throws NoSuchProcessActionException if a process action with the primary key could not be found
+	 */
+	@Override
+	public ProcessAction[] findByF_GID_SID_ACS_PrevAndNext(
+		long processActionId, long groupId, long serviceProcessId,
+		String actionCode, OrderByComparator<ProcessAction> orderByComparator)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = findByPrimaryKey(processActionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ProcessAction[] array = new ProcessActionImpl[3];
+
+			array[0] = getByF_GID_SID_ACS_PrevAndNext(session, processAction,
+					groupId, serviceProcessId, actionCode, orderByComparator,
+					true);
+
+			array[1] = processAction;
+
+			array[2] = getByF_GID_SID_ACS_PrevAndNext(session, processAction,
+					groupId, serviceProcessId, actionCode, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ProcessAction getByF_GID_SID_ACS_PrevAndNext(Session session,
+		ProcessAction processAction, long groupId, long serviceProcessId,
+		String actionCode, OrderByComparator<ProcessAction> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_PROCESSACTION_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2);
+
+		boolean bindActionCode = false;
+
+		if (actionCode == null) {
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1);
+		}
+		else if (actionCode.equals("")) {
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3);
+		}
+		else {
+			bindActionCode = true;
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ProcessActionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(serviceProcessId);
+
+		if (bindActionCode) {
+			qPos.add(actionCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(processAction);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ProcessAction> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCodes the action codes
+	 * @return the matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String[] actionCodes) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCodes,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCodes the action codes
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @return the range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String[] actionCodes, int start, int end) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCodes,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCodes the action codes
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String[] actionCodes, int start, int end,
+		OrderByComparator<ProcessAction> orderByComparator) {
+		return findByF_GID_SID_ACS(groupId, serviceProcessId, actionCodes,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @param start the lower bound of the range of process actions
+	 * @param end the upper bound of the range of process actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching process actions
+	 */
+	@Override
+	public List<ProcessAction> findByF_GID_SID_ACS(long groupId,
+		long serviceProcessId, String[] actionCodes, int start, int end,
+		OrderByComparator<ProcessAction> orderByComparator,
+		boolean retrieveFromCache) {
+		if (actionCodes == null) {
+			actionCodes = new String[0];
+		}
+		else if (actionCodes.length > 1) {
+			actionCodes = ArrayUtil.distinct(actionCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(actionCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (actionCodes.length == 1) {
+			return findByF_GID_SID_ACS(groupId, serviceProcessId,
+				actionCodes[0], start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, StringUtil.merge(actionCodes)
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, StringUtil.merge(actionCodes),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ProcessAction> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ProcessAction>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID_ACS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ProcessAction processAction : list) {
+					if ((groupId != processAction.getGroupId()) ||
+							(serviceProcessId != processAction.getServiceProcessId()) ||
+							!ArrayUtil.contains(actionCodes,
+								processAction.getActionCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2);
+
+			if (actionCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < actionCodes.length; i++) {
+					String actionCode = actionCodes[i];
+
+					if (actionCode == null) {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1);
+					}
+					else if (actionCode.equals("")) {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2);
+					}
+
+					if ((i + 1) < actionCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ProcessActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				for (String actionCode : actionCodes) {
+					if ((actionCode != null) && !actionCode.isEmpty()) {
+						qPos.add(actionCode);
+					}
+				}
+
+				if (!pagination) {
+					list = (List<ProcessAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ProcessAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID_ACS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID_ACS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 */
+	@Override
+	public void removeByF_GID_SID_ACS(long groupId, long serviceProcessId,
+		String actionCode) {
+		for (ProcessAction processAction : findByF_GID_SID_ACS(groupId,
+				serviceProcessId, actionCode, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(processAction);
+		}
+	}
+
+	/**
+	 * Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCode the action code
+	 * @return the number of matching process actions
+	 */
+	@Override
+	public int countByF_GID_SID_ACS(long groupId, long serviceProcessId,
+		String actionCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_SID_ACS;
+
+		Object[] finderArgs = new Object[] { groupId, serviceProcessId, actionCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2);
+
+			boolean bindActionCode = false;
+
+			if (actionCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1);
+			}
+			else if (actionCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3);
+			}
+			else {
+				bindActionCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindActionCode) {
+					qPos.add(actionCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of process actions where groupId = &#63; and serviceProcessId = &#63; and actionCode = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param actionCodes the action codes
+	 * @return the number of matching process actions
+	 */
+	@Override
+	public int countByF_GID_SID_ACS(long groupId, long serviceProcessId,
+		String[] actionCodes) {
+		if (actionCodes == null) {
+			actionCodes = new String[0];
+		}
+		else if (actionCodes.length > 1) {
+			actionCodes = ArrayUtil.distinct(actionCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(actionCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, StringUtil.merge(actionCodes)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_SID_ACS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2);
+
+			if (actionCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < actionCodes.length; i++) {
+					String actionCode = actionCodes[i];
+
+					if (actionCode == null) {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1);
+					}
+					else if (actionCode.equals("")) {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2);
+					}
+
+					if ((i + 1) < actionCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				for (String actionCode : actionCodes) {
+					if ((actionCode != null) && !actionCode.isEmpty()) {
+						qPos.add(actionCode);
+					}
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_SID_ACS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_GID_SID_ACS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_SID_ACS_GROUPID_2 = "processAction.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_SID_ACS_SERVICEPROCESSID_2 = "processAction.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_1 = "processAction.actionCode IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_2 = "processAction.actionCode = ?";
+	private static final String _FINDER_COLUMN_F_GID_SID_ACS_ACTIONCODE_3 = "(processAction.actionCode IS NULL OR processAction.actionCode = '')";
 
 	public ProcessActionPersistenceImpl() {
 		setModelClass(ProcessAction.class);
@@ -9133,6 +10127,16 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_PRE,
 				args);
 
+			args = new Object[] {
+					processActionModelImpl.getGroupId(),
+					processActionModelImpl.getServiceProcessId(),
+					processActionModelImpl.getActionCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SID_ACS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -9363,6 +10367,31 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SID_PRE,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_PRE,
+					args);
+			}
+
+			if ((processActionModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						processActionModelImpl.getOriginalGroupId(),
+						processActionModelImpl.getOriginalServiceProcessId(),
+						processActionModelImpl.getOriginalActionCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SID_ACS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS,
+					args);
+
+				args = new Object[] {
+						processActionModelImpl.getGroupId(),
+						processActionModelImpl.getServiceProcessId(),
+						processActionModelImpl.getActionCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SID_ACS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_SID_ACS,
 					args);
 			}
 		}

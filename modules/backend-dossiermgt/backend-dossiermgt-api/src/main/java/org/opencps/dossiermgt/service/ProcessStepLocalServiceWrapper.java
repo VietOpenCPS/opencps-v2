@@ -237,6 +237,13 @@ public class ProcessStepLocalServiceWrapper implements ProcessStepLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ProcessStep> getByG_SP_SCS(
+		long groupId, long serviceProcessId, String[] scs) {
+		return _processStepLocalService.getByG_SP_SCS(groupId,
+			serviceProcessId, scs);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ProcessStep getByProcessAndStatus(
 		long groupId, long serviceProcessId, String dossierStatus,
 		String dossierSubStatus) {

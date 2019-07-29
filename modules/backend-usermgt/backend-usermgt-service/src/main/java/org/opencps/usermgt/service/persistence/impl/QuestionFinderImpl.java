@@ -23,45 +23,56 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	Log _log = LogFactoryUtil.getLog(QuestionFinderImpl.class);
 
 	@SuppressWarnings("unchecked")
-	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, int start,
+	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, 
+			Boolean answer,
+			int start,
 			int limit) {
 
 		Session session = null;
 		List<Question> questionList = null;
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("SELECT * FROM opencps_question ");
+		sb.append("SELECT q.* FROM opencps_question AS q left join opencps_answer as a on q.questionId=a.questionId ");
 		if (Validator.isNotNull(keyword)) {
-			sb.append("WHERE content like '%"+keyword+"%' ");
+			sb.append("WHERE q.content like '%"+keyword+"%' ");
 			if (Validator.isNotNull(govAgencyCode)) {
-				sb.append("AND govAgencyCode = '"+ govAgencyCode +"' ");
+				sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
 			}
 			if (Validator.isNotNull(publish)) {
-				sb.append("AND publish = " + publish + " ");
+				sb.append("AND q.publish = " + publish + " ");
 			}
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		} else if(Validator.isNotNull(govAgencyCode)){
-			sb.append("WHERE govAgencyCode = '"+ govAgencyCode +"' ");
+			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
-				sb.append("AND publish = " + publish + " ");
+				sb.append("AND q.publish = " + publish + " ");
 			}
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		} else if (Validator.isNotNull(publish)) {
-			sb.append("WHERE publish = " + publish + " ");
+			sb.append("WHERE q.publish = " + publish + " ");
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		}
 		else if (Validator.isNotNull(questionType)) {
-			sb.append("WHERE questionType = '" + questionType + "' ");
+			sb.append("WHERE q.questionType = '" + questionType + "' ");
 		}
-
+		
+		if (answer != null) {
+			if (answer) {
+				sb.append("group by q.questionId having count(a.answerId) > 0 ");
+			}
+			else {
+				sb.append("group by q.questionId having count(a.answerId) = 0 ");
+			}			
+		}
+		
 		if (limit > 0) {
-			sb.append("LIMIT " + limit + " ");
+			sb.append("LIMIT " + (limit - start) + " ");
 		}
 		if (start >= 0) {
 			sb.append("OFFSET " + start + "");
@@ -92,40 +103,49 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType) {
+	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer) {
 
 		Session session = null;
 		int countQuestion = 0;
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("SELECT * FROM opencps_question ");
+		sb.append("SELECT q.* FROM opencps_question AS q left join opencps_answer as a on q.questionId=a.questionId ");
 		if (Validator.isNotNull(keyword)) {
-			sb.append("WHERE content like '%"+keyword+"%' ");
+			sb.append("WHERE q.content like '%"+keyword+"%' ");
 			if (Validator.isNotNull(govAgencyCode)) {
-				sb.append("AND govAgencyCode = '"+ govAgencyCode +"' ");
+				sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
 			}
 			if (Validator.isNotNull(publish)) {
-				sb.append("AND publish = " + publish + " ");
+				sb.append("AND q.publish = " + publish + " ");
 			}
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		} else if(Validator.isNotNull(govAgencyCode)){
-			sb.append("WHERE govAgencyCode = '"+ govAgencyCode +"' ");
+			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
-				sb.append("AND publish = " + publish + " ");
+				sb.append("AND q.publish = " + publish + " ");
 			}
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		} else if (Validator.isNotNull(publish)) {
-			sb.append("WHERE publish = " + publish + " ");
+			sb.append("WHERE q.publish = " + publish + " ");
 			if (Validator.isNotNull(questionType)) {
-				sb.append("AND questionType = '" + questionType + "' ");
+				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
 		}
 		else if (Validator.isNotNull(questionType)) {
-			sb.append("WHERE questionType = '" + questionType + "' ");
+			sb.append("WHERE q.questionType = '" + questionType + "' ");
+		}
+		
+		if (answer != null) {
+			if (answer) {
+				sb.append("group by q.questionId having count(a.answerId) > 0 ");
+			}
+			else {
+				sb.append("group by q.questionId having count(a.answerId) = 0 ");
+			}			
 		}
 
 		_log.info("SQL: "+ sb.toString());

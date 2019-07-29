@@ -324,6 +324,12 @@ public class ActionConfigLocalServiceWrapper implements ActionConfigLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ActionConfig> getByG_ET(
+		long groupId, int eventType) {
+		return _actionConfigLocalService.getByG_ET(groupId, eventType);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ActionConfig> getByGroupId(
 		long groupId) {
 		return _actionConfigLocalService.getByGroupId(groupId);

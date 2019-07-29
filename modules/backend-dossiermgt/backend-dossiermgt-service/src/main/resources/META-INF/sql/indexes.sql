@@ -1,4 +1,5 @@
 create index IX_29353100 on opencps_actionconfig (groupId, actionCode[$COLUMN_LENGTH:75$]);
+create index IX_1833407B on opencps_actionconfig (groupId, eventType);
 create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_EDA28DB7 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -212,6 +213,7 @@ create unique index IX_EBC13809 on opencps_processsequence (uuid_[$COLUMN_LENGTH
 create index IX_66A75140 on opencps_processstep (dossierStatus[$COLUMN_LENGTH:75$], dossierSubStatus[$COLUMN_LENGTH:75$], groupId);
 create index IX_5562AF73 on opencps_processstep (groupId, serviceProcessId, dossierStatus[$COLUMN_LENGTH:75$], dossierSubStatus[$COLUMN_LENGTH:75$]);
 create index IX_B9D0A8CB on opencps_processstep (groupId, serviceProcessId, sequenceNo[$COLUMN_LENGTH:255$]);
+create index IX_D7A5B642 on opencps_processstep (groupId, serviceProcessId, stepCode[$COLUMN_LENGTH:255$]);
 create index IX_2D87C7C7 on opencps_processstep (serviceProcessId);
 create index IX_388C6AC8 on opencps_processstep (stepCode[$COLUMN_LENGTH:255$], groupId, serviceProcessId);
 create index IX_55196C94 on opencps_processstep (stepCode[$COLUMN_LENGTH:255$], serviceProcessId);

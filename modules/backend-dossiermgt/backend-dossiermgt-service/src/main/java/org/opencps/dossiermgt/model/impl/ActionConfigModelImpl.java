@@ -138,8 +138,9 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 			true);
 	public static final long ACTIONCODE_COLUMN_BITMASK = 1L;
 	public static final long COMPANYID_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
+	public static final long EVENTTYPE_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ActionConfig"));
 
@@ -607,7 +608,19 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 
 	@Override
 	public void setEventType(int eventType) {
+		_columnBitmask |= EVENTTYPE_COLUMN_BITMASK;
+
+		if (!_setOriginalEventType) {
+			_setOriginalEventType = true;
+
+			_originalEventType = _eventType;
+		}
+
 		_eventType = eventType;
+	}
+
+	public int getOriginalEventType() {
+		return _originalEventType;
 	}
 
 	@Override
@@ -838,6 +851,10 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 		actionConfigModelImpl._setModifiedDate = false;
 
 		actionConfigModelImpl._originalActionCode = actionConfigModelImpl._actionCode;
+
+		actionConfigModelImpl._originalEventType = actionConfigModelImpl._eventType;
+
+		actionConfigModelImpl._setOriginalEventType = false;
 
 		actionConfigModelImpl._columnBitmask = 0;
 	}
@@ -1145,6 +1162,8 @@ public class ActionConfigModelImpl extends BaseModelImpl<ActionConfig>
 	private int _userNote;
 	private int _syncType;
 	private int _eventType;
+	private int _originalEventType;
+	private boolean _setOriginalEventType;
 	private int _infoType;
 	private boolean _pending;
 	private boolean _rollbackable;

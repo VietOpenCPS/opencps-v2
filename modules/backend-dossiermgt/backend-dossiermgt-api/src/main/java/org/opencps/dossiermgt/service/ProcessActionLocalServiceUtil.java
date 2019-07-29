@@ -240,6 +240,12 @@ public class ProcessActionLocalServiceUtil {
 				   .getByActionCode(groupId, actionCode, serviceProcessId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ProcessAction> getByG_SID_ACS(
+		long groupId, long serviceProcessId, String[] actionCodes) {
+		return getService()
+				   .getByG_SID_ACS(groupId, serviceProcessId, actionCodes);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ProcessAction> getByGroupAndAutoEvent(
 		long groupId, String autoEvent, int start, int end) {
 		return getService()

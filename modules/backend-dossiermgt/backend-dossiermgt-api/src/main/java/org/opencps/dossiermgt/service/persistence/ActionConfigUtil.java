@@ -721,6 +721,178 @@ public class ActionConfigUtil {
 	}
 
 	/**
+	* Returns all the action configs where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @return the matching action configs
+	*/
+	public static List<ActionConfig> findByG_ET(long groupId, int eventType) {
+		return getPersistence().findByG_ET(groupId, eventType);
+	}
+
+	/**
+	* Returns a range of all the action configs where groupId = &#63; and eventType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ActionConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param start the lower bound of the range of action configs
+	* @param end the upper bound of the range of action configs (not inclusive)
+	* @return the range of matching action configs
+	*/
+	public static List<ActionConfig> findByG_ET(long groupId, int eventType,
+		int start, int end) {
+		return getPersistence().findByG_ET(groupId, eventType, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the action configs where groupId = &#63; and eventType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ActionConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param start the lower bound of the range of action configs
+	* @param end the upper bound of the range of action configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching action configs
+	*/
+	public static List<ActionConfig> findByG_ET(long groupId, int eventType,
+		int start, int end, OrderByComparator<ActionConfig> orderByComparator) {
+		return getPersistence()
+				   .findByG_ET(groupId, eventType, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the action configs where groupId = &#63; and eventType = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ActionConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param start the lower bound of the range of action configs
+	* @param end the upper bound of the range of action configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching action configs
+	*/
+	public static List<ActionConfig> findByG_ET(long groupId, int eventType,
+		int start, int end, OrderByComparator<ActionConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_ET(groupId, eventType, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first action config in the ordered set where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching action config
+	* @throws NoSuchActionConfigException if a matching action config could not be found
+	*/
+	public static ActionConfig findByG_ET_First(long groupId, int eventType,
+		OrderByComparator<ActionConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchActionConfigException {
+		return getPersistence()
+				   .findByG_ET_First(groupId, eventType, orderByComparator);
+	}
+
+	/**
+	* Returns the first action config in the ordered set where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching action config, or <code>null</code> if a matching action config could not be found
+	*/
+	public static ActionConfig fetchByG_ET_First(long groupId, int eventType,
+		OrderByComparator<ActionConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_ET_First(groupId, eventType, orderByComparator);
+	}
+
+	/**
+	* Returns the last action config in the ordered set where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching action config
+	* @throws NoSuchActionConfigException if a matching action config could not be found
+	*/
+	public static ActionConfig findByG_ET_Last(long groupId, int eventType,
+		OrderByComparator<ActionConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchActionConfigException {
+		return getPersistence()
+				   .findByG_ET_Last(groupId, eventType, orderByComparator);
+	}
+
+	/**
+	* Returns the last action config in the ordered set where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching action config, or <code>null</code> if a matching action config could not be found
+	*/
+	public static ActionConfig fetchByG_ET_Last(long groupId, int eventType,
+		OrderByComparator<ActionConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_ET_Last(groupId, eventType, orderByComparator);
+	}
+
+	/**
+	* Returns the action configs before and after the current action config in the ordered set where groupId = &#63; and eventType = &#63;.
+	*
+	* @param actionConfigId the primary key of the current action config
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next action config
+	* @throws NoSuchActionConfigException if a action config with the primary key could not be found
+	*/
+	public static ActionConfig[] findByG_ET_PrevAndNext(long actionConfigId,
+		long groupId, int eventType,
+		OrderByComparator<ActionConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchActionConfigException {
+		return getPersistence()
+				   .findByG_ET_PrevAndNext(actionConfigId, groupId, eventType,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the action configs where groupId = &#63; and eventType = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	*/
+	public static void removeByG_ET(long groupId, int eventType) {
+		getPersistence().removeByG_ET(groupId, eventType);
+	}
+
+	/**
+	* Returns the number of action configs where groupId = &#63; and eventType = &#63;.
+	*
+	* @param groupId the group ID
+	* @param eventType the event type
+	* @return the number of matching action configs
+	*/
+	public static int countByG_ET(long groupId, int eventType) {
+		return getPersistence().countByG_ET(groupId, eventType);
+	}
+
+	/**
 	* Caches the action config in the entity cache if it is enabled.
 	*
 	* @param actionConfig the action config

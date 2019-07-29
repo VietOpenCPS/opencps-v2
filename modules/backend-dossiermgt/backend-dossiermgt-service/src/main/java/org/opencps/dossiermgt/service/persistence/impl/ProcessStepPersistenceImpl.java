@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -4534,6 +4536,990 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 		"processStep.dossierSubStatus = ?";
 	private static final String _FINDER_COLUMN_GID_SID_STATUS_DOSSIERSUBSTATUS_3 =
 		"(processStep.dossierSubStatus IS NULL OR processStep.dossierSubStatus = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SP_SCS = new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, ProcessStepImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_SP_SCS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS =
+		new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, ProcessStepImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_SP_SCS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			},
+			ProcessStepModelImpl.GROUPID_COLUMN_BITMASK |
+			ProcessStepModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessStepModelImpl.STEPCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_SP_SCS = new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SP_SCS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SP_SCS =
+		new FinderPath(ProcessStepModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessStepModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_SP_SCS",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @return the matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @return the range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCode, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end,
+		OrderByComparator<ProcessStep> orderByComparator) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCode, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String stepCode, int start, int end,
+		OrderByComparator<ProcessStep> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS;
+			finderArgs = new Object[] { groupId, serviceProcessId, stepCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SP_SCS;
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, stepCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ProcessStep> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ProcessStep>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ProcessStep processStep : list) {
+					if ((groupId != processStep.getGroupId()) ||
+							(serviceProcessId != processStep.getServiceProcessId()) ||
+							!Objects.equals(stepCode, processStep.getStepCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ProcessStepModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				if (!pagination) {
+					list = (List<ProcessStep>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ProcessStep>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching process step
+	 * @throws NoSuchProcessStepException if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep findByG_SP_SCS_First(long groupId,
+		long serviceProcessId, String stepCode,
+		OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException {
+		ProcessStep processStep = fetchByG_SP_SCS_First(groupId,
+				serviceProcessId, stepCode, orderByComparator);
+
+		if (processStep != null) {
+			return processStep;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceProcessId=");
+		msg.append(serviceProcessId);
+
+		msg.append(", stepCode=");
+		msg.append(stepCode);
+
+		msg.append("}");
+
+		throw new NoSuchProcessStepException(msg.toString());
+	}
+
+	/**
+	 * Returns the first process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching process step, or <code>null</code> if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep fetchByG_SP_SCS_First(long groupId,
+		long serviceProcessId, String stepCode,
+		OrderByComparator<ProcessStep> orderByComparator) {
+		List<ProcessStep> list = findByG_SP_SCS(groupId, serviceProcessId,
+				stepCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching process step
+	 * @throws NoSuchProcessStepException if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep findByG_SP_SCS_Last(long groupId, long serviceProcessId,
+		String stepCode, OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException {
+		ProcessStep processStep = fetchByG_SP_SCS_Last(groupId,
+				serviceProcessId, stepCode, orderByComparator);
+
+		if (processStep != null) {
+			return processStep;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceProcessId=");
+		msg.append(serviceProcessId);
+
+		msg.append(", stepCode=");
+		msg.append(stepCode);
+
+		msg.append("}");
+
+		throw new NoSuchProcessStepException(msg.toString());
+	}
+
+	/**
+	 * Returns the last process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching process step, or <code>null</code> if a matching process step could not be found
+	 */
+	@Override
+	public ProcessStep fetchByG_SP_SCS_Last(long groupId,
+		long serviceProcessId, String stepCode,
+		OrderByComparator<ProcessStep> orderByComparator) {
+		int count = countByG_SP_SCS(groupId, serviceProcessId, stepCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ProcessStep> list = findByG_SP_SCS(groupId, serviceProcessId,
+				stepCode, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the process steps before and after the current process step in the ordered set where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param processStepId the primary key of the current process step
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next process step
+	 * @throws NoSuchProcessStepException if a process step with the primary key could not be found
+	 */
+	@Override
+	public ProcessStep[] findByG_SP_SCS_PrevAndNext(long processStepId,
+		long groupId, long serviceProcessId, String stepCode,
+		OrderByComparator<ProcessStep> orderByComparator)
+		throws NoSuchProcessStepException {
+		ProcessStep processStep = findByPrimaryKey(processStepId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ProcessStep[] array = new ProcessStepImpl[3];
+
+			array[0] = getByG_SP_SCS_PrevAndNext(session, processStep, groupId,
+					serviceProcessId, stepCode, orderByComparator, true);
+
+			array[1] = processStep;
+
+			array[2] = getByG_SP_SCS_PrevAndNext(session, processStep, groupId,
+					serviceProcessId, stepCode, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ProcessStep getByG_SP_SCS_PrevAndNext(Session session,
+		ProcessStep processStep, long groupId, long serviceProcessId,
+		String stepCode, OrderByComparator<ProcessStep> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_PROCESSSTEP_WHERE);
+
+		query.append(_FINDER_COLUMN_G_SP_SCS_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2);
+
+		boolean bindStepCode = false;
+
+		if (stepCode == null) {
+			query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_1);
+		}
+		else if (stepCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_3);
+		}
+		else {
+			bindStepCode = true;
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ProcessStepModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(serviceProcessId);
+
+		if (bindStepCode) {
+			qPos.add(stepCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(processStep);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ProcessStep> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCodes the step codes
+	 * @return the matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCodes,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCodes the step codes
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @return the range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCodes, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCodes the step codes
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end,
+		OrderByComparator<ProcessStep> orderByComparator) {
+		return findByG_SP_SCS(groupId, serviceProcessId, stepCodes, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ProcessStepModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of process steps
+	 * @param end the upper bound of the range of process steps (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching process steps
+	 */
+	@Override
+	public List<ProcessStep> findByG_SP_SCS(long groupId,
+		long serviceProcessId, String[] stepCodes, int start, int end,
+		OrderByComparator<ProcessStep> orderByComparator,
+		boolean retrieveFromCache) {
+		if (stepCodes == null) {
+			stepCodes = new String[0];
+		}
+		else if (stepCodes.length > 1) {
+			stepCodes = ArrayUtil.distinct(stepCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(stepCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (stepCodes.length == 1) {
+			return findByG_SP_SCS(groupId, serviceProcessId, stepCodes[0],
+				start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, StringUtil.merge(stepCodes)
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, serviceProcessId, StringUtil.merge(stepCodes),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ProcessStep> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ProcessStep>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SP_SCS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ProcessStep processStep : list) {
+					if ((groupId != processStep.getGroupId()) ||
+							(serviceProcessId != processStep.getServiceProcessId()) ||
+							!ArrayUtil.contains(stepCodes,
+								processStep.getStepCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2);
+
+			if (stepCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < stepCodes.length; i++) {
+					String stepCode = stepCodes[i];
+
+					if (stepCode == null) {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_1);
+					}
+					else if (stepCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_2);
+					}
+
+					if ((i + 1) < stepCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ProcessStepModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				for (String stepCode : stepCodes) {
+					if ((stepCode != null) && !stepCode.isEmpty()) {
+						qPos.add(stepCode);
+					}
+				}
+
+				if (!pagination) {
+					list = (List<ProcessStep>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ProcessStep>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SP_SCS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SP_SCS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 */
+	@Override
+	public void removeByG_SP_SCS(long groupId, long serviceProcessId,
+		String stepCode) {
+		for (ProcessStep processStep : findByG_SP_SCS(groupId,
+				serviceProcessId, stepCode, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(processStep);
+		}
+	}
+
+	/**
+	 * Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCode the step code
+	 * @return the number of matching process steps
+	 */
+	@Override
+	public int countByG_SP_SCS(long groupId, long serviceProcessId,
+		String stepCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_SP_SCS;
+
+		Object[] finderArgs = new Object[] { groupId, serviceProcessId, stepCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of process steps where groupId = &#63; and serviceProcessId = &#63; and stepCode = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceProcessId the service process ID
+	 * @param stepCodes the step codes
+	 * @return the number of matching process steps
+	 */
+	@Override
+	public int countByG_SP_SCS(long groupId, long serviceProcessId,
+		String[] stepCodes) {
+		if (stepCodes == null) {
+			stepCodes = new String[0];
+		}
+		else if (stepCodes.length > 1) {
+			stepCodes = ArrayUtil.distinct(stepCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(stepCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, serviceProcessId, StringUtil.merge(stepCodes)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SP_SCS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_PROCESSSTEP_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2);
+
+			if (stepCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < stepCodes.length; i++) {
+					String stepCode = stepCodes[i];
+
+					if (stepCode == null) {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_1);
+					}
+					else if (stepCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_SP_SCS_STEPCODE_2);
+					}
+
+					if ((i + 1) < stepCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceProcessId);
+
+				for (String stepCode : stepCodes) {
+					if ((stepCode != null) && !stepCode.isEmpty()) {
+						qPos.add(stepCode);
+					}
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SP_SCS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SP_SCS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_SP_SCS_GROUPID_2 = "processStep.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SP_SCS_SERVICEPROCESSID_2 = "processStep.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SP_SCS_STEPCODE_1 = "processStep.stepCode IS NULL";
+	private static final String _FINDER_COLUMN_G_SP_SCS_STEPCODE_2 = "processStep.stepCode = ?";
+	private static final String _FINDER_COLUMN_G_SP_SCS_STEPCODE_3 = "(processStep.stepCode IS NULL OR processStep.stepCode = '')";
 
 	public ProcessStepPersistenceImpl() {
 		setModelClass(ProcessStep.class);
@@ -4994,6 +5980,16 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SNO,
 				args);
 
+			args = new Object[] {
+					processStepModelImpl.getGroupId(),
+					processStepModelImpl.getServiceProcessId(),
+					processStepModelImpl.getStepCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SP_SCS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -5119,6 +6115,29 @@ public class ProcessStepPersistenceImpl extends BasePersistenceImpl<ProcessStep>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SP_SNO, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SNO,
+					args);
+			}
+
+			if ((processStepModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						processStepModelImpl.getOriginalGroupId(),
+						processStepModelImpl.getOriginalServiceProcessId(),
+						processStepModelImpl.getOriginalStepCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SP_SCS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS,
+					args);
+
+				args = new Object[] {
+						processStepModelImpl.getGroupId(),
+						processStepModelImpl.getServiceProcessId(),
+						processStepModelImpl.getStepCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SP_SCS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SP_SCS,
 					args);
 			}
 		}

@@ -99,6 +99,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response getQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword, String questionType,
+			String answer,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -114,11 +115,15 @@ public class FaqManagementImpl implements FaqManagement {
 //				lstQuestions = QuestionLocalServiceUtil.findByG_PL(groupId, new int[] { publish }, start, end);
 //			}
 			
+			Boolean filterAnswer = null;
+			if (Validator.isNotNull(answer)) {
+				filterAnswer = Boolean.parseBoolean(answer);
+			}
 			List<Question> lstQuestions = QuestionLocalServiceUtil.findByQuerySearch(groupId, keyword, govAgencyCode,
-					publish, questionType, start, end);
+					publish, questionType, filterAnswer, start, end);
 			
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish, questionType));
+			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish, questionType, filterAnswer));
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			if (lstQuestions != null && lstQuestions.size() > 0) {

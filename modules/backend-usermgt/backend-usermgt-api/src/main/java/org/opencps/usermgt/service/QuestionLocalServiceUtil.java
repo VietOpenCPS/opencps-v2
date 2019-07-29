@@ -59,10 +59,11 @@ public class QuestionLocalServiceUtil {
 	}
 
 	public static int countByQuerySearch(long groupId, String keyword,
-		String govAgencyCode, Integer publish, String questionType) {
+		String govAgencyCode, Integer publish, String questionType,
+		Boolean answer) {
 		return getService()
 				   .countByQuerySearch(groupId, keyword, govAgencyCode,
-			publish, questionType);
+			publish, questionType, answer);
 	}
 
 	/**
@@ -199,10 +200,10 @@ public class QuestionLocalServiceUtil {
 
 	public static java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
 		long groupId, String keyword, String govAgencyCode, Integer publish,
-		String questionType, int start, int limit) {
+		String questionType, Boolean answer, int start, int limit) {
 		return getService()
 				   .findByQuerySearch(groupId, keyword, govAgencyCode, publish,
-			questionType, start, limit);
+			questionType, answer, start, limit);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
