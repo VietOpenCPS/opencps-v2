@@ -35,11 +35,13 @@ import java.util.Set;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -103,6 +105,7 @@ import org.opencps.statistic.rest.service.VotingStatisticFinderService;
 import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -800,7 +803,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		GetDossierRequest payload = new GetDossierRequest();
 		payload.setGroupId(groupId);
 		// Delete data old of month/year
-		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
@@ -896,18 +899,18 @@ public class OpencpsStatisticRestApplication extends Application {
 									break;
 								}
 							}
-							if (!existsDomain) {
-								try {
-									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month,
-											year);
-								} catch (NoSuchOpencpsDossierStatisticException e) {
-									_log.error(e);
-								}
-							}
+//							if (!existsDomain) {
+//								try {
+//									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month,
+//											year);
+//								} catch (NoSuchOpencpsDossierStatisticException e) {
+//									_log.error(e);
+//								}
+//							}
 						}
 					}
 				} else {
-					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 				}
 
 				StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -923,22 +926,22 @@ public class OpencpsStatisticRestApplication extends Application {
 				List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
 				if (serviceDomainData != null) {
 					for (ServiceDomainData sdd : serviceDomainData) {
-						try {
-							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-						} catch (NoSuchOpencpsDossierStatisticException e) {
-
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//						} catch (NoSuchOpencpsDossierStatisticException e) {
+//
+//						}
 					}
 				}
-				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 			}
 		} else {
-			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		}
 
 		/* Update summary */
 		//Delete record
-		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, year);
+//		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, year);
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
@@ -1053,5 +1056,20 @@ public class OpencpsStatisticRestApplication extends Application {
 		result.setErrorMessage("");
 		result.setSuccess(true);
 		return result;
+	}
+	
+	@GET
+	@Path("/testsearch")
+	public String searchDossierStatistic(@HeaderParam("groupId") long groupId,
+			@QueryParam("month") Integer month, @QueryParam("year") Integer year, @QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode) {
+		List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(groupId);
+		
+		OpencpsDossierStatistic statistic = DossierStatisticUtils.checkExists(month, year, domainCode, govAgencyCode, allSiteDatas);
+		if (statistic == null) {
+			return "Not found";
+		}
+		else {
+			return statistic.getTotalCount() + "";
+		}
 	}
 }

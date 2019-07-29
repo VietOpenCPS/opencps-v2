@@ -33,6 +33,7 @@ public class StatisticEngineFetch {
 				String type1 = "all@all@" + groupId;
 	
 				DossierStatisticData dataType1 = new DossierStatisticData();
+				dataType1.setGroupId(groupId);
 				dataType1.setGovAgencyCode(StringPool.BLANK);
 				dataType1.setGovAgencyName(StringPool.BLANK);
 				dataType1.setDomainCode(StringPool.BLANK);
@@ -57,6 +58,7 @@ public class StatisticEngineFetch {
 				dataType2.setGovAgencyName(StringPool.BLANK);
 				dataType2.setDomainCode(dossierData.getDomainCode());
 				dataType2.setDomainName(dossierData.getDomainName());
+				dataType2.setGroupId(groupId);
 	
 				if (statisticData.containsKey(type2)) {
 					dataType2 = statisticData.get(type2);
@@ -78,6 +80,7 @@ public class StatisticEngineFetch {
 				dataType3.setGovAgencyName(dossierData.getGovAgencyName());
 				dataType3.setDomainCode(StringPool.BLANK);
 				dataType3.setDomainName(StringPool.BLANK);
+				dataType3.setGroupId(groupId);
 
 				if (statisticData.containsKey(type3)) {
 					//System.out.println("type3_TRUE: "+type3);
@@ -101,6 +104,7 @@ public class StatisticEngineFetch {
 				dataType4.setGovAgencyName(dossierData.getGovAgencyName());
 				dataType4.setDomainCode(dossierData.getDomainCode());
 				dataType4.setDomainName(dossierData.getDomainName());
+				dataType4.setGroupId(groupId);
 				
 				if (statisticData.containsKey(type4)) {
 					dataType4 = statisticData.get(type4);

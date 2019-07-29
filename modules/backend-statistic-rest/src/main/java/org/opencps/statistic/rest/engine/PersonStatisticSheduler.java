@@ -125,14 +125,14 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 	
 				/* Update summary */
 				//Delete record
-				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+//				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
 				//
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				//TODO: Calculator again last year
 				//Delete record
-				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+//				engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
 				//
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 	
@@ -180,11 +180,11 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 				statisticEngineUpdate.updatePersonStatisticData(statisticData);														
 			}
 			else {
-				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//				engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 			}
 		}
 		else {
-			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//			engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		}
 	}
 

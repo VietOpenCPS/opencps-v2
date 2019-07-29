@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.statistic.dto.DossierStatisticData;
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 
 import java.io.Serializable;
@@ -82,6 +81,20 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	public OpencpsDossierStatistic checkNotDuplicate(long groupId,
 		String govAgencyCode, int month, int year, String domainCode);
+
+	public OpencpsDossierStatistic createOnlyStatistic(long companyId,
+		long groupId, long userId, String userName, int month, int year,
+		int totalCount, int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount)
+		throws PortalException, SystemException;
 
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
@@ -215,6 +228,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic fetchOpencpsDossierStatisticByUuidAndGroupId(
 		String uuid, long groupId);
 
+	public List<OpencpsDossierStatistic> findByG(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -335,23 +350,25 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
-		int year, String govAgencyCode, String domainCode)
-		throws NoSuchOpencpsDossierStatisticException;
-
-	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
-		int month, int year) throws NoSuchOpencpsDossierStatisticException;
-
-	public void removeDossierStatisticByMonthYear(long groupId, int month,
-		int year) throws NoSuchOpencpsDossierStatisticException;
-
-	public void removeDossierStatisticByYear(long companyId, long groupId,
-		int month, int year) throws NoSuchOpencpsDossierStatisticException;
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,
 		int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	public OpencpsDossierStatistic updateOnlyStatistic(
+		OpencpsDossierStatistic dossierStatistic, long companyId, long groupId,
+		long userId, String userName, int month, int year, int totalCount,
+		int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount)
 		throws PortalException, SystemException;
 
 	/**

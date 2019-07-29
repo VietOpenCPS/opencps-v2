@@ -76,10 +76,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long dossierId = Long.valueOf(id);
 			
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			
+			Dossier dossier = null;
+
+			try {
+				long dossierId = GetterUtil.getLong(id);
+				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			}
+			catch (NumberFormatException e) {
+				_log.debug(e);
+			}
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}

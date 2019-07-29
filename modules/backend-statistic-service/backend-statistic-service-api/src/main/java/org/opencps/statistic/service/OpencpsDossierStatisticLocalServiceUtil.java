@@ -67,6 +67,32 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			domainCode);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic createOnlyStatistic(
+		long companyId, long groupId, long userId, String userName, int month,
+		int year, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .createOnlyStatistic(companyId, groupId, userId, userName,
+			month, year, totalCount, deniedCount, cancelledCount, processCount,
+			remainingCount, receivedCount, onlineCount, releaseCount,
+			betimesCount, ontimeCount, overtimeCount, doneCount,
+			releasingCount, unresolvedCount, processingCount, undueCount,
+			overdueCount, pausingCount, ontimePercentage, overtimeInside,
+			overtimeOutside, interoperatingCount, waitingCount, govAgencyCode,
+			govAgencyName, domainCode, domainName, reporting, onegateCount,
+			outsideCount, insideCount);
+	}
+
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
 	*
@@ -244,6 +270,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 				   .fetchOpencpsDossierStatisticByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByG(
+		long groupId) {
+		return getService().findByG(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
@@ -398,35 +429,6 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static org.opencps.statistic.model.OpencpsDossierStatistic removeByG_M_Y_G_D(
-		long groupId, int month, int year, String govAgencyCode,
-		String domainCode)
-		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		return getService()
-				   .removeByG_M_Y_G_D(groupId, month, year, govAgencyCode,
-			domainCode);
-	}
-
-	public static void removeDossierStatisticByD_M_Y(long groupId,
-		String domainCode, int month, int year)
-		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		getService()
-			.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
-	}
-
-	public static void removeDossierStatisticByMonthYear(long groupId,
-		int month, int year)
-		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		getService().removeDossierStatisticByMonthYear(groupId, month, year);
-	}
-
-	public static void removeDossierStatisticByYear(long companyId,
-		long groupId, int month, int year)
-		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
-		getService()
-			.removeDossierStatisticByYear(companyId, groupId, month, year);
-	}
-
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)
@@ -435,6 +437,34 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService()
 				   .searchDossierStatistic(groupId, month, year, domain,
 			govAgencyCode, groupAgenvyCode, start, end);
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic updateOnlyStatistic(
+		org.opencps.statistic.model.OpencpsDossierStatistic dossierStatistic,
+		long companyId, long groupId, long userId, String userName, int month,
+		int year, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateOnlyStatistic(dossierStatistic, companyId, groupId,
+			userId, userName, month, year, totalCount, deniedCount,
+			cancelledCount, processCount, remainingCount, receivedCount,
+			onlineCount, releaseCount, betimesCount, ontimeCount,
+			overtimeCount, doneCount, releasingCount, unresolvedCount,
+			processingCount, undueCount, overdueCount, pausingCount,
+			ontimePercentage, overtimeInside, overtimeOutside,
+			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
+			domainCode, domainName, reporting, onegateCount, outsideCount,
+			insideCount);
 	}
 
 	/**
