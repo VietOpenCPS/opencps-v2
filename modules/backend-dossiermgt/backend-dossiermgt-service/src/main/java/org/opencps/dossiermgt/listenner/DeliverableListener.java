@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
 
 //@Component(immediate = true, service = ModelListener.class)
 public class DeliverableListener extends BaseModelListener<Deliverable> {
@@ -142,7 +140,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 						DeliverableLocalServiceUtil.updateDeliverable(model);
 					} catch (Exception e) {
-						// TODO: handle exception
+						_log.debug(e);
 					}
 
 				}
@@ -163,7 +161,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 						DeliverableLocalServiceUtil.updateDeliverable(model);
 					} catch (Exception e) {
-						// TODO: handle exception
+						_log.debug(e);
 					}
 
 				}

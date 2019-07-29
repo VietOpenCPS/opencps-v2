@@ -3,6 +3,8 @@ package org.opencps.statistic.rest.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -37,6 +39,7 @@ import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
+import org.opencps.statistic.rest.engine.service.StatisticSumYearCalcular;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -89,7 +92,7 @@ public class StatisticDataUtil {
 			response.setData(lstSDatas);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		return response;
 	}
@@ -151,6 +154,7 @@ public class StatisticDataUtil {
 					data.setModifiedDate(APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE),
 							APIDateTimeUtils._NORMAL_PARTTERN));
 				} catch (Exception e) {
+					_log.error(e);
 				}
 				data.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED), 0));
 				data.setClassName(doc.get(VotingTerm.CLASS_NAME));
@@ -174,7 +178,7 @@ public class StatisticDataUtil {
 			response.setData(lstDatas);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		return response;
 	}
@@ -231,6 +235,7 @@ public class StatisticDataUtil {
 					data.setModifiedDate(APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE),
 							APIDateTimeUtils._NORMAL_PARTTERN));
 				} catch (Exception e) {
+					_log.error(e);
 				}
 				data.setSelected(GetterUtil.get(doc.get(VotingResultTerm.SELECTED), 0));
 				data.setClassName(doc.get(VotingTerm.CLASS_NAME));
@@ -248,7 +253,7 @@ public class StatisticDataUtil {
 			response.setData(lstDatas);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		return response;
 	}	
@@ -293,8 +298,10 @@ public class StatisticDataUtil {
 			response.setData(lstSDatas);
 		}
 		catch (Exception e) {
-			
+			_log.error(e);
 		}
 		return response;
 	}	
+	
+	private static Log _log = LogFactoryUtil.getLog(StatisticDataUtil.class);
 }

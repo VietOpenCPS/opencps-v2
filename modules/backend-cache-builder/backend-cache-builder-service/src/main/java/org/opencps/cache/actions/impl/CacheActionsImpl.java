@@ -26,6 +26,7 @@ public class CacheActionsImpl implements CacheActions{
 				PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 				cache.removeAll();
 			} catch (Exception ex) {
+				_log.debug(ex);
 				_log.error("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
 			}
 		} else {

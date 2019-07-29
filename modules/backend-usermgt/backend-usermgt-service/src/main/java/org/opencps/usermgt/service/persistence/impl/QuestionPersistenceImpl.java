@@ -55,6 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -912,6 +913,2084 @@ public class QuestionPersistenceImpl extends BasePersistenceImpl<Question>
 	private static final String _FINDER_COLUMN_G_PL_GROUPID_2 = "question.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_PL_PUBLISH_2 = "question.publish = ?";
 	private static final String _FINDER_COLUMN_G_PL_PUBLISH_7 = "question.publish IN (";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT = new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, QuestionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_PL_QT",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT =
+		new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, QuestionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_PL_QT",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName()
+			},
+			QuestionModelImpl.GROUPID_COLUMN_BITMASK |
+			QuestionModelImpl.PUBLISH_COLUMN_BITMASK |
+			QuestionModelImpl.QUESTIONTYPE_COLUMN_BITMASK |
+			QuestionModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_PL_QT = new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_PL_QT",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT = new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_PL_QT",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns all the questions where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @return the matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int publish,
+		String questionType) {
+		return findByG_PL_QT(groupId, publish, questionType, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @return the range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int publish,
+		String questionType, int start, int end) {
+		return findByG_PL_QT(groupId, publish, questionType, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int publish,
+		String questionType, int start, int end,
+		OrderByComparator<Question> orderByComparator) {
+		return findByG_PL_QT(groupId, publish, questionType, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int publish,
+		String questionType, int start, int end,
+		OrderByComparator<Question> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT;
+			finderArgs = new Object[] { groupId, publish, questionType };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT;
+			finderArgs = new Object[] {
+					groupId, publish, questionType,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Question> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Question>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Question question : list) {
+					if ((groupId != question.getGroupId()) ||
+							(publish != question.getPublish()) ||
+							!Objects.equals(questionType,
+								question.getQuestionType())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_PUBLISH_2);
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(QuestionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (!pagination) {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching question
+	 * @throws NoSuchQuestionException if a matching question could not be found
+	 */
+	@Override
+	public Question findByG_PL_QT_First(long groupId, int publish,
+		String questionType, OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = fetchByG_PL_QT_First(groupId, publish,
+				questionType, orderByComparator);
+
+		if (question != null) {
+			return question;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", questionType=");
+		msg.append(questionType);
+
+		msg.append("}");
+
+		throw new NoSuchQuestionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching question, or <code>null</code> if a matching question could not be found
+	 */
+	@Override
+	public Question fetchByG_PL_QT_First(long groupId, int publish,
+		String questionType, OrderByComparator<Question> orderByComparator) {
+		List<Question> list = findByG_PL_QT(groupId, publish, questionType, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching question
+	 * @throws NoSuchQuestionException if a matching question could not be found
+	 */
+	@Override
+	public Question findByG_PL_QT_Last(long groupId, int publish,
+		String questionType, OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = fetchByG_PL_QT_Last(groupId, publish, questionType,
+				orderByComparator);
+
+		if (question != null) {
+			return question;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", questionType=");
+		msg.append(questionType);
+
+		msg.append("}");
+
+		throw new NoSuchQuestionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching question, or <code>null</code> if a matching question could not be found
+	 */
+	@Override
+	public Question fetchByG_PL_QT_Last(long groupId, int publish,
+		String questionType, OrderByComparator<Question> orderByComparator) {
+		int count = countByG_PL_QT(groupId, publish, questionType);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Question> list = findByG_PL_QT(groupId, publish, questionType,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the questions before and after the current question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param questionId the primary key of the current question
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next question
+	 * @throws NoSuchQuestionException if a question with the primary key could not be found
+	 */
+	@Override
+	public Question[] findByG_PL_QT_PrevAndNext(long questionId, long groupId,
+		int publish, String questionType,
+		OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = findByPrimaryKey(questionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Question[] array = new QuestionImpl[3];
+
+			array[0] = getByG_PL_QT_PrevAndNext(session, question, groupId,
+					publish, questionType, orderByComparator, true);
+
+			array[1] = question;
+
+			array[2] = getByG_PL_QT_PrevAndNext(session, question, groupId,
+					publish, questionType, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Question getByG_PL_QT_PrevAndNext(Session session,
+		Question question, long groupId, int publish, String questionType,
+		OrderByComparator<Question> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_QUESTION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_PL_QT_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_PL_QT_PUBLISH_2);
+
+		boolean bindQuestionType = false;
+
+		if (questionType == null) {
+			query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1);
+		}
+		else if (questionType.equals("")) {
+			query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3);
+		}
+		else {
+			bindQuestionType = true;
+
+			query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(QuestionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(publish);
+
+		if (bindQuestionType) {
+			qPos.add(questionType);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(question);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Question> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @return the matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int[] publishs,
+		String questionType) {
+		return findByG_PL_QT(groupId, publishs, questionType,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @return the range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int[] publishs,
+		String questionType, int start, int end) {
+		return findByG_PL_QT(groupId, publishs, questionType, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int[] publishs,
+		String questionType, int start, int end,
+		OrderByComparator<Question> orderByComparator) {
+		return findByG_PL_QT(groupId, publishs, questionType, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT(long groupId, int[] publishs,
+		String questionType, int start, int end,
+		OrderByComparator<Question> orderByComparator, boolean retrieveFromCache) {
+		if (publishs == null) {
+			publishs = new int[0];
+		}
+		else if (publishs.length > 1) {
+			publishs = ArrayUtil.unique(publishs);
+
+			Arrays.sort(publishs);
+		}
+
+		if (publishs.length == 1) {
+			return findByG_PL_QT(groupId, publishs[0], questionType, start,
+				end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(publishs), questionType
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(publishs), questionType,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Question> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Question>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Question question : list) {
+					if ((groupId != question.getGroupId()) ||
+							!ArrayUtil.contains(publishs, question.getPublish()) ||
+							!Objects.equals(questionType,
+								question.getQuestionType())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GROUPID_2);
+
+			if (publishs.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_PL_QT_PUBLISH_7);
+
+				query.append(StringUtil.merge(publishs));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(QuestionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (!pagination) {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 */
+	@Override
+	public void removeByG_PL_QT(long groupId, int publish, String questionType) {
+		for (Question question : findByG_PL_QT(groupId, publish, questionType,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(question);
+		}
+	}
+
+	/**
+	 * Returns the number of questions where groupId = &#63; and publish = &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @return the number of matching questions
+	 */
+	@Override
+	public int countByG_PL_QT(long groupId, int publish, String questionType) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_PL_QT;
+
+		Object[] finderArgs = new Object[] { groupId, publish, questionType };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_PUBLISH_2);
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of questions where groupId = &#63; and publish = any &#63; and questionType = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @return the number of matching questions
+	 */
+	@Override
+	public int countByG_PL_QT(long groupId, int[] publishs, String questionType) {
+		if (publishs == null) {
+			publishs = new int[0];
+		}
+		else if (publishs.length > 1) {
+			publishs = ArrayUtil.unique(publishs);
+
+			Arrays.sort(publishs);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(publishs), questionType
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GROUPID_2);
+
+			if (publishs.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_PL_QT_PUBLISH_7);
+
+				query.append(StringUtil.merge(publishs));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_PL_QT_GROUPID_2 = "question.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_PUBLISH_2 = "question.publish = ? AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_PUBLISH_7 = "question.publish IN (";
+	private static final String _FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_1 = "question.questionType IS NULL";
+	private static final String _FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_2 = "question.questionType = ?";
+	private static final String _FINDER_COLUMN_G_PL_QT_QUESTIONTYPE_3 = "(question.questionType IS NULL OR question.questionType = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT_GC =
+		new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, QuestionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_PL_QT_GC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC =
+		new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, QuestionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_PL_QT_GC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			QuestionModelImpl.GROUPID_COLUMN_BITMASK |
+			QuestionModelImpl.PUBLISH_COLUMN_BITMASK |
+			QuestionModelImpl.QUESTIONTYPE_COLUMN_BITMASK |
+			QuestionModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			QuestionModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_PL_QT_GC = new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_PL_QT_GC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT_GC =
+		new FinderPath(QuestionModelImpl.ENTITY_CACHE_ENABLED,
+			QuestionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_PL_QT_GC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @return the matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode) {
+		return findByG_PL_QT_GC(groupId, publish, questionType, govAgencyCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @return the range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode, int start, int end) {
+		return findByG_PL_QT_GC(groupId, publish, questionType, govAgencyCode,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode, int start, int end,
+		OrderByComparator<Question> orderByComparator) {
+		return findByG_PL_QT_GC(groupId, publish, questionType, govAgencyCode,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode, int start, int end,
+		OrderByComparator<Question> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC;
+			finderArgs = new Object[] {
+					groupId, publish, questionType, govAgencyCode
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT_GC;
+			finderArgs = new Object[] {
+					groupId, publish, questionType, govAgencyCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Question> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Question>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Question question : list) {
+					if ((groupId != question.getGroupId()) ||
+							(publish != question.getPublish()) ||
+							!Objects.equals(questionType,
+								question.getQuestionType()) ||
+							!Objects.equals(govAgencyCode,
+								question.getGovAgencyCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_PUBLISH_2);
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(QuestionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (!pagination) {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching question
+	 * @throws NoSuchQuestionException if a matching question could not be found
+	 */
+	@Override
+	public Question findByG_PL_QT_GC_First(long groupId, int publish,
+		String questionType, String govAgencyCode,
+		OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = fetchByG_PL_QT_GC_First(groupId, publish,
+				questionType, govAgencyCode, orderByComparator);
+
+		if (question != null) {
+			return question;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", questionType=");
+		msg.append(questionType);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchQuestionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching question, or <code>null</code> if a matching question could not be found
+	 */
+	@Override
+	public Question fetchByG_PL_QT_GC_First(long groupId, int publish,
+		String questionType, String govAgencyCode,
+		OrderByComparator<Question> orderByComparator) {
+		List<Question> list = findByG_PL_QT_GC(groupId, publish, questionType,
+				govAgencyCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching question
+	 * @throws NoSuchQuestionException if a matching question could not be found
+	 */
+	@Override
+	public Question findByG_PL_QT_GC_Last(long groupId, int publish,
+		String questionType, String govAgencyCode,
+		OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = fetchByG_PL_QT_GC_Last(groupId, publish,
+				questionType, govAgencyCode, orderByComparator);
+
+		if (question != null) {
+			return question;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", questionType=");
+		msg.append(questionType);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchQuestionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching question, or <code>null</code> if a matching question could not be found
+	 */
+	@Override
+	public Question fetchByG_PL_QT_GC_Last(long groupId, int publish,
+		String questionType, String govAgencyCode,
+		OrderByComparator<Question> orderByComparator) {
+		int count = countByG_PL_QT_GC(groupId, publish, questionType,
+				govAgencyCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Question> list = findByG_PL_QT_GC(groupId, publish, questionType,
+				govAgencyCode, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the questions before and after the current question in the ordered set where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param questionId the primary key of the current question
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next question
+	 * @throws NoSuchQuestionException if a question with the primary key could not be found
+	 */
+	@Override
+	public Question[] findByG_PL_QT_GC_PrevAndNext(long questionId,
+		long groupId, int publish, String questionType, String govAgencyCode,
+		OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException {
+		Question question = findByPrimaryKey(questionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Question[] array = new QuestionImpl[3];
+
+			array[0] = getByG_PL_QT_GC_PrevAndNext(session, question, groupId,
+					publish, questionType, govAgencyCode, orderByComparator,
+					true);
+
+			array[1] = question;
+
+			array[2] = getByG_PL_QT_GC_PrevAndNext(session, question, groupId,
+					publish, questionType, govAgencyCode, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Question getByG_PL_QT_GC_PrevAndNext(Session session,
+		Question question, long groupId, int publish, String questionType,
+		String govAgencyCode, OrderByComparator<Question> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_QUESTION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_PL_QT_GC_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_PL_QT_GC_PUBLISH_2);
+
+		boolean bindQuestionType = false;
+
+		if (questionType == null) {
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1);
+		}
+		else if (questionType.equals("")) {
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3);
+		}
+		else {
+			bindQuestionType = true;
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2);
+		}
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(QuestionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(publish);
+
+		if (bindQuestionType) {
+			qPos.add(questionType);
+		}
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(question);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Question> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @return the matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int[] publishs,
+		String questionType, String govAgencyCode) {
+		return findByG_PL_QT_GC(groupId, publishs, questionType, govAgencyCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @return the range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int[] publishs,
+		String questionType, String govAgencyCode, int start, int end) {
+		return findByG_PL_QT_GC(groupId, publishs, questionType, govAgencyCode,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = any &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int[] publishs,
+		String questionType, String govAgencyCode, int start, int end,
+		OrderByComparator<Question> orderByComparator) {
+		return findByG_PL_QT_GC(groupId, publishs, questionType, govAgencyCode,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of questions
+	 * @param end the upper bound of the range of questions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching questions
+	 */
+	@Override
+	public List<Question> findByG_PL_QT_GC(long groupId, int[] publishs,
+		String questionType, String govAgencyCode, int start, int end,
+		OrderByComparator<Question> orderByComparator, boolean retrieveFromCache) {
+		if (publishs == null) {
+			publishs = new int[0];
+		}
+		else if (publishs.length > 1) {
+			publishs = ArrayUtil.unique(publishs);
+
+			Arrays.sort(publishs);
+		}
+
+		if (publishs.length == 1) {
+			return findByG_PL_QT_GC(groupId, publishs[0], questionType,
+				govAgencyCode, start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(publishs), questionType,
+					govAgencyCode
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(publishs), questionType,
+					govAgencyCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Question> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Question>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT_GC,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Question question : list) {
+					if ((groupId != question.getGroupId()) ||
+							!ArrayUtil.contains(publishs, question.getPublish()) ||
+							!Objects.equals(questionType,
+								question.getQuestionType()) ||
+							!Objects.equals(govAgencyCode,
+								question.getGovAgencyCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GROUPID_2);
+
+			if (publishs.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_PUBLISH_7);
+
+				query.append(StringUtil.merge(publishs));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(QuestionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (!pagination) {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Question>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT_GC,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_PL_QT_GC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 */
+	@Override
+	public void removeByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode) {
+		for (Question question : findByG_PL_QT_GC(groupId, publish,
+				questionType, govAgencyCode, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(question);
+		}
+	}
+
+	/**
+	 * Returns the number of questions where groupId = &#63; and publish = &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @return the number of matching questions
+	 */
+	@Override
+	public int countByG_PL_QT_GC(long groupId, int publish,
+		String questionType, String govAgencyCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_PL_QT_GC;
+
+		Object[] finderArgs = new Object[] {
+				groupId, publish, questionType, govAgencyCode
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_PUBLISH_2);
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of questions where groupId = &#63; and publish = any &#63; and questionType = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publishs the publishs
+	 * @param questionType the question type
+	 * @param govAgencyCode the gov agency code
+	 * @return the number of matching questions
+	 */
+	@Override
+	public int countByG_PL_QT_GC(long groupId, int[] publishs,
+		String questionType, String govAgencyCode) {
+		if (publishs == null) {
+			publishs = new int[0];
+		}
+		else if (publishs.length > 1) {
+			publishs = ArrayUtil.unique(publishs);
+
+			Arrays.sort(publishs);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(publishs), questionType, govAgencyCode
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT_GC,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_QUESTION_WHERE);
+
+			query.append(_FINDER_COLUMN_G_PL_QT_GC_GROUPID_2);
+
+			if (publishs.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_PUBLISH_7);
+
+				query.append(StringUtil.merge(publishs));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindQuestionType = false;
+
+			if (questionType == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1);
+			}
+			else if (questionType.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3);
+			}
+			else {
+				bindQuestionType = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2);
+			}
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindQuestionType) {
+					qPos.add(questionType);
+				}
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT_GC,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_PL_QT_GC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_GROUPID_2 = "question.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_PUBLISH_2 = "question.publish = ? AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_PUBLISH_7 = "question.publish IN (";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_1 = "question.questionType IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_2 = "question.questionType = ? AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_QUESTIONTYPE_3 = "(question.questionType IS NULL OR question.questionType = '') AND ";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_1 = "question.govAgencyCode IS NULL";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_2 = "question.govAgencyCode = ?";
+	private static final String _FINDER_COLUMN_G_PL_QT_GC_GOVAGENCYCODE_3 = "(question.govAgencyCode IS NULL OR question.govAgencyCode = '')";
 
 	public QuestionPersistenceImpl() {
 		setModelClass(Question.class);
@@ -1172,6 +3251,27 @@ public class QuestionPersistenceImpl extends BasePersistenceImpl<Question>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL,
 				args);
 
+			args = new Object[] {
+					questionModelImpl.getGroupId(),
+					questionModelImpl.getPublish(),
+					questionModelImpl.getQuestionType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT,
+				args);
+
+			args = new Object[] {
+					questionModelImpl.getGroupId(),
+					questionModelImpl.getPublish(),
+					questionModelImpl.getQuestionType(),
+					questionModelImpl.getGovAgencyCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT_GC, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -1196,6 +3296,54 @@ public class QuestionPersistenceImpl extends BasePersistenceImpl<Question>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL,
+					args);
+			}
+
+			if ((questionModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						questionModelImpl.getOriginalGroupId(),
+						questionModelImpl.getOriginalPublish(),
+						questionModelImpl.getOriginalQuestionType()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT,
+					args);
+
+				args = new Object[] {
+						questionModelImpl.getGroupId(),
+						questionModelImpl.getPublish(),
+						questionModelImpl.getQuestionType()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT,
+					args);
+			}
+
+			if ((questionModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						questionModelImpl.getOriginalGroupId(),
+						questionModelImpl.getOriginalPublish(),
+						questionModelImpl.getOriginalQuestionType(),
+						questionModelImpl.getOriginalGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT_GC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC,
+					args);
+
+				args = new Object[] {
+						questionModelImpl.getGroupId(),
+						questionModelImpl.getPublish(),
+						questionModelImpl.getQuestionType(),
+						questionModelImpl.getGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_PL_QT_GC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_PL_QT_GC,
 					args);
 			}
 		}

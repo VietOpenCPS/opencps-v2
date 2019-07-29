@@ -23,7 +23,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	Log _log = LogFactoryUtil.getLog(QuestionFinderImpl.class);
 
 	@SuppressWarnings("unchecked")
-	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, int start,
+	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, int start,
 			int limit) {
 
 		Session session = null;
@@ -39,13 +39,25 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(publish)) {
 				sb.append("AND publish = " + publish + " ");
 			}
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
 		} else if(Validator.isNotNull(govAgencyCode)){
 			sb.append("WHERE govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
 				sb.append("AND publish = " + publish + " ");
 			}
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
 		} else if (Validator.isNotNull(publish)) {
 			sb.append("WHERE publish = " + publish + " ");
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
+		}
+		else if (Validator.isNotNull(questionType)) {
+			sb.append("WHERE questionType = '" + questionType + "' ");
 		}
 
 		if (limit > 0) {
@@ -80,7 +92,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish) {
+	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType) {
 
 		Session session = null;
 		int countQuestion = 0;
@@ -95,13 +107,25 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(publish)) {
 				sb.append("AND publish = " + publish + " ");
 			}
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
 		} else if(Validator.isNotNull(govAgencyCode)){
 			sb.append("WHERE govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
 				sb.append("AND publish = " + publish + " ");
 			}
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
 		} else if (Validator.isNotNull(publish)) {
 			sb.append("WHERE publish = " + publish + " ");
+			if (Validator.isNotNull(questionType)) {
+				sb.append("AND questionType = '" + questionType + "' ");
+			}
+		}
+		else if (Validator.isNotNull(questionType)) {
+			sb.append("WHERE questionType = '" + questionType + "' ");
 		}
 
 		_log.info("SQL: "+ sb.toString());

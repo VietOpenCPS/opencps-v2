@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = ActionOverdueScheduler.class)
 public class ActionOverdueScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -128,7 +128,7 @@ public class ActionOverdueScheduler extends BaseMessageListener {
 			}
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		_log.info("OpenCPS Check Action Overdue HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));	
 		isRunning = false;

@@ -240,7 +240,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				domainCode);
 		Date now = new Date();
 		long dossierStatisticId = 0l;
-		
+		_log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
 			System.out.println("UPDATE STATISTIC DATA CREATE OR UPDATE: " + dossierStatisticId + "," + now + "," + groupId + "," + month + "," + year + "," + govAgencyCode + "," + domainCode);
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());

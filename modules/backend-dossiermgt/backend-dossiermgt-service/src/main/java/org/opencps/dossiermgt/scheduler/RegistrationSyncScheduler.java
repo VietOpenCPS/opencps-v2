@@ -54,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
 
 //@Component(immediate = true, service = RegistrationSyncScheduler.class)
 public class RegistrationSyncScheduler extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {

@@ -79,7 +79,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = DossierStatisticEngine.class)
 public class DossierStatisticEngine extends BaseMessageListener {
-	private static volatile boolean isRunningDossier = false;
+	private volatile boolean isRunningDossier = false;
 	
 	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
@@ -201,6 +201,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								calculateDatas.put(yearCurrent, calculateData);
 							}
 							catch (Exception e) {
+								_log.debug(e);
 							}
 						}
 						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
@@ -212,6 +213,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							calculateDatas.put(yearCurrent, calculateData);
 						}
 						catch (Exception e) {
+							_log.debug(e);
 						}
 					}
 					mapFlagCurrent.put(month, flagStatistic);
@@ -236,7 +238,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							calculateDatas.put(lastYear, calculateLastData);
 						}
 						catch (Exception e) {
-							
+							_log.debug(e);
 						}
 					}
 					mapFlagPrev.put(lastMonth, flagLastYear);

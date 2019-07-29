@@ -102,7 +102,7 @@ public class AdminEndpoind extends Endpoint {
 			public void onMessage(String text) {
 				try {
 					onMessageHandler(text, session);
-				} catch (JSONException e) {
+				} catch (Exception e) {
 					_log.error(e);
 				}
 			}
@@ -113,7 +113,7 @@ public class AdminEndpoind extends Endpoint {
 
 	}
 
-	private void onMessageHandler(String text, Session session) throws JSONException {
+	private void onMessageHandler(String text, Session session) {
 
 		Map<String, List<String>> parameters = session.getRequestParameterMap();
 		
@@ -126,19 +126,20 @@ public class AdminEndpoind extends Endpoint {
 
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 
-		JSONObject message = JSONFactoryUtil.createJSONObject(text);
-		_log.debug("SOCKET MESSAGE: " + message.toJSONString());
+		JSONObject message = JSONFactoryUtil.createJSONObject();
+
 		try {
-			
+			message = JSONFactoryUtil.createJSONObject(text);
+		_log.debug("SOCKET MESSAGE: " + message.toJSONString());
 			if (message.getString(TYPE).equals(ADMIN)) {
 				
 				String code = message.getString(CODE);
 
 				AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
 
-				String bunderStr = StringPool.BLANK;
-				String modelStr = StringPool.BLANK;
-				String serviceUtilStr = StringPool.BLANK;
+				String bunderStr;
+				String modelStr;
+				String serviceUtilStr;
 
 				if (Validator.isNull(adminConfig)) {
 					bunderStr = message.getString(BUNDLE_NAME);
@@ -163,7 +164,7 @@ public class AdminEndpoind extends Endpoint {
 
 					DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 
-					if (Validator.isNotNull(adminConfig) && !message.getString("responeType").equals("detail")) {
+					if (Validator.isNotNull(adminConfig) && !"detail".equals(message.getString("responeType"))) {
 
 						String columns = adminConfig.getColumns();
 
@@ -183,7 +184,7 @@ public class AdminEndpoind extends Endpoint {
 
 							}
 							
-							if (message.getString(RESPONE).equals("listTableMenu")) {
+							if ("listTableMenu".equals(message.getString(RESPONE))) {
 								projectionList.add(ProjectionFactoryUtil.property("publicManager"));
 							}
 
@@ -191,7 +192,7 @@ public class AdminEndpoind extends Endpoint {
 
 						}
 
-					} else if (message.getString("responeType").equals("menu")) {
+					} else if ("menu".equals(message.getString("responeType"))) {
 						ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
 						projectionList.add(ProjectionFactoryUtil.property("code"));
@@ -210,8 +211,8 @@ public class AdminEndpoind extends Endpoint {
 							if (Validator.isNotNull(filter.getString("value_filter"))
 									&& filter.getString("value_filter").length() > 0) {
 
-								if (filter.getString(COMPARE).equals("=")) {
-									if (filter.getString("type").equals("number") || filter.getString("type").equals("autocomplete")) {
+								if ("=".equals(filter.getString(COMPARE))) {
+									if ("number".equals(filter.getString("type")) || "autocomplete".equals(filter.getString("type"))) {
 										if (filter.getBoolean("int")) {
 											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 													.eq(filter.getInt("value_filter")));
@@ -220,8 +221,8 @@ public class AdminEndpoind extends Endpoint {
 													.eq(filter.getLong("value_filter")));
 										}
 										
-									} else if (filter.getString("type").equals("checkbox")) {
-										if (filter.getString("data_type").equals("int")) {
+									} else if ("checkbox".equals(filter.getString("type"))) {
+										if ("int".equals(filter.getString("data_type"))) {
 											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 													.eq(filter.getBoolean("value_filter") ? 1 : 0));
 										} else {
@@ -232,20 +233,20 @@ public class AdminEndpoind extends Endpoint {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 												.eq(filter.getString("value_filter")));
 									}
-								} else if (filter.getString(COMPARE).equals("like")) {
+								} else if ("like".equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(
 											PropertyFactoryUtil.forName(filter.getString("key")).like(StringPool.PERCENT
 													+ filter.getString("value_filter") + StringPool.PERCENT));
-								} else if (filter.getString(COMPARE).equals("lt")) {
+								} else if ("lt".equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 											.lt(filter.getLong("value_filter")));
-								} else if (filter.getString(COMPARE).equals("le")) {
+								} else if ("le".equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 											.le(filter.getLong("value_filter")));
-								} else if (filter.getString(COMPARE).equals("gt")) {
+								} else if ("gt".equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 											.gt(filter.getLong("value_filter")));
-								} else if (filter.getString(COMPARE).equals("ge")) {
+								} else if ("ge".equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
 											.ge(filter.getLong("value_filter")));
 								}
@@ -261,7 +262,7 @@ public class AdminEndpoind extends Endpoint {
 					if (groupId > 0 && adminConfig.getGroupFilter()) {
 						Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 						if (Validator.isNotNull(code)
-								&& (code.equals("opencps_workingunit") || code.equals("opencps_applicant"))) {
+								&& ("opencps_workingunit".equals(code) || "opencps_applicant".equals(code))) {
 							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
 						} else {
 							disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
@@ -278,7 +279,7 @@ public class AdminEndpoind extends Endpoint {
 					JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 
 //					System.out.println("code: " + code.equals("opencps_employee"));
-					_log.debug("code: " + code.equals("opencps_employee"));
+					_log.debug("code: " + "opencps_employee".equals(code));
 					
 					if (message.getBoolean(CONFIG)) {
 
@@ -307,9 +308,9 @@ public class AdminEndpoind extends Endpoint {
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
 						
 //						System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + code.equals("opencps_employee"));
+						_log.debug("code: " + "opencps_employee".equals(code));
 						_log.debug("lengColumns: " + lengColumns);
-						if (code.equals("opencps_employee")) {
+						if ("opencps_employee".equals(code)) {
 							
 							List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 
@@ -406,6 +407,7 @@ public class AdminEndpoind extends Endpoint {
 				try {
 					responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
 				} catch (Exception e) {
+					_log.debug(e);
 					responeData = JSONFactoryUtil.createJSONArray(resultString);
 				}
 				messageData.put(message.getString(RESPONE), responeData);

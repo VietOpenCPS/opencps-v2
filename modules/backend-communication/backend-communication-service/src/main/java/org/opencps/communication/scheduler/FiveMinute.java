@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = FiveMinute.class)
 public class FiveMinute extends BaseMessageListener {
-	private static volatile boolean isRunning = false;
+	private volatile boolean isRunning = false;
 	
 	@Override
 	protected void doReceive(Message message) {

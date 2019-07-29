@@ -73,7 +73,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 			System.out.println(inputSchema);
 
-			if (cmd.equals("createInvoice")) {
+			if ("createInvoice".equals(cmd)) {
 				// fix tam, do chua mapping dc cac truong trong dossier voi sinvoice
 				requestBody = inputSchema;
 			}
@@ -168,7 +168,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 				params.append("&");
 			}
 
-			if (method.equals("GET")) {
+			if ("GET".equals(method)) {
 				// endpoint = endpoint + "?" + URLEncoder.encode(params.toString(), "UTF-8");
 				endpoint = endpoint + "?" + params.toString();
 			}
@@ -185,8 +185,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			conn.setRequestProperty("Accept", accept);
 			conn.setRequestProperty("Content-Type", contentType);
 
-			if (method.equals("POST")) {
-				if (contentType.equals("application/json")) {
+			if ("POST".equals(method)) {
+				if ("application/json".equals(contentType)) {
 					// body json
 					try (OutputStream os = conn.getOutputStream()) {
 						byte[] input = inputData.toJSONString().getBytes("utf-8");
@@ -194,7 +194,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 						os.flush();
 					}
 
-				} else if (contentType.equals("application/x-www-form-urlencoded")) {
+				} else if ("application/x-www-form-urlencoded".equals(contentType)) {
 
 					try (OutputStream os = conn.getOutputStream()) {
 

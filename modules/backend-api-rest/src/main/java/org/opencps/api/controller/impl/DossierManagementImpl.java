@@ -198,7 +198,7 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
-			boolean isCitizen = false;
+			//boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 				query.setStart(-1);
 				query.setEnd(-1);
@@ -4200,7 +4200,7 @@ public class DossierManagementImpl implements DossierManagement {
 						long dossierActionId = dossier.getDossierActionId();
 						if (dossierActionId > 0) {
 							DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-							if (dAction != null) {
+							if (dAction != null && process != null) {
 								String stepCode = dAction.getStepCode();
 								if (Validator.isNotNull(stepCode)) {
 									ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
@@ -4257,7 +4257,7 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 								//Update DueDate Action
 								String stepCode = dAction.getStepCode();
-								if (Validator.isNotNull(stepCode)) {
+								if (Validator.isNotNull(stepCode) && process != null) {
 									ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
 											process.getServiceProcessId());
 									if (step != null) {
@@ -4319,7 +4319,7 @@ public class DossierManagementImpl implements DossierManagement {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 								if (dAction != null) {
 									String stepCode = dAction.getStepCode();
-									if (Validator.isNotNull(stepCode)) {
+									if (Validator.isNotNull(stepCode) && process != null) {
 										ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId,
 												process.getServiceProcessId());
 										if (step != null) {
@@ -4825,10 +4825,11 @@ public class DossierManagementImpl implements DossierManagement {
 					if (dossier != null) {
 						dossier.setGroupDossierId(groupDossierId);
 						DossierLocalServiceUtil.updateDossier(dossier);
+						
+						DossierDataModel dataModel = new DossierDataModel();
+						dataModel.setDossierNo(dossier.getDossierNo());
+						results.getData().add(dataModel);
 					}
-					DossierDataModel dataModel = new DossierDataModel();
-					dataModel.setDossierNo(dossier.getDossierNo());
-					results.getData().add(dataModel);
 				}
 				//
 				return Response.status(200).entity(results).build();

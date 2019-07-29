@@ -266,24 +266,24 @@ public class CalculateDueDateUtils {
 								//_log.info("endHourAfterNoon: "+endHourAfterNoon);
 								//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
 								// Ngoài giờ làm việc buổi tối
-								boolean flagOff = false;
-								boolean flagOut = false;
-								if (endHourAfterNoon < hours || hours < startHourMorning) {
-									flagOff = true;
-								}
-								if ((endHourAfterNoon == hours && minutes > endMinuteAfterNoon) 
-										|| hours == startHourMorning && minutes < startMinuteMorning) {
-									flagOff = true;
-								}
-								
-								
-								if (endHourMorning < hours && hours < startHourAfterNoon) {
-									flagOut = true;
-								}
-								if ((endHourMorning == hours && minutes > endMinuteMorning) 
-										|| hours == startHourAfterNoon && minutes < startMinuteAfterNoon) {
-									flagOut = true;
-								}
+//								boolean flagOff = false;
+//								boolean flagOut = false;
+//								if (endHourAfterNoon < hours || hours < startHourMorning) {
+//									flagOff = true;
+//								}
+//								if ((endHourAfterNoon == hours && minutes > endMinuteAfterNoon) 
+//										|| hours == startHourMorning && minutes < startMinuteMorning) {
+//									flagOff = true;
+//								}
+//								
+//								
+//								if (endHourMorning < hours && hours < startHourAfterNoon) {
+//									flagOut = true;
+//								}
+//								if ((endHourMorning == hours && minutes > endMinuteMorning) 
+//										|| hours == startHourAfterNoon && minutes < startMinuteAfterNoon) {
+//									flagOut = true;
+//								}
 								
 								
 								

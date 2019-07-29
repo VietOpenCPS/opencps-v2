@@ -67,7 +67,7 @@ public class ServiceInfoUtils {
 				
 				List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
 
-				ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
+				//ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
 
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 

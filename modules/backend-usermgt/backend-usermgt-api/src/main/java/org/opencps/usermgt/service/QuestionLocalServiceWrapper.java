@@ -52,9 +52,9 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 
 	@Override
 	public int countByQuerySearch(long groupId, String keyword,
-		String govAgencyCode, Integer publish) {
+		String govAgencyCode, Integer publish, String questionType) {
 		return _questionLocalService.countByQuerySearch(groupId, keyword,
-			govAgencyCode, publish);
+			govAgencyCode, publish, questionType);
 	}
 
 	/**
@@ -201,9 +201,9 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 	@Override
 	public java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
 		long groupId, String keyword, String govAgencyCode, Integer publish,
-		int start, int limit) {
+		String questionType, int start, int limit) {
 		return _questionLocalService.findByQuerySearch(groupId, keyword,
-			govAgencyCode, publish, start, limit);
+			govAgencyCode, publish, questionType, start, limit);
 	}
 
 	@Override

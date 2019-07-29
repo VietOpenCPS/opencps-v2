@@ -98,7 +98,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 	@Override
 	public Response getQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
+			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword, String questionType,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
@@ -115,10 +115,10 @@ public class FaqManagementImpl implements FaqManagement {
 //			}
 			
 			List<Question> lstQuestions = QuestionLocalServiceUtil.findByQuerySearch(groupId, keyword, govAgencyCode,
-					publish, start, end);
+					publish, questionType, start, end);
 			
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish));
+			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish, questionType));
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			if (lstQuestions != null && lstQuestions.size() > 0) {

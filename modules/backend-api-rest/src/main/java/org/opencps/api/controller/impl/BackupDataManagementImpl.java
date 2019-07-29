@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -619,6 +620,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		//long userId = user.getUserId();
+		ZipOutputStream zos = null;
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -643,7 +645,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			File file = new File("backupmaster" + System.currentTimeMillis() + ".zip");
 			
 			FileOutputStream fos = new FileOutputStream(file);
-		    ZipOutputStream zos = new ZipOutputStream(fos);
+		    zos = new ZipOutputStream(fos);
 		    
 		    ZipEntry entry = new ZipEntry("ActionConfig.xml");
 		    entry.setSize(input.length);
@@ -1141,8 +1143,16 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 
 			return responseBuilder.build();			
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (zos != null) {
+				try {
+					zos.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
 		}
 	}
 

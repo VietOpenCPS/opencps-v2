@@ -156,7 +156,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		fsNHGTGT.setHoadon(hoadon);
 		fsNHGTGT.setBKtraDch("");
 
-		String results = "khong the ket noi den server HDDT !!!!!";
+		// String results = "khong the ket noi den server HDDT !!!!!";
 		String abc = "";
 
 		try {
@@ -212,7 +212,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 				// Print the SOAP Response
 				//_log.info("Response SOAP Message:");
-				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				// ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				
 				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName("Fs_NH_GTGTResult");
 				
@@ -224,7 +224,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		        
 				soapResponse.writeTo(System.out);
 				//_log.info("abc ============ " + abc );
-				results = new String(stream.toByteArray(), "utf-8");
+				// results = new String(stream.toByteArray(), "utf-8");
 				
 				soapConnection.close();
 				

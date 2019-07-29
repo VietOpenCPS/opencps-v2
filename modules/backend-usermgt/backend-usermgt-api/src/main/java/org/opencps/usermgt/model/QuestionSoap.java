@@ -44,6 +44,7 @@ public class QuestionSoap implements Serializable {
 		soapModel.setPublish(model.getPublish());
 		soapModel.setGovAgencyCode(model.getGovAgencyCode());
 		soapModel.setGovAgencyName(model.getGovAgencyName());
+		soapModel.setQuestionType(model.getQuestionType());
 
 		return soapModel;
 	}
@@ -184,6 +185,14 @@ public class QuestionSoap implements Serializable {
 		_govAgencyName = govAgencyName;
 	}
 
+	public String getQuestionType() {
+		return _questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		_questionType = questionType;
+	}
+
 	private long _questionId;
 	private long _companyId;
 	private long _groupId;
@@ -195,4 +204,5 @@ public class QuestionSoap implements Serializable {
 	private int _publish;
 	private String _govAgencyCode;
 	private String _govAgencyName;
+	private String _questionType;
 }

@@ -11,6 +11,8 @@ import org.opencps.communication.model.NotificationQueue;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
@@ -93,9 +95,12 @@ public class NotificationQueueBusinessFactoryUtil {
 			return getNotificationQueueBusiness().update(notificationQueue, serviceContext);
 		}
 		catch (SystemException | PortalException e) {
-			
+			_log.debug(e);
 			return null;
 		}
 	}
+
+	private static final Log _log =
+					LogFactoryUtil.getLog(NotificationQueueBusinessFactoryUtil.class);
 
 }

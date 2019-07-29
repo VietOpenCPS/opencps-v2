@@ -167,14 +167,14 @@ public final class OpencpsUtils {
 	}
 
 	public static void logAsFormattedJson(Logger logger, Object obj){
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String contentFormatted = mapper.writeValueAsString(obj);
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            String contentFormatted = mapper.writeValueAsString(obj);
 //            logger.debug("REST request: \n {}", contentFormatted);
-        } catch (JsonProcessingException e) {
-        	logger.error("Error:", e);
+//        } catch (JsonProcessingException e) {
+//        	logger.error("Error:", e);
 //            logger.debug("Error printing REST request! {}", e);
-        }
+//        }
     }
 
 }
