@@ -941,7 +941,7 @@ public class CPSDossierBusinessLocalServiceImpl
         catch (Exception e) {
         	_log.error(e);
         }
-
+        
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			Serializable notiCache = cache.getFromCache("NotificationTemplate", groupId +"_"+ actionConfig.getNotificationType());
@@ -989,6 +989,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									break;
 								}
 							}
+							
 							if (foundApplicant != null) {
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 

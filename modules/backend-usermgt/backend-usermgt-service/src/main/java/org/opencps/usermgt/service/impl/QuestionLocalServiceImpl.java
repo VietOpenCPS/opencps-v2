@@ -85,12 +85,12 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	}
 
 	public List<Question> findByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish,
-			String questionType, 
+			String questionType, Boolean answer,
 			int start, int limit) {
-		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, start, limit);
+		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer, start, limit);
 	}
 
-	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType) {
-		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType);
+	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer) {
+		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer);
 	}
 }
