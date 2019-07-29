@@ -1309,7 +1309,7 @@ public class DossierActionsImpl implements DossierActions {
 				_log.debug(e);
 			}
 			_log.info("dossierFile create:" + dossierFile);
-			if (Validator.isNull(dossierFile)) {
+			if (dossierFile == null) {
 				DossierFileActions actions = new DossierFileActionsImpl();
 //				dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
 //						dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
@@ -1330,7 +1330,7 @@ public class DossierActionsImpl implements DossierActions {
 			//_log.error(e);
 		}
 		createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
-		createFile.put(DossierFileTerm.FORM_DATA, dossierFile.getFormData());
+		createFile.put(DossierFileTerm.FORM_DATA, dossierFile != null ? dossierFile.getFormData() : StringPool.BLANK);
 		createFile.put(DossierFileTerm.REFERENCE_UID, docFileReferenceUid);
 		createFile.put(DossierFileTerm.FILE_ENTRY_ID, 0l);
 
@@ -1359,7 +1359,7 @@ public class DossierActionsImpl implements DossierActions {
 				catch (Exception e) {
 					_log.debug(e);
 				}
-				if (Validator.isNull(dossierFile)) {
+				if (dossierFile == null) {
 					DossierFileActions actions = new DossierFileActionsImpl();
 					dossierFile = actions.addDossierFile(groupId, dossierId, StringPool.BLANK, dossierTempNo,
 							dossierPart.getPartNo(), fileTemplateNo, dossierPart.getPartName(), StringPool.BLANK, 0L,
@@ -3967,8 +3967,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				String stepCode = "400";
 				String stepName = "Hoàn thành";
 				dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
-						option.getServiceProcessId(), fromStepCode, fromStepName, fromSequenceNo, actionCode,
-						actionUser, actionName, stepCode, stepName, null, 0l, 1, serviceContext);
+						option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName, fromSequenceNo,
+						actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1, serviceContext);
 			} else {
 				List<DossierAction> dossierActionList = DossierActionLocalServiceUtil.getDossierActionById(dossierId);
 				if (dossierActionList != null && dossierActionList.size() > 0) {
@@ -3983,8 +3983,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					String stepCode = "400";
 					String stepName = "Hoàn thành";
 					dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
-							option.getServiceProcessId(), fromStepCode, fromStepName, fromSequenceNo, actionCode,
-							actionUser, actionName, stepCode, stepName, null, 0l, 1, serviceContext);
+							option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName,
+							fromSequenceNo, actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1,
+							serviceContext);
 				}
 			}
 
@@ -3996,8 +3997,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					durationCount, durationUnit, sampleCount, createDate, modifiedDate, submitDate, receiveDate,
 					dueDate, releaseDate, finishDate, dossierTemplateNo, dossierTemplateName, serviceContext);
 			// Update dossierAction
-			dossierAction.setDossierId(dossier.getDossierId());
-			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			if (dossierAction != null) {
+				dossierAction.setDossierId(dossier.getDossierId());
+				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+			}
 
 		} catch (PortalException e) {
 			_log.error(e);

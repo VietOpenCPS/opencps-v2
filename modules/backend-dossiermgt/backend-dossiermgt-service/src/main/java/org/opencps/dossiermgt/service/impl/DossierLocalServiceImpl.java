@@ -541,7 +541,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setSampleCount(option.getSampleCount());
 					dossier.setSubmissionNote(option.getSubmissionNote());
 				}
-				dossier.setServerNo(serviceProcess.getServerNo());
 
 				Double durationCount;
 				Integer durationUnit = 0;
@@ -550,6 +549,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					durationUnit = serviceProcess.getDurationUnit();
 					dossier.setDurationCount(durationCount);
 					dossier.setDurationUnit(durationUnit);
+					dossier.setServerNo(serviceProcess.getServerNo());
 				}
 					
 				dossier.setViaPostal(viaPostal);
@@ -3926,24 +3926,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private String getDossierNote(ServiceInfo serviceInfo, ProcessOption option) {
 
-		String dossierNote = StringPool.BLANK;
+		if (option != null) {
+			 return option.getInstructionNote();
 
-		try {
-
-			dossierNote = option.getInstructionNote();
-
-			if (Validator.isNull(dossierNote)) {
-				throw new Exception();
-			}
-
-		} catch (Exception e) {
-			_log.debug(e);
-			if (Validator.isNotNull(serviceInfo)) {
-				dossierNote = serviceInfo.getProcessText();
-			}
+		} else if(Validator.isNotNull(serviceInfo)){
+			return serviceInfo.getProcessText();
 		}
 
-		return dossierNote;
+		return StringPool.BLANK;
 	}
 	
 	public long countDossierByG_C_GAC_SC_DTNO_NOTDS(long groupId, long companyId, String govAgencyCode,

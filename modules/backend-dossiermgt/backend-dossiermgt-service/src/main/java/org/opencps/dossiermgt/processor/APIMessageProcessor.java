@@ -905,8 +905,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
-		if (processAction.getPreCondition().contains("payok")
-				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
+		//
+		if (processAction != null && (processAction.getPreCondition().contains("payok")
+				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1"))) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 			//_log.debug("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //			_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));

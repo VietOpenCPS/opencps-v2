@@ -158,37 +158,37 @@ public class RestAuthFilter implements Filter {
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
+//	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
 	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
-	    String liferayGzipProperty = PropsUtil.get(LIFERAY_GZIP_FILTER);
+//	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
+//	    String liferayGzipProperty = PropsUtil.get(LIFERAY_GZIP_FILTER);
 	    
-	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
-	    if (Validator.isNotNull(liferayGzipProperty) && Boolean.parseBoolean(liferayGzipProperty)) {
-	    	gzipFilterEnable = false;
-	    }
-	    gzipFilterEnable = false;
-	    if (gzipFilterEnable) {
-		    if ( acceptsGZipEncoding(httpRequest)) {
-		    	if (!httpResponse.containsHeader("Content-Encoding")
-		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
-		    		httpResponse.addHeader("Content-Encoding", "gzip");
-		    		httpResponse.setCharacterEncoding("UTF-8");
-			        GZipServletResponseWrapper gzipResponse =
-			        		new GZipServletResponseWrapper(httpResponse);
-			        filterChain.doFilter(servletRequest, gzipResponse);
-			        gzipResponse.close();
-		    	}
-		    	else {
-		    		filterChain.doFilter(servletRequest, httpResponse);
-		    	}
-		    } else {
-		    	filterChain.doFilter(servletRequest, httpResponse);
-		    }
-	    }
-	    else {
+//	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
+//	    if (Validator.isNotNull(liferayGzipProperty) && Boolean.parseBoolean(liferayGzipProperty)) {
+//	    	gzipFilterEnable = false;
+//	    }
+//	    gzipFilterEnable = false;
+//	    if (gzipFilterEnable) {
+//		    if ( acceptsGZipEncoding(httpRequest)) {
+//		    	if (!httpResponse.containsHeader("Content-Encoding")
+//		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
+//		    		httpResponse.addHeader("Content-Encoding", "gzip");
+//		    		httpResponse.setCharacterEncoding("UTF-8");
+//			        GZipServletResponseWrapper gzipResponse =
+//			        		new GZipServletResponseWrapper(httpResponse);
+//			        filterChain.doFilter(servletRequest, gzipResponse);
+//			        gzipResponse.close();
+//		    	}
+//		    	else {
+//		    		filterChain.doFilter(servletRequest, httpResponse);
+//		    	}
+//		    } else {
+//		    	filterChain.doFilter(servletRequest, httpResponse);
+//		    }
+//	    }
+//	    else {
 	    	filterChain.doFilter(servletRequest, httpResponse);
-	    }
+//	    }
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {

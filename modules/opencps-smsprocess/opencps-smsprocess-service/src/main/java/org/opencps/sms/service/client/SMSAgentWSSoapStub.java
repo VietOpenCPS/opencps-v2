@@ -7,11 +7,15 @@
 
 package org.opencps.sms.service.client;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 public class SMSAgentWSSoapStub extends org.apache.axis.client.Stub implements org.opencps.sms.service.client.SMSAgentWSSoap {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
+    private static Log _log = LogFactoryUtil.getLog(SMSAgentWSSoapStub.class);
 
     static org.apache.axis.description.OperationDesc [] _operations;
 
@@ -272,6 +276,7 @@ public class SMSAgentWSSoapStub extends org.apache.axis.client.Stub implements o
             try {
                 return ((java.lang.Integer) _resp).intValue();
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return ((java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class)).intValue();
             }
         }
@@ -306,6 +311,7 @@ public class SMSAgentWSSoapStub extends org.apache.axis.client.Stub implements o
             try {
                 return ((java.lang.Integer) _resp).intValue();
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return ((java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class)).intValue();
             }
         }
@@ -340,6 +346,7 @@ public class SMSAgentWSSoapStub extends org.apache.axis.client.Stub implements o
             try {
                 return ((java.lang.Integer) _resp).intValue();
             } catch (java.lang.Exception _exception) {
+            	_log.debug(_exception);
                 return ((java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class)).intValue();
             }
         }
