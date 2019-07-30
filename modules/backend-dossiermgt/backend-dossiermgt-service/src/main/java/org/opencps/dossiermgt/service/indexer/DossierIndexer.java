@@ -26,6 +26,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
@@ -200,6 +201,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			//
 			if (dueDateTime > 0) {
 				if (releaseTime > 0) {
+					/*
 					long valueCompareRelease = releaseTime - dueDateTime;
 					if (valueCompareRelease > 0) {
 						// OverTime
@@ -211,6 +213,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						// BeTimes
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
 					}
+					*/
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate()));
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
 				}
