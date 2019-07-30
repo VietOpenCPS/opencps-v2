@@ -407,17 +407,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	 */
 	public PaymentFile getEpaymentProfile(long dossierId, String referenceUid) {
 
-		try {
-			PaymentFile paymentFile = paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
-
-			return paymentFile;
-		} catch (NoSuchPaymentFileException e) {
-			// e.printStackTrace();
-			_log.error(e);
-		}
-
-		return null;
-
+		return paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 	}
 
 	public PaymentFile getPaymentFile(long dossierId, String referenceUid) {
@@ -439,7 +429,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public PaymentFile updateEProfile(long dossierId, String referenceUid, String strInput, ServiceContext context)
 			throws PortalException {
 
-		PaymentFile object = (PaymentFile) paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
+		PaymentFile object = (PaymentFile) paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 
 		Date now = new Date();
 
@@ -507,7 +497,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			// indexer.reindex(dossier);
 		} catch (SearchException e) {
-			// e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -677,31 +666,19 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	public PaymentFile getPaymentFileByReferenceUid(long dossierId, String referenceUid) {
 
-		try {
-			return paymentFilePersistence.findByD_RUID(dossierId, referenceUid);
-		} catch (Exception e) {
-			_log.debug(e);
-			return null;
-		}
-		
+		return paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 	}
 
 	@Override
 	public PaymentFile getByDossierId(long groupId, long dossierId) {
-		try {
-			return paymentFilePersistence.findByDossierId(groupId, dossierId);
-		} catch (Exception e) {
-			_log.debug(e);
-			// _log.error(e);
-		}
-		return null;
+		return paymentFilePersistence.fetchByDossierId(groupId, dossierId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updateApplicantFeeAmount(long paymentFileId, int requestPayment, Long feeAmount,
 			Long serviceAmount, Long shipAmount, String paymentNote, int originality) {
 		try {
-			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(paymentFileId);
+			PaymentFile paymentFile = paymentFilePersistence.fetchByPrimaryKey(paymentFileId);
 			paymentFile.setFeeAmount(feeAmount);
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
@@ -735,7 +712,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			}
 
 			return paymentFilePersistence.update(paymentFile);
-		} catch (NoSuchPaymentFileException e) {
+		} catch (Exception e) {
 			_log.error(e);
 		}
 
@@ -745,12 +722,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public PaymentFile updatePaymentFileCustom(PaymentFile oldpaymentFile) {
 		try {
-			PaymentFile paymentFile = paymentFilePersistence.findByPrimaryKey(oldpaymentFile.getPaymentFileId());
+			PaymentFile paymentFile = paymentFilePersistence.fetchByPrimaryKey(oldpaymentFile.getPaymentFileId());
 			
 			paymentFile.setEinvoice(oldpaymentFile.getEinvoice());
 			
 			return paymentFilePersistence.update(paymentFile);
-		} catch (NoSuchPaymentFileException e) {
+		} catch (Exception e) {
 			_log.error(e);
 		}
 		
