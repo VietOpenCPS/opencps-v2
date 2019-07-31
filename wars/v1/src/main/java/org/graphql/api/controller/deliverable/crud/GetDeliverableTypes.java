@@ -1,6 +1,8 @@
 package org.graphql.api.controller.deliverable.crud;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -36,6 +38,8 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 		this.request = request;
 	}
 
+	private static Log _log = LogFactoryUtil.getLog(GetDeliverableTypes.class);
+
 	@Override
 	public List<DeliverableType> get(DataFetchingEnvironment dataFetchingEnvironment) {
 
@@ -67,31 +71,25 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 				
 				Long[] longObjects = ArrayUtils.toObject(user.getRoleIds());
 				List<Long> roleIds = Arrays.asList(longObjects);
-				
-				List<Long> rIds = new ArrayList<>();
+				//List<Long> rIds = new ArrayList<>();
 				
 				for (DeliverableType openCPSDeliverableType : resultsTemp) {
 					
-					rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
-					
-					for (Long rId : rIds) {
-						if (roleIds.contains(rId)) {
-							results.add(openCPSDeliverableType);
-							break;
+					List<Long> rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
+					if (rIds != null && rIds.size() > 0) {
+						for (Long rId : rIds) {
+							if (roleIds.contains(rId)) {
+								results.add(openCPSDeliverableType);
+								break;
+							}
 						}
 					}
-					
 				}
-				
 //				results = resultsTemp;
 				
 			} catch (PortalException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				_log.debug(e);
 			}
-			
-			
-			
 		}
 		
 		return results;

@@ -35,7 +35,6 @@ import java.util.Set;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -57,9 +56,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.rest.dto.DossierResponse;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticModel;
@@ -768,7 +765,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			throws Exception {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
+		//StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 		long companyId = 0;
 		if (group.getType() == 1 && group.isSite()) {
 			companyId = group.getCompanyId();
@@ -892,13 +889,13 @@ public class OpencpsStatisticRestApplication extends Application {
 					List<ServiceDomainData> serviceDomainDataList = serviceDomainResponse.getData();
 					if (serviceDomainDataList != null && serviceDomainDataList.size() > 0) {
 						for (ServiceDomainData sdd : serviceDomainDataList) {
-							boolean existsDomain = false;
-							for (GetDossierData dd : dossierDataList) {
-								if (dd.getDomainCode().equals(sdd.getItemCode())) {
-									existsDomain = true;
-									break;
-								}
-							}
+//							boolean existsDomain = false;
+//							for (GetDossierData dd : dossierDataList) {
+//								if (dd.getDomainCode().equals(sdd.getItemCode())) {
+//									existsDomain = true;
+//									break;
+//								}
+//							}
 //							if (!existsDomain) {
 //								try {
 //									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month,

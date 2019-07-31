@@ -225,12 +225,12 @@ public class RestfulController {
 
 				for (Role role : roles) {
 
-					if (role.getName().equals("Administrator")) {
+					if ("Administrator".equals(role.getName())) {
 						roleName = "Administrator";
 						break;
 					}
 
-					if (role.getName().equals("Administrator_data")) {
+					if ("Administrator_data".equals(role.getName())) {
 						roleName = "Administrator_data";
 						break;
 					}
@@ -332,6 +332,7 @@ public class RestfulController {
 		} 
 		catch (AuthException ae) {
 			System.out.println("AUTH EXCEPTION: " + checkUserId);
+			_log.debug(ae);
 			if (checkUserId != -1) {
 				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
 				
@@ -339,14 +340,14 @@ public class RestfulController {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String jCaptchaResponse = request.getParameter("j_captcha_response");
 					String captchaId = request.getSession().getId();
-			        try {
-			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-			        			jCaptchaResponse);
-			        	if (!isResponseCorrect) 
-			        		return "captcha";
-			        } catch (CaptchaServiceException e) {
-			        	return "captcha";
-			        }				
+					try {
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						if (!isResponseCorrect)
+							return "captcha";
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						return "captcha";
+					}
 				}
 				else {
 					return "captcha";
@@ -367,15 +368,18 @@ public class RestfulController {
 				        	if (!isResponseCorrect) 
 				        		return "captcha";
 				        } catch (CaptchaServiceException e) {
+				        	_log.debug(e);
 				        	return "captcha";
 				        }				
 					}		
 				} catch (PortalException e) {
+					_log.debug(e);
 				}				
 			}
 		}
 		catch (PortalException pe) {
 			System.out.println("PORTAL EXCEPTION: " + emailAddress);
+			_log.debug(pe);
 			try {
 				Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 				User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
@@ -390,10 +394,12 @@ public class RestfulController {
 			        	if (!isResponseCorrect) 
 			        		return "captcha";
 			        } catch (CaptchaServiceException e) {
+			        	_log.debug(e);
 			        	return "captcha";
 			        }				
 				}		
 			} catch (PortalException e) {
+				_log.debug(e);
 			}
 			
 		}		
@@ -474,80 +480,79 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 
 		try {
+			if (multipartFile != null) {
+				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
+						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+						multipartFile.getOriginalFilename()
+								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+						multipartFile.getSize(), destination, desc, serviceContext);
 
-			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-					UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
-					multipartFile.getOriginalFilename()
-							.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
-					multipartFile.getSize(), destination, desc, serviceContext);
+				if ("opencps_adminconfig".equals(code)) {
 
-			if (code.equals("opencps_adminconfig")) {
+					ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(Long.valueOf(pk),
+							fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
+							fileEntry.getFileEntryId(), serviceContext);
 
-				ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(Long.valueOf(pk),
-						fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
-						fileEntry.getFileEntryId(), serviceContext);
+				} else {
 
-			} else {
+					User user = UserLocalServiceUtil.fetchUser(userId);
 
-				User user = UserLocalServiceUtil.fetchUser(userId);
+					FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk,
+							user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
+							StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
-				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, pk,
-						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
-						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
+					if ("opencps_employee".equals(code)) {
+						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
+						employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
+						EmployeeLocalServiceUtil.updateEmployee(employee);
+					} else if ("opencps_deliverabletype".equals(code)) {
 
-				if (code.equals("opencps_employee")) {
-					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
-					employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
-					EmployeeLocalServiceUtil.updateEmployee(employee);
-				} else if (code.equals("opencps_deliverabletype")) {
+						DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
+								.fetchDeliverableType(Long.valueOf(pk));
 
-					DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
-							.fetchDeliverableType(Long.valueOf(pk));
+						if (className.endsWith("FORM")) {
+							openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
+						} else if (className.endsWith("JASPER")) {
+							openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
+						}
 
-					if (className.endsWith("FORM")) {
-						openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
-					} else if (className.endsWith("JASPER")) {
-						openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
+						DeliverableTypeLocalServiceUtil.updateDeliverableType(openCPSDeliverableType);
+
+					} else if ("opencps_applicant".equals(code)) {
+
+						System.out.println("RestfulController.uploadAttachment()" + Long.valueOf(pk));
+						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
+						System.out.println("RestfulController.uploadAttachment(className)" + className);
+						File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+								true);
+						if ("org.opencps.usermgt.model.ApplicantEsign".equals(className)) {
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+							File targetFile = new File(buildFileName);
+							employee.setFileSignId(fileAttach.getFileEntryId());
+							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						} else {
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+							File targetFile = new File(buildFileName);
+							employee.setFileCertId(fileAttach.getFileEntryId());
+							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						}
+
+						EmployeeLocalServiceUtil.updateEmployee(employee);
+
+					} else if ("opencps_deliverable".equals(code)) {
+
+						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
+								.fetchDeliverable(Long.valueOf(pk));
+
+						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+
+						DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
+
 					}
-
-					DeliverableTypeLocalServiceUtil.updateDeliverableType(openCPSDeliverableType);
-
-				} else if (code.equals("opencps_applicant")) {
-
-					System.out.println("RestfulController.uploadAttachment()" + Long.valueOf(pk));
-					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
-					System.out.println("RestfulController.uploadAttachment(className)" + className);
-					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-							true);
-					if (className.equals("org.opencps.usermgt.model.ApplicantEsign")) {
-						String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
-						File targetFile = new File(buildFileName);
-						employee.setFileSignId(fileAttach.getFileEntryId());
-						Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					} else {
-						String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
-						File targetFile = new File(buildFileName);
-						employee.setFileCertId(fileAttach.getFileEntryId());
-						Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					}
-
-					EmployeeLocalServiceUtil.updateEmployee(employee);
-
-				} else if (code.equals("opencps_deliverable")) {
-
-					Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
-							.fetchDeliverable(Long.valueOf(pk));
-
-					openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
-
-					DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 
 				}
-
 			}
-
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			_log.debug(e);
 		}
 
@@ -586,12 +591,12 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 
 		try {
-
-			FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-					UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
-					multipartFile.getOriginalFilename()
-							.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
-					multipartFile.getSize(), destination, desc, serviceContext);
+			if (multipartFile != null) {
+				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
+						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+						multipartFile.getOriginalFilename()
+								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+						multipartFile.getSize(), destination, desc, serviceContext);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
@@ -599,7 +604,7 @@ public class RestfulController {
 						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
 						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
-				if (code.equals("opencps_services_filetemplates")) {
+				if ("opencps_services_filetemplates".equals(code)) {
 
 					ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
 							.fetchByF_serviceInfoId_fileTemplateNo(Long.valueOf(serviceInfoId), fileTemplateNo);
@@ -612,9 +617,10 @@ public class RestfulController {
 
 					ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(fileTemplate);
 				}
+			}
 
 		} catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 		}
 
 	}
@@ -735,7 +741,7 @@ public class RestfulController {
 
 		}
 
-		if (code.equals("opencps_deliverable")) {
+		if ("opencps_deliverable".equals(code)) {
 			Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
 					.fetchDeliverable(Long.valueOf(pk));
 
@@ -769,7 +775,7 @@ public class RestfulController {
 			return IOUtils.toByteArray(inputStream);
 
 		} catch (Exception exception) {
-			System.out.println(exception);
+			_log.debug(exception);
 		}
 		return null;
 	}
@@ -816,7 +822,7 @@ public class RestfulController {
 				return IOUtils.toByteArray(inputStream);
 
 			} catch (Exception exception) {
-				System.out.println(exception);
+				_log.debug(exception);
 			}
 		}
 		return null;
@@ -851,7 +857,6 @@ public class RestfulController {
 				ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(serviceFileTemplateNew);
 			}
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
 			_log.debug(e);
 		}
 
@@ -859,24 +864,23 @@ public class RestfulController {
 
 	@RequestMapping(value = "/upload/", method = RequestMethod.POST)
 	public String uploadFile(MultipartHttpServletRequest request) {
-		CommonsMultipartFile multipartFile = null; // multipart file class depends on which class you use assuming you
+		//CommonsMultipartFile multipartFile = null; // multipart file class depends on which class you use assuming you
 													// are using
 													// org.springframework.web.multipart.commons.CommonsMultipartFile
 
-		Iterator<String> iterator = request.getFileNames();
+		//Iterator<String> iterator = request.getFileNames();
 
-		while (iterator.hasNext()) {
-			String key = (String) iterator.next();
+		//while (iterator.hasNext()) {
+			//String key = (String) iterator.next();
 			// create multipartFile array if you upload multiple files
-			multipartFile = (CommonsMultipartFile) request.getFile(key);
-		}
+			//multipartFile = (CommonsMultipartFile) request.getFile(key);
+		//}
 
-		try {
-			System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			_log.debug(e);
-		}
+		//try {
+			//System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
+		//} catch (IOException e) {
+		//	_log.debug(e);
+		//}
 
 		return "sdfds";
 	}
@@ -923,7 +927,7 @@ public class RestfulController {
 					&& Validator.isNotNull(request.getParameter("column"))
 					&& Validator.isNotNull(request.getParameter("type"))) {
 
-				if (request.getParameter("type").equals("int")) {
+				if ("int".equals(request.getParameter("type"))) {
 					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
 							request.getParameter("collectionCode"), Long.valueOf(request.getHeader("groupId")));
 
@@ -974,7 +978,6 @@ public class RestfulController {
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			_log.debug(e);
 		}
 
@@ -1029,10 +1032,12 @@ public class RestfulController {
 			_log.debug(e);
 			result = StringPool.BLANK;
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				_log.debug(e);
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
 			}
 		}
 
@@ -1093,7 +1098,7 @@ public class RestfulController {
 							if (Validator
 									.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
 
-								if (filterData.getJSONObject(i).getString("compare").equals("like")) {
+								if ("like".equals(filterData.getJSONObject(i).getString("compare"))) {
 
 									queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
 											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
@@ -1116,7 +1121,7 @@ public class RestfulController {
 					int size = 0;
 					if (Validator.isNull(end) || end == 0) {
 						start = -1;
-						end = -1;
+						//end = -1;
 						size = -1;
 					} else {
 						size = end - start;
@@ -1203,7 +1208,6 @@ public class RestfulController {
 					+ StringPool.FORWARD_SLASH + fileEntry.getTitle() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			_log.debug(e);
 		}
 
@@ -1246,7 +1250,6 @@ public class RestfulController {
 			result = JSONFactoryUtil.looseSerialize(method.invoke(model, dynamicQuery, QueryUtil.ALL_POS, QueryUtil.ALL_POS)).toString();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			_log.debug(e);
 		}
 
@@ -1301,6 +1304,7 @@ public class RestfulController {
 					ImageIO.write( challengeImage, "png", file );
 				    
 				} catch (IOException e) {
+					_log.debug(e);
 				}
 			}
 		
@@ -1314,6 +1318,7 @@ public class RestfulController {
 		            .body(resource);
 		}
 		catch (Exception e) {
+			_log.debug(e);
 			return null;
 		}
 		
