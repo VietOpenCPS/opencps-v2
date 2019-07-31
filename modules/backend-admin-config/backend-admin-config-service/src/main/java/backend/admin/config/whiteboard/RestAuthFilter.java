@@ -121,14 +121,14 @@ public class RestAuthFilter implements Filter {
 		} 
 		String origin = httpRequest.getHeader("Origin");
 		
-		System.out.println("Request IP: " + ipAddress);
-		System.out.println("Allow ips: " + allowIps);
-		System.out.println("Origin: " + origin);
+		_log.debug("Request IP: " + ipAddress);
+		_log.debug("Allow ips: " + allowIps);
+		_log.debug("Origin: " + origin);
 		String domain = StringPool.BLANK;
 		if (origin != null) {
 			domain = getDomainName(origin);			
 		}
-		System.out.println("Domain: " + domain);
+		_log.debug("Domain: " + domain);
 		
 		for (String disallow : DISALLOW_METHODS) {
 			if (disallow.equals(method)) {
@@ -144,7 +144,7 @@ public class RestAuthFilter implements Filter {
 					return;					
 				}
 				else if (lstIps.contains(ipAddress) || lstIps.contains(domain)) {
-					System.out.println("CORS Ok");
+					_log.debug("CORS Ok");
 					
 					long userId = 0;
 					Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
