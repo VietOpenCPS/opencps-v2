@@ -102,7 +102,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 						rootFileName = URLEncoder.encode(docType.getDocumentName(), "UTF-8");
 					}
 					catch (Exception e) {
-						
+						_log.debug(e);
 					}
 					if ("excel".equals(reportType)) {
 						responseBuilder.header("Content-Disposition",

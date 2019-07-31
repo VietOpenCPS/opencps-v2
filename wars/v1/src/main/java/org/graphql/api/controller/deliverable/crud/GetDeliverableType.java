@@ -27,7 +27,7 @@ public class GetDeliverableType implements DataFetcher<Object> {
 	@Override
 	public Object get(DataFetchingEnvironment dataFetchingEnvironment) {
 
-		String typeCode = dataFetchingEnvironment.getArgument("typeCode");
+		//String typeCode = dataFetchingEnvironment.getArgument("typeCode");
 		System.out.println("GetDeliverableType.get()" + request);
 		Enumeration<String> headerNames = request.getHeaderNames();
 

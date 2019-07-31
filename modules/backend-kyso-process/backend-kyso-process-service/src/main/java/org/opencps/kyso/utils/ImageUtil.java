@@ -31,13 +31,11 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.StringPool;
 
 /**
  * @author trungnt
