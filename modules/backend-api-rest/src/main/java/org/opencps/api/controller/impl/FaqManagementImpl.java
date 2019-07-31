@@ -361,15 +361,47 @@ public class FaqManagementImpl implements FaqManagement {
 	}
 
 	@Override
-	public Response getOptionQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+	public Response optionQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
 			String questionType, String answer, ServiceContext serviceContext) {
 		return Response.status(200).entity("")
 				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 				.header("Access-Control-Allow-Credentials", "true")
 				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "GET")
+				.header("Access-Control-Allow-Methods", "GET,POST")
 				.build();
 	}
 
+	@Override
+	public Response detailQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id) {
+		return Response.status(200).entity("")
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
+				.header("Access-Control-Allow-Credentials", "true")
+				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
+				.header("Access-Control-Allow-Methods", "GET,PUT,DELETE")
+				.build();
+	}
+
+	@Override
+	public Response optionAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, long questionId, Integer start, Integer end, Integer publish, ServiceContext serviceContext) {
+		return Response.status(200).entity("")
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
+				.header("Access-Control-Allow-Credentials", "true")
+				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
+				.header("Access-Control-Allow-Methods", "GET,POST")
+				.build();
+	}
+
+	@Override
+	public Response optionsDetailAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long questionId, long answerId) {
+		return Response.status(200).entity("")
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
+				.header("Access-Control-Allow-Credentials", "true")
+				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
+				.header("Access-Control-Allow-Methods", "GET,PUT,DELETE")
+				.build();
+	}
 }

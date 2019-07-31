@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -72,6 +74,21 @@ public class RestAuthFilter implements Filter {
 	final static String[] DISALLOW_METHODS_IGNORE_PATTERN = new String[] { "/o/rest/v2/faq" };
 	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
 	
+	private static final String hostExtractorRegexString = "(?:https?://)?(?:www\\.)?(.+\\.)(com|au\\.uk|co\\.in|be|in|uk|org\\.in|org|net|edu|gov\\.vn|mil)";
+	private static final Pattern hostExtractorRegexPattern = Pattern.compile(hostExtractorRegexString);
+
+	public static String getDomainName(String url){
+	    if (url == null) return null;
+	    url = url.trim();
+	    Matcher m = hostExtractorRegexPattern.matcher(url);
+	    if(m.find() && m.groupCount() == 2) {
+	        return m.group(1) + m.group(2);
+	    }
+	    else {
+	        return null;
+	    }
+	}
+	
 	@Override
 	public void destroy() {
 	}
@@ -102,8 +119,17 @@ public class RestAuthFilter implements Filter {
 		if (ipAddress == null) {  
 		   ipAddress = httpRequest.getRemoteAddr();  
 		} 
-//		System.out.println("Request IP: " + ipAddress);
-//		System.out.println("Allow ips: " + allowIps);
+		String origin = httpRequest.getHeader("Origin");
+		
+		System.out.println("Request IP: " + ipAddress);
+		System.out.println("Allow ips: " + allowIps);
+		System.out.println("Origin: " + origin);
+		String domain = StringPool.BLANK;
+		if (origin != null) {
+			domain = getDomainName(origin);			
+		}
+		System.out.println("Domain: " + domain);
+		
 		for (String disallow : DISALLOW_METHODS) {
 			if (disallow.equals(method)) {
 				boolean excludeMethod = false;
@@ -117,7 +143,9 @@ public class RestAuthFilter implements Filter {
 					authFailure(servletResponse);
 					return;					
 				}
-				else if (lstIps.contains(ipAddress)) {
+				else if (lstIps.contains(ipAddress) || lstIps.contains(domain)) {
+					System.out.println("CORS Ok");
+					
 					long userId = 0;
 					Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 					if (userObj != null) 
