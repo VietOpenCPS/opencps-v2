@@ -57,7 +57,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -1164,12 +1163,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response addDossierFiles(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		long rootDossierFileId, String dossierIds, String dossierTemplateNo,
-		String dossierPartNo, int dossierPartType, String fileTemplateNo,
-		String displayName, String formData, Boolean original, Boolean eForm,
-		Boolean isNew, Boolean removed, int signCheck, String signInfo,
-		String formScript, String formReport, String formSchema,
-		String deliverableCode) {
+		String rootDossierFileIds, String dossierIds) {
 
 		try {
 
@@ -1180,45 +1174,20 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new UnauthenticationException();
 			}
 
+			DossierFileActions action = new DossierFileActionsImpl();
+			List<DossierFile> dossierFiles = action.addDossierFile(
+				rootDossierFileIds.split(StringPool.COMMA),
+				dossierIds.split(StringPool.COMMA),
+				GetterUtil.getLong(header.getHeaderString("groupId")),
+				company.getCompanyId(), user.getUserId(), user.getFullName(),
+				serviceContext);
+
 			DossierFileResultsModel results = new DossierFileResultsModel();
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
-			List<DossierFile> dossierFiles = new ArrayList<>();
-			String[] dossierIdList = dossierIds.split(StringPool.COMMA);
-			DossierFile dossierFile =
-				DossierFileLocalServiceUtil.getDossierFile(rootDossierFileId);
-
-			for (String dossierIdStr : dossierIdList) {
-
-				try {
-
-					long dossierId = GetterUtil.getLong(dossierIdStr);
-
-					if (dossierId > 0 && Validator.isNotNull(dossierFile)) {
-
-						DossierFile dossierFileResult =
-							DossierFileLocalServiceUtil.updateDossierFile(
-								0, groupId, company.getCompanyId(),
-								user.getUserId(), user.getFullName(), dossierId,
-								PortalUUIDUtil.generate(), dossierFile.getDossierTemplateNo(),
-								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(), dossierFile.getFileTemplateNo(),
-								dossierFile.getDisplayName(), dossierFile.getFormData(),
-								dossierFile.getFileEntryId(), original, dossierFile.getEForm(),
-								isNew, removed, signCheck, dossierFile.getSignInfo(), dossierFile.getFormScript(),
-								dossierFile.getFormReport(), dossierFile.getFormSchema(), dossierFile.getDeliverableCode());
-
-						dossierFiles.add(dossierFileResult);
-					}
-				}
-				catch (Exception e) {
-
-					_log.error(e);
-				}
-			}
 
 			results.setTotal(dossierFiles.size());
 			results.getData().addAll(
 				DossierFileUtils.mappingToDossierFileData(dossierFiles));
+
 			return Response.status(200).entity(results).build();
 		}
 		catch (Exception e) {

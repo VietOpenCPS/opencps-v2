@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -546,24 +545,8 @@ public interface DossierFileManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
-		@ApiParam(value = "Id root of DossierFile", required = true) @FormParam("dossierFileId") long dossierFileId,
-		@ApiParam(value = "Id of DossierFile", required = true) @FormParam("dossierIds") String dossierIds,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierTemplateNo") String dossierTemplateNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierPartNo") String dossierPartNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierPartType") int dossierPartType,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("fileTemplateNo") String fileTemplateNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("displayName") String displayName,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formData") @Nullable String formData,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("original") Boolean original,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("eForm") Boolean eForm,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("isNew") Boolean isNew,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("removed") Boolean removed,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("signCheck") int signCheck,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("signInfo") String signInfo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formScript") String formScript,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formReport") String formReport,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formSchema") String formSchema,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("deliverableCode") String deliverableCode);
+		@ApiParam(value = "List Id root of DossierFile", required = true) @FormParam("dossierFileId") String dossierFileId,
+		@ApiParam(value = "List Id of DossierFile", required = true) @FormParam("dossierIds") String dossierIds);
 
 	@DELETE
 	@Path("/clean/{dossierFileId}")
