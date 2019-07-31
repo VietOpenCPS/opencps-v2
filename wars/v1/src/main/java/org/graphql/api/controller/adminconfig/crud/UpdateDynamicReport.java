@@ -3,6 +3,8 @@ package org.graphql.api.controller.adminconfig.crud;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +31,9 @@ public class UpdateDynamicReport implements DataFetcher<DynamicReport> {
 	public UpdateDynamicReport(HttpServletRequest request) {
 		this.request = request;
 	}
-	
+
+	private static Log _log = LogFactoryUtil.getLog(UpdateDynamicReport.class);
+
 	@Override
 	public DynamicReport get(DataFetchingEnvironment dataFetchingEnvironment) {
 
@@ -63,7 +67,7 @@ public class UpdateDynamicReport implements DataFetcher<DynamicReport> {
 			result = DynamicReportLocalServiceUtil.adminProcessData(JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dynamicReport)));
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		
 		return result;

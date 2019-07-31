@@ -1,6 +1,7 @@
 package org.graphql.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
@@ -36,11 +37,11 @@ public class DataItemService {
 	@PostConstruct
 	public void loadGraphQLSchema() throws IOException {
 
-		String schema = StringPool.BLANK;
+		//String schema = StringPool.BLANK;
 
-		schema = GraphQLUtils.readGrapQL("dataitem.graphql");
+		String schema = GraphQLUtils.readGrapQL("dataitem.graphql");
 
-		TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(schema);
+		TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(Validator.isNotNull(schema) ? schema : StringPool.BLANK);
 		RuntimeWiring runtimeWiring = initWiring();
 		GraphQLSchema graphQLSchema = new SchemaGenerator().makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
 
