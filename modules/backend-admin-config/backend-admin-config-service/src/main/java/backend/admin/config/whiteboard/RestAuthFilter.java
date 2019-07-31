@@ -27,8 +27,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -67,6 +69,9 @@ public class RestAuthFilter implements Filter {
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	
 	final static String[] DISALLOW_METHODS = new String[] { "OPTIONS" };
+	final static String[] DISALLOW_METHODS_IGNORE_PATTERN = new String[] { "/o/rest/v2/faq" };
+	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
+	
 	@Override
 	public void destroy() {
 	}
@@ -74,6 +79,12 @@ public class RestAuthFilter implements Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
 		_log.debug("RestAuthFilter.doFilter()");
+		String allowIps = PropsUtil.get(OPENCPS_ALLOW_CORS_IPS);
+		List<String> lstIps = new ArrayList<>();
+		String[] ipSplit = allowIps != null ? allowIps.split(StringPool.COMMA) : (new String[] {});
+		for (String ip : ipSplit) {
+			lstIps.add(ip);
+		}
 		HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
 		String pAuth = httpRequest.getHeader(P_AUTH);
@@ -85,11 +96,35 @@ public class RestAuthFilter implements Filter {
 				break;
 			}
 		}
+		
 		String method = httpRequest.getMethod();
+		String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");  
+		if (ipAddress == null) {  
+		   ipAddress = httpRequest.getRemoteAddr();  
+		} 
+//		System.out.println("Request IP: " + ipAddress);
+//		System.out.println("Allow ips: " + allowIps);
 		for (String disallow : DISALLOW_METHODS) {
 			if (disallow.equals(method)) {
-				authFailure(servletResponse);
-				return;
+				boolean excludeMethod = false;
+				for (String pattern : DISALLOW_METHODS_IGNORE_PATTERN) {
+					if (path.contains(pattern)) {
+						excludeMethod = true;
+						break;
+					}
+				}
+				if (!excludeMethod) {
+					authFailure(servletResponse);
+					return;					
+				}
+				else if (lstIps.contains(ipAddress)) {
+					long userId = 0;
+					Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
+					if (userObj != null) 
+						userId = (Long)userObj;
+					authOKCORS(servletRequest, servletResponse, filterChain, userId);
+					return;
+				}
 			}
 		}
 		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
@@ -159,6 +194,18 @@ public class RestAuthFilter implements Filter {
 
 	}
 
+	private void authOKCORS(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
+			throws IOException, ServletException {
+		servletRequest.setAttribute(USER_ID, userId);
+	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+		httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+		httpResponse.addHeader("Access-Control-Allow-Headers", "*");
+		httpResponse.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
+		httpResponse.addHeader("Access-Control-Allow-Credentials", "true");
+		
+	    filterChain.doFilter(servletRequest, httpResponse);
+	}
+	
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
 			throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);

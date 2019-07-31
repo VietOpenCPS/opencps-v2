@@ -25,6 +25,7 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_STATISTIC_MUTIPLE_SERVER = "org.opencps.statistic.multiple.server.enable";
 	public static final String OPENCPS_AI_MODE = "org.opencps.ai.mode";
 	public static final String OPENCPS_PERMISSION_ROLE_MODE = "org.opencps.permission.role.mode";
+	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -96,5 +97,8 @@ public class OpenCPSConfigUtil {
 		return Validator.isNotNull(isPermissionRoleMode) ? Boolean.parseBoolean(isPermissionRoleMode) : false;		
 	}
 
+	public String getAllowCORSIps() {
+		return PropsUtil.get(OPENCPS_ALLOW_CORS_IPS);
+	}
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSConfigUtil.class);
 }

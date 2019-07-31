@@ -86,9 +86,9 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setGovAgencyName(question.getGovAgencyName());
 				
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 						.header("Access-Control-Allow-Methods", "POST")
 						.build();
 			}
@@ -155,9 +155,9 @@ public class FaqManagementImpl implements FaqManagement {
 			}
 
 			return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", "*")
+					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 					.header("Access-Control-Allow-Methods", "GET")
 					.build();
 		}
@@ -183,9 +183,9 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(answer.getQuestionId());
 				result.setUserName(answer.getUserName());
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 						.header("Access-Control-Allow-Methods", "POST")
 						.build();
 			}
@@ -241,9 +241,9 @@ public class FaqManagementImpl implements FaqManagement {
 			result.getData().addAll(lstModels);
 			
 			return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", "*")
+					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 					.header("Access-Control-Allow-Methods", "GET")
 					.build();			
 		}
@@ -274,9 +274,9 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setGovAgencyName(input.getGovAgencyName());
 				
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 						.header("Access-Control-Allow-Methods", "PUT")
 						.build();
 			}
@@ -298,9 +298,9 @@ public class FaqManagementImpl implements FaqManagement {
 			QuestionLocalServiceUtil.deleteQuestion(questionId);
 
 			return Response.status(200).entity("Delete question is success!")
-					.header("Access-Control-Allow-Origin", "*")
+					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 					.header("Access-Control-Allow-Methods", "DELETE")
 					.build();
 		} catch (PortalException e) {
@@ -326,9 +326,9 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(answer.getQuestionId());
 				result.setUserName(answer.getUserName());
 				return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", "*")
+					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 					.header("Access-Control-Allow-Methods", "PUT")	
 					.build();
 			}
@@ -349,15 +349,27 @@ public class FaqManagementImpl implements FaqManagement {
 			AnswerLocalServiceUtil.deleteAnswer(answerId);
 
 			return Response.status(200).entity("Delete Answer is success!")
-				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 				.header("Access-Control-Allow-Methods", "DELETE")		
 				.build();
 		} catch (PortalException e) {
 			_log.debug(e);
 			return Response.status(500).entity("Delete Answer is false!").build();
 		}
+	}
+
+	@Override
+	public Response getOptionQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
+			String questionType, String answer, ServiceContext serviceContext) {
+		return Response.status(200).entity("")
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
+				.header("Access-Control-Allow-Credentials", "true")
+				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
+				.header("Access-Control-Allow-Methods", "GET")
+				.build();
 	}
 
 }
