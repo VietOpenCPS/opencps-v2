@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,6 +28,7 @@ import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
+import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -538,37 +538,31 @@ public interface DossierFileManagement {
 	@ApiResponses(value = {
 		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = org.opencps.auth.api.exception.UnauthenticationException.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = NoSuchDossierFileException.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
 	})
 	public Response addDossierFiles(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
-		@ApiParam(value = "Id of DossierFile", required = true) @FormParam("dossierIds") String dossierIds,
-		@ApiParam(value = "Metadata of  DossierFile", required = true) @FormParam("referenceUid") String referenceUid,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierTemplateNo") String dossierTemplateNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierPartNo") String dossierPartNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("dossierPartType") int dossierPartType,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("fileTemplateNo") String fileTemplateNo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("displayName") String displayName,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formData") @Nullable String formData,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("fileEntryId") long fileEntryId,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("original") Boolean original,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("eForm") Boolean eForm,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("isNew") Boolean isNew,
-		@ApiParam(value = "Metadata of DossierFile", required = false, defaultValue = "false") @DefaultValue("false") @FormParam("removed") Boolean removed,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("signCheck") int signCheck,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("signInfo") String signInfo,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formScript") String formScript,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formReport") String formReport,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("formSchema") String formSchema,
-		@ApiParam(value = "Metadata of DossierFile", required = false) @FormParam("deliverableCode") String deliverableCode);
+		@ApiParam(value = "List Id root of DossierFile", required = true) @FormParam("dossierFileId") String dossierFileId,
+		@ApiParam(value = "List Id of DossierFile", required = true) @FormParam("dossierIds") String dossierIds);
 
 	@DELETE
 	@Path("/clean/{dossierFileId}")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "addDossierFiles)", response = DossierFileModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = org.opencps.auth.api.exception.UnauthenticationException.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = NoSuchDossierFileException.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
 	public Response cleanDossierFile(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
