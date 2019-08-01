@@ -228,6 +228,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
 				}
 				if (finishTime > 0) {
+					
+					/*
 					long valueCompareFinish = finishTime - dueDateTime;
 					if (valueCompareFinish > 0) {
 						// OverTime
@@ -239,7 +241,9 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						// BeTimes
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
 					}
+					*/
 					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
+					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getFinishDate(), object.getDueDate()));
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
 				}

@@ -1860,13 +1860,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossier.setLockState(lockState);
 		dossier.setDossierNote(stepInstruction);
 
-		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
-			dossier.setReleaseDate(now);
-		}
-
-		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
-			dossier.setFinishDate(now);
-		}
+//		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+//			dossier.setReleaseDate(now);
+//		}
+//
+//		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+//			dossier.setFinishDate(now);
+//		}
 	}		
 	
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
@@ -2005,6 +2005,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				e.printStackTrace();
 //			}
 		}
+		
 //		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)

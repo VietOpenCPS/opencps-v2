@@ -280,24 +280,24 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	
 				/* Update summary */
 				//Delete record
-				try {
-					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
-				}
-				catch (Exception e) {
-					
-				}
+//				try {
+//					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
+//				}
+//				catch (Exception e) {
+//					
+//				}
 				//
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				//TODO: Calculator again last year
 				//Delete record
-				try {
-					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
-				}
-				catch (Exception e) {
-					
-				}
+//				try {
+//					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
+//				}
+//				catch (Exception e) {
+//					
+//				}
 				//
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 	
