@@ -214,7 +214,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
 					}
 					*/
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate()));
+					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
+					if (1 == valueCompareRelease) {
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
+					}
+					else if (2 == valueCompareRelease) {
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+					}
+					else if (3 == valueCompareRelease) {
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
+					}
 				} else {
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
 				}

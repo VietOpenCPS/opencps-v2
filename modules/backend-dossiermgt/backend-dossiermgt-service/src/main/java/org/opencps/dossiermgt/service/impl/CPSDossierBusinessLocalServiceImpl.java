@@ -2018,6 +2018,9 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						dossier.setExtendDate(now);
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);
@@ -2062,6 +2065,9 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						dossier.setExtendDate(now);
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);

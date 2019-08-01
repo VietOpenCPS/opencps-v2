@@ -21,7 +21,7 @@ public class BetimeUtils {
 	private static int DEFAULT_END_PM_HOUR = 17;
 	private static int DEFAULT_END_PM_MINUTE = 0;
 	
-	public static int getValueCompareRelease(long groupId, Date releaseDate, Date dueDate) {
+	public static Integer getValueCompareRelease(long groupId, Date releaseDate, Date dueDate) {
 		if (dueDate == null || Validator.isNull(dueDate)) return 3;
 		if (releaseDate == null) return -1;
 		Calendar c = Calendar.getInstance();
