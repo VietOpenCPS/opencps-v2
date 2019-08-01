@@ -86,17 +86,17 @@ public class StatisticEngineUpdateAction {
 		}
 	}
 	
-//	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
-//	}
-//
-//	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByMonthYear(groupId, month, year);
-//	}
-//
-//	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByYear(companyId, groupId, month, year);
-//	}
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByMonthYear(groupId, month, year);
+	}
+
+	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeDossierStatisticByYear(companyId, groupId, month, year);
+	}
 
 	//Get list dossierStatistic by groupId, month, year
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
@@ -109,10 +109,10 @@ public class StatisticEngineUpdateAction {
 	}
 
 	//Remove record by domain and govAgencyCode
-//	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
-//			throws NoSuchOpencpsDossierStatisticException {
-//		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
-//	}
+	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
+			throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatisticLocalServiceUtil.removeByG_M_Y_G_D(groupId, month, year, agency, domainCode);
+	}
 
 	//Get list statistic by year
 	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
