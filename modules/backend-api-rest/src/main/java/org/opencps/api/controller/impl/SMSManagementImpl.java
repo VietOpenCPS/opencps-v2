@@ -241,7 +241,7 @@ public class SMSManagementImpl implements SMSManagement {
 			_log.info(startDateS);
 			_log.info(dueDate2);
 			DueDateUtils dueDateUtils = new DueDateUtils(
-				startDateS, (int)durationCount, durationUnit, groupId);
+				startDateS, durationCount, durationUnit, groupId);
 			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(
 				dueDateUtils.getDueDate());
 			return Response.status(200).entity(dueDate).build();

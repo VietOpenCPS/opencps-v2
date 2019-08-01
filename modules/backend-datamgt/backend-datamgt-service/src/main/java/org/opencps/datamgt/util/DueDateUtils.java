@@ -28,6 +28,7 @@ public class DueDateUtils {
 	public static final int DAY_TO_MILISECOND = 1 * 24 * 60 * 60 * 1000;
 	public static final int HOUR_TO_MILISECOND = 1 * 60 * 60 * 1000;
 	public static final String DEFAULT_START_AM_STR = "00:00";
+	public static final int DAY_TO_HOURS = 8;
 
 	private Date startDate;
 	private Date dueDate;
@@ -66,19 +67,36 @@ public class DueDateUtils {
 	private int gioLamViecLe;
 
 	public DueDateUtils(
-		Date startDate, int durationCount, int durationUnit, long groupId) {
+		Date startDate, Double durationCountD, int durationUnit, long groupId) {
 
 		super();
 
-		this.durationUnit = durationUnit;
+		_log.info("==========init due date =========");
+		_log.info(startDate);
+		_log.info(durationCount);
+		_log.info(durationUnit);
+		_log.info(groupId);
+
 		this.groupId = groupId;
 		this.countNextWorkDay = 0;
 
-		if (durationUnit == 0) {
-			this.durationCount = durationCount;
-		}
-		else {
-			this.durationCount = durationCount * 100;
+		int durationCountInt = durationCountD.intValue();
+
+		if (durationCountInt != durationCountD && durationUnit == 0) {
+
+			// convert to hours
+			Double hours = (durationCountD * DAY_TO_HOURS);
+			this.durationUnit = 1;
+			this.durationCount = hours.intValue() * 100;
+			
+		} else if (durationUnit == 0) {
+
+			this.durationUnit = durationUnit;
+			this.durationCount = durationCountInt;
+		} else {
+
+			this.durationUnit = durationUnit;
+			this.durationCount = durationCountInt * 100;
 		}
 
 		if (startDate != null) {
@@ -163,7 +181,7 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		//else if (this.startDateTimeNum > this.endPM) {
+		// else if (this.startDateTimeNum > this.endPM) {
 		else {
 
 			// set to startAM
@@ -180,11 +198,11 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		//else {
+		// else {
 
-		//	this.startDate = startDate;
-		//	_log.info("other case");
-		//}
+		// this.startDate = startDate;
+		// _log.info("other case");
+		// }
 
 		_log.info(
 			"ngay tiep nhan ho so=====" + SupportUtils._dateToString(
@@ -276,7 +294,7 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		//else if (this.startDateTimeNum > this.endPM) {
+		// else if (this.startDateTimeNum > this.endPM) {
 		else {
 
 			// set to startAM
@@ -286,9 +304,9 @@ public class DueDateUtils {
 			// case 3
 			this._setNextWorkDay();
 		}
-//		else {
-//			_log.info("other case");
-//		}
+		// else {
+		// _log.info("other case");
+		// }
 	}
 
 	private void _findAWorkingDayNSetDueDate(Date date) {
@@ -381,8 +399,9 @@ public class DueDateUtils {
 
 					// gio tra qua gio lam viec
 
-					this.countNextWorkDayTime +=
-						SupportUtils.subTime(gioTra, this.gioCanBoNghiLamViec);
+					this.countNextWorkDayTime += SupportUtils.subTime(
+						durationHours,
+						SupportUtils.subTime(gioTra, this.gioCanBoNghiLamViec));
 					this.startDateTimeStr = DEFAULT_START_AM_STR;
 					this.startDateTimeNum =
 						SupportUtils._stringToNumberHourColon(
