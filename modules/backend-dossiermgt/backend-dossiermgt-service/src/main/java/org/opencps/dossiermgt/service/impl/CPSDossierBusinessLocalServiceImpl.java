@@ -14,36 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.transaction.Isolation;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URLEncoder;
@@ -91,6 +61,8 @@ import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
@@ -178,6 +150,36 @@ import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import backend.auth.api.exception.NotFoundException;
 
@@ -1859,13 +1861,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossier.setLockState(lockState);
 		dossier.setDossierNote(stepInstruction);
 
-		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
-			dossier.setReleaseDate(now);
-		}
-
-		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
-			dossier.setFinishDate(now);
-		}
+//		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+//			dossier.setReleaseDate(now);
+//		}
+//
+//		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+//			dossier.setFinishDate(now);
+//		}
 	}		
 	
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
@@ -1938,7 +1940,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				Date dueDate = null;
 				if (Validator.isNotNull(durationCount) && durationCount > 0
 						&& !areEqualDouble(durationCount, 0.00d, 3)) {
-					dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
+					// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
+					DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
+					dueDate = dueDateUtils.getDueDate();
 				}
 				
 				if (Validator.isNotNull(dueDate)) {
@@ -2004,6 +2008,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				e.printStackTrace();
 //			}
 		}
+		
 //		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
@@ -2018,6 +2023,12 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						int valueCompareRelease = BetimeUtils.getValueCompareRelease(dossier.getGroupId(), now, dossier.getDueDate());
+						if (3 == valueCompareRelease) {
+							dossier.setExtendDate(now);							
+						}
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);
@@ -2062,6 +2073,12 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						int valueCompareRelease = BetimeUtils.getValueCompareRelease(dossier.getGroupId(), now, dossier.getDueDate());
+						if (3 == valueCompareRelease) {
+							dossier.setExtendDate(now);							
+						}
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);
@@ -2145,9 +2162,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			dossier.setLockState(StringPool.BLANK);
 			if (dossier.getDueDate() != null) {
 				if (serviceProcess != null) {
-					Date newDueDate = HolidayUtils.getDueDate(new Date(),
-							serviceProcess.getDurationCount(),
-							serviceProcess.getDurationUnit(), dossier.getGroupId());
+//					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+//							serviceProcess.getDurationCount(),
+//							serviceProcess.getDurationUnit(), dossier.getGroupId());
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(),
+						serviceProcess.getDurationCount(),
+						serviceProcess.getDurationUnit(), dossier.getGroupId());
+					Date newDueDate = dueDateUtils.getDueDate();
 					if (newDueDate != null) {
 						dossier.setReceiveDate(new Date());
 						dossier.setDueDate(newDueDate);
@@ -2191,7 +2212,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (Validator.isNotNull(durationCount) && durationCount > 0
 				&& !areEqualDouble(durationCount, 0.00d, 3)) {
 //			_log.info("========STEP DUE DATE CACULATE DUE DATE");
-			dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
+			DueDateUtils dueDateUtils = new DueDateUtils(rootDate, durationCount, durationUnit, dossier.getGroupId());
+			// dueDate = HolidayUtils.getDueDate(rootDate, durationCount, durationUnit, dossier.getGroupId());
+			dueDate = dueDateUtils.getDueDate();
 //			_log.info("dueDateAction: "+dueDate);
 		}		
 	
@@ -3782,7 +3805,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 				
@@ -3841,7 +3866,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 
@@ -4425,8 +4452,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				Double durationCount = process.getDurationCount();
 				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
-					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
-							process.getDurationUnit(), groupId);
+//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+//							process.getDurationUnit(), groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+						process.getDurationUnit(), groupId);
+					Date dueDateCal = dueDateUtils.getDueDate();
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}
 				if (Validator.isNotNull(jsonDate)) {
@@ -4916,8 +4946,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				Double durationCount = process.getDurationCount();
 				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
-					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
-							process.getDurationUnit(), groupId);
+//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+//							process.getDurationUnit(), groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+						process.getDurationUnit(), groupId);
+					Date dueDateCal = dueDateUtils.getDueDate();
+
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}
 				if (Validator.isNotNull(jsonDate)) {
@@ -5894,7 +5928,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 				
@@ -5953,7 +5989,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 
