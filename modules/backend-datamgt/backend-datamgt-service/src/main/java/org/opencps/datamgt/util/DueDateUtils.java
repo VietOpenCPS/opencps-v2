@@ -66,6 +66,8 @@ public class DueDateUtils {
 	private int countNextWorkDayTime;
 	private int gioLamViecLe;
 
+	private Date ngayTiepNhan;
+
 	public DueDateUtils(
 		Date startDate, Double durationCountD, int durationUnit, long groupId) {
 
@@ -349,6 +351,23 @@ public class DueDateUtils {
 			this.isHolidayType0 = isWeekend && this.workTimes.size() > 0;
 		}
 
+		// set ngay tiep nhan
+		if (!this.isHolidayType0 && Validator.isNull(this.ngayTiepNhan)) {
+
+			if (DEFAULT_START_AM_STR.equals(this.startDateTimeStr)) {
+
+				this.ngayTiepNhan = SupportUtils._stringToDate(
+					truncDateStr + StringPool.SPACE + this.startAMStr,
+					DATE_SPACE_TIME_FORMAT);
+			}
+			else {
+
+				this.ngayTiepNhan = SupportUtils._stringToDate(
+					truncDateStr + StringPool.SPACE + this.startDateTimeStr,
+					DATE_SPACE_TIME_FORMAT);
+			}
+		}
+
 		// neu la ngay nghi thi next ngay tiep theo
 		if (this.isHolidayType0 && countNextDay < 360) {
 
@@ -584,6 +603,11 @@ public class DueDateUtils {
 	public Date getDueDate() {
 
 		return dueDate;
+	}
+
+	public Date getRecivedDate() {
+
+		return ngayTiepNhan;
 	}
 
 	public double getDurationCount() {
