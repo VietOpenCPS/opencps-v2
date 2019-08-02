@@ -73,7 +73,7 @@ public class DueDateUtils {
 
 		_log.info("==========init due date =========");
 		_log.info(startDate);
-		_log.info(durationCount);
+		_log.info(durationCountD);
 		_log.info(durationUnit);
 		_log.info(groupId);
 
@@ -532,9 +532,9 @@ public class DueDateUtils {
 	private void _setHourTimeWorkingByDay(int day) {
 
 		String startAM = "00:00";
-		String endAM = "00:00";
-		String startPM = "00:00";
-		String endPM = "00:00";
+		String endAM = "12:00";
+		String startPM = "12:00";
+		String endPM = "24:00";
 
 		try {
 
@@ -574,6 +574,7 @@ public class DueDateUtils {
 		this.tongThoiGianCanBoLamViecTrongNgay =
 			SupportUtils.subTime(this.endAM, this.startAM) +
 				SupportUtils.subTime(this.endPM, this.startPM);
+		this.tongThoiGianCanBoLamViecTrongNgay = this.tongThoiGianCanBoLamViecTrongNgay == 0 ? 2400 : this.tongThoiGianCanBoLamViecTrongNgay;
 		this.gioCanBoNghiLamViec = Math.max(this.endAM, this.endPM);
 		this.thoiGianCanBoNghiTrua =
 			Math.max(0, SupportUtils.subTime(this.startPM, this.endAM));

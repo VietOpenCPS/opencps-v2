@@ -1939,7 +1939,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				Date dueDate = null;
 				if (Validator.isNotNull(durationCount) && durationCount > 0
 						&& !areEqualDouble(durationCount, 0.00d, 3)) {
-					dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
+					// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
+					DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
+					dueDate = dueDateUtils.getDueDate();
 				}
 				
 				if (Validator.isNotNull(dueDate)) {
@@ -2146,9 +2148,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			dossier.setLockState(StringPool.BLANK);
 			if (dossier.getDueDate() != null) {
 				if (serviceProcess != null) {
-					Date newDueDate = HolidayUtils.getDueDate(new Date(),
-							serviceProcess.getDurationCount(),
-							serviceProcess.getDurationUnit(), dossier.getGroupId());
+//					Date newDueDate = HolidayUtils.getDueDate(new Date(),
+//							serviceProcess.getDurationCount(),
+//							serviceProcess.getDurationUnit(), dossier.getGroupId());
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(),
+						serviceProcess.getDurationCount(),
+						serviceProcess.getDurationUnit(), dossier.getGroupId());
+					Date newDueDate = dueDateUtils.getDueDate();
 					if (newDueDate != null) {
 						dossier.setReceiveDate(new Date());
 						dossier.setDueDate(newDueDate);
@@ -3785,7 +3791,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 				
@@ -3844,7 +3852,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 
@@ -4428,8 +4438,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				Double durationCount = process.getDurationCount();
 				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
-					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
-							process.getDurationUnit(), groupId);
+//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+//							process.getDurationUnit(), groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+						process.getDurationUnit(), groupId);
+					Date dueDateCal = dueDateUtils.getDueDate();
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}
 				if (Validator.isNotNull(jsonDate)) {
@@ -4919,8 +4932,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				Double durationCount = process.getDurationCount();
 				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
-					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
-							process.getDurationUnit(), groupId);
+//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
+//							process.getDurationUnit(), groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+						process.getDurationUnit(), groupId);
+					Date dueDateCal = dueDateUtils.getDueDate();
+
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
 				}
 				if (Validator.isNotNull(jsonDate)) {
@@ -5897,7 +5914,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 				
@@ -5956,7 +5975,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 
 				if (durationCount > 0) {
-					Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					// Date dueDate = HolidayUtils.getDueDate(new Date(), durationCount, durationUnit, groupId);
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, durationUnit, groupId);
+					Date dueDate = dueDateUtils.getDueDate();
 					dossier.setDueDate(dueDate);
 				}
 
