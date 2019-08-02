@@ -429,6 +429,35 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic removeByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getService()
+				   .removeByG_M_Y_G_D(groupId, month, year, govAgencyCode,
+			domainCode);
+	}
+
+	public static void removeDossierStatisticByD_M_Y(long groupId,
+		String domainCode, int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService()
+			.removeDossierStatisticByD_M_Y(groupId, domainCode, month, year);
+	}
+
+	public static void removeDossierStatisticByMonthYear(long groupId,
+		int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService().removeDossierStatisticByMonthYear(groupId, month, year);
+	}
+
+	public static void removeDossierStatisticByYear(long companyId,
+		long groupId, int month, int year)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		getService()
+			.removeDossierStatisticByYear(companyId, groupId, month, year);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)

@@ -25,6 +25,8 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_STATISTIC_MUTIPLE_SERVER = "org.opencps.statistic.multiple.server.enable";
 	public static final String OPENCPS_AI_MODE = "org.opencps.ai.mode";
 	public static final String OPENCPS_PERMISSION_ROLE_MODE = "org.opencps.permission.role.mode";
+	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
+	public static final String OPENCPS_AUTO_BETIMES = "org.opencps.auto.betimes";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -94,6 +96,14 @@ public class OpenCPSConfigUtil {
 	public static boolean isPermissionRoleMode() {
 		String isPermissionRoleMode = PropsUtil.get(OPENCPS_PERMISSION_ROLE_MODE);
 		return Validator.isNotNull(isPermissionRoleMode) ? Boolean.parseBoolean(isPermissionRoleMode) : false;		
+	}
+
+	public String getAllowCORSIps() {
+		return PropsUtil.get(OPENCPS_ALLOW_CORS_IPS);
+	}
+	public static boolean isAutoBetimes() {
+		String autoBetimesEnable = PropsUtil.get(OPENCPS_AUTO_BETIMES);
+		return Validator.isNotNull(autoBetimesEnable) ? Boolean.parseBoolean(autoBetimesEnable) : false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSConfigUtil.class);

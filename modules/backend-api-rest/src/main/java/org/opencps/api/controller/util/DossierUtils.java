@@ -146,7 +146,7 @@ public class DossierUtils {
 			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
-			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase() : StringPool.BLANK);
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setApplicantNote(doc.get(DossierTerm.APPLICANT_NOTE));
 			model.setApplicantIdType(doc.get(DossierTerm.APPLICANT_ID_TYPE));
 			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
@@ -204,6 +204,9 @@ public class DossierUtils {
 			Long releaseDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
 			Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
 			Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
+			int valueCompareRelease = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_RELEASE));
+			int valueCompareFinish = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_FINISH));
+			
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
@@ -216,23 +219,40 @@ public class DossierUtils {
 				model.setStepOverdue(StringPool.BLANK);
 			} else if (!checkWaiting(lockState, dossierStatus) || !checkReceiving(dossierStatus)) {
 				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-							extendDateTimeStamp)) {
+//					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+//							extendDateTimeStamp)) {
+//						model.setDossierOverdue("Sớm hạn");
+//					} 
+					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
 						model.setDossierOverdue("Sớm hạn");
-					} 
-					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-							extendDateTimeStamp)){
-						if (dueDateTimeStamp!=0) {
-							model.setDossierOverdue("Đúng hạn");
-						} else {
-							model.setDossierOverdue(StringPool.BLANK);
-						}
 					}
-					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-							extendDateTimeStamp)) {
+					if (dueDateTimeStamp != 0 && 3 == valueCompareFinish) {
+						model.setDossierFinishOverdue("Sớm hạn");
+					}
+//					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+//							extendDateTimeStamp)){
+//						if (dueDateTimeStamp!=0) {
+//							model.setDossierOverdue("Đúng hạn");
+//						} else {
+//							model.setDossierOverdue(StringPool.BLANK);
+//						}
+//					}
+					if (dueDateTimeStamp == 0 || 2 == valueCompareRelease) {
+						model.setDossierOverdue("Đúng hạn");
+					}
+					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish) {
+						model.setDossierFinishOverdue("Đúng hạn");
+					}
+//					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
+//							extendDateTimeStamp)) {
+//						model.setDossierOverdue("Quá hạn");
+//					}
+					if (1 == valueCompareRelease) {
 						model.setDossierOverdue("Quá hạn");
 					}
-					
+					if (1 == valueCompareFinish) {
+						model.setDossierFinishOverdue("Qúa hạn");
+					}
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
 						long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;

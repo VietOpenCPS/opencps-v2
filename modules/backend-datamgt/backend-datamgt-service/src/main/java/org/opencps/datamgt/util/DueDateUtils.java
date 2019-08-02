@@ -73,11 +73,11 @@ public class DueDateUtils {
 
 		super();
 
-		_log.info("==========init due date =========");
-		_log.info(startDate);
-		_log.info(durationCountD);
-		_log.info(durationUnit);
-		_log.info(groupId);
+//		_log.info("==========init due date =========");
+//		_log.info(startDate);
+//		_log.info(durationCount);
+//		_log.info(durationUnit);
+//		_log.info(groupId);
 
 		this.groupId = groupId;
 		this.countNextWorkDay = 0;
@@ -371,17 +371,17 @@ public class DueDateUtils {
 		// neu la ngay nghi thi next ngay tiep theo
 		if (this.isHolidayType0 && countNextDay < 360) {
 
-			_log.info(
-				"ngay nghi============" +
-					SupportUtils._dateToString(date, DATE_FORMAT));
+//			_log.info(
+//				"ngay nghi============" +
+//					SupportUtils._dateToString(date, DATE_FORMAT));
 
 			if (SupportUtils._dateToString(this.startDate, DATE_FORMAT).equals(
 				truncDateStr)) {
 				this.startDateTimeStr = DEFAULT_START_AM_STR;
 				this.startDateTimeNum = SupportUtils._stringToNumberHourColon(
 					this.startDateTimeStr);
-				_log.info(
-					"reset gio bat dau xu ly ho so=====" + startDateTimeStr);
+//				_log.info(
+//					"reset gio bat dau xu ly ho so=====" + startDateTimeStr);
 			}
 			// warning: recusive to find a next work day
 			this._setNextWorkDay();
@@ -425,20 +425,20 @@ public class DueDateUtils {
 					this.startDateTimeNum =
 						SupportUtils._stringToNumberHourColon(
 							this.startDateTimeStr);
-					_log.info(
-						"=======tra ngay hom sau========" +
-							SupportUtils._dateToString(date, DATE_FORMAT) +
-							"========Da lam========" +
-							this.countNextWorkDayTime);
+//					_log.info(
+//						"=======tra ngay hom sau========" +
+//							SupportUtils._dateToString(date, DATE_FORMAT) +
+//							"========Da lam========" +
+//							this.countNextWorkDayTime);
 					this._setNextWorkDay();
 				}
 				else {
 
-					_log.info(
-						"=======tra ho so trong ngay========gioTra=" + gioTra +
-							"====gioNghiLam=" + this.gioCanBoNghiLamViec +
-							"==this.startDateTimeNum==" +
-							this.startDateTimeNum);
+//					_log.info(
+//						"=======tra ho so trong ngay========gioTra=" + gioTra +
+//							"====gioNghiLam=" + this.gioCanBoNghiLamViec +
+//							"==this.startDateTimeNum==" +
+//							this.startDateTimeNum);
 					this.gioLamViecLe = durationHours;
 					this._setDueDate();
 				}
@@ -460,9 +460,9 @@ public class DueDateUtils {
 					this.startDateTimeNum =
 						SupportUtils._stringToNumberHourColon(
 							this.startDateTimeStr);
-					_log.info(
-						"reset gio bat dau xu ly ho so=====" +
-							startDateTimeStr);
+//					_log.info(
+//						"reset gio bat dau xu ly ho so=====" +
+//							startDateTimeStr);
 
 				}
 				else if (this.countNextWorkDayTime == 0 &&
@@ -478,9 +478,9 @@ public class DueDateUtils {
 					this.startDateTimeNum =
 						SupportUtils._stringToNumberHourColon(
 							this.startDateTimeStr);
-					_log.info(
-						"reset gio bat dau xu ly ho so=====" +
-							startDateTimeStr);
+//					_log.info(
+//						"reset gio bat dau xu ly ho so=====" +
+//							startDateTimeStr);
 
 				}
 				else {
@@ -488,10 +488,10 @@ public class DueDateUtils {
 					this.countNextWorkDayTime +=
 						this.tongThoiGianCanBoLamViecTrongNgay;
 				}
-				_log.info(
-					"=======tra ngay hom sau========" +
-						SupportUtils._dateToString(date, DATE_FORMAT) +
-						"========Da lam========" + this.countNextWorkDayTime);
+//				_log.info(
+//					"=======tra ngay hom sau========" +
+//						SupportUtils._dateToString(date, DATE_FORMAT) +
+//						"========Da lam========" + this.countNextWorkDayTime);
 				this._setNextWorkDay();
 			}
 		}

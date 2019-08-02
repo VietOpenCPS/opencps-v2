@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetPersonData;
@@ -245,6 +246,7 @@ public class StatisticEngineFetchEntry {
 					}
 
 					if (fromStatisticDate.before(releaseDate) && toStatisticDate.after(releaseDate)) {
+						/*
 						// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
 						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
 						// Check condition filter betimes
@@ -270,7 +272,24 @@ public class StatisticEngineFetchEntry {
 							}
 						} else {
 							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-						}						
+						}	
+						*/
+						
+						int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
+						
+						if (betimeCal == 3) {
+							statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
+						} else if (betimeCal == 1) {
+							statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
+							boolean isOvertimeInside = true;
+							if (isOvertimeInside) {
+								statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
+							} else {
+								statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
+							}
+						} else {
+							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
+						}							
 					}
 				}
 			}
