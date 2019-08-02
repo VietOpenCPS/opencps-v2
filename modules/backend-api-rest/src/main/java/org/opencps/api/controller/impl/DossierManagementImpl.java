@@ -92,6 +92,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -108,6 +109,7 @@ import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -160,7 +162,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepRoleLocalService;
 import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -5158,6 +5159,49 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response fixExtendDateDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		boolean isAdmin = false;
+		List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+		if (roles != null && roles.size() > 0) {
+			for (Role role : roles) {
+				if ("Administrator".equals(role.getName())) {
+					isAdmin = true;
+					break;
+				}
+				if ("Administrator_data".equals(role.getName())) {
+					isAdmin = true;
+					break;
+				}
+			}
+		}
+		if (isAdmin && OpenCPSConfigUtil.isAutoBetimes()) {
+			List<Group> groups = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+			
+			for (Group group : groups) {
+				if (group.getType() == 1 && group.isSite()) {
+					List<Dossier> lstDossiers = DossierLocalServiceUtil.findDossierByGroup(group.getGroupId());
+					for (Dossier dossier : lstDossiers) {
+						if (dossier.getReleaseDate() != null) {
+							int valueCompareRelease = BetimeUtils.getValueCompareRelease(group.getGroupId(), dossier.getReleaseDate(), dossier.getDueDate());
+							if (3 == valueCompareRelease) {
+								dossier.setExtendDate(dossier.getReleaseDate());
+								DossierLocalServiceUtil.updateDossier(dossier);
+							}
+						}
+					}
+				}
+			}
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
+		}
+		else {
+			return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
 		}
 	}
 

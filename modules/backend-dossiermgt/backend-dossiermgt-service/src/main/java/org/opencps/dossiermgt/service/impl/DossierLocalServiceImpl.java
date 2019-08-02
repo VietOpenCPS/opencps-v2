@@ -3600,13 +3600,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (lstTimes != null && lstTimes.length > 1) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < lstTimes.length; i++) {
-					BooleanQuery query = processStatisticDossier(lstTimes[i], fromReleaseDate
-							, toReleaseDate, fromFinishDate, toFinishDate);
+					BooleanQuery query = processStatisticDossier(lstTimes[i]);
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
-				booleanQuery.add(processStatisticDossier(time, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate), BooleanClauseOccur.MUST);
+				booleanQuery.add(processStatisticDossier(time), BooleanClauseOccur.MUST);
 			}
 		}
 
@@ -3632,7 +3631,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return booleanQuery;
 	}
 
-	private BooleanQuery processStatisticDossier(String subTime, String fromReleaseDate, String toReleaseDate, String fromFinishDate, String toFinishDate) throws ParseException {
+	private BooleanQuery processStatisticDossier(String subTime) throws ParseException {
 		BooleanQuery booleanQuery = new BooleanQueryImpl();
 		// Check list dossier is betimes
 		if (subTime.equals(DossierTerm.BE_TIME)) {
@@ -3664,12 +3663,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			termRangeFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
 			subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
 			/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
-			if (Validator.isNotNull(fromFinishDate) || Validator.isNotNull(toFinishDate)) {
-				subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);				
-			}
-			if (Validator.isNotNull(fromReleaseDate) || Validator.isNotNull(toReleaseDate)) {
-				subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);				
-			}
+			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);				
+			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);				
 			/** Check condition dueDate != null &&  subQueryTwo **/
 			subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
 			/** Add search all **/
@@ -3729,8 +3724,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryThree.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
 			// Check releaseDate < dueDate
-			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
-					String.valueOf(2), String.valueOf(2), true, true);
+//			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+//					String.valueOf(2), String.valueOf(2), true, true);
+			MultiMatchQuery queryCompareRelease = new MultiMatchQuery(String.valueOf(2));
+			queryCompareRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+
 			subQueryThree.add(queryCompareRelease, BooleanClauseOccur.MUST);
 
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - START **/
@@ -3745,16 +3743,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryFinishDate.addField(DossierTerm.FINISH_DATE_TIMESTAMP);
 			subQueryFive.add(queryFinishDate, BooleanClauseOccur.MUST_NOT);
 			//Check finishDate >= dueDate
-			TermRangeQueryImpl queryCompareFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
-					String.valueOf(1), String.valueOf(2), true, true);
+//			TermRangeQueryImpl queryCompareFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
+//					String.valueOf(1), String.valueOf(2), true, true);
+			MultiMatchQuery queryCompareFinish = new MultiMatchQuery(String.valueOf(2));
+			queryCompareFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
+			
 			subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
-			if (Validator.isNotNull(fromFinishDate) || Validator.isNotNull(toFinishDate)) {
-				subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
-			}
-			if (Validator.isNotNull(fromReleaseDate) || Validator.isNotNull(toReleaseDate)) {
-				subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
-			}
+			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
 
 			/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/
 			subQueryThree.add(subQuerySix, BooleanClauseOccur.MUST);
