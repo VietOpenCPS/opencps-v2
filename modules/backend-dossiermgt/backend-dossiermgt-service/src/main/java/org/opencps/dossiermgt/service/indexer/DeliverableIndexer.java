@@ -68,14 +68,20 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		// add number fields
 		document.addNumberSortable(DeliverableTerm.DELIVERABLE_ID, object.getDeliverableId());
 		if (Validator.isNotNull(object.getIssueDate())) {
-			document.addDateSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate());			
+			document.addDateSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate());
+		} else {
+			document.addTextSortable(DeliverableTerm.ISSUE_DATE, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getExpireDate())) {
-			document.addDateSortable(DeliverableTerm.EXPIRE_DATE, object.getExpireDate());			
+			document.addDateSortable(DeliverableTerm.EXPIRE_DATE, object.getExpireDate());
+		} else {
+			document.addTextSortable(DeliverableTerm.EXPIRE_DATE, StringPool.BLANK);
 		}
-		
+
 		if (Validator.isNotNull(object.getRevalidate())) {
-			document.addDateSortable(DeliverableTerm.REVALIDATE, object.getRevalidate());			
+			document.addDateSortable(DeliverableTerm.REVALIDATE, object.getRevalidate());
+		} else {
+			document.addTextSortable(DeliverableTerm.REVALIDATE, StringPool.BLANK);
 		}
 
 		// add text fields
@@ -88,30 +94,14 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
 		}
 		
-		if (Validator.isNotNull(object.getDeliverableName())) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());			
-		}
-		if (Validator.isNotNull(object.getDeliverableType())) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_TYPE, object.getDeliverableType());			
-		}
-		if (Validator.isNotNull(object.getGovAgencyCode())) {
-			document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());			
-		}
-		if (Validator.isNotNull(object.getGovAgencyName())) {
-			document.addTextSortable(DeliverableTerm.GOV_AGENCY_NAME, object.getGovAgencyName());			
-		}
-		if (Validator.isNotNull(object.getApplicantIdNo())) {
-			document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());			
-		}
-		if (Validator.isNotNull(object.getApplicantName())) {
-			document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());			
-		}
-		if (Validator.isNotNull(object.getSubject())) {
-			document.addTextSortable(DeliverableTerm.SUBJECT, object.getSubject());			
-		}
-		if (Validator.isNotNull(object.getFormData())) {
-			document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());			
-		}
+		document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());
+		document.addTextSortable(DeliverableTerm.DELIVERABLE_TYPE, object.getDeliverableType());
+		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+		document.addTextSortable(DeliverableTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
+		document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
+		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());
+		document.addTextSortable(DeliverableTerm.SUBJECT, object.getSubject());
+		document.addTextSortable(DeliverableTerm.FORM_DATA, object.getFormData());
 
 		document.addNumberSortable(ModelKeysDeliverable.ISSUEDATE, Validator.isNotNull(object.getIssueDate()) ? object.getIssueDate().getTime() : null);
 		document.addNumberSortable(ModelKeysDeliverable.EXPIREDATE, Validator.isNotNull(object.getExpireDate()) ? object.getExpireDate().getTime(): null);
@@ -149,23 +139,17 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 			Iterator<String> keys = jsonObject.keys();
 
-			while(keys.hasNext()) {
-			    String key = keys.next();
-			    document.addTextSortable(key+ "_data", jsonObject.getString(key));
+			while (keys.hasNext()) {
+				String key = keys.next();
+				document.addTextSortable(key + "_data", jsonObject.getString(key));
 			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
 		
-		if (Validator.isNotNull(object.getFormScript())) {
-			document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());			
-		}
-		if (Validator.isNotNull(object.getFormReport())) {
-			document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());			
-		}
-		if (Validator.isNotNull(object.getDeliverableState())) {
-			document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());			
-		}
+		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
+		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
+		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
 
 		return document;
 	}
