@@ -613,26 +613,6 @@ public class DueDateUtils {
 		}
 	}
 
-	public static void main(String[] args) {
-		System.out.println("hello");
-		try {
-			Date startDate = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("28/07/2019 10:40");
-			Date toDate = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse("29/07/2019 10:30");
-			Double durationCount = new Double(12);
-			int durationUnit = 1;
-			long groupId = 111;
-			DueDateUtils d = new DueDateUtils(startDate, durationCount, durationUnit, groupId);
-			System.out.println("===================================durationCount=" + durationCount);
-			System.out.println("===================================durationUnit=" + durationUnit);
-			System.out.println(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(d.getDueDate()));
-			System.out.println(d.getRecivedDate());
-//			DueDateUtils d = new DueDateUtils(startDate, toDate, 1, 111);
-//			System.out.println(d.getOverDue());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }
 
 class SupportUtils {
