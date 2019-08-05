@@ -61,6 +61,7 @@ import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.ExtendDueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
@@ -1860,13 +1861,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossier.setLockState(lockState);
 		dossier.setDossierNote(stepInstruction);
 
-		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
-			dossier.setReleaseDate(now);
-		}
-
-		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
-			dossier.setFinishDate(now);
-		}
+//		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+//			dossier.setReleaseDate(now);
+//		}
+//
+//		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+//			dossier.setFinishDate(now);
+//		}
 	}		
 	
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
@@ -2007,6 +2008,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				e.printStackTrace();
 //			}
 		}
+		
 //		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
 //				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
@@ -2021,6 +2023,12 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						int valueCompareRelease = BetimeUtils.getValueCompareRelease(dossier.getGroupId(), now, dossier.getDueDate());
+						if (3 == valueCompareRelease) {
+							dossier.setExtendDate(now);							
+						}
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);
@@ -2065,6 +2073,12 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 //					DossierLocalServiceUtil.updateReleaseDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 					dossier.setReleaseDate(now);
+					if (OpenCPSConfigUtil.isAutoBetimes()) {
+						int valueCompareRelease = BetimeUtils.getValueCompareRelease(dossier.getGroupId(), now, dossier.getDueDate());
+						if (3 == valueCompareRelease) {
+							dossier.setExtendDate(now);							
+						}
+					}
 					bResult.put(DossierTerm.RELEASE_DATE, true);
 //				} catch (PortalException e) {
 //					_log.error(e);

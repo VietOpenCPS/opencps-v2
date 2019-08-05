@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.statistic.dto.DossierStatisticData;
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBaseImpl;
@@ -192,17 +193,17 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				govAgencyCode, groupAgenvyCode, start, end);
 	}
 	
-//	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		opencpsDossierStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
-//	}
-//	
-//	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		opencpsDossierStatisticPersistence.removeByG_M_Y(groupId, month, year);
-//	}
-//
-//	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
-//		opencpsDossierStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
-//	}
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByG_D_M_Y(groupId, domainCode, month, year);
+	}
+	
+	public void removeDossierStatisticByMonthYear(long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByG_M_Y(groupId, month, year);
+	}
+
+	public void removeDossierStatisticByYear(long companyId, long groupId, int month, int year) throws NoSuchOpencpsDossierStatisticException {
+		opencpsDossierStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
+	}
 
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(long groupId, int month, int year) {
 		return opencpsDossierStatisticPersistence.findByG_M_Y(groupId, month, year);
@@ -212,10 +213,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return opencpsDossierStatisticPersistence.findByGID_M_Y_RP(groupId, month, year, reporting);
 	}
 
-//	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode,
-//			String domainCode) throws NoSuchOpencpsDossierStatisticException {
-//		return opencpsDossierStatisticPersistence.removeByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
-//	}
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode,
+			String domainCode) throws NoSuchOpencpsDossierStatisticException {
+		return opencpsDossierStatisticPersistence.removeByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
 
 	public List<OpencpsDossierStatistic> getDossierStatisticByYear(long companyId, long groupId, int month, int year) {
 		return opencpsDossierStatisticPersistence.findByCID_GID_Y(companyId, groupId, month, year);

@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -3626,16 +3628,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (DossierTerm.STATISTIC.equals(top) && Validator.isNotNull(fromStatisticDate)
-				&& Validator.isNotNull(toStatisticDate) && Validator.isNotNull(time)) {
-			if (!DossierTerm.OVER_DUE.equals(time)) {
-				String fromStatisDateFilter = fromStatisticDate + ConstantsTerm.HOUR_START;
-				String toStatisDateFilter = toStatisticDate + ConstantsTerm.HOUR_END;
-				TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.RELEASE_DATE_LUCENE,
-						fromStatisDateFilter, toStatisDateFilter, true, true);
-				booleanQuery.add(termRangeRelease, BooleanClauseOccur.MUST);				
-			}
-		}
 		return booleanQuery;
 	}
 
@@ -3661,7 +3653,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			//TermRangeQueryImpl termRangeRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
 			//		null, String.valueOf(0), true, false);
 			//subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
-			MultiMatchQuery termRangeRelease = new MultiMatchQuery(String.valueOf(3));
+			MultiMatchQuery termRangeRelease = new MultiMatchQuery("3");
 			termRangeRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
 			subQueryTwo.add(termRangeRelease, BooleanClauseOccur.MUST);
 			/** Check condition finishDate < dueDate **/
@@ -3671,8 +3663,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			termRangeFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
 			subQueryThree.add(termRangeFinish, BooleanClauseOccur.MUST);
 			/** Check condition (extendDate != null && releaseDate < dueDate) || (finishDate < dueDate) **/
-//			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);
-			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);
+			subQueryFour.add(subQueryThree, BooleanClauseOccur.SHOULD);				
+			subQueryFour.add(subQueryTwo, BooleanClauseOccur.SHOULD);				
 			/** Check condition dueDate != null &&  subQueryTwo **/
 			subQueryOne.add(subQueryFour, BooleanClauseOccur.MUST);
 			/** Add search all **/
@@ -3732,8 +3724,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryDueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
 			subQueryThree.add(queryDueDate, BooleanClauseOccur.MUST_NOT);
 			// Check releaseDate < dueDate
-			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
-					String.valueOf(2), String.valueOf(2), true, true);
+//			TermRangeQueryImpl queryCompareRelease = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_RELEASE,
+//					String.valueOf(2), String.valueOf(2), true, true);
+			MultiMatchQuery queryCompareRelease = new MultiMatchQuery(String.valueOf(2));
+			queryCompareRelease.addField(DossierTerm.VALUE_COMPARE_RELEASE);
+
 			subQueryThree.add(queryCompareRelease, BooleanClauseOccur.MUST);
 
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - START **/
@@ -3748,11 +3743,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			queryFinishDate.addField(DossierTerm.FINISH_DATE_TIMESTAMP);
 			subQueryFive.add(queryFinishDate, BooleanClauseOccur.MUST_NOT);
 			//Check finishDate >= dueDate
-			TermRangeQueryImpl queryCompareFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
-					String.valueOf(1), String.valueOf(2), true, true);
+//			TermRangeQueryImpl queryCompareFinish = new TermRangeQueryImpl(DossierTerm.VALUE_COMPARE_FINISH,
+//					String.valueOf(1), String.valueOf(2), true, true);
+			MultiMatchQuery queryCompareFinish = new MultiMatchQuery(String.valueOf(2));
+			queryCompareFinish.addField(DossierTerm.VALUE_COMPARE_FINISH);
+			
 			subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
-//			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
 			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
 
 			/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/

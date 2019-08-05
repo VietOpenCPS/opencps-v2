@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import org.opencps.statistic.dto.DossierStatisticData;
+import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 
 import java.io.Serializable;
@@ -349,6 +350,19 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month,
+		int year, String govAgencyCode, String domainCode)
+		throws NoSuchOpencpsDossierStatisticException;
+
+	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode,
+		int month, int year) throws NoSuchOpencpsDossierStatisticException;
+
+	public void removeDossierStatisticByMonthYear(long groupId, int month,
+		int year) throws NoSuchOpencpsDossierStatisticException;
+
+	public void removeDossierStatisticByYear(long companyId, long groupId,
+		int month, int year) throws NoSuchOpencpsDossierStatisticException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,

@@ -1117,9 +1117,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setUserName(objectData.getString("userName"));
 
 		//
-		String deliverableCode = objectData.getString("deliverableCode");
-		object.setDeliverableCode(deliverableCode);
-		object.setDeliverableName(objectData.getString("deliverableName"));
+//		String deliverableCode = objectData.getString("deliverableCode");
+//		object.setDeliverableCode(deliverableCode);
+//		object.setDeliverableName(objectData.getString("deliverableName"));
 		//
 		String deliverableType = objectData.getString("deliverableType");
 		object.setDeliverableType(deliverableType);
@@ -1132,56 +1132,98 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		object.setGovAgencyName(govAgencyName);
 		//applicant
-		String applicantIdNo = objectData.getString("applicantIdNo");
-		String applicantIdName = objectData.getString("applicantName");
-		object.setApplicantIdNo(applicantIdNo);
+//		String applicantIdNo = objectData.getString("applicantIdNo");
+//		String applicantIdName = objectData.getString("applicantName");
+//		object.setApplicantIdNo(applicantIdNo);
 
-		if (Validator.isNull(applicantIdName)) {
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicantIdNo);
-			if (applicant != null) {
-				applicantIdName = applicant.getApplicantName();
-			}
-		}
-		object.setApplicantName(applicantIdName);
-		object.setSubject(objectData.getString("subject"));
-		long expireDateLong = objectData.getLong("expireDate");
-		long issueDateLong = objectData.getLong("issueDate");
-		long revalidateLong = objectData.getLong("revalidate");
-		if (expireDateLong > 0)
-			object.setExpireDate(new Date(expireDateLong));
-		if (issueDateLong > 0)
-			object.setIssueDate(new Date(issueDateLong));
-		if (revalidateLong > 0)
-			object.setRevalidate(new Date(revalidateLong));
+//		if (Validator.isNull(applicantIdName)) {
+//			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicantIdNo);
+//			if (applicant != null) {
+//				applicantIdName = applicant.getApplicantName();
+//			}
+//		}
+//		object.setApplicantName(applicantIdName);
+//		object.setSubject(objectData.getString("subject"));
+//		long expireDateLong = objectData.getLong("expireDate");
+//		long issueDateLong = objectData.getLong("issueDate");
+//		long revalidateLong = objectData.getLong("revalidate");
+//		if (expireDateLong > 0)
+//			object.setExpireDate(new Date(expireDateLong));
+//		if (issueDateLong > 0)
+//			object.setIssueDate(new Date(issueDateLong));
+//		if (revalidateLong > 0)
+//			object.setRevalidate(new Date(revalidateLong));
 		//
 		JSONObject jsonData = null;
 		try {
 			jsonData = JSONFactoryUtil.createJSONObject(objectData.getString("formData"));
+			
+			String deliverableCode = jsonData.getString("deliverableCode");
 			if (Validator.isNotNull(deliverableCode)) {
-				jsonData.put("deliverableCode", deliverableCode);
+				object.setDeliverableCode(deliverableCode);
 			}
-			if (Validator.isNotNull(applicantIdName)) {
-				jsonData.put("applicantName", applicantIdName);
+			//
+			String deliverableName = jsonData.getString("deliverableName");
+			if (Validator.isNotNull(deliverableName)) {
+				object.setDeliverableName(deliverableName);
+			} else {
+				DeliverableType deliType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+				if (deliType != null) {
+					object.setDeliverableName(deliType.getTypeName());
+				}
 			}
-
+			//
+			String applicantName = jsonData.getString("applicantName");
+			if (Validator.isNotNull(applicantName)) {
+				object.setApplicantName(applicantName);
+			}
+			//
+			String applicantIdNo = jsonData.getString("applicantIdNo");
+			if (Validator.isNotNull(applicantIdNo)) {
+				object.setApplicantIdNo(applicantIdNo);
+			}
+			//
+			String subject = jsonData.getString("subject");
+			if (Validator.isNotNull(subject)) {
+				object.setSubject(subject);
+			}
+			//
+			String deliverableState = jsonData.getString("deliverableState");
+			if (Validator.isNotNull(deliverableState)) {
+				object.setDeliverableState(Integer.valueOf(deliverableState));
+			} else {
+				object.setDeliverableState(1);
+			}
+			//
 			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-			String strExpireDate = StringPool.BLANK;
-			String strIssueDate = StringPool.BLANK;
-			String strRevalidate = StringPool.BLANK;
-			if (expireDateLong > 0) {
-				strExpireDate = sdf.format(new Date(expireDateLong));
+			String strExpireDate = jsonData.getString("expireDate");
+			String strIssueDate = jsonData.getString("issueDate");
+			String strRevalidate = jsonData.getString("revaliDate");
+			if (Validator.isNotNull(strExpireDate)) {
+				Date expireDate = sdf.parse(strExpireDate);
+				if (expireDate != null) {
+					object.setExpireDate(expireDate);
+				}
 			}
-			if (issueDateLong > 0) {
-				strIssueDate = sdf.format(new Date(issueDateLong));
+			//
+			if (Validator.isNotNull(strIssueDate)) {
+				Date issueDate = sdf.parse(strIssueDate);
+				if (issueDate != null) {
+					object.setIssueDate(issueDate);
+				}
 			}
-			if (revalidateLong > 0) {
-				strRevalidate = sdf.format(new Date(revalidateLong));
+			//
+			if (Validator.isNotNull(strRevalidate)) {
+				Date revaliDate = sdf.parse(strRevalidate);
+				if (revaliDate != null) {
+					object.setRevalidate(revaliDate);
+				}
 			}
-			jsonData.put("expireDate", strExpireDate);
-			jsonData.put("issueDate", strIssueDate);
-			jsonData.put("revalidate", strRevalidate);
+			
 		} catch (JSONException e1) {
 			_log.debug(e1);
+		} catch (java.text.ParseException e2) {
+			_log.debug(e2);
 		}
 		
 		if (jsonData != null) {
@@ -1206,7 +1248,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setFormScript(objectData.getString("formScript"));
 		object.setFormReport(objectData.getString("formReport"));
 
-		object.setDeliverableState(objectData.getInt("deliverableState"));
+		//object.setDeliverableState(objectData.getInt("deliverableState"));
 
 		object = deliverablePersistence.update(object);
 

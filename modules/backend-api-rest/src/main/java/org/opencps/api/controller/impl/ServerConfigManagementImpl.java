@@ -113,7 +113,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response getServerConfigDetail(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		BackendAuth auth = new BackendAuthImpl();
-
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -125,11 +126,11 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				config = ServerConfigLocalServiceUtil.fetchServerConfig(serverId);
 
 				if (Validator.isNull(config)) {
-					config = ServerConfigLocalServiceUtil.getByCode(id);
+					config = ServerConfigLocalServiceUtil.getByCode(groupId, id);
 				}
 
 			} else {
-				config = ServerConfigLocalServiceUtil.getByCode(id);
+				config = ServerConfigLocalServiceUtil.getByCode(groupId,  id);
 
 			}
 

@@ -1129,6 +1129,7 @@ public class RestfulController {
 
 					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + start
 							+ ", \"size\" : " + size
+							+ ", \"sort\" : [{\"issueDate_Number_sortable\" : { \"order\" : \"desc\"}}]"
 							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
 							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
 							+ "}");
