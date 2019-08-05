@@ -87,6 +87,7 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -296,7 +297,7 @@ public class RestfulController {
 						CompanyConstants.AUTH_TYPE_EA);
 
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-
+				
 				User user = UserLocalServiceUtil.fetchUser(userId);
 //				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 //				
@@ -314,7 +315,7 @@ public class RestfulController {
 //						userTrackerPath);
 				if (Validator.isNotNull(employee)) {
 
-					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
 						return "pending";
 					} else {
 						return "/c";

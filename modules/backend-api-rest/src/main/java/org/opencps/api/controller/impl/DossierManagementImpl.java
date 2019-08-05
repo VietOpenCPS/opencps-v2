@@ -5187,7 +5187,7 @@ public class DossierManagementImpl implements DossierManagement {
 				if (group.getType() == 1 && group.isSite()) {
 					List<Dossier> lstDossiers = DossierLocalServiceUtil.findDossierByGroup(group.getGroupId());
 					for (Dossier dossier : lstDossiers) {
-						if (dossier.getReleaseDate() != null) {
+						if (dossier.getReleaseDate() != null && dossier.getExtendDate() == null) {
 							int valueCompareRelease = BetimeUtils.getValueCompareRelease(group.getGroupId(), dossier.getReleaseDate(), dossier.getDueDate());
 							if (3 == valueCompareRelease) {
 								dossier.setExtendDate(dossier.getReleaseDate());
