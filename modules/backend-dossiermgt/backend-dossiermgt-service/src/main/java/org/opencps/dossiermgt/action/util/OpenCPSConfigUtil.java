@@ -27,10 +27,29 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_PERMISSION_ROLE_MODE = "org.opencps.permission.role.mode";
 	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
 	public static final String OPENCPS_AUTO_BETIMES = "org.opencps.auto.betimes";
+	//
+	public static final String OPENCPS_DOSSIERDOCUMENT_ENABLE = "org.opencps.dossierdocument.enable";
+	public static final String OPENCPS_PUBISHEVENT_ENABLE = "org.opencps.publishevent.enable";
+	public static final String OPENCPS_DLFILEENTRY_ENABLE = "org.opencps.dlfileentry.enable";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
 	    return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty) : false;
+	}
+
+	public static boolean isDossierDocumentEnable() {
+	    String notificationEnableProperty = PropsUtil.get(OPENCPS_DOSSIERDOCUMENT_ENABLE);
+	    return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty) : true;
+	}
+
+	public static boolean isPublishEventEnable() {
+	    String notificationEnableProperty = PropsUtil.get(OPENCPS_PUBISHEVENT_ENABLE);
+	    return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty) : true;
+	}
+
+	public static boolean isDLFileEntryEnable() {
+	    String fileEntryProperty = PropsUtil.get(OPENCPS_DLFILEENTRY_ENABLE);
+	    return Validator.isNotNull(fileEntryProperty) ? Boolean.parseBoolean(fileEntryProperty) : true;
 	}
 	
 	public static int getCacheTTL() {

@@ -35,13 +35,15 @@ public class MBEmailSenderImpl implements MBEmailSender {
 			mailMessage.setTo(messageEntry.getToAddress());
 			mailMessage.setBody(messageEntry.getEmailBody());
 			mailMessage.setHTMLFormat(true);
+			_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
+			_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
 			String smtpUser = PrefsPropsUtil.getString(
 					PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
 					StringPool.BLANK);
 			if (Validator.isNotNull(smtpUser)) {
 				messageEntry.getFrom().setAddress(smtpUser);				
 				mailMessage.setFrom(messageEntry.getFrom());
-				_log.debug("SEND EMAIL FROM: " + messageEntry.getFrom());
+				_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
 			}
 			MailServiceUtil.sendEmail(mailMessage);
 
