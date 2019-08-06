@@ -3750,8 +3750,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			
 			subQueryFive.add(queryCompareFinish, BooleanClauseOccur.MUST);
 			/** Check condition (finishDate == null) || (finishDate != null && finishDate >= dueDate) - END **/
-			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
-			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
+//			subQuerySix.add(subQueryFive, BooleanClauseOccur.SHOULD);
+//			subQuerySix.add(subQueryFour, BooleanClauseOccur.SHOULD);
 
 			/** Check condition (releaseDate < dueDate &&  extendDate==null && (finishDate==null||finishDate>=dueDate))- END **/
 			subQueryThree.add(subQuerySix, BooleanClauseOccur.MUST);
