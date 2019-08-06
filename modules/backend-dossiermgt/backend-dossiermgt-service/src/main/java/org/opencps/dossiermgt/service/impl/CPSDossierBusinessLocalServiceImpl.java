@@ -601,11 +601,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			//Gửi thông tin hồ sơ để tra cứu
 			if (state == DossierSyncTerm.STATE_NOT_SYNC
-					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+					&& OpenCPSConfigUtil.isPublishEventEnable()) {
 				publishEvent(dossier, context);
 			}
 		}
-		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+				&& OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context);			
 		}		
 	}
@@ -867,7 +869,9 @@ public class CPSDossierBusinessLocalServiceImpl
 //			dossier = dossierLocalService.updateDossier(dossier);
 			
 			//Tạo văn bản đính kèm
-			createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject, employee, user, context);
+			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
+				createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject, employee, user, context);
+			}
 			
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains("sendviapostal=1")) {
@@ -2904,7 +2908,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		}
 		
-		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT) {
+		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT && OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context);			
 		}
 		

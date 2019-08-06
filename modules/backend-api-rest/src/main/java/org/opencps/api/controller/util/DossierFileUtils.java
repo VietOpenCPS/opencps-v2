@@ -17,6 +17,7 @@ import java.util.List;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileSearchResultModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DossierFile;
 
@@ -62,23 +63,25 @@ public class DossierFileUtils {
         long fileSize = 0;
         String fileVersion = StringPool.BLANK;
 
-        if (dossierFile.getDossierFileId() > 0) {
-            try {
-                FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
-                    dossierFile.getFileEntryId());
-                DLFileVersion dlFileVersion =
-                    DLFileVersionLocalServiceUtil.getLatestFileVersion(
-                        fileEntry.getFileEntryId(), true);
+        if (OpenCPSConfigUtil.isDLFileEntryEnable()) {
+        	if (dossierFile.getDossierFileId() > 0) {
+                try {
+                    FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+                        dossierFile.getFileEntryId());
+                    DLFileVersion dlFileVersion =
+                        DLFileVersionLocalServiceUtil.getLatestFileVersion(
+                            fileEntry.getFileEntryId(), true);
 
-                fileType = dlFileVersion.getExtension();
-                fileSize = dlFileVersion.getSize();
-                fileVersion = dlFileVersion.getVersion();
+                    fileType = dlFileVersion.getExtension();
+                    fileSize = dlFileVersion.getSize();
+                    fileVersion = dlFileVersion.getVersion();
+                }
+                catch (Exception e) {
+                	//_log.error(e);
+                	_log.debug(e);
+                }
             }
-            catch (Exception e) {
-            	//_log.error(e);
-            	_log.debug(e);
-            }
-        }
+		}
 
         model.setFileType(fileType);
         model.setFileSize(fileSize);
