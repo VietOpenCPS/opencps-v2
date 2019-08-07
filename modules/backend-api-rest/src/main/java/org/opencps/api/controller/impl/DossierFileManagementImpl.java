@@ -992,7 +992,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+		long startTime = System.currentTimeMillis();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -1018,11 +1018,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 
 					String[] ftns = StringUtil.split(fileTemplateNo);
-
+					_log.debug("DOSSIER TEMPLATE NO: " + dossierIds.length);
 					for (String ftn : ftns) {
+						startTime = System.currentTimeMillis();
 						List<DossierFile> dossierFiles =
 							DossierFileLocalServiceUtil.getByG_DID_FTN_R_O(
 								groupId, dossierIds, ftn, false, true);
+						_log.debug("END TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 						resultFiles.addAll(dossierFiles);
 					}
 				}
