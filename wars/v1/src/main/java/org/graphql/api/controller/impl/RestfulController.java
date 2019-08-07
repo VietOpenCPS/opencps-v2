@@ -62,6 +62,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
 
 import org.apache.commons.io.IOUtils;
@@ -1014,10 +1015,12 @@ public class RestfulController {
 
 	@RequestMapping(value = "/fileattach/{id}/text", produces = {
 			"text/plain; charset=utf-8" }, method = RequestMethod.GET)
-	public String getTextFromFileEntryId(
+	public @ResponseBody String getTextFromFileEntryId(HttpServletResponse response,
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
 
 		String result = StringPool.BLANK;
+		response.setContentType("text/plain");
+		response.setCharacterEncoding("UTF-8");
 
 		InputStream is = null;
 
@@ -1042,7 +1045,7 @@ public class RestfulController {
 			}
 		}
 
-		return result;
+		return result.toString();
 
 	}
 
