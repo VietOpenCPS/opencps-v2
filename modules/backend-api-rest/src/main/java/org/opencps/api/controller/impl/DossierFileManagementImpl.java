@@ -33,6 +33,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -991,7 +992,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-
+		long startTime = System.currentTimeMillis();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -1000,10 +1001,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			if (dossier != null) {
-				List<Dossier> lstDossiers =
-					DossierLocalServiceUtil.getByG_AN(groupId, applicantIdNo);
+				List<Dossier> lstDossiers = null;
+				if (!OpenCPSConfigUtil.isDLFileEntryEnable()) {
+					lstDossiers = DossierLocalServiceUtil.getByF_GID_AN_DS(groupId, applicantIdNo,
+							DossierTerm.DOSSIER_STATUS_DONE);
+				} else {
+					lstDossiers = DossierLocalServiceUtil.getByG_AN(groupId, applicantIdNo);
+				}
+				
 				List<DossierFile> resultFiles = new ArrayList<>();
-				if (lstDossiers.size() > 0) {
+				if (lstDossiers != null && lstDossiers.size() > 0) {
 					long[] dossierIds = new long[lstDossiers.size()];
 					int i = 0;
 					for (Dossier d : lstDossiers) {
@@ -1011,11 +1018,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 
 					String[] ftns = StringUtil.split(fileTemplateNo);
-
+					_log.debug("DOSSIER TEMPLATE NO: " + dossierIds.length);
 					for (String ftn : ftns) {
+						startTime = System.currentTimeMillis();
 						List<DossierFile> dossierFiles =
 							DossierFileLocalServiceUtil.getByG_DID_FTN_R_O(
 								groupId, dossierIds, ftn, false, true);
+						_log.debug("END TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 						resultFiles.addAll(dossierFiles);
 					}
 				}
