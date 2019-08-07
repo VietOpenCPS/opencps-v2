@@ -238,6 +238,7 @@
 		<property name="contactName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="contactTelNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="contactEmail" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="delegateType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="delegateName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="delegateIdNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="delegateTelNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
@@ -249,6 +250,8 @@
 		<property name="delegateDistrictName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="delegateWardCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="delegateWardName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="documentNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="documentDate" type="org.hibernate.type.TimestampType" />
 		<property name="dossierTemplateNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dossierTemplateName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dossierNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />

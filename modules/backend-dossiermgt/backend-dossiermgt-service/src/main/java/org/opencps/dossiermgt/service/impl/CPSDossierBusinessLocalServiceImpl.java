@@ -3664,6 +3664,17 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierName(serviceName);
 			}
 			dossier.setSampleCount(sampleCount);
+			
+			//Delegate dossier
+			dossier.setDelegateType(input.getDelegateType());
+			if (Validator.isNotNull(input.getDocumentNo())) {				
+				dossier.setDocumentNo(input.getDocumentNo());
+			}
+			if (0 != input.getDocumentDate()) {
+				dossier.setDocumentDate(new Date(input.getDocumentDate()));				
+			}
+			
+			
 			if (Validator.isNotNull(input.getMetaData()))
 				dossier.setMetaData(input.getMetaData());
 
@@ -3815,6 +3826,16 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				}
 				
+				
+				//Delegate
+				//Delegate dossier
+				dossier.setDelegateType(input.getDelegateType());
+				if (Validator.isNotNull(input.getDocumentNo())) {				
+					dossier.setDocumentNo(input.getDocumentNo());
+				}
+				if (0 != input.getDocumentDate()) {
+					dossier.setDocumentDate(new Date(input.getDocumentDate()));				
+				}				
 			}
 			else if (oldDossiers.size() > 0) {
 				flagOldDossier = true;
@@ -3883,6 +3904,15 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setProcessNo(serviceProcess.getProcessNo());
 				}
 				
+				//Delegate dossier
+				dossier.setDelegateType(input.getDelegateType());
+				if (Validator.isNotNull(input.getDocumentNo())) {				
+					dossier.setDocumentNo(input.getDocumentNo());
+				}
+				if (0 != input.getDocumentDate()) {
+					dossier.setDocumentDate(new Date(input.getDocumentDate()));				
+				}
+				
 //					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 			}
 			else {
@@ -3929,6 +3959,19 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (Validator.isNotNull(input.getMetaData()))
 					dossier.setMetaData(input.getMetaData());
 
+				//Delegate dossier
+				
+				if (Validator.isNotNull(input.getDelegateType())) {
+					dossier.setDelegateType(input.getDelegateType());					
+				}
+				if (Validator.isNotNull(input.getDocumentNo())) {				
+					dossier.setDocumentNo(input.getDocumentNo());
+				}
+				if (input.getDocumentDate() != null && 0 != input.getDocumentDate()) {
+					dossier.setDocumentDate(new Date(input.getDocumentDate()));				
+				}
+				
+				
 				updateDelegateApplicant(dossier, input);
 				
 				//if (process != null) {
@@ -4022,43 +4065,47 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			if (dossier != null) {
 				//
-				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+				//Check if have DOSSIER-01 template
+				Notificationtemplate dossierTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, NotificationType.DOSSIER_01);
+				if (dossierTemplate != null) {
+					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
-				NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-				//Process add notification queue
-				Date now = new Date();
+					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					//Process add notification queue
+					Date now = new Date();
 
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-				
-				queue.setCreateDate(now);
-				queue.setModifiedDate(now);
-				queue.setGroupId(groupId);
-				queue.setCompanyId(company.getCompanyId());
-				
-				queue.setNotificationType(NotificationType.DOSSIER_01);
-				queue.setClassName(Dossier.class.getName());
-				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
-				queue.setToUsername(dossier.getUserName());
-				queue.setToUserId(dossier.getUserId());
-				queue.setToEmail(dossier.getContactEmail());
-				queue.setToTelNo(dossier.getContactTelNo());
-				
-				JSONObject payload = JSONFactoryUtil.createJSONObject();
-				try {
-//						_log.info("START PAYLOAD: ");
-					payload.put(
-						"Dossier", JSONFactoryUtil.createJSONObject(
-							JSONFactoryUtil.looseSerialize(dossier)));
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+					
+					queue.setCreateDate(now);
+					queue.setModifiedDate(now);
+					queue.setGroupId(groupId);
+					queue.setCompanyId(company.getCompanyId());
+					
+					queue.setNotificationType(NotificationType.DOSSIER_01);
+					queue.setClassName(Dossier.class.getName());
+					queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
+					queue.setToUsername(dossier.getUserName());
+					queue.setToUserId(dossier.getUserId());
+					queue.setToEmail(dossier.getContactEmail());
+					queue.setToTelNo(dossier.getContactTelNo());
+					
+					JSONObject payload = JSONFactoryUtil.createJSONObject();
+					try {
+//							_log.info("START PAYLOAD: ");
+						payload.put(
+							"Dossier", JSONFactoryUtil.createJSONObject(
+								JSONFactoryUtil.looseSerialize(dossier)));
+					}
+					catch (JSONException parse) {
+						_log.error(parse);
+					}
+//						_log.info("payloadTest: "+payload.toJSONString());
+					queue.setPayload(payload.toJSONString());
+					queue.setExpireDate(cal.getTime());
+
+					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);					
 				}
-				catch (JSONException parse) {
-					_log.error(parse);
-				}
-//					_log.info("payloadTest: "+payload.toJSONString());
-				queue.setPayload(payload.toJSONString());
-				queue.setExpireDate(cal.getTime());
-
-				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			}
 
 			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");

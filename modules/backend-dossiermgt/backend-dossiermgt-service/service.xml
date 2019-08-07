@@ -492,6 +492,7 @@
 		<column name="contactName" type="String" />
 		<column name="contactTelNo" type="String" />
 		<column name="contactEmail" type="String" />
+		<column name="delegateType" type="int" />
 		<column name="delegateName" type="String" />
 		<column name="delegateIdNo" type="String" />
 		<column name="delegateTelNo" type="String" />
@@ -503,6 +504,8 @@
 		<column name="delegateDistrictName" type="String" />
 		<column name="delegateWardCode" type="String" />
 		<column name="delegateWardName" type="String" />
+		<column name="documentNo" type="String" />
+		<column name="documentDate" type="Date" />
 		
 		<column name="dossierTemplateNo" type="String" />
 		<column name="dossierTemplateName" type="String" />
