@@ -114,6 +114,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
 	}
 
+	public Deliverable fetchByGID_DID(long groupId, long dossierId) {
+		return deliverablePersistence.fetchByF_GID_DID(groupId, dossierId);
+	}
+
 	public List<Deliverable> getListDeliverable(int deliverableState, String govAgencyCode, String deliverableType,
 			String applicant) {
 		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(deliverableState, govAgencyCode,
@@ -214,6 +218,55 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
 		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setDeliverableState(Integer.valueOf(deliverableState));
+
+		return deliverablePersistence.update(object);
+	}
+
+	//
+	@Indexable(type = IndexableType.REINDEX)
+	public Deliverable addDeliverableSign(long groupId, String deliverableType, String deliverableName,
+			String deliverableCode, String govAgencyCode, String govAgencyName, String applicationIdNo,
+			String applicationName, String subject, String issueDate, String expireDate, String revalidate,
+			String deliverableState, long dossierId, long fileEntryId, long formScriptFileId, long formReportFileId,
+			ServiceContext serviceContext) {
+
+		long userId = serviceContext.getUserId();
+
+		Date now = new Date();
+
+		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
+
+		Deliverable object = deliverablePersistence.create(deliverableId);
+		//DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+
+		/// Add audit fields
+		object.setGroupId(groupId);
+		object.setCreateDate(now);
+		object.setModifiedDate(now);
+		object.setUserId(userId);
+
+		// Add other fields
+		object.setDeliverableName(deliverableName);
+		//object.setDeliverableId(deliverableId);
+		object.setDeliverableType(deliverableType);
+		object.setDeliverableCode(deliverableCode);
+		object.setGovAgencyCode(govAgencyCode);
+		object.setGovAgencyName(govAgencyName);
+		object.setApplicantIdNo(applicationIdNo);
+		object.setApplicantName(applicationName);
+		object.setSubject(subject);
+		object.setDossierId(dossierId);
+		object.setFileEntryId(fileEntryId);
+		if (Validator.isNotNull(issueDate)) {
+			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
+		} else {
+			object.setIssueDate(now);
+		}
+		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setFormScriptFileId(formScriptFileId);
+		object.setFormReportFileId(formReportFileId);
 		object.setDeliverableState(Integer.valueOf(deliverableState));
 
 		return deliverablePersistence.update(object);
@@ -621,6 +674,43 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Add other fields
 		object.setFormData(formData);
+		//
+		String result = StringPool.BLANK;
+		if (object.getFormReportFileId() > 0) {
+			InputStream is = null;
+
+			try {
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(object.getFormReportFileId());
+
+				is = dlFileEntry.getContentStream();
+
+				result = IOUtils.toString(is, StandardCharsets.UTF_8);
+
+			} catch (Exception e) {
+				_log.debug(e);
+				result = StringPool.BLANK;
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						_log.debug(e);
+					}
+				}
+			}
+		}
+		//Process update deliverable file Id
+		Message message = new Message();
+//		_log.info("Document script: " + dt.getDocumentScript());
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		msgData.put("className", Deliverable.class.getName());
+		msgData.put("classPK", object.getDeliverableId());
+		msgData.put("jrxmlTemplate", result);
+		msgData.put("formData", formData);
+		msgData.put("userId", userId);
+
+		message.put("msgToEngine", msgData);
+		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
 
 		return deliverablePersistence.update(object);
 	}
@@ -1097,9 +1187,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		long deliverableId = objectData.getLong("deliverableId");
 		long groupId = objectData.getLong("groupId");
+		boolean flagAttach = false;
 		if (deliverableId > 0) {
 
 			object = deliverablePersistence.fetchByPrimaryKey(deliverableId);
+			//
+			try {
+				JSONObject jsonDeli = JSONFactoryUtil.createJSONObject(object.getFormData());
+				if (jsonDeli != null && jsonDeli.has("fileAttach")) {
+					flagAttach = jsonDeli.getBoolean("fileAttach");
+				}
+			} catch (JSONException e) {
+				_log.debug(e);
+			}
 
 		} else {
 
@@ -1227,6 +1327,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		
 		if (jsonData != null) {
+			jsonData.put("fileAttach", flagAttach);
 			object.setFormData(jsonData.toJSONString());
 		} else {
 			object.setFormData(StringPool.BLANK);
@@ -1252,42 +1353,44 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		object = deliverablePersistence.update(object);
 
-		String result = StringPool.BLANK;
-		if (formReportFileId > 0) {
-			InputStream is = null;
+		if (!flagAttach) {
+			String result = StringPool.BLANK;
+			if (formReportFileId > 0) {
+				InputStream is = null;
 
-			try {
-				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
+				try {
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
 
-				is = dlFileEntry.getContentStream();
+					is = dlFileEntry.getContentStream();
 
-				result = IOUtils.toString(is, StandardCharsets.UTF_8);
+					result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
-			} catch (Exception e) {
-				_log.debug(e);
-				result = StringPool.BLANK;
-			} finally {
-				if (is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-						_log.debug(e);
+				} catch (Exception e) {
+					_log.debug(e);
+					result = StringPool.BLANK;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							_log.debug(e);
+						}
 					}
 				}
 			}
-		}
-		//Process update deliverable file Id
-		Message message = new Message();
-//		_log.info("Document script: " + dt.getDocumentScript());
-		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", Deliverable.class.getName());
-		msgData.put("classPK", object.getDeliverableId());
-		msgData.put("jrxmlTemplate", result);
-		msgData.put("formData", jsonData!= null ? jsonData.toJSONString(): StringPool.BLANK);
-		msgData.put("userId", objectData.getLong("userId"));
+			//Process update deliverable file Id
+			Message message = new Message();
+//			_log.info("Document script: " + dt.getDocumentScript());
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
+			msgData.put("className", Deliverable.class.getName());
+			msgData.put("classPK", object.getDeliverableId());
+			msgData.put("jrxmlTemplate", result);
+			msgData.put("formData", jsonData!= null ? jsonData.toJSONString(): StringPool.BLANK);
+			msgData.put("userId", objectData.getLong("userId"));
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			message.put("msgToEngine", msgData);
+			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		}
 
 		return object;
 	}

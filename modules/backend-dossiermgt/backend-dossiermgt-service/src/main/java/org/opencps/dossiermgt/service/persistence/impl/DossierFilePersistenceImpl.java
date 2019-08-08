@@ -13777,6 +13777,831 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 		"(dossierFile.dossierPartNo IS NULL OR dossierFile.dossierPartNo = '') AND ";
 	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_EFORM_2 = "dossierFile.eForm = ? AND ";
 	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_REMOVED_2 = "dossierFile.removed = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByGID_DID_TEMP_PART_EFORM",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Boolean.class.getName(), Boolean.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByGID_DID_TEMP_PART_EFORM",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Boolean.class.getName(), Boolean.class.getName()
+			},
+			DossierFileModelImpl.GROUPID_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERID_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERTEMPLATENO_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERPARTNO_COLUMN_BITMASK |
+			DossierFileModelImpl.EFORM_COLUMN_BITMASK |
+			DossierFileModelImpl.REMOVED_COLUMN_BITMASK |
+			DossierFileModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GID_DID_TEMP_PART_EFORM = new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByGID_DID_TEMP_PART_EFORM",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), String.class.getName(),
+				Boolean.class.getName(), Boolean.class.getName()
+			});
+
+	/**
+	 * Returns all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByGID_DID_TEMP_PART_EFORM(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed) {
+		return findByGID_DID_TEMP_PART_EFORM(groupId, dossierId,
+			dossierTemplateNo, dossierPartNo, eForm, removed,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @return the range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByGID_DID_TEMP_PART_EFORM(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed, int start, int end) {
+		return findByGID_DID_TEMP_PART_EFORM(groupId, dossierId,
+			dossierTemplateNo, dossierPartNo, eForm, removed, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByGID_DID_TEMP_PART_EFORM(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return findByGID_DID_TEMP_PART_EFORM(groupId, dossierId,
+			dossierTemplateNo, dossierPartNo, eForm, removed, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByGID_DID_TEMP_PART_EFORM(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM;
+			finderArgs = new Object[] {
+					groupId, dossierId, dossierTemplateNo, dossierPartNo, eForm,
+					removed
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM;
+			finderArgs = new Object[] {
+					groupId, dossierId, dossierTemplateNo, dossierPartNo, eForm,
+					removed,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DossierFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierFile>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierFile dossierFile : list) {
+					if ((groupId != dossierFile.getGroupId()) ||
+							(dossierId != dossierFile.getDossierId()) ||
+							!Objects.equals(dossierTemplateNo,
+								dossierFile.getDossierTemplateNo()) ||
+							!Objects.equals(dossierPartNo,
+								dossierFile.getDossierPartNo()) ||
+							(eForm != dossierFile.isEForm()) ||
+							(removed != dossierFile.isRemoved())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(8 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(8);
+			}
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERID_2);
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_2);
+			}
+
+			boolean bindDossierPartNo = false;
+
+			if (dossierPartNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_1);
+			}
+			else if (dossierPartNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_3);
+			}
+			else {
+				bindDossierPartNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_EFORM_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_REMOVED_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				if (bindDossierPartNo) {
+					qPos.add(dossierPartNo);
+				}
+
+				qPos.add(eForm);
+
+				qPos.add(removed);
+
+				if (!pagination) {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByGID_DID_TEMP_PART_EFORM_First(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByGID_DID_TEMP_PART_EFORM_First(groupId,
+				dossierId, dossierTemplateNo, dossierPartNo, eForm, removed,
+				orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", dossierTemplateNo=");
+		msg.append(dossierTemplateNo);
+
+		msg.append(", dossierPartNo=");
+		msg.append(dossierPartNo);
+
+		msg.append(", eForm=");
+		msg.append(eForm);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByGID_DID_TEMP_PART_EFORM_First(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		List<DossierFile> list = findByGID_DID_TEMP_PART_EFORM(groupId,
+				dossierId, dossierTemplateNo, dossierPartNo, eForm, removed, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByGID_DID_TEMP_PART_EFORM_Last(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByGID_DID_TEMP_PART_EFORM_Last(groupId,
+				dossierId, dossierTemplateNo, dossierPartNo, eForm, removed,
+				orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", dossierTemplateNo=");
+		msg.append(dossierTemplateNo);
+
+		msg.append(", dossierPartNo=");
+		msg.append(dossierPartNo);
+
+		msg.append(", eForm=");
+		msg.append(eForm);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByGID_DID_TEMP_PART_EFORM_Last(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		int count = countByGID_DID_TEMP_PART_EFORM(groupId, dossierId,
+				dossierTemplateNo, dossierPartNo, eForm, removed);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DossierFile> list = findByGID_DID_TEMP_PART_EFORM(groupId,
+				dossierId, dossierTemplateNo, dossierPartNo, eForm, removed,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossier files before and after the current dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param dossierFileId the primary key of the current dossier file
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier file
+	 * @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	 */
+	@Override
+	public DossierFile[] findByGID_DID_TEMP_PART_EFORM_PrevAndNext(
+		long dossierFileId, long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = findByPrimaryKey(dossierFileId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DossierFile[] array = new DossierFileImpl[3];
+
+			array[0] = getByGID_DID_TEMP_PART_EFORM_PrevAndNext(session,
+					dossierFile, groupId, dossierId, dossierTemplateNo,
+					dossierPartNo, eForm, removed, orderByComparator, true);
+
+			array[1] = dossierFile;
+
+			array[2] = getByGID_DID_TEMP_PART_EFORM_PrevAndNext(session,
+					dossierFile, groupId, dossierId, dossierTemplateNo,
+					dossierPartNo, eForm, removed, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DossierFile getByGID_DID_TEMP_PART_EFORM_PrevAndNext(
+		Session session, DossierFile dossierFile, long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(9 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(8);
+		}
+
+		query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+		query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERID_2);
+
+		boolean bindDossierTemplateNo = false;
+
+		if (dossierTemplateNo == null) {
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_1);
+		}
+		else if (dossierTemplateNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_3);
+		}
+		else {
+			bindDossierTemplateNo = true;
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_2);
+		}
+
+		boolean bindDossierPartNo = false;
+
+		if (dossierPartNo == null) {
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_1);
+		}
+		else if (dossierPartNo.equals("")) {
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_3);
+		}
+		else {
+			bindDossierPartNo = true;
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_2);
+		}
+
+		query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_EFORM_2);
+
+		query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_REMOVED_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(dossierId);
+
+		if (bindDossierTemplateNo) {
+			qPos.add(dossierTemplateNo);
+		}
+
+		if (bindDossierPartNo) {
+			qPos.add(dossierPartNo);
+		}
+
+		qPos.add(eForm);
+
+		qPos.add(removed);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossierFile);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DossierFile> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 */
+	@Override
+	public void removeByGID_DID_TEMP_PART_EFORM(long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed) {
+		for (DossierFile dossierFile : findByGID_DID_TEMP_PART_EFORM(groupId,
+				dossierId, dossierTemplateNo, dossierPartNo, eForm, removed,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossierFile);
+		}
+	}
+
+	/**
+	 * Returns the number of dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param dossierTemplateNo the dossier template no
+	 * @param dossierPartNo the dossier part no
+	 * @param eForm the e form
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByGID_DID_TEMP_PART_EFORM(long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_DID_TEMP_PART_EFORM;
+
+		Object[] finderArgs = new Object[] {
+				groupId, dossierId, dossierTemplateNo, dossierPartNo, eForm,
+				removed
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERID_2);
+
+			boolean bindDossierTemplateNo = false;
+
+			if (dossierTemplateNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_1);
+			}
+			else if (dossierTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_3);
+			}
+			else {
+				bindDossierTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_2);
+			}
+
+			boolean bindDossierPartNo = false;
+
+			if (dossierPartNo == null) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_1);
+			}
+			else if (dossierPartNo.equals("")) {
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_3);
+			}
+			else {
+				bindDossierPartNo = true;
+
+				query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_2);
+			}
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_EFORM_2);
+
+			query.append(_FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_REMOVED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				if (bindDossierTemplateNo) {
+					qPos.add(dossierTemplateNo);
+				}
+
+				if (bindDossierPartNo) {
+					qPos.add(dossierPartNo);
+				}
+
+				qPos.add(eForm);
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_GROUPID_2 =
+		"dossierFile.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERID_2 =
+		"dossierFile.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_1 =
+		"dossierFile.dossierTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_2 =
+		"dossierFile.dossierTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERTEMPLATENO_3 =
+		"(dossierFile.dossierTemplateNo IS NULL OR dossierFile.dossierTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_1 =
+		"dossierFile.dossierPartNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_2 =
+		"dossierFile.dossierPartNo = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_DOSSIERPARTNO_3 =
+		"(dossierFile.dossierPartNo IS NULL OR dossierFile.dossierPartNo = '') AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_EFORM_2 = "dossierFile.eForm = ? AND ";
+	private static final String _FINDER_COLUMN_GID_DID_TEMP_PART_EFORM_REMOVED_2 =
+		"dossierFile.removed = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS =
 		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
 			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
@@ -16646,6 +17471,20 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 				args);
 
 			args = new Object[] {
+					dossierFileModelImpl.getGroupId(),
+					dossierFileModelImpl.getDossierId(),
+					dossierFileModelImpl.getDossierTemplateNo(),
+					dossierFileModelImpl.getDossierPartNo(),
+					dossierFileModelImpl.isEForm(),
+					dossierFileModelImpl.isRemoved()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_DID_TEMP_PART_EFORM,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM,
+				args);
+
+			args = new Object[] {
 					dossierFileModelImpl.getDossierId(),
 					dossierFileModelImpl.getFileTemplateNo(),
 					dossierFileModelImpl.getDossierPartType(),
@@ -17011,6 +17850,37 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID_R_O,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_DID_R_O,
+					args);
+			}
+
+			if ((dossierFileModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierFileModelImpl.getOriginalGroupId(),
+						dossierFileModelImpl.getOriginalDossierId(),
+						dossierFileModelImpl.getOriginalDossierTemplateNo(),
+						dossierFileModelImpl.getOriginalDossierPartNo(),
+						dossierFileModelImpl.getOriginalEForm(),
+						dossierFileModelImpl.getOriginalRemoved()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_DID_TEMP_PART_EFORM,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM,
+					args);
+
+				args = new Object[] {
+						dossierFileModelImpl.getGroupId(),
+						dossierFileModelImpl.getDossierId(),
+						dossierFileModelImpl.getDossierTemplateNo(),
+						dossierFileModelImpl.getDossierPartNo(),
+						dossierFileModelImpl.isEForm(),
+						dossierFileModelImpl.isRemoved()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_DID_TEMP_PART_EFORM,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_DID_TEMP_PART_EFORM,
 					args);
 			}
 

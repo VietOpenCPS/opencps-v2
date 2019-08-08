@@ -152,9 +152,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	public static final long DELIVERABLEID_COLUMN_BITMASK = 8L;
 	public static final long DELIVERABLESTATE_COLUMN_BITMASK = 16L;
 	public static final long DELIVERABLETYPE_COLUMN_BITMASK = 32L;
-	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 64L;
-	public static final long GROUPID_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 64L;
+	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 128L;
+	public static final long GROUPID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Deliverable"));
 
@@ -851,7 +852,19 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 	@Override
 	public void setDossierId(long dossierId) {
+		_columnBitmask |= DOSSIERID_COLUMN_BITMASK;
+
+		if (!_setOriginalDossierId) {
+			_setOriginalDossierId = true;
+
+			_originalDossierId = _dossierId;
+		}
+
 		_dossierId = dossierId;
+	}
+
+	public long getOriginalDossierId() {
+		return _originalDossierId;
 	}
 
 	@Override
@@ -1018,6 +1031,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		deliverableModelImpl._originalDeliverableState = deliverableModelImpl._deliverableState;
 
 		deliverableModelImpl._setOriginalDeliverableState = false;
+
+		deliverableModelImpl._originalDossierId = deliverableModelImpl._dossierId;
+
+		deliverableModelImpl._setOriginalDossierId = false;
 
 		deliverableModelImpl._columnBitmask = 0;
 	}
@@ -1434,6 +1451,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	private boolean _setOriginalDeliverableState;
 	private long _fileEntryId;
 	private long _dossierId;
+	private long _originalDossierId;
+	private boolean _setOriginalDossierId;
 	private int _docSync;
 	private long _columnBitmask;
 	private Deliverable _escapedModel;

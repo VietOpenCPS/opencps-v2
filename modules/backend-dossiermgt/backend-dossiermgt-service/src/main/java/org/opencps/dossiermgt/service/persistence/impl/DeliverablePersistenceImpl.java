@@ -3443,6 +3443,235 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLECODE_3 = "(deliverable.deliverableCode IS NULL OR deliverable.deliverableCode = '') AND ";
 	private static final String _FINDER_COLUMN_FB_DCODE_STATE_DELIVERABLESTATE_2 =
 		"deliverable.deliverableState = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_DID = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableModelImpl.FINDER_CACHE_ENABLED, DeliverableImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_DID",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			DeliverableModelImpl.GROUPID_COLUMN_BITMASK |
+			DeliverableModelImpl.DOSSIERID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_DID = new FinderPath(DeliverableModelImpl.ENTITY_CACHE_ENABLED,
+			DeliverableModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_DID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and dossierId = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the matching deliverable
+	 * @throws NoSuchDeliverableException if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable findByF_GID_DID(long groupId, long dossierId)
+		throws NoSuchDeliverableException {
+		Deliverable deliverable = fetchByF_GID_DID(groupId, dossierId);
+
+		if (deliverable == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierId=");
+			msg.append(dossierId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDeliverableException(msg.toString());
+		}
+
+		return deliverable;
+	}
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable fetchByF_GID_DID(long groupId, long dossierId) {
+		return fetchByF_GID_DID(groupId, dossierId, true);
+	}
+
+	/**
+	 * Returns the deliverable where groupId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	 */
+	@Override
+	public Deliverable fetchByF_GID_DID(long groupId, long dossierId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, dossierId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_DID,
+					finderArgs, this);
+		}
+
+		if (result instanceof Deliverable) {
+			Deliverable deliverable = (Deliverable)result;
+
+			if ((groupId != deliverable.getGroupId()) ||
+					(dossierId != deliverable.getDossierId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DELIVERABLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				List<Deliverable> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DeliverablePersistenceImpl.fetchByF_GID_DID(long, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Deliverable deliverable = list.get(0);
+
+					result = deliverable;
+
+					cacheResult(deliverable);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Deliverable)result;
+		}
+	}
+
+	/**
+	 * Removes the deliverable where groupId = &#63; and dossierId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the deliverable that was removed
+	 */
+	@Override
+	public Deliverable removeByF_GID_DID(long groupId, long dossierId)
+		throws NoSuchDeliverableException {
+		Deliverable deliverable = findByF_GID_DID(groupId, dossierId);
+
+		return remove(deliverable);
+	}
+
+	/**
+	 * Returns the number of deliverables where groupId = &#63; and dossierId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierId the dossier ID
+	 * @return the number of matching deliverables
+	 */
+	@Override
+	public int countByF_GID_DID(long groupId, long dossierId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_DID;
+
+		Object[] finderArgs = new Object[] { groupId, dossierId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DELIVERABLE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_GID_DID_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(dossierId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_DID_GROUPID_2 = "deliverable.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_DID_DOSSIERID_2 = "deliverable.dossierId = ?";
 
 	public DeliverablePersistenceImpl() {
 		setModelClass(Deliverable.class);
@@ -3501,6 +3730,10 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 				deliverable.getDeliverableCode(),
 				deliverable.getDeliverableState()
 			}, deliverable);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID,
+			new Object[] { deliverable.getGroupId(), deliverable.getDossierId() },
+			deliverable);
 
 		deliverable.resetOriginalValues();
 	}
@@ -3626,6 +3859,16 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_DCODE_STATE, args,
 			deliverableModelImpl, false);
+
+		args = new Object[] {
+				deliverableModelImpl.getGroupId(),
+				deliverableModelImpl.getDossierId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_DID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_DID, args,
+			deliverableModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -3748,6 +3991,27 @@ public class DeliverablePersistenceImpl extends BasePersistenceImpl<Deliverable>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_DCODE_STATE, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_DCODE_STATE, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					deliverableModelImpl.getGroupId(),
+					deliverableModelImpl.getDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID, args);
+		}
+
+		if ((deliverableModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_DID.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					deliverableModelImpl.getOriginalGroupId(),
+					deliverableModelImpl.getOriginalDossierId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_DID, args);
 		}
 	}
 

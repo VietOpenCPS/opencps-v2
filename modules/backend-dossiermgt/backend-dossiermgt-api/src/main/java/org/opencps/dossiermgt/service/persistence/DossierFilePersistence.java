@@ -3424,6 +3424,214 @@ public interface DossierFilePersistence extends BasePersistence<DossierFile> {
 		String dossierPartNo, boolean eForm, boolean removed);
 
 	/**
+	* Returns all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the matching dossier files
+	*/
+	public java.util.List<DossierFile> findByGID_DID_TEMP_PART_EFORM(
+		long groupId, long dossierId, String dossierTemplateNo,
+		String dossierPartNo, boolean eForm, boolean removed);
+
+	/**
+	* Returns a range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @return the range of matching dossier files
+	*/
+	public java.util.List<DossierFile> findByGID_DID_TEMP_PART_EFORM(
+		long groupId, long dossierId, String dossierTemplateNo,
+		String dossierPartNo, boolean eForm, boolean removed, int start, int end);
+
+	/**
+	* Returns an ordered range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier files
+	*/
+	public java.util.List<DossierFile> findByGID_DID_TEMP_PART_EFORM(
+		long groupId, long dossierId, String dossierTemplateNo,
+		String dossierPartNo, boolean eForm, boolean removed, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier files
+	*/
+	public java.util.List<DossierFile> findByGID_DID_TEMP_PART_EFORM(
+		long groupId, long dossierId, String dossierTemplateNo,
+		String dossierPartNo, boolean eForm, boolean removed, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public DossierFile findByGID_DID_TEMP_PART_EFORM_First(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException;
+
+	/**
+	* Returns the first dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public DossierFile fetchByGID_DID_TEMP_PART_EFORM_First(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator);
+
+	/**
+	* Returns the last dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public DossierFile findByGID_DID_TEMP_PART_EFORM_Last(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException;
+
+	/**
+	* Returns the last dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public DossierFile fetchByGID_DID_TEMP_PART_EFORM_Last(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator);
+
+	/**
+	* Returns the dossier files before and after the current dossier file in the ordered set where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param dossierFileId the primary key of the current dossier file
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier file
+	* @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	*/
+	public DossierFile[] findByGID_DID_TEMP_PART_EFORM_PrevAndNext(
+		long dossierFileId, long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException;
+
+	/**
+	* Removes all the dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	*/
+	public void removeByGID_DID_TEMP_PART_EFORM(long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed);
+
+	/**
+	* Returns the number of dossier files where groupId = &#63; and dossierId = &#63; and dossierTemplateNo = &#63; and dossierPartNo = &#63; and eForm = &#63; and removed = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param dossierTemplateNo the dossier template no
+	* @param dossierPartNo the dossier part no
+	* @param eForm the e form
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public int countByGID_DID_TEMP_PART_EFORM(long groupId, long dossierId,
+		String dossierTemplateNo, String dossierPartNo, boolean eForm,
+		boolean removed);
+
+	/**
 	* Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
 	*
 	* @param dossierId the dossier ID

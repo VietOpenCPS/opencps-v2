@@ -5221,6 +5221,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 
 			long originDossierId = dossier.getOriginDossierId();
+			DossierPart dossierPart = null;
 			if (originDossierId != 0) {
 				//HSLT
 				Dossier hsltDossier = dossierLocalService.fetchDossier(dossier.getDossierId());
@@ -5236,6 +5237,8 @@ public class CPSDossierBusinessLocalServiceImpl
 						for (DossierPart dp : lstParts) {
 							if (dp.getPartNo().equals(dossierPartNo) && dp.getFileTemplateNo().equals(fileTemplateNo)) {
 								dossierTemplateNo = dp.getTemplateNo();
+								dossierPart = dp;
+								break;
 							}
 						}
 					}
@@ -5247,6 +5250,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (dp.getPartNo().equals(dossierPartNo)) {
 						fileTemplateNo = dp.getFileTemplateNo();
 						dossierTemplateNo = dossier.getDossierTemplateNo();
+						dossierPart = dp;
+						break;
 					}
 				}
 			}
@@ -5257,24 +5262,21 @@ public class CPSDossierBusinessLocalServiceImpl
 				DossierFile oldDossierFile = null;
 				if (Validator.isNotNull(referenceUid)) {
 					oldDossierFile = dossierFileLocalService.getByDossierAndRef(dossier.getDossierId(), referenceUid);
+				} else if (dossierPart != null && !dossierPart.getMultiple()) {
+					oldDossierFile = dossierFileLocalService.getByGID_DID_TEMP_PART_EFORM(groupId, dossier.getDossierId(),
+							dossierTemplateNo, dossierPartNo, false, false);
 				}
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
 				
 						if (dataHandler != null && dataHandler.getInputStream() != null) {
-							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
-									dossier.getDossierId(), 
-									referenceUid, 
-									displayName, 
-									StringPool.BLANK,
-									dataHandler.getInputStream(), serviceContext);
+						dossierFile = dossierFileLocalService.updateDossierFile(groupId, dossier.getDossierId(),
+								oldDossierFile.getReferenceUid(), displayName, dataHandler.getName(), 0,
+								dataHandler.getInputStream(), fileType, isSync, serviceContext);
 						} else {
-							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
-									dossier.getDossierId(), 
-									referenceUid, 
-									displayName, 
-									StringPool.BLANK,
-									null, serviceContext);
+						dossierFile = dossierFileLocalService.updateDossierFile(groupId, dossier.getDossierId(),
+								oldDossierFile.getReferenceUid(), displayName, displayName, 0, null, fileType, isSync,
+								serviceContext);
 						}
 						
 						_log.debug("__End add file at:" + new Date());
@@ -5288,6 +5290,9 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						if(Validator.isNotNull(eForm)) {
 							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
+						if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
+							dossierFile.setFormData(StringPool.BLANK);
 						}
 						_log.debug("__Start update dossier file at:" + new Date());
 			
@@ -5325,6 +5330,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					if(Validator.isNotNull(eForm)) {
 						dossierFile.setEForm(Boolean.parseBoolean(eForm));
 					}
+					if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
+						dossierFile.setFormData(StringPool.BLANK);
+					}
 					_log.debug("__Start update dossier file at:" + new Date());
 		
 					dossierFileLocalService.updateDossierFile(dossierFile);
@@ -5340,26 +5348,26 @@ public class CPSDossierBusinessLocalServiceImpl
 				DossierFile oldDossierFile = null;
 				if (Validator.isNotNull(referenceUid)) {
 					oldDossierFile = DossierFileLocalServiceUtil.getByDossierAndRef(dossier.getDossierId(), referenceUid);
+				}  else if (dossierPart != null && !dossierPart.getMultiple()) {
+					oldDossierFile = dossierFileLocalService.getByGID_DID_TEMP_PART_EFORM(groupId, dossier.getDossierId(),
+							dossierTemplateNo, dossierPartNo, false, false);
+					_log.info("dossierPart.getMultiple: "+dossierPart.getMultiple());
 				}
+				_log.info("oldDossierFile: "+oldDossierFile);
+
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
 						_log.debug("__Start add file at:" + new Date());
 						DossierFile dossierFile =  null;
 						
 						if (dataHandler != null && dataHandler.getInputStream() != null) {
-							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
-									dossier.getDossierId(), 
-									referenceUid, 
-									displayName, 
-									StringPool.BLANK,
-									dataHandler.getInputStream(), serviceContext);
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, dossier.getDossierId(),
+									oldDossierFile.getReferenceUid(), displayName, dataHandler.getName(), 0,
+									dataHandler.getInputStream(), fileType, isSync, serviceContext);
 						} else {
-							dossierFile = dossierFileLocalService.updateDossierFile(groupId, 
-									dossier.getDossierId(), 
-									referenceUid, 
-									displayName, 
-									StringPool.BLANK,
-									null, serviceContext);
+							dossierFile = dossierFileLocalService.updateDossierFile(groupId, dossier.getDossierId(),
+									oldDossierFile.getReferenceUid(), displayName, displayName, 0, null, fileType, isSync,
+									serviceContext);
 						}
 						
 						_log.debug("__End add file at:" + new Date());
@@ -5372,6 +5380,9 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						if(Validator.isNotNull(eForm)) {
 							dossierFile.setEForm(Boolean.parseBoolean(eForm));
+						}
+						if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
+							dossierFile.setFormData(StringPool.BLANK);
 						}
 						_log.debug("__Start update dossier file at:" + new Date());
 
@@ -5410,6 +5421,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					if(Validator.isNotNull(eForm)) {
 						dossierFile.setEForm(Boolean.parseBoolean(eForm));
+					}
+					if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
+						dossierFile.setFormData(StringPool.BLANK);
 					}
 					_log.debug("__Start update dossier file at:" + new Date());
 		
