@@ -81,6 +81,22 @@ public class DeliverableLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.dossiermgt.model.Deliverable addDeliverableSign(
+		long groupId, String deliverableType, String deliverableName,
+		String deliverableCode, String govAgencyCode, String govAgencyName,
+		String applicationIdNo, String applicationName, String subject,
+		String issueDate, String expireDate, String revalidate,
+		String deliverableState, long dossierId, long fileEntryId,
+		long formScriptFileId, long formReportFileId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .addDeliverableSign(groupId, deliverableType,
+			deliverableName, deliverableCode, govAgencyCode, govAgencyName,
+			applicationIdNo, applicationName, subject, issueDate, expireDate,
+			revalidate, deliverableState, dossierId, fileEntryId,
+			formScriptFileId, formReportFileId, serviceContext);
+	}
+
 	public static org.opencps.dossiermgt.model.Deliverable adminProcessData(
 		com.liferay.portal.kernel.json.JSONObject objectData) {
 		return getService().adminProcessData(objectData);
@@ -219,6 +235,11 @@ public class DeliverableLocalServiceUtil {
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
+	}
+
+	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
+		long groupId, long dossierId) {
+		return getService().fetchByGID_DID(groupId, dossierId);
 	}
 
 	public static org.opencps.dossiermgt.model.Deliverable fetchDeliverable(

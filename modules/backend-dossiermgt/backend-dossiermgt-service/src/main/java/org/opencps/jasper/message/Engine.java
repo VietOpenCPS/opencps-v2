@@ -1,18 +1,7 @@
 package org.opencps.jasper.message;
 
-import java.io.File;
-import java.util.Date;
-
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
-
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -24,6 +13,26 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.io.File;
+import java.util.Date;
+
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.RegistrationForm;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
 public class Engine implements MessageListener {
 
@@ -152,7 +161,47 @@ public class Engine implements MessageListener {
     			deliverable.setFileEntryId(fileEntryId);
     
     			DeliverableLocalServiceUtil.updateDeliverable(deliverable);
-    
+    			//Process dossierFile
+    			DossierFile dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverable.getDeliverableCode());
+    			if (dossierFile != null) {
+					DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
+							dossierFile.getGroupId(), dossierFile.getDossierId(), dossierFile.getDossierTemplateNo(),
+							dossierFile.getDossierPartNo(), false, false);
+					if (dossierFileAttach != null) {
+						String formData = dossierFileAttach.getFormData();
+						if (Validator.isNotNull(formData)) {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+							String deliverableCode = jsonData.getString(DeliverableTerm.DELIVERABLE_CODE);
+							if (Validator.isNotNull(deliverableCode)) {
+								dossierFileAttach.setFileEntryId(fileEntryId);
+								dossierFileAttach.setDisplayName(fileEntry.getFileName());
+								//
+								DossierFileLocalServiceUtil.updateDossierFile(dossierFileAttach);
+							}
+						}
+					} else {
+//						String deliverableCode = StringPool.BLANK;
+//						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+//								dossierFile.getGroupId(), dossierFile.getDossierTemplateNo(),
+//								dossierFile.getDossierPartNo());
+//						if (dossierPart != null && Validator.isNotNull(dossierPart.getDeliverableType())) {
+//							DeliverableType deliverableType = DeliverableTypeLocalServiceUtil
+//									.getByCode(dossierFile.getGroupId(), dossierPart.getDeliverableType());
+//							if (Validator.isNotNull(deliverableType)) {
+//								deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
+//										dossierFile.getGroupId(), serviceContext.getCompanyId(),
+//										deliverableType.getDeliverableTypeId());
+//							}
+//						}
+
+						DossierFileLocalServiceUtil.addDossierByDeliverable(dossierFile.getGroupId(),
+								dossierFile.getCompanyId(), dossierFile.getUserId(), dossierFile.getUserName(),
+								dossierFile.getDossierId(), StringPool.BLANK, dossierFile.getDossierTemplateNo(),
+								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
+								dossierFile.getFileTemplateNo(), fileEntry.getFileName(), dossierFile.getFormData(),
+								fileEntryId, dossierFile.getOriginal(), false, true, false, StringPool.BLANK);
+					}
+				}
 			}
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
