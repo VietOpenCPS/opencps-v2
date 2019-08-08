@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -2459,7 +2460,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long groupDossierId = GetterUtil.getLong(params.get(DossierTerm.GROUP_DOSSIER_ID));
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
 		String assignedUserId = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
-
+		
+		//Delegate
+		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
+		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
+		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2489,7 +2495,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2569,6 +2575,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String applicantFollowIdNo = GetterUtil.getString(params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
 		String assignedUserId = GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
 
+		//Delegate
+		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
+		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
+		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -2595,7 +2606,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2698,7 +2709,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			String assignedUserId, BooleanQuery booleanQuery) throws ParseException {
+			String assignedUserId, Integer delegateType, String documentNo, String documentDate, BooleanQuery booleanQuery) throws ParseException {
 
 
 		if (Validator.isNotNull(status)) {
@@ -3628,6 +3639,37 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		//Delegate
+		if (delegateType != null && Validator.isNotNull(delegateType)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(delegateType));
+			query.addField(DossierTerm.DELEGATE_TYPE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(documentNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(documentNo));
+			query.addField(DossierTerm.DOCUMENT_NO);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(documentDate)) {
+			Date filterDocumentDate = APIDateTimeUtils.convertStringToDate(documentDate, APIDateTimeUtils._NORMAL_DATE);
+			if (filterDocumentDate != null) {
+				Calendar c = Calendar.getInstance();
+				c.setTime(filterDocumentDate);				
+				int yearDocument = c.get(Calendar.YEAR);
+				int monthDocument = c.get(Calendar.MONTH) + 1;
+				int dayDocument = c.get(Calendar.DAY_OF_MONTH);
+				String yearDocumentStr = String.valueOf(yearDocument);
+				String monthDocumentStr = (monthDocument < 10) ? "0" + monthDocument : monthDocument + "";
+				String dayDocumentStr = (dayDocument < 10) ? "0" + dayDocument : dayDocument + "";
+				String fromDocumentDate = yearDocumentStr + monthDocumentStr + dayDocumentStr + ConstantsTerm.HOUR_START;
+				String toDocumentDate = yearDocumentStr + monthDocumentStr + dayDocumentStr + ConstantsTerm.HOUR_END;
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DOCUMENT_DATE,
+						fromDocumentDate, toDocumentDate, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		
 		return booleanQuery;
 	}
 
@@ -4796,7 +4838,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		desDossier.setDueDate(srcDossier.getDueDate());
 		// set receivedDate
 		desDossier.setReceiveDate(srcDossier.getReceiveDate());
-
+		desDossier.setDelegateType(srcDossier.getDelegateType());
+		desDossier.setDocumentNo(srcDossier.getDocumentNo());
+		desDossier.setDocumentDate(srcDossier.getDocumentDate());
+		
 		return dossierPersistence.update(desDossier);
 	}
 

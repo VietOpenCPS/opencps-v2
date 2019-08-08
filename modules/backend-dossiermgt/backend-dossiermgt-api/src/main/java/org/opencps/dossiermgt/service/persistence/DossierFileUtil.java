@@ -4269,6 +4269,699 @@ public class DossierFileUtil {
 	}
 
 	/**
+	* Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @return the matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartType, removed);
+	}
+
+	/**
+	* Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @return the range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartType, removed, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end, OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartType, removed, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end, OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartType, removed, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public static DossierFile findByDID_FTNO_DPTS_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_First(dossierId, fileTemplateNo,
+			dossierPartType, removed, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByDID_FTNO_DPTS_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FTNO_DPTS_First(dossierId, fileTemplateNo,
+			dossierPartType, removed, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public static DossierFile findByDID_FTNO_DPTS_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_Last(dossierId, fileTemplateNo,
+			dossierPartType, removed, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByDID_FTNO_DPTS_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FTNO_DPTS_Last(dossierId, fileTemplateNo,
+			dossierPartType, removed, orderByComparator);
+	}
+
+	/**
+	* Returns the dossier files before and after the current dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierFileId the primary key of the current dossier file
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier file
+	* @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	*/
+	public static DossierFile[] findByDID_FTNO_DPTS_PrevAndNext(
+		long dossierFileId, long dossierId, String fileTemplateNo,
+		int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_PrevAndNext(dossierFileId, dossierId,
+			fileTemplateNo, dossierPartType, removed, orderByComparator);
+	}
+
+	/**
+	* Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param removed the removed
+	* @return the matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartTypes, removed);
+	}
+
+	/**
+	* Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @return the range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartTypes, removed, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end, OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartTypes, removed, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end, OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartTypes, removed, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	*/
+	public static void removeByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed) {
+		getPersistence()
+			.removeByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartType,
+			removed);
+	}
+
+	/**
+	* Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public static int countByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed) {
+		return getPersistence()
+				   .countByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartType, removed);
+	}
+
+	/**
+	* Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public static int countByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed) {
+		return getPersistence()
+				   .countByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+			dossierPartTypes, removed);
+	}
+
+	/**
+	* Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @return the matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed);
+	}
+
+	/**
+	* Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @return the range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed, int start, int end) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public static DossierFile findByDID_FTNO_DPTS_NOT_NULL_FID_First(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID_First(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByDID_FTNO_DPTS_NOT_NULL_FID_First(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FTNO_DPTS_NOT_NULL_FID_First(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file
+	* @throws NoSuchDossierFileException if a matching dossier file could not be found
+	*/
+	public static DossierFile findByDID_FTNO_DPTS_NOT_NULL_FID_Last(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID_Last(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	*/
+	public static DossierFile fetchByDID_FTNO_DPTS_NOT_NULL_FID_Last(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByDID_FTNO_DPTS_NOT_NULL_FID_Last(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the dossier files before and after the current dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierFileId the primary key of the current dossier file
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier file
+	* @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	*/
+	public static DossierFile[] findByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(
+		long dossierFileId, long dossierId, String fileTemplateNo,
+		int dossierPartType, long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(dossierFileId,
+			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @return the matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartTypes,
+		long fileEntryId, boolean removed) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed);
+	}
+
+	/**
+	* Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @return the range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartTypes,
+		long fileEntryId, boolean removed, int start, int end) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartTypes,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @param start the lower bound of the range of dossier files
+	* @param end the upper bound of the range of dossier files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier files
+	*/
+	public static List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartTypes,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63; from the database.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	*/
+	public static void removeByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed) {
+		getPersistence()
+			.removeByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed);
+	}
+
+	/**
+	* Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartType the dossier part type
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public static int countByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed) {
+		return getPersistence()
+				   .countByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed);
+	}
+
+	/**
+	* Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	*
+	* @param dossierId the dossier ID
+	* @param fileTemplateNo the file template no
+	* @param dossierPartTypes the dossier part types
+	* @param fileEntryId the file entry ID
+	* @param removed the removed
+	* @return the number of matching dossier files
+	*/
+	public static int countByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed) {
+		return getPersistence()
+				   .countByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+			fileTemplateNo, dossierPartTypes, fileEntryId, removed);
+	}
+
+	/**
 	* Caches the dossier file in the entity cache if it is enabled.
 	*
 	* @param dossierFile the dossier file

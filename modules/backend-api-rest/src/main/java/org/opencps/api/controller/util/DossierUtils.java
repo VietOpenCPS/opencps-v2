@@ -449,7 +449,13 @@ public class DossierUtils {
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
-			
+			model.setDelegateType(GetterUtil.getInteger(doc.get(DossierTerm.DELEGATE_TYPE)));
+			model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
+			if (Validator.isNotNull(doc.get(DossierTerm.DOCUMENT_DATE))) {
+				Date documentDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.DOCUMENT_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//				_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
+				model.setDocumentDate(APIDateTimeUtils.convertDateToString(documentDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			}
 			ouputs.add(model);
 		}
 
@@ -922,6 +928,11 @@ public class DossierUtils {
 		model.setOriginDossierNo(input.getOriginDossierNo());
 		model.setMetaData(input.getMetaData());
 		model.setGroupDossierId(input.getGroupDossierId());
+		model.setDelegateType(input.getDelegateType());
+		model.setDocumentNo(input.getDocumentNo());
+		if (Validator.isNotNull(input.getDocumentDate())) {
+			model.setDocumentDate(APIDateTimeUtils.convertDateToString(input.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+		}
 
 		return model;
 	}
@@ -1312,7 +1323,10 @@ public class DossierUtils {
 		model.setOriginDossierNo(input.getOriginDossierNo());
 		model.setServerNo(input.getServerNo());
 		model.setMetaData(input.getMetaData());
-
+		model.setDelegateType(input.getDelegateType());
+		model.setDocumentNo(input.getDocumentNo());
+		model.setDocumentDate(input.getDocumentDate());
+		
 		return model;
 	}
 

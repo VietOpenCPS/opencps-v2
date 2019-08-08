@@ -116,7 +116,10 @@ import javax.xml.bind.annotation.XmlType;
     "day",
     "paymentStatus",
     "groupDossierId",
-    "permission"
+    "permission",
+    "delegateType",
+    "documentNo",
+    "documentDate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -240,6 +243,36 @@ public class DossierSearchModel {
     protected Long groupDossierId;
     @QueryParam(value = "permission")
     protected String permission;
+    @QueryParam(value = "delegateType")
+    protected String delegateType;
+    @QueryParam(value = "documentNo")
+    protected String documentNo;
+    public String getDelegateType() {
+		return delegateType;
+	}
+
+	public void setDelegateType(String delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public String getDocumentDate() {
+		return documentDate;
+	}
+
+	public void setDocumentDate(String documentDate) {
+		this.documentDate = documentDate;
+	}
+
+	@QueryParam(value = "documentDate")
+    protected String documentDate;
 
     public Integer getAssigned() {
 		return assigned;

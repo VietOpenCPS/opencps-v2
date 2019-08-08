@@ -833,11 +833,11 @@ public class DossierActionsImpl implements DossierActions {
 										dossierId, dossierPart.getPartNo());
 								if (dossierMark != null) {
 									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
-									createFile.put(DossierPartTerm.FILE_MARK, dossierMark.getFileMark());
+									createFile.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 									createFile.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 								} else {
 									createFile.put(DossierPartTerm.FILE_MARK, 0);
-									createFile.put(DossierPartTerm.FILE_MARK, 0);
+									createFile.put(DossierPartTerm.FILE_CHECK, 0);
 									createFile.put(DossierPartTerm.FILE_COMMENT, StringPool.BLANK);
 								}
 
@@ -855,7 +855,7 @@ public class DossierActionsImpl implements DossierActions {
 								_log.info("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
-											.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2, false,
+											.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, false,
 													QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 													new DossierFileComparator(false, "createDate", Date.class));
 									_log.debug("dossierFilesResult: "+dossierFilesResult.size());
@@ -868,7 +868,7 @@ public class DossierActionsImpl implements DossierActions {
 										createFile = processEFormByCreateFile(dossierPart, groupId, dossierId,
 												sampleData, fileTemplateNo, dossierTempNo, createFile, serviceContext);
 										dossierFilesResult = DossierFileLocalServiceUtil
-												.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId, fileTemplateNo, 2, 0,
+												.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0,
 														false);
 									}
 									_log.debug("dossierFilesResult1: "+dossierFilesResult.size());
@@ -894,7 +894,7 @@ public class DossierActionsImpl implements DossierActions {
 											if (Validator.isNull(deliverables)) {
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
-														.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2,
+														.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 																false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 																new DossierFileComparator(false, "createDate",
 																		Date.class));
@@ -933,8 +933,8 @@ public class DossierActionsImpl implements DossierActions {
 																			.createJSONArray(formDataObj
 																					.getString(deliverables));
 																	dossierFilesResult = DossierFileLocalServiceUtil
-																			.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(
-																					dossierId, fileTemplateNo, 2, 0,
+																			.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+																					dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0,
 																					false);
 
 																	counter = (dossierFilesResult != null
@@ -982,8 +982,8 @@ public class DossierActionsImpl implements DossierActions {
 													}
 												}
 												dossierFilesResult = DossierFileLocalServiceUtil
-														.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId,
-																fileTemplateNo, 2, 0, false);
+														.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+																fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0, false);
 
 												counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 														? dossierFilesResult.size() : 0;
@@ -992,7 +992,7 @@ public class DossierActionsImpl implements DossierActions {
 												createFiles.put(createFile);
 											} else {
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
-														.getDossierFileByDID_FTNO_DPT(dossierId, fileTemplateNo, 2,
+														.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 																false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 																new DossierFileComparator(false, "createDate",
 																		Date.class));
@@ -1025,13 +1025,23 @@ public class DossierActionsImpl implements DossierActions {
 
 														try {
 															dossierFile = DossierFileLocalServiceUtil
-																	.getDossierFileByDID_FTNO_DPT_First(dossierId,
-																			fileTemplateNo, 2, false,
+																	.getDossierFileByDID_FTNO_DPTS_First(dossierId,
+																			fileTemplateNo, DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, false,
 																			new DossierFileComparator(false,
 																					"createDate", Date.class));
 														} catch (Exception e) {
 															_log.debug(e);
 														}
+														try {
+															dossierFile = DossierFileLocalServiceUtil
+																	.getDossierFileByDID_FTNO_DPTS_First(dossierId,
+																			fileTemplateNo, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT, false,
+																			new DossierFileComparator(false,
+																					"createDate", Date.class));
+														} catch (Exception e) {
+															_log.debug(e);
+														}
+
 														if (Validator.isNull(dossierFile)) {
 
 															dossierFile = actions.addDossierFile(groupId, dossierId,
@@ -1140,8 +1150,8 @@ public class DossierActionsImpl implements DossierActions {
 													}
 
 													dossierFilesResult = DossierFileLocalServiceUtil
-															.getDossierFileByDID_FTNO_DPT_NOT_NULL_FID(dossierId,
-																	fileTemplateNo, 2, 0, false);
+															.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+																	fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0, false);
 
 													counter = (dossierFilesResult != null
 															&& !dossierFilesResult.isEmpty())

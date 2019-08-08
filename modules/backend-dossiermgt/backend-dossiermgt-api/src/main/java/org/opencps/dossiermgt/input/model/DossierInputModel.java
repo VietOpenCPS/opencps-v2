@@ -71,7 +71,34 @@ public class DossierInputModel {
 	private String payment;
 	private String serverNo;
 	private String metaData;
+	private Integer delegateType;
+	public Integer getDelegateType() {
+		return delegateType;
+	}
 
+	public void setDelegateType(Integer delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public Long getDocumentDate() {
+		return documentDate;
+	}
+
+	public void setDocumentDate(Long documentDate) {
+		this.documentDate = documentDate;
+	}
+
+	private String documentNo;
+	private Long documentDate;
+	
 	public Integer getViaPostal() {
 		return viaPostal;
 	}

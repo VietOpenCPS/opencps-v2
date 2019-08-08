@@ -384,6 +384,31 @@ public interface DossierFileLocalService extends BaseLocalService,
 		OrderByComparator orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartType, boolean removed);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartType, boolean removed,
+		int start, int end, OrderByComparator orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierFile getDossierFileByDID_FTNO_DPTS_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator orderByComparator) throws NoSuchDossierFileException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getDossierFileByDID_FTNO_First(long dossierId,
 		String fileTemplateNo, boolean removed,
 		OrderByComparator orderByComparator);

@@ -33,5 +33,6 @@ public class DossierPartTerm {
 
 	public static final int DOSSIER_PART_TYPE_INPUT = 1;
 	public static final int DOSSIER_PART_TYPE_OUTPUT = 2;
+	public static final int DOSSIER_PART_TYPE_GROUP_OUTPUT = 7;
 
 }

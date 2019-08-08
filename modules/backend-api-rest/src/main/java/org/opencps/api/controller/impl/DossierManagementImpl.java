@@ -421,6 +421,16 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.REGISTER, query.getRegister());
 			
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
+			//Delegate
+			if (Validator.isNotNull(query.getDelegateType())) {
+				params.put(DossierTerm.DELEGATE_TYPE, query.getDelegateType());
+			}
+			if (Validator.isNotNull(query.getDocumentNo())) {
+				params.put(DossierTerm.DOCUMENT_NO, query.getDocumentNo());
+			}
+			if (Validator.isNotNull(query.getDocumentDate())) {
+				params.put(DossierTerm.DOCUMENT_DATE, query.getDocumentDate());
+			}
 			
 			//Search theo tu tuong moi
 			//params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
@@ -815,6 +825,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 			return Response.status(HttpStatus.SC_OK).entity(result).build();
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

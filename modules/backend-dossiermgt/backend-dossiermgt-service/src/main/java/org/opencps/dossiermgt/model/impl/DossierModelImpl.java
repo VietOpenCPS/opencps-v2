@@ -100,6 +100,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "contactName", Types.VARCHAR },
 			{ "contactTelNo", Types.VARCHAR },
 			{ "contactEmail", Types.VARCHAR },
+			{ "delegateType", Types.INTEGER },
 			{ "delegateName", Types.VARCHAR },
 			{ "delegateIdNo", Types.VARCHAR },
 			{ "delegateTelNo", Types.VARCHAR },
@@ -111,6 +112,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "delegateDistrictName", Types.VARCHAR },
 			{ "delegateWardCode", Types.VARCHAR },
 			{ "delegateWardName", Types.VARCHAR },
+			{ "documentNo", Types.VARCHAR },
+			{ "documentDate", Types.TIMESTAMP },
 			{ "dossierTemplateNo", Types.VARCHAR },
 			{ "dossierTemplateName", Types.VARCHAR },
 			{ "dossierNote", Types.VARCHAR },
@@ -197,6 +200,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("contactName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("contactTelNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("contactEmail", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("delegateType", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("delegateName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("delegateIdNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("delegateTelNo", Types.VARCHAR);
@@ -208,6 +212,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("delegateDistrictName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("delegateWardCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("delegateWardName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("documentNo", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("documentDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("dossierTemplateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dossierTemplateName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dossierNote", Types.VARCHAR);
@@ -260,7 +266,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(75) null,cityName VARCHAR(255) null,districtCode VARCHAR(75) null,districtName VARCHAR(255) null,wardCode VARCHAR(75) null,wardName VARCHAR(255) null,contactName TEXT null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(255) null,postalAddress VARCHAR(255) null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(255) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(255) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(255) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId LONG,metaData TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(75) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(75) null,dossierRegister VARCHAR(75) null,processNo VARCHAR(75) null,serviceCode VARCHAR(75) null,serviceName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(255) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(75) null,cityName VARCHAR(255) null,districtCode VARCHAR(75) null,districtName VARCHAR(255) null,wardCode VARCHAR(75) null,wardName VARCHAR(255) null,contactName TEXT null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,delegateType INTEGER,delegateName VARCHAR(75) null,delegateIdNo VARCHAR(75) null,delegateTelNo VARCHAR(75) null,delegateEmail VARCHAR(75) null,delegateAddress VARCHAR(75) null,delegateCityCode VARCHAR(75) null,delegateCityName VARCHAR(75) null,delegateDistrictCode VARCHAR(75) null,delegateDistrictName VARCHAR(75) null,delegateWardCode VARCHAR(75) null,delegateWardName VARCHAR(75) null,documentNo VARCHAR(75) null,documentDate DATE null,dossierTemplateNo VARCHAR(75) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(75) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(75) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(255) null,postalAddress VARCHAR(255) null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(255) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(255) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(255) null,postalTelNo VARCHAR(75) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(75) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId LONG,metaData TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -369,6 +375,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		attributes.put("contactName", getContactName());
 		attributes.put("contactTelNo", getContactTelNo());
 		attributes.put("contactEmail", getContactEmail());
+		attributes.put("delegateType", getDelegateType());
 		attributes.put("delegateName", getDelegateName());
 		attributes.put("delegateIdNo", getDelegateIdNo());
 		attributes.put("delegateTelNo", getDelegateTelNo());
@@ -380,6 +387,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		attributes.put("delegateDistrictName", getDelegateDistrictName());
 		attributes.put("delegateWardCode", getDelegateWardCode());
 		attributes.put("delegateWardName", getDelegateWardName());
+		attributes.put("documentNo", getDocumentNo());
+		attributes.put("documentDate", getDocumentDate());
 		attributes.put("dossierTemplateNo", getDossierTemplateNo());
 		attributes.put("dossierTemplateName", getDossierTemplateName());
 		attributes.put("dossierNote", getDossierNote());
@@ -631,6 +640,12 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			setContactEmail(contactEmail);
 		}
 
+		Integer delegateType = (Integer)attributes.get("delegateType");
+
+		if (delegateType != null) {
+			setDelegateType(delegateType);
+		}
+
 		String delegateName = (String)attributes.get("delegateName");
 
 		if (delegateName != null) {
@@ -697,6 +712,18 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		if (delegateWardName != null) {
 			setDelegateWardName(delegateWardName);
+		}
+
+		String documentNo = (String)attributes.get("documentNo");
+
+		if (documentNo != null) {
+			setDocumentNo(documentNo);
+		}
+
+		Date documentDate = (Date)attributes.get("documentDate");
+
+		if (documentDate != null) {
+			setDocumentDate(documentDate);
 		}
 
 		String dossierTemplateNo = (String)attributes.get("dossierTemplateNo");
@@ -1591,6 +1618,16 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	}
 
 	@Override
+	public int getDelegateType() {
+		return _delegateType;
+	}
+
+	@Override
+	public void setDelegateType(int delegateType) {
+		_delegateType = delegateType;
+	}
+
+	@Override
 	public String getDelegateName() {
 		if (_delegateName == null) {
 			return "";
@@ -1753,6 +1790,31 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	@Override
 	public void setDelegateWardName(String delegateWardName) {
 		_delegateWardName = delegateWardName;
+	}
+
+	@Override
+	public String getDocumentNo() {
+		if (_documentNo == null) {
+			return "";
+		}
+		else {
+			return _documentNo;
+		}
+	}
+
+	@Override
+	public void setDocumentNo(String documentNo) {
+		_documentNo = documentNo;
+	}
+
+	@Override
+	public Date getDocumentDate() {
+		return _documentDate;
+	}
+
+	@Override
+	public void setDocumentDate(Date documentDate) {
+		_documentDate = documentDate;
 	}
 
 	@Override
@@ -2579,6 +2641,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierImpl.setContactName(getContactName());
 		dossierImpl.setContactTelNo(getContactTelNo());
 		dossierImpl.setContactEmail(getContactEmail());
+		dossierImpl.setDelegateType(getDelegateType());
 		dossierImpl.setDelegateName(getDelegateName());
 		dossierImpl.setDelegateIdNo(getDelegateIdNo());
 		dossierImpl.setDelegateTelNo(getDelegateTelNo());
@@ -2590,6 +2653,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierImpl.setDelegateDistrictName(getDelegateDistrictName());
 		dossierImpl.setDelegateWardCode(getDelegateWardCode());
 		dossierImpl.setDelegateWardName(getDelegateWardName());
+		dossierImpl.setDocumentNo(getDocumentNo());
+		dossierImpl.setDocumentDate(getDocumentDate());
 		dossierImpl.setDossierTemplateNo(getDossierTemplateNo());
 		dossierImpl.setDossierTemplateName(getDossierTemplateName());
 		dossierImpl.setDossierNote(getDossierNote());
@@ -3000,6 +3065,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			dossierCacheModel.contactEmail = null;
 		}
 
+		dossierCacheModel.delegateType = getDelegateType();
+
 		dossierCacheModel.delegateName = getDelegateName();
 
 		String delegateName = dossierCacheModel.delegateName;
@@ -3088,6 +3155,23 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		if ((delegateWardName != null) && (delegateWardName.length() == 0)) {
 			dossierCacheModel.delegateWardName = null;
+		}
+
+		dossierCacheModel.documentNo = getDocumentNo();
+
+		String documentNo = dossierCacheModel.documentNo;
+
+		if ((documentNo != null) && (documentNo.length() == 0)) {
+			dossierCacheModel.documentNo = null;
+		}
+
+		Date documentDate = getDocumentDate();
+
+		if (documentDate != null) {
+			dossierCacheModel.documentDate = documentDate.getTime();
+		}
+		else {
+			dossierCacheModel.documentDate = Long.MIN_VALUE;
 		}
 
 		dossierCacheModel.dossierTemplateNo = getDossierTemplateNo();
@@ -3429,7 +3513,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(187);
+		StringBundler sb = new StringBundler(193);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -3495,6 +3579,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getContactTelNo());
 		sb.append(", contactEmail=");
 		sb.append(getContactEmail());
+		sb.append(", delegateType=");
+		sb.append(getDelegateType());
 		sb.append(", delegateName=");
 		sb.append(getDelegateName());
 		sb.append(", delegateIdNo=");
@@ -3517,6 +3603,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getDelegateWardCode());
 		sb.append(", delegateWardName=");
 		sb.append(getDelegateWardName());
+		sb.append(", documentNo=");
+		sb.append(getDocumentNo());
+		sb.append(", documentDate=");
+		sb.append(getDocumentDate());
 		sb.append(", dossierTemplateNo=");
 		sb.append(getDossierTemplateNo());
 		sb.append(", dossierTemplateName=");
@@ -3624,7 +3714,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(283);
+		StringBundler sb = new StringBundler(292);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Dossier");
@@ -3759,6 +3849,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getContactEmail());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>delegateType</column-name><column-value><![CDATA[");
+		sb.append(getDelegateType());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>delegateName</column-name><column-value><![CDATA[");
 		sb.append(getDelegateName());
 		sb.append("]]></column-value></column>");
@@ -3801,6 +3895,14 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(
 			"<column><column-name>delegateWardName</column-name><column-value><![CDATA[");
 		sb.append(getDelegateWardName());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>documentNo</column-name><column-value><![CDATA[");
+		sb.append(getDocumentNo());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>documentDate</column-name><column-value><![CDATA[");
+		sb.append(getDocumentDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>dossierTemplateNo</column-name><column-value><![CDATA[");
@@ -4061,6 +4163,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _contactName;
 	private String _contactTelNo;
 	private String _contactEmail;
+	private int _delegateType;
 	private String _delegateName;
 	private String _delegateIdNo;
 	private String _delegateTelNo;
@@ -4072,6 +4175,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _delegateDistrictName;
 	private String _delegateWardCode;
 	private String _delegateWardName;
+	private String _documentNo;
+	private Date _documentDate;
 	private String _dossierTemplateNo;
 	private String _originalDossierTemplateNo;
 	private String _dossierTemplateName;

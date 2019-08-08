@@ -200,7 +200,10 @@ import javax.xml.bind.annotation.XmlType;
     "delegateWardName",
     "metaData",
     "groupDossierId",
-    "dossierFinishOverdue"
+    "dossierFinishOverdue",
+    "delegateType",
+    "documentNo",
+    "documentDate"
 })
 public class DossierDataModel {
 
@@ -307,6 +310,33 @@ public class DossierDataModel {
     protected String metaData;
     protected Long groupDossierId;
     protected String dossierFinishOverdue;
+    protected Integer delegateType;
+    protected String documentNo;
+    protected String documentDate;
+
+	public Integer getDelegateType() {
+		return delegateType;
+	}
+
+	public void setDelegateType(Integer delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public String getDocumentDate() {
+		return documentDate;
+	}
+
+	public void setDocumentDate(String documentDate) {
+		this.documentDate = documentDate;
+	}
 
 	public String getDossierFinishOverdue() {
 		return dossierFinishOverdue;
