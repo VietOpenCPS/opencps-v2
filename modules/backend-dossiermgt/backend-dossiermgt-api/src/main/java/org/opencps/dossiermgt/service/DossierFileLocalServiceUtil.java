@@ -42,6 +42,20 @@ public class DossierFileLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.DossierFileLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static org.opencps.dossiermgt.model.DossierFile addDossierByDeliverable(
+		long groupId, long companyId, long userId, String userName,
+		long dossierId, String referenceUid, String dossierTemplateNo,
+		String dossierPartNo, int dossierPartType, String fileTemplateNo,
+		String displayName, String formData, long fileEntryId,
+		Boolean original, Boolean eForm, Boolean isNew, Boolean removed,
+		String deliverableCode) {
+		return getService()
+				   .addDossierByDeliverable(groupId, companyId, userId,
+			userName, dossierId, referenceUid, dossierTemplateNo,
+			dossierPartNo, dossierPartType, fileTemplateNo, displayName,
+			formData, fileEntryId, original, eForm, isNew, removed,
+			deliverableCode);
+	}
 
 	/**
 	* Adds the dossier file to the database. Also notifies the appropriate model listeners.
@@ -423,6 +437,14 @@ public class DossierFileLocalServiceUtil {
 			eform, removed);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile getByGID_DID_TEMP_PART_EFORM(
+		long groupId, long dossierId, String dossierTemplateNo,
+		String dossierPartNo, boolean eForm, boolean removed) {
+		return getService()
+				   .getByGID_DID_TEMP_PART_EFORM(groupId, dossierId,
+			dossierTemplateNo, dossierPartNo, eForm, removed);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierFile getByRefAndGroupId(
 		long groupId, String referenceUid)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -696,6 +718,19 @@ public class DossierFileLocalServiceUtil {
 		return getService()
 				   .updateDossierFile(groupId, dossierId, referenceUid,
 			displayName, sourceFileName, inputStream, serviceContext);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierFile updateDossierFile(
+		long groupId, long dossierId, String referenceUid, String displayName,
+		String sourceFileName, long fileSize, java.io.InputStream inputStream,
+		String fileType, String isSync,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateDossierFile(groupId, dossierId, referenceUid,
+			displayName, sourceFileName, fileSize, inputStream, fileType,
+			isSync, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.DossierFile updateFormData(

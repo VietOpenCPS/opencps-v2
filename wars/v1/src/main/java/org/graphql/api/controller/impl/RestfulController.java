@@ -547,6 +547,13 @@ public class RestfulController {
 								.fetchDeliverable(Long.valueOf(pk));
 
 						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+						//
+						String formData = openCPSDeliverable.getFormData();
+						if (Validator.isNotNull(formData)) {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+							jsonData.put("fileAttach", true);
+							openCPSDeliverable.setFormData(jsonData.toJSONString());
+						}
 
 						DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
 

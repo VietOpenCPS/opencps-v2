@@ -899,6 +899,14 @@
 			<finder-column name="eForm" />
 			<finder-column name="removed" />
 		</finder>
+		<finder return-type="Collection" name="GID_DID_TEMP_PART_EFORM">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="dossierTemplateNo" />
+			<finder-column name="dossierPartNo" />
+			<finder-column name="eForm" />
+			<finder-column name="removed" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
@@ -2028,6 +2036,10 @@
 		<finder return-type="Deliverable" name="FB_DCODE_STATE">
 			<finder-column name="deliverableCode"/>
 			<finder-column name="deliverableState"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_DID">
+			<finder-column name="groupId"/>
+			<finder-column name="dossierId"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->

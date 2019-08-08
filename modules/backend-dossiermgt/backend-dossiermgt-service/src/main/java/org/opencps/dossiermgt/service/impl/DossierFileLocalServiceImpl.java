@@ -991,6 +991,54 @@ public class DossierFileLocalServiceImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile updateDossierFile(long groupId, long dossierId, String referenceUid, String displayName,
+			String sourceFileName, long fileSize, InputStream inputStream, String fileType, String isSync,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+
+		long userId = serviceContext.getUserId();
+		DossierFile dossierFile = dossierFileLocalService.getDossierFileByReferenceUid(dossierId, referenceUid);
+
+		long fileEntryId = 0;
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+					userId, groupId, inputStream, sourceFileName, fileType,
+					fileSize, serviceContext);
+
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+		}
+		_log.debug("fileEntryId: "+fileEntryId);
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(userId);
+
+		// Add audit fields
+		dossierFile.setModifiedDate(now);
+		dossierFile.setUserId(userAction.getUserId());
+		dossierFile.setUserName(userAction.getFullName());
+
+		// Add other fields
+
+		dossierFile.setDossierId(dossierId);
+		dossierFile.setFileEntryId(fileEntryId);
+		if (Validator.isNull(displayName)) {
+			displayName = sourceFileName;
+		}
+
+		dossierFile.setDisplayName(displayName);
+		dossierFile.setOriginal(false);
+		dossierFile.setIsNew(true);
+
+		return dossierFilePersistence.update(dossierFile);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(
 		long groupId, long dossierId, String referenceUid, String formData,
 		ServiceContext serviceContext)
@@ -1688,13 +1736,23 @@ public class DossierFileLocalServiceImpl
 		long groupId, long dossierId, String dossierPartNo, boolean eform,
 		boolean removed) {
 
+		return dossierFilePersistence.fetchByGID_DID_PART_EFORM(
+			groupId, dossierId, dossierPartNo, eform, removed);
+	}
+
+	public DossierFile getByGID_DID_TEMP_PART_EFORM(long groupId, long dossierId, String dossierTemplateNo,
+			String dossierPartNo, boolean eForm, boolean removed) {
+
 		try {
-			return dossierFilePersistence.findByGID_DID_PART_EFORM(
-				groupId, dossierId, dossierPartNo, eform, removed);
-		}
-		catch (NoSuchDossierFileException e) {
+			List<DossierFile> fileList = dossierFilePersistence.findByGID_DID_TEMP_PART_EFORM(groupId, dossierId, dossierTemplateNo, dossierPartNo,
+					eForm, removed);
+			if (fileList != null && fileList.size() > 0) {
+				return fileList.get(0);
+			}
+		} catch (Exception e) {
 			_log.debug(e);
 		}
+
 		return null;
 	}
 
@@ -1760,6 +1818,42 @@ public class DossierFileLocalServiceImpl
 
 		return dossierFile;
 
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile addDossierByDeliverable(long groupId, long companyId, long userId, String userName,
+			long dossierId, String referenceUid, String dossierTemplateNo, String dossierPartNo, int dossierPartType,
+			String fileTemplateNo, String displayName, String formData, long fileEntryId, Boolean original,
+			Boolean eForm, Boolean isNew, Boolean removed, String deliverableCode) {
+
+		long id = CounterLocalServiceUtil.increment(DossierFile.class.getName());
+		DossierFile dossierFile = dossierFilePersistence.create(id);
+		//
+		dossierFile.setGroupId(groupId);
+		dossierFile.setCompanyId(companyId);
+		dossierFile.setCreateDate(new Date());
+		dossierFile.setUserId(userId);
+		dossierFile.setUserName(userName);
+
+		dossierFile.setDossierId(dossierId);
+		if (Validator.isNull(referenceUid)) {
+			referenceUid = PortalUUIDUtil.generate();
+		}
+		dossierFile.setReferenceUid(referenceUid);
+		dossierFile.setDossierTemplateNo(dossierTemplateNo);
+		dossierFile.setDossierPartNo(dossierPartNo);
+		dossierFile.setDossierPartType(dossierPartType);
+		dossierFile.setFileTemplateNo(fileTemplateNo);
+		dossierFile.setDisplayName(displayName);
+		dossierFile.setFormData(formData);
+		dossierFile.setFileEntryId(fileEntryId);
+		dossierFile.setOriginal(original);
+		dossierFile.setEForm(eForm);
+		dossierFile.setIsNew(isNew);
+		dossierFile.setRemoved(removed);
+		dossierFile.setDeliverableCode(deliverableCode);
+
+		return dossierFilePersistence.update(dossierFile);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();

@@ -157,18 +157,18 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
-				return builder.entity(result).cacheControl(cc).build();
-			}
-			else {
+//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.status(200);
+//				CacheControl cc = new CacheControl();
+//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//				cc.setPrivate(true);	
+//				return builder.entity(result).cacheControl(cc).build();
+//			}
+//			else {
 				return Response.status(200).entity(result).build();
-			}
+//			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

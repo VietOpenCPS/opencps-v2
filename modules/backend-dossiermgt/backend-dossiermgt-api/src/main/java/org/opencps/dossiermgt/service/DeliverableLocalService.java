@@ -100,6 +100,15 @@ public interface DeliverableLocalService extends BaseLocalService,
 		String deliverableState, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Deliverable addDeliverableSign(long groupId, String deliverableType,
+		String deliverableName, String deliverableCode, String govAgencyCode,
+		String govAgencyName, String applicationIdNo, String applicationName,
+		String subject, String issueDate, String expireDate, String revalidate,
+		String deliverableState, long dossierId, long fileEntryId,
+		long formScriptFileId, long formReportFileId,
+		ServiceContext serviceContext);
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Deliverable adminProcessData(JSONObject objectData);
 
 	@Indexable(type = IndexableType.DELETE)
@@ -202,6 +211,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 	*/
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
 		Projection projection);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable fetchByGID_DID(long groupId, long dossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable fetchDeliverable(long deliverableId);

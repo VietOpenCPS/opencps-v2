@@ -73,6 +73,22 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Deliverable addDeliverableSign(
+		long groupId, String deliverableType, String deliverableName,
+		String deliverableCode, String govAgencyCode, String govAgencyName,
+		String applicationIdNo, String applicationName, String subject,
+		String issueDate, String expireDate, String revalidate,
+		String deliverableState, long dossierId, long fileEntryId,
+		long formScriptFileId, long formReportFileId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return _deliverableLocalService.addDeliverableSign(groupId,
+			deliverableType, deliverableName, deliverableCode, govAgencyCode,
+			govAgencyName, applicationIdNo, applicationName, subject,
+			issueDate, expireDate, revalidate, deliverableState, dossierId,
+			fileEntryId, formScriptFileId, formReportFileId, serviceContext);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Deliverable adminProcessData(
 		com.liferay.portal.kernel.json.JSONObject objectData) {
 		return _deliverableLocalService.adminProcessData(objectData);
@@ -222,6 +238,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return _deliverableLocalService.dynamicQueryCount(dynamicQuery,
 			projection);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
+		long groupId, long dossierId) {
+		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
 	}
 
 	@Override

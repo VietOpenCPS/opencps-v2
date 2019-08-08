@@ -1024,6 +1024,67 @@ public class DeliverableUtil {
 	}
 
 	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; or throws a {@link NoSuchDeliverableException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the matching deliverable
+	* @throws NoSuchDeliverableException if a matching deliverable could not be found
+	*/
+	public static Deliverable findByF_GID_DID(long groupId, long dossierId)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
+		return getPersistence().findByF_GID_DID(groupId, dossierId);
+	}
+
+	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public static Deliverable fetchByF_GID_DID(long groupId, long dossierId) {
+		return getPersistence().fetchByF_GID_DID(groupId, dossierId);
+	}
+
+	/**
+	* Returns the deliverable where groupId = &#63; and dossierId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching deliverable, or <code>null</code> if a matching deliverable could not be found
+	*/
+	public static Deliverable fetchByF_GID_DID(long groupId, long dossierId,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_DID(groupId, dossierId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the deliverable where groupId = &#63; and dossierId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the deliverable that was removed
+	*/
+	public static Deliverable removeByF_GID_DID(long groupId, long dossierId)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableException {
+		return getPersistence().removeByF_GID_DID(groupId, dossierId);
+	}
+
+	/**
+	* Returns the number of deliverables where groupId = &#63; and dossierId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierId the dossier ID
+	* @return the number of matching deliverables
+	*/
+	public static int countByF_GID_DID(long groupId, long dossierId) {
+		return getPersistence().countByF_GID_DID(groupId, dossierId);
+	}
+
+	/**
 	* Caches the deliverable in the entity cache if it is enabled.
 	*
 	* @param deliverable the deliverable

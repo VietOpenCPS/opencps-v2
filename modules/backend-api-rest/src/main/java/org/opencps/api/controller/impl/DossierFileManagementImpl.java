@@ -166,6 +166,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		_log.debug("In dossier file create");
 		try {
+			if (modifiedDate == null) {
+				modifiedDate = (new Date()).getTime();
+			}
 			DossierFile dossierFile =
 				CPSDossierBusinessLocalServiceUtil.addDossierFileByDossierId(
 					groupId, company, user, serviceContext, file, id,

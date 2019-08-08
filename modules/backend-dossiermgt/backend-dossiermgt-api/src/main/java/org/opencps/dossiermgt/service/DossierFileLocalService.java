@@ -73,6 +73,13 @@ public interface DossierFileLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link DossierFileLocalServiceUtil} to access the dossier file local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.DossierFileLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile addDossierByDeliverable(long groupId, long companyId,
+		long userId, String userName, long dossierId, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, int dossierPartType,
+		String fileTemplateNo, String displayName, String formData,
+		long fileEntryId, Boolean original, Boolean eForm, Boolean isNew,
+		Boolean removed, String deliverableCode);
 
 	/**
 	* Adds the dossier file to the database. Also notifies the appropriate model listeners.
@@ -329,6 +336,11 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String dossierPartNo, boolean eform, boolean removed);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DossierFile getByGID_DID_TEMP_PART_EFORM(long groupId,
+		long dossierId, String dossierTemplateNo, String dossierPartNo,
+		boolean eForm, boolean removed);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierFile getByRefAndGroupId(long groupId, String referenceUid)
 		throws PortalException;
 
@@ -524,6 +536,12 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String referenceUid, String displayName, String sourceFileName,
 		InputStream inputStream, ServiceContext serviceContext)
 		throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierFile updateDossierFile(long groupId, long dossierId,
+		String referenceUid, String displayName, String sourceFileName,
+		long fileSize, InputStream inputStream, String fileType, String isSync,
+		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(long groupId, long dossierId,
