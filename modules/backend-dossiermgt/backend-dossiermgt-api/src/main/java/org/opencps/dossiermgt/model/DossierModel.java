@@ -569,6 +569,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	public void setContactEmail(String contactEmail);
 
 	/**
+	 * Returns the delegate type of this dossier.
+	 *
+	 * @return the delegate type of this dossier
+	 */
+	public int getDelegateType();
+
+	/**
+	 * Sets the delegate type of this dossier.
+	 *
+	 * @param delegateType the delegate type of this dossier
+	 */
+	public void setDelegateType(int delegateType);
+
+	/**
 	 * Returns the delegate name of this dossier.
 	 *
 	 * @return the delegate name of this dossier
@@ -732,6 +746,35 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 * @param delegateWardName the delegate ward name of this dossier
 	 */
 	public void setDelegateWardName(String delegateWardName);
+
+	/**
+	 * Returns the document no of this dossier.
+	 *
+	 * @return the document no of this dossier
+	 */
+	@AutoEscape
+	public String getDocumentNo();
+
+	/**
+	 * Sets the document no of this dossier.
+	 *
+	 * @param documentNo the document no of this dossier
+	 */
+	public void setDocumentNo(String documentNo);
+
+	/**
+	 * Returns the document date of this dossier.
+	 *
+	 * @return the document date of this dossier
+	 */
+	public Date getDocumentDate();
+
+	/**
+	 * Sets the document date of this dossier.
+	 *
+	 * @param documentDate the document date of this dossier
+	 */
+	public void setDocumentDate(Date documentDate);
 
 	/**
 	 * Returns the dossier template no of this dossier.

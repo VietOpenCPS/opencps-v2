@@ -65,6 +65,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setContactName(model.getContactName());
 		soapModel.setContactTelNo(model.getContactTelNo());
 		soapModel.setContactEmail(model.getContactEmail());
+		soapModel.setDelegateType(model.getDelegateType());
 		soapModel.setDelegateName(model.getDelegateName());
 		soapModel.setDelegateIdNo(model.getDelegateIdNo());
 		soapModel.setDelegateTelNo(model.getDelegateTelNo());
@@ -76,6 +77,8 @@ public class DossierSoap implements Serializable {
 		soapModel.setDelegateDistrictName(model.getDelegateDistrictName());
 		soapModel.setDelegateWardCode(model.getDelegateWardCode());
 		soapModel.setDelegateWardName(model.getDelegateWardName());
+		soapModel.setDocumentNo(model.getDocumentNo());
+		soapModel.setDocumentDate(model.getDocumentDate());
 		soapModel.setDossierTemplateNo(model.getDossierTemplateNo());
 		soapModel.setDossierTemplateName(model.getDossierTemplateName());
 		soapModel.setDossierNote(model.getDossierNote());
@@ -434,6 +437,14 @@ public class DossierSoap implements Serializable {
 		_contactEmail = contactEmail;
 	}
 
+	public int getDelegateType() {
+		return _delegateType;
+	}
+
+	public void setDelegateType(int delegateType) {
+		_delegateType = delegateType;
+	}
+
 	public String getDelegateName() {
 		return _delegateName;
 	}
@@ -520,6 +531,22 @@ public class DossierSoap implements Serializable {
 
 	public void setDelegateWardName(String delegateWardName) {
 		_delegateWardName = delegateWardName;
+	}
+
+	public String getDocumentNo() {
+		return _documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		_documentNo = documentNo;
+	}
+
+	public Date getDocumentDate() {
+		return _documentDate;
+	}
+
+	public void setDocumentDate(Date documentDate) {
+		_documentDate = documentDate;
 	}
 
 	public String getDossierTemplateNo() {
@@ -970,6 +997,7 @@ public class DossierSoap implements Serializable {
 	private String _contactName;
 	private String _contactTelNo;
 	private String _contactEmail;
+	private int _delegateType;
 	private String _delegateName;
 	private String _delegateIdNo;
 	private String _delegateTelNo;
@@ -981,6 +1009,8 @@ public class DossierSoap implements Serializable {
 	private String _delegateDistrictName;
 	private String _delegateWardCode;
 	private String _delegateWardName;
+	private String _documentNo;
+	private Date _documentDate;
 	private String _dossierTemplateNo;
 	private String _dossierTemplateName;
 	private String _dossierNote;

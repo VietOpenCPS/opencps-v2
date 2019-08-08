@@ -1327,6 +1327,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		
 		if (jsonData != null) {
+			jsonData.put("fileAttach", flagAttach);
 			object.setFormData(jsonData.toJSONString());
 		} else {
 			object.setFormData(StringPool.BLANK);

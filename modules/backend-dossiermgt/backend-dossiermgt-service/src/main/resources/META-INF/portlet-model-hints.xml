@@ -242,6 +242,7 @@
 		</field>
 		<field name="contactTelNo" type="String" />
 		<field name="contactEmail" type="String" />
+		<field name="delegateType" type="int" />
 		<field name="delegateName" type="String" />
 		<field name="delegateIdNo" type="String" />
 		<field name="delegateTelNo" type="String" />
@@ -253,6 +254,8 @@
 		<field name="delegateDistrictName" type="String" />
 		<field name="delegateWardCode" type="String" />
 		<field name="delegateWardName" type="String" />
+		<field name="documentNo" type="String" />
+		<field name="documentDate" type="Date" />
 		<field name="dossierTemplateNo" type="String" />
 		<field name="dossierTemplateName" type="String">
 			<hint name="max-length">65535</hint>

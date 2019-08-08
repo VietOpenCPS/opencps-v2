@@ -82,17 +82,20 @@ public class DueDateUtils {
 
 			// convert to hours
 			Double hours = (durationCountD * DAY_TO_HOURS);
+			// lam tron den so thap phan t2
+			hours = (double) Math.round(hours * 100) / 100;
 			this.durationUnit = 1;
-			this.durationCount = hours.intValue() * 100;
+			this.durationCount = SupportUtils.reverseToMinutes(hours);
 
 		} else if (durationUnit == 0) {
 
-			this.durationUnit = durationUnit;
-			this.durationCount = durationCountInt;
+			// because 1d = 8h :((
+			this.durationUnit = 1;// durationUnit;
+			this.durationCount = durationCountInt * DAY_TO_HOURS * 100;// durationCountInt;
 		} else {
 
 			this.durationUnit = durationUnit;
-			this.durationCount = durationCountInt * 100;
+			this.durationCount = SupportUtils.reverseToMinutes(durationCountD);
 		}
 
 		if (startDate != null) {
@@ -201,15 +204,16 @@ public class DueDateUtils {
 			calStartDate.add(Calendar.DATE, 1);
 			startDateDateStr = SupportUtils._dateToString(calStartDate.getTime(), DATE_FORMAT);
 
-			this.startDateTimeStr = DEFAULT_START_AM_STR;
-			this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
-			this.startDate = SupportUtils._stringToDate(startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
+			this.startDate = SupportUtils._stringToDate(startDateDateStr + StringPool.SPACE + DEFAULT_START_AM_STR,
 					DATE_SPACE_TIME_FORMAT);
 		} else {
 
 			this.startDate = startDate;
 			_log.debug("other case");
 		}
+
+		this.startDateTimeStr = SupportUtils._dateToString(this.startDate, HOUR_COLON_TIME_FORMAT);
+		this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
 
 	}
 
@@ -247,10 +251,10 @@ public class DueDateUtils {
 //				? this.gioLamViecLe + this.startDateTimeNum + this.thoiGianCanBoNghiTrua
 //				: this.gioLamViecLe + this.startDateTimeNum;
 ////		sai logic
-		this.startDateTimeNum = (this.gioLamViecLe + this.startDateTimeNum > this.endAM)
+		this.startDateTimeNum = (SupportUtils.addTime(this.gioLamViecLe, this.startDateTimeNum) > this.endAM)
 				&& this.startDateTimeNum < this.endAM && this.startDateTimeNum < this.startPM
-						? this.gioLamViecLe + this.startDateTimeNum + this.thoiGianCanBoNghiTrua
-						: this.gioLamViecLe + this.startDateTimeNum;
+						? SupportUtils.addTime(this.gioLamViecLe, this.startDateTimeNum, this.thoiGianCanBoNghiTrua)
+						: SupportUtils.addTime(this.gioLamViecLe, this.startDateTimeNum);
 
 		this.startDateTimeStr = SupportUtils._numberToStringHourColon(this.startDateTimeNum);
 
@@ -318,10 +322,11 @@ public class DueDateUtils {
 
 				// tra ho so trong ngay
 
-				int gioTra = (durationHours + this.startDateTimeNum > this.endAM) && this.startDateTimeNum < this.endAM
-						&& this.startDateTimeNum < this.startPM
-								? durationHours + this.startDateTimeNum + this.thoiGianCanBoNghiTrua
-								: durationHours + this.startDateTimeNum;
+				int gioTra = (SupportUtils.addTime(durationHours, this.startDateTimeNum) > this.endAM)
+						&& this.startDateTimeNum < this.endAM && this.startDateTimeNum < this.startPM
+								? SupportUtils
+										.addTime(durationHours + this.startDateTimeNum + this.thoiGianCanBoNghiTrua)
+								: SupportUtils.addTime(durationHours + this.startDateTimeNum);
 
 				if (gioTra > this.gioCanBoNghiLamViec) {
 
@@ -329,8 +334,8 @@ public class DueDateUtils {
 
 					// whatttttttt this.countNextWorkDayTime += SupportUtils.subTime(gioTra,
 					// this.gioCanBoNghiLamViec);
-					this.countNextWorkDayTime += SupportUtils.subTime(durationHours,
-							SupportUtils.subTime(gioTra, this.gioCanBoNghiLamViec));
+					this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime, SupportUtils
+							.subTime(durationHours, SupportUtils.subTime(gioTra, this.gioCanBoNghiLamViec)));
 
 					this.startDateTimeStr = DEFAULT_START_AM_STR;
 					this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
@@ -343,7 +348,7 @@ public class DueDateUtils {
 					_log.debug("=======tra ho so trong ngay========gioTra=" + gioTra + "====gioNghiLam="
 							+ this.gioCanBoNghiLamViec + "==this.startDateTimeNum==" + this.startDateTimeNum);
 					this.gioLamViecLe = durationHours;
-					this.countNextWorkDayTime += durationHours;
+					this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime, durationHours);
 					this._setDueDate();
 				}
 			} else {
@@ -354,8 +359,9 @@ public class DueDateUtils {
 
 					// buoi sang
 
-					this.countNextWorkDayTime += SupportUtils.subTime(this.endAM, this.startDateTimeNum)
-							+ SupportUtils.subTime(this.endPM, this.startPM);
+					this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+							SupportUtils.subTime(this.endAM, this.startDateTimeNum)
+									+ SupportUtils.subTime(this.endPM, this.startPM));
 
 					this.startDateTimeStr = DEFAULT_START_AM_STR;
 					this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
@@ -366,7 +372,8 @@ public class DueDateUtils {
 
 					// buoi chieu
 
-					this.countNextWorkDayTime += SupportUtils.subTime(this.endPM, this.startDateTimeNum);
+					this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+							SupportUtils.subTime(this.endPM, this.startDateTimeNum));
 
 					this.startDateTimeStr = DEFAULT_START_AM_STR;
 					this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
@@ -374,7 +381,8 @@ public class DueDateUtils {
 
 				} else {
 
-					this.countNextWorkDayTime += this.tongThoiGianCanBoLamViecTrongNgay;
+					this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+							this.tongThoiGianCanBoLamViecTrongNgay);
 				}
 				_log.debug("=======tra ngay hom sau========" + SupportUtils._dateToString(date, DATE_FORMAT)
 						+ "========Da lam========" + this.countNextWorkDayTime);
@@ -403,9 +411,11 @@ public class DueDateUtils {
 
 		} else if (truncDateStr.equals(SupportUtils._dateToString(this.toDate, DATE_FORMAT))) {
 
+			// stop here
 			String time = SupportUtils._dateToString(this.toDate, HOUR_COLON_TIME_FORMAT);
-			this.countNextWorkDayTime += SupportUtils.calcStartAMToStartDateTime(startAM, endAM, startPM, endPM,
-					SupportUtils._stringToNumberHourColon(time));
+			this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+					SupportUtils.calcStartAMToStartDateTime(startAM, endAM, startPM, endPM,
+							SupportUtils._stringToNumberHourColon(time)));
 		} else if (date.getTime() < this.toDate.getTime() && this.countNextDay < 360) {
 
 			if (DEFAULT_START_AM_STR.equals(this.startDateTimeStr)) {
@@ -413,11 +423,12 @@ public class DueDateUtils {
 				// lam full ngay
 				this.startDateTimeStr = this.startAMStr;
 				this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
-				this.countNextWorkDayTime += this.tongThoiGianCanBoLamViecTrongNgay;
+				this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+						this.tongThoiGianCanBoLamViecTrongNgay);
 			} else {
 
-				this.countNextWorkDayTime += SupportUtils.calcStartDateTimeToEndPM(startAM, endAM, startPM, endPM,
-						this.startDateTimeNum);
+				this.countNextWorkDayTime = SupportUtils.addTime(this.countNextWorkDayTime,
+						SupportUtils.calcStartDateTimeToEndPM(startAM, endAM, startPM, endPM, this.startDateTimeNum));
 				this.startDateTimeStr = DEFAULT_START_AM_STR;
 				this.startDateTimeNum = SupportUtils._stringToNumberHourColon(this.startDateTimeStr);
 			}
@@ -585,6 +596,22 @@ public class DueDateUtils {
 
 	public Date getDueDate() {
 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dueDate);
+		// minute / 15 == 0
+		int minute = cal.get(Calendar.MINUTE) == 0 ? 0 : cal.get(Calendar.MINUTE) <= 15 ? 15
+				: cal.get(Calendar.MINUTE) <= 30 ? 30 : cal.get(Calendar.MINUTE) <= 45 ? 45 : 0;
+		if (minute == 0 && cal.get(Calendar.MINUTE) > 0) {
+			cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + 1);
+		}
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, 0);
+
+		return cal.getTime();
+	}
+
+	public Date getDueDateOriginal() {
+
 		return dueDate;
 	}
 
@@ -611,6 +638,47 @@ public class DueDateUtils {
 		} else {
 			return SupportUtils.convertToMiliseconds(countNextWorkDayTime);
 		}
+	}
+	
+	public double getOverDueCalcToDate() {
+
+		double ms = (double) getOverDue();
+		double result = ms / (DAY_TO_HOURS * 60 * 60 * 1000);
+		// lam tron den so thap phan thu 2
+		return (double) Math.round(result * 100) / 100;
+	}
+
+	public double getOverDueCalcToHours() {
+
+		double ms = (double) getOverDue();
+		double result = ms / (DAY_TO_HOURS * 60 * 1000);
+		// lam tron den so thap phan thu 2
+		return (double) Math.round(result * 100) / 100;
+	}
+
+	public long getOverDueTypeDay() {
+
+		return countNextWorkDay;
+	}
+
+	public long getOverDueTypeHour() {
+
+		return countNextWorkDayTime / 100;
+	}
+
+	public String getOverDueCalcToString() {
+		
+		long seconds = getOverDue() / 1000;
+		long minutes = seconds / 60;
+		long hours = minutes / 60;
+		long days = hours / 8;
+		hours = (hours - days * 8) % 24;
+		minutes = minutes % 60;
+		seconds = seconds % 60;
+		String time = days > 0 ? days + " ngày " : StringPool.BLANK;
+		time += hours > 0 ? hours + " giờ " : StringPool.BLANK;
+		time += minutes > 0 ? minutes + " phút " : StringPool.BLANK;
+		return StringPool.BLANK.equals(time) ? "0 ngày " : time;
 	}
 
 }
@@ -645,7 +713,7 @@ class SupportUtils {
 		// format: HHmm -> HH:mm
 		int mm = hourNumber % 100;
 		String hh = String.valueOf((hourNumber - mm) / 100);
-		return padLeft(hh, 2, "0") + StringPool.COLON + mm;
+		return padLeft(hh, 2, "0") + StringPool.COLON + padLeft(String.valueOf(mm), 2, "0");
 	}
 
 	public static String padRight(String s, int n, String c) {
@@ -662,6 +730,12 @@ class SupportUtils {
 		int hh = (hourNumber - mm) / 100;
 
 		return hh * 60 + mm;
+	}
+	
+	// doi gio dang so phut 12.5 sang hhmm 1230
+	public static int reverseToMinutes(Double hourNumber) {
+		Double duD = hourNumber%1.0 * 60.0;
+		return hourNumber.intValue() * 100 + duD.intValue();
 	}
 
 	// tinh 3h80p -> ms
@@ -680,9 +754,23 @@ class SupportUtils {
 		return hours * 100 + minutes;
 	}
 
+	// c gio HHmm - HHmm
+	public static int addTime(int... times) {
+		int diff = 0;
+		for (int time : times) {
+			diff += convertToMinutes(time);
+		}
+		int hours = diff / 60;
+		int minutes = diff % 60;
+		return hours * 100 + minutes;
+	}
+
 	public static int calcStartAMToStartDateTime(int startAM, int endAM, int startPM, int endPM, int startDateTime) {
 		int duration = 0;
-		if (startAM <= startDateTime && startDateTime <= endAM) {
+		if (startDateTime <= startAM) {
+
+			duration = 0;
+		} else if (startAM <= startDateTime && startDateTime <= endAM) {
 
 			duration = subTime(startDateTime, startAM);
 		} else if (endAM < startDateTime && startDateTime < startPM) {

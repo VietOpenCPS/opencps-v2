@@ -1856,5 +1856,49 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(dossierFile);
 	}
 
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(
+			long dossierId, String fileTemplateNo, int[] dossierPartType,
+			boolean removed) {
+
+		return dossierFilePersistence.findByDID_FTNO_DPTS(
+			dossierId, fileTemplateNo, dossierPartType, removed);
+	}
+
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS(
+			long dossierId, String fileTemplateNo, int[] dossierPartType,
+			boolean removed, int start, int end,
+			OrderByComparator orderByComparator) {
+
+			return dossierFilePersistence.findByDID_FTNO_DPTS(
+				dossierId, fileTemplateNo, dossierPartType, removed, start, end,
+				orderByComparator);
+	}
+	public DossierFile getDossierFileByDID_FTNO_DPTS_First(
+			long dossierId, String fileTemplateNo, int dossierPartType,
+			boolean removed, OrderByComparator orderByComparator) throws NoSuchDossierFileException {
+
+			return dossierFilePersistence.findByDID_FTNO_DPTS_First(
+				dossierId, fileTemplateNo, dossierPartType, removed,
+				orderByComparator);
+	}
+	
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed) {
+
+		return dossierFilePersistence.findByDID_FTNO_DPTS_NOT_NULL_FID(
+			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed);
+	}
+
+	public List<DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed, int start, int end,
+		OrderByComparator orderByComparator) {
+
+		return dossierFilePersistence.findByDID_FTNO_DPTS_NOT_NULL_FID(
+			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
+			start, end, orderByComparator);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(187);
+		StringBundler sb = new StringBundler(193);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -130,6 +130,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(contactTelNo);
 		sb.append(", contactEmail=");
 		sb.append(contactEmail);
+		sb.append(", delegateType=");
+		sb.append(delegateType);
 		sb.append(", delegateName=");
 		sb.append(delegateName);
 		sb.append(", delegateIdNo=");
@@ -152,6 +154,10 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(delegateWardCode);
 		sb.append(", delegateWardName=");
 		sb.append(delegateWardName);
+		sb.append(", documentNo=");
+		sb.append(documentNo);
+		sb.append(", documentDate=");
+		sb.append(documentDate);
 		sb.append(", dossierTemplateNo=");
 		sb.append(dossierTemplateNo);
 		sb.append(", dossierTemplateName=");
@@ -457,6 +463,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setContactEmail(contactEmail);
 		}
 
+		dossierImpl.setDelegateType(delegateType);
+
 		if (delegateName == null) {
 			dossierImpl.setDelegateName("");
 		}
@@ -532,6 +540,20 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		}
 		else {
 			dossierImpl.setDelegateWardName(delegateWardName);
+		}
+
+		if (documentNo == null) {
+			dossierImpl.setDocumentNo("");
+		}
+		else {
+			dossierImpl.setDocumentNo(documentNo);
+		}
+
+		if (documentDate == Long.MIN_VALUE) {
+			dossierImpl.setDocumentDate(null);
+		}
+		else {
+			dossierImpl.setDocumentDate(new Date(documentDate));
 		}
 
 		if (dossierTemplateNo == null) {
@@ -855,6 +877,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		contactName = objectInput.readUTF();
 		contactTelNo = objectInput.readUTF();
 		contactEmail = objectInput.readUTF();
+
+		delegateType = objectInput.readInt();
 		delegateName = objectInput.readUTF();
 		delegateIdNo = objectInput.readUTF();
 		delegateTelNo = objectInput.readUTF();
@@ -866,6 +890,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		delegateDistrictName = objectInput.readUTF();
 		delegateWardCode = objectInput.readUTF();
 		delegateWardName = objectInput.readUTF();
+		documentNo = objectInput.readUTF();
+		documentDate = objectInput.readLong();
 		dossierTemplateNo = objectInput.readUTF();
 		dossierTemplateName = objectInput.readUTF();
 		dossierNote = objectInput.readUTF();
@@ -1117,6 +1143,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			objectOutput.writeUTF(contactEmail);
 		}
 
+		objectOutput.writeInt(delegateType);
+
 		if (delegateName == null) {
 			objectOutput.writeUTF("");
 		}
@@ -1193,6 +1221,15 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		else {
 			objectOutput.writeUTF(delegateWardName);
 		}
+
+		if (documentNo == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(documentNo);
+		}
+
+		objectOutput.writeLong(documentDate);
 
 		if (dossierTemplateNo == null) {
 			objectOutput.writeUTF("");
@@ -1453,6 +1490,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String contactName;
 	public String contactTelNo;
 	public String contactEmail;
+	public int delegateType;
 	public String delegateName;
 	public String delegateIdNo;
 	public String delegateTelNo;
@@ -1464,6 +1502,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String delegateDistrictName;
 	public String delegateWardCode;
 	public String delegateWardName;
+	public String documentNo;
+	public long documentDate;
 	public String dossierTemplateNo;
 	public String dossierTemplateName;
 	public String dossierNote;

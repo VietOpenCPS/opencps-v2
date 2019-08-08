@@ -195,7 +195,10 @@ import javax.xml.bind.annotation.XmlType;
     "originDossierId",
     "originDossierNo",
     "metaData",
-    "groupDossierId"
+    "groupDossierId",
+    "delegateType",
+    "documentNo",
+    "documentDate"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -298,8 +301,35 @@ public class DossierDetailModel {
 	protected String originDossierNo;
 	protected String metaData;
 	protected Long groupDossierId;
+	protected Integer delegateType;
+	protected String documentNo;
+	protected String documentDate;
 	
-    public Long getGroupDossierId() {
+    public Integer getDelegateType() {
+		return delegateType;
+	}
+
+	public void setDelegateType(Integer delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public String getDocumentDate() {
+		return documentDate;
+	}
+
+	public void setDocumentDate(String documentDate) {
+		this.documentDate = documentDate;
+	}
+
+	public Long getGroupDossierId() {
 		return groupDossierId;
 	}
 

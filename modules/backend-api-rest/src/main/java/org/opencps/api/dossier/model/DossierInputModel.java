@@ -114,7 +114,10 @@ import javax.xml.bind.annotation.XmlType;
 	"payment",
 	"importing",
 	"serverNo",
-	"metaData"
+	"metaData",
+	"delegateType",
+	"documentNo",
+	"documentDate"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -246,7 +249,38 @@ public class DossierInputModel {
 	
 	@FormParam(value = "metaData")
 	private String metaData;
+	public Integer getDelegateType() {
+		return delegateType;
+	}
 
+	public void setDelegateType(Integer delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
+
+	public Long getDocumentDate() {
+		return documentDate;
+	}
+
+	public void setDocumentDate(Long documentDate) {
+		this.documentDate = documentDate;
+	}
+
+	@FormParam(value = "delegateType")
+	private Integer delegateType;
+	@FormParam(value = "documentNo")
+	private String documentNo;
+	@FormParam(value = "documentDate")
+	private Long documentDate;
+
+	
 	public Integer getViaPostal() {
 		return viaPostal;
 	}

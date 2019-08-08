@@ -1,21 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -43,6 +27,7 @@ import org.opencps.api.processsequence.model.StepModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DossierActions;
@@ -73,6 +58,22 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -148,46 +149,68 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
 
 							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
-							Long releaseDateTimeStamp = (dossier.getReleaseDate() != null ? dossier.getReleaseDate() .getTime(): 0l);
-							
-							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
-							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
-									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
-											dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
-											dueDateTimeStamp, groupId, true);
-									if (Validator.isNotNull(strOverDue)) {
-										if (subTimeStamp > 0) {
-											result.setStepOverdue("Quá hạn " + strOverDue);
-										} else {
-											result.setStepOverdue("Còn " + strOverDue);
-										}
-									} else {
-										result.setStepOverdue(StringPool.BLANK);
-									}
+							if (stepDuedate != null) {
+
+								DueDateUtils dueDateUtils;
+								String overType;
+								if (dateNowTimeStamp < stepDuedate.getTime()) {
+
+									dueDateUtils = new DueDateUtils(now, stepDuedate, 1, groupId);
+									overType = "Còn ";
 								} else {
-									result.setStepOverdue(StringPool.BLANK);
+
+									dueDateUtils = new DueDateUtils(stepDuedate, now, 1, groupId);
+									overType = "Quá hạn ";
 								}
-							} else {
-								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
-											dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
-											groupId, true);
-									if (Validator.isNotNull(strOverDue)) {
-										if (subTimeStamp > 0) {
-											result.setStepOverdue("Quá hạn " + strOverDue);
-										} else {
-											result.setStepOverdue("Còn " + strOverDue);
-										}
-									} else {
-										result.setStepOverdue(StringPool.BLANK);
-									}
+								if (dossier.getDurationUnit() == 0) {
+
+									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToString());
 								} else {
-									result.setStepOverdue(StringPool.BLANK);
+
+									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToHours() + " giờ");
 								}
 							}
+							_log.debug(stepDuedate + "========result.getStepOverdue()======="+result.getStepOverdue());
+//							Long releaseDateTimeStamp = (dossier.getReleaseDate() != null ? dossier.getReleaseDate() .getTime(): 0l);
+//							
+//							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
+//							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
+//								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+//									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
+//									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
+//											dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
+//											dueDateTimeStamp, groupId, true);
+//									if (Validator.isNotNull(strOverDue)) {
+//										if (subTimeStamp > 0) {
+//											result.setStepOverdue("Quá hạn " + strOverDue);
+//										} else {
+//											result.setStepOverdue("Còn " + strOverDue);
+//										}
+//									} else {
+//										result.setStepOverdue(StringPool.BLANK);
+//									}
+//								} else {
+//									result.setStepOverdue(StringPool.BLANK);
+//								}
+//							} else {
+//								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
+//									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
+//									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
+//											dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
+//											groupId, true);
+//									if (Validator.isNotNull(strOverDue)) {
+//										if (subTimeStamp > 0) {
+//											result.setStepOverdue("Quá hạn " + strOverDue);
+//										} else {
+//											result.setStepOverdue("Còn " + strOverDue);
+//										}
+//									} else {
+//										result.setStepOverdue(StringPool.BLANK);
+//									}
+//								} else {
+//									result.setStepOverdue(StringPool.BLANK);
+//								}
+//							}
 						}
 					}
 	

@@ -91,6 +91,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("contactName", getContactName());
 		attributes.put("contactTelNo", getContactTelNo());
 		attributes.put("contactEmail", getContactEmail());
+		attributes.put("delegateType", getDelegateType());
 		attributes.put("delegateName", getDelegateName());
 		attributes.put("delegateIdNo", getDelegateIdNo());
 		attributes.put("delegateTelNo", getDelegateTelNo());
@@ -102,6 +103,8 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("delegateDistrictName", getDelegateDistrictName());
 		attributes.put("delegateWardCode", getDelegateWardCode());
 		attributes.put("delegateWardName", getDelegateWardName());
+		attributes.put("documentNo", getDocumentNo());
+		attributes.put("documentDate", getDocumentDate());
 		attributes.put("dossierTemplateNo", getDossierTemplateNo());
 		attributes.put("dossierTemplateName", getDossierTemplateName());
 		attributes.put("dossierNote", getDossierNote());
@@ -350,6 +353,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 			setContactEmail(contactEmail);
 		}
 
+		Integer delegateType = (Integer)attributes.get("delegateType");
+
+		if (delegateType != null) {
+			setDelegateType(delegateType);
+		}
+
 		String delegateName = (String)attributes.get("delegateName");
 
 		if (delegateName != null) {
@@ -416,6 +425,18 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (delegateWardName != null) {
 			setDelegateWardName(delegateWardName);
+		}
+
+		String documentNo = (String)attributes.get("documentNo");
+
+		if (documentNo != null) {
+			setDocumentNo(documentNo);
+		}
+
+		Date documentDate = (Date)attributes.get("documentDate");
+
+		if (documentDate != null) {
+			setDocumentDate(documentDate);
 		}
 
 		String dossierTemplateNo = (String)attributes.get("dossierTemplateNo");
@@ -992,6 +1013,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	}
 
 	/**
+	* Returns the delegate type of this dossier.
+	*
+	* @return the delegate type of this dossier
+	*/
+	@Override
+	public int getDelegateType() {
+		return _dossier.getDelegateType();
+	}
+
+	/**
 	* Returns the delegate ward code of this dossier.
 	*
 	* @return the delegate ward code of this dossier
@@ -1029,6 +1060,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getDistrictName() {
 		return _dossier.getDistrictName();
+	}
+
+	/**
+	* Returns the document date of this dossier.
+	*
+	* @return the document date of this dossier
+	*/
+	@Override
+	public Date getDocumentDate() {
+		return _dossier.getDocumentDate();
+	}
+
+	/**
+	* Returns the document no of this dossier.
+	*
+	* @return the document no of this dossier
+	*/
+	@Override
+	public String getDocumentNo() {
+		return _dossier.getDocumentNo();
 	}
 
 	/**
@@ -2022,6 +2073,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	}
 
 	/**
+	* Sets the delegate type of this dossier.
+	*
+	* @param delegateType the delegate type of this dossier
+	*/
+	@Override
+	public void setDelegateType(int delegateType) {
+		_dossier.setDelegateType(delegateType);
+	}
+
+	/**
 	* Sets the delegate ward code of this dossier.
 	*
 	* @param delegateWardCode the delegate ward code of this dossier
@@ -2059,6 +2120,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setDistrictName(String districtName) {
 		_dossier.setDistrictName(districtName);
+	}
+
+	/**
+	* Sets the document date of this dossier.
+	*
+	* @param documentDate the document date of this dossier
+	*/
+	@Override
+	public void setDocumentDate(Date documentDate) {
+		_dossier.setDocumentDate(documentDate);
+	}
+
+	/**
+	* Sets the document no of this dossier.
+	*
+	* @param documentNo the document no of this dossier
+	*/
+	@Override
+	public void setDocumentNo(String documentNo) {
+		_dossier.setDocumentNo(documentNo);
 	}
 
 	/**
