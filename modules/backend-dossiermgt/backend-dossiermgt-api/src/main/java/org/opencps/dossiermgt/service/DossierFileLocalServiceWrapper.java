@@ -539,6 +539,52 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getDossierFileByDID_FTNO_DPTS(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		boolean removed) {
+		return _dossierFileLocalService.getDossierFileByDID_FTNO_DPTS(dossierId,
+			fileTemplateNo, dossierPartType, removed);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getDossierFileByDID_FTNO_DPTS(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		boolean removed, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator) {
+		return _dossierFileLocalService.getDossierFileByDID_FTNO_DPTS(dossierId,
+			fileTemplateNo, dossierPartType, removed, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierFile getDossierFileByDID_FTNO_DPTS_First(
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		boolean removed,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierFileException {
+		return _dossierFileLocalService.getDossierFileByDID_FTNO_DPTS_First(dossierId,
+			fileTemplateNo, dossierPartType, removed, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed) {
+		return _dossierFileLocalService.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(
+		long dossierId, String fileTemplateNo, int[] dossierPartType,
+		long fileEntryId, boolean removed, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator) {
+		return _dossierFileLocalService.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+			fileTemplateNo, dossierPartType, fileEntryId, removed, start, end,
+			orderByComparator);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierFile getDossierFileByDID_FTNO_First(
 		long dossierId, String fileTemplateNo, boolean removed,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator) {

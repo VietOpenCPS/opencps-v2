@@ -13777,6 +13777,2138 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 		"(dossierFile.dossierPartNo IS NULL OR dossierFile.dossierPartNo = '') AND ";
 	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_EFORM_2 = "dossierFile.eForm = ? AND ";
 	private static final String _FINDER_COLUMN_GID_DID_PART_EFORM_REMOVED_2 = "dossierFile.removed = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByDID_FTNO_DPTS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByDID_FTNO_DPTS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName()
+			},
+			DossierFileModelImpl.DOSSIERID_COLUMN_BITMASK |
+			DossierFileModelImpl.FILETEMPLATENO_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERPARTTYPE_COLUMN_BITMASK |
+			DossierFileModelImpl.REMOVED_COLUMN_BITMASK |
+			DossierFileModelImpl.DOSSIERPARTNO_COLUMN_BITMASK |
+			DossierFileModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_DID_FTNO_DPTS = new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDID_FTNO_DPTS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByDID_FTNO_DPTS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName()
+			});
+
+	/**
+	 * Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @return the matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartType,
+			removed, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @return the range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartType,
+			removed, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end, OrderByComparator<DossierFile> orderByComparator) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartType,
+			removed, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed, int start,
+		int end, OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS;
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo, dossierPartType, removed
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS;
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo, dossierPartType, removed,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DossierFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierFile>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierFile dossierFile : list) {
+					if ((dossierId != dossierFile.getDossierId()) ||
+							!Objects.equals(fileTemplateNo,
+								dossierFile.getFileTemplateNo()) ||
+							(dossierPartType != dossierFile.getDossierPartType()) ||
+							(removed != dossierFile.isRemoved())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(dossierPartType);
+
+				qPos.add(removed);
+
+				if (!pagination) {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByDID_FTNO_DPTS_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByDID_FTNO_DPTS_First(dossierId,
+				fileTemplateNo, dossierPartType, removed, orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append(", dossierPartType=");
+		msg.append(dossierPartType);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByDID_FTNO_DPTS_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		List<DossierFile> list = findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+				dossierPartType, removed, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByDID_FTNO_DPTS_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByDID_FTNO_DPTS_Last(dossierId,
+				fileTemplateNo, dossierPartType, removed, orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append(", dossierPartType=");
+		msg.append(dossierPartType);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByDID_FTNO_DPTS_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator) {
+		int count = countByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+				dossierPartType, removed);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DossierFile> list = findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+				dossierPartType, removed, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossier files before and after the current dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierFileId the primary key of the current dossier file
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier file
+	 * @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	 */
+	@Override
+	public DossierFile[] findByDID_FTNO_DPTS_PrevAndNext(long dossierFileId,
+		long dossierId, String fileTemplateNo, int dossierPartType,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = findByPrimaryKey(dossierFileId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DossierFile[] array = new DossierFileImpl[3];
+
+			array[0] = getByDID_FTNO_DPTS_PrevAndNext(session, dossierFile,
+					dossierId, fileTemplateNo, dossierPartType, removed,
+					orderByComparator, true);
+
+			array[1] = dossierFile;
+
+			array[2] = getByDID_FTNO_DPTS_PrevAndNext(session, dossierFile,
+					dossierId, fileTemplateNo, dossierPartType, removed,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DossierFile getByDID_FTNO_DPTS_PrevAndNext(Session session,
+		DossierFile dossierFile, long dossierId, String fileTemplateNo,
+		int dossierPartType, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2);
+
+		boolean bindFileTemplateNo = false;
+
+		if (fileTemplateNo == null) {
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1);
+		}
+		else if (fileTemplateNo.equals("")) {
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3);
+		}
+		else {
+			bindFileTemplateNo = true;
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2);
+		}
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_2);
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(dossierId);
+
+		if (bindFileTemplateNo) {
+			qPos.add(fileTemplateNo);
+		}
+
+		qPos.add(dossierPartType);
+
+		qPos.add(removed);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossierFile);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DossierFile> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param removed the removed
+	 * @return the matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartTypes,
+			removed, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @return the range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartTypes,
+			removed, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end, OrderByComparator<DossierFile> orderByComparator) {
+		return findByDID_FTNO_DPTS(dossierId, fileTemplateNo, dossierPartTypes,
+			removed, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, boolean removed,
+		int start, int end, OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		if (dossierPartTypes == null) {
+			dossierPartTypes = new int[0];
+		}
+		else if (dossierPartTypes.length > 1) {
+			dossierPartTypes = ArrayUtil.unique(dossierPartTypes);
+
+			Arrays.sort(dossierPartTypes);
+		}
+
+		if (dossierPartTypes.length == 1) {
+			return findByDID_FTNO_DPTS(dossierId, fileTemplateNo,
+				dossierPartTypes[0], removed, start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo,
+					StringUtil.merge(dossierPartTypes), removed
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo,
+					StringUtil.merge(dossierPartTypes), removed,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DossierFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierFile>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierFile dossierFile : list) {
+					if ((dossierId != dossierFile.getDossierId()) ||
+							!Objects.equals(fileTemplateNo,
+								dossierFile.getFileTemplateNo()) ||
+							!ArrayUtil.contains(dossierPartTypes,
+								dossierFile.getDossierPartType()) ||
+							(removed != dossierFile.isRemoved())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2);
+			}
+
+			if (dossierPartTypes.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_7);
+
+				query.append(StringUtil.merge(dossierPartTypes));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(removed);
+
+				if (!pagination) {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63; from the database.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 */
+	@Override
+	public void removeByDID_FTNO_DPTS(long dossierId, String fileTemplateNo,
+		int dossierPartType, boolean removed) {
+		for (DossierFile dossierFile : findByDID_FTNO_DPTS(dossierId,
+				fileTemplateNo, dossierPartType, removed, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(dossierFile);
+		}
+	}
+
+	/**
+	 * Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByDID_FTNO_DPTS(long dossierId, String fileTemplateNo,
+		int dossierPartType, boolean removed) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_DID_FTNO_DPTS;
+
+		Object[] finderArgs = new Object[] {
+				dossierId, fileTemplateNo, dossierPartType, removed
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(dossierPartType);
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByDID_FTNO_DPTS(long dossierId, String fileTemplateNo,
+		int[] dossierPartTypes, boolean removed) {
+		if (dossierPartTypes == null) {
+			dossierPartTypes = new int[0];
+		}
+		else if (dossierPartTypes.length > 1) {
+			dossierPartTypes = ArrayUtil.unique(dossierPartTypes);
+
+			Arrays.sort(dossierPartTypes);
+		}
+
+		Object[] finderArgs = new Object[] {
+				dossierId, fileTemplateNo, StringUtil.merge(dossierPartTypes),
+				removed
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2);
+			}
+
+			if (dossierPartTypes.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_7);
+
+				query.append(StringUtil.merge(dossierPartTypes));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERID_2 = "dossierFile.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_1 = "dossierFile.fileTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_2 = "dossierFile.fileTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_FILETEMPLATENO_3 = "(dossierFile.fileTemplateNo IS NULL OR dossierFile.fileTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_2 = "dossierFile.dossierPartType = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_DOSSIERPARTTYPE_7 = "dossierFile.dossierPartType IN (";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_REMOVED_2 = "dossierFile.removed = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS_NOT_NULL_FID =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, DossierFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByDID_FTNO_DPTS_NOT_NULL_FID",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Long.class.getName(),
+				Boolean.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS_NOT_NULL_FID =
+		new FinderPath(DossierFileModelImpl.ENTITY_CACHE_ENABLED,
+			DossierFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByDID_FTNO_DPTS_NOT_NULL_FID",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Long.class.getName(),
+				Boolean.class.getName()
+			});
+
+	/**
+	 * Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @return the matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @return the range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, int start, int end) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartType, fileEntryId, removed, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS_NOT_NULL_FID;
+		finderArgs = new Object[] {
+				dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
+				
+				start, end, orderByComparator
+			};
+
+		List<DossierFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierFile>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierFile dossierFile : list) {
+					if ((dossierId != dossierFile.getDossierId()) ||
+							!Objects.equals(fileTemplateNo,
+								dossierFile.getFileTemplateNo()) ||
+							(dossierPartType != dossierFile.getDossierPartType()) ||
+							(fileEntryId >= dossierFile.getFileEntryId()) ||
+							(removed != dossierFile.isRemoved())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(7 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(7);
+			}
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(dossierPartType);
+
+				qPos.add(fileEntryId);
+
+				qPos.add(removed);
+
+				if (!pagination) {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByDID_FTNO_DPTS_NOT_NULL_FID_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByDID_FTNO_DPTS_NOT_NULL_FID_First(dossierId,
+				fileTemplateNo, dossierPartType, fileEntryId, removed,
+				orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(12);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append(", dossierPartType=");
+		msg.append(dossierPartType);
+
+		msg.append(", fileEntryId=");
+		msg.append(fileEntryId);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByDID_FTNO_DPTS_NOT_NULL_FID_First(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator) {
+		List<DossierFile> list = findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+				fileTemplateNo, dossierPartType, fileEntryId, removed, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file
+	 * @throws NoSuchDossierFileException if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile findByDID_FTNO_DPTS_NOT_NULL_FID_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = fetchByDID_FTNO_DPTS_NOT_NULL_FID_Last(dossierId,
+				fileTemplateNo, dossierPartType, fileEntryId, removed,
+				orderByComparator);
+
+		if (dossierFile != null) {
+			return dossierFile;
+		}
+
+		StringBundler msg = new StringBundler(12);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append(", dossierPartType=");
+		msg.append(dossierPartType);
+
+		msg.append(", fileEntryId=");
+		msg.append(fileEntryId);
+
+		msg.append(", removed=");
+		msg.append(removed);
+
+		msg.append("}");
+
+		throw new NoSuchDossierFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier file, or <code>null</code> if a matching dossier file could not be found
+	 */
+	@Override
+	public DossierFile fetchByDID_FTNO_DPTS_NOT_NULL_FID_Last(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator) {
+		int count = countByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+				fileTemplateNo, dossierPartType, fileEntryId, removed);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DossierFile> list = findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
+				fileTemplateNo, dossierPartType, fileEntryId, removed,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the dossier files before and after the current dossier file in the ordered set where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierFileId the primary key of the current dossier file
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next dossier file
+	 * @throws NoSuchDossierFileException if a dossier file with the primary key could not be found
+	 */
+	@Override
+	public DossierFile[] findByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(
+		long dossierFileId, long dossierId, String fileTemplateNo,
+		int dossierPartType, long fileEntryId, boolean removed,
+		OrderByComparator<DossierFile> orderByComparator)
+		throws NoSuchDossierFileException {
+		DossierFile dossierFile = findByPrimaryKey(dossierFileId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DossierFile[] array = new DossierFileImpl[3];
+
+			array[0] = getByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(session,
+					dossierFile, dossierId, fileTemplateNo, dossierPartType,
+					fileEntryId, removed, orderByComparator, true);
+
+			array[1] = dossierFile;
+
+			array[2] = getByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(session,
+					dossierFile, dossierId, fileTemplateNo, dossierPartType,
+					fileEntryId, removed, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DossierFile getByDID_FTNO_DPTS_NOT_NULL_FID_PrevAndNext(
+		Session session, DossierFile dossierFile, long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed, OrderByComparator<DossierFile> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(8 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(7);
+		}
+
+		query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2);
+
+		boolean bindFileTemplateNo = false;
+
+		if (fileTemplateNo == null) {
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1);
+		}
+		else if (fileTemplateNo.equals("")) {
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3);
+		}
+		else {
+			bindFileTemplateNo = true;
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2);
+		}
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_2);
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2);
+
+		query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(dossierId);
+
+		if (bindFileTemplateNo) {
+			qPos.add(fileTemplateNo);
+		}
+
+		qPos.add(dossierPartType);
+
+		qPos.add(fileEntryId);
+
+		qPos.add(removed);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(dossierFile);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<DossierFile> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @return the matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @return the range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed, int start, int end) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator) {
+		return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+			dossierPartTypes, fileEntryId, removed, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @param start the lower bound of the range of dossier files
+	 * @param end the upper bound of the range of dossier files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossier files
+	 */
+	@Override
+	public List<DossierFile> findByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed, int start, int end,
+		OrderByComparator<DossierFile> orderByComparator,
+		boolean retrieveFromCache) {
+		if (dossierPartTypes == null) {
+			dossierPartTypes = new int[0];
+		}
+		else if (dossierPartTypes.length > 1) {
+			dossierPartTypes = ArrayUtil.unique(dossierPartTypes);
+
+			Arrays.sort(dossierPartTypes);
+		}
+
+		if (dossierPartTypes.length == 1) {
+			return findByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo,
+				dossierPartTypes[0], fileEntryId, removed, start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo,
+					StringUtil.merge(dossierPartTypes), fileEntryId, removed
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					dossierId, fileTemplateNo,
+					StringUtil.merge(dossierPartTypes), fileEntryId, removed,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<DossierFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<DossierFile>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (DossierFile dossierFile : list) {
+					if ((dossierId != dossierFile.getDossierId()) ||
+							!Objects.equals(fileTemplateNo,
+								dossierFile.getFileTemplateNo()) ||
+							!ArrayUtil.contains(dossierPartTypes,
+								dossierFile.getDossierPartType()) ||
+							(fileEntryId >= dossierFile.getFileEntryId()) ||
+							(removed != dossierFile.isRemoved())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2);
+			}
+
+			if (dossierPartTypes.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_7);
+
+				query.append(StringUtil.merge(dossierPartTypes));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(fileEntryId);
+
+				qPos.add(removed);
+
+				if (!pagination) {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<DossierFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63; from the database.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 */
+	@Override
+	public void removeByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed) {
+		for (DossierFile dossierFile : findByDID_FTNO_DPTS_NOT_NULL_FID(
+				dossierId, fileTemplateNo, dossierPartType, fileEntryId,
+				removed, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(dossierFile);
+		}
+	}
+
+	/**
+	 * Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartType the dossier part type
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int dossierPartType, long fileEntryId,
+		boolean removed) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS_NOT_NULL_FID;
+
+		Object[] finderArgs = new Object[] {
+				dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(dossierPartType);
+
+				qPos.add(fileEntryId);
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of dossier files where dossierId = &#63; and fileTemplateNo = &#63; and dossierPartType = any &#63; and fileEntryId &gt; &#63; and removed = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param fileTemplateNo the file template no
+	 * @param dossierPartTypes the dossier part types
+	 * @param fileEntryId the file entry ID
+	 * @param removed the removed
+	 * @return the number of matching dossier files
+	 */
+	@Override
+	public int countByDID_FTNO_DPTS_NOT_NULL_FID(long dossierId,
+		String fileTemplateNo, int[] dossierPartTypes, long fileEntryId,
+		boolean removed) {
+		if (dossierPartTypes == null) {
+			dossierPartTypes = new int[0];
+		}
+		else if (dossierPartTypes.length > 1) {
+			dossierPartTypes = ArrayUtil.unique(dossierPartTypes);
+
+			Arrays.sort(dossierPartTypes);
+		}
+
+		Object[] finderArgs = new Object[] {
+				dossierId, fileTemplateNo, StringUtil.merge(dossierPartTypes),
+				fileEntryId, removed
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_DOSSIERFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2);
+			}
+
+			if (dossierPartTypes.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_7);
+
+				query.append(StringUtil.merge(dossierPartTypes));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2);
+
+			query.append(_FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2);
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				qPos.add(fileEntryId);
+
+				qPos.add(removed);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_DID_FTNO_DPTS_NOT_NULL_FID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERID_2 =
+		"dossierFile.dossierId = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_1 =
+		"dossierFile.fileTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_2 =
+		"dossierFile.fileTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILETEMPLATENO_3 =
+		"(dossierFile.fileTemplateNo IS NULL OR dossierFile.fileTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_2 =
+		"dossierFile.dossierPartType = ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_DOSSIERPARTTYPE_7 =
+		"dossierFile.dossierPartType IN (";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_FILEENTRYID_2 =
+		"dossierFile.fileEntryId > ? AND ";
+	private static final String _FINDER_COLUMN_DID_FTNO_DPTS_NOT_NULL_FID_REMOVED_2 =
+		"dossierFile.removed = ?";
 
 	public DossierFilePersistenceImpl() {
 		setModelClass(DossierFile.class);
@@ -14513,6 +16645,17 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_DID_R_O,
 				args);
 
+			args = new Object[] {
+					dossierFileModelImpl.getDossierId(),
+					dossierFileModelImpl.getFileTemplateNo(),
+					dossierFileModelImpl.getDossierPartType(),
+					dossierFileModelImpl.isRemoved()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_FTNO_DPTS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -14868,6 +17011,33 @@ public class DossierFilePersistenceImpl extends BasePersistenceImpl<DossierFile>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_DID_R_O,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_DID_R_O,
+					args);
+			}
+
+			if ((dossierFileModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierFileModelImpl.getOriginalDossierId(),
+						dossierFileModelImpl.getOriginalFileTemplateNo(),
+						dossierFileModelImpl.getOriginalDossierPartType(),
+						dossierFileModelImpl.getOriginalRemoved()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_FTNO_DPTS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS,
+					args);
+
+				args = new Object[] {
+						dossierFileModelImpl.getDossierId(),
+						dossierFileModelImpl.getFileTemplateNo(),
+						dossierFileModelImpl.getDossierPartType(),
+						dossierFileModelImpl.isRemoved()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_DID_FTNO_DPTS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DID_FTNO_DPTS,
 					args);
 			}
 		}
