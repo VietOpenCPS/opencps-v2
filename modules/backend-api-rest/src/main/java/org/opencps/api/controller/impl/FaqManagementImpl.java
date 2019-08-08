@@ -107,6 +107,7 @@ public class FaqManagementImpl implements FaqManagement {
 			String answer,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		_log.debug("IN GET QUESTION: " + groupId);
 		try {
 			if (Validator.isNull(start)) {
 				start = QueryUtil.ALL_POS;
