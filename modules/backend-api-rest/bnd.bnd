@@ -13,7 +13,10 @@ Include-Resource: \
 	@jjwt-jackson-0.10.2.jar,\
 	@jcaptcha-2.0-alpha-1-SNAPSHOT.jar,\
 	@jcaptcha-api-1.0.jar,\
-	@filters-2.0.235.jar
+	@filters-2.0.235.jar, \
+	@jackson-annotations-2.9.6.jar,\
+	@jackson-core-2.9.6.jar,\
+	@jackson-databind-2.9.6.jar
 -includeresource: 
 	@DKDN.GTVT.1.0.jar;lib:=true
 Import-Package: *;resolution:=optional
@@ -21,6 +24,7 @@ Export-Package: \
 	org.opencps.usermgt.action,\
 	com.fasterxml.jackson.annotation,\
 	com.fasterxml.jackson.annotation.*,\
+	com.fasterxml.jackson.annotation.JsonInclude,\
 	io.swagger.annotations,\
 	io.swagger.annotations.*,\
 	com.fasterxml.jackson.dataformat.xml.annotation,\
