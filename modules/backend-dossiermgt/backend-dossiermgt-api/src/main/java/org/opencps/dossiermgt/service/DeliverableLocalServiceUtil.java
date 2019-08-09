@@ -87,14 +87,14 @@ public class DeliverableLocalServiceUtil {
 		String applicationIdNo, String applicationName, String subject,
 		String issueDate, String expireDate, String revalidate,
 		String deliverableState, long dossierId, long fileEntryId,
-		long formScriptFileId, long formReportFileId,
+		long formScriptFileId, long formReportFileId, String formData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .addDeliverableSign(groupId, deliverableType,
 			deliverableName, deliverableCode, govAgencyCode, govAgencyName,
 			applicationIdNo, applicationName, subject, issueDate, expireDate,
 			revalidate, deliverableState, dossierId, fileEntryId,
-			formScriptFileId, formReportFileId, serviceContext);
+			formScriptFileId, formReportFileId, formData, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Deliverable adminProcessData(

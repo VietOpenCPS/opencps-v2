@@ -105,7 +105,7 @@ public interface DeliverableLocalService extends BaseLocalService,
 		String govAgencyName, String applicationIdNo, String applicationName,
 		String subject, String issueDate, String expireDate, String revalidate,
 		String deliverableState, long dossierId, long fileEntryId,
-		long formScriptFileId, long formReportFileId,
+		long formScriptFileId, long formReportFileId, String formData,
 		ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)

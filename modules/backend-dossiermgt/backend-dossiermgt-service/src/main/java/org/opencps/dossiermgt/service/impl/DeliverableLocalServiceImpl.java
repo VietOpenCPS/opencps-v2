@@ -229,7 +229,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			String deliverableCode, String govAgencyCode, String govAgencyName, String applicationIdNo,
 			String applicationName, String subject, String issueDate, String expireDate, String revalidate,
 			String deliverableState, long dossierId, long fileEntryId, long formScriptFileId, long formReportFileId,
-			ServiceContext serviceContext) {
+			String formData, ServiceContext serviceContext) {
 
 		long userId = serviceContext.getUserId();
 
@@ -268,6 +268,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setFormScriptFileId(formScriptFileId);
 		object.setFormReportFileId(formReportFileId);
 		object.setDeliverableState(Integer.valueOf(deliverableState));
+		object.setFormData(formData);
 
 		return deliverablePersistence.update(object);
 	}
