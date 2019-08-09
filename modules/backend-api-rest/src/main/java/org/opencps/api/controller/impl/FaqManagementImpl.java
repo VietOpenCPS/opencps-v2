@@ -1,7 +1,10 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -12,7 +15,14 @@ import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +42,9 @@ import org.opencps.api.faq.model.QuestionInputModel;
 import org.opencps.api.faq.model.QuestionModel;
 import org.opencps.api.faq.model.QuestionResultsModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
@@ -404,5 +417,101 @@ public class FaqManagementImpl implements FaqManagement {
 				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
 				.header("Access-Control-Allow-Methods", "GET,PUT,DELETE")
 				.build();
+	}
+
+	@Override
+	public Response proxyQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String url, String method, String data) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		System.out.println("In proxy question: " + groupId);
+		try {
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, "SERVER_DVC");
+			if (sc != null) {
+				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+				String serverUrl = StringPool.BLANK;
+		        String authStrEnc = StringPool.BLANK;
+				
+	
+			    String apiUrl = StringPool.BLANK;
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try
+			    {
+			        URL urlVal = null;
+			        String groupIdRequest = StringPool.BLANK;
+			        StringBuilder postData = new StringBuilder();
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
+					Iterator<?> keys = dataObj.keys();
+					while(keys.hasNext() ) {
+					    String key = (String)keys.next();
+					    if (!"".equals(postData.toString())) {
+					    	postData.append("&");
+					    }
+					    postData.append(key);
+					    postData.append("=");
+					    postData.append(dataObj.get(key));
+					}
+			        
+					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
+							&& configObj.has(SyncServerTerm.SERVER_SECRET)
+							&& configObj.has(SyncServerTerm.SERVER_URL)
+							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+						
+						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+
+						_log.debug("PROXY URL: " + serverUrl);
+					}
+			        
+					apiUrl = serverUrl + url;
+					System.out.println("API URL: " + apiUrl);
+			        if ("GET".equals(method)) {
+						urlVal = new URL(apiUrl + "?" + postData.toString());			        	
+			        }
+
+					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+			        conn.setRequestProperty("groupId", groupIdRequest);
+			        conn.setRequestMethod(method);
+			        conn.setRequestProperty("Accept", "application/json");
+			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+			        
+			        if ("POST".equals(method)) {
+				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
+
+						conn.setUseCaches(false);
+						conn.setDoInput(true);
+						conn.setDoOutput(true);
+						
+						OutputStream os = conn.getOutputStream();
+						os.write( postData.toString().getBytes() );    
+						os.close();			        	
+			        }
+
+					
+			        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			        			        
+			        int cp;
+			        while ((cp = brf.read()) != -1) {
+			          sb.append((char) cp);
+			        }
+
+					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
+			    }
+			    catch(IOException e)
+			    {
+			        System.out.println("Something went wrong while reading/writing in stream!!");
+			    }
+			    return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+			}
+			else {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+			}		
+		}
+		catch (Exception e) {
+			_log.info(e);
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }
