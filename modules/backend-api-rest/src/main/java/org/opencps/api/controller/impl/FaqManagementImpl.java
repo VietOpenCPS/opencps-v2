@@ -469,6 +469,9 @@ public class FaqManagementImpl implements FaqManagement {
 			        if ("GET".equals(method)) {
 						urlVal = new URL(apiUrl + "?" + postData.toString());			        	
 			        }
+			        else {
+			        	urlVal = new URL(apiUrl);
+			        }
 
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
 			        conn.setRequestProperty("groupId", groupIdRequest);
@@ -476,7 +479,7 @@ public class FaqManagementImpl implements FaqManagement {
 			        conn.setRequestProperty("Accept", "application/json");
 			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 			        
-			        if ("POST".equals(method)) {
+			        if ("POST".equals(method) || "PUT".equals(method)) {
 				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
 
