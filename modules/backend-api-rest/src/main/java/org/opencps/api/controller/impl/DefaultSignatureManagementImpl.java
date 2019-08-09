@@ -844,6 +844,10 @@ public class DefaultSignatureManagementImpl implements DefaultSignatureManagemen
 					if (dossierFile != null) {
 						String deliverableCode = dossierFile.getDeliverableCode();
 						if (Validator.isNotNull(deliverableCode)) {
+							if (dossierFile.getEForm()) {
+								dossierFile.setIsNew(false);
+								DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+							}
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = String.valueOf(deliverable.getDeliverableState());

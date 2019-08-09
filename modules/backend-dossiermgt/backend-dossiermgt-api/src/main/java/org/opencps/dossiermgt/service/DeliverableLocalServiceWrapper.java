@@ -79,13 +79,14 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		String applicationIdNo, String applicationName, String subject,
 		String issueDate, String expireDate, String revalidate,
 		String deliverableState, long dossierId, long fileEntryId,
-		long formScriptFileId, long formReportFileId,
+		long formScriptFileId, long formReportFileId, String formData,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _deliverableLocalService.addDeliverableSign(groupId,
 			deliverableType, deliverableName, deliverableCode, govAgencyCode,
 			govAgencyName, applicationIdNo, applicationName, subject,
 			issueDate, expireDate, revalidate, deliverableState, dossierId,
-			fileEntryId, formScriptFileId, formReportFileId, serviceContext);
+			fileEntryId, formScriptFileId, formReportFileId, formData,
+			serviceContext);
 	}
 
 	@Override
