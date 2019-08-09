@@ -423,7 +423,6 @@ public class FaqManagementImpl implements FaqManagement {
 	public Response proxyQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String url, String method, String data) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		System.out.println("In proxy question: " + groupId);
 		try {
 			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, "SERVER_DVC");
 			if (sc != null) {
@@ -460,12 +459,9 @@ public class FaqManagementImpl implements FaqManagement {
 						
 						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
 				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
-
-						_log.debug("PROXY URL: " + serverUrl);
 					}
 			        
 					apiUrl = serverUrl + url;
-					System.out.println("API URL: " + apiUrl);
 			        if ("GET".equals(method)) {
 						urlVal = new URL(apiUrl + "?" + postData.toString());			        	
 			        }
@@ -504,7 +500,7 @@ public class FaqManagementImpl implements FaqManagement {
 			    }
 			    catch(IOException e)
 			    {
-			        System.out.println("Something went wrong while reading/writing in stream!!");
+			        _log.debug("Something went wrong while reading/writing in stream!!");
 			    }
 			    return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
 			}
@@ -513,7 +509,6 @@ public class FaqManagementImpl implements FaqManagement {
 			}		
 		}
 		catch (Exception e) {
-			_log.info(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
