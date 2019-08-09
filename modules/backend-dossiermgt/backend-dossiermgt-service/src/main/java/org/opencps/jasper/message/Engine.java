@@ -1,6 +1,7 @@
 package org.opencps.jasper.message;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -116,12 +117,11 @@ public class Engine implements MessageListener {
     			fileEntryId = fileEntry.getFileEntryId();
     
     			dossierFile.setFileEntryId(fileEntryId);
-    
+    			dossierFile.setIsNew(false);
     			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
     
-    			Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
-    
-    			indexer.reindex(dossierFile);
+    			//Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
+    			//indexer.reindex(dossierFile);
     
 			} else if(engineClass.isAssignableFrom(RegistrationForm.class)) {
 			    RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.fetchRegistrationForm(classPK);
@@ -147,30 +147,47 @@ public class Engine implements MessageListener {
 			}
 			else if (engineClass.isAssignableFrom(Deliverable.class)) {
 				Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
-				
-    			ServiceContext serviceContext = new ServiceContext();
-    			serviceContext.setUserId(deliverable.getUserId());
-    
-    			long fileEntryId = 0;
-    
-    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, deliverable.getGroupId(), file, filePath,
-    					serviceContext);
-    
-    			fileEntryId = fileEntry.getFileEntryId();
-    
-    			deliverable.setFileEntryId(fileEntryId);
-    
-    			DeliverableLocalServiceUtil.updateDeliverable(deliverable);
-    			//Process dossierFile
-    			DossierFile dossierFile = DossierFileLocalServiceUtil.getByDeliverableCode(deliverable.getDeliverableCode());
-    			if (dossierFile != null) {
+				//
+				boolean flagAttach = false;
+				String formData = deliverable.getFormData();
+				if (Validator.isNotNull(formData)) {
+					try {
+						JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+						if (jsonData.has("fileAttach")) {
+							flagAttach = jsonData.getBoolean("fileAttach");
+						}
+					} catch (JSONException e) {
+						_log.debug(e);
+					}
+				}
+				//
+				ServiceContext serviceContext = new ServiceContext();
+				serviceContext.setUserId(deliverable.getUserId());
+
+				long fileEntryId = 0;
+
+				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, deliverable.getGroupId(), file,
+						filePath, serviceContext);
+
+				fileEntryId = fileEntry.getFileEntryId();
+
+				_log.info("flagAttach: "+flagAttach);
+				if (!flagAttach) {
+					deliverable.setFileEntryId(fileEntryId);
+					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				}
+
+				// Process dossierFile
+				DossierFile dossierFile = DossierFileLocalServiceUtil
+						.getByDeliverableCode(deliverable.getDeliverableCode());
+				if (dossierFile != null) {
 					DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
 							dossierFile.getGroupId(), dossierFile.getDossierId(), dossierFile.getDossierTemplateNo(),
 							dossierFile.getDossierPartNo(), false, false);
 					if (dossierFileAttach != null) {
-						String formData = dossierFileAttach.getFormData();
-						if (Validator.isNotNull(formData)) {
-							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
+						String formDataAttach = dossierFileAttach.getFormData();
+						if (Validator.isNotNull(formDataAttach)) {
+							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formDataAttach);
 							String deliverableCode = jsonData.getString(DeliverableTerm.DELIVERABLE_CODE);
 							if (Validator.isNotNull(deliverableCode)) {
 								dossierFileAttach.setFileEntryId(fileEntryId);
@@ -199,7 +216,7 @@ public class Engine implements MessageListener {
 								dossierFile.getDossierId(), StringPool.BLANK, dossierFile.getDossierTemplateNo(),
 								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
 								dossierFile.getFileTemplateNo(), fileEntry.getFileName(), dossierFile.getFormData(),
-								fileEntryId, dossierFile.getOriginal(), false, true, false, StringPool.BLANK);
+								fileEntryId, dossierFile.getOriginal(), false, false, false, StringPool.BLANK);
 					}
 				}
 			}

@@ -3638,7 +3638,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Date appIdDate = null;
 
 			try {
@@ -3666,11 +3666,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			dossier.setSampleCount(sampleCount);
 			
 			//Delegate dossier
-			dossier.setDelegateType(input.getDelegateType());
+			dossier.setDelegateType(input.getDelegateType() != null ? input.getDelegateType() : 0);
 			if (Validator.isNotNull(input.getDocumentNo())) {				
 				dossier.setDocumentNo(input.getDocumentNo());
 			}
-			if (0 != input.getDocumentDate()) {
+			if (input.getDocumentDate() != null && 0 != input.getDocumentDate()) {
 				dossier.setDocumentDate(new Date(input.getDocumentDate()));				
 			}
 			
@@ -3829,11 +3829,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				//Delegate
 				//Delegate dossier
-				dossier.setDelegateType(input.getDelegateType());
+				dossier.setDelegateType(input.getDelegateType() != null ? input.getDelegateType() : 0);
 				if (Validator.isNotNull(input.getDocumentNo())) {				
 					dossier.setDocumentNo(input.getDocumentNo());
 				}
-				if (0 != input.getDocumentDate()) {
+				if (input.getDocumentDate() != null && 0 != input.getDocumentDate()) {
 					dossier.setDocumentDate(new Date(input.getDocumentDate()));				
 				}				
 			}
@@ -3905,11 +3905,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				
 				//Delegate dossier
-				dossier.setDelegateType(input.getDelegateType());
+				dossier.setDelegateType(input.getDelegateType() != null ? input.getDelegateType() : 0);
 				if (Validator.isNotNull(input.getDocumentNo())) {				
 					dossier.setDocumentNo(input.getDocumentNo());
 				}
-				if (0 != input.getDocumentDate()) {
+				if (input.getDocumentDate() != null && 0 != input.getDocumentDate()) {
 					dossier.setDocumentDate(new Date(input.getDocumentDate()));				
 				}
 				
@@ -5293,6 +5293,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
 							dossierFile.setFormData(StringPool.BLANK);
+							dossierFile.setIsNew(false);
 						}
 						_log.debug("__Start update dossier file at:" + new Date());
 			
@@ -5332,6 +5333,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
 						dossierFile.setFormData(StringPool.BLANK);
+						dossierFile.setIsNew(false);
 					}
 					_log.debug("__Start update dossier file at:" + new Date());
 		
@@ -5383,6 +5385,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
 							dossierFile.setFormData(StringPool.BLANK);
+							dossierFile.setIsNew(false);
 						}
 						_log.debug("__Start update dossier file at:" + new Date());
 
@@ -5424,6 +5427,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					if (Validator.isNull(eForm) || (Validator.isNotNull(eForm) && !Boolean.parseBoolean(eForm))) {
 						dossierFile.setFormData(StringPool.BLANK);
+						dossierFile.setIsNew(false);
 					}
 					_log.debug("__Start update dossier file at:" + new Date());
 		

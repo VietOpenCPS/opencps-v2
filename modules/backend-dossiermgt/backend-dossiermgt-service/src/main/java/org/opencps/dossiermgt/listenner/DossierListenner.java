@@ -35,7 +35,7 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 
 	@Override
 	public void onAfterCreate(Dossier model) throws ModelListenerException {
-		
+
 		/*
 		 * 04/01/2017 ThanhNV: 
 		 * add doossier log use DossierListennerUtils
