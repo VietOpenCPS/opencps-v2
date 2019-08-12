@@ -198,7 +198,8 @@ import javax.xml.bind.annotation.XmlType;
     "groupDossierId",
     "delegateType",
     "documentNo",
-    "documentDate"
+    "documentDate",
+    "serverNo"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -304,8 +305,17 @@ public class DossierDetailModel {
 	protected Integer delegateType;
 	protected String documentNo;
 	protected String documentDate;
+	protected String serverNo;
 	
-    public Integer getDelegateType() {
+    public String getServerNo() {
+		return serverNo;
+	}
+
+	public void setServerNo(String serverNo) {
+		this.serverNo = serverNo;
+	}
+
+	public Integer getDelegateType() {
 		return delegateType;
 	}
 

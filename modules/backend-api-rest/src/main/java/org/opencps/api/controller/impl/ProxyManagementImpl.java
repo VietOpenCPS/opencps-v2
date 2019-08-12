@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,10 +38,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 
 	@Override
 	public Response proxy(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String url, String method, String data) {
+			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, "SERVER_DVC");
+			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "SERVER_DVC";
+			
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
+			
 			if (sc != null) {
 				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 				String serverUrl = StringPool.BLANK;
