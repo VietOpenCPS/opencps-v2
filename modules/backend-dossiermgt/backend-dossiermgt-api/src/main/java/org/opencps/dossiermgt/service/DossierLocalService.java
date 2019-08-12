@@ -239,6 +239,9 @@ public interface DossierLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier fetchByDO_NO(String dossierNo);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
 	/**

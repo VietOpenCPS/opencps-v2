@@ -667,6 +667,9 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierNo" />
 		</finder>
+		<finder return-type="Dossier" name="DO_NO">
+			<finder-column name="dossierNo" />
+		</finder>
 
 		<finder return-type="Collection" name="G_AN">
 			<finder-column name="groupId"/>
