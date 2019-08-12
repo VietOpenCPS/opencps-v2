@@ -2449,7 +2449,8 @@ public class DossierManagementImpl implements DossierManagement {
 		
 		if (dossier != null) {
 			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-			if (dossierAction != null && dossierAction.isRollbackable()) {
+			if (dossierAction != null) {
+//			if (dossierAction != null && dossierAction.isRollbackable()) {
 				DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
 				DossierAction previousAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getPreviousActionId());
