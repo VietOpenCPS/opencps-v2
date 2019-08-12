@@ -286,6 +286,11 @@ public class DossierLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier fetchByDO_NO(
+		String dossierNo) {
+		return getService().fetchByDO_NO(dossierNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier fetchDossier(
 		long dossierId) {
 		return getService().fetchDossier(dossierId);

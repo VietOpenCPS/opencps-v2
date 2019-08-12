@@ -3824,6 +3824,61 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns the dossier where dossierNo = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param dossierNo the dossier no
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByDO_NO(String dossierNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().findByDO_NO(dossierNo);
+	}
+
+	/**
+	* Returns the dossier where dossierNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierNo the dossier no
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByDO_NO(String dossierNo) {
+		return getPersistence().fetchByDO_NO(dossierNo);
+	}
+
+	/**
+	* Returns the dossier where dossierNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierNo the dossier no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByDO_NO(String dossierNo,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByDO_NO(dossierNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier where dossierNo = &#63; from the database.
+	*
+	* @param dossierNo the dossier no
+	* @return the dossier that was removed
+	*/
+	public static Dossier removeByDO_NO(String dossierNo)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().removeByDO_NO(dossierNo);
+	}
+
+	/**
+	* Returns the number of dossiers where dossierNo = &#63;.
+	*
+	* @param dossierNo the dossier no
+	* @return the number of matching dossiers
+	*/
+	public static int countByDO_NO(String dossierNo) {
+		return getPersistence().countByDO_NO(dossierNo);
+	}
+
+	/**
 	* Returns all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
 	*
 	* @param groupId the group ID

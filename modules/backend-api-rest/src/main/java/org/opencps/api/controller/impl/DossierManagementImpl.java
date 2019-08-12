@@ -837,7 +837,7 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
 //		_log.info("secretCode: "+secretCode);
-//		_log.info("secretKey: "+secretKey);
+		//_log.info("secretKey: "+secretKey);
 		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 

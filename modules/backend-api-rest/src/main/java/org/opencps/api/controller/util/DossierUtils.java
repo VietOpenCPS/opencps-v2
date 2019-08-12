@@ -1047,7 +1047,13 @@ public class DossierUtils {
 		if (dossierId > 0) {
 			return DossierLocalServiceUtil.fetchDossier(dossierId);
 		} else {
-			return DossierLocalServiceUtil.getByRef(groupId, id);
+
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(id);
+			if (dossier == null) {
+				return DossierLocalServiceUtil.getByRef(groupId, id);
+			} else {
+				return dossier;
+			}
 		}
 	}
 
