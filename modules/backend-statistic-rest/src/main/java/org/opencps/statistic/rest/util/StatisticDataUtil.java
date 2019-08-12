@@ -225,6 +225,8 @@ public class StatisticDataUtil {
 			response.setTotal(jsonData.getInt("total"));
 			List<Document> lstDocs = (List<Document>) jsonData.get("data");
 			List<GetVotingResultData> lstDatas = new ArrayList<>();
+			
+			System.out.println("VOTING DATA SIZE: " + jsonData.getInt("total"));
 			for (Document doc : lstDocs) {
 				GetVotingResultData data = new GetVotingResultData();
 				data.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));
