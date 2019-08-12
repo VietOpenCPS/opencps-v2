@@ -933,7 +933,7 @@ public class DossierUtils {
 		if (Validator.isNotNull(input.getDocumentDate())) {
 			model.setDocumentDate(APIDateTimeUtils.convertDateToString(input.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		}
-
+		model.setServerNo(input.getServerNo());
 		return model;
 	}
 
