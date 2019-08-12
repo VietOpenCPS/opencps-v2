@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.statistic.rest.dto.DomainResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
@@ -27,6 +28,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.VotingStatisticFinderService;
 import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
@@ -198,7 +200,13 @@ public class VotingStatisticSumYearCalcular {
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
 
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}			
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -239,7 +247,13 @@ public class VotingStatisticSumYearCalcular {
 			/* statistic by all */
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}			
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -284,7 +298,13 @@ public class VotingStatisticSumYearCalcular {
 			/* statistic by all */
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}			
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -331,7 +351,13 @@ public class VotingStatisticSumYearCalcular {
 			//System.out.println("STRART");
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}			
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
