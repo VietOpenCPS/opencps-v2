@@ -234,7 +234,7 @@ public class VotingManagementImpl implements VotingManagement {
 			String comment = HtmlUtil.escape(input.getComment());
 			String selected = HtmlUtil.escape(input.getSelected());
 			String email = HtmlUtil.escape(input.getEmail());
-
+			_log.debug("ADD VOTING: " + votingId + "," + comment);
 			VotingResult votingResult = actions.addVotingResult(user.getUserId(), company.getCompanyId(), groupId,
 					votingId, email, comment, selected, serviceContext);
 
@@ -243,6 +243,7 @@ public class VotingManagementImpl implements VotingManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
