@@ -89,6 +89,7 @@ import org.opencps.api.controller.impl.OneGateControllerImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
 import org.opencps.api.controller.impl.ProcessPluginManagementImpl;
+import org.opencps.api.controller.impl.ProxyManagementImpl;
 import org.opencps.api.controller.impl.RegistrationFormManagementImpl;
 import org.opencps.api.controller.impl.RegistrationLogManagementImpl;
 import org.opencps.api.controller.impl.RegistrationManagementImpl;
@@ -213,7 +214,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new EFormManagementImpl());
 		singletons.add(new BookingManagementImpl());
 		singletons.add(new AdminConfigManagementImpl());
-		
+		singletons.add(new ProxyManagementImpl());
 		singletons.add(this);
 		
 		// add service provider
