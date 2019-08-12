@@ -44,7 +44,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "SERVER_DVC";
 			
 			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
-			
+			_log.debug("SERVER PROXY: " + sc.getConfigs());
 			if (sc != null) {
 				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 				String serverUrl = StringPool.BLANK;
@@ -88,13 +88,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        else {
 			        	urlVal = new URL(apiUrl);
 			        }
-
+			        _log.debug("API URL: " + apiUrl);
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
 			        conn.setRequestProperty("groupId", groupIdRequest);
 			        conn.setRequestMethod(method);
 			        conn.setRequestProperty("Accept", "application/json");
 			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
-			        
+			        _log.debug("BASIC AUTHEN: " + authStrEnc);
 			        if ("POST".equals(method) || "PUT".equals(method)) {
 				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
@@ -102,7 +102,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 						conn.setUseCaches(false);
 						conn.setDoInput(true);
 						conn.setDoOutput(true);
-						
+						_log.debug("POST DATA: " + postData.toString());
 						OutputStream os = conn.getOutputStream();
 						os.write( postData.toString().getBytes() );    
 						os.close();			        	
@@ -115,7 +115,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        while ((cp = brf.read()) != -1) {
 			          sb.append((char) cp);
 			        }
-
+			        _log.debug("RESULT PROXY: " + sb.toString());
 					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
 			    }
 			    catch(IOException e)

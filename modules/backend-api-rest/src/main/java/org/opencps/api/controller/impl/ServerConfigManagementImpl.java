@@ -1,6 +1,9 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -10,6 +13,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +36,7 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -294,6 +299,50 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getBasicServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+
+			if (query.getEnd() == 0) {
+				query.setStart(-1);
+				query.setEnd(-1);
+			}
+
+			List<ServerConfig> configs = ServerConfigLocalServiceUtil.getGroupId(groupId);
+			int count = configs.size();
+			
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			
+			result.put("total", count);
+			JSONArray sLists = JSONFactoryUtil.createJSONArray();
+			for (ServerConfig sc : configs) {
+				JSONObject obj = JSONFactoryUtil.createJSONObject();
+				obj.put("serverNo", sc.getServerNo());
+				if (Validator.isNotNull(sc.getConfigs())) {
+					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
+							&& configObj.has(SyncServerTerm.SERVER_SECRET)
+							&& configObj.has(SyncServerTerm.SERVER_URL)
+							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+				        obj.put("groupId", configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
+					}
+				}
+				
+				sLists.put(obj);
+			}
+
+			result.put("data", sLists);
+			
+			return Response.status(200).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
