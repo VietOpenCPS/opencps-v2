@@ -237,7 +237,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
-			//LOG.info(sql);
+			LOG.info(sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 

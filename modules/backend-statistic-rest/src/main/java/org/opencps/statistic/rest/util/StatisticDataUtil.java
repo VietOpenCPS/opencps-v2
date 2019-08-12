@@ -206,15 +206,16 @@ public class StatisticDataUtil {
 				else {
 					params.put("year", Integer.toString(LocalDate.now().getYear()));
 				}
-			} else {
+			} 
+			else {
 				if (Validator.isNotNull(payload.getFromVotingDate())) {
 					params.put(VotingResultTerm.FROM_VOTING_DATE, payload.getFromVotingDate());
 				}
 				if (Validator.isNotNull(payload.getToVotingDate())) {
-					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getFromVotingDate());
+					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-		
+			System.out.println("FROM VOTING: " + payload.getFromVotingDate() + ":" + payload.getToVotingDate());
 			params.put(VotingTerm.CLASS_NAME, "dossier");
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
