@@ -124,6 +124,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
@@ -1345,6 +1346,15 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 				}
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI) {
+			
+			try {
+				_log.debug("groupId=" + groupId + " dossierId=" + dossier.getDossierId());
+				ExecuteOneActionTerm.invokeSInvoice(groupId, dossier, context);
+			} catch (Exception e) {
+				// TODO: do sth
+				_log.error(e);
+			}
+			
 			String CINVOICEUrl = "postal/invoice";
 			
 			JSONObject resultObj = null;
