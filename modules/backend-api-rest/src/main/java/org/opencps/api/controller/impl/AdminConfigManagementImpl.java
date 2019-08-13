@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +43,12 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.controller.AdminConfigManagement;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import backend.admin.config.whiteboard.BundleLoader;
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -383,6 +390,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 //						_log.debug(e);
 //						responeData = JSONFactoryUtil.createJSONArray(resultString);
 //					}
+//					messageData.put(message.getString(RESPONE), responeData);
+//
+//					messageData.put(STATUS, HttpStatus.OK);
+					
 				    String apiUrl = StringPool.BLANK;
 				    
 				    StringBuilder sb = new StringBuilder();
