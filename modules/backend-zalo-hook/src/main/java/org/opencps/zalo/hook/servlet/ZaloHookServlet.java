@@ -1,7 +1,10 @@
 
 package org.opencps.zalo.hook.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
 import org.opencps.zalo.hook.utils.ZaloMapUtils;
+import org.opencps.zalo.hook.utils.ZaloMapUtilsV2;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.petra.string.StringPool;
@@ -39,12 +43,7 @@ public class ZaloHookServlet extends HttpServlet {
 	public void init()
 		throws ServletException {
 
-		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet init success");
-		}
-		else {
-			System.out.println("ZaloHookServlet init success sys");
-		}
+		_log.debug("ZaloHookServlet init success");
 
 		super.init();
 	}
@@ -56,12 +55,7 @@ public class ZaloHookServlet extends HttpServlet {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet doGet opencps");
-		}
-		else {
-			System.out.println("ZaloHookServlet doGet opencps Sys");
-		}
+		_log.debug("ZaloHookServlet doGet opencps");
 
 		try {
 
@@ -71,9 +65,7 @@ public class ZaloHookServlet extends HttpServlet {
 				String parameterName = enumeration.nextElement();
 				zaloInfo.put(
 					parameterName, request.getParameter(parameterName));
-				_log.info(
-					parameterName + "=" + request.getParameter(parameterName));
-				System.out.println(
+				_log.debug(
 					parameterName + "=" + request.getParameter(parameterName));
 			}
 
@@ -108,7 +100,7 @@ public class ZaloHookServlet extends HttpServlet {
 			}
 			else {
 
-				_log.info("======action invalid======");
+				_log.debug("======action invalid======");
 			}
 
 		}
@@ -124,21 +116,47 @@ public class ZaloHookServlet extends HttpServlet {
 		HttpServletRequest request, HttpServletResponse response)
 		throws IOException, ServletException {
 
-		if (_log.isInfoEnabled()) {
-			_log.info("ZaloHookServlet doPost");
+		_log.debug("ZaloHookServlet doPost");
+
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+		try {
+			
+			InputStream inputStream = request.getInputStream();
+			char[] charBuffer = new char[1024];
+			int bytesRead = -1;
+			if (Validator.isNotNull(inputStream)) {
+				
+				bufferedReader =
+								new BufferedReader(new InputStreamReader(inputStream));
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+
+				ZaloMapUtilsV2.doAction(stringBuilder.toString());
+			}
+			
 		}
-		else {
-			System.out.println("ZaloHookServlet doPost Sys");
+		catch (IOException ex) {
+			
+			_log.error(ex);
+		}
+		finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				}
+				catch (IOException ex) {
+					_log.error(ex);
+				}
+			}
 		}
 
-		try {
-			doGet(request, response);
-		}
-		catch (Exception e) {
-			_log.error(e);
-		}
+		_writeSampleHTML(response, null);
 
 	}
+
+	
 
 	/**
 	 * Dummy contents
