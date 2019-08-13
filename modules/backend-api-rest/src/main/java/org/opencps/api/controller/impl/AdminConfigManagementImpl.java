@@ -353,90 +353,90 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					}
 				} else if (message.getString(TYPE).equals(API)) {
 
-					RestTemplate restTemplate = new RestTemplate();
-
-					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-
-					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-
-					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-					JSONObject headerObject = message.getJSONObject("headers");
-
-					JSONArray keys = headerObject.names();
-
-					for (int i = 0; i < keys.length(); ++i) {
-
-						String key = keys.getString(i);
-						String value = headerObject.getString(key);
-
-						headers.set(key, value);
-
-					}
-					headers.set("localaccess", headerObject.getString("Token"));
-					headers.set("userid", headerObject.getString("USER_ID"));
+//					RestTemplate restTemplate = new RestTemplate();
+//
+//					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+//
+//					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+//
+//					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+//
+//					JSONObject headerObject = message.getJSONObject("headers");
+//
+//					JSONArray keys = headerObject.names();
+//
+//					for (int i = 0; i < keys.length(); ++i) {
+//
+//						String key = keys.getString(i);
+//						String value = headerObject.getString(key);
+//
+//						headers.set(key, value);
+//
+//					}
+//					headers.set("localaccess", headerObject.getString("Token"));
+//					headers.set("userid", headerObject.getString("USER_ID"));
+//					
+//					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+//					
+//					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+//							HttpMethod.GET, entity, String.class);
+//
+//					String resultString = response.getBody();
+//
+//					JSONArray responeData = JSONFactoryUtil.createJSONArray();
+//					try {
+//						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
+//					} catch (Exception e) {
+//						_log.debug(e);
+//						responeData = JSONFactoryUtil.createJSONArray(resultString);
+//					}
+//					messageData.put(message.getString(RESPONE), responeData);
+//
+//					messageData.put(STATUS, HttpStatus.OK);
 					
-					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-					
-					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
-							HttpMethod.GET, entity, String.class);
+				    String apiUrl = StringPool.BLANK;
+				    
+				    StringBuilder sb = new StringBuilder();
+				    try
+				    {
+				        URL urlVal = null;
+						apiUrl = portalURL + message.getString("api");
+						urlVal = new URL(apiUrl);
+						
+						JSONObject headerObject = message.getJSONObject("headers");
+						java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
 
-					String resultString = response.getBody();
+						JSONArray keys = headerObject.names();
 
-					JSONArray responeData = JSONFactoryUtil.createJSONArray();
-					try {
-						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
-					} catch (Exception e) {
-						_log.debug(e);
-						responeData = JSONFactoryUtil.createJSONArray(resultString);
-					}
-					messageData.put(message.getString(RESPONE), responeData);
+						for (int i = 0; i < keys.length(); ++i) {
 
-					messageData.put(STATUS, HttpStatus.OK);
-					
-//				    String apiUrl = StringPool.BLANK;
-//				    
-//				    StringBuilder sb = new StringBuilder();
-//				    try
-//				    {
-//				        URL urlVal = null;
-//						apiUrl = portalURL + message.getString("api");
-//						urlVal = new URL(apiUrl);
-//						
-//						JSONObject headerObject = message.getJSONObject("headers");
-//						java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-//
-//						JSONArray keys = headerObject.names();
-//
-//						for (int i = 0; i < keys.length(); ++i) {
-//
-//							String key = keys.getString(i);
-//							String value = headerObject.getString(key);
-//
-//							conn.setRequestProperty(key, value);
-//
-//						}
-//						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
-//						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
-//
-//				        conn.setRequestMethod("GET");
-//				        conn.setRequestProperty("Accept", "application/json");
-//				        
-//				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//				        			        
-//				        int cp;
-//				        while ((cp = brf.read()) != -1) {
-//				          sb.append((char) cp);
-//				        }
-//					    
-//						messageData.put(message.getString(RESPONE), sb.toString());
-//						messageData.put(STATUS, HttpStatus.OK);
-//				    }
-//				    catch(IOException e)
-//				    {
-//				        _log.debug("Something went wrong while reading/writing in stream!!");
-//				        _log.debug(e);
-//				    }
+							String key = keys.getString(i);
+							String value = headerObject.getString(key);
+
+							conn.setRequestProperty(key, value);
+
+						}
+						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
+						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
+
+				        conn.setRequestMethod("GET");
+				        conn.setRequestProperty("Accept", "application/json");
+				        
+				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				        			        
+				        int cp;
+				        while ((cp = brf.read()) != -1) {
+				          sb.append((char) cp);
+				        }
+					    
+						messageData.put(message.getString(RESPONE), sb.toString());
+						messageData.put(STATUS, HttpStatus.OK);
+				    }
+				    catch(IOException e)
+				    {
+				        _log.debug("Something went wrong while reading/writing in stream!!");
+				        _log.debug(e);
+				    }
 					
 				}
 	
