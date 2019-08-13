@@ -111,6 +111,7 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.DynamicReport;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -132,6 +133,7 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
@@ -2174,7 +2176,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						serviceProcess.getDurationUnit(), dossier.getGroupId());
 					Date newDueDate = dueDateUtils.getDueDate();
 					if (newDueDate != null) {
-						dossier.setReceiveDate(new Date());
+						//dossier.setReceiveDate(new Date());
 						dossier.setDueDate(newDueDate);
 						bResult.put(DossierTerm.DUE_DATE, true);
 					}
@@ -3630,8 +3632,14 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		Long sampleCount = (option != null ? option.getSampleCount() : 1l);
 		String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
-		String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
-
+		//String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+		String registerBookName = StringPool.BLANK;
+		if (Validator.isNotNull(registerBookCode)) {
+			DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+			if (report != null) {
+				registerBookName = report.getReportName();
+			}
+		}
 		
 		// Process group dossier
 		if (originality == 9) {
@@ -4237,8 +4245,15 @@ public class CPSDossierBusinessLocalServiceImpl
 			String registerBookCode = (option != null
 					? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode()
 							: StringPool.BLANK) : StringPool.BLANK);
-			String registerBookName = (Validator.isNotNull(registerBookCode)
-					? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			//String registerBookName = (Validator.isNotNull(registerBookCode)
+			//		? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			String registerBookName = StringPool.BLANK;
+			if (Validator.isNotNull(registerBookCode)) {
+				DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+				if (report != null) {
+					registerBookName = report.getReportName();
+				}
+			}
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			Long appIdDateLong = jsonDossier.getLong(DossierTerm.APPLICANT_ID_DATE);
@@ -4690,8 +4705,15 @@ public class CPSDossierBusinessLocalServiceImpl
 			String registerBookCode = (option != null
 					? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode()
 							: StringPool.BLANK) : StringPool.BLANK);
-			String registerBookName = (Validator.isNotNull(registerBookCode)
-					? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			//String registerBookName = (Validator.isNotNull(registerBookCode)
+			//		? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			String registerBookName = StringPool.BLANK;
+			if (Validator.isNotNull(registerBookCode)) {
+				DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+				if (report != null) {
+					registerBookName = report.getReportName();
+				}
+			}
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			Long appIdDateLong = jsonDossier.getLong(DossierTerm.APPLICANT_ID_DATE);
@@ -5979,7 +6001,14 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			boolean flagOldDossier = false;
 			String registerBookCode = (option != null ? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode() : StringPool.BLANK) : StringPool.BLANK);
-			String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			//String registerBookName = (Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, REGISTER_BOOK, registerBookCode) : StringPool.BLANK);
+			String registerBookName = StringPool.BLANK;
+			if (Validator.isNotNull(registerBookCode)) {
+				DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+				if (report != null) {
+					registerBookName = report.getReportName();
+				}
+			}
 			_log.debug("CREATE DOSSIER 2: " + (System.currentTimeMillis() - start) + " ms");
 			
 			if (oldRefDossier != null) {
