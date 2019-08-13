@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +43,12 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.controller.AdminConfigManagement;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import backend.admin.config.whiteboard.BundleLoader;
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -346,86 +353,90 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					}
 				} else if (message.getString(TYPE).equals(API)) {
 
-//					RestTemplate restTemplate = new RestTemplate();
-//
-//					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-//
-//					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-//
-//					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//
-//					JSONObject headerObject = message.getJSONObject("headers");
-//
-//					JSONArray keys = headerObject.names();
-//
-//					for (int i = 0; i < keys.length(); ++i) {
-//
-//						String key = keys.getString(i);
-//						String value = headerObject.getString(key);
-//
-//						headers.set(key, value);
-//
-//					}
-//					headers.set("localaccess", headerObject.getString("Token"));
-//					headers.set("userid", headerObject.getString("USER_ID"));
-//					
-//					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-//					
-//					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
-//							HttpMethod.GET, entity, String.class);
-//
-//					String resultString = response.getBody();
-//
-//					JSONArray responeData = JSONFactoryUtil.createJSONArray();
-//					try {
-//						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
-//					} catch (Exception e) {
-//						_log.debug(e);
-//						responeData = JSONFactoryUtil.createJSONArray(resultString);
-//					}
-				    String apiUrl = StringPool.BLANK;
-				    
-				    StringBuilder sb = new StringBuilder();
-				    try
-				    {
-				        URL urlVal = null;
-						apiUrl = portalURL + message.getString("api");
-						urlVal = new URL(apiUrl);
-						
-						JSONObject headerObject = message.getJSONObject("headers");
-						java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+					RestTemplate restTemplate = new RestTemplate();
 
-						JSONArray keys = headerObject.names();
+					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
-						for (int i = 0; i < keys.length(); ++i) {
+					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
 
-							String key = keys.getString(i);
-							String value = headerObject.getString(key);
+					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-							conn.setRequestProperty(key, value);
+					JSONObject headerObject = message.getJSONObject("headers");
 
-						}
-						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
-						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
+					JSONArray keys = headerObject.names();
 
-				        conn.setRequestMethod("GET");
-				        conn.setRequestProperty("Accept", "application/json");
-				        
-				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				        			        
-				        int cp;
-				        while ((cp = brf.read()) != -1) {
-				          sb.append((char) cp);
-				        }
-					    
-						messageData.put(message.getString(RESPONE), sb.toString());
-						messageData.put(STATUS, HttpStatus.OK);
-				    }
-				    catch(IOException e)
-				    {
-				        _log.debug("Something went wrong while reading/writing in stream!!");
-				        _log.debug(e);
-				    }
+					for (int i = 0; i < keys.length(); ++i) {
+
+						String key = keys.getString(i);
+						String value = headerObject.getString(key);
+
+						headers.set(key, value);
+
+					}
+					headers.set("localaccess", headerObject.getString("Token"));
+					headers.set("userid", headerObject.getString("USER_ID"));
+					
+					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+					
+					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+							HttpMethod.GET, entity, String.class);
+
+					String resultString = response.getBody();
+
+					JSONArray responeData = JSONFactoryUtil.createJSONArray();
+					try {
+						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
+					} catch (Exception e) {
+						_log.debug(e);
+						responeData = JSONFactoryUtil.createJSONArray(resultString);
+					}
+					messageData.put(message.getString(RESPONE), responeData);
+
+					messageData.put(STATUS, HttpStatus.OK);
+					
+//				    String apiUrl = StringPool.BLANK;
+//				    
+//				    StringBuilder sb = new StringBuilder();
+//				    try
+//				    {
+//				        URL urlVal = null;
+//						apiUrl = portalURL + message.getString("api");
+//						urlVal = new URL(apiUrl);
+//						
+//						JSONObject headerObject = message.getJSONObject("headers");
+//						java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+//
+//						JSONArray keys = headerObject.names();
+//
+//						for (int i = 0; i < keys.length(); ++i) {
+//
+//							String key = keys.getString(i);
+//							String value = headerObject.getString(key);
+//
+//							conn.setRequestProperty(key, value);
+//
+//						}
+//						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
+//						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
+//
+//				        conn.setRequestMethod("GET");
+//				        conn.setRequestProperty("Accept", "application/json");
+//				        
+//				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//				        			        
+//				        int cp;
+//				        while ((cp = brf.read()) != -1) {
+//				          sb.append((char) cp);
+//				        }
+//					    
+//						messageData.put(message.getString(RESPONE), sb.toString());
+//						messageData.put(STATUS, HttpStatus.OK);
+//				    }
+//				    catch(IOException e)
+//				    {
+//				        _log.debug("Something went wrong while reading/writing in stream!!");
+//				        _log.debug(e);
+//				    }
 					
 				}
 	

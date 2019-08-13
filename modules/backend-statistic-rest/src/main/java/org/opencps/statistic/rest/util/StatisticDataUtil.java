@@ -215,7 +215,6 @@ public class StatisticDataUtil {
 					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-			System.out.println("FROM VOTING: " + payload.getFromVotingDate() + ":" + payload.getToVotingDate());
 			params.put(VotingTerm.CLASS_NAME, "dossier");
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
@@ -227,7 +226,6 @@ public class StatisticDataUtil {
 			List<Document> lstDocs = (List<Document>) jsonData.get("data");
 			List<GetVotingResultData> lstDatas = new ArrayList<>();
 			
-			System.out.println("VOTING DATA SIZE: " + jsonData.getInt("total"));
 			for (Document doc : lstDocs) {
 				GetVotingResultData data = new GetVotingResultData();
 				data.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));
