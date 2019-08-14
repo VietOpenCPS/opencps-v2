@@ -7,7 +7,7 @@ package org.opencps.zalo.hook.constants;
 public class ZaloHookConstantKeys {
 
 	public static final String SERVLET_URL = "/zalohookk/*";
-	
+
 	public static final String ZALO_PARAM_REF = "ref";
 	public static final String ZALO_PARAM_FROM_UID = "fromuid";
 	public static final String ZALO_PARAM_PHONE = "phone";
@@ -29,10 +29,24 @@ public class ZaloHookConstantKeys {
 	public static final String ZALO_ACTION_FOLLOW = "follow";
 	public static final String ZALO_ACTION_SEND_MSG = "sendmsg";
 	public static final String ZALO_ACTION_ADD_PHONE = "addPhone";
-	
+
 	public static final String ZALO_MESSAGE_SYNTAX_CHECK_TEL_NO = "phone";
 	public static final String ZALO_MESSAGE_SYNTAX_REGISTRY_TEL_NO = "registry";
 	public static final String ZALO_MESSAGE_SYNTAX_UPDATE_TEL_NO = "update";
 	public static final String ZALO_MESSAGE_SYNTAX_SEARCH_DOSSIER = "tracuu";
+
+	public static final String ZALO_V2_PARAM_EVENT_NAME = "event_name";
+	public static final String ZALO_V2_PARAM_app_id = "app_id";
+	public static final String ZALO_V2_PARAM_SENDER = "sender";
+	public static final String ZALO_V2_PARAM_SENDER_ID = "id";
+	public static final String ZALO_V2_PARAM_RECIPENT = "recipient";
+	public static final String ZALO_V2_PARAM_RECIPIENT_ = "id";
+	public static final String ZALO_V2_PARAM_MESSAGE = "message";
+	public static final String ZALO_V2_PARAM_MESSAGE_TEXT = "text";
+	public static final String ZALO_V2_PARAM_MESSAGE_MSG_ID = "msg_id";
+	public static final String ZALO_V2_PARAM_TIMESTAMP = "timestamp";
+	public static final String ZALO_V2_PARAM_USER_ID_BY_APP = "user_id_by_app";
+
+	public static final String ZALO_V2_ACTION_USER_SEND_TEXT = "user_send_text";
 
 }
