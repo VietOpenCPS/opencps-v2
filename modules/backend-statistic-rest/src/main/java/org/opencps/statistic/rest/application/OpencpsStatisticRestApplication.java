@@ -480,6 +480,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					votingResponse = callVotingRestService.callRestService(payload);
 				}
 				else {
+					payload.setFromVotingDate(APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate));
+					payload.setToVotingDate(APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate));					
 					votingResponse = StatisticDataUtil.getLocalVotingResponse(payload);
 				}
 				if (votingResponse != null && fromCalDate != null && toCalDate != null) {
@@ -531,6 +533,9 @@ public class OpencpsStatisticRestApplication extends Application {
 				votingRequest.setGroupId(groupId);
 				votingRequest.setStart(start);
 				votingRequest.setEnd(end);
+				if (Validator.isNull(month)) {
+					month = -1;
+				}
 				votingRequest.setMonth(month);
 				votingRequest.setYear(year);
 				//
@@ -640,6 +645,9 @@ public class OpencpsStatisticRestApplication extends Application {
 					personResponse = callPersonRestService.callRestService(payload);
 				}
 				else {
+					payload.setFromStatisticDate(APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate));
+					payload.setToStatisticDate(APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate));
+
 					personResponse = StatisticDataUtil.getLocalPersonResponse(payload);
 				}
 				

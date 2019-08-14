@@ -226,7 +226,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
-			
 			if (createDossiers.contains(StringPool.POUND)) {
 				String[] splitCDs = createDossiers.split(StringPool.POUND);
 				if (splitCDs.length == 2) {
@@ -243,6 +242,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					else {
 						govAgencyCode = splitCDs[0];
+						dossierTemplateNo = splitCDs[1];
 					}
 				}
 			}
@@ -262,7 +262,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			
 			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
-			
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
 				//
@@ -855,6 +854,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				return previousAction;
 			}
+			
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			
 			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
@@ -5244,12 +5244,15 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			long originDossierId = dossier.getOriginDossierId();
 			DossierPart dossierPart = null;
+			String originDossierTemplateNo = StringPool.BLANK;
+			
 			if (originDossierId != 0) {
 				//HSLT
 				Dossier hsltDossier = dossierLocalService.fetchDossier(dossier.getDossierId());
 				dossier = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
 				ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), hsltDossier.getGovAgencyCode());
 				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
+				originDossierTemplateNo = dossier.getDossierTemplateNo();
 				
 				if (serviceConfig != null) {
 					if (lstOptions.size() > 0) {
@@ -5285,8 +5288,10 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (Validator.isNotNull(referenceUid)) {
 					oldDossierFile = dossierFileLocalService.getByDossierAndRef(dossier.getDossierId(), referenceUid);
 				} else if (dossierPart != null && !dossierPart.getMultiple()) {
+//					oldDossierFile = dossierFileLocalService.getByGID_DID_TEMP_PART_EFORM(groupId, dossier.getDossierId(),
+//							dossierTemplateNo, dossierPartNo, false, false);
 					oldDossierFile = dossierFileLocalService.getByGID_DID_TEMP_PART_EFORM(groupId, dossier.getDossierId(),
-							dossierTemplateNo, dossierPartNo, false, false);
+							originDossierTemplateNo, dossierPartNo, false, false);
 				}
 				if (oldDossierFile != null && modifiedDate != null) {
 					if (oldDossierFile.getModifiedDate() != null && oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
@@ -5333,11 +5338,17 @@ public class CPSDossierBusinessLocalServiceImpl
 				else {
 					_log.debug("__Start add file at:" + new Date());
 					if (dataHandler != null && dataHandler.getInputStream() != null) {
-						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+//						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+//								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
+//								dataHandler.getInputStream(), fileType, isSync, serviceContext);
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, originDossierTemplateNo,
 								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
 								dataHandler.getInputStream(), fileType, isSync, serviceContext);
 					} else {
-						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+//						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
+//								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
+//								serviceContext);
+						dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid, originDossierTemplateNo,
 								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
 								serviceContext);
 					}

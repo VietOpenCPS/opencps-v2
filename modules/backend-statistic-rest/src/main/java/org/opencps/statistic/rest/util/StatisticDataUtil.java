@@ -206,15 +206,15 @@ public class StatisticDataUtil {
 				else {
 					params.put("year", Integer.toString(LocalDate.now().getYear()));
 				}
-			} else {
+			} 
+			else {
 				if (Validator.isNotNull(payload.getFromVotingDate())) {
 					params.put(VotingResultTerm.FROM_VOTING_DATE, payload.getFromVotingDate());
 				}
 				if (Validator.isNotNull(payload.getToVotingDate())) {
-					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getFromVotingDate());
+					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-		
 			params.put(VotingTerm.CLASS_NAME, "dossier");
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
@@ -225,6 +225,7 @@ public class StatisticDataUtil {
 			response.setTotal(jsonData.getInt("total"));
 			List<Document> lstDocs = (List<Document>) jsonData.get("data");
 			List<GetVotingResultData> lstDatas = new ArrayList<>();
+			
 			for (Document doc : lstDocs) {
 				GetVotingResultData data = new GetVotingResultData();
 				data.setUserId(Long.valueOf(doc.get(VotingResultTerm.USER_ID)));

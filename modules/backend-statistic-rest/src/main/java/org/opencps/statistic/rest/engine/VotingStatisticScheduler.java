@@ -75,7 +75,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-			//System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+//			System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 			
 			OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 			
@@ -162,8 +162,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 						processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
 								engineUpdateAction, serviceDomainResponse);
 					}
-					// System.out.println("END getVotingStatistic(): " +
-					// LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+//					 System.out.println("END getVotingStatistic(): " +
+//					 LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 	
 					/* Update summary */
 					// Delete record
