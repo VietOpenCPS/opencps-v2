@@ -133,7 +133,9 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			object.setBriefNote(briefNote);
 			object.setEditable(editable);
 			object.setLockState(lockState);
-			object.setCheckInput(checkInput);
+			if (checkInput != null && Validator.isNotNull(checkInput)) {
+				object.setCheckInput(checkInput);				
+			}
 
 		} else {
 			validateUpdate(groupId, processStepId, stepCode, serviceProcessId, sequenceNo, dossierStatus,
@@ -160,7 +162,9 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			object.setBriefNote(briefNote);
 			object.setEditable(editable);
 			object.setLockState(lockState);
-			object.setCheckInput(checkInput);
+			if (checkInput != null && Validator.isNotNull(checkInput)) {
+				object.setCheckInput(checkInput);				
+			}
 		}
 
 		processStepPersistence.update(object);
