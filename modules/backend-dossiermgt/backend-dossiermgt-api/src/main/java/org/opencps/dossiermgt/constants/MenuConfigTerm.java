@@ -8,4 +8,5 @@ public class MenuConfigTerm {
 	public static final String QUERY_PARAMS = "queryParams";
 	public static final String TABLE_CONFIG = "tableConfig";
 	public static final String BUTTON_CONFIG = "buttonConfig";
+	public static final String VIEW_SCRIPT = "viewScript";
 }

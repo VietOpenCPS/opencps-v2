@@ -304,6 +304,21 @@ public interface MenuConfigModel extends BaseModel<MenuConfig>, ShardedModel,
 	 */
 	public void setIcon(String icon);
 
+	/**
+	 * Returns the view script of this menu config.
+	 *
+	 * @return the view script of this menu config
+	 */
+	@AutoEscape
+	public String getViewScript();
+
+	/**
+	 * Sets the view script of this menu config.
+	 *
+	 * @param viewScript the view script of this menu config
+	 */
+	public void setViewScript(String viewScript);
+
 	@Override
 	public boolean isNew();
 
