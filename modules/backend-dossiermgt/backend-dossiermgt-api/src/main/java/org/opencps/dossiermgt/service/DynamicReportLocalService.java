@@ -170,6 +170,9 @@ public interface DynamicReportLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DynamicReport fetchByG_CODE(long groupId, String reportCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicReport fetchDynamicReport(long dynamicReportId);
 
 	/**

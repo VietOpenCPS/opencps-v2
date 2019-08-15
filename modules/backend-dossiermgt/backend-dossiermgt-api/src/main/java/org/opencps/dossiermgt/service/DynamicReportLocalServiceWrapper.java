@@ -180,6 +180,12 @@ public class DynamicReportLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DynamicReport fetchByG_CODE(
+		long groupId, String reportCode) {
+		return _dynamicReportLocalService.fetchByG_CODE(groupId, reportCode);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DynamicReport fetchDynamicReport(
 		long dynamicReportId) {
 		return _dynamicReportLocalService.fetchDynamicReport(dynamicReportId);

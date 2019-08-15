@@ -94,6 +94,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.DynamicReport;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -101,6 +102,7 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -467,7 +469,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setSampleCount(processOption != null ? processOption.getSampleCount(): 0);
 				String registerBookCode = processOption != null ? processOption.getRegisterBookCode() : StringPool.BLANK;
 				dossier.setRegisterBookCode(registerBookCode);
-				dossier.setRegisterBookName(Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, "REGISTER_BOOK", registerBookCode) : StringPool.BLANK);
+				String registerBookName = StringPool.BLANK;
+				if (Validator.isNotNull(registerBookCode)) {
+					DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+					if (report != null) {
+						registerBookName = report.getReportName();
+					}
+				}
+				dossier.setRegisterBookName(registerBookName);
 				dossier.setProcessNo(serviceProcess != null ? serviceProcess.getProcessNo() : StringPool.BLANK);
 
 				dossierPersistence.update(dossier);
@@ -535,7 +544,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setOriginality(originality);
 				String registerBookCode = processOption != null ? processOption.getRegisterBookCode() : StringPool.BLANK;
 				dossier.setRegisterBookCode(registerBookCode);
-				dossier.setRegisterBookName(Validator.isNotNull(registerBookCode) ? getDictItemName(groupId, "REGISTER_BOOK", registerBookCode) : StringPool.BLANK);
+				String registerBookName = StringPool.BLANK;
+				if (Validator.isNotNull(registerBookCode)) {
+					DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+					if (report != null) {
+						registerBookName = report.getReportName();
+					}
+				}
+				dossier.setRegisterBookName(registerBookName);
 				dossier.setProcessNo(serviceProcess != null ? serviceProcess.getProcessNo() : StringPool.BLANK);
 				//Update sampleCount
 //				ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
