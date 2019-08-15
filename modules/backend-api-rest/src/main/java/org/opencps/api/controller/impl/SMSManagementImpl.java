@@ -556,8 +556,8 @@ public class SMSManagementImpl implements SMSManagement {
 			"totalAmountWithTax", oldPaymentFile.getPaymentAmount());
 		summarizeInfo.put(
 			"totalAmountAfterDiscount", oldPaymentFile.getPaymentAmount());
-		summarizeInfo.put("totalAmountWithTaxInWords", "");
-		summarizeInfo.put("discountAmount", 0);
+		summarizeInfo.put("totalAmountWithTaxInWords", oldPaymentFile.getPaymentAmount());
+		summarizeInfo.put("discountAmount", oldPaymentFile.getPaymentAmount());
 		paymentConfig.put("summarizeInfo", summarizeInfo);
 
 		JSONArray taxBreakdowns = JSONFactoryUtil.createJSONArray();
