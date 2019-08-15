@@ -128,6 +128,7 @@ import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -2134,16 +2135,43 @@ public class CPSDossierBusinessLocalServiceImpl
 //			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null) {
 				_log.debug("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
-				DossierAction dActStart = dossierActionLocalService
+				DossierAction dActPrevious = dossierActionLocalService
 						.fetchDossierAction(dActEnd.getPreviousActionId());
 //				DossierAction dActStart = prevAction;
-				if (dActStart != null) {
+				if (dActPrevious != null) {
+					ActionConfig actPrevious = ActionConfigLocalServiceUtil.getByCode(dActPrevious.getGroupId(),
+							dActPrevious.getActionCode());
+					_log.debug("actPrevious: "+actPrevious.getDateOption());
 					long createEnd = dActEnd.getCreateDate().getTime();
-					long createStart = dActStart.getCreateDate().getTime();
+					long createStart = 0;
+					if (actPrevious != null && actPrevious.getDateOption() != 1) {
+						createStart = dActPrevious.getCreateDate().getTime();
+					} else {
+						List<DossierAction> dActionList = DossierActionLocalServiceUtil
+								.findByG_DID(dActEnd.getGroupId(), dActEnd.getDossierId());
+						if (dActionList != null && dActionList.size() > 1) {
+							int lengthAction = dActionList.size();
+							for (int i = lengthAction - 2; i >= 0; i--) {
+								DossierAction dAction = dActionList.get(i);
+								_log.debug("dAction: "+i+": "+dAction);
+								ActionConfig actDetail = ActionConfigLocalServiceUtil.getByCode(dAction.getGroupId(),
+										dAction.getActionCode());
+								_log.debug("actDetail: "+i+": "+actDetail.getDateOption());
+								if (actDetail.getDateOption() == 1) {
+									createStart = dAction.getCreateDate().getTime();
+								} else {
+									break;
+								}
+							}
+						}
+					}
+					
 					_log.debug("createStart: "+createStart);
 					_log.debug("createEnd: "+createEnd);
 					if (createEnd > createStart) {
-						long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, dossier.getGroupId());
+						DueDateUtils dueDateUtils = new DueDateUtils(new Date(createStart), new Date(createEnd), 1, dActEnd.getGroupId());
+						//long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, dossier.getGroupId());
+						long extendDateTimeStamp = dueDateUtils.getOverDue();
 						_log.debug("extendDateTimeStamp: "+extendDateTimeStamp);
 						if (extendDateTimeStamp > 0) {
 							long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
