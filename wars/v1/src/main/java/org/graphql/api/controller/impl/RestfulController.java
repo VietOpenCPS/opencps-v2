@@ -212,12 +212,10 @@ public class RestfulController {
 		result.put("email", StringPool.BLANK);
 		result.put("role", StringPool.BLANK);
 		result.put("deactiveAccountFlag", 0);
-		System.out.println("LOGIN USER START");
 		try {
 
 			long userId = 0;
 			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				System.out.println("LOGIN USER START BEFORE GET USER");
 				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
@@ -240,7 +238,6 @@ public class RestfulController {
 
 				}
 
-				System.out.println("LOGIN USER AFTER GET ROLE");
 				result.put("email", user.getEmailAddress());
 				result.put("role", roleName);
 				result.put("deactiveAccountFlag", user.getStatus());
@@ -250,8 +247,6 @@ public class RestfulController {
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-
-		System.out.println("LOGIN USER END");
 
 		dataUser.put(result);
 

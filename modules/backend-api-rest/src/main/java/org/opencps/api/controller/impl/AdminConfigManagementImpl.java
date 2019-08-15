@@ -26,11 +26,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -39,16 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.controller.AdminConfigManagement;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import backend.admin.config.whiteboard.BundleLoader;
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -400,11 +394,11 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				    try
 				    {
 				        URL urlVal = null;
-						apiUrl = portalURL + message.getString("api");
+						apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString("api");
 						urlVal = new URL(apiUrl);
 						
 						JSONObject headerObject = message.getJSONObject("headers");
-						java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+						HttpURLConnection conn = (HttpURLConnection) urlVal.openConnection();
 
 						JSONArray keys = headerObject.names();
 
@@ -416,21 +410,27 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							conn.setRequestProperty(key, value);
 
 						}
+				        
 						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
 						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
 
-				        conn.setRequestMethod("GET");
+				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
 				        conn.setRequestProperty("Accept", "application/json");
-				        
+				        conn.setDoInput(true);
+						conn.setDoOutput(true);
+						conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
+						conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
+						
 				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				        			        
 				        int cp;
 				        while ((cp = brf.read()) != -1) {
 				          sb.append((char) cp);
 				        }
-					    
 						messageData.put(message.getString(RESPONE), sb.toString());
 						messageData.put(STATUS, HttpStatus.OK);
+						
+						conn.disconnect();
 				    }
 				    catch(IOException e)
 				    {
