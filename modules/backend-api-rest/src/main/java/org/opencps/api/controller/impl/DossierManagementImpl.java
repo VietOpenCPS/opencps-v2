@@ -967,6 +967,12 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
 			}
+			Integer delegateType = (input.getDelegateType() != null ? input.getDelegateType() : 0);
+			String documentNo = input.getDocumentNo();
+			Date documentDate = null;
+			if (input.getDocumentDate() != null && Validator.isNotNull(input.getDocumentDate())) {
+				documentDate = new Date(input.getDocumentDate());
+			}
 
 //			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
 //					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
@@ -977,7 +983,7 @@ public class DossierManagementImpl implements DossierManagement {
 //					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
 //					true, input.getApplicantNote(), Integer.valueOf(input.getOriginality()), serviceContext);
 			//
-			Dossier dossier = actions.initUpdateDossier(groupId, id, input.getApplicantName(),
+			Dossier dossier = actions.initUpdateDossierFull(groupId, id, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
@@ -987,6 +993,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
 					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), input.getBriefNote(),
+					delegateType, documentNo, documentDate,
 					serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());

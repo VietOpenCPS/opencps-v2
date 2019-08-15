@@ -3883,6 +3883,30 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	}
 
 	@Override
+	public Dossier initUpdateDossierFull(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate,
+			ServiceContext serviceContext) {
+		try {
+			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
+					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+					delegateWardCode, sampleCount, dossierName, briefNote, serviceContext);
+
+		} catch (Exception e) {
+			_log.debug(e);
+			return null;
+		}		
+	}
+	
+	@Override
 	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
