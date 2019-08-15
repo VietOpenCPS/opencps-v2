@@ -3893,12 +3893,12 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate,
 			ServiceContext serviceContext) {
 		try {
-			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
+			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-					delegateWardCode, sampleCount, dossierName, briefNote, serviceContext);
+					delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate, serviceContext);
 
 		} catch (Exception e) {
 			_log.debug(e);
