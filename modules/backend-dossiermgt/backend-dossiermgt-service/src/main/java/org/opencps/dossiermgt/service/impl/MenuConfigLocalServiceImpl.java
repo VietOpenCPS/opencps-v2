@@ -276,6 +276,7 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 		object.setTableConfig(objectData.getString("tableConfig"));
 		object.setButtonConfig(objectData.getString("buttonConfig"));
 		object.setIcon(objectData.getString("icon"));
+		object.setViewScript(objectData.getString("viewScript"));
 
 		menuConfigPersistence.update(object);
 

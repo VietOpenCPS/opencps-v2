@@ -74,6 +74,7 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 		attributes.put("tableConfig", getTableConfig());
 		attributes.put("buttonConfig", getButtonConfig());
 		attributes.put("icon", getIcon());
+		attributes.put("viewScript", getViewScript());
 
 		return attributes;
 	}
@@ -168,6 +169,12 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 
 		if (icon != null) {
 			setIcon(icon);
+		}
+
+		String viewScript = (String)attributes.get("viewScript");
+
+		if (viewScript != null) {
+			setViewScript(viewScript);
 		}
 	}
 
@@ -359,6 +366,16 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 	@Override
 	public String getUuid() {
 		return _menuConfig.getUuid();
+	}
+
+	/**
+	* Returns the view script of this menu config.
+	*
+	* @return the view script of this menu config
+	*/
+	@Override
+	public String getViewScript() {
+		return _menuConfig.getViewScript();
 	}
 
 	@Override
@@ -585,6 +602,16 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 	@Override
 	public void setUuid(String uuid) {
 		_menuConfig.setUuid(uuid);
+	}
+
+	/**
+	* Sets the view script of this menu config.
+	*
+	* @param viewScript the view script of this menu config
+	*/
+	@Override
+	public void setViewScript(String viewScript) {
+		_menuConfig.setViewScript(viewScript);
 	}
 
 	@Override

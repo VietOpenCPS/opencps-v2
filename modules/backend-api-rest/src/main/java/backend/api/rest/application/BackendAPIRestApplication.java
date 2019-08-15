@@ -79,6 +79,7 @@ import org.opencps.api.controller.impl.FileAttachManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
 import org.opencps.api.controller.impl.ImportDataManagementImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
+import org.opencps.api.controller.impl.MenuConfigManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
 import org.opencps.api.controller.impl.NotificationManagementImpl;
 import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
@@ -215,6 +216,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new BookingManagementImpl());
 		singletons.add(new AdminConfigManagementImpl());
 		singletons.add(new ProxyManagementImpl());
+		singletons.add(new MenuConfigManagementImpl());
+		
 		singletons.add(this);
 		
 		// add service provider
