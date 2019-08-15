@@ -31,6 +31,9 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_DOSSIERDOCUMENT_ENABLE = "org.opencps.dossierdocument.enable";
 	public static final String OPENCPS_PUBISHEVENT_ENABLE = "org.opencps.publishevent.enable";
 	public static final String OPENCPS_DLFILEENTRY_ENABLE = "org.opencps.dlfileentry.enable";
+
+	public static final String OPENCPS_ADMIN_PROXY_URL = "org.opencps.admin.proxy.ip";
+	public static final String DEFAULT_PROXY_URL = "http://127.0.0.1:8080";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -124,6 +127,10 @@ public class OpenCPSConfigUtil {
 		String autoBetimesEnable = PropsUtil.get(OPENCPS_AUTO_BETIMES);
 		return Validator.isNotNull(autoBetimesEnable) ? Boolean.parseBoolean(autoBetimesEnable) : false;
 	}
-
+	public static String getAdminProxyUrl() {
+		String adminProxyUrl = PropsUtil.get(OPENCPS_ADMIN_PROXY_URL);
+		return Validator.isNotNull(adminProxyUrl) ? adminProxyUrl : DEFAULT_PROXY_URL;
+	}
+	
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSConfigUtil.class);
 }

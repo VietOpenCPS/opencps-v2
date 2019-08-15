@@ -95,6 +95,7 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
+		System.out.println("RestAuthFilter.doFilter()");
 		_log.debug("RestAuthFilter.doFilter()");
 		
 		String allowIps = PropsUtil.get(OPENCPS_ALLOW_CORS_IPS);
