@@ -176,6 +176,11 @@ public class DynamicReportLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.DynamicReport fetchByG_CODE(
+		long groupId, String reportCode) {
+		return getService().fetchByG_CODE(groupId, reportCode);
+	}
+
 	public static org.opencps.dossiermgt.model.DynamicReport fetchDynamicReport(
 		long dynamicReportId) {
 		return getService().fetchDynamicReport(dynamicReportId);

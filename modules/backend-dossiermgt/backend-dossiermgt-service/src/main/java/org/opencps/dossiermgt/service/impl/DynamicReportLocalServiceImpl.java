@@ -100,4 +100,9 @@ public class DynamicReportLocalServiceImpl
 
 		return dynamicReportPersistence.update(dynamicReport);
 	}
+
+	public DynamicReport fetchByG_CODE(long groupId, String reportCode) {
+		return dynamicReportPersistence.fetchByF_GID_CODE(groupId, reportCode);
+	}
+
 }
