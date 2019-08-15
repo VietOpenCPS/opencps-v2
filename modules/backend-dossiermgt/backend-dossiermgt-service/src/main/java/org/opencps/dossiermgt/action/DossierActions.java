@@ -117,7 +117,7 @@ public interface DossierActions {
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, ServiceContext serviceContext);
-
+	
 //	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 //			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 //			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
@@ -179,6 +179,15 @@ public interface DossierActions {
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, String dossierName, String briefNote, ServiceContext serviceContext);
 
+	public Dossier initUpdateDossierFull(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
+			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
+			Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate, ServiceContext serviceContext);
+	
 	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
 			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
