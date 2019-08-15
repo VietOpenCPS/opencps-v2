@@ -2318,6 +2318,7 @@
 		<column name="tableConfig" type="String" />
 		<column name="buttonConfig" type="String" />
 		<column name="icon" type="String" />
+		<column name="viewScript" type="String" />
 		
         <order by="asc">
             <order-column name="order" order-by="asc" case-sensitive="true"></order-column>

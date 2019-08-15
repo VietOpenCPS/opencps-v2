@@ -648,6 +648,7 @@
 		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="buttonConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="icon" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="viewScript" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.MenuRoleImpl" table="opencps_menurole">
 		<id name="menuRoleId" type="long">

@@ -82,7 +82,8 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 			{ "queryParams", Types.VARCHAR },
 			{ "tableConfig", Types.VARCHAR },
 			{ "buttonConfig", Types.VARCHAR },
-			{ "icon", Types.VARCHAR }
+			{ "icon", Types.VARCHAR },
+			{ "viewScript", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -102,9 +103,10 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 		TABLE_COLUMNS_MAP.put("tableConfig", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("buttonConfig", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("icon", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("viewScript", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_menuconfig (uuid_ VARCHAR(75) null,menuConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,menuGroup VARCHAR(75) null,menuName VARCHAR(75) null,order_ INTEGER,menuType INTEGER,queryParams VARCHAR(500) null,tableConfig TEXT null,buttonConfig TEXT null,icon VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_menuconfig (uuid_ VARCHAR(75) null,menuConfigId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,menuGroup VARCHAR(75) null,menuName VARCHAR(75) null,order_ INTEGER,menuType INTEGER,queryParams VARCHAR(500) null,tableConfig TEXT null,buttonConfig TEXT null,icon VARCHAR(75) null,viewScript VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_menuconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY menuConfig.order ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_menuconfig.order_ ASC";
@@ -181,6 +183,7 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 		attributes.put("tableConfig", getTableConfig());
 		attributes.put("buttonConfig", getButtonConfig());
 		attributes.put("icon", getIcon());
+		attributes.put("viewScript", getViewScript());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -278,6 +281,12 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 
 		if (icon != null) {
 			setIcon(icon);
+		}
+
+		String viewScript = (String)attributes.get("viewScript");
+
+		if (viewScript != null) {
+			setViewScript(viewScript);
 		}
 	}
 
@@ -545,6 +554,21 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 	}
 
 	@Override
+	public String getViewScript() {
+		if (_viewScript == null) {
+			return "";
+		}
+		else {
+			return _viewScript;
+		}
+	}
+
+	@Override
+	public void setViewScript(String viewScript) {
+		_viewScript = viewScript;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				MenuConfig.class.getName()));
@@ -596,6 +620,7 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 		menuConfigImpl.setTableConfig(getTableConfig());
 		menuConfigImpl.setButtonConfig(getButtonConfig());
 		menuConfigImpl.setIcon(getIcon());
+		menuConfigImpl.setViewScript(getViewScript());
 
 		menuConfigImpl.resetOriginalValues();
 
@@ -775,12 +800,20 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 			menuConfigCacheModel.icon = null;
 		}
 
+		menuConfigCacheModel.viewScript = getViewScript();
+
+		String viewScript = menuConfigCacheModel.viewScript;
+
+		if ((viewScript != null) && (viewScript.length() == 0)) {
+			menuConfigCacheModel.viewScript = null;
+		}
+
 		return menuConfigCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -812,6 +845,8 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 		sb.append(getButtonConfig());
 		sb.append(", icon=");
 		sb.append(getIcon());
+		sb.append(", viewScript=");
+		sb.append(getViewScript());
 		sb.append("}");
 
 		return sb.toString();
@@ -819,7 +854,7 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(52);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.MenuConfig");
@@ -885,6 +920,10 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 			"<column><column-name>icon</column-name><column-value><![CDATA[");
 		sb.append(getIcon());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>viewScript</column-name><column-value><![CDATA[");
+		sb.append(getViewScript());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -919,6 +958,7 @@ public class MenuConfigModelImpl extends BaseModelImpl<MenuConfig>
 	private String _tableConfig;
 	private String _buttonConfig;
 	private String _icon;
+	private String _viewScript;
 	private long _columnBitmask;
 	private MenuConfig _escapedModel;
 }
