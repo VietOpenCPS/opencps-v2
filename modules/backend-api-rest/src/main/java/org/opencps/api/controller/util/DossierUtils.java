@@ -456,6 +456,13 @@ public class DossierUtils {
 //				_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
 				model.setDocumentDate(APIDateTimeUtils.convertDateToString(documentDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			}
+			if (DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)) {
+				model.setLock("Yêu cầu bổ sung quá hạn 3 ngày");
+			}
+			else {
+				model.setLock("Yêu cầu bổ sung trong hạn 3 ngày");
+			}
+			
 			ouputs.add(model);
 		}
 
