@@ -2174,7 +2174,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						long extendDateTimeStamp = dueDateUtils.getOverDue();
 						_log.debug("extendDateTimeStamp: "+extendDateTimeStamp);
 						if (extendDateTimeStamp > 0) {
-							long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
+							double hoursCount = extendDateTimeStamp * 1.0 / (1000 * 60 * 60);
 							_log.debug("hoursCount: "+hoursCount);
 							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
 							List<Holiday> holidayList = HolidayLocalServiceUtil
@@ -2182,9 +2182,14 @@ public class CPSDossierBusinessLocalServiceImpl
 							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
 									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
 
-							Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
-									dossier.getDueDate(), hoursCount, holidayList,
-									extendWorkDayList);
+							//Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
+							//		dossier.getDueDate(), hoursCount, holidayList,
+							//		extendWorkDayList);
+							//
+							DueDateUtils dateUtils = new DueDateUtils(dossier.getDueDate(),
+									hoursCount, 1, dossier.getGroupId());
+							Date dueDateExtend = dateUtils.getDueDate();
+							
 							_log.debug("dueDateExtend: "+dueDateExtend);
 							if (dueDateExtend != null) {
 								dossier.setDueDate(dueDateExtend);
