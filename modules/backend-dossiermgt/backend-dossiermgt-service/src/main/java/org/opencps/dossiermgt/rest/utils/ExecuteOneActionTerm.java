@@ -171,7 +171,8 @@ public class ExecuteOneActionTerm {
 			"totalAmountWithTax", oldPaymentFile.getPaymentAmount());
 		summarizeInfo.put(
 			"totalAmountAfterDiscount", oldPaymentFile.getPaymentAmount());
-		summarizeInfo.put("totalAmountWithTaxInWords", oldPaymentFile.getPaymentAmount());
+		summarizeInfo.put(
+			"totalAmountWithTaxInWords", oldPaymentFile.getPaymentAmount());
 		summarizeInfo.put("discountAmount", oldPaymentFile.getPaymentAmount());
 		paymentConfig.put("summarizeInfo", summarizeInfo);
 
@@ -199,11 +200,10 @@ public class ExecuteOneActionTerm {
 			"fileType", sysPaymentConfig.get("invoiceFile-fileType"));
 		paymentConfig.put("invoiceFile", invoiceFile);
 
-		String serverConfigSInvoice = "SERVER_SINVOICE";
-		String SINVOICEUrl =
-			"postal/invoice/sinvoice/" + serverConfigSInvoice + "/create";
+		String SINVOICEUrl = sysPaymentConfig.getString("server-sInvoiceUrl");
+		String baseUrl = sysPaymentConfig.getString("server-baseUrl");
+
 		InvokeREST callRest = new InvokeREST();
-		String baseUrl = "http://localhost:8080/o/rest/v2/";
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 		params.put("paymentConfig", paymentConfig.toString());
@@ -214,7 +214,12 @@ public class ExecuteOneActionTerm {
 			sysPaymentConfig.getString("auth-password"), properties, params,
 			context);
 
-		oldPaymentFile.setEinvoice(resultObj.toString());
+		JSONObject eInvoice = JSONFactoryUtil.createJSONObject(
+			resultObj.getString("message"));
+
+		eInvoice.put("sInvoiceUrl", sysPaymentConfig.get("server-sInvoiceClientUrl"));
+
+		oldPaymentFile.setEinvoice(eInvoice.toString());
 		PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 
 		return resultObj.toString();
