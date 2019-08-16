@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -615,6 +616,18 @@ public class DossierMgtUtils {
 					result = result && checkRoleCode(splitRoles[1], dossier);
 				}
 			}
+			if (preCondition.contains("waiting_overdue>")) {
+				String[] splitDuration = preCondition.split(">");
+				if (splitDuration.length == 2) {
+					result = result && checkWaitingOverdueGreaterThan(splitDuration[1], dossier);
+				}
+			}
+			if (preCondition.contains("waiting_overdue<=")) {
+				String[] splitDuration = preCondition.split("<=");
+				if (splitDuration.length == 2) {
+					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
+				}
+			}
 		}
 
 		return result;
@@ -852,6 +865,42 @@ public class DossierMgtUtils {
 		return false;
 	}
 
+	private static boolean checkWaitingOverdueGreaterThan(String preCondition, Dossier dossier) {
+		Date now = new Date();
+		if (dossier.getReceiveDate() != null) {
+			Calendar receiveCal = Calendar.getInstance();
+			receiveCal.setTime(dossier.getReceiveDate());
+			int dayDue = Integer.valueOf(preCondition);
+			receiveCal.add(Calendar.DATE, dayDue);
+			if (receiveCal.after(now)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		
+		return false;
+	}
+
+	private static boolean checkWaitingOverdueLessThan(String preCondition, Dossier dossier) {
+		Date now = new Date();
+		if (dossier.getReceiveDate() != null) {
+			Calendar receiveCal = Calendar.getInstance();
+			receiveCal.setTime(dossier.getReceiveDate());
+			int dayDue = Integer.valueOf(preCondition);
+			receiveCal.add(Calendar.DATE, dayDue);
+			if (receiveCal.after(now)) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		
+		return true;
+	}
+	
 	//Calculator startDate and endDate
 	public static int minDay(int month, int year) {
 		Calendar cal = Calendar.getInstance();

@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.sun.xml.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -3088,9 +3089,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					subQuery.add(subQueryThree, BooleanClauseOccur.MUST);
 					
 					//Check lock state
+					BooleanQuery pauseQuery = new BooleanQueryImpl();
+					
 					MultiMatchQuery pauseLockState = new MultiMatchQuery(DossierTerm.PAUSE_LOCK_STATE);
 					pauseLockState.addField(DossierTerm.LOCK_STATE);
-					subQuery.add(pauseLockState, BooleanClauseOccur.MUST_NOT);
+					MultiMatchQuery pauseLockStateOverdue = new MultiMatchQuery(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
+					pauseLockStateOverdue.addField(DossierTerm.LOCK_STATE);
+					pauseQuery.add(pauseLockState, BooleanClauseOccur.SHOULD);
+					pauseQuery.add(pauseLockStateOverdue, BooleanClauseOccur.SHOULD);
+					
+					subQuery.add(pauseQuery, BooleanClauseOccur.MUST_NOT);
 					
 				// Dossier is coming
 				} else if (top.toLowerCase().equals(DossierTerm.COMING)) {
@@ -3100,9 +3108,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					subQuery.add(querydueDateNull, BooleanClauseOccur.MUST_NOT);
 
 					//Check lock state
+					//Check lock state
+					BooleanQuery pauseQuery = new BooleanQueryImpl();
+					
 					MultiMatchQuery pauseLockState = new MultiMatchQuery(DossierTerm.PAUSE_LOCK_STATE);
 					pauseLockState.addField(DossierTerm.LOCK_STATE);
-					subQuery.add(pauseLockState, BooleanClauseOccur.MUST_NOT);
+					MultiMatchQuery pauseLockStateOverdue = new MultiMatchQuery(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
+					pauseLockStateOverdue.addField(DossierTerm.LOCK_STATE);
+					pauseQuery.add(pauseLockState, BooleanClauseOccur.SHOULD);
+					pauseQuery.add(pauseLockStateOverdue, BooleanClauseOccur.SHOULD);
+					
+					subQuery.add(pauseQuery, BooleanClauseOccur.MUST_NOT);
 					
 					//Check dossier is not dueDate
 					MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
