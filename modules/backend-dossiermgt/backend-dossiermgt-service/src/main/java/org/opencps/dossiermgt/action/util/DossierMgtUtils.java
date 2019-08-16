@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
@@ -868,15 +869,14 @@ public class DossierMgtUtils {
 	private static boolean checkWaitingOverdueGreaterThan(String preCondition, Dossier dossier) {
 		Date now = new Date();
 		if (dossier.getReceiveDate() != null) {
-			Calendar receiveCal = Calendar.getInstance();
-			receiveCal.setTime(dossier.getReceiveDate());
 			int dayDue = Integer.valueOf(preCondition);
-			receiveCal.add(Calendar.DATE, dayDue);
-			if (receiveCal.after(now)) {
-				return true;
+			DueDateUtils dueDateUtil = new DueDateUtils(dossier.getReceiveDate(), dayDue * 1.0, 0, dossier.getGroupId());
+			
+			if (dueDateUtil.getDueDate().after(now)) {
+				return false;
 			}
 			else {
-				return false;
+				return true;
 			}
 		}
 		
@@ -886,19 +886,18 @@ public class DossierMgtUtils {
 	private static boolean checkWaitingOverdueLessThan(String preCondition, Dossier dossier) {
 		Date now = new Date();
 		if (dossier.getReceiveDate() != null) {
-			Calendar receiveCal = Calendar.getInstance();
-			receiveCal.setTime(dossier.getReceiveDate());
 			int dayDue = Integer.valueOf(preCondition);
-			receiveCal.add(Calendar.DATE, dayDue);
-			if (receiveCal.after(now)) {
-				return false;
+			DueDateUtils dueDateUtil = new DueDateUtils(dossier.getReceiveDate(), dayDue * 1.0, 0, dossier.getGroupId());
+			
+			if (dueDateUtil.getDueDate().after(now)) {
+				return true;
 			}
 			else {
-				return true;
+				return false;
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	//Calculator startDate and endDate

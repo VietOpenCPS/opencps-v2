@@ -416,6 +416,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 
 				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
 				        conn.setRequestProperty("Accept", "application/json");
+				        conn.setRequestProperty("Content-Type", "application/json");
+				        
 				        conn.setDoInput(true);
 						conn.setDoOutput(true);
 						conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
@@ -427,7 +429,14 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				        while ((cp = brf.read()) != -1) {
 				          sb.append((char) cp);
 				        }
-						messageData.put(message.getString(RESPONE), sb.toString());
+						JSONArray responeData = JSONFactoryUtil.createJSONArray();
+						try {
+							responeData = JSONFactoryUtil.createJSONObject(sb.toString()).getJSONArray("data");
+						} catch (Exception e) {
+							_log.debug(e);
+							responeData = JSONFactoryUtil.createJSONArray(sb.toString());
+						}
+						messageData.put(message.getString(RESPONE), responeData);
 						messageData.put(STATUS, HttpStatus.OK);
 						
 						conn.disconnect();
