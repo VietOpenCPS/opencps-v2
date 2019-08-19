@@ -83,9 +83,9 @@ dependencies {
 
 	compileOnly group: 'org.springframework', name: 'spring-dao', version: '2.0.8'
 	compileOnly group: "org.springframework", name: "spring-webmvc-portlet", version: "4.1.9.RELEASE"
-	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
-	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
-	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8'
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
 }
 
 repositories {
