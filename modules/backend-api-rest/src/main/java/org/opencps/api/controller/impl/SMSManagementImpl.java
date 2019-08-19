@@ -556,7 +556,8 @@ public class SMSManagementImpl implements SMSManagement {
 			"totalAmountWithTax", oldPaymentFile.getPaymentAmount());
 		summarizeInfo.put(
 			"totalAmountAfterDiscount", oldPaymentFile.getPaymentAmount());
-		summarizeInfo.put("totalAmountWithTaxInWords", oldPaymentFile.getPaymentAmount());
+		summarizeInfo.put(
+			"totalAmountWithTaxInWords", oldPaymentFile.getPaymentAmount());
 		summarizeInfo.put("discountAmount", oldPaymentFile.getPaymentAmount());
 		paymentConfig.put("summarizeInfo", summarizeInfo);
 
@@ -584,21 +585,26 @@ public class SMSManagementImpl implements SMSManagement {
 			"fileType", sysPaymentConfig.get("invoiceFile-fileType"));
 		paymentConfig.put("invoiceFile", invoiceFile);
 
-		String serverConfigSInvoice = "SERVER_SINVOICE";
-		String SINVOICEUrl =
-			"postal/invoice/sinvoice/" + serverConfigSInvoice + "/create";
+		String SINVOICEUrl = sysPaymentConfig.getString("server-sInvoiceUrl");
+		String baseUrl = sysPaymentConfig.getString("server-baseUrl");
+
 		InvokeREST callRest = new InvokeREST();
-		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 		params.put("paymentConfig", paymentConfig.toString());
 
 		JSONObject resultObj = callRest.callPostAPI(
 			groupId, HttpMethod.POST, "application/json", baseUrl, SINVOICEUrl,
-			sysPaymentConfig.getString("auth-username"), sysPaymentConfig.getString("auth-password"), properties, params,
+			sysPaymentConfig.getString("auth-username"),
+			sysPaymentConfig.getString("auth-password"), properties, params,
 			context);
 
-		oldPaymentFile.setEinvoice(resultObj.toString());
+		JSONObject eInvoice = JSONFactoryUtil.createJSONObject(
+			resultObj.getString(RESTFulConfiguration.MESSAGE));
+
+		eInvoice.put("sInvoiceUrl", sysPaymentConfig.get("server-sInvoiceClientUrl"));
+
+		oldPaymentFile.setEinvoice(eInvoice.toString());
 		PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 
 		return resultObj.toString();
@@ -609,8 +615,6 @@ public class SMSManagementImpl implements SMSManagement {
 
 class RESTFulConfiguration {
 
-	public static final String SERVER_PATH_BASE =
-		"http://localhost:8080/o/rest/v2/";
 	public static final String STATUS = "status";
 	public static final String MESSAGE = "message";
 
