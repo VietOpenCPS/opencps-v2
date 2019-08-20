@@ -19,10 +19,12 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
@@ -622,6 +624,18 @@ public class DossierMgtUtils {
 					result = result && checkRoleCode(splitRoles[1], dossier);
 				}
 			}
+			if (preCondition.contains("waiting_overdue>")) {
+				String[] splitDuration = preCondition.split(">");
+				if (splitDuration.length == 2) {
+					result = result && checkWaitingOverdueGreaterThan(splitDuration[1], dossier);
+				}
+			}
+			if (preCondition.contains("waiting_overdue<=")) {
+				String[] splitDuration = preCondition.split("<=");
+				if (splitDuration.length == 2) {
+					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
+				}
+			}
 		}
 
 		return result;
@@ -859,6 +873,40 @@ public class DossierMgtUtils {
 		return false;
 	}
 
+	private static boolean checkWaitingOverdueGreaterThan(String preCondition, Dossier dossier) {
+		Date now = new Date();
+		if (dossier.getReceiveDate() != null) {
+			int dayDue = Integer.valueOf(preCondition);
+			DueDateUtils dueDateUtil = new DueDateUtils(dossier.getReceiveDate(), dayDue * 1.0, 0, dossier.getGroupId());
+			
+			if (dueDateUtil.getDueDate().after(now)) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private static boolean checkWaitingOverdueLessThan(String preCondition, Dossier dossier) {
+		Date now = new Date();
+		if (dossier.getReceiveDate() != null) {
+			int dayDue = Integer.valueOf(preCondition);
+			DueDateUtils dueDateUtil = new DueDateUtils(dossier.getReceiveDate(), dayDue * 1.0, 0, dossier.getGroupId());
+			
+			if (dueDateUtil.getDueDate().after(now)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		
+		return false;
+	}
+	
 	//Calculator startDate and endDate
 	public static int minDay(int month, int year) {
 		Calendar cal = Calendar.getInstance();

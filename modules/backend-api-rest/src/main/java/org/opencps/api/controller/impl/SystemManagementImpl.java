@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -18,6 +19,13 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -25,6 +33,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +43,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.SystemManagement;
+import org.opencps.api.controller.util.ServiceProcessUtils;
+import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -44,15 +55,23 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.ServiceProcessActions;
+import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
@@ -380,5 +399,55 @@ public class SystemManagementImpl implements SystemManagement {
 		}
 		
 		return objArr;
+	}
+
+	@Override
+	public Response resolveConflict(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		ServiceProcessActions actions = new ServiceProcessActionsImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		BackendAuth auth = new BackendAuthImpl();
+		Indexer<ProcessAction> indexer = IndexerRegistryUtil
+				.nullSafeGetIndexer(ProcessAction.class);
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			
+			Sort[] sorts = new Sort[] { };
+
+			JSONObject jsonData = actions.getProcessActions(user.getUserId(), serviceContext.getCompanyId(), groupId,
+					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
+
+			long total = jsonData.getInt("total");
+			if (total > 0) {
+				List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+				for (Document document : lstDocuments) {
+					long processActionId = GetterUtil.getLong(document.get(ProcessActionTerm.PROCESS_ACTION_ID));
+					long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+					String uid = document.get(Field.UID);
+					ProcessAction pa = ProcessActionLocalServiceUtil.fetchProcessAction(processActionId);
+					if (pa == null) {
+						try {
+							indexer.delete(companyId, uid);
+						} catch (SearchException e) {
+							_log.error(e);
+						}
+					}
+				}
+			}
+			
+			return Response.status(200).entity("{}").build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}	
 }

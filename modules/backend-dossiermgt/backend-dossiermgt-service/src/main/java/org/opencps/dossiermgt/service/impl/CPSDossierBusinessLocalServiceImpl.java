@@ -2234,6 +2234,11 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 		}
+		else if (dateOption == DossierTerm.DATE_OPTION_PAUSE_OVERDUE) {
+			if (dossier.getDueDate() != null) {
+				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
+			}			
+		}
 		
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
