@@ -233,7 +233,9 @@ public class DossierTerm {
 	public static final int DATE_OPTION_RESET_DUE_DATE = 6;
 	public static final int DATE_OPTION_SEVEN = 7;
 	//public static final int DATE_OPTION_RESET_DUE_DATE = 8;
-
+	//PAUSE OVERDUE
+	public static final int DATE_OPTION_PAUSE_OVERDUE = 9;
+	
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
 	//STATISTIC
@@ -241,6 +243,7 @@ public class DossierTerm {
 	public static final String OVER_TIME = "overtime";
 	public static final String ON_TIME = "ontime";
 	public static final String TIME = "time";
+	//LamTV
 	public static final String PAUSE_STATE = "PAUSE";
 	public static final String OVERTIME_STATE = "OVERTIME";
 
@@ -261,4 +264,7 @@ public class DossierTerm {
 	public static final String DOCUMENT_DATE = "documentDate";
 	
 	public static final String PAUSE_LOCK_STATE = "PAUSE";
+	public static final String PAUSE_OVERDUE_LOCK_STATE = "PAUSE_OVERDUE";
+	
+	public static final String PAUSE_LOCK_STATE_TERM = "LOCK";
 }

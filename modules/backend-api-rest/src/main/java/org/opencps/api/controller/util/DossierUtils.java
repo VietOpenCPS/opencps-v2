@@ -456,6 +456,13 @@ public class DossierUtils {
 //				_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
 				model.setDocumentDate(APIDateTimeUtils.convertDateToString(documentDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			}
+			if (DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)) {
+				model.setLock("Yêu cầu bổ sung quá hạn 3 ngày");
+			}
+			else {
+				model.setLock("Yêu cầu bổ sung trong hạn 3 ngày");
+			}
+			
 			ouputs.add(model);
 		}
 
@@ -1442,7 +1449,8 @@ public class DossierUtils {
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
-				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState)));
+				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState))
+				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)));
 	}
 
 	private static boolean checkReceiving(String dossierStatus) {
