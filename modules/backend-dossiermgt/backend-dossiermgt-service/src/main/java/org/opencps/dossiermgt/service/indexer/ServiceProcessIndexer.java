@@ -99,6 +99,8 @@ public class ServiceProcessIndexer extends BaseIndexer<ServiceProcess> {
 		long [] roleArray = ListUtil.toLongArray(roles, ServiceProcessRole.ROLE_ID_ACCESSOR);
 		
 		document.addNumber(ServiceProcessRoleTerm.ROLE_ID, roleArray);
+		document.addTextSortable(ServiceProcessTerm.DOSSIER_GROUP_PATTERN,
+			object.getDossierGroupPattern());
 		
 		return document;
 	}

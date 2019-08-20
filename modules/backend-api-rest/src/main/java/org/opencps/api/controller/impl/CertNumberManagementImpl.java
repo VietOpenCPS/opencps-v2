@@ -238,7 +238,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 	@Override
 	public Response updateSertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long certid, String pattern, int initNumber) {
+			User user, ServiceContext serviceContext, String certid, String pattern, int initNumber) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
@@ -262,9 +262,9 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			if (!isAdmin) {
 				throw new UnauthenticationException();
 			}
-			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
+//			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 
-			Counter counter = CounterLocalServiceUtil.getCounter(certId);
+			Counter counter = CounterLocalServiceUtil.getCounter(certid);
 
 			counter.setCurrentId(initNumber);
 			

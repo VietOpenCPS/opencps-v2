@@ -61,7 +61,8 @@ import javax.xml.bind.annotation.XmlType;
     "generatePassword",
     "directNotification",
     "serverNo",
-    "paymentFee"
+    "paymentFee",
+    "dossierGroupPattern"
 })
 @XmlRootElement(name = "ServiceProcessInputModel")
 public class ServiceProcessInputModel {
@@ -93,8 +94,20 @@ public class ServiceProcessInputModel {
     protected String serverNo;
 	@FormParam("paymentFee")
     protected String paymentFee;
+	@FormParam("dossierGroupPattern")
+    protected String dossierGroupPattern;
 
-    public String getPaymentFee() {
+	public String getDossierGroupPattern() {
+	
+		return dossierGroupPattern;
+	}
+
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+	
+		this.dossierGroupPattern = dossierGroupPattern;
+	}
+
+	public String getPaymentFee() {
 		return paymentFee;
 	}
 

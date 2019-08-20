@@ -68,7 +68,8 @@ import javax.xml.bind.annotation.XmlType;
     "directNotification",
     "serverNo",
     "serverName",
-    "paymentFee"
+    "paymentFee",
+    "dossierGroupPattern"
 })
 @XmlRootElement(name = "ServiceProcessDetailModel")
 public class ServiceProcessDetailModel {
@@ -91,8 +92,19 @@ public class ServiceProcessDetailModel {
     protected String serverNo;
     protected String serverName;
     protected String paymentFee;
+    protected String dossierGroupPattern;
 
-    public String getPaymentFee() {
+	public String getDossierGroupPattern() {
+	
+		return dossierGroupPattern;
+	}
+
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+	
+		this.dossierGroupPattern = dossierGroupPattern;
+	}
+
+	public String getPaymentFee() {
 		return paymentFee;
 	}
 
