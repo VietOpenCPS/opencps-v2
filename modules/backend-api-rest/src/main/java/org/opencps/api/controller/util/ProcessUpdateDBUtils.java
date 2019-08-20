@@ -858,7 +858,7 @@ public class ProcessUpdateDBUtils {
 				ServiceProcessActions actionService = new ServiceProcessActionsImpl();
 				long serviceProcessId = actionService.updateServiceProcessDB(userId, groupId, processNo, processName,
 						description, durationCountConvert, durationUnit, generatePassword, serverNo, serverName,
-						dossierNoPattern, dueDatePattern, serviceContext);
+						dossierNoPattern, dueDatePattern, process.getDossierGroupPattern(), serviceContext);
 				//Delete all record ServiceFileTemplate with serviceInfoId
 				Roles processRoles = process.getRoles();
 				if (processRoles != null) {

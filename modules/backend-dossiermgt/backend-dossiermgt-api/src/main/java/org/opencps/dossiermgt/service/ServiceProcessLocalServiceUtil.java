@@ -383,6 +383,7 @@ public class ServiceProcessLocalServiceUtil {
 		String dossierNoPattern, boolean generateDueDate,
 		String dueDatePattern, boolean generatePassword,
 		boolean directNotification, String serverNo, String paymentFee,
+		String dossierGroupPattern,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -390,7 +391,7 @@ public class ServiceProcessLocalServiceUtil {
 			processName, description, durationCount, durationUnit, counter,
 			generateDossierNo, dossierNoPattern, generateDueDate,
 			dueDatePattern, generatePassword, directNotification, serverNo,
-			paymentFee, context);
+			paymentFee, dossierGroupPattern, context);
 	}
 
 	/**
@@ -409,13 +410,14 @@ public class ServiceProcessLocalServiceUtil {
 		String description, Double durationCount, Integer durationUnit,
 		boolean generatePassword, String serverNo, String serverName,
 		String dossierNoPattern, String dueDatePattern,
+		String dossierGroupPattern,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateServiceProcessDB(userId, groupId, processNo,
 			processName, description, durationCount, durationUnit,
 			generatePassword, serverNo, serverName, dossierNoPattern,
-			dueDatePattern, serviceContext);
+			dueDatePattern, dossierGroupPattern, serviceContext);
 	}
 
 	public static ServiceProcessLocalService getService() {

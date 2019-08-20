@@ -66,6 +66,7 @@ public class ServiceProcessUtils {
 			model.setServerNo(doc.get(ServiceProcessTerm.SERVER_NO));
 			model.setServerName(doc.get(ServiceProcessTerm.SERVER_NAME));
 			model.setPaymentFee(doc.get(ServiceProcessTerm.PAYMENT_FEE));
+			model.setDossierGroupPattern(doc.get(ServiceProcessTerm.DOSSIER_GROUP_PATTERN));
 
 			outputs.add(model);
 		}
@@ -89,6 +90,7 @@ public class ServiceProcessUtils {
 		output.setGeneratePassword(Boolean.toString(serviceProcess.getGeneratePassword()));
 		output.setDirectNotification(Boolean.toString(serviceProcess.getDirectNotification()));
 		output.setServerNo(serviceProcess.getServerNo());
+		output.setDossierGroupPattern(serviceProcess.getDossierGroupPattern());
 
 		return output;
 
@@ -126,6 +128,7 @@ public class ServiceProcessUtils {
 			serverName = server.getServerName();
 
 		output.setServerName(serverName);
+		output.setDossierGroupPattern(serviceProcess.getDossierGroupPattern());
 
 		return output;
 

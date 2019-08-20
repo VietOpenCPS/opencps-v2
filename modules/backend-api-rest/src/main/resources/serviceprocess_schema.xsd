@@ -63,6 +63,7 @@
 			<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
 			<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
 			<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+			<xsd:element name="dossierGroupPattern" type="xsd:string" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -91,6 +92,7 @@
 				<xsd:element name="generatePassword" type="xsd:string" minOccurs="0" />
 				<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierGroupPattern" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
@@ -115,6 +117,7 @@
 				<xsd:element name="directNotification" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serverNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="serverName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierGroupPattern" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

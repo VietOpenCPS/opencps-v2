@@ -576,7 +576,7 @@ create table opencps_menuconfig (
 	tableConfig TEXT null,
 	buttonConfig TEXT null,
 	icon VARCHAR(75) null,
-	viewScript VARCHAR(75) null
+	viewScript TEXT null
 );
 
 create table opencps_menurole (
