@@ -693,13 +693,15 @@ public class UserManagementImpl implements UserManagement {
 				result.put("role", StringPool.BLANK);
 				result.put("deactiveAccountFlag", 0);
 
-				if ("Administrator".equalsIgnoreCase(role.getName())) {
-					roleName = "Administrator";
-				}
-
-				if ("Administrator_data".equalsIgnoreCase(role.getName())) {
-					roleName = "Administrator_data";
-				}
+//				if ("Administrator".equalsIgnoreCase(role.getName())) {
+//					roleName = "Administrator";
+//				}
+//
+//				if ("Administrator_data".equalsIgnoreCase(role.getName())) {
+//					roleName = "Administrator_data";
+//				}
+				
+				roleName = role.getName();
 
 				result.put("email", user.getEmailAddress());
 				result.put("role", roleName);
