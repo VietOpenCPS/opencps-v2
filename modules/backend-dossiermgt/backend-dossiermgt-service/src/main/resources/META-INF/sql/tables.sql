@@ -919,7 +919,8 @@ create table opencps_serviceinfo (
 	domainName TEXT null,
 	domainIndex VARCHAR(75) null,
 	maxLevel INTEGER,
-	public_ BOOLEAN
+	public_ BOOLEAN,
+	govAgencyText VARCHAR(75) null
 );
 
 create table opencps_serviceprocess (

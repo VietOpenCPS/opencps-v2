@@ -28,23 +28,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.ServiceInfoUtils;
@@ -65,11 +59,8 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
@@ -206,7 +197,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode,
 					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					serviceContext);
+					input.getGovAgencyText(), serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
@@ -303,7 +294,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					dossierText, conditionText, durationText, applicantText,
 					resultText, regularText, feeText, administrationCode,
 					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					serviceContext);
+					input.getGovAgencyText(), serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 

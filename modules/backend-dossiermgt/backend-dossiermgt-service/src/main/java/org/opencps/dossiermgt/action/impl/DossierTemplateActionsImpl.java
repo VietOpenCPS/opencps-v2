@@ -62,7 +62,7 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 	@Override
 	public DossierTemplate getDossierTemplate(long dossierTemplateId) throws PortalException {
-		return DossierTemplateLocalServiceUtil.getDossierTemplate(dossierTemplateId);
+		return DossierTemplateLocalServiceUtil.fetchDossierTemplate(dossierTemplateId);
 	}
 
 	@Override

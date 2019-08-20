@@ -1343,6 +1343,7 @@
 		<field name="domainIndex" type="String" />
 		<field name="maxLevel" type="int" />
 		<field name="public_" type="boolean" />
+		<field name="govAgencyText" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcess">
 		<field name="uuid" type="String" />

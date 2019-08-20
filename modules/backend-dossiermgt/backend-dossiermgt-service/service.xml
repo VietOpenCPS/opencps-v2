@@ -46,6 +46,7 @@
 		<column name="domainIndex" type="String" />
 		<column name="maxLevel" type="int" />
 		<column name="public_" type="boolean" />
+		<column name="govAgencyText" type="String" />
 
 		<!-- Order -->
 

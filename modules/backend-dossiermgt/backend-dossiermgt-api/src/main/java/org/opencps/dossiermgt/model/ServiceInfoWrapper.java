@@ -87,6 +87,7 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		attributes.put("domainIndex", getDomainIndex());
 		attributes.put("maxLevel", getMaxLevel());
 		attributes.put("public_", isPublic_());
+		attributes.put("govAgencyText", getGovAgencyText());
 
 		return attributes;
 	}
@@ -255,6 +256,12 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		if (public_ != null) {
 			setPublic_(public_);
 		}
+
+		String govAgencyText = (String)attributes.get("govAgencyText");
+
+		if (govAgencyText != null) {
+			setGovAgencyText(govAgencyText);
+		}
 	}
 
 	@Override
@@ -400,6 +407,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public String getFeeText() {
 		return _serviceInfo.getFeeText();
+	}
+
+	/**
+	* Returns the gov agency text of this service info.
+	*
+	* @return the gov agency text of this service info
+	*/
+	@Override
+	public String getGovAgencyText() {
+		return _serviceInfo.getGovAgencyText();
 	}
 
 	/**
@@ -751,6 +768,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public void setFeeText(String feeText) {
 		_serviceInfo.setFeeText(feeText);
+	}
+
+	/**
+	* Sets the gov agency text of this service info.
+	*
+	* @param govAgencyText the gov agency text of this service info
+	*/
+	@Override
+	public void setGovAgencyText(String govAgencyText) {
+		_serviceInfo.setGovAgencyText(govAgencyText);
 	}
 
 	/**

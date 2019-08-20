@@ -125,7 +125,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo addServiceInfo(long userId, long groupId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext)
+			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, ServiceContext serviceContext)
 			throws PortalException {
 
 		User user = userLocalService.getUser(userId);
@@ -177,6 +177,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		}
 
 		serviceInfo.setPublic_(activeStatus);
+		serviceInfo.setGovAgencyText(govAgencyText);
 
 		serviceInfoPersistence.update(serviceInfo);
 
@@ -203,7 +204,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 	public ServiceInfo updateServiceInfo(long groupId, long serviceInfoId, String serviceCode, String serviceName,
 			String processText, String methodText, String dossierText, String conditionText, String durationText,
 			String applicantText, String resultText, String regularText, String feeText, String administrationCode,
-			String domainCode, int maxLevel, boolean activeStatus, ServiceContext serviceContext)
+			String domainCode, int maxLevel, boolean activeStatus, String govAgencyText, ServiceContext serviceContext)
 			throws PortalException {
 
 		Date now = new Date();
@@ -257,6 +258,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			serviceInfo.setMaxLevel(maxLevel);
 
 		serviceInfo.setPublic_(activeStatus);
+
+		if (Validator.isNotNull(govAgencyText))
+			serviceInfo.setGovAgencyText(govAgencyText);
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE, administrationCode,
 				groupId);

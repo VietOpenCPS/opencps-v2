@@ -60,6 +60,7 @@ public class ServiceInfoSoap implements Serializable {
 		soapModel.setDomainIndex(model.getDomainIndex());
 		soapModel.setMaxLevel(model.getMaxLevel());
 		soapModel.setPublic_(model.isPublic_());
+		soapModel.setGovAgencyText(model.getGovAgencyText());
 
 		return soapModel;
 	}
@@ -332,6 +333,14 @@ public class ServiceInfoSoap implements Serializable {
 		_public_ = public_;
 	}
 
+	public String getGovAgencyText() {
+		return _govAgencyText;
+	}
+
+	public void setGovAgencyText(String govAgencyText) {
+		_govAgencyText = govAgencyText;
+	}
+
 	private String _uuid;
 	private long _serviceInfoId;
 	private long _groupId;
@@ -359,4 +368,5 @@ public class ServiceInfoSoap implements Serializable {
 	private String _domainIndex;
 	private int _maxLevel;
 	private boolean _public_;
+	private String _govAgencyText;
 }
