@@ -635,7 +635,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 										Question question = QuestionLocalServiceUtil.updateQuestion(
 												serviceContext.getCompanyId(), groupId, 0l, "Hệ thống", "test@liferay.com",
 												questionData.getString("question"), 1, questionData.getString("govAgencyCode"), 
-												questionData.getString("govAgencyName"));
+												questionData.getString("govAgencyName"), StringPool.BLANK);
 										if (question != null) {
 											AnswerLocalServiceUtil.updateAnswer(userId, groupId, 0l,
 													question.getQuestionId(), questionData.getString("answer"), 1);

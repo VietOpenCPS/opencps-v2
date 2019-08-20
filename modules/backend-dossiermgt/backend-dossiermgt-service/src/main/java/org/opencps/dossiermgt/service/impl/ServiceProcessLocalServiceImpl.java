@@ -82,44 +82,43 @@ import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
 import aQute.bnd.annotation.ProviderType;
 
 /**
- * The implementation of the service process local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
+ * The implementation of the service process local service. <p> All custom
+ * service methods should be put in this class. Whenever methods are added,
+ * rerun ServiceBuilder to copy their definitions into the
  * {@link org.opencps.dossiermgt.service.ServiceProcessLocalService} interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security
+ * <p> This is a local service. Methods of this service will not have security
  * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
- * </p>
+ * be accessed from within the same VM. </p>
  *
  * @author huymq
  * @see ServiceProcessLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil
  */
 @ProviderType
-public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBaseImpl {
+public class ServiceProcessLocalServiceImpl
+	extends ServiceProcessLocalServiceBaseImpl {
 	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil} to access the
-	 * service process local service.
+	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
+	 * {@link org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil} to
+	 * access the service process local service.
 	 */
 
 	static final String PROCESS_NO = "DEFAULT_SERVICE_PROCESS";
 
 	@Indexable(type = IndexableType.REINDEX)
-	public void cloneServiceProcess(long serviceProcessId, long groupId, String processNo,
-			ServiceContext serviceContext) throws PortalException {
+	public void cloneServiceProcess(
+		long serviceProcessId, long groupId, String processNo,
+		ServiceContext serviceContext)
+		throws PortalException {
 
-		ServiceProcess originServiceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
+		ServiceProcess originServiceProcess =
+			serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
-		long cloneServiceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
+		long cloneServiceProcessId =
+			counterLocalService.increment(ServiceProcess.class.getName());
 
-		ServiceProcess cloneServiceProcess = serviceProcessPersistence.create(cloneServiceProcessId);
+		ServiceProcess cloneServiceProcess =
+			serviceProcessPersistence.create(cloneServiceProcessId);
 
 		Date now = new Date();
 
@@ -134,34 +133,50 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		cloneServiceProcess.setUserName(userAction.getFullName());
 
 		// Add other fields
-		// cloneServiceProcess.setProcessNo(originServiceProcess.getProcessNo() +
+		// cloneServiceProcess.setProcessNo(originServiceProcess.getProcessNo()
+		// +
 		// "_CLONE");
 		cloneServiceProcess.setProcessNo(processNo);
-		cloneServiceProcess.setProcessName(originServiceProcess.getProcessName());
-		cloneServiceProcess.setDescription(originServiceProcess.getDescription());
-		cloneServiceProcess.setDurationCount(originServiceProcess.getDurationCount());
-		cloneServiceProcess.setDurationUnit(originServiceProcess.getDurationUnit());
+		cloneServiceProcess.setProcessName(
+			originServiceProcess.getProcessName());
+		cloneServiceProcess.setDescription(
+			originServiceProcess.getDescription());
+		cloneServiceProcess.setDurationCount(
+			originServiceProcess.getDurationCount());
+		cloneServiceProcess.setDurationUnit(
+			originServiceProcess.getDurationUnit());
 		cloneServiceProcess.setCounter(0);
-		cloneServiceProcess.setGenerateDossierNo(originServiceProcess.getGenerateDossierNo());
-		cloneServiceProcess.setDossierNoPattern(originServiceProcess.getDossierNoPattern());
-		cloneServiceProcess.setGenerateDueDate(originServiceProcess.getGenerateDueDate());
-		cloneServiceProcess.setDueDatePattern(originServiceProcess.getDueDatePattern());
-		cloneServiceProcess.setGeneratePassword(originServiceProcess.getGeneratePassword());
-		cloneServiceProcess.setDirectNotification(originServiceProcess.getDirectNotification());
+		cloneServiceProcess.setGenerateDossierNo(
+			originServiceProcess.getGenerateDossierNo());
+		cloneServiceProcess.setDossierNoPattern(
+			originServiceProcess.getDossierNoPattern());
+		cloneServiceProcess.setGenerateDueDate(
+			originServiceProcess.getGenerateDueDate());
+		cloneServiceProcess.setDueDatePattern(
+			originServiceProcess.getDueDatePattern());
+		cloneServiceProcess.setGeneratePassword(
+			originServiceProcess.getGeneratePassword());
+		cloneServiceProcess.setDirectNotification(
+			originServiceProcess.getDirectNotification());
 		cloneServiceProcess.setServerNo(originServiceProcess.getServerNo());
+		cloneServiceProcess.setDossierGroupPattern(
+			originServiceProcess.getDossierGroupPattern());
 
 		serviceProcessPersistence.update(cloneServiceProcess);
 
-		List<ServiceProcessRole> processRoles = serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
+		List<ServiceProcessRole> processRoles =
+			serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
 		// clone processRole
 		for (ServiceProcessRole sp : processRoles) {
 			// long roleId =
 			// counterLocalService.increment(ServiceProcessRole.class.getName());
 
-			ServiceProcessRolePK pk = new ServiceProcessRolePK(cloneServiceProcessId, sp.getRoleId());
+			ServiceProcessRolePK pk =
+				new ServiceProcessRolePK(cloneServiceProcessId, sp.getRoleId());
 
-			ServiceProcessRole cloneRole = serviceProcessRolePersistence.create(pk);
+			ServiceProcessRole cloneRole =
+				serviceProcessRolePersistence.create(pk);
 
 			cloneRole.setModerator(sp.getModerator());
 			cloneRole.setCondition(sp.getCondition());
@@ -169,23 +184,29 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			serviceProcessRolePersistence.update(cloneRole);
 		}
 
-		Indexer<ServiceProcess> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
+		Indexer<ServiceProcess> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
 
 		try {
 			indexer.reindex(cloneServiceProcess);
-		} catch (SearchException se) {
+		}
+		catch (SearchException se) {
 			// se.printStackTrace();
 			_log.error(se);
 		}
 
-		Indexer<ProcessStep> stepindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
+		Indexer<ProcessStep> stepindexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
 
-		Indexer<ProcessAction> actionindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessAction.class);
+		Indexer<ProcessAction> actionindexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ProcessAction.class);
 
-		List<ProcessStep> originSteps = processStepPersistence.findByS_P_ID(serviceProcessId);
+		List<ProcessStep> originSteps =
+			processStepPersistence.findByS_P_ID(serviceProcessId);
 
 		for (ProcessStep step : originSteps) {
-			long cloneStepId = counterLocalService.increment(ProcessStep.class.getName());
+			long cloneStepId =
+				counterLocalService.increment(ProcessStep.class.getName());
 
 			ProcessStep cloneStep = processStepPersistence.create(cloneStepId);
 
@@ -217,17 +238,21 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 			try {
 				stepindexer.reindex(cloneStep);
-			} catch (SearchException se) {
+			}
+			catch (SearchException se) {
 				// se.printStackTrace();
 				_log.error(se);
 			}
 
-			List<ProcessStepRole> stepRoles = processStepRolePersistence.findByP_S_ID(cloneStepId);
+			List<ProcessStepRole> stepRoles =
+				processStepRolePersistence.findByP_S_ID(cloneStepId);
 
 			for (ProcessStepRole role : stepRoles) {
-				ProcessStepRolePK pk = new ProcessStepRolePK(cloneStepId, role.getRoleId());
+				ProcessStepRolePK pk =
+					new ProcessStepRolePK(cloneStepId, role.getRoleId());
 
-				ProcessStepRole cloneStepRole = processStepRolePersistence.create(pk);
+				ProcessStepRole cloneStepRole =
+					processStepRolePersistence.create(pk);
 
 				cloneStepRole.setModerator(role.getModerator());
 				cloneStepRole.setCondition(role.getCondition());
@@ -236,12 +261,15 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			}
 		}
 
-		List<ProcessAction> originActions = processActionPersistence.findByS_P_ID(serviceProcessId);
+		List<ProcessAction> originActions =
+			processActionPersistence.findByS_P_ID(serviceProcessId);
 
 		for (ProcessAction act : originActions) {
-			long cloneActionId = counterLocalService.increment(ProcessAction.class.getName());
+			long cloneActionId =
+				counterLocalService.increment(ProcessAction.class.getName());
 
-			ProcessAction cloneaction = processActionPersistence.create(cloneActionId);
+			ProcessAction cloneaction =
+				processActionPersistence.create(cloneActionId);
 
 			// Add audit fields
 			cloneaction.setCompanyId(serviceContext.getCompanyId());
@@ -269,7 +297,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 			try {
 				actionindexer.reindex(cloneaction);
-			} catch (SearchException se) {
+			}
+			catch (SearchException se) {
 				// se.printStackTrace();
 				_log.error(se);
 			}
@@ -290,17 +319,19 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 			User userAction = userLocalService.getUser(context.getUserId());
 
-			input = this.getClass().getClassLoader().getResourceAsStream("default_service_process.properties");
+			input = this.getClass().getClassLoader().getResourceAsStream(
+				"default_service_process.properties");
 
-			// input = new FileInputStream("default_service_process.properties");
+			// input = new
+			// FileInputStream("default_service_process.properties");
 
 			// load a properties file
 			props.load(input);
 
 			Enumeration e = props.propertyNames();
 
-			ServiceProcess object = serviceProcessPersistence
-					.create(counterLocalService.increment(ServiceProcess.class.getName()));
+			ServiceProcess object = serviceProcessPersistence.create(
+				counterLocalService.increment(ServiceProcess.class.getName()));
 
 			// Add audit fields
 			object.setCompanyId(context.getCompanyId());
@@ -318,16 +349,19 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 			serviceProcessPersistence.update(object);
 
-			Indexer<ServiceProcess> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
+			Indexer<ServiceProcess> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
 
 			try {
 				indexer.reindex(object);
-			} catch (SearchException se) {
+			}
+			catch (SearchException se) {
 				// se.printStackTrace();
 				_log.error(se);
 			}
 
-			Indexer<ProcessStep> stepindexer = IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
+			Indexer<ProcessStep> stepindexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(ProcessStep.class);
 
 			while (e.hasMoreElements()) {
 
@@ -337,8 +371,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 				String key = (String) e.nextElement();
 
-				ProcessStep step = processStepPersistence
-						.create(counterLocalService.increment(ProcessStep.class.getName()));
+				ProcessStep step = processStepPersistence.create(
+					counterLocalService.increment(ProcessStep.class.getName()));
 
 				// Add audit fields
 				step.setCompanyId(context.getCompanyId());
@@ -362,7 +396,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 				try {
 					stepindexer.reindex(step);
-				} catch (SearchException se) {
+				}
+				catch (SearchException se) {
 					// se.printStackTrace();
 					_log.error(se);
 				}
@@ -371,13 +406,16 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.info(e);
-		} finally {
+		}
+		finally {
 			if (input != null) {
 				try {
 					input.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					// e.printStackTrace();
 					_log.error(e);
 				}
@@ -477,11 +515,14 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
-			String processName, String description, Double durationCount, int durationUnit, long counter,
-			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
-			ServiceContext context) throws PortalException {
+	public ServiceProcess updateServiceProcess(
+		long groupId, long serviceProcessId, String processNo,
+		String processName, String description, Double durationCount,
+		int durationUnit, long counter, boolean generateDossierNo,
+		String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
+		boolean generatePassword, boolean directNotification, String serverNo,
+		String paymentFee, String dossierGroupPattern, ServiceContext context)
+		throws PortalException {
 
 		Date now = new Date();
 
@@ -489,12 +530,15 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 		ServiceProcess object = null;
 
-		validateAdd(groupId, serviceProcessId, processNo, processName, generateDossierNo, dossierNoPattern,
-				generateDueDate, dueDatePattern, context);
+		validateAdd(
+			groupId, serviceProcessId, processNo, processName,
+			generateDossierNo, dossierNoPattern, generateDueDate,
+			dueDatePattern, context);
 
 		if (serviceProcessId == 0) {
 
-			serviceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
+			serviceProcessId =
+				counterLocalService.increment(ServiceProcess.class.getName());
 
 			object = serviceProcessPersistence.create(serviceProcessId);
 
@@ -521,9 +565,12 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setDirectNotification(directNotification);
 			object.setServerNo(serverNo);
 			object.setPaymentFee(paymentFee);
+			object.setDossierGroupPattern(dossierGroupPattern);
 
-		} else {
-			object = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
+		}
+		else {
+			object =
+				serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
 			// Add audit fields
 			object.setModifiedDate(now);
@@ -545,6 +592,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setDirectNotification(directNotification);
 			object.setServerNo(serverNo);
 			object.setPaymentFee(paymentFee);
+			object.setDossierGroupPattern(dossierGroupPattern);
+
 		}
 
 		serviceProcessPersistence.update(object);
@@ -553,7 +602,10 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceProcess removeServiceProcess(long serviceProcessId, long groupId) throws PortalException {
+	public ServiceProcess removeServiceProcess(
+		long serviceProcessId, long groupId)
+		throws PortalException {
+
 		validateRemove(serviceProcessId, groupId);
 
 		// List<ServiceProcessRole> processRoles =
@@ -563,7 +615,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		// serviceProcessRolePersistence.remove(processRole);
 		// }
 
-		ServiceProcess serviceProcess = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
+		ServiceProcess serviceProcess =
+			serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
 		return serviceProcessPersistence.remove(serviceProcess);
 
@@ -571,16 +624,21 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 	public static final String CLASS_NAME = ServiceProcess.class.getName();
 
-	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
-			SearchContext searchContext) throws ParseException, SearchException {
+	public Hits searchLucene(
+		LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+		SearchContext searchContext)
+		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<ServiceProcess> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
+		Indexer<ServiceProcess> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setEntryClassNames(new String[] {
+			CLASS_NAME
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setStart(start);
@@ -592,7 +650,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -604,8 +663,10 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceProcessTerm.PROCESS_NAME, ServiceProcessTerm.PROCESS_NO,
-						ServiceProcessTerm.DESCRIPTION);
+				query.addFields(
+					ServiceProcessTerm.PROCESS_NAME,
+					ServiceProcessTerm.PROCESS_NO,
+					ServiceProcessTerm.DESCRIPTION);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -625,16 +686,20 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
-	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
-			throws ParseException, SearchException {
+	public long countLucene(
+		LinkedHashMap<String, Object> params, SearchContext searchContext)
+		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<ServiceProcess> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
+		Indexer<ServiceProcess> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ServiceProcess.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setEntryClassNames(new String[] {
+			CLASS_NAME
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
@@ -643,7 +708,8 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -655,8 +721,10 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ServiceProcessTerm.PROCESS_NAME, ServiceProcessTerm.PROCESS_NO,
-						ServiceProcessTerm.DESCRIPTION);
+				query.addFields(
+					ServiceProcessTerm.PROCESS_NAME,
+					ServiceProcessTerm.PROCESS_NO,
+					ServiceProcessTerm.DESCRIPTION);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -676,89 +744,116 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 	}
 
-	private void validateAdd(long groupId, long serviceProcessId, String processNo, String processName,
-			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			ServiceContext context) throws PortalException {
+	private void validateAdd(
+		long groupId, long serviceProcessId, String processNo,
+		String processName, boolean generateDossierNo, String dossierNoPattern,
+		boolean generateDueDate, String dueDatePattern, ServiceContext context)
+		throws PortalException {
 
 		if (Validator.isNull(processNo)) {
 			throw new RequiredProcessNoException("RequiredProcessNoException");
 		}
 
 		if (Validator.isNull(processNo)) {
-			throw new RequiredProcessNameException("RequiredProcessNameException");
+			throw new RequiredProcessNameException(
+				"RequiredProcessNameException");
 		}
 
 		if (serviceProcessId == 0) {
 			ServiceProcess serviceProcess = null;
 
-			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			serviceProcess =
+				serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 
 			if (Validator.isNotNull(serviceProcess)) {
-				throw new DuplicateProcessNoException("DuplicateProcessNoException");
+				throw new DuplicateProcessNoException(
+					"DuplicateProcessNoException");
 			}
 
-			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			serviceProcess =
+				serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 			if (Validator.isNotNull(serviceProcess)) {
-				throw new DuplicateProcessNameException("DuplicateProcessNameException");
+				throw new DuplicateProcessNameException(
+					"DuplicateProcessNameException");
 			}
 
-		} else {
+		}
+		else {
 
 			ServiceProcess serviceProcess = null;
 
-			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			serviceProcess =
+				serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 
-			if (Validator.isNotNull(serviceProcess) && serviceProcessId != serviceProcess.getPrimaryKey()) {
-				throw new DuplicateProcessNoException("DuplicateProcessNoException");
+			if (Validator.isNotNull(serviceProcess) &&
+				serviceProcessId != serviceProcess.getPrimaryKey()) {
+				throw new DuplicateProcessNoException(
+					"DuplicateProcessNoException");
 			}
 
-			serviceProcess = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
-			if (Validator.isNotNull(serviceProcess) && serviceProcessId != serviceProcess.getPrimaryKey()) {
-				throw new DuplicateProcessNameException("DuplicateProcessNameException");
+			serviceProcess =
+				serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+			if (Validator.isNotNull(serviceProcess) &&
+				serviceProcessId != serviceProcess.getPrimaryKey()) {
+				throw new DuplicateProcessNameException(
+					"DuplicateProcessNameException");
 			}
 
 		}
 
 		if (generateDossierNo && Validator.isNull(dossierNoPattern)) {
-			throw new RequiredDossierNoPatternException("RequiredDossierNoPatternException");
+			throw new RequiredDossierNoPatternException(
+				"RequiredDossierNoPatternException");
 		}
 
 		if (generateDueDate && Validator.isNull(dueDatePattern)) {
-			throw new RequiredDueDatePatternException("RequiredDueDatePatternException");
+			throw new RequiredDueDatePatternException(
+				"RequiredDueDatePatternException");
 		}
 
 	}
 
 	@Deprecated
-	private void validateUpdate(long groupId, long serviceProcessId, String processNo, String processName,
-			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			ServiceContext context) throws PortalException {
+	private void validateUpdate(
+		long groupId, long serviceProcessId, String processNo,
+		String processName, boolean generateDossierNo, String dossierNoPattern,
+		boolean generateDueDate, String dueDatePattern, ServiceContext context)
+		throws PortalException {
 
-		ServiceProcess spUpdate = serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
+		ServiceProcess spUpdate =
+			serviceProcessPersistence.fetchByPrimaryKey(serviceProcessId);
 
-		if (!spUpdate.getProcessNo().equals(processNo) || !spUpdate.getProcessName().equals(processName)) {
-			validateAdd(groupId, serviceProcessId, processNo, processName, generateDossierNo, dossierNoPattern,
-					generateDueDate, dueDatePattern, context);
+		if (!spUpdate.getProcessNo().equals(processNo) ||
+			!spUpdate.getProcessName().equals(processName)) {
+			validateAdd(
+				groupId, serviceProcessId, processNo, processName,
+				generateDossierNo, dossierNoPattern, generateDueDate,
+				dueDatePattern, context);
 		}
 
 		if (generateDossierNo && Validator.isNull(dossierNoPattern)) {
-			throw new RequiredDossierNoPatternException("RequiredDossierNoPatternException");
+			throw new RequiredDossierNoPatternException(
+				"RequiredDossierNoPatternException");
 		}
 
 		if (generateDueDate && Validator.isNull(dueDatePattern)) {
-			throw new RequiredDueDatePatternException("RequiredDueDatePatternException");
+			throw new RequiredDueDatePatternException(
+				"RequiredDueDatePatternException");
 		}
 
 	}
 
-	private void validateRemove(long serviceProcessId, long groupId) throws PortalException {
+	private void validateRemove(long serviceProcessId, long groupId)
+		throws PortalException {
 
 		// List<ServiceProcessRole> processRoles =
 		// serviceProcessRolePersistence.findByP_S_ID(serviceProcessId);
 
-		List<ProcessStep> processSteps = processStepPersistence.findByS_P_ID(serviceProcessId);
+		List<ProcessStep> processSteps =
+			processStepPersistence.findByS_P_ID(serviceProcessId);
 
-		List<ProcessAction> processActions = processActionPersistence.findByS_P_ID(serviceProcessId);
+		List<ProcessAction> processActions =
+			processActionPersistence.findByS_P_ID(serviceProcessId);
 
 		if (processSteps.size() != 0 || processActions.size() != 0) {
 			throw new HasChildrenException("HasChildrenException");
@@ -766,37 +861,47 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	public List<ServiceProcess> getByServerNo(String serverNo) {
+
 		return serviceProcessPersistence.findBySVR_NO(serverNo);
 	}
 
 	// LamTV_Process
-	public ServiceProcess getServiceByCode(long groupId, String serviceCode, String govAgencyCode,
-			String dossierTemplateNo) throws PortalException {
+	public ServiceProcess getServiceByCode(
+		long groupId, String serviceCode, String govAgencyCode,
+		String dossierTemplateNo)
+		throws PortalException {
 
-		ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+		ProcessOption option = getProcessOption(
+			serviceCode, govAgencyCode, dossierTemplateNo, groupId);
 		if (option != null) {
 			long serviceProcessId = option.getServiceProcessId();
 
 			return serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
 
 	// LamTV_Process output ServiceProcess to DB
 	@Indexable(type = IndexableType.REINDEX)
-	public ServiceProcess updateServiceProcessDB(long userId, long groupId, String processNo, String processName,
-			String description, Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo,
-			String serverName, String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext)
-			throws PortalException {
+	public ServiceProcess updateServiceProcessDB(
+		long userId, long groupId, String processNo, String processName,
+		String description, Double durationCount, Integer durationUnit,
+		boolean generatePassword, String serverNo, String serverName,
+		String dossierNoPattern, String dueDatePattern, String dossierGroupPattern,
+		ServiceContext serviceContext)
+		throws PortalException {
 
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
 
-		ServiceProcess object = serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
+		ServiceProcess object =
+			serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 
 		if (object == null) {
-			long serviceProcessId = counterLocalService.increment(ServiceProcess.class.getName());
+			long serviceProcessId =
+				counterLocalService.increment(ServiceProcess.class.getName());
 			object = serviceProcessPersistence.create(serviceProcessId);
 
 			// Add audit fields
@@ -818,7 +923,9 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setServerName(serverName);
 			object.setDossierNoPattern(dossierNoPattern);
 			object.setDueDatePattern(dueDatePattern);
-		} else {
+			object.setDossierGroupPattern(dossierGroupPattern);
+		}
+		else {
 			// Add audit fields
 			object.setModifiedDate(now);
 			object.setUserId(userAction.getUserId());
@@ -835,51 +942,71 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 			object.setServerName(serverName);
 			object.setDossierNoPattern(dossierNoPattern);
 			object.setDueDatePattern(dueDatePattern);
+			object.setDossierGroupPattern(dossierGroupPattern);
 		}
 
 		return serviceProcessPersistence.update(object);
 	}
 
-	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
-			long groupId) throws PortalException {
+	private ProcessOption getProcessOption(
+		String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+		long groupId)
+		throws PortalException {
 
-		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(
+			groupId, serviceInfoCode, govAgencyCode);
 
-		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
-				config.getServiceConfigId());
+		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
+			groupId, dossierTemplateNo, config.getServiceConfigId());
 	}
 
 	public ServiceProcess getByG_PNO(long groupId, String processNo) {
+
 		return serviceProcessPersistence.fetchByG_ID_PNO(groupId, processNo);
 	}
 
 	public List<ServiceProcess> getByG_ID(long groupId) {
+
 		return serviceProcessPersistence.findByG_ID(groupId);
 	}
 
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
-	public ServiceProcess adminProcessDelete(Long id) throws Exception {
+	public ServiceProcess adminProcessDelete(Long id)
+		throws Exception {
 
-		ServiceProcess process = serviceProcessPersistence.fetchByPrimaryKey(id);
+		ServiceProcess process =
+			serviceProcessPersistence.fetchByPrimaryKey(id);
 		if (process != null) {
 			String processNo = process.getProcessNo();
 			long groupId = process.getGroupId();
 			if (Validator.isNotNull(processNo)) {
-				int countDossier = dossierLocalService.countByG_NOTS_O_PN(process.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, process.getProcessNo());
+				int countDossier = dossierLocalService.countByG_NOTS_O_PN(
+					process.getGroupId(), new String[] {
+						DossierTerm.DOSSIER_STATUS_DONE,
+						DossierTerm.DOSSIER_STATUS_CANCELLED,
+						DossierTerm.DOSSIER_STATUS_DENIED,
+						DossierTerm.DOSSIER_STATUS_UNRESOLVED
+					}, 1, process.getProcessNo());
 				if (countDossier > 0) {
-					throw new DataConflictException("Have dossiers use this service process");
+					throw new DataConflictException(
+						"Have dossiers use this service process");
 				}
-				List<Dossier> dossierList = dossierPersistence.findByGID_PNO(groupId, processNo);
+				List<Dossier> dossierList =
+					dossierPersistence.findByGID_PNO(groupId, processNo);
 				if (dossierList == null || dossierList.size() == 0) {
 					boolean flagProRole = deleteAllProcessRole(id);
 					boolean flagStep = deleteAllProcessStep(id);
 					boolean flagProAction = deleteAllProcessAction(id);
-					boolean flagSequence = deleteAllProcessSequence(process.getGroupId(), id);
-					if (flagProRole && flagStep && flagProAction && flagSequence) {
+					boolean flagSequence =
+						deleteAllProcessSequence(process.getGroupId(), id);
+					if (flagProRole && flagStep && flagProAction &&
+						flagSequence) {
 						try {
-							return ServiceProcessLocalServiceUtil.removeServiceProcess(id, groupId);
-						} catch (Exception e) {
+							return ServiceProcessLocalServiceUtil.removeServiceProcess(
+								id, groupId);
+						}
+						catch (Exception e) {
 							_log.debug(e);
 							return null;
 						}
@@ -898,13 +1025,16 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 
 		if (objectData.getLong("serviceProcessId") > 0) {
 
-			object = serviceProcessPersistence.fetchByPrimaryKey(objectData.getLong("serviceProcessId"));
+			object = serviceProcessPersistence.fetchByPrimaryKey(
+				objectData.getLong("serviceProcessId"));
 
 			object.setModifiedDate(new Date());
 
-		} else {
+		}
+		else {
 
-			long id = CounterLocalServiceUtil.increment(ServiceProcess.class.getName());
+			long id = CounterLocalServiceUtil.increment(
+				ServiceProcess.class.getName());
 
 			object = serviceProcessPersistence.create(id);
 
@@ -928,11 +1058,13 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 		object.setGenerateDueDate(objectData.getBoolean("generateDueDate"));
 		object.setDueDatePattern(objectData.getString("dueDatePattern"));
 		object.setGeneratePassword(objectData.getBoolean("generatePassword"));
-		object.setDirectNotification(objectData.getBoolean("directNotification"));
+		object.setDirectNotification(
+			objectData.getBoolean("directNotification"));
 		object.setServerNo(objectData.getString("serverNo"));
 		object.setServerName(objectData.getString("serverName"));
 		object.setRequestPayment(objectData.getBoolean("requestPayment"));
 		object.setPaymentFee(objectData.getString("paymentFee"));
+		object.setDossierGroupPattern(objectData.getString(ServiceProcessTerm.DOSSIER_GROUP_PATTERN));
 
 		serviceProcessPersistence.update(object);
 
@@ -940,20 +1072,25 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	private boolean deleteAllProcessAction(long serviceProcessId) {
+
 		boolean flag = false;
 		try {
-			List<ProcessAction> actList = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcessId);
+			List<ProcessAction> actList =
+				ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(
+					serviceProcessId);
 			if (actList != null && actList.size() > 0) {
 				for (ProcessAction act : actList) {
 					ProcessActionLocalServiceUtil.deleteProcessAction(act);
 					flag = true;
 				}
-			} else {
+			}
+			else {
 				flag = true;
 			}
-		}catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return false;
 		}
 
@@ -961,20 +1098,26 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	private boolean deleteAllProcessRole(long serviceProcessId) {
+
 		boolean flag = false;
 		try {
-			List<ServiceProcessRole> roleList = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+			List<ServiceProcessRole> roleList =
+				ServiceProcessRoleLocalServiceUtil.findByS_P_ID(
+					serviceProcessId);
 			if (roleList != null && roleList.size() > 0) {
 				for (ServiceProcessRole role : roleList) {
-					ServiceProcessRoleLocalServiceUtil.deleteServiceProcessRole(role);
+					ServiceProcessRoleLocalServiceUtil.deleteServiceProcessRole(
+						role);
 					flag = true;
 				}
-			} else {
+			}
+			else {
 				flag = true;
 			}
-		}catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return false;
 		}
 
@@ -982,64 +1125,79 @@ public class ServiceProcessLocalServiceImpl extends ServiceProcessLocalServiceBa
 	}
 
 	private boolean deleteAllProcessStep(long serviceProcessId) {
+
 		boolean flag = false;
 		try {
-			List<ProcessStep> stepList = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcessId);
+			List<ProcessStep> stepList =
+				ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(
+					serviceProcessId);
 			if (stepList != null && stepList.size() > 0) {
-//				_log.info("stepList: "+stepList.size());
+				// _log.info("stepList: "+stepList.size());
 				long stepId = 0;
 				for (ProcessStep step : stepList) {
 					stepId = step.getProcessStepId();
-//					_log.info("stepId: "+stepId);
+					// _log.info("stepId: "+stepId);
 					if (stepId > 0) {
-						List<ProcessStepRole> stepRoleList = ProcessStepRoleLocalServiceUtil
-								.findByP_S_ID(stepId);
-//						_log.info("stepRoleList: "+stepRoleList.size());
+						List<ProcessStepRole> stepRoleList =
+							ProcessStepRoleLocalServiceUtil.findByP_S_ID(
+								stepId);
+						// _log.info("stepRoleList: "+stepRoleList.size());
 						if (stepRoleList != null && stepRoleList.size() > 0) {
 							for (ProcessStepRole stepRole : stepRoleList) {
-								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(stepRole);
+								ProcessStepRoleLocalServiceUtil.deleteProcessStepRole(
+									stepRole);
 								flag = true;
 							}
-						} else {
+						}
+						else {
 							flag = true;
 						}
 					}
 					if (flag) {
-//						_log.info("STARTTT: ");
-						ProcessStep processStep = ProcessStepLocalServiceUtil.deleteProcessStep(step);
+						// _log.info("STARTTT: ");
+						ProcessStep processStep =
+							ProcessStepLocalServiceUtil.deleteProcessStep(step);
 						if (processStep == null) {
 							flag = false;
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				flag = true;
 			}
-		}catch (Exception e) {
-//			e.printStackTrace();
+		}
+		catch (Exception e) {
+			// e.printStackTrace();
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return false;
 		}
 
 		return flag;
 	}
 
-	private boolean deleteAllProcessSequence(long groupId, long serviceProcessId) {
+	private boolean deleteAllProcessSequence(
+		long groupId, long serviceProcessId) {
+
 		boolean flag = false;
 		try {
-			List<ProcessSequence> seqList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcessId);
+			List<ProcessSequence> seqList =
+				ProcessSequenceLocalServiceUtil.getByServiceProcess(
+					groupId, serviceProcessId);
 			if (seqList != null && seqList.size() > 0) {
 				for (ProcessSequence seq : seqList) {
 					ProcessSequenceLocalServiceUtil.deleteProcessSequence(seq);
 					flag = true;
 				}
-			} else {
+			}
+			else {
 				flag = true;
 			}
-		}catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			return false;
 		}
 

@@ -170,7 +170,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
 					dueDatePattern, GetterUtil.getBoolean(generatePassword),
 					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
-					serviceContext);
+					input.getDossierGroupPattern(), serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
@@ -241,6 +241,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					dossierNoPattern, GetterUtil.getBoolean(generateDueDate),
 					dueDatePattern, GetterUtil.getBoolean(generatePassword),
 					GetterUtil.getBoolean(directNotification), serverNo, paymentFee,
+					input.getDossierGroupPattern(),
 					serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);

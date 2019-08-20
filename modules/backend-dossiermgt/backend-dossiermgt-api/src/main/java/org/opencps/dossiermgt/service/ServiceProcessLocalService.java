@@ -330,7 +330,8 @@ public interface ServiceProcessLocalService extends BaseLocalService,
 		long counter, boolean generateDossierNo, String dossierNoPattern,
 		boolean generateDueDate, String dueDatePattern,
 		boolean generatePassword, boolean directNotification, String serverNo,
-		String paymentFee, ServiceContext context) throws PortalException;
+		String paymentFee, String dossierGroupPattern, ServiceContext context)
+		throws PortalException;
 
 	/**
 	* Updates the service process in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -346,6 +347,6 @@ public interface ServiceProcessLocalService extends BaseLocalService,
 		String processNo, String processName, String description,
 		Double durationCount, Integer durationUnit, boolean generatePassword,
 		String serverNo, String serverName, String dossierNoPattern,
-		String dueDatePattern, ServiceContext serviceContext)
-		throws PortalException;
+		String dueDatePattern, String dossierGroupPattern,
+		ServiceContext serviceContext) throws PortalException;
 }

@@ -270,10 +270,10 @@ public class QuestionLocalServiceUtil {
 	public static org.opencps.usermgt.model.Question updateQuestion(
 		long companyId, long groupId, long questionId, String fullname,
 		String email, String content, int publish, String govAgencyCode,
-		String govAgencyName) {
+		String govAgencyName, String questionType) {
 		return getService()
 				   .updateQuestion(companyId, groupId, questionId, fullname,
-			email, content, publish, govAgencyCode, govAgencyName);
+			email, content, publish, govAgencyCode, govAgencyName, questionType);
 	}
 
 	/**
