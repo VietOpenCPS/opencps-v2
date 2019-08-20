@@ -218,6 +218,7 @@ public class ExecuteOneActionTerm {
 			resultObj.getString("message"));
 
 		eInvoice.put("sInvoiceUrl", sysPaymentConfig.get("server-sInvoiceClientUrl"));
+		eInvoice.put("invoiceTemplateNo", sysPaymentConfig.get("generalInvoiceInfo-templateCode"));
 
 		oldPaymentFile.setEinvoice(eInvoice.toString());
 		PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
