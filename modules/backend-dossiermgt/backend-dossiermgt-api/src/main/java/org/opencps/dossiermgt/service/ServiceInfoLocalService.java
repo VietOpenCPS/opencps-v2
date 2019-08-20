@@ -79,7 +79,8 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 		String durationText, String applicantText, String resultText,
 		String regularText, String feeText, String administrationCode,
 		String domainCode, int maxLevel, boolean activeStatus,
-		ServiceContext serviceContext) throws PortalException;
+		String govAgencyText, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* Adds the service info to the database. Also notifies the appropriate model listeners.
@@ -341,7 +342,8 @@ public interface ServiceInfoLocalService extends BaseLocalService,
 		String durationText, String applicantText, String resultText,
 		String regularText, String feeText, String administrationCode,
 		String domainCode, int maxLevel, boolean activeStatus,
-		ServiceContext serviceContext) throws PortalException;
+		String govAgencyText, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* Updates the service info in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

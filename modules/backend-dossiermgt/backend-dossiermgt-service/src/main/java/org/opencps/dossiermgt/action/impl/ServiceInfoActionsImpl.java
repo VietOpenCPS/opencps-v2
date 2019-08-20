@@ -75,21 +75,21 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	public ServiceInfo updateServiceInfo(long userId, long groupId, long serviceInfoId, String serviceCode,
 			String serviceName, String processText, String methodText, String dossierText, String conditionText,
 			String durationText, String applicantText, String resultText, String regularText, String feeText,
-			String administrationCode, String domainCode, int maxLevel, boolean public_, ServiceContext serviceContext)
-			throws PortalException {
+			String administrationCode, String domainCode, int maxLevel, boolean public_, String govAgencyText,
+			ServiceContext serviceContext) throws PortalException {
 
 		ServiceInfo serviceInfo = null;
 
 		if (serviceInfoId == 0) {
 			serviceInfo = ServiceInfoLocalServiceUtil.addServiceInfo(userId, groupId, serviceCode, serviceName,
 					processText, methodText, dossierText, conditionText, durationText, applicantText, resultText,
-					regularText, feeText, administrationCode, domainCode, maxLevel, public_,
+					regularText, feeText, administrationCode, domainCode, maxLevel, public_, govAgencyText,
 					serviceContext);
 		} else {
 			serviceInfo = ServiceInfoLocalServiceUtil.updateServiceInfo(groupId, serviceInfoId, serviceCode,
 					serviceName, processText, methodText, dossierText, conditionText, durationText, applicantText,
-					resultText, regularText, feeText, administrationCode, domainCode, maxLevel,
-					public_, serviceContext);
+					resultText, regularText, feeText, administrationCode, domainCode, maxLevel, public_, govAgencyText,
+					serviceContext);
 		}
 
 		return serviceInfo;

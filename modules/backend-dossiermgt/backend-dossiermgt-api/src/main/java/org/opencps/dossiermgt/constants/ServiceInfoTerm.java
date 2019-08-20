@@ -23,5 +23,6 @@ public class ServiceInfoTerm {
 	public static final String MAX_LEVEL = "maxLevel";
 	public static final String PUBLIC_ = "public";
 	public static final String SERVICE_CODE_SEARCH = "serviceCodeSearch";
+	public static final String GOV_AGENCY_TEXT  = "govAgencyText";
 
 }

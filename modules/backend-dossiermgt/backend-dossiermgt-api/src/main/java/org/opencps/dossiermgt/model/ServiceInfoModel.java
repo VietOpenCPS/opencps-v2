@@ -500,6 +500,21 @@ public interface ServiceInfoModel extends BaseModel<ServiceInfo>, GroupedModel,
 	 */
 	public void setPublic_(boolean public_);
 
+	/**
+	 * Returns the gov agency text of this service info.
+	 *
+	 * @return the gov agency text of this service info
+	 */
+	@AutoEscape
+	public String getGovAgencyText();
+
+	/**
+	 * Sets the gov agency text of this service info.
+	 *
+	 * @param govAgencyText the gov agency text of this service info
+	 */
+	public void setGovAgencyText(String govAgencyText);
+
 	@Override
 	public boolean isNew();
 

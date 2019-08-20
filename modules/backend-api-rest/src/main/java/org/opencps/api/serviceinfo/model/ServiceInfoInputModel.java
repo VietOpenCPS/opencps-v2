@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "maxLevel",
     "administrationName",
     "domainName",
-    "active"
+    "active",
+    "govAgencyText"
 
 })
 @XmlRootElement(name = "ServiceInfoInputModel")
@@ -149,6 +150,10 @@ public class ServiceInfoInputModel {
     @XmlElement(name = "public")
 	@FormParam(value = "public")
     protected String _public;
+
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyText")
+	protected String govAgencyText;
 	
 	public String get_public() {
 		return _public;
@@ -563,5 +568,13 @@ public class ServiceInfoInputModel {
     public void setMaxLevel(Integer value) {
         this.maxLevel = value;
     }
+
+	public String getGovAgencyText() {
+		return govAgencyText;
+	}
+
+	public void setGovAgencyText(String govAgencyText) {
+		this.govAgencyText = govAgencyText;
+	}
 
 }

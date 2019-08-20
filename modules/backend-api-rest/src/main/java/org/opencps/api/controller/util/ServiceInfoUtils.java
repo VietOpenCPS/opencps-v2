@@ -145,6 +145,7 @@ public class ServiceInfoUtils {
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
+		model.setGovAgencyText(serviceInfo.getGovAgencyText());
 
 		return model;
 	}
@@ -177,6 +178,7 @@ public class ServiceInfoUtils {
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
+		model.setGovAgencyText(serviceInfo.getGovAgencyText());
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
@@ -298,6 +300,7 @@ public class ServiceInfoUtils {
 		model.setDomainName(serviceInfo.getDomainName());
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
+		model.setGovAgencyText(serviceInfo.getGovAgencyText());
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
