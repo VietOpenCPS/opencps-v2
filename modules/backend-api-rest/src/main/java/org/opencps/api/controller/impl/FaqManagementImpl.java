@@ -86,7 +86,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, 0l,
 					input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
-					input.getGovAgencyCode(), input.getGovAgencyName());
+					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -275,7 +275,7 @@ public class FaqManagementImpl implements FaqManagement {
 		try {
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId,
 					questionId, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
-					input.getGovAgencyCode(), input.getGovAgencyName());
+					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());

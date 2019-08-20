@@ -232,7 +232,8 @@ public interface QuestionLocalService extends BaseLocalService,
 
 	public Question updateQuestion(long companyId, long groupId,
 		long questionId, String fullname, String email, String content,
-		int publish, String govAgencyCode, String govAgencyName);
+		int publish, String govAgencyCode, String govAgencyName,
+		String questionType);
 
 	/**
 	* Updates the question in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
