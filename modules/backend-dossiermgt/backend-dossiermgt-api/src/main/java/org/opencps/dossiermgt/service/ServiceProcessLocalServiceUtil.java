@@ -73,6 +73,15 @@ public class ServiceProcessLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static void cloneServiceProcess(long serviceProcessId, long groupId,
+		String processNo, String processName,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService()
+			.cloneServiceProcess(serviceProcessId, groupId, processNo,
+			processName, serviceContext);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

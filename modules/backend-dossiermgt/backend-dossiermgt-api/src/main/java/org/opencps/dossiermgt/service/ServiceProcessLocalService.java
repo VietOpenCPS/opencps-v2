@@ -92,6 +92,11 @@ public interface ServiceProcessLocalService extends BaseLocalService,
 		String processNo, ServiceContext serviceContext)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public void cloneServiceProcess(long serviceProcessId, long groupId,
+		String processNo, String processName, ServiceContext serviceContext)
+		throws PortalException;
+
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
 
