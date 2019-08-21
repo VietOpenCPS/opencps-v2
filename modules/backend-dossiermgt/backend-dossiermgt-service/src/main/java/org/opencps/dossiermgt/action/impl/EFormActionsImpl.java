@@ -82,7 +82,8 @@ public class EFormActionsImpl implements EFormActions{
 			if (Validator.isNull(eFormNo)) {
 				_log.info("START GENERATE EFORM");
 				eFormNo = EFormNumberGenerator.generateServiceFileNumber(groupId, serviceContext.getCompanyId(),
-						service != null ? service.getServiceCode() : StringPool.BLANK, eFormNoPattern);
+						service != null ? service.getServiceCode() : StringPool.BLANK,
+						service != null ? service.getAdministrationCode() : StringPool.BLANK, eFormNoPattern);
 			}
 			if (Validator.isNull(secret)) {
 				secret = PwdGenerator.getPinNumber();
