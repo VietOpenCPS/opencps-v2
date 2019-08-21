@@ -99,7 +99,7 @@ public interface CertNumberManagement {
 	public Response updateSertNumbers(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of certNumber", required = true) @PathParam("certid") long certid,
+			@ApiParam(value = "id of certNumber", required = true) @PathParam("certid") String certid,
 			@FormParam("pattern") String pattern, @FormParam("initNumber") int initNumber);
 
 	@DELETE

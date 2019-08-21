@@ -153,7 +153,8 @@ import javax.xml.bind.annotation.XmlType;
     "roles",
     "steps",
     "actions",
-    "sequences"
+    "sequences",
+    "dossierGroupPattern"
 })
 @XmlRootElement(name = "ServiceProcess")
 public class ServiceProcess {
@@ -184,8 +185,20 @@ public class ServiceProcess {
     protected Actions actions;
     @XmlElement(required = true)
     protected Sequences sequences;
+    @XmlElement(required = false)
+    protected String dossierGroupPattern;
 
-    /**
+	public String getDossierGroupPattern() {
+	
+		return dossierGroupPattern;
+	}
+
+	public void setDossierGroupPattern(String dossierGroupPattern) {
+	
+		this.dossierGroupPattern = dossierGroupPattern;
+	}
+
+	/**
      * Gets the value of the processNo property.
      * 
      * @return

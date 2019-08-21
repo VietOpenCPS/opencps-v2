@@ -23,7 +23,7 @@ public interface ServiceProcessActions {
 	public ServiceProcess updateServiceProcess(long groupId, long serviceProcessId, String processNo,
 			String processName, String description, Double durationCount, int durationUnit, long counter,
 			boolean generateDossierNo, String dossierNoPattern, boolean generateDueDate, String dueDatePattern,
-			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee,
+			boolean generatePassword, boolean directNotification, String serverNo, String paymentFee, String dossierGroupPattern,
 			ServiceContext context) throws PortalException;
 
 	public ServiceProcess removeServiceProcess(long userId, long groupId, long serviceProcessId,
@@ -85,7 +85,7 @@ public interface ServiceProcessActions {
 	//LamTV_Process output DB
 	public long updateServiceProcessDB(long userId, long groupId, String processNo, String processName, String description,
 			Double durationCount, Integer durationUnit, boolean generatePassword, String serverNo, String serverName,
-			String dossierNoPattern, String dueDatePattern, ServiceContext serviceContext) throws PortalException;
+			String dossierNoPattern, String dueDatePattern, String dossierGroupPattern, ServiceContext serviceContext) throws PortalException;
 
 	public void updateServiceProcessRoleDB(long userId, long groupId, long serviceProcessId, long roleId,
 			String roleCode, String roleName, boolean moderator, String condition, ServiceContext serviceContext);

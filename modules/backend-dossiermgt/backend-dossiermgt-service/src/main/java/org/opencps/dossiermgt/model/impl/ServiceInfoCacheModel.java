@@ -65,7 +65,7 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -121,6 +121,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		sb.append(maxLevel);
 		sb.append(", public_=");
 		sb.append(public_);
+		sb.append(", govAgencyText=");
+		sb.append(govAgencyText);
 		sb.append("}");
 
 		return sb.toString();
@@ -285,6 +287,13 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		serviceInfoImpl.setMaxLevel(maxLevel);
 		serviceInfoImpl.setPublic_(public_);
 
+		if (govAgencyText == null) {
+			serviceInfoImpl.setGovAgencyText("");
+		}
+		else {
+			serviceInfoImpl.setGovAgencyText(govAgencyText);
+		}
+
 		serviceInfoImpl.resetOriginalValues();
 
 		return serviceInfoImpl;
@@ -325,6 +334,7 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		maxLevel = objectInput.readInt();
 
 		public_ = objectInput.readBoolean();
+		govAgencyText = objectInput.readUTF();
 	}
 
 	@Override
@@ -477,6 +487,13 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		objectOutput.writeInt(maxLevel);
 
 		objectOutput.writeBoolean(public_);
+
+		if (govAgencyText == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(govAgencyText);
+		}
 	}
 
 	public String uuid;
@@ -506,4 +523,5 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 	public String domainIndex;
 	public int maxLevel;
 	public boolean public_;
+	public String govAgencyText;
 }

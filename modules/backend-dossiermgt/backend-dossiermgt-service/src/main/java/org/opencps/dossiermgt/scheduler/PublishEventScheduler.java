@@ -115,10 +115,13 @@ public class PublishEventScheduler extends BaseMessageListener {
 		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
 			try {
 				if (dossier != null && dossier.getOriginality() > 0) {
-					OpenCPSRestClient client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+					OpenCPSRestClient client = OpenCPSRestClient
+							.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
+					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(
+							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 					if (client.isWriteLog()) {
-						String messageText = DossierMgtUtils.convertDossierToJSON(dossier).toJSONString();
+						String messageText = DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())
+								.toJSONString();
 						String acknowlegement = JSONFactoryUtil.looseSerialize(result);
 						pq.setMessageText(messageText);
 						pq.setAcknowlegement(acknowlegement);
@@ -144,18 +147,22 @@ public class PublishEventScheduler extends BaseMessageListener {
 					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 					Mtoken token = client.getToken();
 					if (Validator.isNotNull(token.getAccessToken())) {
-						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier);
-						MResult result = client.publishDossier(token.getAccessToken(), OpenCPSConverter.convertDossierPublish(DossierMgtUtils.convertDossierToJSON(dossier)));
+						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier,
+								dossier.getDossierActionId());
+						MResult result = client.publishDossier(token.getAccessToken(),
+								OpenCPSConverter.convertDossierPublish(
+										DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
 						if (client.isWriteLog()) {
 							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
 							messageObj.put("token", token.getAccessToken());
-							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
+							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter
+									.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
 							String messageText = messageObj.toJSONString();
 							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
 							pq.setMessageText(messageText);
 							pq.setAcknowlegement(acknowlegement);
 							pq.setPublishType(1);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);							
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
 						}
 						if (result.getStatus() != 200) {
 							return false;

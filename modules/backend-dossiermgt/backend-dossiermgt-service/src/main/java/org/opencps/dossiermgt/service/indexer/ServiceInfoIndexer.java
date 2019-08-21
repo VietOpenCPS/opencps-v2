@@ -130,6 +130,7 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addNumberSortable(ServiceInfoTerm.MAX_LEVEL, object.getMaxLevel());
 		
 		document.addKeywordSortable(ServiceInfoTerm.PUBLIC_, Boolean.toString(object.getPublic_()));
+		document.addKeywordSortable(ServiceInfoTerm.GOV_AGENCY_TEXT, object.getGovAgencyText());
 
 		return document;
 	}

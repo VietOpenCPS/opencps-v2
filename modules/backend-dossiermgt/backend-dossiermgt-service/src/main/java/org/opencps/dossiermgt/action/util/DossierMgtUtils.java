@@ -63,7 +63,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
 	
-	public static JSONObject convertDossierToJSON(Dossier dossier) {
+	public static JSONObject convertDossierToJSON(Dossier dossier, long dossierActionId) {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
 		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
@@ -110,7 +110,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.ONLINE, dossier.getOnline());
 		obj.put(DossierTerm.SECRET, dossier.getPassword());
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
-		obj.put(DossierTerm.DOSSIER_ACTION_ID, dossier.getDossierActionId());
+		obj.put(DossierTerm.DOSSIER_ACTION_ID, dossierActionId > 0 ? dossierActionId : dossier.getDossierActionId());
 		obj.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		obj.put(DossierTerm.POSTAL_CITY_CODE, dossier.getPostalCityCode());
 		obj.put(DossierTerm.POSTAL_TEL_NO, dossier.getPostalTelNo());
@@ -124,7 +124,7 @@ public class DossierMgtUtils {
 			if (serviceProcess == null) {
 			}
 			else {
-				JSONObject submissionNoteObj = getDossierProcessSequencesPublishJSON(dossier.getGroupId(), dossier, serviceProcess);
+				JSONObject submissionNoteObj = getDossierProcessSequencesPublishJSON(dossier.getGroupId(), dossier, dossierActionId, serviceProcess);
 				obj.put(DossierTerm.SUBMISSION_NOTE, submissionNoteObj.toJSONString());
 			}
 		} catch (PortalException e) {
@@ -304,7 +304,7 @@ public class DossierMgtUtils {
 		return result;
 	}
 	
-	public static JSONObject getDossierProcessSequencesPublishJSON(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
+	public static JSONObject getDossierProcessSequencesPublishJSON(long groupId, Dossier dossier, long dossierActionId, ServiceProcess serviceProcess) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
 
@@ -313,7 +313,14 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
 		result.put("total", lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
-		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		DossierAction lastDA = null;
+		if (dossierActionId > 0) {
+			lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+		}
+		if (lastDA == null) {
+			lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+		}
+
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
 		List<ActionConfig> lstAcs = ActionConfigLocalServiceUtil.getByG_ET(groupId, ActionConfigTerm.EVENT_TYPE_SENT);
 		List<ProcessSequence> lstPublishSequences = null;

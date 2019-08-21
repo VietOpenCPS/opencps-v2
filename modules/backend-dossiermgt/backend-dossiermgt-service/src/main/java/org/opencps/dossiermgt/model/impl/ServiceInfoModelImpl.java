@@ -94,7 +94,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 			{ "domainName", Types.VARCHAR },
 			{ "domainIndex", Types.VARCHAR },
 			{ "maxLevel", Types.INTEGER },
-			{ "public_", Types.BOOLEAN }
+			{ "public_", Types.BOOLEAN },
+			{ "govAgencyText", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -126,9 +127,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		TABLE_COLUMNS_MAP.put("domainIndex", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("maxLevel", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("public_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("govAgencyText", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfo (uuid_ VARCHAR(75) null,serviceInfoId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(75) null,serviceName STRING null,processText TEXT null,methodText TEXT null,dossierText TEXT null,conditionText TEXT null,durationText TEXT null,applicantText TEXT null,resultText TEXT null,regularText TEXT null,feeText TEXT null,administrationCode VARCHAR(75) null,administrationName VARCHAR(500) null,administrationIndex VARCHAR(75) null,domainCode VARCHAR(75) null,domainName TEXT null,domainIndex VARCHAR(75) null,maxLevel INTEGER,public_ BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfo (uuid_ VARCHAR(75) null,serviceInfoId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(75) null,serviceName STRING null,processText TEXT null,methodText TEXT null,dossierText TEXT null,conditionText TEXT null,durationText TEXT null,applicantText TEXT null,resultText TEXT null,regularText TEXT null,feeText TEXT null,administrationCode VARCHAR(75) null,administrationName VARCHAR(500) null,administrationIndex VARCHAR(75) null,domainCode VARCHAR(75) null,domainName TEXT null,domainIndex VARCHAR(75) null,maxLevel INTEGER,public_ BOOLEAN,govAgencyText VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceinfo";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceInfo.serviceInfoId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceinfo.serviceInfoId ASC";
@@ -218,6 +220,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		attributes.put("domainIndex", getDomainIndex());
 		attributes.put("maxLevel", getMaxLevel());
 		attributes.put("public_", isPublic_());
+		attributes.put("govAgencyText", getGovAgencyText());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -388,6 +391,12 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 		if (public_ != null) {
 			setPublic_(public_);
+		}
+
+		String govAgencyText = (String)attributes.get("govAgencyText");
+
+		if (govAgencyText != null) {
+			setGovAgencyText(govAgencyText);
 		}
 	}
 
@@ -848,6 +857,21 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	}
 
 	@Override
+	public String getGovAgencyText() {
+		if (_govAgencyText == null) {
+			return "";
+		}
+		else {
+			return _govAgencyText;
+		}
+	}
+
+	@Override
+	public void setGovAgencyText(String govAgencyText) {
+		_govAgencyText = govAgencyText;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ServiceInfo.class.getName()));
@@ -911,6 +935,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		serviceInfoImpl.setDomainIndex(getDomainIndex());
 		serviceInfoImpl.setMaxLevel(getMaxLevel());
 		serviceInfoImpl.setPublic_(isPublic_());
+		serviceInfoImpl.setGovAgencyText(getGovAgencyText());
 
 		serviceInfoImpl.resetOriginalValues();
 
@@ -1183,12 +1208,20 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 		serviceInfoCacheModel.public_ = isPublic_();
 
+		serviceInfoCacheModel.govAgencyText = getGovAgencyText();
+
+		String govAgencyText = serviceInfoCacheModel.govAgencyText;
+
+		if ((govAgencyText != null) && (govAgencyText.length() == 0)) {
+			serviceInfoCacheModel.govAgencyText = null;
+		}
+
 		return serviceInfoCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1244,6 +1277,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		sb.append(getMaxLevel());
 		sb.append(", public_=");
 		sb.append(isPublic_());
+		sb.append(", govAgencyText=");
+		sb.append(getGovAgencyText());
 		sb.append("}");
 
 		return sb.toString();
@@ -1251,7 +1286,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(85);
+		StringBundler sb = new StringBundler(88);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ServiceInfo");
@@ -1365,6 +1400,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 			"<column><column-name>public_</column-name><column-value><![CDATA[");
 		sb.append(isPublic_());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>govAgencyText</column-name><column-value><![CDATA[");
+		sb.append(getGovAgencyText());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1412,6 +1451,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	private boolean _public_;
 	private boolean _originalPublic_;
 	private boolean _setOriginalPublic_;
+	private String _govAgencyText;
 	private long _columnBitmask;
 	private ServiceInfo _escapedModel;
 }

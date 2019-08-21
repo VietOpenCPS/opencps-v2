@@ -3518,7 +3518,7 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
 		message.put("msgToEngine", msgData);
-		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
 		
 		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
 		
@@ -3526,7 +3526,7 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject lgspMsgData = msgData;
 
 		lgspMessage.put("msgToEngine", lgspMsgData);
-		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier));
+		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
 	}

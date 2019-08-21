@@ -688,10 +688,10 @@ public class DueDateUtils {
 
 	private void _setHourTimeWorkingByDay(int day) {
 
-		String startAM = "00:00";
-		String endAM = "12:00";
-		String startPM = "12:00";
-		String endPM = "24:00";
+		String startAM = "07:30";
+		String endAM = "11:30";
+		String startPM = "13:00";
+		String endPM = "17:00";
 
 		try {
 

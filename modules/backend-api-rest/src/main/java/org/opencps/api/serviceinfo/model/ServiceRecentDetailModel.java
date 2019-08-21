@@ -81,7 +81,8 @@ import javax.xml.bind.annotation.XmlType;
  "_public",
  "fileTemplates",
  "serviceConfigs",
- "active"
+ "active",
+ "govAgencyText"
 })
 public class ServiceRecentDetailModel {
 
@@ -106,6 +107,8 @@ public class ServiceRecentDetailModel {
  protected Integer maxLevel;
  @XmlElement(name = "public")
  protected String _public;
+ protected String govAgencyText;
+
  public String getActive() {
 		return active;
 	}
@@ -656,5 +659,13 @@ public class ServiceRecentDetailModel {
      }
      return this.serviceConfigs;
  }
+
+public String getGovAgencyText() {
+	return govAgencyText;
+}
+
+public void setGovAgencyText(String govAgencyText) {
+	this.govAgencyText = govAgencyText;
+}
 
 }
