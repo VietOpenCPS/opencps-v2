@@ -68,6 +68,15 @@ public class ServiceProcessLocalServiceWrapper
 	}
 
 	@Override
+	public void cloneServiceProcess(long serviceProcessId, long groupId,
+		String processNo, String processName,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_serviceProcessLocalService.cloneServiceProcess(serviceProcessId,
+			groupId, processNo, processName, serviceContext);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,
