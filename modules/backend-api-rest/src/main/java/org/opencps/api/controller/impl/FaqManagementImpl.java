@@ -156,6 +156,7 @@ public class FaqManagementImpl implements FaqManagement {
 					model.setQuestionId(q.getQuestionId());
 					model.setGovAgencyCode(q.getGovAgencyCode());
 					model.setGovAgencyName(q.getGovAgencyName());
+					model.setQuestionType(q.getQuestionType());
 					
 					int count = AnswerLocalServiceUtil.countByG_Q_PL(groupId, q.getQuestionId(), new int[] { 0, 1 } );
 					model.setAnswered(false);
