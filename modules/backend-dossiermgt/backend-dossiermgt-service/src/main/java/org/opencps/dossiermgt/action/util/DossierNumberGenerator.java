@@ -184,8 +184,12 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternGov)) {
 //						_log.info("codePatternGov: "+ true);
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + (Validator.isNotNull(govAgencyCode)
+								? govAgencyCode
+								: dossier.getGovAgencyCode());
+						String number = countByNumber(key, tmp);
 
-						String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
+						//String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
 						_log.debug("//////////////////////////////////////////////////////////// " + number
 								+ "|processOtionId= " + number);
