@@ -185,8 +185,9 @@ public class NotificationManagementImpl implements NotificationManagement{
 		
 		try {
 
-			int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
-					.getArchivedUserNotificationEventsCount(userId, false, archivedParam);
+			//int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
+			//		.getArchivedUserNotificationEventsCount(userId, false, archivedParam);
+			int userNotificationEventsCount = 0;
 
 			result.put("total", userNotificationEventsCount);
 		} catch (Exception e) {

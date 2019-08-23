@@ -28,7 +28,7 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DossierListenner extends BaseModelListener<Dossier> {
 
 	private static final String ORIGINAL_TODO = "2,3";

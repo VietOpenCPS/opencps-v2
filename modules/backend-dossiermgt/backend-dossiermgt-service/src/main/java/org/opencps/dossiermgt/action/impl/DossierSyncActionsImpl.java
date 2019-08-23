@@ -125,14 +125,18 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
-			List<DossierSync> docList = DossierSyncLocalServiceUtil.findByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY }, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
+			if (dossier != null) {
+				List<DossierSync> docList = DossierSyncLocalServiceUtil.findByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY }, start, end);
+				//if (docList != null && docList.size() > 0) {
+				//	_log.info("docList:"+docList);
+				//}
+				result.put("data", docList);
+				
+				long total = DossierSyncLocalServiceUtil.countByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY });
+				result.put("total", total);
+			} else {
+				result.put("total", 0);
 			}
-			result.put("data", docList);
-			
-			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY });
-			result.put("total", total);
 		} catch (Exception e) {
 			_log.error(e);
 		}

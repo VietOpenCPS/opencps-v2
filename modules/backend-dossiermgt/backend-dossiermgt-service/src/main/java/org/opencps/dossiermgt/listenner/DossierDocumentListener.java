@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 
 import backend.utils.APIDateTimeUtils;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DossierDocumentListener extends BaseModelListener<DossierDocument> {
 	@Override
 	public void onBeforeCreate(DossierDocument model) throws ModelListenerException {
