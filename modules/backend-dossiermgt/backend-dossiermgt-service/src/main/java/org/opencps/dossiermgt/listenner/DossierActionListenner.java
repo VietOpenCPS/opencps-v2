@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Component;
 
 import backend.utils.APIDateTimeUtils;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DossierActionListenner extends BaseModelListener<DossierAction> {
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	

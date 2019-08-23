@@ -763,6 +763,9 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
+			} else if(Validator.isNotNull(query.getSort()) && "dossierId".equalsIgnoreCase(query.getSort())){
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };

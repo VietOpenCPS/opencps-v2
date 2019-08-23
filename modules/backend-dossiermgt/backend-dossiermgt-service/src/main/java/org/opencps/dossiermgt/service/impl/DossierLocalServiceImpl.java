@@ -2734,21 +2734,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 
 		if (Validator.isNotNull(notDossierId)) {
-			String[] dossierIdList = StringUtil.split(notDossierId);
-
-			if (dossierIdList != null && dossierIdList.length > 0) {
-				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < dossierIdList.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(dossierIdList[i]);
-					query.addField(DossierTerm.NOT_DOSSIER_ID);
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
-				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST_NOT);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(notDossierId);
-				query.addFields(DossierTerm.DOSSIER_STATUS);
-				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			}
+			TermRangeQueryImpl termRangeQueryTwo = new TermRangeQueryImpl(DossierTerm.DOSSIER_ID,
+					notDossierId, null, false, false);
+			booleanQuery.add(termRangeQueryTwo, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(status)) {

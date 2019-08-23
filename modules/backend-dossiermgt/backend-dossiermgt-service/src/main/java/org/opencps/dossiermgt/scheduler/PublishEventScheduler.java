@@ -50,7 +50,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = PublishEventScheduler.class)
+//@Component(immediate = true, service = PublishEventScheduler.class)
 public class PublishEventScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	
