@@ -2482,6 +2482,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String notDossierId = GetterUtil.getString(params.get(DossierTerm.NOT_DOSSIER_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2512,7 +2513,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate,
+				notDossierId, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2596,6 +2598,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String notDossierId = GetterUtil.getString(params.get(DossierTerm.NOT_DOSSIER_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2623,7 +2626,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate,
+				notDossierId, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2726,8 +2730,26 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			String assignedUserId, Integer delegateType, String documentNo, String documentDate, BooleanQuery booleanQuery) throws ParseException {
+			String assignedUserId, Integer delegateType, String documentNo, String documentDate, String notDossierId, BooleanQuery booleanQuery) throws ParseException {
 
+
+		if (Validator.isNotNull(notDossierId)) {
+			String[] dossierIdList = StringUtil.split(notDossierId);
+
+			if (dossierIdList != null && dossierIdList.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < dossierIdList.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(dossierIdList[i]);
+					query.addField(DossierTerm.NOT_DOSSIER_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST_NOT);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(notDossierId);
+				query.addFields(DossierTerm.DOSSIER_STATUS);
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+		}
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
