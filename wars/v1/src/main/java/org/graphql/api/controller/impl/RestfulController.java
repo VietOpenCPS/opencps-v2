@@ -296,8 +296,8 @@ public class RestfulController {
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
 
-				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-				
+//				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+//				
 				User user = UserLocalServiceUtil.fetchUser(userId);
 //				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 //				
@@ -313,26 +313,26 @@ public class RestfulController {
 //						request.getRemoteHost(), 
 //						userAgent, 
 //						userTrackerPath);
-				if (Validator.isNotNull(employee)) {
-
-					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
-						return "pending";
-					} else {
-						return "/c";
-					}
-				} else {
-					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-						return "pending";
-					} else {
-						return "ok";
-					}
-
-				}
-//				if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-//					return "pending";
+//				if (Validator.isNotNull(employee)) {
+//
+//					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
+//						return "pending";
+//					} else {
+//						return "/c";
+//					}
 //				} else {
-//					return "ok";
+//					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+//						return "pending";
+//					} else {
+//						return "ok";
+//					}
+//
 //				}
+				if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+					return "pending";
+				} else {
+					return "ok";
+				}
 
 			}
 
