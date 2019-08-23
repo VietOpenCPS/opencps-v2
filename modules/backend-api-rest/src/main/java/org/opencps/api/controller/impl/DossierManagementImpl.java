@@ -678,7 +678,9 @@ public class DossierManagementImpl implements DossierManagement {
 			String applicantName = query.getApplicantName();
 			String applicantIdNo = query.getApplicantIdNo();
 			String serviceName = query.getServiceName();
+			String notDossierId = query.getNotDossierId();
 			
+			params.put(DossierTerm.NOT_DOSSIER_ID, notDossierId);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCY, agency);
