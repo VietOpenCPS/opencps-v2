@@ -256,7 +256,7 @@ public class RestfulController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
-		long checkUserId = -1;
+//		long checkUserId = -1;
 		String emailAddress = StringPool.BLANK;
 		
 		try {
@@ -286,10 +286,10 @@ public class RestfulController {
 			String password = account[1];
 			emailAddress = email;
 			
-			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
-					CompanyConstants.AUTH_TYPE_EA);
-			if (userId > 0 && userId != 20103) {
-				checkUserId = userId;
+//			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+//					CompanyConstants.AUTH_TYPE_EA);
+//			if (userId > 0 && userId != 20103) {
+//				checkUserId = userId;
 //				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
 //						CompanyConstants.AUTH_TYPE_EA);
 				//Remember me false
@@ -298,7 +298,7 @@ public class RestfulController {
 
 //				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 //				
-				User user = UserLocalServiceUtil.fetchUser(userId);
+//				User user = UserLocalServiceUtil.fetchUser(userId);
 //				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 //				
 //				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
@@ -328,61 +328,62 @@ public class RestfulController {
 //					}
 //
 //				}
-				if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-					return "pending";
-				} else {
-					return "ok";
-				}
+//				if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+//					return "pending";
+//				} else {
+//					return "ok";
+//				}
 
-			}
+				return "ok";
+//			}
 
 		} 
 		catch (AuthException ae) {
-			System.out.println("AUTH EXCEPTION: " + checkUserId);
-			_log.debug(ae);
-			if (checkUserId != -1) {
-				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
-				
-				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
-					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String jCaptchaResponse = request.getParameter("j_captcha_response");
-					String captchaId = request.getSession().getId();
-					try {
-						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
-						if (!isResponseCorrect)
-							return "captcha";
-					} catch (CaptchaServiceException e) {
-						_log.debug(e);
-						return "captcha";
-					}
-				}
-				else {
-					return "captcha";
-				}
-			}
-			else {
-				try {
-					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
-					
-					if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
-						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-						String jCaptchaResponse = request.getParameter("j_captcha_response");
-						String captchaId = request.getSession().getId();
-				        try {
-				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-				        			jCaptchaResponse);
-				        	if (!isResponseCorrect) 
-				        		return "captcha";
-				        } catch (CaptchaServiceException e) {
-				        	_log.debug(e);
-				        	return "captcha";
-				        }				
-					}		
-				} catch (PortalException e) {
-					_log.debug(e);
-				}				
-			}
+//			System.out.println("AUTH EXCEPTION: " + checkUserId);
+//			_log.debug(ae);
+//			if (checkUserId != -1) {
+//				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
+//				
+//				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+//					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+//					String jCaptchaResponse = request.getParameter("j_captcha_response");
+//					String captchaId = request.getSession().getId();
+//					try {
+//						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+//						if (!isResponseCorrect)
+//							return "captcha";
+//					} catch (CaptchaServiceException e) {
+//						_log.debug(e);
+//						return "captcha";
+//					}
+//				}
+//				else {
+//					return "captcha";
+//				}
+//			}
+//			else {
+//				try {
+//					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+//					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
+//					
+//					if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+//						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+//						String jCaptchaResponse = request.getParameter("j_captcha_response");
+//						String captchaId = request.getSession().getId();
+//				        try {
+//				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+//				        			jCaptchaResponse);
+//				        	if (!isResponseCorrect) 
+//				        		return "captcha";
+//				        } catch (CaptchaServiceException e) {
+//				        	_log.debug(e);
+//				        	return "captcha";
+//				        }				
+//					}		
+//				} catch (PortalException e) {
+//					_log.debug(e);
+//				}				
+//			}
 		}
 		catch (PortalException pe) {
 			System.out.println("PORTAL EXCEPTION: " + emailAddress);
