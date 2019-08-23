@@ -44,15 +44,19 @@ import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.exception.NoSuchEmployeeException;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -87,6 +91,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	 * org.mobilink.backend.usermgt.service.EmployeeLocalServiceUtil} to access the
 	 * employee local service.
 	 */
+	CacheActions cache = new CacheActionsImpl();
+	
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Employee addEmployee(long userId, long groupId, String fullName, String employeeNo, int gender,
@@ -307,7 +313,27 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	public Employee fetchByFB_MUID(long mappingUserId) {
-		return employeePersistence.fetchByFB_MUID(mappingUserId);
+		Employee employee = null;
+		
+		try {
+			Serializable employeeCache = cache.getFromCache("Employee", "mapping_"+ mappingUserId);
+			if (employeeCache == null) {
+				employee = employeePersistence.fetchByFB_MUID(mappingUserId);
+				if (employee != null) {
+					cache.addToCache("Employee",
+							"mapping_" + mappingUserId, (Serializable) employee,
+							3600);
+				}
+			} else {
+				employee = (Employee) employeeCache;
+			}		
+		}
+		catch (PortalException e) {
+			
+		}
+//		return employeePersistence.fetchByFB_MUID(mappingUserId);
+		
+		return employee;
 	}
 
 	public void isExits(long groupId, String employeeNo, String email)

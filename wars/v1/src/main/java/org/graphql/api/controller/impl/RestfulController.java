@@ -328,6 +328,12 @@ public class RestfulController {
 					}
 
 				}
+//				if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+//					return "pending";
+//				} else {
+//					return "ok";
+//				}
+
 			}
 
 		} 
