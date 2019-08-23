@@ -262,6 +262,7 @@ public class DossierTerm {
 	public static final String DELEGATE_TYPE = "delegateType";
 	public static final String DOCUMENT_NO = "documentNo";
 	public static final String DOCUMENT_DATE = "documentDate";
+	public static final String NOT_DOSSIER_ID = "notDossierId";
 	
 	public static final String PAUSE_LOCK_STATE = "PAUSE";
 	public static final String PAUSE_OVERDUE_LOCK_STATE = "PAUSE_OVERDUE";
