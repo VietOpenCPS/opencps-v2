@@ -551,7 +551,7 @@ public class ServiceProcessLocalServiceImpl
 			cloneSequence.setSequenceName(ps.getSequenceName());
 			cloneSequence.setSequenceNo(ps.getSequenceNo());
 			cloneSequence.setSequenceRole(ps.getSequenceRole());
-			cloneSequence.setServiceProcessId(ps.getServiceProcessId());
+			cloneSequence.setServiceProcessId(cloneServiceProcessId);
 			cloneSequence.setUserId(ps.getUserId());
 			cloneSequence.setUserName(ps.getUserName());
 			
