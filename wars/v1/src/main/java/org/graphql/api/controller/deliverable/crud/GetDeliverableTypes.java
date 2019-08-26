@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.graphql.api.controller.utils.WebKeys;
+import org.graphql.api.model.DeliverableTypeDynamic;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DeliverableTypeRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,7 @@ import graphql.schema.DataFetchingEnvironment;
  * Created binhth
  */
 @Component
-public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
+public class GetDeliverableTypes implements DataFetcher<List<DeliverableTypeDynamic>> {
 
 	@Autowired
 	private final HttpServletRequest request;
@@ -41,7 +43,7 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 	private static Log _log = LogFactoryUtil.getLog(GetDeliverableTypes.class);
 
 	@Override
-	public List<DeliverableType> get(DataFetchingEnvironment dataFetchingEnvironment) {
+	public List<DeliverableTypeDynamic> get(DataFetchingEnvironment dataFetchingEnvironment) {
 
 		DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
 
@@ -59,7 +61,7 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 			userId = (long) request.getAttribute(WebKeys.USER_ID);
 		}
 		
-		List<DeliverableType> results = new ArrayList<>();
+		List<DeliverableTypeDynamic> results = new ArrayList<>();
 		
 		if (userId > 0) {
 			
@@ -75,13 +77,21 @@ public class GetDeliverableTypes implements DataFetcher<List<DeliverableType>> {
 				
 				for (DeliverableType openCPSDeliverableType : resultsTemp) {
 					
-					List<Long> rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
-					if (rIds != null && rIds.size() > 0) {
-						for (Long rId : rIds) {
-							if (roleIds.contains(rId)) {
-								results.add(openCPSDeliverableType);
-								break;
+					// List<Long> rIds = actions.getRoleIdByTypes(openCPSDeliverableType.getDeliverableTypeId());
+					List<DeliverableTypeRole> deliverableTypeRoles = actions.getRolesByType(openCPSDeliverableType.getDeliverableTypeId());
+					if (deliverableTypeRoles != null && deliverableTypeRoles.size() > 0) {
+						Boolean moderator = false;
+						Boolean allowAdd = false;
+						for (DeliverableTypeRole deliverableTypeRole : deliverableTypeRoles) {
+							if (roleIds.contains(deliverableTypeRole.getRoleId())) {
+								allowAdd = true;
+								if (deliverableTypeRole.getModerator()) {
+									moderator = deliverableTypeRole.getModerator();
+								}
 							}
+						}
+						if (allowAdd) {
+							results.add(new DeliverableTypeDynamic(openCPSDeliverableType, moderator));
 						}
 					}
 				}

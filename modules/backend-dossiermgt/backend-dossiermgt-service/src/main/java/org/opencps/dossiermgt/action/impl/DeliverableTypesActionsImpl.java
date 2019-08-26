@@ -116,6 +116,11 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 	}
 
 	@Override
+	public List<DeliverableTypeRole> getRolesByType(long deliverableTypeId) {
+		return DeliverableTypeRoleLocalServiceUtil.getRolesByType(deliverableTypeId);
+	}
+
+	@Override
 	public DeliverableTypeRole updateDeliverableTypeRoleDB(long userId, long groupId, long deliverableTypeId, long mappingRoleId,
 			boolean moderator) {
 

@@ -340,6 +340,12 @@ public class DeliverableTypeRoleLocalServiceWrapper
 		return _deliverableTypeRoleLocalService.getRoleIdByTypes(deliverableTypeId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableTypeRole> getRolesByType(
+		long deliverableTypeId) {
+		return _deliverableTypeRoleLocalService.getRolesByType(deliverableTypeId);
+	}
+
 	/**
 	* Updates the deliverable type role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

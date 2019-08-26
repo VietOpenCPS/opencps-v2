@@ -61,6 +61,7 @@ type OpenCPSDeliverableType {
  	tableConfig: String
  	docSync: Int
  	govAgencies: String
+ 	moderator: Boolean
 }
 type OpenCPSDeliverableLog {
 	uuid_: String
