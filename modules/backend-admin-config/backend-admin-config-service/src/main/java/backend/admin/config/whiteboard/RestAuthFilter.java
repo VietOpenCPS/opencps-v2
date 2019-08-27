@@ -57,7 +57,7 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/o/v1/opencps/users/*"
 		,
 		"url-pattern=/o/v1/opencps/login",
-//		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2/*",
 //		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )

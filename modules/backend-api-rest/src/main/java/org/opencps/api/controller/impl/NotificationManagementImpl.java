@@ -176,25 +176,26 @@ public class NotificationManagementImpl implements NotificationManagement{
 		}
 
 	@Override
-	public Response countTotalNotifications(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, NotificationSearchModel query, Boolean archived) {
+	public Response countTotalNotifications(HttpServletRequest request, HttpHeaders header,
+			NotificationSearchModel query, Boolean archived) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		long userId = user.getUserId();
-		Boolean archivedParam = archived != null ? archived : true;
-		
-		try {
+		//_log.info("userId: "+request.getAttribute("USER_ID"));
+		// long userId = user.getUserId();
+		// Boolean archivedParam = archived != null ? archived : true;
 
-			//int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
-			//		.getArchivedUserNotificationEventsCount(userId, false, archivedParam);
-			int userNotificationEventsCount = 0;
+//		try {
 
-			result.put("total", userNotificationEventsCount);
-		} catch (Exception e) {
-			_log.debug(e);
-			result.put("total", 0);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
-		}
+		// int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
+		// .getArchivedUserNotificationEventsCount(userId, false, archivedParam);
+		int userNotificationEventsCount = 0;
+
+		result.put("total", userNotificationEventsCount);
+//		} catch (Exception e) {
+//			_log.debug(e);
+//			result.put("total", 0);
+//			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
+//		}
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 

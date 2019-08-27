@@ -501,7 +501,7 @@ public class DossierManagementImpl implements DossierManagement {
 		long userId = user.getUserId();
 //		_log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
-		DossierPermission dossierPermission = new DossierPermission();
+		//DossierPermission dossierPermission = new DossierPermission();
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
@@ -509,8 +509,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
-			dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
+			//boolean isCitizen = dossierPermission.isCitizen(user.getUserId());
+			//dossierPermission.hasGetDossiers(groupId, user.getUserId(), query.getSecetKey());
 
 			if (query.getEnd() == 0) {
 				query.setStart(-1);
@@ -627,9 +627,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			String owner = query.getOwner();
 			// If user is citizen then default owner true
-			if (isCitizen) {
-				owner = String.valueOf(true);
-			}
+//			if (isCitizen) {
+//				owner = String.valueOf(true);
+//			}
 			if (Boolean.valueOf(query.getSpecialKey())){
 				owner = String.valueOf(false);
 			}
@@ -660,19 +660,19 @@ public class DossierManagementImpl implements DossierManagement {
 				dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierIdNo);
 			}
 //			_log.info("dossierNoSearch: "+dossierNoSearch);
-			String soChungChi = query.getSoChungChi();
-			String certNo = StringPool.BLANK;
-			if (Validator.isNotNull(soChungChi)) {
-				certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
-			}
+//			String soChungChi = query.getSoChungChi();
+//			String certNo = StringPool.BLANK;
+//			if (Validator.isNotNull(soChungChi)) {
+//				certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
+//			}
 
 			String fromReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReceiveDate());
 			String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
-			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
-			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
+			//String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
+			//String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
-			String dossierIdCTN = query.getDossierIdCTN();
+			//String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
 			String domainName = query.getDomainName();
 			String applicantName = query.getApplicantName();
@@ -696,20 +696,20 @@ public class DossierManagementImpl implements DossierManagement {
 			//backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 			//Check role follow dossier
 			boolean isAdmin = false;
-			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
-			if (roles != null && roles.size() > 0) {
-				for (Role role : roles) {
-					// LamTV_Fix sonarqube
-					if ("Administrator".equals(role.getName())) {
-						isAdmin = true;
-						break;
-					}
-					if ("Administrator_data".equals(role.getName())) {
-						isAdmin = true;
-						break;
-					}
-				}
-			}
+//			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+//			if (roles != null && roles.size() > 0) {
+//				for (Role role : roles) {
+//					// LamTV_Fix sonarqube
+//					if ("Administrator".equals(role.getName())) {
+//						isAdmin = true;
+//						break;
+//					}
+//					if ("Administrator_data".equals(role.getName())) {
+//						isAdmin = true;
+//						break;
+//					}
+//				}
+//			}
 			if (isAdmin) {
 			}
 			else {
@@ -719,12 +719,12 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
-			params.put(DossierTerm.CERT_NO, certNo);
+			//params.put(DossierTerm.CERT_NO, certNo);
 			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
 			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
-			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
-			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
-			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
+			//params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
+			//params.put(DossierTerm.TO_CERT_DATE, toCertDate);
+			//params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
 			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
 			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
 			if (Validator.isNotNull(domain)) {

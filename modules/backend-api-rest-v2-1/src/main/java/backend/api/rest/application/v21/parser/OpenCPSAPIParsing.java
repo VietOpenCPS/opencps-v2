@@ -109,10 +109,10 @@ public class OpenCPSAPIParsing {
 		MenuConfigItemResult object = new MenuConfigItemResult();
 		List<MenuConfigItem> data = new ArrayList<>();
 		
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
-		if (applicant == null) {
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-			if (employee != null) {
+//		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+//		if (applicant == null) {
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+//			if (employee != null) {
 				List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
 				long[] arrRoles = new long[lstRoles.size()];
 				int i = 0;
@@ -152,89 +152,89 @@ public class OpenCPSAPIParsing {
 						}
 					}
 				}
-			}
-			else {
-				List<Role> userRoles = user.getRoles();
-				boolean isAdmin = false;
-				for (Role r : userRoles) {
-					if ("Administrator".equalsIgnoreCase(r.getName())) {
-						isAdmin = true;
-						break;
-					}
-					if ("Administrator_data".equalsIgnoreCase(r.getName())) {
-						isAdmin = true;
-						break;
-					}
-				}
-				if (isAdmin) {
-					List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-					List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
-
-					for (MenuConfig menuConfig : lstMenus) {
-						MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-						MenuConfigStepsItem menuConfigStepsItem;
-						List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-						
-						for (StepConfig stepConfig : lstSteps) {
-							if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
-								if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
-									menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
-									
-									menuConfigStepsItems.add(menuConfigStepsItem);							
-								}
-							}
-						}
-						
-						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
-						
-						data.add(menuConfigItem);
-					}
-				}
-			}
-		}
-		else {
-			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
-			long[] arrMenuConfigIds = null;
-			if (job != null) {
-				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
-				if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
-					int length = lstMenuRoles.size();
-					arrMenuConfigIds = new long[length];
-					for (int i = 0; i < length; i++) {
-						MenuRole menu = lstMenuRoles.get(i);
-						arrMenuConfigIds[i] = menu.getMenuConfigId();
-					}
-				}
-			}
-			//List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-			if (arrMenuConfigIds != null && arrMenuConfigIds.length > 0) {
-				List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds);
-			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
-
-				if (lstMenus != null && lstMenus.size() > 0) {
-			for (MenuConfig menuConfig : lstMenus) {
-				if (menuConfig.getMenuType() > 0) {
-					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
-					MenuConfigStepsItem menuConfigStepsItem;
-					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
-					
-					for (StepConfig stepConfig : lstSteps) {
-						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
-								&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
-							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
-								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
-								
-										menuConfigStepsItems.add(menuConfigStepsItem);
-							}
-						}
-					}
-					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
-					data.add(menuConfigItem);
-				}
-			}
-		}
-			}
-		}
+//			}
+//			else {
+//				List<Role> userRoles = user.getRoles();
+//				boolean isAdmin = false;
+//				for (Role r : userRoles) {
+//					if ("Administrator".equalsIgnoreCase(r.getName())) {
+//						isAdmin = true;
+//						break;
+//					}
+//					if ("Administrator_data".equalsIgnoreCase(r.getName())) {
+//						isAdmin = true;
+//						break;
+//					}
+//				}
+//				if (isAdmin) {
+//					List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+//					List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+//
+//					for (MenuConfig menuConfig : lstMenus) {
+//						MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+//						MenuConfigStepsItem menuConfigStepsItem;
+//						List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+//						
+//						for (StepConfig stepConfig : lstSteps) {
+//							if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
+//								if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+//									menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+//									
+//									menuConfigStepsItems.add(menuConfigStepsItem);							
+//								}
+//							}
+//						}
+//						
+//						menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+//						
+//						data.add(menuConfigItem);
+//					}
+//				}
+//			}
+//		}
+//		else {
+//			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
+//			long[] arrMenuConfigIds = null;
+//			if (job != null) {
+//				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
+//				if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
+//					int length = lstMenuRoles.size();
+//					arrMenuConfigIds = new long[length];
+//					for (int i = 0; i < length; i++) {
+//						MenuRole menu = lstMenuRoles.get(i);
+//						arrMenuConfigIds[i] = menu.getMenuConfigId();
+//					}
+//				}
+//			}
+//			//List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+//			if (arrMenuConfigIds != null && arrMenuConfigIds.length > 0) {
+//				List<MenuConfig> lstMenus = MenuConfigLocalServiceUtil.getByMenus(arrMenuConfigIds);
+//			List<StepConfig> lstSteps = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
+//
+//				if (lstMenus != null && lstMenus.size() > 0) {
+//			for (MenuConfig menuConfig : lstMenus) {
+//				if (menuConfig.getMenuType() > 0) {
+//					MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
+//					MenuConfigStepsItem menuConfigStepsItem;
+//					List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+//					
+//					for (StepConfig stepConfig : lstSteps) {
+//						if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())
+//								&& (menuConfig.getMenuType() == 1 || menuConfig.getMenuType() == 2)) {
+//							if (stepConfig.getStepType() == 1 || stepConfig.getStepType() == 2) {
+//								menuConfigStepsItem = mappingMenuConfigStepsItem(stepConfig);
+//								
+//										menuConfigStepsItems.add(menuConfigStepsItem);
+//							}
+//						}
+//					}
+//					menuConfigItem.getSteps().addAll(menuConfigStepsItems);
+//					data.add(menuConfigItem);
+//				}
+//			}
+//		}
+//			}
+//		}
 		
 		object.setData(data);
 		object.setTotal(Long.valueOf(data.size()));
