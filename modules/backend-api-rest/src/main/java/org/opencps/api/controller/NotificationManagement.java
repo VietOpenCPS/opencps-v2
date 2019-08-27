@@ -37,8 +37,7 @@ public interface NotificationManagement {
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response countTotalNotifications(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @BeanParam NotificationSearchModel query, @QueryParam("archived") Boolean archived);
+			@BeanParam NotificationSearchModel query, @QueryParam("archived") Boolean archived);
 
 	@POST
 	@Path("/{eventId}/mark")

@@ -1301,39 +1301,40 @@ public class RestfulController {
 	
 	@RequestMapping(value = "/users/login/jcaptcha", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resource> getJCaptcha(HttpServletRequest request, HttpServletResponse response) {
+	public String getJCaptcha(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-			
-		    String captchaId = request.getSession().getId();
-			File destDir = new File("jcaptcha");
-			if (!destDir.exists()) {
-				destDir.mkdir();
-			}
-			File file = new File("jcaptcha/" + captchaId  + ".png");
-			if (!file.exists()) {
-				file.createNewFile();				
-			}
-	
-			if (file.exists()) {
-			    BufferedImage challengeImage = instance.getImageChallengeForID(
-			    captchaId, Locale.US );
-			    try {
-					ImageIO.write( challengeImage, "png", file );
-				    
-				} catch (IOException e) {
-					_log.debug(e);
-				}
-			}
-		
-			Path path = Paths.get(file.getAbsolutePath());
-		    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+//			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+//			
+//		    String captchaId = request.getSession().getId();
+//			File destDir = new File("jcaptcha");
+//			if (!destDir.exists()) {
+//				destDir.mkdir();
+//			}
+//			File file = new File("jcaptcha/" + captchaId  + ".png");
+//			if (!file.exists()) {
+//				file.createNewFile();				
+//			}
+//	
+//			if (file.exists()) {
+//			    BufferedImage challengeImage = instance.getImageChallengeForID(
+//			    captchaId, Locale.US );
+//			    try {
+//					ImageIO.write( challengeImage, "png", file );
+//				    
+//				} catch (IOException e) {
+//					_log.debug(e);
+//				}
+//			}
+//		
+//			Path path = Paths.get(file.getAbsolutePath());
+		    //ByteArrayResource resource = new ByteArrayResource(byteArray)
 
-		    return ResponseEntity.ok()
-		            .headers(new HttpHeaders())
-		            .contentLength(file.length())
-		            .contentType(MediaType.parseMediaType("application/octet-stream"))
-		            .body(resource);
+//		    return ResponseEntity.ok()
+//		            .headers(new HttpHeaders())
+//		            .contentLength(file.length())
+//		            .contentType(MediaType.parseMediaType("application/octet-stream"))
+//		            .body(resource);
+		    return StringPool.BLANK;
 		}
 		catch (Exception e) {
 			_log.debug(e);

@@ -682,16 +682,16 @@ public class UserManagementImpl implements UserManagement {
 
 
 		try {
-			List<Role> roles = user.getRoles();
+//			List<Role> roles = user.getRoles();
 
-			for (Role role : roles) {
-				String roleName = StringPool.BLANK;
-
+//			for (Role role : roles) {
+//				String roleName = StringPool.BLANK;
+//
 				JSONObject result = JSONFactoryUtil.createJSONObject();
-
-				result.put("email", StringPool.BLANK);
-				result.put("role", StringPool.BLANK);
-				result.put("deactiveAccountFlag", 0);
+//
+//				result.put("email", StringPool.BLANK);
+//				result.put("role", StringPool.BLANK);
+//				result.put("deactiveAccountFlag", 0);
 
 //				if ("Administrator".equalsIgnoreCase(role.getName())) {
 //					roleName = "Administrator";
@@ -701,14 +701,14 @@ public class UserManagementImpl implements UserManagement {
 //					roleName = "Administrator_data";
 //				}
 				
-				roleName = role.getName();
+				//roleName = role.getName();
 
 				result.put("email", user.getEmailAddress());
-				result.put("role", roleName);
+				result.put("role", StringPool.BLANK);
 				result.put("deactiveAccountFlag", user.getStatus());
 
 				dataUser.put(result);
-			}
+			//}
 
 		} catch (Exception e) {
 			_log.debug(e);

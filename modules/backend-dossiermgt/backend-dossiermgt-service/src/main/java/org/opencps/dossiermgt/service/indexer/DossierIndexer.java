@@ -189,65 +189,65 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// Index calculator statistic
 			long extendateTime = Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0;
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
-			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
-			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
-			long hourMiliseconds = 60 * 60 * 1000;
+			//long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
+			//long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
+			//long hourMiliseconds = 60 * 60 * 1000;
 			
-			if (extendateTime > dueDateTime) {
-				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
-			} else {
-				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 0);
-			}
+//			if (extendateTime > dueDateTime) {
+//				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
+//			} else {
+//				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 0);
+//			}
 			//
-			if (dueDateTime > 0) {
-				if (releaseTime > 0) {
-					/*
-					long valueCompareRelease = releaseTime - dueDateTime;
-					if (valueCompareRelease > 0) {
-						// OverTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
-					} else if (valueCompareRelease > -hourMiliseconds) {
-						// OnTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
-					} else {
-						// BeTimes
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
-					}
-					*/
-					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
-					if (1 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
-					}
-					else if (2 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
-					}
-					else if (3 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
-					}
-				} else {
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
-				}
-				if (finishTime > 0) {
-					
-					/*
-					long valueCompareFinish = finishTime - dueDateTime;
-					if (valueCompareFinish > 0) {
-						// OverTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
-					} else if (valueCompareFinish > -hourMiliseconds) {
-						// OnTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
-					} else {
-						// BeTimes
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
-					}
-					*/
-					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getFinishDate(), object.getDueDate()));
-				} else {
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
-				}
-			}
+//			if (dueDateTime > 0) {
+//				if (releaseTime > 0) {
+//					/*
+//					long valueCompareRelease = releaseTime - dueDateTime;
+//					if (valueCompareRelease > 0) {
+//						// OverTime
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
+//					} else if (valueCompareRelease > -hourMiliseconds) {
+//						// OnTime
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+//					} else {
+//						// BeTimes
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
+//					}
+//					*/
+//					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
+//					if (1 == valueCompareRelease) {
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
+//					}
+//					else if (2 == valueCompareRelease) {
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+//					}
+//					else if (3 == valueCompareRelease) {
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
+//					}
+//				} else {
+//					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
+//				}
+//				if (finishTime > 0) {
+//					
+//					/*
+//					long valueCompareFinish = finishTime - dueDateTime;
+//					if (valueCompareFinish > 0) {
+//						// OverTime
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
+//					} else if (valueCompareFinish > -hourMiliseconds) {
+//						// OnTime
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
+//					} else {
+//						// BeTimes
+//						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
+//					}
+//					*/
+//					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
+//					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getFinishDate(), object.getDueDate()));
+//				} else {
+//					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
+//				}
+//			}
 
 			double durationCount = object.getDurationCount();
 			double durationUnit = object.getDurationUnit();
@@ -417,18 +417,18 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(userAssignedList, StringPool.SPACE));
 
 					//Index userNote
-					String actionCode = dossierAction.getActionCode();
+					//String actionCode = dossierAction.getActionCode();
 //					_log.info("actionCode: "+actionCode);
-					ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
+					//ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
 //					_log.info("act: "+act);
-					if (act != null) {
-//						_log.info("act: "+act.getUserNote());
-						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
-						document.addNumberSortable(DossierTerm.DATE_OPTION, act.getDateOption());
-					} else {
-						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
-						document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
-					}
+//					if (act != null) {
+////						_log.info("act: "+act.getUserNote());
+//						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
+//						document.addNumberSortable(DossierTerm.DATE_OPTION, act.getDateOption());
+//					} else {
+//						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
+//						document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
+//					}
 					//Add userActionId
 					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 				} else {
@@ -645,18 +645,18 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.SAMPLE_COUNT, object.getSampleCount());
 			document.addNumberSortable(DossierTerm.GROUP_DOSSIER_ID, object.getGroupDossierId());
 			// add domainCode to dossier
-			String serviceCode = object.getServiceCode();
-			String domainCode = StringPool.BLANK;
-			String domainName = StringPool.BLANK;
-			if (Validator.isNotNull(serviceCode)) {
-				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(), serviceCode);
-				if (service != null) {
-					domainCode = service.getDomainCode();
-					domainName = service.getDomainName();
-				}
-			}
-			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
-			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
+//			String serviceCode = object.getServiceCode();
+//			String domainCode = StringPool.BLANK;
+//			String domainName = StringPool.BLANK;
+//			if (Validator.isNotNull(serviceCode)) {
+//				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(), serviceCode);
+//				if (service != null) {
+//					domainCode = service.getDomainCode();
+//					domainName = service.getDomainName();
+//				}
+//			}
+//			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
+//			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
 			document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_ID, String.valueOf(object.getOriginDossierId()));
 			document.addTextSortable(DossierTerm.ORIGIN, String.valueOf(object.getOriginDossierId()));
 			document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_NO, object.getOriginDossierNo());
@@ -690,10 +690,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addDateSortable(DossierTerm.DOCUMENT_DATE, object.getDocumentDate());
 			}
 			//Add payment status
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);
-			if (paymentFile != null) {
-				document.addNumberSortable(PaymentFileTerm.PAYMENT_STATUS, paymentFile.getPaymentStatus());
-			}
+			//PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(object.getGroupId(), dossierId);
+//			if (paymentFile != null) {
+//				document.addNumberSortable(PaymentFileTerm.PAYMENT_STATUS, paymentFile.getPaymentStatus());
+//			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
