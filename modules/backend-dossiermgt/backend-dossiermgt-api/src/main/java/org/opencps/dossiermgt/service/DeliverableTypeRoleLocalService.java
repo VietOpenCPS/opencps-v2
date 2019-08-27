@@ -289,6 +289,9 @@ public interface DeliverableTypeRoleLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getRoleIdByTypes(long deliverableTypeId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DeliverableTypeRole> getRolesByType(long deliverableTypeId);
+
 	/**
 	* Updates the deliverable type role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

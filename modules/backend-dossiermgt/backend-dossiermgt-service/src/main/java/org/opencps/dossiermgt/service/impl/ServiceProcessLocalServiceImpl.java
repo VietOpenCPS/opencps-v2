@@ -361,15 +361,13 @@ public class ServiceProcessLocalServiceImpl
 		cloneServiceProcess.setModifiedDate(now);
 		cloneServiceProcess.setUserId(userAction.getUserId());
 		cloneServiceProcess.setUserName(userAction.getFullName());
-		cloneServiceProcess.setProcessName(processName);
 		
 		// Add other fields
 		// cloneServiceProcess.setProcessNo(originServiceProcess.getProcessNo()
 		// +
 		// "_CLONE");
 		cloneServiceProcess.setProcessNo(processNo);
-		cloneServiceProcess.setProcessName(
-			originServiceProcess.getProcessName());
+		cloneServiceProcess.setProcessName(processName);
 		cloneServiceProcess.setDescription(
 			originServiceProcess.getDescription());
 		cloneServiceProcess.setDurationCount(
@@ -551,7 +549,7 @@ public class ServiceProcessLocalServiceImpl
 			cloneSequence.setSequenceName(ps.getSequenceName());
 			cloneSequence.setSequenceNo(ps.getSequenceNo());
 			cloneSequence.setSequenceRole(ps.getSequenceRole());
-			cloneSequence.setServiceProcessId(ps.getServiceProcessId());
+			cloneSequence.setServiceProcessId(cloneServiceProcessId);
 			cloneSequence.setUserId(ps.getUserId());
 			cloneSequence.setUserName(ps.getUserName());
 			

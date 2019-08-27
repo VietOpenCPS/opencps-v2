@@ -204,7 +204,8 @@ import javax.xml.bind.annotation.XmlType;
     "delegateType",
     "documentNo",
     "documentDate",
-    "lock"
+    "lock",
+    "timeOverdueText"
 })
 public class DossierDataModel {
 
@@ -315,7 +316,16 @@ public class DossierDataModel {
     protected String documentNo;
     protected String documentDate;
     protected String lock;
+    protected String timeOverdueText;
     
+	public String getTimeOverdueText() {
+		return timeOverdueText;
+	}
+
+	public void setTimeOverdueText(String timeOverdueText) {
+		this.timeOverdueText = timeOverdueText;
+	}
+
 	public String getLock() {
 		return lock;
 	}

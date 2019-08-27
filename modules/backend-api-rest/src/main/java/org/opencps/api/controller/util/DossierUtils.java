@@ -34,6 +34,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
@@ -210,6 +211,9 @@ public class DossierUtils {
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
 			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
 			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
+			
+			Date dueDateCalc = (dueDateTimeStamp != 0 ? new Date(dueDateTimeStamp) : null);
+			
 			//Check lockState
 			if (checkWaiting(lockState, dossierStatus)){
 				model.setDossierOverdue("Tạm dừng xử lý");
@@ -224,9 +228,13 @@ public class DossierUtils {
 //						model.setDossierOverdue("Sớm hạn");
 //					} 
 					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
+						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
+						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
 						model.setDossierOverdue("Sớm hạn");
 					}
 					if (dueDateTimeStamp != 0 && 3 == valueCompareFinish) {
+						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
+						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
 						model.setDossierFinishOverdue("Sớm hạn");
 					}
 //					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
@@ -248,9 +256,13 @@ public class DossierUtils {
 //						model.setDossierOverdue("Quá hạn");
 //					}
 					if (1 == valueCompareRelease) {
+						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
+						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
 						model.setDossierOverdue("Quá hạn");
 					}
 					if (1 == valueCompareFinish) {
+						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
+						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
 						model.setDossierFinishOverdue("Qúa hạn");
 					}
 				} else {

@@ -61,6 +61,11 @@ public class DeliverableTypeRoleLocalServiceImpl
 		return result;
 	}
 	
+	public List<DeliverableTypeRole> getRolesByType(long deliverableTypeId) {
+		
+		return deliverableTypeRolePersistence.findByF_deliverableTypeId(deliverableTypeId);
+	}
+	
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public DeliverableTypeRole adminProcessDelete(Long id) {

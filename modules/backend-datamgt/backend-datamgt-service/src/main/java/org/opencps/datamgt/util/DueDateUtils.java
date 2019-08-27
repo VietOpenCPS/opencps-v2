@@ -521,20 +521,22 @@ public class DueDateUtils {
 			String time =
 				SupportUtils._dateToString(this.toDate, HOUR_COLON_TIME_FORMAT);
 			// stop here
-			if (DEFAULT_START_AM_STR.equals(this.startDateTimeStr)) {
+			if (!DEFAULT_START_AM_STR.equals(this.startDateTimeStr) &&
+				this.countNextWorkDayTime == 0) {
+
+				// case tinh trong ngay
+				this.countNextWorkDayTime =
+					SupportUtils.calcStartDateTimeToEndDateTime(
+						startAM, endAM, startPM, endPM, this.startDateTimeNum,
+						SupportUtils._stringToNumberHourColon(time));
+			}
+			else {
 
 				this.countNextWorkDayTime = SupportUtils.addTime(
 					this.countNextWorkDayTime,
 					SupportUtils.calcStartAMToStartDateTime(
 						startAM, endAM, startPM, endPM,
 						SupportUtils._stringToNumberHourColon(time)));
-			}
-			else {
-
-				this.countNextWorkDayTime =
-					SupportUtils.calcStartDateTimeToEndDateTime(
-						startAM, endAM, startPM, endPM, this.startDateTimeNum,
-						SupportUtils._stringToNumberHourColon(time));
 			}
 		}
 		else if (date.getTime() < this.toDate.getTime() &&
