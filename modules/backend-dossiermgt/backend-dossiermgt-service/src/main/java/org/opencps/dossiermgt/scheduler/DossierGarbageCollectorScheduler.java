@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = DossierGarbageCollectorScheduler.class)
+//@Component(immediate = true, service = DossierGarbageCollectorScheduler.class)
 public class DossierGarbageCollectorScheduler extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {

@@ -2,9 +2,9 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
      <category name="org.opencps">
-        <priority value="OFF" />
+        <priority value="ERROR" />
     </category>
     <category name="backend.auth">
-        <priority value="OFF" />
+        <priority value="ERROR" />
     </category>
 </log4j:configuration>

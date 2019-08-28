@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = ActionOverdueScheduler.class)
+//@Component(immediate = true, service = ActionOverdueScheduler.class)
 public class ActionOverdueScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	

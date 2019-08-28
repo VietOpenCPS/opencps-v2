@@ -201,8 +201,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			//boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(0);
+				query.setEnd(29);
 //				query.setStart(0);
 //				query.setEnd(15);
 			}
@@ -286,9 +286,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
 
 			String fromCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getTuNgayKyCc());
-
 			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getDenNgayKyCc());
-
 			String dossierIdCTN = query.getDossierIdCTN();
 			String fromSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromSubmitDate());
 			String toSubmitDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToSubmitDate());
@@ -473,15 +471,21 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			DossierResultsModel results = new DossierResultsModel();
+			//DossierResultsModel results = new DossierResultsModel();
+			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			//results.setTotal(jsonData.getInt("total"));
 
-			results.getData().addAll(
-					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
+//			results.getData().addAll(
+//					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
+			
+			results.put("total", jsonData.getInt("total"));
+
+			results.put("data", jsonData.get("data"));
+//					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
 
 			return Response.status(200).entity(results).build();
 
@@ -4165,6 +4169,44 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
 			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}		
+	}
+
+	@Override
+	public Response reindexGroupDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			List<Dossier> dossierList = DossierLocalServiceUtil.findDossierByGroup(groupId);
+			if (dossierList != null) {
+				Indexer<Dossier> indexer = IndexerRegistryUtil
+						.nullSafeGetIndexer(Dossier.class);
+				for (Dossier dossier : dossierList) {
+					indexer.reindex(dossier);
+				}
+			}
+
+			return Response.status(200).entity("Bạn đã index thành công!!!").build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
