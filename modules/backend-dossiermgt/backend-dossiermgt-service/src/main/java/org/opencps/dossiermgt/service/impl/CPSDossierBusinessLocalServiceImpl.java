@@ -1539,8 +1539,10 @@ public class CPSDossierBusinessLocalServiceImpl
 							&& dossierAction != null) {
 						StepConfig stepConfig = stepConfigLocalService.getByCode(groupId, dossierAction.getStepCode());
 						List<DossierActionUser> lstDaus = dossierActionUserLocalService.getByDID_DAI_SC_AS(dossier.getDossierId(), dossierAction.getDossierActionId(), dossierAction.getStepCode(), new int[] { 1, 2 });
-						if ("EMPL-01".equals(actionConfig.getDocumentType())
-								&& stepConfig != null && "1".equals(stepConfig.getStepType())) {
+						if ("EMPL-01".equals(actionConfig.getDocumentType()) && stepConfig != null
+								&& "1".equals(Validator.isNotNull(stepConfig.getStepType())
+										? String.valueOf(stepConfig.getStepType())
+										: StringPool.BLANK)) {
 							for (DossierActionUser dau : lstDaus) {
 								try {
 									SubscriptionLocalServiceUtil.addSubscription(dau.getUserId(), groupId, "EMPL-01", 0);
