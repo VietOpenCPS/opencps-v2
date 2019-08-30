@@ -296,7 +296,9 @@ public class Actions {
         "returnDossierFiles",
         "eSignature",
         "signatureType",
-        "createDossiers"
+        "createDossiers",
+        "configNote",
+        "postAction"
     })
     public static class ProcessAction {
 
@@ -328,6 +330,10 @@ public class Actions {
         protected String signatureType;
         @XmlElement(required = true)
         protected String createDossiers;
+        @XmlElement(required = true)
+        protected String configNote;
+        @XmlElement(required = true)
+        protected String postAction;
 
         /**
          * Gets the value of the actionCode property.
@@ -680,6 +686,42 @@ public class Actions {
         public void setCreateDossiers(String value) {
             this.createDossiers = value;
         }
+
+		
+		public boolean iseSignature() {
+		
+			return eSignature;
+		}
+
+		
+		public void seteSignature(boolean eSignature) {
+		
+			this.eSignature = eSignature;
+		}
+
+		
+		public String getConfigNote() {
+		
+			return configNote;
+		}
+
+		
+		public void setConfigNote(String configNote) {
+		
+			this.configNote = configNote;
+		}
+
+		
+		public String getPostAction() {
+		
+			return postAction;
+		}
+
+		
+		public void setPostAction(String postAction) {
+		
+			this.postAction = postAction;
+		}
 
     }
 

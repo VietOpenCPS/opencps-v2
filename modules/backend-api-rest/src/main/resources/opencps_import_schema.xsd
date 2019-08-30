@@ -191,6 +191,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="viewScript">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="1024"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -868,6 +875,14 @@
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>
+				<xsd:element name="counter">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:integer">
+							<xsd:minInclusive value="-9223372036854775808"/>
+							<xsd:maxInclusive value="9223372036854775807"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
 				<xsd:element name="roles" >
 					<xsd:complexType>
 						<xsd:sequence >
@@ -1116,6 +1131,20 @@
 								</xsd:simpleType>
 							</xsd:element>
 							<xsd:element name="createDossiers">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="configNote">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="postAction">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
 										<xsd:maxLength value="255"></xsd:maxLength>
@@ -1436,6 +1465,13 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="invoiceForm">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="255"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -1487,6 +1523,14 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
+							<xsd:element name="notifyMessage">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="1024"></xsd:maxLength>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="sendNotification" type="xsd:boolean" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>

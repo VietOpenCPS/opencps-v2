@@ -215,7 +215,8 @@ public class MenuConfigList {
         "tableConfig",
         "buttonConfig",
         "icon",
-        "roles"
+        "roles",
+        "viewScript"
     })
     public static class MenuConfig {
 
@@ -235,6 +236,8 @@ public class MenuConfigList {
         protected String icon;
         @XmlElement(required = true)
         protected String roles;
+        @XmlElement(required = true)
+        protected String viewScript;
 
         /**
          * Gets the value of the menuGroup property.
@@ -451,6 +454,18 @@ public class MenuConfigList {
         public void setRoles(String value) {
             this.roles = value;
         }
+
+		
+		public String getViewScript() {
+		
+			return viewScript;
+		}
+
+		
+		public void setViewScript(String viewScript) {
+		
+			this.viewScript = viewScript;
+		}
 
     }
 

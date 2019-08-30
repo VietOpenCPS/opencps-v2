@@ -1164,7 +1164,9 @@ public class ReadXMLFileUtils {
 							config.setRoles(sb.toString());
 						}
 					}
-					
+					// update model 2019-08-29
+					config.setIcon(menu.getIcon());
+					config.setViewScript(menu.getViewScript());
 					//
 					configList.getMenuConfig().add(config);
 				}
@@ -1246,6 +1248,9 @@ public class ReadXMLFileUtils {
 				paymentConfig.setInvoiceIssueNo(type.getInvoiceIssueNo());
 				paymentConfig.setInvoiceLastNo(type.getInvoiceLastNo());
 				paymentConfig.setInvoiceTemplateNo(type.getInvoiceTemplateNo());
+				// update model 2019-08-29
+				paymentConfig.setInvoiceForm(type.getInvoiceForm());
+
 				typeList.getPaymentConfig().add(paymentConfig);
 			}
 			paymentConfigXMLStream = ReadXMLFileUtils.convertPaymentConfigToXMLStream(typeList);
@@ -1294,6 +1299,10 @@ public class ReadXMLFileUtils {
 				notiConfig.setSendEmail(type.getSendEmail());
 				notiConfig.setSendSMS(type.getSendSMS());
 				notiConfig.setTextMessage(type.getTextMessage());
+				// update model 2019-08-29
+				notiConfig.setNotifyMessage(type.getNotifyMessage());
+				notiConfig.setSendNotification(type.getSendNotification());
+
 				typeList.getNotificationTemplate().add(notiConfig);
 			}
 			notificationTemplateXMLStream = ReadXMLFileUtils.convertNotificationTemplateToXMLStream(typeList);
@@ -1362,5 +1371,6 @@ public class ReadXMLFileUtils {
 		}	
 		
 		return userManagementXMLStream;
-	}		
+	}
+
 }
