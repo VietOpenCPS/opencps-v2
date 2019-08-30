@@ -65,7 +65,7 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(63);
+		StringBundler sb = new StringBundler(65);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -129,6 +129,8 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 		sb.append(createDossiers);
 		sb.append(", checkInput=");
 		sb.append(checkInput);
+		sb.append(", postAction=");
+		sb.append(postAction);
 		sb.append("}");
 
 		return sb.toString();
@@ -288,6 +290,13 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 
 		processActionImpl.setCheckInput(checkInput);
 
+		if (postAction == null) {
+			processActionImpl.setPostAction("");
+		}
+		else {
+			processActionImpl.setPostAction(postAction);
+		}
+
 		processActionImpl.resetOriginalValues();
 
 		return processActionImpl;
@@ -338,6 +347,7 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 		createDossiers = objectInput.readUTF();
 
 		checkInput = objectInput.readInt();
+		postAction = objectInput.readUTF();
 	}
 
 	@Override
@@ -488,6 +498,13 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 		}
 
 		objectOutput.writeInt(checkInput);
+
+		if (postAction == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(postAction);
+		}
 	}
 
 	public String uuid;
@@ -521,4 +538,5 @@ public class ProcessActionCacheModel implements CacheModel<ProcessAction>,
 	public String signatureType;
 	public String createDossiers;
 	public int checkInput;
+	public String postAction;
 }

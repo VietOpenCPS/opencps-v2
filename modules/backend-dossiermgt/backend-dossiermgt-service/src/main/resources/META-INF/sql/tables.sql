@@ -694,7 +694,8 @@ create table opencps_processaction (
 	dossierTemplateNo VARCHAR(255) null,
 	signatureType VARCHAR(255) null,
 	createDossiers VARCHAR(255) null,
-	checkInput INTEGER
+	checkInput INTEGER,
+	postAction VARCHAR(75) null
 );
 
 create table opencps_processoption (

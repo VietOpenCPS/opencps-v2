@@ -91,6 +91,7 @@ public class ProcessActionWrapper implements ProcessAction,
 		attributes.put("signatureType", getSignatureType());
 		attributes.put("createDossiers", getCreateDossiers());
 		attributes.put("checkInput", getCheckInput());
+		attributes.put("postAction", getPostAction());
 
 		return attributes;
 	}
@@ -281,6 +282,12 @@ public class ProcessActionWrapper implements ProcessAction,
 
 		if (checkInput != null) {
 			setCheckInput(checkInput);
+		}
+
+		String postAction = (String)attributes.get("postAction");
+
+		if (postAction != null) {
+			setPostAction(postAction);
 		}
 	}
 
@@ -487,6 +494,16 @@ public class ProcessActionWrapper implements ProcessAction,
 	@Override
 	public String getPaymentFee() {
 		return _processAction.getPaymentFee();
+	}
+
+	/**
+	* Returns the post action of this process action.
+	*
+	* @return the post action of this process action
+	*/
+	@Override
+	public String getPostAction() {
+		return _processAction.getPostAction();
 	}
 
 	/**
@@ -913,6 +930,16 @@ public class ProcessActionWrapper implements ProcessAction,
 	@Override
 	public void setPaymentFee(String paymentFee) {
 		_processAction.setPaymentFee(paymentFee);
+	}
+
+	/**
+	* Sets the post action of this process action.
+	*
+	* @param postAction the post action of this process action
+	*/
+	@Override
+	public void setPostAction(String postAction) {
+		_processAction.setPostAction(postAction);
 	}
 
 	/**

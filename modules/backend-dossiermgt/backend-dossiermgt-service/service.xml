@@ -1419,6 +1419,7 @@
 		<column name="signatureType" type="String"/>
 		<column name="createDossiers" type="String"/>
 		<column name="checkInput" type="int" />
+		<column name="postAction" type="String"/>
 
 		<finder return-type="Collection" name="S_P_ID">
 			<finder-column name="serviceProcessId" />
