@@ -24,7 +24,7 @@ public class EFormNumberGenerator {
 	private static Log _log = LogFactoryUtil.getLog(EFormNumberGenerator.class);
 
 	public static String generateServiceFileNumber(long groupId, long companyId, String serviceCode,
-			String seriNumberPattern, SearchContext... searchContext)
+			String govAgencyCode, String seriNumberPattern, SearchContext... searchContext)
 			throws ParseException, SearchException {
 
 		//String eFormNo = StringPool.BLANK;
@@ -157,7 +157,7 @@ public class EFormNumberGenerator {
 				} else if (r.toString().equals(codePatternGov)) {
 //						_log.info("codePatternGov: "+ true);
 					//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + serviceCode;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + govAgencyCode;
 					String number = countByNumber(key, tmp);
 
 					_log.debug("//////////////////////////////////////////////////////////// " + number

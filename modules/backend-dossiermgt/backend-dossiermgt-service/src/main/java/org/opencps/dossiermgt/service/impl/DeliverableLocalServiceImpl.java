@@ -218,7 +218,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		}
 		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
 		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
-		object.setDeliverableState(Integer.valueOf(deliverableState));
+		object.setDeliverableState(Validator.isNotNull(deliverableState) ? Integer.valueOf(deliverableState) : 0);
 
 		return deliverablePersistence.update(object);
 	}
@@ -267,7 +267,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
 		object.setFormScriptFileId(formScriptFileId);
 		object.setFormReportFileId(formReportFileId);
-		object.setDeliverableState(Integer.valueOf(deliverableState));
+		object.setDeliverableState(Validator.isNotNull(deliverableState) ? Integer.valueOf(deliverableState) : 0);
 		object.setFormData(formData);
 
 		return deliverablePersistence.update(object);

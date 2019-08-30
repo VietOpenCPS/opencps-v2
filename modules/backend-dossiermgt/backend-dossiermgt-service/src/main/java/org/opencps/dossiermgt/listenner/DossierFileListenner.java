@@ -448,189 +448,194 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					deliverableType = dossierPart.getDeliverableType();
 					eSign = dossierPart.getESign();
 				}
+				//
+				DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
+						deliverableType);
+				if (dlvType != null && eSign) {
 	
-				String deliverableCode = model.getDeliverableCode();
-				// _log.info("deliverableCode DossierFile_________-" +
-				// deliverableCode);
-	
-				if ((Validator.isNotNull(deliverableCode) && model.getEForm()) || 
-						(Validator.isNull(deliverableCode) && !model.getEForm())) {
-					Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
-	
-					// Exist Deliverable checking
-					Deliverable dlv = null;
-					if (Validator.isNotNull(deliverableCode)) {
-						dlv = DeliverableLocalServiceUtil.getByF_GID_DCODE(model.getGroupId(), deliverableCode);
-					} else {
-						dlv = DeliverableLocalServiceUtil.fetchByGID_DID(model.getGroupId(), model.getDossierId());
-					}
-	
-					DeliverableType dlvType = DeliverableTypeLocalServiceUtil.getByCode(model.getGroupId(),
-							deliverableType);
-	
-					JSONObject formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());
-	
-					String subject = StringPool.BLANK;
-					String issueDate = StringPool.BLANK;
-					String expireDate = StringPool.BLANK;
-					String revalidate = StringPool.BLANK;
-					String codeForm = StringPool.BLANK;
-					String applicantName = StringPool.BLANK;
-					String deliverableState = (dlv != null ? String.valueOf(dlv.getDeliverableState()) : StringPool.BLANK);
-					if (eSign && Validator.isNull(deliverableState)) {
-						deliverableState = "0";
-					} else {
-						deliverableState = "1";
-					}
-	
-					// update deliverable
-					try {
-	
-						if (Validator.isNotNull(dlvType.getMappingData())) {
-							JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
-							_log.info("jsMappingData: "+jsMappingData);
-	
-							JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
-	
-							if (Validator.isNotNull(model.getFormData()))
-								jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
-							_log.info("jsFormData: "+jsFormData);
-	
-							if (jsMappingData.has("deliverables") && Validator.isNotNull(jsMappingData.get("deliverbles"))) {
-								formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
-							}
-							else if (jsMappingData.has("deliverables")){
-								formDataContent = mappingContent(jsMappingData, jsFormData);
-							}
-						}
-	
-					} catch (Exception e) {
-						_log.debug(e);
-						_log.error("Parser JSONDATA error_DELIVERABLE");
-					}
-	
-					String formData = StringPool.BLANK;
-	
-					if (Validator.isNotNull(formDataContent)) {
-						formData = formDataContent.toString();
-	
-					}
-					if (Validator.isNotNull(formDataContent)) {
-						subject = formDataContent.getString("subject");
-						issueDate = formDataContent.getString("issueDate");
-						expireDate = formDataContent.getString("expireDate");
-						revalidate = formDataContent.getString("revalidate");
-						codeForm = formDataContent.getString("deliverableCode");
-						applicantName = formDataContent.getString("applicantName");
-					}
-	
-					if (Validator.isNull(dlv) && model.getEForm() && dlvType != null) {
-						_log.info("model.getEForm(): "+model.getEForm());
-						// add deliverable
-						if (Validator.isNotNull(codeForm)) {
-							dlv = DeliverableLocalServiceUtil.addDeliverableSign(model.getGroupId(), deliverableType,
-									dlvType.getTypeName(), codeForm, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
-									dossier.getApplicantIdNo(), applicantName, subject, issueDate, expireDate, revalidate,
-									deliverableState, model.getDossierId(), model.getFileEntryId(),
-									dlvType.getFormScriptFileId(), dlvType.getFormReportFileId(), formData, serviceContext);
-							
+					String deliverableCode = model.getDeliverableCode();
+					// _log.info("deliverableCode DossierFile_________-" +
+					// deliverableCode);
+		
+					if ((Validator.isNotNull(deliverableCode) && model.getEForm()) || 
+							(Validator.isNull(deliverableCode) && !model.getEForm())) {
+						Dossier dossier = DossierLocalServiceUtil.getDossier(model.getDossierId());
+		
+						// Exist Deliverable checking
+						Deliverable dlv = null;
+						if (Validator.isNotNull(deliverableCode)) {
+							dlv = DeliverableLocalServiceUtil.getByF_GID_DCODE(model.getGroupId(), deliverableCode);
 						} else {
-							dlv = DeliverableLocalServiceUtil.addDeliverableSign(model.getGroupId(), deliverableType,
-									dlvType.getTypeName(), deliverableCode, dossier.getGovAgencyCode(),
-									dossier.getGovAgencyName(), dossier.getApplicantIdNo(), dossier.getApplicantName(),
-									subject, issueDate, expireDate, revalidate, deliverableState, model.getDossierId(),
-									model.getFileEntryId(), dlvType.getFormScriptFileId(), dlvType.getFormReportFileId(),
-									formData, serviceContext);
+							dlv = DeliverableLocalServiceUtil.fetchByGID_DID(model.getGroupId(), model.getDossierId());
 						}
-						//
-						DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
-								model.getGroupId(), model.getDossierId(), model.getDossierTemplateNo(),
-								model.getDossierPartNo(), false, false);
-						if (dossierFileAttach != null) {
-							dlv.setFileEntryId(dossierFileAttach.getFileEntryId());
-							//
-							String formDataDlv = dlv.getFormData();
-							if (Validator.isNotNull(formDataDlv)) {
-								JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
-								jsonDlv.put("fileAttach", true);
-								//
-								dlv.setFormData(jsonDlv.toJSONString());
+		
+		
+						JSONObject formDataContent = JSONFactoryUtil.createJSONObject(model.getFormData());
+		
+						String subject = StringPool.BLANK;
+						String issueDate = StringPool.BLANK;
+						String expireDate = StringPool.BLANK;
+						String revalidate = StringPool.BLANK;
+						String codeForm = StringPool.BLANK;
+						String applicantName = StringPool.BLANK;
+						String deliverableState = (dlv != null ? String.valueOf(dlv.getDeliverableState()) : StringPool.BLANK);
+						_log.info("deliverableState1: "+deliverableState);
+						if (Validator.isNull(deliverableState)) {
+							deliverableState = "0";
+						}
+	//					else {
+	//						deliverableState = "1";
+	//					}
+						_log.info("deliverableState2: "+deliverableState);
+						// update deliverable
+						try {
+		
+							if (Validator.isNotNull(dlvType.getMappingData())) {
+								JSONObject jsMappingData = JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
+								_log.info("jsMappingData: "+jsMappingData);
+		
+								JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+		
+								if (Validator.isNotNull(model.getFormData()))
+									jsFormData = JSONFactoryUtil.createJSONObject(model.getFormData());
+								_log.info("jsFormData: "+jsFormData);
+		
+								if (jsMappingData.has("deliverables") && Validator.isNotNull(jsMappingData.get("deliverbles"))) {
+									formDataContent = mappingContent(jsMappingData, jsFormData, model.getDossierId());
+								}
+								else if (jsMappingData.has("deliverables")){
+									formDataContent = mappingContent(jsMappingData, jsFormData);
+								}
 							}
-							Deliverable bbb = DeliverableLocalServiceUtil.updateDeliverable(dlv);
-							_log.info("jsonDlv: "+bbb.getFormData());
-							_log.info("dossierFileAttach.getFileEntryId(): "+dossierFileAttach.getFileEntryId());
-						} else {
-							// Process update formData
-							DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv != null ? dlv.getDeliverableId() : 0, formData,
-									serviceContext);
+		
+						} catch (Exception e) {
+							_log.debug(e);
+							_log.error("Parser JSONDATA error_DELIVERABLE");
 						}
-						//Update deliverable Code
-						if (dlv != null && Validator.isNotNull(codeForm)) {
-							model.setDeliverableCode(codeForm);
-							if (model.getEForm()) {
-								model.setIsNew(true);
+		
+						String formData = StringPool.BLANK;
+		
+						if (Validator.isNotNull(formDataContent)) {
+							formData = formDataContent.toString();
+		
+						}
+						if (Validator.isNotNull(formDataContent)) {
+							subject = formDataContent.getString("subject");
+							issueDate = formDataContent.getString("issueDate");
+							expireDate = formDataContent.getString("expireDate");
+							revalidate = formDataContent.getString("revalidate");
+							codeForm = formDataContent.getString("deliverableCode");
+							applicantName = formDataContent.getString("applicantName");
+						}
+		
+						if (Validator.isNull(dlv) && model.getEForm() && dlvType != null) {
+							_log.info("model.getEForm(): "+model.getEForm());
+							// add deliverable
+							if (Validator.isNotNull(codeForm)) {
+								dlv = DeliverableLocalServiceUtil.addDeliverableSign(model.getGroupId(), deliverableType,
+										dlvType.getTypeName(), codeForm, dossier.getGovAgencyCode(), dossier.getGovAgencyName(),
+										dossier.getApplicantIdNo(), applicantName, subject, issueDate, expireDate, revalidate,
+										deliverableState, model.getDossierId(), model.getFileEntryId(),
+										dlvType.getFormScriptFileId(), dlvType.getFormReportFileId(), formData, serviceContext);
+								
+							} else {
+								dlv = DeliverableLocalServiceUtil.addDeliverableSign(model.getGroupId(), deliverableType,
+										dlvType.getTypeName(), deliverableCode, dossier.getGovAgencyCode(),
+										dossier.getGovAgencyName(), dossier.getApplicantIdNo(), dossier.getApplicantName(),
+										subject, issueDate, expireDate, revalidate, deliverableState, model.getDossierId(),
+										model.getFileEntryId(), dlvType.getFormScriptFileId(), dlvType.getFormReportFileId(),
+										formData, serviceContext);
 							}
-							//
-							DossierFile aaa = DossierFileLocalServiceUtil.updateDossierFile(model);
-							_log.info("aaa: "+aaa.getIsNew());
-						}
-					} else if (dlv != null) {
-						_log.info("dlv != null");
-						if (model.getEForm()) {
-							if (Validator.isNotNull(codeForm))
-								dlv.setDeliverableCode(codeForm);
-							if (Validator.isNotNull(applicantName))
-								dlv.setApplicantName(applicantName);
-							if (Validator.isNotNull(issueDate))
-								dlv.setIssueDate(
-										APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
-							if (Validator.isNotNull(expireDate))
-								dlv.setExpireDate(
-										APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
-							if (Validator.isNotNull(revalidate))
-								dlv.setRevalidate(
-										APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
-							//
-							DeliverableLocalServiceUtil.updateDeliverable(dlv);
 							//
 							DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
 									model.getGroupId(), model.getDossierId(), model.getDossierTemplateNo(),
 									model.getDossierPartNo(), false, false);
 							if (dossierFileAttach != null) {
-								if (Validator.isNotNull(dossierFileAttach.getFormData())) {
-									DeliverableLocalServiceUtil.updateFormData(model.getGroupId(),
-											dlv != null ? dlv.getDeliverableId() : 0, formData, serviceContext);
-								} else {
-									dlv.setFileEntryId(dossierFileAttach.getFileEntryId());
-									//
-									String formDataDlv = dlv.getFormData();
-									if (Validator.isNotNull(formDataDlv)) {
-										JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
-										jsonDlv.put("fileAttach", true);
-										//
-										dlv.setFormData(jsonDlv.toJSONString());
-									}
-									Deliverable bbb = DeliverableLocalServiceUtil.updateDeliverable(dlv);
-									_log.info("jsonDlv: "+bbb.getFormData());
-									_log.info("dossierFileAttach.getFileEntryId(): "+dossierFileAttach.getFileEntryId());
-								}
-							}
-							//
-							if (Validator.isNotNull(codeForm) && !codeForm.equalsIgnoreCase(model.getDeliverableCode())) {
-								model.setDeliverableCode(codeForm);
-								DossierFileLocalServiceUtil.updateDossierFile(model);
-							}
-						} else {
-							_log.info("model.getFileEntryId(): "+model.getFileEntryId());
-							dlv.setFileEntryId(model.getFileEntryId());
-							String formDataDlv = dlv.getFormData();
-							if (Validator.isNotNull(formDataDlv)) {
-								JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
-								jsonDlv.put("fileAttach", true);
+								dlv.setFileEntryId(dossierFileAttach.getFileEntryId());
 								//
-								dlv.setFormData(jsonDlv.toJSONString());
+								String formDataDlv = dlv.getFormData();
+								if (Validator.isNotNull(formDataDlv)) {
+									JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
+									jsonDlv.put("fileAttach", true);
+									//
+									dlv.setFormData(jsonDlv.toJSONString());
+								}
+								Deliverable bbb = DeliverableLocalServiceUtil.updateDeliverable(dlv);
+								_log.info("jsonDlv: "+bbb.getFormData());
+								_log.info("dossierFileAttach.getFileEntryId(): "+dossierFileAttach.getFileEntryId());
+							} else {
+								// Process update formData
+								DeliverableLocalServiceUtil.updateFormData(model.getGroupId(), dlv != null ? dlv.getDeliverableId() : 0, formData,
+										serviceContext);
 							}
-							DeliverableLocalServiceUtil.updateDeliverable(dlv);
+							//Update deliverable Code
+							if (dlv != null && Validator.isNotNull(codeForm)) {
+								model.setDeliverableCode(codeForm);
+								if (model.getEForm()) {
+									model.setIsNew(true);
+								}
+								//
+								DossierFile aaa = DossierFileLocalServiceUtil.updateDossierFile(model);
+								_log.info("aaa: "+aaa.getIsNew());
+							}
+						} else if (dlv != null) {
+							_log.info("dlv != null");
+							if (model.getEForm()) {
+								if (Validator.isNotNull(codeForm))
+									dlv.setDeliverableCode(codeForm);
+								if (Validator.isNotNull(applicantName))
+									dlv.setApplicantName(applicantName);
+								if (Validator.isNotNull(issueDate))
+									dlv.setIssueDate(
+											APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
+								if (Validator.isNotNull(expireDate))
+									dlv.setExpireDate(
+											APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
+								if (Validator.isNotNull(revalidate))
+									dlv.setRevalidate(
+											APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+								//
+								DeliverableLocalServiceUtil.updateDeliverable(dlv);
+								//
+								DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
+										model.getGroupId(), model.getDossierId(), model.getDossierTemplateNo(),
+										model.getDossierPartNo(), false, false);
+								if (dossierFileAttach != null) {
+									if (Validator.isNotNull(dossierFileAttach.getFormData())) {
+										DeliverableLocalServiceUtil.updateFormData(model.getGroupId(),
+												dlv != null ? dlv.getDeliverableId() : 0, formData, serviceContext);
+									} else {
+										dlv.setFileEntryId(dossierFileAttach.getFileEntryId());
+										//
+										String formDataDlv = dlv.getFormData();
+										if (Validator.isNotNull(formDataDlv)) {
+											JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
+											jsonDlv.put("fileAttach", true);
+											//
+											dlv.setFormData(jsonDlv.toJSONString());
+										}
+										Deliverable bbb = DeliverableLocalServiceUtil.updateDeliverable(dlv);
+										_log.info("jsonDlv: "+bbb.getFormData());
+										_log.info("dossierFileAttach.getFileEntryId(): "+dossierFileAttach.getFileEntryId());
+									}
+								}
+								//
+								if (Validator.isNotNull(codeForm) && !codeForm.equalsIgnoreCase(model.getDeliverableCode())) {
+									model.setDeliverableCode(codeForm);
+									DossierFileLocalServiceUtil.updateDossierFile(model);
+								}
+							} else {
+								_log.info("model.getFileEntryId(): "+model.getFileEntryId());
+								dlv.setFileEntryId(model.getFileEntryId());
+								String formDataDlv = dlv.getFormData();
+								if (Validator.isNotNull(formDataDlv)) {
+									JSONObject jsonDlv = JSONFactoryUtil.createJSONObject(formDataDlv);
+									jsonDlv.put("fileAttach", true);
+									//
+									dlv.setFormData(jsonDlv.toJSONString());
+								}
+								DeliverableLocalServiceUtil.updateDeliverable(dlv);
+							}
 						}
 					}
 	
