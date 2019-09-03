@@ -227,7 +227,8 @@ public class DossierUtils {
 //							extendDateTimeStamp)) {
 //						model.setDossierOverdue("Sớm hạn");
 //					} 
-					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
+//					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
+					if (dueDateTimeStamp != 0 && 3 == valueCompareRelease) {
 						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
 						model.setDossierOverdue("Sớm hạn");
