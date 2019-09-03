@@ -98,7 +98,8 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 			{ "dossierTemplateNo", Types.VARCHAR },
 			{ "signatureType", Types.VARCHAR },
 			{ "createDossiers", Types.VARCHAR },
-			{ "checkInput", Types.INTEGER }
+			{ "checkInput", Types.INTEGER },
+			{ "postAction", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -134,9 +135,10 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 		TABLE_COLUMNS_MAP.put("signatureType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDossiers", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("checkInput", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("postAction", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processaction (uuid_ VARCHAR(75) null,processActionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceProcessId LONG,preStepCode STRING null,postStepCode STRING null,autoEvent STRING null,preCondition STRING null,actionCode VARCHAR(255) null,actionName VARCHAR(500) null,allowAssignUser INTEGER,assignUserId LONG,requestPayment INTEGER,paymentFee VARCHAR(500) null,createDossierFiles STRING null,returnDossierFiles STRING null,makeBriefNote VARCHAR(500) null,syncActionCode VARCHAR(75) null,rollbackable BOOLEAN,createDossierNo BOOLEAN,eSignature BOOLEAN,configNote TEXT null,dossierTemplateNo VARCHAR(255) null,signatureType VARCHAR(255) null,createDossiers VARCHAR(255) null,checkInput INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processaction (uuid_ VARCHAR(75) null,processActionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceProcessId LONG,preStepCode STRING null,postStepCode STRING null,autoEvent STRING null,preCondition STRING null,actionCode VARCHAR(255) null,actionName VARCHAR(500) null,allowAssignUser INTEGER,assignUserId LONG,requestPayment INTEGER,paymentFee VARCHAR(500) null,createDossierFiles STRING null,returnDossierFiles STRING null,makeBriefNote VARCHAR(500) null,syncActionCode VARCHAR(75) null,rollbackable BOOLEAN,createDossierNo BOOLEAN,eSignature BOOLEAN,configNote TEXT null,dossierTemplateNo VARCHAR(255) null,signatureType VARCHAR(255) null,createDossiers VARCHAR(255) null,checkInput INTEGER,postAction VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processaction";
 	public static final String ORDER_BY_JPQL = " ORDER BY processAction.processActionId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processaction.processActionId ASC";
@@ -234,6 +236,7 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 		attributes.put("signatureType", getSignatureType());
 		attributes.put("createDossiers", getCreateDossiers());
 		attributes.put("checkInput", getCheckInput());
+		attributes.put("postAction", getPostAction());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -427,6 +430,12 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 
 		if (checkInput != null) {
 			setCheckInput(checkInput);
+		}
+
+		String postAction = (String)attributes.get("postAction");
+
+		if (postAction != null) {
+			setPostAction(postAction);
 		}
 	}
 
@@ -983,6 +992,21 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 	}
 
 	@Override
+	public String getPostAction() {
+		if (_postAction == null) {
+			return "";
+		}
+		else {
+			return _postAction;
+		}
+	}
+
+	@Override
+	public void setPostAction(String postAction) {
+		_postAction = postAction;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ProcessAction.class.getName()));
@@ -1050,6 +1074,7 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 		processActionImpl.setSignatureType(getSignatureType());
 		processActionImpl.setCreateDossiers(getCreateDossiers());
 		processActionImpl.setCheckInput(getCheckInput());
+		processActionImpl.setPostAction(getPostAction());
 
 		processActionImpl.resetOriginalValues();
 
@@ -1325,12 +1350,20 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 
 		processActionCacheModel.checkInput = getCheckInput();
 
+		processActionCacheModel.postAction = getPostAction();
+
+		String postAction = processActionCacheModel.postAction;
+
+		if ((postAction != null) && (postAction.length() == 0)) {
+			processActionCacheModel.postAction = null;
+		}
+
 		return processActionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(63);
+		StringBundler sb = new StringBundler(65);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1394,6 +1427,8 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 		sb.append(getCreateDossiers());
 		sb.append(", checkInput=");
 		sb.append(getCheckInput());
+		sb.append(", postAction=");
+		sb.append(getPostAction());
 		sb.append("}");
 
 		return sb.toString();
@@ -1401,7 +1436,7 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(97);
+		StringBundler sb = new StringBundler(100);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ProcessAction");
@@ -1531,6 +1566,10 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 			"<column><column-name>checkInput</column-name><column-value><![CDATA[");
 		sb.append(getCheckInput());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>postAction</column-name><column-value><![CDATA[");
+		sb.append(getPostAction());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1586,6 +1625,7 @@ public class ProcessActionModelImpl extends BaseModelImpl<ProcessAction>
 	private String _createDossiers;
 	private String _originalCreateDossiers;
 	private int _checkInput;
+	private String _postAction;
 	private long _columnBitmask;
 	private ProcessAction _escapedModel;
 }

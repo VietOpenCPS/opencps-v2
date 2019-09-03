@@ -991,6 +991,8 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    	dossierTemplate.setDescription(dt.getDescription());
 		    	dossierTemplate.setTemplateName(dt.getTemplateName());
 		    	dossierTemplate.setTemplateNo(dt.getTemplateNo());
+		    	// update model 2019-08-30
+		    	dossierTemplate.setNewFormScript(dt.getNewFormScript());
 		    	
 		    	List<DossierPart> parts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dt.getTemplateNo());
 		    	Parts tempParts = new Parts();
@@ -1042,6 +1044,10 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    	serviceProcess.setServerName(sp.getServerName());
 		    	serviceProcess.setDossierNoPattern(sp.getDossierNoPattern());
 		    	serviceProcess.setDueDatePattern(sp.getDueDatePattern());
+		    	// update model 2019-08-30
+		    	serviceProcess.setCounter(sp.getCounter());
+		    	serviceProcess.setDossierGroupPattern(sp.getDossierGroupPattern());
+
 		    	List<ServiceProcessRole> lstProcessRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(sp.getServiceProcessId());
 		    	Roles roles = new Roles();
 		    	for (ServiceProcessRole role : lstProcessRoles) {
@@ -1118,7 +1124,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    		paction.setESignature(pa.getESignature());
 		    		paction.setSignatureType(pa.getSignatureType());
 		    		paction.setCreateDossiers(pa.getCreateDossiers());
-		    		
+		    		// update model 2019-08-30
+		    		paction.setConfigNote(pa.getConfigNote());
+		    		paction.setPostAction(pa.getPostAction());
+		    		paction.setESignature(pa.getESignature());
+
 		    		actions.getProcessAction().add(paction);
 		    	}
 		    	serviceProcess.setActions(actions);

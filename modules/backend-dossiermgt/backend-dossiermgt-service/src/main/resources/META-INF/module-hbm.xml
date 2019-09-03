@@ -752,6 +752,7 @@
 		<property name="signatureType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="createDossiers" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="checkInput" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="postAction" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessOptionImpl" table="opencps_processoption">
 		<id name="processOptionId" type="long">

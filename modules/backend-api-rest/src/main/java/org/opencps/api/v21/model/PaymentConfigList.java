@@ -224,7 +224,8 @@ public class PaymentConfigList {
         "invoiceIssueNo",
         "invoiceLastNo",
         "bankInfo",
-        "epaymentConfig"
+        "epaymentConfig",
+        "invoiceForm"
     })
     public static class PaymentConfig {
 
@@ -244,6 +245,8 @@ public class PaymentConfigList {
         protected String bankInfo;
         @XmlElement(required = true)
         protected String epaymentConfig;
+        @XmlElement(required = true)
+        protected String invoiceForm;
 
         /**
          * Gets the value of the govAgencyCode property.
@@ -436,6 +439,18 @@ public class PaymentConfigList {
         public void setEpaymentConfig(String value) {
             this.epaymentConfig = value;
         }
+
+		
+		public String getInvoiceForm() {
+		
+			return invoiceForm;
+		}
+
+		
+		public void setInvoiceForm(String invoiceForm) {
+		
+			this.invoiceForm = invoiceForm;
+		}
 
     }
 

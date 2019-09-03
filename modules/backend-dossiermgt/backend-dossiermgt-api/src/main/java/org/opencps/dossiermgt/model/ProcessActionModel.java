@@ -582,6 +582,21 @@ public interface ProcessActionModel extends BaseModel<ProcessAction>,
 	 */
 	public void setCheckInput(int checkInput);
 
+	/**
+	 * Returns the post action of this process action.
+	 *
+	 * @return the post action of this process action
+	 */
+	@AutoEscape
+	public String getPostAction();
+
+	/**
+	 * Sets the post action of this process action.
+	 *
+	 * @param postAction the post action of this process action
+	 */
+	public void setPostAction(String postAction);
+
 	@Override
 	public boolean isNew();
 
