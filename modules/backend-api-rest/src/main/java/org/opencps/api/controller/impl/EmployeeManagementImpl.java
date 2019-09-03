@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -22,6 +21,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +46,6 @@ import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
-import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
@@ -56,7 +55,10 @@ import org.opencps.usermgt.constants.EmployeeJobPosTerm;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -567,53 +569,53 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				}
 			}
 			if (groupIdEmp > 0) {
-				if (query.getEnd() == 0) {
-					query.setStart(-1);
-					query.setEnd(-1);
-				}
+				String jobPosCode = query.getJobposCode();
+				if (Validator.isNotNull(jobPosCode)) {
 
-				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+					long total = 0;
+					List<EmployeeModel> empModelList = new ArrayList<EmployeeModel>();
+					JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(groupIdEmp, jobPosCode);
+					if (jobPos != null) {
+						List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupIdEmp, jobPos.getJobPosId());
+						if (empJobList != null && empJobList.size() > 0) {
+							for (EmployeeJobPos employeeJobPos : empJobList) {
+								Employee emp = EmployeeLocalServiceUtil.fetchEmployee(employeeJobPos.getEmployeeId());
+								if (emp != null) {
+									total += 1;
+									empModelList.add(EmployeeUtils.mapperEmployeeModel(emp));
+								}
+							}
+						}
+					}
+					
+					result.setTotal(total);
+					result.getEmployeeModel().addAll(empModelList);
+					
+				} else {
+					if (query.getEnd() == 0) {
+						query.setStart(-1);
+						query.setEnd(-1);
+					}
 
-				params.put("groupId", String.valueOf(groupIdEmp));
-				params.put("keywords", query.getKeywords());
-				params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
-				params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
-				params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
-				params.put(EmployeeTerm.FULL_NAME, query.getEmployeeName());
+					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-						Boolean.valueOf(query.getOrder())) };
+					params.put("groupId", String.valueOf(groupIdEmp));
+					params.put("keywords", query.getKeywords());
+					params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
+					params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
+					params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
+					params.put(EmployeeTerm.FULL_NAME, query.getEmployeeName());
 
-				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
-						query.getStart(), query.getEnd(), serviceContext);
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+							Boolean.valueOf(query.getOrder())) };
 
-//				int total = 0;
-//				if (jsonData != null && jsonData.getLong("total") > 0) {
-					// if (Validator.isNotNull(jobPos)) {
-					// List<Document> docList = (List<Document>)
-					// jsonData.get("data");
-					// if (docList != null && docList.size() > 0) {
-					// for (Document document : docList) {
-					// String jobPosCode =
-					// GetterUtil.getString(document.get(""));
-					// }
-					// } else {
-					// result.setTotal(0);
-					// }
-					// } else {
-					// result.setTotal(jsonData.getLong("total"));
-					// result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>)
-					// jsonData.get("data")));
-					// }
-					// } else {
-					// result.setTotal(jsonData.getLong("total"));
-					// }
+					JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
+							query.getStart(), query.getEnd(), serviceContext);
+
 					result.setTotal(jsonData.getLong("total"));
 					result.getEmployeeModel()
 							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
-//				} else {
-//					result.setTotal(0);
-//				}
+				}
 			}
 			return Response.status(200).entity(result).build();
 
