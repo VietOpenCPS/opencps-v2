@@ -960,6 +960,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="checkInput" type="int" />
+		<field name="postAction" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessOption">
 		<field name="uuid" type="String" />

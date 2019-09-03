@@ -64,6 +64,7 @@ public class ProcessActionSoap implements Serializable {
 		soapModel.setSignatureType(model.getSignatureType());
 		soapModel.setCreateDossiers(model.getCreateDossiers());
 		soapModel.setCheckInput(model.getCheckInput());
+		soapModel.setPostAction(model.getPostAction());
 
 		return soapModel;
 	}
@@ -376,6 +377,14 @@ public class ProcessActionSoap implements Serializable {
 		_checkInput = checkInput;
 	}
 
+	public String getPostAction() {
+		return _postAction;
+	}
+
+	public void setPostAction(String postAction) {
+		_postAction = postAction;
+	}
+
 	private String _uuid;
 	private long _processActionId;
 	private long _companyId;
@@ -407,4 +416,5 @@ public class ProcessActionSoap implements Serializable {
 	private String _signatureType;
 	private String _createDossiers;
 	private int _checkInput;
+	private String _postAction;
 }

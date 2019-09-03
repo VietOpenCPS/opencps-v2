@@ -154,7 +154,8 @@ import javax.xml.bind.annotation.XmlType;
     "steps",
     "actions",
     "sequences",
-    "dossierGroupPattern"
+    "dossierGroupPattern",
+    "counter"
 })
 @XmlRootElement(name = "ServiceProcess")
 public class ServiceProcess {
@@ -187,6 +188,19 @@ public class ServiceProcess {
     protected Sequences sequences;
     @XmlElement(required = false)
     protected String dossierGroupPattern;
+    protected long counter;
+
+	
+	public long getCounter() {
+	
+		return counter;
+	}
+
+	
+	public void setCounter(long counter) {
+	
+		this.counter = counter;
+	}
 
 	public String getDossierGroupPattern() {
 	

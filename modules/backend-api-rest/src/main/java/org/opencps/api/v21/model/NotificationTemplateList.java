@@ -188,7 +188,9 @@ public class NotificationTemplateList {
         "textMessage",
         "sendSMS",
         "expireDuration",
-        "interval"
+        "interval",
+        "sendNotification",
+        "notifyMessage"
     })
     public static class NotificationTemplate {
 
@@ -205,6 +207,9 @@ public class NotificationTemplateList {
         protected int expireDuration;
         @XmlElement(required = true)
         protected String interval;
+        @XmlElement(required = true)
+        protected String notifyMessage;
+        protected boolean sendNotification;
 
         /**
          * Gets the value of the notificationType property.
@@ -373,6 +378,30 @@ public class NotificationTemplateList {
         public void setInterval(String value) {
             this.interval = value;
         }
+
+		
+		public String getNotifyMessage() {
+		
+			return notifyMessage;
+		}
+
+		
+		public void setNotifyMessage(String notifyMessage) {
+		
+			this.notifyMessage = notifyMessage;
+		}
+
+		
+		public boolean isSendNotification() {
+		
+			return sendNotification;
+		}
+
+		
+		public void setSendNotification(boolean sendNotification) {
+		
+			this.sendNotification = sendNotification;
+		}
 
     }
 
