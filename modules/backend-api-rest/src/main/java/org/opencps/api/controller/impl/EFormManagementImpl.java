@@ -575,4 +575,32 @@ public class EFormManagementImpl implements EFormManagement{
 				.build();
 	}
 
+	@Override
+	public Response getEFormByBarCodeAndSecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String eFormNo) {
+
+		//DossierPermission dossierPermission = new DossierPermission();
+		//BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+//				_log.info("START");
+//				if (!auth.isAuth(serviceContext)) {
+//					throw new UnauthenticationException();
+//				}
+
+			EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
+
+			EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
+
+			return Response.status(200).entity(result).build();
+
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }
