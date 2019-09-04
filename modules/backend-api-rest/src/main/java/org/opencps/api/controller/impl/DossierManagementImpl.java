@@ -471,20 +471,20 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			//DossierResultsModel results = new DossierResultsModel();
-			JSONObject results = JSONFactoryUtil.createJSONObject();
+			DossierResultsModel results = new DossierResultsModel();
+//			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);
 
-			//results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt("total"));
 
-//			results.getData().addAll(
-//					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
+			results.getData().addAll(
+					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
 			
-			results.put("total", jsonData.getInt("total"));
-
-			results.put("data", jsonData.get("data"));
+//			results.put("total", jsonData.getInt("total"));
+//
+//			results.put("data", jsonData.get("data"));
 //					DossierUtils.mappingForGetList((List<Document>) jsonData.get("data"), userId, query.getAssigned()));
 
 			return Response.status(200).entity(results).build();
@@ -927,7 +927,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierActions actions = new DossierActionsImpl();
-		DossierPermission dossierPermission = new DossierPermission();
+		//DossierPermission dossierPermission = new DossierPermission();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -939,8 +939,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// throw new UnauthorizationException();
 			// }
 
-			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
-					input.getGovAgencyCode(), input.getDossierTemplateNo());
+//			dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
+//					input.getGovAgencyCode(), input.getDossierTemplateNo());
 
 //			int counter = 0;
 //			String referenceUid = StringPool.BLANK;
@@ -961,21 +961,25 @@ public class DossierManagementImpl implements DossierManagement {
 			// String govAgencyName = getDictItemName(groupId,
 			// GOVERNMENT_AGENCY, input.getGovAgencyCode());
 
-			String cityName = StringPool.BLANK;
-			String districtName = StringPool.BLANK;
-			String wardName = StringPool.BLANK;
+//			String cityName = StringPool.BLANK;
+//			String districtName = StringPool.BLANK;
+//			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
+			//
+			String cityName = "Hà Nội";
+			String districtName = "Quận Ba Đình";
+			String wardName = "Phường Trúc Bạch";
 			
-			if (Validator.isNotNull(input.getCityCode()))
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-			if (Validator.isNotNull(input.getDistrictCode()))
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-			if (Validator.isNotNull(input.getWardCode()))
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-
-			if (Validator.isNotNull(input.getPostalCityCode())) {
-				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
-			}
+//			if (Validator.isNotNull(input.getCityCode()))
+//				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+//			if (Validator.isNotNull(input.getDistrictCode()))
+//				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+//			if (Validator.isNotNull(input.getWardCode()))
+//				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+//
+//			if (Validator.isNotNull(input.getPostalCityCode())) {
+//				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+//			}
 			Integer delegateType = (input.getDelegateType() != null ? input.getDelegateType() : 0);
 			String documentNo = input.getDocumentNo();
 			Date documentDate = null;
@@ -1183,6 +1187,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response doAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, String id, DoActionModel input, Long dueDate) {
 
+		_log.error("START DOACTION");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		long userId = user.getUserId();
 //		DossierPermission dossierPermission = new DossierPermission();
@@ -1191,14 +1196,14 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierAction dossierResult = null;
 		ErrorMsgModel errorModel = new ErrorMsgModel();
 		String actionUser = input.getActionUser();
-		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
-		if (employee != null) {
-			actionUser = employee.getFullName();
-		} else {
-			if (Validator.isNull(actionUser)) {
-				actionUser = user.getFullName();
-			}
-		}
+		//Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+		//if (employee != null) {
+		//	actionUser = employee.getFullName();
+		//} else {
+		if (Validator.isNull(actionUser))
+			actionUser = user.getFullName();
+		//	}
+		//}
 		
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1212,9 +1217,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (dossier != null) {
 				_log.debug("Dossier: " + dossier + ", action code: " + input.getActionCode());
-				if (Validator.isNotNull(dueDate)) {
-					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
-				}
+//				if (Validator.isNotNull(dueDate)) {
+//					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
+//				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class ServiceFileTemplateTempListener extends BaseModelListener<ServiceFileTemplate> {
 
 	@Override

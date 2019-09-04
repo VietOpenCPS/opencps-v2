@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class ProcessOptionTempListener extends BaseModelListener<ProcessOption> {
 
 	@Override

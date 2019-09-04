@@ -81,7 +81,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	 * dossier action local service.
 	 */
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
 			String actionUser, String actionName, String actionNote, int actionOverdue, String syncActionCode,
@@ -166,7 +166,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.update(object);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
 			String actionUser, String actionName, String actionNote, int actionOverdue, String stepCode,
@@ -245,14 +245,14 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierAction removeAction(long actionId) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 
 		return dossierActionPersistence.remove(action);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateNextActionId(long actionId, long nextActionId) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 
@@ -265,7 +265,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.update(action);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updatePending(long actionId, boolean pending) throws PortalException {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 
@@ -278,7 +278,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.update(action);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateState(long actionId, int state) {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 
@@ -291,7 +291,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.update(action);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateRollbackable(long actionId, boolean rollbackable) {
 		DossierAction action = dossierActionPersistence.fetchByPrimaryKey(actionId);
 		action.setRollbackable(rollbackable);
@@ -489,7 +489,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 	}
 
 	// super_admin Generators
-//	@Indexable(type = IndexableType.DELETE)
+//	//@Indexable(type = IndexableType.DELETE)
 	public DossierAction adminProcessDelete(Long id) {
 
 		DossierAction object = dossierActionPersistence.fetchByPrimaryKey(id);
@@ -503,7 +503,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-//	@Indexable(type = IndexableType.REINDEX)
+//	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction adminProcessData(JSONObject objectData) {
 
 		DossierAction object = null;
@@ -589,7 +589,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionPersistence.findByDD(now, 0l);
 	}
 	
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId, long dossierActionId, long dossierId, long serviceProcessId,
 			long previousActionId, String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode,
 			String actionUser, String actionName, String actionNote, int actionOverdue, String stepCode,
@@ -668,7 +668,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateImportDossierAction(long groupId, long dossierActionId, long serviceProcessId,
 			String fromStepCode, String fromStepName, String fromSequenceNo, String actionCode, String actionUser,
 			String actionName, String stepCode, String stepName, Date dueDate, long nextActionId, int state,

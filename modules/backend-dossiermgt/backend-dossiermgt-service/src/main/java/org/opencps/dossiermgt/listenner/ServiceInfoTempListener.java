@@ -14,7 +14,7 @@ import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class ServiceInfoTempListener extends BaseModelListener<ServiceInfo> {
 
 	@Override

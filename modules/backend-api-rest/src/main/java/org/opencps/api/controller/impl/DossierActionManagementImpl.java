@@ -143,74 +143,35 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							result.setStepCode(processStep.getStepCode());
 							result.setStepName(processStep.getStepName());
 							
-							Date now = new Date();
-							long dateNowTimeStamp = now.getTime();
-			
-							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
+							//Date now = new Date();
+							//long dateNowTimeStamp = now.getTime();
+							//Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
 
-							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
-							if (stepDuedate != null) {
-
-								DueDateUtils dueDateUtils;
-								String overType;
-								if (dateNowTimeStamp < stepDuedate.getTime()) {
-
-									dueDateUtils = new DueDateUtils(now, stepDuedate, 1, groupId);
-									overType = "Còn ";
-								} else {
-
-									dueDateUtils = new DueDateUtils(stepDuedate, now, 1, groupId);
-									overType = "Quá hạn ";
-								}
-								if (dossier.getDurationUnit() == 0) {
-
-									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToString());
-								} else {
-
-									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToHours() + " giờ");
-								}
-							}
-							_log.debug(stepDuedate + "========result.getStepOverdue()======="+result.getStepOverdue());
-//							Long releaseDateTimeStamp = (dossier.getReleaseDate() != null ? dossier.getReleaseDate() .getTime(): 0l);
-//							
-//							Long dueDateTimeStamp = stepDuedate != null ? stepDuedate.getTime() : 0l;
-//							if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-//								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-//									long subTimeStamp = releaseDateTimeStamp - dueDateTimeStamp;
-//									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
-//											dossier.getDurationUnit(), subTimeStamp, releaseDateTimeStamp,
-//											dueDateTimeStamp, groupId, true);
-//									if (Validator.isNotNull(strOverDue)) {
-//										if (subTimeStamp > 0) {
-//											result.setStepOverdue("Quá hạn " + strOverDue);
-//										} else {
-//											result.setStepOverdue("Còn " + strOverDue);
-//										}
-//									} else {
-//										result.setStepOverdue(StringPool.BLANK);
-//									}
+							//result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
+							result.setStepDueDate(0l);
+//							if (stepDuedate != null) {
+//
+//								DueDateUtils dueDateUtils;
+//								String overType;
+//								if (dateNowTimeStamp < stepDuedate.getTime()) {
+//
+//									dueDateUtils = new DueDateUtils(now, stepDuedate, 1, groupId);
+//									overType = "Còn ";
 //								} else {
-//									result.setStepOverdue(StringPool.BLANK);
+//
+//									dueDateUtils = new DueDateUtils(stepDuedate, now, 1, groupId);
+//									overType = "Quá hạn ";
 //								}
-//							} else {
-//								if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-//									long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-//									String strOverDue = DossierUtils.calculatorOverDue(dossier.getDurationCount(),
-//											dossier.getDurationUnit(), subTimeStamp, dateNowTimeStamp, dueDateTimeStamp,
-//											groupId, true);
-//									if (Validator.isNotNull(strOverDue)) {
-//										if (subTimeStamp > 0) {
-//											result.setStepOverdue("Quá hạn " + strOverDue);
-//										} else {
-//											result.setStepOverdue("Còn " + strOverDue);
-//										}
-//									} else {
-//										result.setStepOverdue(StringPool.BLANK);
-//									}
+//								if (dossier.getDurationUnit() == 0) {
+//
+//									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToString());
 //								} else {
-//									result.setStepOverdue(StringPool.BLANK);
+//
+//									result.setStepOverdue(overType + dueDateUtils.getOverDueCalcToHours() + " giờ");
 //								}
 //							}
+							result.setStepOverdue(StringPool.BLANK);
+							//_log.debug(stepDuedate + "========result.getStepOverdue()======="+result.getStepOverdue());
 						}
 					}
 	

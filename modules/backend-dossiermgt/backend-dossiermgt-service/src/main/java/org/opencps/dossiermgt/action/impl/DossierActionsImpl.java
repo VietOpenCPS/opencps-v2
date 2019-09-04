@@ -418,16 +418,16 @@ public class DossierActionsImpl implements DossierActions {
 		List<ProcessAction> processActionList = null;
 		JSONArray results = null;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		User user = UserLocalServiceUtil.fetchUser(userId);
+//		User user = UserLocalServiceUtil.fetchUser(userId);
 
-		List<Role> userRolesAdminCheck = user.getRoles();
+//		List<Role> userRolesAdminCheck = user.getRoles();
 		boolean isAdministratorData = false;
-		for (Role r : userRolesAdminCheck) {
-			if ("Administrator".equalsIgnoreCase(r.getName())) {
-				isAdministratorData = true;
-				break;
-			}
-		}
+//		for (Role r : userRolesAdminCheck) {
+//			if ("Administrator".equalsIgnoreCase(r.getName())) {
+//				isAdministratorData = true;
+//				break;
+//			}
+//		}
 		
 //		_log.info("dossier: "+dossier);
 		try {
@@ -447,25 +447,25 @@ public class DossierActionsImpl implements DossierActions {
 					pending = dossierAction.getPending();
 				}
 
-				if (isAdministratorData) {
-					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
-					if (ac != null) {
-						if (results == null) {
-							results = JSONFactoryUtil.createJSONArray();							
-						}
-						JSONObject data = JSONFactoryUtil.createJSONObject();
-						data.put(ProcessActionTerm.ENABLE, 1);
-						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
-						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
-						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
-						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
-						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
-						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
-						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
-						//
-						results.put(data);						
-					}
-				}
+//				if (isAdministratorData) {
+//					ActionConfig ac = ActionConfigLocalServiceUtil.getByCode(groupId, FIX_DOSSIER_ACTION);
+//					if (ac != null) {
+//						if (results == null) {
+//							results = JSONFactoryUtil.createJSONArray();							
+//						}
+//						JSONObject data = JSONFactoryUtil.createJSONObject();
+//						data.put(ProcessActionTerm.ENABLE, 1);
+//						data.put(ProcessActionTerm.PROCESS_ACTION_ID, ac.getActionCode());
+//						data.put(ProcessActionTerm.ACTION_CODE, FIX_DOSSIER_ACTION);
+//						data.put(ProcessActionTerm.ACTION_NAME, ac.getActionName());
+//						data.put(ProcessActionTerm.PRESTEP_CODE, StringPool.BLANK);
+//						data.put(ProcessActionTerm.POSTSTEP_CODE, StringPool.BLANK);
+//						data.put(ProcessActionTerm.AUTO_EVENT, StringPool.BLANK);
+//						data.put(ProcessActionTerm.PRE_CONDITION, StringPool.BLANK);
+//						//
+//						results.put(data);						
+//					}
+//				}
 
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
