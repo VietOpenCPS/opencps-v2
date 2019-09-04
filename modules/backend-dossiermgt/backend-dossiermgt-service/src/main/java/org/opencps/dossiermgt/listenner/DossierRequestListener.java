@@ -28,7 +28,7 @@ import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = ModelListener.class)
+//@Component(immediate = true, service = ModelListener.class)
 public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 	@Override
 	public void onAfterCreate(DossierRequestUD model) throws ModelListenerException {
