@@ -362,6 +362,35 @@ public interface BookingModel extends BaseModel<Booking>, GroupedModel,
 	 */
 	public void setSpeaking(boolean speaking);
 
+	/**
+	 * Returns the service group code of this booking.
+	 *
+	 * @return the service group code of this booking
+	 */
+	@AutoEscape
+	public String getServiceGroupCode();
+
+	/**
+	 * Sets the service group code of this booking.
+	 *
+	 * @param serviceGroupCode the service group code of this booking
+	 */
+	public void setServiceGroupCode(String serviceGroupCode);
+
+	/**
+	 * Returns the count of this booking.
+	 *
+	 * @return the count of this booking
+	 */
+	public int getCount();
+
+	/**
+	 * Sets the count of this booking.
+	 *
+	 * @param count the count of this booking
+	 */
+	public void setCount(int count);
+
 	@Override
 	public boolean isNew();
 

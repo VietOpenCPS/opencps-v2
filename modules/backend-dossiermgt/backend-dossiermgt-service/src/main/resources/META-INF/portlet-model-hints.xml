@@ -53,6 +53,10 @@
 		<field name="state" type="int" />
 		<field name="bookingDate" type="Date" />
 		<field name="speaking" type="boolean" />
+		<field name="serviceGroupCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="count" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />

@@ -85,7 +85,9 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			{ "gateNumber", Types.VARCHAR },
 			{ "state_", Types.INTEGER },
 			{ "bookingDate", Types.TIMESTAMP },
-			{ "speaking", Types.BOOLEAN }
+			{ "speaking", Types.BOOLEAN },
+			{ "serviceGroupCode", Types.VARCHAR },
+			{ "count", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,9 +110,11 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		TABLE_COLUMNS_MAP.put("state_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("bookingDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("speaking", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("serviceGroupCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("count", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(75) null,count INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_booking";
 	public static final String ORDER_BY_JPQL = " ORDER BY booking.bookingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_booking.bookingId ASC";
@@ -190,6 +194,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		attributes.put("state", getState());
 		attributes.put("bookingDate", getBookingDate());
 		attributes.put("speaking", isSpeaking());
+		attributes.put("serviceGroupCode", getServiceGroupCode());
+		attributes.put("count", getCount());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -305,6 +311,18 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 		if (speaking != null) {
 			setSpeaking(speaking);
+		}
+
+		String serviceGroupCode = (String)attributes.get("serviceGroupCode");
+
+		if (serviceGroupCode != null) {
+			setServiceGroupCode(serviceGroupCode);
+		}
+
+		Integer count = (Integer)attributes.get("count");
+
+		if (count != null) {
+			setCount(count);
 		}
 	}
 
@@ -605,6 +623,31 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	}
 
 	@Override
+	public String getServiceGroupCode() {
+		if (_serviceGroupCode == null) {
+			return "";
+		}
+		else {
+			return _serviceGroupCode;
+		}
+	}
+
+	@Override
+	public void setServiceGroupCode(String serviceGroupCode) {
+		_serviceGroupCode = serviceGroupCode;
+	}
+
+	@Override
+	public int getCount() {
+		return _count;
+	}
+
+	@Override
+	public void setCount(int count) {
+		_count = count;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Booking.class.getName()));
@@ -659,6 +702,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		bookingImpl.setState(getState());
 		bookingImpl.setBookingDate(getBookingDate());
 		bookingImpl.setSpeaking(isSpeaking());
+		bookingImpl.setServiceGroupCode(getServiceGroupCode());
+		bookingImpl.setCount(getCount());
 
 		bookingImpl.resetOriginalValues();
 
@@ -852,12 +897,22 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 		bookingCacheModel.speaking = isSpeaking();
 
+		bookingCacheModel.serviceGroupCode = getServiceGroupCode();
+
+		String serviceGroupCode = bookingCacheModel.serviceGroupCode;
+
+		if ((serviceGroupCode != null) && (serviceGroupCode.length() == 0)) {
+			bookingCacheModel.serviceGroupCode = null;
+		}
+
+		bookingCacheModel.count = getCount();
+
 		return bookingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -895,6 +950,10 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		sb.append(getBookingDate());
 		sb.append(", speaking=");
 		sb.append(isSpeaking());
+		sb.append(", serviceGroupCode=");
+		sb.append(getServiceGroupCode());
+		sb.append(", count=");
+		sb.append(getCount());
 		sb.append("}");
 
 		return sb.toString();
@@ -902,7 +961,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(64);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Booking");
@@ -980,6 +1039,14 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			"<column><column-name>speaking</column-name><column-value><![CDATA[");
 		sb.append(isSpeaking());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serviceGroupCode</column-name><column-value><![CDATA[");
+		sb.append(getServiceGroupCode());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>count</column-name><column-value><![CDATA[");
+		sb.append(getCount());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1017,6 +1084,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	private int _state;
 	private Date _bookingDate;
 	private boolean _speaking;
+	private String _serviceGroupCode;
+	private int _count;
 	private long _columnBitmask;
 	private Booking _escapedModel;
 }

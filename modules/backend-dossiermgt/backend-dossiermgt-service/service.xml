@@ -190,6 +190,8 @@
 		<column name="state" type="int" />
 		<column name="bookingDate" type="Date" />
 		<column name="speaking" type="boolean" />
+		<column name="serviceGroupCode" type="String" />
+		<column name="count" type="int" />
 
 		<!-- Order -->
 
