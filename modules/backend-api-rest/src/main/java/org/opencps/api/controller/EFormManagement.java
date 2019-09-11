@@ -199,5 +199,5 @@ public interface EFormManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getEFormByBarCodeAndSecret(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("eformNo") String eformNo);
+			@Context ServiceContext serviceContext, @PathParam("eFormNo") String eFormNo);
 }

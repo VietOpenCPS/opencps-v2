@@ -945,7 +945,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
-        try {		
+        try {
         	payloadObj.put(
 					"Dossier", JSONFactoryUtil.createJSONObject(
 						JSONFactoryUtil.looseSerialize(dossier)));
@@ -956,6 +956,23 @@ public class CPSDossierBusinessLocalServiceImpl
         		payloadObj.put("actionName", dossierAction.getActionName());
         		payloadObj.put("actionNote", dossierAction.getActionNote());
         	}
+        	//
+			if (payloadObject != null) {
+				Iterator<String> keys = payloadObject.keys();
+				while (keys.hasNext()) {
+					String key = (String) keys.next();
+					if ("complementDate".equalsIgnoreCase(key)) {
+						Long complementDate = payloadObject.getLong("complementDate");
+						if (complementDate != null && complementDate > 0) {
+							String strDate = APIDateTimeUtils.convertDateToString(new Date(complementDate),
+									APIDateTimeUtils._NORMAL_PARTTERN);
+							payloadObj.put(key, strDate);
+						}
+					} else {
+						payloadObj.put(key, payloadObject.getString(key));
+					}
+				}
+			}
         }
         catch (Exception e) {
         	_log.error(e);
