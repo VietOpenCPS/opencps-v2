@@ -19,10 +19,14 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
 import org.opencps.api.deliverable.model.DeliverableUpdateModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
+import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -222,4 +226,38 @@ public interface DeliverablesManagement {
 	public Response resolveConflictDeliverables(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext);	
+	
+	@POST
+	@Path("/deliverables/import/files")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "import deliverable zip file")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return a list Deliverable was imported"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response importDeliverables(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
+	
+	
+	@GET
+	@Path("/deliverables/tests/{id}")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get info formscript for deliverable id")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
+	public Response getFormScript2(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id);
 }
