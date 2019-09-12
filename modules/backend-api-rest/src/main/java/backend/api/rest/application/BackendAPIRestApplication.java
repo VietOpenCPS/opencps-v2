@@ -120,7 +120,6 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
-import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -250,14 +249,20 @@ public class BackendAPIRestApplication extends Application {
 
 	public Response getBarcode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("value") String value, @QueryParam("font") String font) {
+			@Context ServiceContext serviceContext, @QueryParam("value") String value, @QueryParam("font") String font,
+			@QueryParam("location") String location) {
 		try {
 			Code128 barcode = new Code128();
 			barcode.setFontName("Monospaced");
 			barcode.setFontSize(Validator.isNotNull(font) ? Integer.valueOf(font) : ConstantUtils.DEFAULT_FONT_SIZE);
 			barcode.setModuleWidth(2);
 			barcode.setBarHeight(50);
-			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			if (Validator.isNotNull(location) && Boolean.valueOf(location)) {
+				barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+			} else {
+				barcode.setHumanReadableLocation(HumanReadableLocation.NONE);
+			}
+			
 			barcode.setContent(value);
 
 			int width = barcode.getWidth();
