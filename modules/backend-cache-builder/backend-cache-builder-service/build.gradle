@@ -8,11 +8,11 @@ dependencies {
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
 
 	// https://mvnrepository.com/artifact/redis.clients/jedis
-	//compileInclude group: 'redis.clients', name: 'jedis', version: '2.9.0'
+	compileInclude group: 'redis.clients', name: 'jedis', version: '2.9.0'
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-pool2
-	//compileInclude group: 'org.apache.commons', name: 'commons-pool2', version: '2.5.0'
-	//compileInclude group: 'cglib', name: 'cglib', version: '2.2.2'
+	compileInclude group: 'org.apache.commons', name: 'commons-pool2', version: '2.5.0'
+	compileInclude group: 'cglib', name: 'cglib', version: '2.2.2'
 }
 
 buildService {

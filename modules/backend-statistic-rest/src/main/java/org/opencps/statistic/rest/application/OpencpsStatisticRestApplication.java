@@ -43,7 +43,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -142,12 +145,15 @@ public class OpencpsStatisticRestApplication extends Application {
 	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
-	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@BeanParam DossierSearchModel query) {
+	public Response searchDossierStatistic(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierSearchModel query, @Context Request requestCC) {
 
 		//LOG.info("GET DossierStatisticResponse");
 		//_log.info("START DossierStatisticResponse: "+query.getAgency());
-
+		CacheControl cc = new CacheControl();
+	    cc.setMaxAge(60);
+	    cc.setPrivate(true);
+	    
 		int start = query.getStart();
 		int end = query.getEnd();
 		int month = query.getMonth();
@@ -341,7 +347,9 @@ public class OpencpsStatisticRestApplication extends Application {
 						statisticResponse.setAgency(govAgencyCode);
 					}
 
-					return statisticResponse;
+					ResponseBuilder builder = Response.ok(statisticResponse);
+				    builder.cacheControl(cc);
+				    return builder.build();
 				}
 
 			} catch (Exception e) {
@@ -384,7 +392,9 @@ public class OpencpsStatisticRestApplication extends Application {
 					statisticResponse.setAgency(govAgencyCode);
 				}
 
-				return statisticResponse;
+				ResponseBuilder builder = Response.ok(statisticResponse);
+			    builder.cacheControl(cc);
+			    return builder.build();
 			} catch (Exception e) {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();

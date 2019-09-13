@@ -94,6 +94,7 @@ import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -201,6 +202,7 @@ public class RestfulController {
 		return result.toJSONString();
 	}
 
+	@Cacheable
 	@RequestMapping(value = "/users/login", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getUserLoginInfo(HttpServletRequest request, HttpServletResponse response) {

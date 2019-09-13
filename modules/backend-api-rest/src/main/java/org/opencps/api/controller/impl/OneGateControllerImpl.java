@@ -210,7 +210,7 @@ public class OneGateControllerImpl implements OneGateController {
 			results.put("data", data);
 			
 //			_log.info(results.toJSONString());
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+			EntityTag etag = new EntityTag(Integer.toString((groupId + domain).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
 		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
 				builder = Response.status(200);
