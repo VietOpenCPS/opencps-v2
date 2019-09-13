@@ -51,6 +51,8 @@ public class BookingSoap implements Serializable {
 		soapModel.setState(model.getState());
 		soapModel.setBookingDate(model.getBookingDate());
 		soapModel.setSpeaking(model.isSpeaking());
+		soapModel.setServiceGroupCode(model.getServiceGroupCode());
+		soapModel.setCount(model.getCount());
 
 		return soapModel;
 	}
@@ -251,6 +253,22 @@ public class BookingSoap implements Serializable {
 		_speaking = speaking;
 	}
 
+	public String getServiceGroupCode() {
+		return _serviceGroupCode;
+	}
+
+	public void setServiceGroupCode(String serviceGroupCode) {
+		_serviceGroupCode = serviceGroupCode;
+	}
+
+	public int getCount() {
+		return _count;
+	}
+
+	public void setCount(int count) {
+		_count = count;
+	}
+
 	private String _uuid;
 	private long _bookingId;
 	private long _groupId;
@@ -269,4 +287,6 @@ public class BookingSoap implements Serializable {
 	private int _state;
 	private Date _bookingDate;
 	private boolean _speaking;
+	private String _serviceGroupCode;
+	private int _count;
 }

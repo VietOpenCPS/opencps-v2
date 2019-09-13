@@ -42,7 +42,9 @@ create table opencps_booking (
 	gateNumber VARCHAR(75) null,
 	state_ INTEGER,
 	bookingDate DATE null,
-	speaking BOOLEAN
+	speaking BOOLEAN,
+	serviceGroupCode VARCHAR(75) null,
+	count INTEGER
 );
 
 create table opencps_deliverable (

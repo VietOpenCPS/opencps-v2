@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,13 +43,10 @@ import org.opencps.api.eform.model.EFormSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.EFormActions;
+import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.EFormActionsImpl;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.EFormLocalServiceUtil;
@@ -178,7 +174,7 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response getEFromBySecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String eFormNo, String secret) {
 
-		//DossierPermission dossierPermission = new DossierPermission();
+		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -186,21 +182,12 @@ public class EFormManagementImpl implements EFormManagement{
 
 			if (Validator.isNotNull(secret)) {
 				try {
-					EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
+					EForm eForm = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
 
-//					List<Role> userRoles = user.getRoles();
-//					boolean isAdmin = false;
-//					for (Role r : userRoles) {
-//						if (r.getName().startsWith("Administrator")) {
-//							isAdmin = true;
-//							break;
-//						}
-//					}
-//					if (!isAdmin) {
-//						dossierPermission.checkPassword(dossier, secretKey);
-//					}
-					
-					EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
+					//
+					EFormUtils.checkPassword(eForm, secret);
+
+					EFormDataModel result = EFormUtils.mappingForGetDetail(eForm);
 
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
@@ -216,9 +203,9 @@ public class EFormManagementImpl implements EFormManagement{
 					throw new UnauthenticationException();
 				}
 
-				EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
+				EForm eForm = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
 
-				EFormDataModel result = EFormUtils.mappingForGetDetail(eform);
+				EFormDataModel result = EFormUtils.mappingForGetDetail(eForm);
 
 				return Response.status(200).entity(result).build();
 

@@ -94,4 +94,5 @@ public class BookingUtils {
 
 		return model;
 	}
+
 }
