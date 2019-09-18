@@ -1,6 +1,7 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -16,6 +17,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
+import org.opencps.dossiermgt.exception.DossierPasswordException;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
@@ -90,4 +93,14 @@ public class EFormUtils {
 		return model;
 	}
 
+	public static void checkPassword(EForm eForm, String secret) throws PortalException {
+
+		if (Validator.isNull(eForm.getSecret())) {
+			throw new DossierPasswordException("EFormPasswordException");
+		}
+
+		if (!eForm.getSecret().equalsIgnoreCase(secret)) {
+			throw new DossierPasswordException("EFormPasswordException");
+		}
+	}
 }

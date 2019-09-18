@@ -77,6 +77,8 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		attributes.put("state", getState());
 		attributes.put("bookingDate", getBookingDate());
 		attributes.put("speaking", isSpeaking());
+		attributes.put("serviceGroupCode", getServiceGroupCode());
+		attributes.put("count", getCount());
 
 		return attributes;
 	}
@@ -190,6 +192,18 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		if (speaking != null) {
 			setSpeaking(speaking);
 		}
+
+		String serviceGroupCode = (String)attributes.get("serviceGroupCode");
+
+		if (serviceGroupCode != null) {
+			setServiceGroupCode(serviceGroupCode);
+		}
+
+		Integer count = (Integer)attributes.get("count");
+
+		if (count != null) {
+			setCount(count);
+		}
 	}
 
 	@Override
@@ -283,6 +297,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Returns the count of this booking.
+	*
+	* @return the count of this booking
+	*/
+	@Override
+	public int getCount() {
+		return _booking.getCount();
+	}
+
+	/**
 	* Returns the create date of this booking.
 	*
 	* @return the create date of this booking
@@ -350,6 +374,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public String getServiceCode() {
 		return _booking.getServiceCode();
+	}
+
+	/**
+	* Returns the service group code of this booking.
+	*
+	* @return the service group code of this booking
+	*/
+	@Override
+	public String getServiceGroupCode() {
+		return _booking.getServiceGroupCode();
 	}
 
 	/**
@@ -533,6 +567,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Sets the count of this booking.
+	*
+	* @param count the count of this booking
+	*/
+	@Override
+	public void setCount(int count) {
+		_booking.setCount(count);
+	}
+
+	/**
 	* Sets the create date of this booking.
 	*
 	* @param createDate the create date of this booking
@@ -616,6 +660,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public void setServiceCode(String serviceCode) {
 		_booking.setServiceCode(serviceCode);
+	}
+
+	/**
+	* Sets the service group code of this booking.
+	*
+	* @param serviceGroupCode the service group code of this booking
+	*/
+	@Override
+	public void setServiceGroupCode(String serviceGroupCode) {
+		_booking.setServiceGroupCode(serviceGroupCode);
 	}
 
 	/**

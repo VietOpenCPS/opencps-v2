@@ -222,12 +222,12 @@ public class BookingManagementImpl implements BookingManagement{
 	public Response deleteBookingById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 
-		BackendAuth auth = new BackendAuthImpl();
+		//BackendAuth auth = new BackendAuthImpl();
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
+			//if (!auth.isAuth(serviceContext)) {
+			//	throw new UnauthenticationException();
+			//}
 
 			BookingActions actions = new BookingActionsImpl();
 			Booking booking = actions.deleteBookingById(id, serviceContext);

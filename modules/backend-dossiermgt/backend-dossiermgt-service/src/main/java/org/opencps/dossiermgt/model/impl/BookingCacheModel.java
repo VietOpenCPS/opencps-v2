@@ -64,7 +64,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -102,6 +102,10 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		sb.append(bookingDate);
 		sb.append(", speaking=");
 		sb.append(speaking);
+		sb.append(", serviceGroupCode=");
+		sb.append(serviceGroupCode);
+		sb.append(", count=");
+		sb.append(count);
 		sb.append("}");
 
 		return sb.toString();
@@ -199,6 +203,15 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 		bookingImpl.setSpeaking(speaking);
 
+		if (serviceGroupCode == null) {
+			bookingImpl.setServiceGroupCode("");
+		}
+		else {
+			bookingImpl.setServiceGroupCode(serviceGroupCode);
+		}
+
+		bookingImpl.setCount(count);
+
 		bookingImpl.resetOriginalValues();
 
 		return bookingImpl;
@@ -231,6 +244,9 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		bookingDate = objectInput.readLong();
 
 		speaking = objectInput.readBoolean();
+		serviceGroupCode = objectInput.readUTF();
+
+		count = objectInput.readInt();
 	}
 
 	@Override
@@ -304,6 +320,15 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		objectOutput.writeLong(bookingDate);
 
 		objectOutput.writeBoolean(speaking);
+
+		if (serviceGroupCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(serviceGroupCode);
+		}
+
+		objectOutput.writeInt(count);
 	}
 
 	public String uuid;
@@ -324,4 +349,6 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 	public int state;
 	public long bookingDate;
 	public boolean speaking;
+	public String serviceGroupCode;
+	public int count;
 }
