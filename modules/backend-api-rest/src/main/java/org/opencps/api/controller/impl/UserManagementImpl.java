@@ -30,7 +30,9 @@ import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -679,7 +681,7 @@ public class UserManagementImpl implements UserManagement {
 
 	@Override
 	public Response getUserLoginInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, Request requestCC) {
 		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
 
 
@@ -716,16 +718,19 @@ public class UserManagementImpl implements UserManagement {
 			_log.debug(e);
 		}
 
-	    if (OpenCPSConfigUtil.isHttpCacheEnable()) {
-			CacheControl cc = new CacheControl();
-		    cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-		    cc.setPrivate(true);
-		    
-			return Response.status(200).cacheControl(cc).entity(dataUser.toJSONString()).build();	    	
-	    }
-	    else {
-			return Response.status(200).entity(dataUser.toJSONString()).build();	    		    	
-	    }
+		EntityTag etag = new EntityTag(String.valueOf(("USER_LOGIN_INFO_" + user.getGroupId() + "_" + user.getUserId()).hashCode()));
+	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+		cc.setPrivate(true);	
+
+	    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			builder = Response.ok(dataUser.toJSONString());
+			builder.tag(etag);
+		}
+	    
+	    builder.cacheControl(cc);
+	    return builder.build();		
 	}
 
 }
