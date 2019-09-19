@@ -250,21 +250,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(results).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(results).build();
-//			}
 		
-			return Response.status(200).entity(results).build();
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			cc.setPrivate(true);	
+	
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.ok(results);
+				builder.tag(etag);
+			}
+		    
+		    builder.cacheControl(cc);
+		    return builder.build();
+		    
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
