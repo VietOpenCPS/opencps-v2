@@ -153,7 +153,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId + "_" + id).hashCode()));
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
@@ -495,14 +495,14 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 //			result.setValue(content);
 
-			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId + "_" + id + "_" + partNo).hashCode()));
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id + "_" + partNo).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 			cc.setPrivate(true);	
 	
 		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.ok(result);
+				builder = Response.ok(content);
 				builder.tag(etag);
 			}
 		    

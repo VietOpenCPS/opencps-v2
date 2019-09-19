@@ -2529,7 +2529,15 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new Exception("Không tìm thấy hồ sơ");
 			}
 			String serviceCode = dossier.getServiceCode();
-			ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+			ServiceProcess serviceProcess = null;
+			List<DossierAction> listDa = DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
+			if (listDa.size() > 0) {
+				long serviceProcessId = listDa.get(0).getServiceProcessId();
+				serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+			}
+			else {
+				serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());				
+			}
 			if (serviceProcess == null) {
 				throw new Exception("Không tìm thấy hồ sơ");
 			}
