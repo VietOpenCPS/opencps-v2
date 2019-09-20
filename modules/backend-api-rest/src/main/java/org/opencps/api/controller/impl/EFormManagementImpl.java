@@ -590,4 +590,25 @@ public class EFormManagementImpl implements EFormManagement{
 		}
 	}
 
+	@Override
+	public Response getEFormDataByEFormNo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String eFormNo) {
+
+		//BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
+
+			if (eform != null) {
+				return Response.status(200).entity(eform.getEFormData()).build();
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity("No eform exits")
+				.build();
+	}
+
 }

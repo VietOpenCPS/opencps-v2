@@ -4,6 +4,7 @@ create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], com
 create unique index IX_EDA28DB7 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_2B451CAC on opencps_booking (className[$COLUMN_LENGTH:75$], classPK);
+create index IX_D55B8904 on opencps_booking (groupId, serviceCode[$COLUMN_LENGTH:75$]);
 create index IX_915B3B70 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F25BDDF2 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], groupId);
 

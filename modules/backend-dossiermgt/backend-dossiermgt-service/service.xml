@@ -200,10 +200,10 @@
 			<finder-column name="className" />
 			<finder-column name="classPK" />
 		</finder>
-<!-- 		<finder name="F_GID_SC" return-type="Collection"> -->
-<!-- 			<finder-column name="groupId" /> -->
-<!-- 			<finder-column name="serviceCode" /> -->
-<!-- 		</finder> -->
+		<finder name="F_GID_SC_DATE_MAX" return-type="Booking">
+			<finder-column name="groupId" />
+			<finder-column name="serviceCode" />
+		</finder>
 <!-- 		<finder name="F_GID_FORM" return-type="EForm"> -->
 <!-- 			<finder-column name="groupId" /> -->
 <!-- 			<finder-column name="eFormNo" /> -->

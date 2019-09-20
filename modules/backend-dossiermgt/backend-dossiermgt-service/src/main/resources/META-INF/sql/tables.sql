@@ -43,7 +43,7 @@ create table opencps_booking (
 	state_ INTEGER,
 	bookingDate DATE null,
 	speaking BOOLEAN,
-	serviceGroupCode VARCHAR(75) null,
+	serviceGroupCode VARCHAR(255) null,
 	count INTEGER
 );
 

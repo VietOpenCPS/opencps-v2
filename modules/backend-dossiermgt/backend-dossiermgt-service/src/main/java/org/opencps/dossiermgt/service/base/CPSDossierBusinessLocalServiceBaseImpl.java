@@ -32,6 +32,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalService;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
@@ -177,6 +178,24 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	 */
 	public void setBookingPersistence(BookingPersistence bookingPersistence) {
 		this.bookingPersistence = bookingPersistence;
+	}
+
+	/**
+	 * Returns the booking finder.
+	 *
+	 * @return the booking finder
+	 */
+	public BookingFinder getBookingFinder() {
+		return bookingFinder;
+	}
+
+	/**
+	 * Sets the booking finder.
+	 *
+	 * @param bookingFinder the booking finder
+	 */
+	public void setBookingFinder(BookingFinder bookingFinder) {
+		this.bookingFinder = bookingFinder;
 	}
 
 	/**
@@ -2044,6 +2063,8 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.BookingLocalService bookingLocalService;
 	@BeanReference(type = BookingPersistence.class)
 	protected BookingPersistence bookingPersistence;
+	@BeanReference(type = BookingFinder.class)
+	protected BookingFinder bookingFinder;
 	@BeanReference(type = CPSDossierBusinessLocalService.class)
 	protected CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)

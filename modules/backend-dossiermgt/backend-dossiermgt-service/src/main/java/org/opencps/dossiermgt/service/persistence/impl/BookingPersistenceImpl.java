@@ -1726,6 +1726,266 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSNAME_2 = "booking.className = ? AND ";
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSNAME_3 = "(booking.className IS NULL OR booking.className = '') AND ";
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSPK_2 = "booking.classPK = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_SC_DATE_MAX",
+			new String[] { Long.class.getName(), String.class.getName() },
+			BookingModelImpl.GROUPID_COLUMN_BITMASK |
+			BookingModelImpl.SERVICECODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_GID_SC_DATE_MAX",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the booking where groupId = &#63; and serviceCode = &#63; or throws a {@link NoSuchBookingException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceCode the service code
+	 * @return the matching booking
+	 * @throws NoSuchBookingException if a matching booking could not be found
+	 */
+	@Override
+	public Booking findByF_GID_SC_DATE_MAX(long groupId, String serviceCode)
+		throws NoSuchBookingException {
+		Booking booking = fetchByF_GID_SC_DATE_MAX(groupId, serviceCode);
+
+		if (booking == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", serviceCode=");
+			msg.append(serviceCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchBookingException(msg.toString());
+		}
+
+		return booking;
+	}
+
+	/**
+	 * Returns the booking where groupId = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceCode the service code
+	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_GID_SC_DATE_MAX(long groupId, String serviceCode) {
+		return fetchByF_GID_SC_DATE_MAX(groupId, serviceCode, true);
+	}
+
+	/**
+	 * Returns the booking where groupId = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceCode the service code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_GID_SC_DATE_MAX(long groupId, String serviceCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, serviceCode };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+					finderArgs, this);
+		}
+
+		if (result instanceof Booking) {
+			Booking booking = (Booking)result;
+
+			if ((groupId != booking.getGroupId()) ||
+					!Objects.equals(serviceCode, booking.getServiceCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_GROUPID_2);
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				List<Booking> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"BookingPersistenceImpl.fetchByF_GID_SC_DATE_MAX(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Booking booking = list.get(0);
+
+					result = booking;
+
+					cacheResult(booking);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Booking)result;
+		}
+	}
+
+	/**
+	 * Removes the booking where groupId = &#63; and serviceCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceCode the service code
+	 * @return the booking that was removed
+	 */
+	@Override
+	public Booking removeByF_GID_SC_DATE_MAX(long groupId, String serviceCode)
+		throws NoSuchBookingException {
+		Booking booking = findByF_GID_SC_DATE_MAX(groupId, serviceCode);
+
+		return remove(booking);
+	}
+
+	/**
+	 * Returns the number of bookings where groupId = &#63; and serviceCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceCode the service code
+	 * @return the number of matching bookings
+	 */
+	@Override
+	public int countByF_GID_SC_DATE_MAX(long groupId, String serviceCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX;
+
+		Object[] finderArgs = new Object[] { groupId, serviceCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_GROUPID_2);
+
+			boolean bindServiceCode = false;
+
+			if (serviceCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_1);
+			}
+			else if (serviceCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_3);
+			}
+			else {
+				bindServiceCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServiceCode) {
+					qPos.add(serviceCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_GROUPID_2 = "booking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_1 = "booking.serviceCode IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_2 = "booking.serviceCode = ?";
+	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_3 = "(booking.serviceCode IS NULL OR booking.serviceCode = '')";
 
 	public BookingPersistenceImpl() {
 		setModelClass(Booking.class);
@@ -1765,6 +2025,10 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK,
 			new Object[] { booking.getClassName(), booking.getClassPK() },
+			booking);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+			new Object[] { booking.getGroupId(), booking.getServiceCode() },
 			booking);
 
 		booking.resetOriginalValues();
@@ -1853,6 +2117,15 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK, args,
 			bookingModelImpl, false);
+
+		args = new Object[] {
+				bookingModelImpl.getGroupId(), bookingModelImpl.getServiceCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX, args,
+			bookingModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(BookingModelImpl bookingModelImpl,
@@ -1896,6 +2169,31 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CLASS_NAME_PK, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					bookingModelImpl.getGroupId(),
+					bookingModelImpl.getServiceCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+				args);
+		}
+
+		if ((bookingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					bookingModelImpl.getOriginalGroupId(),
+					bookingModelImpl.getOriginalServiceCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
+				args);
 		}
 	}
 

@@ -14,8 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -25,6 +29,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +44,7 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
@@ -128,6 +134,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -429,7 +436,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
 					//Generate document
-					//Generate document
 					String[] documentTypes = ac.getDocumentType().split(",");
 					for (String documentType : documentTypes) {
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
@@ -477,6 +483,62 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 		}
+	}
+
+	private boolean createDossierDocumentPostAction(long groupId, long userId, 
+			Dossier dossier, DossierAction dossierAction, 
+			JSONObject payloadObject, Employee employee, User user, String documentTypeList,
+			ServiceContext context) throws com.liferay.portal.kernel.search.ParseException, JSONException {
+		//Check if generate dossier document
+		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
+			// Generate document
+			String[] documentTypes = documentTypeList.split(",");
+			for (String documentType : documentTypes) {
+				DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
+				if (dt != null) {
+					String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId,
+							dossier.getCompanyId(), dt.getDocumentTypeId());
+					DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
+							dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
+							dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
+
+					// Generate PDF
+					String formData = dossierAction.getPayload();
+					JSONObject payloadTmp = JSONFactoryUtil.createJSONObject(formData);
+					if (payloadTmp != null && payloadTmp.has("complementDate")) {
+						if (payloadTmp.getLong("complementDate") > 0) {
+							Timestamp ts = new Timestamp(payloadTmp.getLong("complementDate"));
+							SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+							payloadTmp.put("complementDate", format.format(ts));
+						}
+					}
+
+					JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
+					formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
+					formDataObj.put("url", context.getPortalURL());
+					if (employee != null) {
+						formDataObj.put("userName", employee.getFullName());
+					} else {
+						formDataObj.put("userName", user.getFullName());
+					}
+
+					Message message = new Message();
+					// _log.info("Document script: " + dt.getDocumentScript());
+					JSONObject msgData = JSONFactoryUtil.createJSONObject();
+					msgData.put("className", DossierDocument.class.getName());
+					msgData.put("classPK", dossierDocument.getDossierDocumentId());
+					msgData.put("jrxmlTemplate", dt.getDocumentScript());
+					msgData.put("formData", formDataObj.toJSONString());
+					msgData.put("userId", userId);
+
+					message.put("msgToEngine", msgData);
+					MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+
+					payloadObject.put("dossierDocument", dossierDocument.getDossierDocumentId());
+				}
+			}
+		}
+		return true;
 	}
 	
 	private void createDossierSync(long groupId, long userId, ActionConfig actionConfig, ProcessAction proAction, DossierAction dossierAction, Dossier dossier, int syncType, 
@@ -664,11 +726,11 @@ public class CPSDossierBusinessLocalServiceImpl
 		}		
 	}
 	
-	private DossierAction createActionAndAssignUser(long groupId, long userId, ProcessStep curStep, ActionConfig actionConfig,
-			DossierAction dossierAction,
-			DossierAction previousAction, ProcessAction proAction, Dossier dossier, 
-			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
-			String payment, ServiceProcess serviceProcess, ProcessOption option, Map<String, Boolean> flagChanged, ServiceContext context) throws PortalException {
+	private DossierAction createActionAndAssignUser(long groupId, long userId, ProcessStep curStep,
+			ActionConfig actionConfig, DossierAction dossierAction, DossierAction previousAction,
+			ProcessAction proAction, Dossier dossier, String actionCode, String actionUser, String actionNote,
+			String payload, String assignUsers, String payment, ServiceProcess serviceProcess, ProcessOption option,
+			Map<String, Boolean> flagChanged, Integer dateOption, ServiceContext context) throws PortalException {
 		int actionOverdue = getActionDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), proAction.getProcessActionId());
 		String actionName = proAction.getActionName();
 		String prevStatus = dossier.getDossierStatus();
@@ -737,7 +799,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK, curStep.getLockState(), dossierNote, context);
 			
 			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
-			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep, dossier, curStatus, curSubStatus, prevStatus, actionConfig, option, serviceProcess, context);
+			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
+					dossier, curStatus, curSubStatus, prevStatus,
+					dateOption != null ? dateOption : actionConfig.getDateOption(), option, serviceProcess, context);
 			for (Map.Entry<String, Boolean> entry : resultFlagChanged.entrySet()) {
 				flagChanged.put(entry.getKey(), entry.getValue());
 			}
@@ -842,6 +906,120 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			String postStepCode = proAction.getPostStepCode();
 			
+			String postAction = proAction.getPostAction();
+			boolean flagDocument = false;
+			Integer dateOption = null;
+			String documentTypeList = StringPool.BLANK;
+			if (Validator.isNotNull(postAction)) {
+				JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
+				if (jsonPostData != null) {
+					JSONObject jsonDocument = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CREATE_DOCUMENT"));
+					if (jsonDocument != null && jsonDocument.has("documentType")) {
+						documentTypeList = jsonDocument.getString("documentType");
+						flagDocument = true;
+					}
+					JSONObject jsonChangeDate = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CHANGE_DATE"));
+					if (jsonChangeDate != null && jsonChangeDate.has("dateOption")) {
+						String strDateOption = jsonChangeDate.getString("dateOption");
+						if (Validator.isNotNull(strDateOption)) {
+							dateOption = Integer.valueOf(strDateOption);
+						}
+					}
+					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CALL_API"));
+					if (jsonCallAPI != null) {
+						String serverNo = jsonCallAPI.getString("serverNo");
+						if (Validator.isNotNull(serverNo)) {
+							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+							if (serverConfig != null) {
+								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+								//
+								String method = configObj.getString("method");
+								//params
+								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(configObj.getString("params"));
+								if (jsonParams != null) {
+									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(jsonParams.getString("header"));
+									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(jsonParams.getString("body"));
+									
+									
+									String serverUrl = StringPool.BLANK;
+									String authStrEnc = StringPool.BLANK;
+									String apiUrl = StringPool.BLANK;
+									StringBuilder sb = new StringBuilder();
+//									try {
+//										URL urlVal = null;
+//										String groupIdRequest = StringPool.BLANK;
+//										StringBuilder postData = new StringBuilder();
+//										Iterator<?> keys = jsonBody.keys();
+//										while (keys.hasNext()) {
+//											String key = (String) keys.next();
+//											if (!"".equals(postData.toString())) {
+//												postData.append("&");
+//											}
+//											postData.append(key);
+//											postData.append("=");
+//											postData.append(jsonBody.get(key));
+//										}
+//
+//										if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+//												&& configObj.has(SyncServerTerm.SERVER_SECRET)
+//												&& configObj.has(SyncServerTerm.SERVER_URL)
+//												&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+//											authStrEnc = Base64.getEncoder()
+//													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+//															+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET))
+//																	.getBytes());
+//
+//											serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+//											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+//										}
+//
+//										//apiUrl = serverUrl + url;
+//										apiUrl = serverUrl;
+//										if ("GET".equals(method)) {
+//											urlVal = new URL(apiUrl + "?" + postData.toString());
+//										} else {
+//											urlVal = new URL(apiUrl);
+//										}
+//										_log.debug("API URL: " + apiUrl);
+//										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+//												.openConnection();
+//										conn.setRequestProperty("groupId", groupIdRequest);
+//										conn.setRequestMethod(method);
+//										conn.setRequestProperty("Accept", "application/json");
+//										conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+//										_log.debug("BASIC AUTHEN: " + authStrEnc);
+//										if ("POST".equals(method) || "PUT".equals(method)) {
+//											conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//											conn.setRequestProperty("Content-Length",
+//													"" + Integer.toString(postData.toString().getBytes().length));
+//
+//											conn.setUseCaches(false);
+//											conn.setDoInput(true);
+//											conn.setDoOutput(true);
+//											_log.debug("POST DATA: " + postData.toString());
+//											OutputStream os = conn.getOutputStream();
+//											os.write(postData.toString().getBytes());
+//											os.close();
+//										}
+//
+//										BufferedReader brf = new BufferedReader(
+//												new InputStreamReader(conn.getInputStream()));
+//
+//										int cp;
+//										while ((cp = brf.read()) != -1) {
+//											sb.append((char) cp);
+//										}
+//										_log.debug("RESULT PROXY: " + sb.toString());
+//										//return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
+//									} catch (IOException e) {
+//										_log.debug("Something went wrong while reading/writing in stream!!");
+//									}
+								}
+							}
+						}
+					}
+				}
+			}
 			//Xử lý phiếu thanh toán
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 			
@@ -876,13 +1054,20 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			
 			//Cập nhật hành động và quyền người dùng với hồ sơ
-			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction, previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers, paymentFee, serviceProcess, option, flagChanged, context);
+			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
+					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
+					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 			
 //			dossier = dossierLocalService.updateDossier(dossier);
 			
 			//Tạo văn bản đính kèm
 			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
-				createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject, employee, user, context);
+				if (!flagDocument) {
+					createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject, employee, user, context);
+				} else {
+				createDossierDocumentPostAction(groupId, userId, dossier, dossierAction,
+						payloadObject, employee, user, documentTypeList, context);
+				}
 			}
 			
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
@@ -1916,7 +2101,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	}		
 	
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction, ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus, 
-			ActionConfig actionConfig,
+			int dateOption,
 			ProcessOption option,
 			ServiceProcess serviceProcess,
 			ServiceContext context) {
@@ -1973,7 +2158,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
-				|| (actionConfig != null && actionConfig.getDateOption() == 2))
+				|| (dateOption == 2))
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -2023,7 +2208,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		//Update counter and dossierNo
-		if (actionConfig != null && actionConfig.getDateOption() == 2) {
+		if (dateOption == 2) {
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
@@ -2062,7 +2247,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)
-				|| (actionConfig != null && actionConfig.getDateOption() == 4)
+				|| (dateOption == 4)
 				) {
 			if (Validator.isNull(dossier.getReleaseDate())) {
 //				try {
@@ -2100,7 +2285,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				|| DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_UNRESOLVED.equals(curStatus)
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(curStatus)				
-				|| (actionConfig != null && actionConfig.getDateOption() == 5)) {
+				|| (dateOption == 5)) {
 			if (Validator.isNull(dossier.getFinishDate())) {
 //				try {
 //					DossierLocalServiceUtil.updateFinishDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -2155,7 +2340,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
 		}
 		
-		int dateOption = actionConfig.getDateOption();
+		//int dateOption = actionConfig.getDateOption();
 		_log.debug("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 			DossierAction dActEnd = dossierActionLocalService
