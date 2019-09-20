@@ -93,6 +93,7 @@
 		<field name="fileEntryId" type="long" />
 		<field name="dossierId" type="long" />
 		<field name="docSync" type="int" />
+		<field name="fileAttachs" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableLog">
 		<field name="uuid" type="String" />
@@ -114,6 +115,7 @@
 		<field name="payload" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="fileEntryId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableType">
 		<field name="uuid" type="String" />

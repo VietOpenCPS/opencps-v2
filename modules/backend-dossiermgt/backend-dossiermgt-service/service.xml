@@ -2033,6 +2033,7 @@
 		<column name="fileEntryId" type="long" />
 		<column name="dossierId" type="long" />
 		<column name="docSync" type="int" />
+		<column name="fileAttachs" type="String" />
 
 		<finder return-type="Deliverable" name="DID">
 			<finder-column name="deliverableId" />
@@ -2091,6 +2092,7 @@
 		<column name="deliverableAction" type="int" />
 		<column name="actionDate" type="Date" />
 		<column name="payload" type="String" />
+		<column name="fileEntryId" type="long" />
 		
 <!-- 		<finder return-type="DeliverableLog" name="G_DIDL"> -->
 <!-- 			<finder-column name="gropuId" /> -->

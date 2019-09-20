@@ -43,7 +43,7 @@ create table opencps_booking (
 	state_ INTEGER,
 	bookingDate DATE null,
 	speaking BOOLEAN,
-	serviceGroupCode VARCHAR(75) null,
+	serviceGroupCode VARCHAR(255) null,
 	count INTEGER
 );
 
@@ -75,7 +75,8 @@ create table opencps_deliverable (
 	deliverableState INTEGER,
 	fileEntryId LONG,
 	dossierId LONG,
-	docSync INTEGER
+	docSync INTEGER,
+	fileAttachs VARCHAR(75) null
 );
 
 create table opencps_deliverablelog (
@@ -93,7 +94,8 @@ create table opencps_deliverablelog (
 	content TEXT null,
 	deliverableAction INTEGER,
 	actionDate DATE null,
-	payload TEXT null
+	payload TEXT null,
+	fileEntryId LONG
 );
 
 create table opencps_deliverabletype (

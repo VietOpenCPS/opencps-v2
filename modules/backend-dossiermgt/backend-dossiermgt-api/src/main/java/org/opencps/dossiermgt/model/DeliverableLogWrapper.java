@@ -75,6 +75,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 		attributes.put("deliverableAction", getDeliverableAction());
 		attributes.put("actionDate", getActionDate());
 		attributes.put("payload", getPayload());
+		attributes.put("fileEntryId", getFileEntryId());
 
 		return attributes;
 	}
@@ -169,6 +170,12 @@ public class DeliverableLogWrapper implements DeliverableLog,
 
 		if (payload != null) {
 			setPayload(payload);
+		}
+
+		Long fileEntryId = (Long)attributes.get("fileEntryId");
+
+		if (fileEntryId != null) {
+			setFileEntryId(fileEntryId);
 		}
 	}
 
@@ -275,6 +282,16 @@ public class DeliverableLogWrapper implements DeliverableLog,
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _deliverableLog.getExpandoBridge();
+	}
+
+	/**
+	* Returns the file entry ID of this deliverable log.
+	*
+	* @return the file entry ID of this deliverable log
+	*/
+	@Override
+	public long getFileEntryId() {
+		return _deliverableLog.getFileEntryId();
 	}
 
 	/**
@@ -496,6 +513,16 @@ public class DeliverableLogWrapper implements DeliverableLog,
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
 		_deliverableLog.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets the file entry ID of this deliverable log.
+	*
+	* @param fileEntryId the file entry ID of this deliverable log
+	*/
+	@Override
+	public void setFileEntryId(long fileEntryId) {
+		_deliverableLog.setFileEntryId(fileEntryId);
 	}
 
 	/**
