@@ -21,7 +21,7 @@ public class BookingTerm {
 	public static final String BOOKING_DATE_LUCENE = "bookingDateLucene";
 	public static final String FROM_CREATE_DATE = "fromCreateDate";
 	public static final String TO_CREATE_DATE = "toCreateDate";
-	public static final String FROM_BOOKING_DATE = "fromBookingDate";
-	public static final String TO_BOOKING_DATE = "toBookingDate";
+	public static final String FROM_CHECK_IN_DATE = "fromCheckinDate";
+	public static final String TO_CHECK_IN_DATE = "toCheckinDate";
 	public static final String SPEAKING = "speaking";
 }

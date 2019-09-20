@@ -258,9 +258,9 @@ public class BackendAPIRestApplication extends Application {
 			barcode.setModuleWidth(2);
 			barcode.setBarHeight(50);
 			if (Validator.isNotNull(location) && Boolean.valueOf(location)) {
-				barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
-			} else {
 				barcode.setHumanReadableLocation(HumanReadableLocation.NONE);
+			} else {
+				barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
 			}
 			
 			barcode.setContent(value);

@@ -26,7 +26,9 @@ import javax.xml.bind.annotation.XmlType;
     "gateNumber",
     "state",
     "bookingDate",
-    "speaking"
+    "speaking",
+    "serviceGroupCode",
+    "count"
 })
 @XmlRootElement(name = "BookingDataModel")
 public class BookingDataModel {
@@ -44,6 +46,8 @@ public class BookingDataModel {
 	protected Integer state;
 	protected Long bookingDate;
 	protected boolean speaking;
+	protected String serviceGroupCode;
+	protected Integer count;
 
 	public Long getBookingId() {
 		return bookingId;
@@ -122,6 +126,18 @@ public class BookingDataModel {
 	}
 	public void setSpeaking(boolean speaking) {
 		this.speaking = speaking;
+	}
+	public String getServiceGroupCode() {
+		return serviceGroupCode;
+	}
+	public void setServiceGroupCode(String serviceGroupCode) {
+		this.serviceGroupCode = serviceGroupCode;
+	}
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 
 }

@@ -53,12 +53,14 @@ public class BookingActionsImpl implements BookingActions {
 	@Override
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, ServiceContext serviceContext) {
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode,
+			ServiceContext serviceContext) {
 
 		try {
 
 			return BookingLocalServiceUtil.updateBooking(userId, groupId, bookingId, className, classPK, serviceCode,
-					codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceContext);
+					codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceGroupCode,
+					serviceContext);
 		} catch (Exception e) {
 			_log.debug(e);
 		}

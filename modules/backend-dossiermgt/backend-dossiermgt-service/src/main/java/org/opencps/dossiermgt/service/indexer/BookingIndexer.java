@@ -107,6 +107,8 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 			}
 
 			document.addTextSortable(BookingTerm.SPEAKING, String.valueOf(object.getSpeaking()));
+			document.addTextSortable("serviceGroupCode", object.getServiceGroupCode());
+			document.addNumberSortable("count", object.getCount());
 
 		} catch (Exception e) {
 			_log.error(e);

@@ -63,6 +63,8 @@ public class BookingUtils {
 					model.setBookingDate(0l);
 				}
 				model.setSpeaking(Boolean.valueOf(doc.get(BookingTerm.SPEAKING)));
+				model.setServiceGroupCode(doc.get("serviceGroupCode"));
+				model.setCount(Integer.valueOf(Validator.isNotNull(doc.get("count")) ? doc.get("count") : "0"));
 
 				ouputs.add(model);
 			}
@@ -91,6 +93,8 @@ public class BookingUtils {
 		model.setState(input.getState());
 		model.setBookingDate(input.getBookingDate() != null ? input.getBookingDate().getTime() : 0l);
 		model.setSpeaking(input.getSpeaking());
+		model.setServiceGroupCode(input.getServiceGroupCode());
+		model.setCount(input.getCount());
 
 		return model;
 	}

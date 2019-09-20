@@ -57,7 +57,8 @@ import javax.xml.bind.annotation.XmlType;
     "to",
     "bookingFrom",
     "bookingTo",
-    "gateNumber"
+    "gateNumber",
+    "checkinDate"
 })
 @XmlRootElement(name = "BookingSearchModel")
 public class BookingSearchModel {
@@ -88,6 +89,8 @@ public class BookingSearchModel {
 	protected String bookingTo;
 	@QueryParam(value = "gateNumber")
 	protected String gateNumber;
+	@QueryParam(value = "checkinDate")
+	protected String checkinDate;
 
 	public String getKeyword() {
 		return keyword;
@@ -160,6 +163,12 @@ public class BookingSearchModel {
 	}
 	public void setGateNumber(String gateNumber) {
 		this.gateNumber = gateNumber;
+	}
+	public String getCheckinDate() {
+		return checkinDate;
+	}
+	public void setCheckinDate(String checkinDate) {
+		this.checkinDate = checkinDate;
 	}
 
 }
