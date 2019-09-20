@@ -117,15 +117,24 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response getServerConfigDetail(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
+		
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
 		try {
-			if (!auth.isAuth(serviceContext)) {
+			boolean checkAuth = true;
+			long serverId = GetterUtil.getLong(id);
+			ServerConfig config = null;
+			if (serverId == 0) {
+				config = ServerConfigLocalServiceUtil.getByCode(groupId,  id);
+				if (config != null && "MULTIMEDIA".equalsIgnoreCase(config.getProtocol())) {
+					checkAuth = false;
+				}
+			}
+
+			if (checkAuth && !auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			ServerConfig config = null;
-			long serverId = GetterUtil.getLong(id);
 
 			if (serverId != 0) {
 				config = ServerConfigLocalServiceUtil.fetchServerConfig(serverId);
@@ -133,9 +142,6 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				if (Validator.isNull(config)) {
 					config = ServerConfigLocalServiceUtil.getByCode(groupId, id);
 				}
-
-			} else {
-				config = ServerConfigLocalServiceUtil.getByCode(groupId,  id);
 
 			}
 

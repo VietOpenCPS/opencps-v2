@@ -114,7 +114,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		TABLE_COLUMNS_MAP.put("count", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(75) null,count INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(255) null,count INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_booking";
 	public static final String ORDER_BY_JPQL = " ORDER BY booking.bookingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_booking.bookingId ASC";
@@ -134,8 +134,9 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	public static final long CLASSPK_COLUMN_BITMASK = 2L;
 	public static final long COMPANYID_COLUMN_BITMASK = 4L;
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long BOOKINGID_COLUMN_BITMASK = 32L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long BOOKINGID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Booking"));
 
@@ -529,7 +530,17 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public void setServiceCode(String serviceCode) {
+		_columnBitmask |= SERVICECODE_COLUMN_BITMASK;
+
+		if (_originalServiceCode == null) {
+			_originalServiceCode = _serviceCode;
+		}
+
 		_serviceCode = serviceCode;
+	}
+
+	public String getOriginalServiceCode() {
+		return GetterUtil.getString(_originalServiceCode);
 	}
 
 	@Override
@@ -783,6 +794,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		bookingModelImpl._originalClassPK = bookingModelImpl._classPK;
 
 		bookingModelImpl._setOriginalClassPK = false;
+
+		bookingModelImpl._originalServiceCode = bookingModelImpl._serviceCode;
 
 		bookingModelImpl._columnBitmask = 0;
 	}
@@ -1077,6 +1090,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	private long _originalClassPK;
 	private boolean _setOriginalClassPK;
 	private String _serviceCode;
+	private String _originalServiceCode;
 	private String _codeNumber;
 	private String _bookingName;
 	private Date _checkinDate;

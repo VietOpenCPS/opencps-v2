@@ -556,6 +556,71 @@ public class BookingUtil {
 	}
 
 	/**
+	* Returns the booking where groupId = &#63; and serviceCode = &#63; or throws a {@link NoSuchBookingException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serviceCode the service code
+	* @return the matching booking
+	* @throws NoSuchBookingException if a matching booking could not be found
+	*/
+	public static Booking findByF_GID_SC_DATE_MAX(long groupId,
+		String serviceCode)
+		throws org.opencps.dossiermgt.exception.NoSuchBookingException {
+		return getPersistence().findByF_GID_SC_DATE_MAX(groupId, serviceCode);
+	}
+
+	/**
+	* Returns the booking where groupId = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceCode the service code
+	* @return the matching booking, or <code>null</code> if a matching booking could not be found
+	*/
+	public static Booking fetchByF_GID_SC_DATE_MAX(long groupId,
+		String serviceCode) {
+		return getPersistence().fetchByF_GID_SC_DATE_MAX(groupId, serviceCode);
+	}
+
+	/**
+	* Returns the booking where groupId = &#63; and serviceCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serviceCode the service code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching booking, or <code>null</code> if a matching booking could not be found
+	*/
+	public static Booking fetchByF_GID_SC_DATE_MAX(long groupId,
+		String serviceCode, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_SC_DATE_MAX(groupId, serviceCode,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the booking where groupId = &#63; and serviceCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serviceCode the service code
+	* @return the booking that was removed
+	*/
+	public static Booking removeByF_GID_SC_DATE_MAX(long groupId,
+		String serviceCode)
+		throws org.opencps.dossiermgt.exception.NoSuchBookingException {
+		return getPersistence().removeByF_GID_SC_DATE_MAX(groupId, serviceCode);
+	}
+
+	/**
+	* Returns the number of bookings where groupId = &#63; and serviceCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serviceCode the service code
+	* @return the number of matching bookings
+	*/
+	public static int countByF_GID_SC_DATE_MAX(long groupId, String serviceCode) {
+		return getPersistence().countByF_GID_SC_DATE_MAX(groupId, serviceCode);
+	}
+
+	/**
 	* Caches the booking in the entity cache if it is enabled.
 	*
 	* @param booking the booking

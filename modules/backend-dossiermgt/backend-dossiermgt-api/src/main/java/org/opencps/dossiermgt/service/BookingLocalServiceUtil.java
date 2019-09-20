@@ -342,12 +342,12 @@ public class BookingLocalServiceUtil {
 		long classPK, String serviceCode, String codeNumber,
 		String bookingName, String gateNumber, Integer state,
 		java.util.Date checkinDate, java.util.Date bookingDate,
-		boolean speaking,
+		boolean speaking, String serviceGroupCode,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .updateBooking(userId, groupId, bookingId, className,
 			classPK, serviceCode, codeNumber, bookingName, gateNumber, state,
-			checkinDate, bookingDate, speaking, serviceContext);
+			checkinDate, bookingDate, speaking, serviceGroupCode, serviceContext);
 	}
 
 	public static BookingLocalService getService() {
