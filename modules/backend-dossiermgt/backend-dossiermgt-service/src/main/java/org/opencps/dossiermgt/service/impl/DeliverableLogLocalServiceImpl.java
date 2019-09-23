@@ -29,31 +29,26 @@ import org.opencps.dossiermgt.service.base.DeliverableLogLocalServiceBaseImpl;
 import aQute.bnd.annotation.ProviderType;
 
 /**
- * The implementation of the deliverable log local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
+ * The implementation of the deliverable log local service. <p> All custom
+ * service methods should be put in this class. Whenever methods are added,
+ * rerun ServiceBuilder to copy their definitions into the
  * {@link org.opencps.dossiermgt.service.DeliverableLogLocalService} interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security
+ * <p> This is a local service. Methods of this service will not have security
  * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
- * </p>
+ * be accessed from within the same VM. </p>
  *
  * @author huymq
  * @see DeliverableLogLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil
  */
 @ProviderType
-public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBaseImpl {
+public class DeliverableLogLocalServiceImpl
+	extends DeliverableLogLocalServiceBaseImpl {
+
 	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil} to access the
-	 * deliverable log local service.
+	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
+	 * {@link org.opencps.dossiermgt.service.DeliverableLogLocalServiceUtil} to
+	 * access the deliverable log local service.
 	 */
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
@@ -63,7 +58,8 @@ public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBa
 
 		if (Validator.isNull(object)) {
 			return null;
-		} else {
+		}
+		else {
 			deliverableLogPersistence.remove(object);
 		}
 
@@ -77,13 +73,16 @@ public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBa
 
 		if (objectData.getLong("deliverableLogId") > 0) {
 
-			object = deliverableLogPersistence.fetchByPrimaryKey(objectData.getLong("deliverableLogId"));
+			object = deliverableLogPersistence.fetchByPrimaryKey(
+				objectData.getLong("deliverableLogId"));
 
 			object.setModifiedDate(new Date());
 
-		} else {
+		}
+		else {
 
-			long id = CounterLocalServiceUtil.increment(DeliverableLog.class.getName());
+			long id = CounterLocalServiceUtil.increment(
+				DeliverableLog.class.getName());
 
 			object = deliverableLogPersistence.create(id);
 
@@ -103,14 +102,18 @@ public class DeliverableLogLocalServiceImpl extends DeliverableLogLocalServiceBa
 		object.setDeliverableAction(objectData.getInt("deliverableAction"));
 		object.setActionDate(new Date(objectData.getLong("actionDate")));
 		object.setPayload(objectData.getString("payload"));
+		object.setFileEntryId(objectData.getLong("fileEntryId"));
 
 		deliverableLogPersistence.update(object);
 
 		return object;
 	}
-	
-	public List<DeliverableLog> findByF_deliverableId(long deliverableId, int start, int end) {
-		return deliverableLogPersistence.findByF_deliverableId(deliverableId, start, end);
+
+	public List<DeliverableLog> findByF_deliverableId(
+		long deliverableId, int start, int end) {
+
+		return deliverableLogPersistence.findByF_deliverableId(
+			deliverableId, start, end);
 	}
-	
+
 }

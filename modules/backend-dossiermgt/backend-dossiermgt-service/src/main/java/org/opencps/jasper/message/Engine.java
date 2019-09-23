@@ -211,12 +211,13 @@ public class Engine implements MessageListener {
 //							}
 //						}
 
+						System.out.println("==========addDossierByDeliverable=========" + deliverable.getDeliverableCode());
 						DossierFileLocalServiceUtil.addDossierByDeliverable(dossierFile.getGroupId(),
 								dossierFile.getCompanyId(), dossierFile.getUserId(), dossierFile.getUserName(),
 								dossierFile.getDossierId(), StringPool.BLANK, dossierFile.getDossierTemplateNo(),
 								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
 								dossierFile.getFileTemplateNo(), fileEntry.getFileName(), dossierFile.getFormData(),
-								fileEntryId, dossierFile.getOriginal(), false, false, false, StringPool.BLANK);
+								fileEntryId, dossierFile.getOriginal(), false, false, false, deliverable.getDeliverableCode());
 					}
 				}
 			}

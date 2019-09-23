@@ -1,37 +1,19 @@
 
 package org.opencps.api.controller.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.util.DeliverableUtils;
-import org.opencps.api.controller.util.ImportDataUtils;
-import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.controller.util.OneGateUtils;
-import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.deliverable.model.DeliverableSearchModel;
@@ -73,7 +55,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-import io.swagger.annotations.ApiParam;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
@@ -719,6 +700,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		return Response.status(200).entity("{}").build();
 	}
 
+	@Override
 	public Response importDeliverables(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
@@ -746,11 +728,11 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				GetterUtil.getLong(header.getHeaderString("groupId"));
 			long userId = user.getUserId();
 
-			List<Deliverable> deliverables =
-				DeliverableUtils.readWorkBooksDeliverabe(
-					file, userId, groupId, serviceContext);
-
-			result.put("total", deliverables.size());
+			// List<Deliverable> deliverables =
+			// DeliverableUtils.readWorkBooksDeliverabe(
+			// file, userId, groupId, serviceContext);
+			//
+			// result.put("total", deliverables.size());
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
@@ -758,39 +740,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-	}
-
-	JSONObject convertRowToDeliverable(Row currentRow) {
-
-		JSONObject jsonData = JSONFactoryUtil.createJSONObject();
-		try {
-			currentRow.getCell(1).setCellType(CellType.STRING);
-			currentRow.getCell(2).setCellType(CellType.STRING);
-			currentRow.getCell(3).setCellType(CellType.STRING);
-			currentRow.getCell(4).setCellType(CellType.STRING);
-			currentRow.getCell(5).setCellType(CellType.STRING);
-			currentRow.getCell(6).setCellType(CellType.STRING);
-			jsonData.put(
-				"domain", currentRow.getCell(1).getStringCellValue().trim());
-			jsonData.put(
-				"question", currentRow.getCell(2).getStringCellValue().trim());
-			jsonData.put(
-				"answer", currentRow.getCell(3).getStringCellValue().trim());
-			jsonData.put(
-				"subDomain", currentRow.getCell(4).getStringCellValue().trim());
-			jsonData.put(
-				"govAgencyCode",
-				currentRow.getCell(5).getStringCellValue().trim());
-			jsonData.put(
-				"govAgencyName",
-				currentRow.getCell(6).getStringCellValue().trim());
-
-		}
-		catch (Exception e) {
-			_log.error(e);
-		}
-
-		return jsonData;
 	}
 
 	@Override
@@ -818,6 +767,85 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 
+	}
+
+	@Override
+	public Response importDeliverables2(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		Attachment file, String deliverableType) {
+
+		try {
+
+			System.out.println(
+				"================POST===========================" +
+					deliverableType + " " + file);
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNull(deliverableType) || Validator.isNull(file)) {
+				return Response.status(204).entity(
+					JSONFactoryUtil.looseSerialize(result)).build();
+			}
+
+			BackendAuth auth = new BackendAuthImpl();
+			backend.auth.api.BackendAuth auth2 =
+				new backend.auth.api.BackendAuthImpl();
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (!auth2.isAdmin(serviceContext, "admin")) {
+				// return Response.status(
+				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
+				// "User not permission process!").build();
+			}
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString("groupId"));
+			long userId = user.getUserId();
+			long companyId = user.getCompanyId();
+			String userName = user.getFullName();
+
+			DataHandler dataHandle = file.getDataHandler();
+			JSONArray deliverables = DeliverableUtils.readExcelDeliverable(
+				dataHandle.getInputStream());
+
+			int size = 0;
+			for (int i = 0; i < deliverables.length(); i++) {
+
+				JSONObject deliverable = deliverables.getJSONObject(i);
+
+				if (Validator.isNotNull(deliverable.get("deliverableCode"))) {
+
+					Deliverable deliverableObj =
+						DeliverableLocalServiceUtil.getByF_GID_DCODE(
+							groupId, deliverable.getString("deliverableCode"));
+
+					deliverable.put(
+						"deliverableId", Validator.isNotNull(deliverableObj)
+							? deliverableObj.getDeliverableId() : 0);
+					deliverable.put("groupId", groupId);
+					deliverable.put("userId", userId);
+					deliverable.put("companyId", companyId);
+					deliverable.put("userName", userName);
+					deliverable.put("deliverableType", deliverableType);
+					deliverable.put("fileAttach", false);
+					deliverableObj =
+						DeliverableLocalServiceUtil.adminProcessData(
+							deliverable);
+					System.out.println("add================" + deliverable);
+					size += 1;
+				}
+			}
+
+			result.put("total", size);
+
+			return Response.status(200).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }

@@ -312,6 +312,20 @@ public interface DeliverableLogModel extends BaseModel<DeliverableLog>,
 	 */
 	public void setPayload(String payload);
 
+	/**
+	 * Returns the file entry ID of this deliverable log.
+	 *
+	 * @return the file entry ID of this deliverable log
+	 */
+	public long getFileEntryId();
+
+	/**
+	 * Sets the file entry ID of this deliverable log.
+	 *
+	 * @param fileEntryId the file entry ID of this deliverable log
+	 */
+	public void setFileEntryId(long fileEntryId);
+
 	@Override
 	public boolean isNew();
 

@@ -83,53 +83,54 @@ import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import aQute.bnd.annotation.ProviderType;
 
 /**
- * The implementation of the deliverable local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
- * {@link org.opencps.dossiermgt.service.DeliverableLocalService} interface.
- *
- * <p>
+ * The implementation of the deliverable local service. <p> All custom service
+ * methods should be put in this class. Whenever methods are added, rerun
+ * ServiceBuilder to copy their definitions into the
+ * {@link org.opencps.dossiermgt.service.DeliverableLocalService} interface. <p>
  * This is a local service. Methods of this service will not have security
  * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
- * </p>
+ * be accessed from within the same VM. </p>
  *
  * @author huymq
  * @see DeliverableLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.DeliverableLocalServiceUtil
  */
 @ProviderType
-public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl {
+public class DeliverableLocalServiceImpl
+	extends DeliverableLocalServiceBaseImpl {
 	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link
-	 * org.opencps.dossiermgt.service.DeliverableLocalServiceUtil} to access the
-	 * deliverable local service.
+	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
+	 * {@link org.opencps.dossiermgt.service.DeliverableLocalServiceUtil} to
+	 * access the deliverable local service.
 	 */
 
 	public Deliverable getByCode(String deliverableCode) {
+
 		return deliverablePersistence.fetchByFB_DCODE(deliverableCode);
 	}
 
 	public Deliverable fetchByGID_DID(long groupId, long dossierId) {
+
 		return deliverablePersistence.fetchByF_GID_DID(groupId, dossierId);
 	}
 
-	public List<Deliverable> getListDeliverable(int deliverableState, String govAgencyCode, String deliverableType,
-			String applicant) {
-		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(deliverableState, govAgencyCode,
-				deliverableType, applicant);
+	public List<Deliverable> getListDeliverable(
+		int deliverableState, String govAgencyCode, String deliverableType,
+		String applicant) {
+
+		List<Deliverable> listDeliverable = deliverablePersistence.findByG_ID(
+			deliverableState, govAgencyCode, deliverableType, applicant);
 		return listDeliverable;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
-			String govAgencyCode, String govAgencyName, String applicationIdNo, String applicationName, String subject,
-			String issueDate, String expireDate, String revalidate, String deliverableState,
-			ServiceContext serviceContext) {
+	public Deliverable addDeliverable(
+		long groupId, String deliverableType, String deliverableCode,
+		String govAgencyCode, String govAgencyName, String applicationIdNo,
+		String applicationName, String subject, String issueDate,
+		String expireDate, String revalidate, String deliverableState,
+		ServiceContext serviceContext) {
+
 		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
 
@@ -139,11 +140,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// referenceUid = UUID.randomUUID().toString();
 
-		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
+		long deliverableId =
+			counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
 
-		DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+		DeliverableType dlvType =
+			deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
@@ -164,32 +167,44 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setApplicantName(applicationName);
 		object.setSubject(subject);
 		if (Validator.isNotNull(issueDate)) {
-			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
-		} else {
+			object.setIssueDate(
+				APIDateTimeUtils.convertStringToDate(
+					issueDate, APIDateTimeUtils._NORMAL_DATE));
+		}
+		else {
 			object.setIssueDate(now);
 		}
-		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
-		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setExpireDate(
+			APIDateTimeUtils.convertStringToDate(
+				expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(
+			APIDateTimeUtils.convertStringToDate(
+				revalidate, APIDateTimeUtils._NORMAL_DATE));
 		object.setDeliverableState(Integer.valueOf(deliverableState));
 
 		return deliverablePersistence.update(object);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Deliverable addDeliverable(long groupId, String deliverableType, String deliverableCode,
-			String govAgencyCode, String govAgencyName, String applicationIdNo, String applicationName, String subject,
-			String issueDate, String expireDate, String revalidate, String deliverableState,
-			long dossierId, long fileEntryId, ServiceContext serviceContext) {
+	public Deliverable addDeliverable(
+		long groupId, String deliverableType, String deliverableCode,
+		String govAgencyCode, String govAgencyName, String applicationIdNo,
+		String applicationName, String subject, String issueDate,
+		String expireDate, String revalidate, String deliverableState,
+		long dossierId, long fileEntryId, ServiceContext serviceContext) {
+
 		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
 
-		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
+		long deliverableId =
+			counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
 
-		DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+		DeliverableType dlvType =
+			deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
@@ -212,33 +227,47 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setDossierId(dossierId);
 		object.setFileEntryId(fileEntryId);
 		if (Validator.isNotNull(issueDate)) {
-			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
-		} else {
+			object.setIssueDate(
+				APIDateTimeUtils.convertStringToDate(
+					issueDate, APIDateTimeUtils._NORMAL_DATE));
+		}
+		else {
 			object.setIssueDate(now);
 		}
-		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
-		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
-		object.setDeliverableState(Validator.isNotNull(deliverableState) ? Integer.valueOf(deliverableState) : 0);
+		object.setExpireDate(
+			APIDateTimeUtils.convertStringToDate(
+				expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(
+			APIDateTimeUtils.convertStringToDate(
+				revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setDeliverableState(
+			Validator.isNotNull(deliverableState)
+				? Integer.valueOf(deliverableState) : 0);
 
 		return deliverablePersistence.update(object);
 	}
 
 	//
 	@Indexable(type = IndexableType.REINDEX)
-	public Deliverable addDeliverableSign(long groupId, String deliverableType, String deliverableName,
-			String deliverableCode, String govAgencyCode, String govAgencyName, String applicationIdNo,
-			String applicationName, String subject, String issueDate, String expireDate, String revalidate,
-			String deliverableState, long dossierId, long fileEntryId, long formScriptFileId, long formReportFileId,
-			String formData, ServiceContext serviceContext) {
+	public Deliverable addDeliverableSign(
+		long groupId, String deliverableType, String deliverableName,
+		String deliverableCode, String govAgencyCode, String govAgencyName,
+		String applicationIdNo, String applicationName, String subject,
+		String issueDate, String expireDate, String revalidate,
+		String deliverableState, long dossierId, long fileEntryId,
+		long formScriptFileId, long formReportFileId, String formData,
+		String fileAttachs, ServiceContext serviceContext) {
 
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
 
-		long deliverableId = counterLocalService.increment(Deliverable.class.getName());
+		long deliverableId =
+			counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
-		//DeliverableType dlvType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+		// DeliverableType dlvType =
+		// deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
@@ -248,7 +277,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Add other fields
 		object.setDeliverableName(deliverableName);
-		//object.setDeliverableId(deliverableId);
+		// object.setDeliverableId(deliverableId);
 		object.setDeliverableType(deliverableType);
 		object.setDeliverableCode(deliverableCode);
 		object.setGovAgencyCode(govAgencyCode);
@@ -259,27 +288,40 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setDossierId(dossierId);
 		object.setFileEntryId(fileEntryId);
 		if (Validator.isNotNull(issueDate)) {
-			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE));
-		} else {
+			object.setIssueDate(
+				APIDateTimeUtils.convertStringToDate(
+					issueDate, APIDateTimeUtils._NORMAL_DATE));
+		}
+		else {
 			object.setIssueDate(now);
 		}
-		object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_DATE));
-		object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_DATE));
+		object.setExpireDate(
+			APIDateTimeUtils.convertStringToDate(
+				expireDate, APIDateTimeUtils._NORMAL_DATE));
+		object.setRevalidate(
+			APIDateTimeUtils.convertStringToDate(
+				revalidate, APIDateTimeUtils._NORMAL_DATE));
 		object.setFormScriptFileId(formScriptFileId);
 		object.setFormReportFileId(formReportFileId);
-		object.setDeliverableState(Validator.isNotNull(deliverableState) ? Integer.valueOf(deliverableState) : 0);
+		object.setDeliverableState(
+			Validator.isNotNull(deliverableState)
+				? Integer.valueOf(deliverableState) : 0);
 		object.setFormData(formData);
+		object.setFileAttachs(fileAttachs);
 
 		return deliverablePersistence.update(object);
 	}
 
-	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
-			SearchContext searchContext) throws ParseException, SearchException {
+	public Hits searchLucene(
+		LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+		SearchContext searchContext)
+		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		// String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
+		Indexer<Deliverable> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		// Search elastic
 		String pattern = String.valueOf(params.get("pattern"));
@@ -288,9 +330,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		// Query elastic
 		// List<BooleanQuery> _subQueries = null;
 		// List<BooleanClauseOccur> _occurs = null;
-		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) &&
+			Validator.isNotNull(paramTypes)) {
 			LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-		} else {
+		}
+		else {
 			this.setOccurs(null);
 			this.setParams(null);
 			this.setPattern(null);
@@ -304,7 +348,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setEntryClassNames(new String[] {
+			CLASS_NAME
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setStart(start);
@@ -316,7 +362,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -326,7 +373,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
 					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
-				} else {
+				}
+				else {
 					booleanQuery.add(boolQuery, _occurs.get(count - 1));
 				}
 				count++;
@@ -350,9 +398,12 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
-					DeliverableTerm.DELIVERABLE_CODE_SEARCH };
+			String[] subQuerieArr = new String[] {
+				DeliverableTerm.DELIVERABLE_TYPE,
+				DeliverableTerm.DELIVERABLE_NAME,
+				DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+				DeliverableTerm.DELIVERABLE_CODE_SEARCH
+			};
 
 			// query.addTerms(subQuerieArr, keywords.toLowerCase(), true);
 			// booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -360,8 +411,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+						fieldSearch,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
@@ -379,11 +431,16 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		// }
 
 		// Extra fields
-		String state = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
-		String agency = GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
-		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
-		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
-		String deliverableId = String.valueOf(GetterUtil.getLong(params.get(DeliverableTerm.DELIVERABLE_ID)));
+		String state =
+			GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
+		String agency =
+			GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
+		String type =
+			GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
+		String applicant =
+			GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
+		String deliverableId = String.valueOf(
+			GetterUtil.getLong(params.get(DeliverableTerm.DELIVERABLE_ID)));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 		_log.info("owner:" + owner);
@@ -421,7 +478,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(deliverableId) && !"0".equalsIgnoreCase(deliverableId)) {
+		if (Validator.isNotNull(deliverableId) &&
+			!"0".equalsIgnoreCase(deliverableId)) {
 			MultiMatchQuery query = new MultiMatchQuery(deliverableId);
 
 			query.addFields(DeliverableTerm.DELIVERABLE_ID);
@@ -429,7 +487,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
+		if (Validator.isNotNull(owner) &&
+			Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
 			query.addField(DossierTerm.USER_ID);
@@ -442,24 +501,30 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
 
-	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
-			throws ParseException, SearchException {
+	public long countLucene(
+		LinkedHashMap<String, Object> params, SearchContext searchContext)
+		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		// String groupId = (String) params.get(Field.GROUP_ID);
 
-		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
+		Indexer<Deliverable> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
 		String pattern = String.valueOf(params.get("pattern"));
 		String paramValues = String.valueOf(params.get("paramValues"));
 		String paramTypes = String.valueOf(params.get("paramTypes"));
-		_log.info("pattern:" + pattern + "------paramValues: " + paramValues + "----paramTypes: " + paramTypes);
+		_log.info(
+			"pattern:" + pattern + "------paramValues: " + paramValues +
+				"----paramTypes: " + paramTypes);
 		// Query elastic
 		// List<BooleanQuery> _subQueries = null;
 		// List<BooleanClauseOccur> _occurs = null;
-		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) && Validator.isNotNull(paramTypes)) {
+		if (Validator.isNotNull(pattern) && Validator.isNotNull(paramValues) &&
+			Validator.isNotNull(paramTypes)) {
 			LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-		} else {
+		}
+		else {
 			this.setOccurs(null);
 			this.setParams(null);
 			this.setPattern(null);
@@ -473,7 +538,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setEntryClassNames(new String[] {
+			CLASS_NAME
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
@@ -482,7 +549,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -493,7 +561,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			for (BooleanQuery boolQuery : _subQueries) {
 				if (count == 0) {
 					booleanQuery.add(boolQuery, BooleanClauseOccur.MUST);
-				} else {
+				}
+				else {
 					booleanQuery.add(boolQuery, _occurs.get(count - 1));
 				}
 				count++;
@@ -518,15 +587,19 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME };
+			String[] subQuerieArr = new String[] {
+				DeliverableTerm.DELIVERABLE_TYPE,
+				DeliverableTerm.DELIVERABLE_NAME,
+				DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME
+			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+						fieldSearch,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
@@ -544,10 +617,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		// }
 
 		// Extra fields
-		String state = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
-		String agency = GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
-		String type = GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
-		String applicant = GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
+		String state =
+			GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
+		String agency =
+			GetterUtil.getString(params.get(DeliverableTerm.GOV_AGENCY_CODE));
+		String type =
+			GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_TYPE));
+		String applicant =
+			GetterUtil.getString(params.get(DeliverableTerm.APPLICANT_ID_NO));
 		String owner = GetterUtil.getString(params.get(DossierTerm.OWNER));
 		long userId = GetterUtil.getLong(params.get(DossierTerm.USER_ID));
 		_log.info("owner:" + owner);
@@ -585,7 +662,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(owner) && Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
+		if (Validator.isNotNull(owner) &&
+			Boolean.parseBoolean(owner.toLowerCase()) && userId > 0) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(userId));
 
 			query.addField(DossierTerm.USER_ID);
@@ -600,18 +678,24 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	public static final String CLASS_NAME = Deliverable.class.getName();
 
-	public Deliverable getDeliverableDetail(long id) throws NoSuchDeliverableException {
+	public Deliverable getDeliverableDetail(long id)
+		throws NoSuchDeliverableException {
+
 		return deliverablePersistence.fetchByDID(id);
 	}
 
 	public Deliverable getDetailById(long id) {
+
 		return deliverablePersistence.fetchByDID(id);
 	}
 
 	// 4
 	@Indexable(type = IndexableType.REINDEX)
-	public Deliverable updateDeliverable(long groupId, long id, String subject, String issueDate, String expireDate,
-			String revalidate, String deliverableState, String deliverableAction, ServiceContext serviceContext) {
+	public Deliverable updateDeliverable(
+		long groupId, long id, String subject, String issueDate,
+		String expireDate, String revalidate, String deliverableState,
+		String deliverableAction, ServiceContext serviceContext) {
+
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
@@ -627,17 +711,25 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 			// Add other fields
 			object.setSubject(subject);
-			object.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
-			object.setExpireDate(APIDateTimeUtils.convertStringToDate(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
-			object.setRevalidate(APIDateTimeUtils.convertStringToDate(revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
+			object.setIssueDate(
+				APIDateTimeUtils.convertStringToDate(
+					issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			object.setExpireDate(
+				APIDateTimeUtils.convertStringToDate(
+					expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			object.setRevalidate(
+				APIDateTimeUtils.convertStringToDate(
+					revalidate, APIDateTimeUtils._NORMAL_PARTTERN));
 			object.setDeliverableState(Integer.valueOf(deliverableState));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			// TODO
 			_log.error(e);
 		}
 		// TODO:????
 		// try {
-		// DeliverableLog deliverableLog = deliverableLogPersistence.fi(groupId, id);
+		// DeliverableLog deliverableLog = deliverableLogPersistence.fi(groupId,
+		// id);
 
 		// } catch (Exception e) {
 		// TODO: handle exception
@@ -648,7 +740,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	// 5
 	@Indexable(type = IndexableType.DELETE)
-	public Deliverable deleteDeliverable(long id) throws PortalException {
+	public Deliverable deleteDeliverable(long id)
+		throws PortalException {
+
 		Deliverable deliverable = deliverablePersistence.findByPrimaryKey(id);
 		if (deliverable != null) {
 			return deliverablePersistence.remove(deliverable);
@@ -659,8 +753,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	// 7
 	@Indexable(type = IndexableType.REINDEX)
-	public Deliverable updateFormData(long groupId, long id, String formData, ServiceContext serviceContext)
-			throws NoSuchDeliverableException {
+	public Deliverable updateFormData(
+		long groupId, long id, String formData, ServiceContext serviceContext)
+		throws NoSuchDeliverableException {
+
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
@@ -681,28 +777,33 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			InputStream is = null;
 
 			try {
-				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(object.getFormReportFileId());
+				DLFileEntry dlFileEntry =
+					DLFileEntryLocalServiceUtil.getFileEntry(
+						object.getFormReportFileId());
 
 				is = dlFileEntry.getContentStream();
 
 				result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				_log.debug(e);
 				result = StringPool.BLANK;
-			} finally {
+			}
+			finally {
 				if (is != null) {
 					try {
 						is.close();
-					} catch (IOException e) {
+					}
+					catch (IOException e) {
 						_log.debug(e);
 					}
 				}
 			}
 		}
-		//Process update deliverable file Id
+		// Process update deliverable file Id
 		Message message = new Message();
-//		_log.info("Document script: " + dt.getDocumentScript());
+		// _log.info("Document script: " + dt.getDocumentScript());
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 		msgData.put("className", Deliverable.class.getName());
 		msgData.put("classPK", object.getDeliverableId());
@@ -717,18 +818,25 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	}
 
 	/////////////////////
-	public List<Deliverable> findDeliverableByState(String strDeliverableCode, int state) {
-		return deliverableFinder.findDeliverableByState(strDeliverableCode, state);
+	public List<Deliverable> findDeliverableByState(
+		String strDeliverableCode, int state) {
+
+		return deliverableFinder.findDeliverableByState(
+			strDeliverableCode, state);
 	}
 
 	// Get info Output DB
-	public List<Deliverable> getDeliverableByModifiedDate(String synsDate, String deliverableType,
-			long deliverableState) {
-		return deliverableFinder.findDeliverableByModifiedDate(synsDate, deliverableType, deliverableState);
+	public List<Deliverable> getDeliverableByModifiedDate(
+		String synsDate, String deliverableType, long deliverableState) {
+
+		return deliverableFinder.findDeliverableByModifiedDate(
+			synsDate, deliverableType, deliverableState);
 	}
 
 	public Deliverable getByCodeAndState(String deliverableCode, int state) {
-		return deliverablePersistence.fetchByFB_DCODE_STATE(deliverableCode, state);
+
+		return deliverablePersistence.fetchByFB_DCODE_STATE(
+			deliverableCode, state);
 	}
 
 	/**
@@ -736,6 +844,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * @return
 	 */
 	protected static List<String> getSplitIndex(String pattern) {
+
 		List<String> splitIndexs = new ArrayList<String>();
 		int eliminateParenthesis = 0;
 		int startIndex = 0;
@@ -747,20 +856,25 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 			if (c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				eliminateParenthesis += 1;
-			} else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			}
+			else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				eliminateParenthesis += -1;
 			}
 
-			if (eliminateParenthesis == 1 && c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+			if (eliminateParenthesis == 1 &&
+				c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				startIndex = i;
 			}
 
-			if (eliminateParenthesis == 0 && c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			if (eliminateParenthesis == 0 &&
+				c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				endIndex = i;
 
 			}
 
-			if (!splitIndexs.contains(startIndex + StringPool.DASH + endIndex) && startIndex < endIndex) {
+			if (!splitIndexs.contains(
+				startIndex + StringPool.DASH + endIndex) &&
+				startIndex < endIndex) {
 
 				splitIndexs.add(startIndex + StringPool.DASH + endIndex);
 			}
@@ -775,7 +889,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * @return
 	 * @throws ParseException
 	 */
-	public static List<String> getSubQueries(String pattern, List<String> subQueries) throws ParseException {
+	public static List<String> getSubQueries(
+		String pattern, List<String> subQueries)
+		throws ParseException {
 
 		pattern = validPattern(pattern);
 
@@ -788,14 +904,20 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		if (splitIndexs != null) {
 			if (splitIndexs.isEmpty()) {
 				subQueries.add(pattern);
-			} else {
+			}
+			else {
 				for (String splitIndex : splitIndexs) {
 
-					int[] splitIndexsTemp = StringUtil.split(splitIndex, StringPool.DASH, 0);
-					String subQuery = pattern.substring(splitIndexsTemp[0], splitIndexsTemp[1] + 1);
-					if (subQuery.contains("[and]") || subQuery.contains("[or]") || subQuery.contains("[not]")) {
+					int[] splitIndexsTemp =
+						StringUtil.split(splitIndex, StringPool.DASH, 0);
+					String subQuery = pattern.substring(
+						splitIndexsTemp[0], splitIndexsTemp[1] + 1);
+					if (subQuery.contains("[and]") ||
+						subQuery.contains("[or]") ||
+						subQuery.contains("[not]")) {
 						getSubQueries(subQuery, subQueries);
-					} else {
+					}
+					else {
 						subQuery = subQuery.replaceAll("\\(", StringPool.BLANK);
 
 						subQuery = subQuery.replaceAll("\\)", StringPool.BLANK);
@@ -816,6 +938,7 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	 * @return
 	 */
 	public static String validPattern(String pattern) {
+
 		int eliminateParenthesis = 0;
 		int startParenthesisIndex = 0;
 		int endParenthesisIndex = 0;
@@ -826,15 +949,18 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 			if (c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				eliminateParenthesis += 1;
-			} else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			}
+			else if (c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				eliminateParenthesis += -1;
 			}
 
-			if (eliminateParenthesis == 1 && c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
+			if (eliminateParenthesis == 1 &&
+				c.toString().equals(StringPool.OPEN_PARENTHESIS)) {
 				startParenthesisIndex = i;
 			}
 
-			if (eliminateParenthesis == 0 && c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
+			if (eliminateParenthesis == 0 &&
+				c.toString().equals(StringPool.CLOSE_PARENTHESIS)) {
 				endParenthesisIndex = i;
 			}
 
@@ -844,8 +970,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			return StringPool.BLANK;
 		}
 
-		if (endParenthesisIndex == pattern.length() - 1 && startParenthesisIndex == 0) {
-			pattern = pattern.substring(startParenthesisIndex + 1, endParenthesisIndex);
+		if (endParenthesisIndex == pattern.length() - 1 &&
+			startParenthesisIndex == 0) {
+			pattern = pattern.substring(
+				startParenthesisIndex + 1, endParenthesisIndex);
 
 			pattern = validPattern(pattern);
 
@@ -855,7 +983,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	}
 
 	/////////////
-	public void LuceneQuery(String pattern, String paramValues, String paramTypes, SearchContext searchContext) {
+	public void LuceneQuery(
+		String pattern, String paramValues, String paramTypes,
+		SearchContext searchContext) {
 
 		BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
 		List<String> subPatterns = new ArrayList<String>();
@@ -865,12 +995,14 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		List<Object> params = new ArrayList<Object>();
 		List<Class<?>> clazzs = new ArrayList<Class<?>>();
 
-		String[] arrParamValue = Validator.isNotNull(paramValues) ? StringUtil.split(paramValues, StringPool.POUND)
-				: null;
-		String[] arrParamTypes = Validator.isNotNull(paramTypes) ? StringUtil.split(paramTypes) : null;
+		String[] arrParamValue = Validator.isNotNull(paramValues)
+			? StringUtil.split(paramValues, StringPool.POUND) : null;
+		String[] arrParamTypes = Validator.isNotNull(paramTypes)
+			? StringUtil.split(paramTypes) : null;
 
-		if (arrParamValue != null && arrParamTypes != null && arrParamTypes.length > 0 && arrParamValue.length > 0
-				&& arrParamValue.length == arrParamTypes.length) {
+		if (arrParamValue != null && arrParamTypes != null &&
+			arrParamTypes.length > 0 && arrParamValue.length > 0 &&
+			arrParamValue.length == arrParamTypes.length) {
 			try {
 				// pattern = LuceneQueryUtil.validPattern(pattern);
 
@@ -882,8 +1014,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					String paramType = arrParamTypes[i].toLowerCase();
 					String strValueArr = StringPool.BLANK;
 					if (Validator.isNotNull(arrParamValue[i])) {
-						strValueArr = SpecialCharacterUtils.splitSpecial(arrParamValue[i].toString().toLowerCase());
-					} else {
+						strValueArr = SpecialCharacterUtils.splitSpecial(
+							arrParamValue[i].toString().toLowerCase());
+					}
+					else {
 						strValueArr = arrParamValue[i];
 					}
 					Object param = null;
@@ -949,7 +1083,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				getSubQueries(pattern, subPatterns);
 
 				if (subPatterns != null && !subPatterns.isEmpty()) {
-					subQueries = createBooleanQueries(subPatterns, params, paramNames, searchContext);
+					subQueries = createBooleanQueries(
+						subPatterns, params, paramNames, searchContext);
 
 					occurs = getBooleanClauseOccurs(pattern, subPatterns);
 
@@ -960,7 +1095,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					for (BooleanQuery booleanQuery : subQueries) {
 						if (count == 0) {
 							query.add(booleanQuery, BooleanClauseOccur.MUST);
-						} else {
+						}
+						else {
 							query.add(booleanQuery, occurs.get(count - 1));
 						}
 
@@ -968,7 +1104,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					}
 				}
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				_log.error(e);
 				// try {
 				// throw new Exception();
@@ -977,7 +1114,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				// e1.printStackTrace();
 				// _log.error(e1);
 				// }
-			} finally {
+			}
+			finally {
 				this.setOccurs(occurs);
 				this.setParams(params);
 				this.setPattern(pattern);
@@ -988,7 +1126,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				this.setParamNames(paramNames);
 				this.setParamTypes(clazzs);
 			}
-		} else {
+		}
+		else {
 			// TODO
 		}
 
@@ -1005,79 +1144,100 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 	private List<Class<?>> _paramTypes;
 
 	public List<Class<?>> getParamTypes() {
+
 		return _paramTypes;
 	}
 
 	public void setParamTypes(List<Class<?>> paramTypes) {
+
 		this._paramTypes = paramTypes;
 	}
 
 	public SearchContext getSearchContext() {
+
 		return _searchContext;
 	}
 
 	public void setSearchContext(SearchContext searchContext) {
+
 		this._searchContext = searchContext;
 	}
 
 	public String getPattern() {
+
 		return _pattern;
 	}
 
 	public void setPattern(String pattern) {
+
 		this._pattern = pattern;
 	}
 
 	public BooleanQuery getQuery() {
+
 		return _query;
 	}
 
 	public void setQuery(BooleanQuery query) {
+
 		this._query = query;
 	}
 
 	public List<BooleanQuery> getSubQueries() {
+
 		return _subQueries;
 	}
 
 	public void setSubQueries(List<BooleanQuery> subQueries) {
+
 		this._subQueries = subQueries;
 	}
 
 	public List<String> getSubPatterns() {
+
 		return _subPatterns;
 	}
 
 	public void setSubPatterns(List<String> subPatterns) {
+
 		this._subPatterns = subPatterns;
 	}
 
 	public List<String> getParamNames() {
+
 		return _paramNames;
 	}
 
 	public void setParamNames(List<String> paramNames) {
+
 		this._paramNames = paramNames;
 	}
 
 	public List<Object> getParams() {
+
 		return _params;
 	}
 
 	public void setParams(List<Object> params) {
+
 		this._params = params;
 	}
 
 	public List<BooleanClauseOccur> getOccurs() {
+
 		return _occurs;
 	}
 
 	public void setOccurs(List<BooleanClauseOccur> occurs) {
+
 		this._occurs = occurs;
 	}
 
-	public static List<BooleanClauseOccur> getBooleanClauseOccurs(String pattern, List<String> subQueries) {
-		List<BooleanClauseOccur> booleanClauseOccurs = new ArrayList<BooleanClauseOccur>();
+	public static List<BooleanClauseOccur> getBooleanClauseOccurs(
+		String pattern, List<String> subQueries) {
+
+		List<BooleanClauseOccur> booleanClauseOccurs =
+			new ArrayList<BooleanClauseOccur>();
 		pattern = pattern.replaceAll(Pattern.quote("("), StringPool.BLANK);
 
 		pattern = pattern.replaceAll("\\)", StringPool.BLANK);
@@ -1100,9 +1260,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			for (int c = 0; c < conditions.length; c++) {
 				if ("and".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
-				} else if ("or".equalsIgnoreCase(conditions[c])) {
+				}
+				else if ("or".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
-				} else if ("not".equalsIgnoreCase(conditions[c])) {
+				}
+				else if ("not".equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
 				}
 			}
@@ -1111,21 +1273,28 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		return booleanClauseOccurs;
 	}
 
-	public static List<BooleanQuery> createBooleanQueries(List<String> subQueries, List<Object> params,
-			List<String> paramNames, SearchContext searchContext) throws ParseException {
+	public static List<BooleanQuery> createBooleanQueries(
+		List<String> subQueries, List<Object> params, List<String> paramNames,
+		SearchContext searchContext)
+		throws ParseException {
+
 		List<BooleanQuery> booleanQueries = new ArrayList<BooleanQuery>();
 		if (subQueries != null) {
 			for (String subQuery : subQueries) {
 				String[] terms = StringUtil.split(subQuery);
 				if (terms != null && terms.length > 0) {
-					BooleanQuery query = BooleanQueryFactoryUtil.create(searchContext);
+					BooleanQuery query =
+						BooleanQueryFactoryUtil.create(searchContext);
 					for (int t = 0; t < terms.length; t++) {
-						int paramPossition = subQueries.indexOf(subQuery) * terms.length + t;
+						int paramPossition =
+							subQueries.indexOf(subQuery) * terms.length + t;
 						// String term = terms[t].trim().toLowerCase();
 						String term = terms[t].trim();
 						String key = StringPool.BLANK;
 						if (term.contains((StringPool.EQUAL.toLowerCase()))) {
-							key = term.substring(0, term.indexOf(StringPool.EQUAL.toLowerCase())).trim();
+							key = term.substring(
+								0, term.indexOf(
+									StringPool.EQUAL.toLowerCase())).trim();
 							// addExactTerm(query, key,
 							// params.get(paramPossition));
 
@@ -1134,21 +1303,34 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 							Object tempValue = params.get(paramPossition);
 
 							if (tempValue instanceof Long) {
-								termQuery = TermQueryFactoryUtil.create(searchContext, key, (long) tempValue);
-							} else {
-								termQuery = TermQueryFactoryUtil.create(searchContext, key, String.valueOf(tempValue));
+								termQuery = TermQueryFactoryUtil.create(
+									searchContext, key, (long) tempValue);
+							}
+							else {
+								termQuery = TermQueryFactoryUtil.create(
+									searchContext, key,
+									String.valueOf(tempValue));
 							}
 
 							if (termQuery != null) {
 								query.add(termQuery, BooleanClauseOccur.MUST);
 							}
-						} else if (term.contains(StringPool.LIKE.toLowerCase())) {
-							key = term.substring(0, term.indexOf(StringPool.LIKE.toLowerCase())).trim();
+						}
+						else if (term.contains(StringPool.LIKE.toLowerCase())) {
+							key = term.substring(
+								0, term.indexOf(
+									StringPool.LIKE.toLowerCase())).trim();
 
-							query.addTerm(key, params.get(paramPossition).toString(), true);
+							query.addTerm(
+								key, params.get(paramPossition).toString(),
+								true);
 
-						} else if (term.contains(StringPool.BETWEEN.toLowerCase())) {
-							key = term.substring(0, term.indexOf(StringPool.BETWEEN.toLowerCase())).trim();
+						}
+						else if (term.contains(
+							StringPool.BETWEEN.toLowerCase())) {
+							key = term.substring(
+								0, term.indexOf(
+									StringPool.BETWEEN.toLowerCase())).trim();
 							// query = addRangeTerm(query, key,
 							// params.get(paramPossition));
 						}
@@ -1174,7 +1356,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 		if (Validator.isNull(object)) {
 			return null;
-		} else {
+		}
+		else {
 			deliverablePersistence.remove(object);
 		}
 
@@ -1183,6 +1366,8 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Deliverable adminProcessData(JSONObject objectData) {
+
+		System.out.println("=========objectData==========" + objectData);
 
 		Deliverable object = null;
 
@@ -1194,17 +1379,21 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			object = deliverablePersistence.fetchByPrimaryKey(deliverableId);
 			//
 			try {
-				JSONObject jsonDeli = JSONFactoryUtil.createJSONObject(object.getFormData());
+				JSONObject jsonDeli =
+					JSONFactoryUtil.createJSONObject(object.getFormData());
 				if (jsonDeli != null && jsonDeli.has("fileAttach")) {
 					flagAttach = jsonDeli.getBoolean("fileAttach");
 				}
-			} catch (JSONException e) {
+			}
+			catch (JSONException e) {
 				_log.debug(e);
 			}
 
-		} else {
+		}
+		else {
 
-			deliverableId = CounterLocalServiceUtil.increment(Deliverable.class.getName());
+			deliverableId =
+				CounterLocalServiceUtil.increment(Deliverable.class.getName());
 			object = deliverablePersistence.create(deliverableId);
 
 			object.setGroupId(groupId);
@@ -1218,9 +1407,9 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setUserName(objectData.getString("userName"));
 
 		//
-//		String deliverableCode = objectData.getString("deliverableCode");
-//		object.setDeliverableCode(deliverableCode);
-//		object.setDeliverableName(objectData.getString("deliverableName"));
+		// String deliverableCode = objectData.getString("deliverableCode");
+		// object.setDeliverableCode(deliverableCode);
+		// object.setDeliverableName(objectData.getString("deliverableName"));
 		//
 		String deliverableType = objectData.getString("deliverableType");
 		object.setDeliverableType(deliverableType);
@@ -1228,37 +1417,41 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		//
 		String govAgencyName = objectData.getString("govAgencyName");
 		if (Validator.isNull(govAgencyName)) {
-			govAgencyName = getDictItemName(groupId, "GOVERNMENT_AGENCY", objectData.getString("govAgencyCode"));
+			govAgencyName = getDictItemName(
+				groupId, "GOVERNMENT_AGENCY",
+				objectData.getString("govAgencyCode"));
 		}
 
 		object.setGovAgencyName(govAgencyName);
-		//applicant
-//		String applicantIdNo = objectData.getString("applicantIdNo");
-//		String applicantIdName = objectData.getString("applicantName");
-//		object.setApplicantIdNo(applicantIdNo);
+		// applicant
+		// String applicantIdNo = objectData.getString("applicantIdNo");
+		// String applicantIdName = objectData.getString("applicantName");
+		// object.setApplicantIdNo(applicantIdNo);
 
-//		if (Validator.isNull(applicantIdName)) {
-//			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicantIdNo);
-//			if (applicant != null) {
-//				applicantIdName = applicant.getApplicantName();
-//			}
-//		}
-//		object.setApplicantName(applicantIdName);
-//		object.setSubject(objectData.getString("subject"));
-//		long expireDateLong = objectData.getLong("expireDate");
-//		long issueDateLong = objectData.getLong("issueDate");
-//		long revalidateLong = objectData.getLong("revalidate");
-//		if (expireDateLong > 0)
-//			object.setExpireDate(new Date(expireDateLong));
-//		if (issueDateLong > 0)
-//			object.setIssueDate(new Date(issueDateLong));
-//		if (revalidateLong > 0)
-//			object.setRevalidate(new Date(revalidateLong));
+		// if (Validator.isNull(applicantIdName)) {
+		// Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0,
+		// applicantIdNo);
+		// if (applicant != null) {
+		// applicantIdName = applicant.getApplicantName();
+		// }
+		// }
+		// object.setApplicantName(applicantIdName);
+		// object.setSubject(objectData.getString("subject"));
+		// long expireDateLong = objectData.getLong("expireDate");
+		// long issueDateLong = objectData.getLong("issueDate");
+		// long revalidateLong = objectData.getLong("revalidate");
+		// if (expireDateLong > 0)
+		// object.setExpireDate(new Date(expireDateLong));
+		// if (issueDateLong > 0)
+		// object.setIssueDate(new Date(issueDateLong));
+		// if (revalidateLong > 0)
+		// object.setRevalidate(new Date(revalidateLong));
 		//
 		JSONObject jsonData = null;
 		try {
-			jsonData = JSONFactoryUtil.createJSONObject(objectData.getString("formData"));
-			
+			jsonData = JSONFactoryUtil.createJSONObject(
+				objectData.getString("formData"));
+
 			String deliverableCode = jsonData.getString("deliverableCode");
 			if (Validator.isNotNull(deliverableCode)) {
 				object.setDeliverableCode(deliverableCode);
@@ -1267,8 +1460,11 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			String deliverableName = jsonData.getString("deliverableName");
 			if (Validator.isNotNull(deliverableName)) {
 				object.setDeliverableName(deliverableName);
-			} else {
-				DeliverableType deliType = deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
+			}
+			else {
+				DeliverableType deliType =
+					deliverableTypePersistence.fetchByG_DLT(
+						groupId, deliverableType);
 				if (deliType != null) {
 					object.setDeliverableName(deliType.getTypeName());
 				}
@@ -1292,11 +1488,13 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 			String deliverableState = jsonData.getString("deliverableState");
 			if (Validator.isNotNull(deliverableState)) {
 				object.setDeliverableState(Integer.valueOf(deliverableState));
-			} else {
+			}
+			else {
 				object.setDeliverableState(1);
 			}
 			//
-			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+			SimpleDateFormat sdf =
+				new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
 			String strExpireDate = jsonData.getString("expireDate");
 			String strIssueDate = jsonData.getString("issueDate");
 			String strRevalidate = jsonData.getString("revaliDate");
@@ -1320,25 +1518,30 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 					object.setRevalidate(revaliDate);
 				}
 			}
-			
-		} catch (JSONException e1) {
+
+		}
+		catch (JSONException e1) {
 			_log.debug(e1);
-		} catch (java.text.ParseException e2) {
+		}
+		catch (java.text.ParseException e2) {
 			_log.debug(e2);
 		}
-		
+
 		if (jsonData != null) {
 			jsonData.put("fileAttach", flagAttach);
 			object.setFormData(jsonData.toJSONString());
-		} else {
+		}
+		else {
 			object.setFormData(StringPool.BLANK);
 		}
-		
+
 		//
 		long formScriptFileId = 0;
 		long formReportFileId = 0;
 		if (Validator.isNotNull(deliverableType)) {
-			DeliverableType deliType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableType);
+			DeliverableType deliType =
+				DeliverableTypeLocalServiceUtil.getByCode(
+					groupId, deliverableType);
 			if (deliType != null) {
 				formScriptFileId = deliType.getFormScriptFileId();
 				formReportFileId = deliType.getFormReportFileId();
@@ -1350,7 +1553,10 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 		object.setFormScript(objectData.getString("formScript"));
 		object.setFormReport(objectData.getString("formReport"));
 
-		//object.setDeliverableState(objectData.getInt("deliverableState"));
+		// new field to save QD
+		object.setFormReport(objectData.getString("fileAttachs"));
+
+		// object.setDeliverableState(objectData.getInt("deliverableState"));
 
 		object = deliverablePersistence.update(object);
 
@@ -1360,62 +1566,79 @@ public class DeliverableLocalServiceImpl extends DeliverableLocalServiceBaseImpl
 				InputStream is = null;
 
 				try {
-					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
+					DLFileEntry dlFileEntry =
+						DLFileEntryLocalServiceUtil.getFileEntry(
+							formReportFileId);
 
 					is = dlFileEntry.getContentStream();
 
 					result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					_log.debug(e);
 					result = StringPool.BLANK;
-				} finally {
+				}
+				finally {
 					if (is != null) {
 						try {
 							is.close();
-						} catch (IOException e) {
+						}
+						catch (IOException e) {
 							_log.debug(e);
 						}
 					}
 				}
 			}
-			//Process update deliverable file Id
+			// Process update deliverable file Id
 			Message message = new Message();
-//			_log.info("Document script: " + dt.getDocumentScript());
+			// _log.info("Document script: " + dt.getDocumentScript());
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
 			msgData.put("className", Deliverable.class.getName());
 			msgData.put("classPK", object.getDeliverableId());
 			msgData.put("jrxmlTemplate", result);
-			msgData.put("formData", jsonData!= null ? jsonData.toJSONString(): StringPool.BLANK);
+			msgData.put(
+				"formData",
+				jsonData != null ? jsonData.toJSONString() : StringPool.BLANK);
 			msgData.put("userId", objectData.getLong("userId"));
 
 			message.put("msgToEngine", msgData);
-			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			MessageBusUtil.sendMessage(
+				"jasper/engine/out/destination", message);
 		}
 
 		return object;
 	}
 
 	public Deliverable getByF_GID_DCODE(long groupId, String deliverableCode) {
-		return deliverablePersistence.fetchByF_GID_DCODE(groupId, deliverableCode);
+
+		return deliverablePersistence.fetchByF_GID_DCODE(
+			groupId, deliverableCode);
 	}
 
-	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
+	protected String getDictItemName(
+		long groupId, String collectionCode, String itemCode) {
 
-		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
+		DictCollection dc =
+			DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
+				collectionCode, groupId);
 
 		if (Validator.isNotNull(dc)) {
-			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-			if(Validator.isNotNull(it)){
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(
+				itemCode, dc.getPrimaryKey(), groupId);
+			if (Validator.isNotNull(it)) {
 				return it.getItemName();
-			}else{
+			}
+			else {
 				return StringPool.BLANK;
 			}
-		} else {
+		}
+		else {
 			return StringPool.BLANK;
 		}
 
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);
+	private static Log _log =
+		LogFactoryUtil.getLog(DeliverableLocalServiceImpl.class);
 }

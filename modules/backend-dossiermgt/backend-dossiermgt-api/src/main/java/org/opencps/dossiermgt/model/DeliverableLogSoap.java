@@ -48,6 +48,7 @@ public class DeliverableLogSoap implements Serializable {
 		soapModel.setDeliverableAction(model.getDeliverableAction());
 		soapModel.setActionDate(model.getActionDate());
 		soapModel.setPayload(model.getPayload());
+		soapModel.setFileEntryId(model.getFileEntryId());
 
 		return soapModel;
 	}
@@ -220,6 +221,14 @@ public class DeliverableLogSoap implements Serializable {
 		_payload = payload;
 	}
 
+	public long getFileEntryId() {
+		return _fileEntryId;
+	}
+
+	public void setFileEntryId(long fileEntryId) {
+		_fileEntryId = fileEntryId;
+	}
+
 	private String _uuid;
 	private long _deliverableLogId;
 	private long _companyId;
@@ -235,4 +244,5 @@ public class DeliverableLogSoap implements Serializable {
 	private int _deliverableAction;
 	private Date _actionDate;
 	private String _payload;
+	private long _fileEntryId;
 }

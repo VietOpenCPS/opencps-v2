@@ -65,7 +65,7 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(59);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -123,6 +123,8 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		sb.append(dossierId);
 		sb.append(", docSync=");
 		sb.append(docSync);
+		sb.append(", fileAttachs=");
+		sb.append(fileAttachs);
 		sb.append("}");
 
 		return sb.toString();
@@ -271,6 +273,13 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		deliverableImpl.setDossierId(dossierId);
 		deliverableImpl.setDocSync(docSync);
 
+		if (fileAttachs == null) {
+			deliverableImpl.setFileAttachs("");
+		}
+		else {
+			deliverableImpl.setFileAttachs(fileAttachs);
+		}
+
 		deliverableImpl.resetOriginalValues();
 
 		return deliverableImpl;
@@ -316,6 +325,7 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		dossierId = objectInput.readLong();
 
 		docSync = objectInput.readInt();
+		fileAttachs = objectInput.readUTF();
 	}
 
 	@Override
@@ -437,6 +447,13 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 		objectOutput.writeLong(dossierId);
 
 		objectOutput.writeInt(docSync);
+
+		if (fileAttachs == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fileAttachs);
+		}
 	}
 
 	public String uuid;
@@ -467,4 +484,5 @@ public class DeliverableCacheModel implements CacheModel<Deliverable>,
 	public long fileEntryId;
 	public long dossierId;
 	public int docSync;
+	public String fileAttachs;
 }

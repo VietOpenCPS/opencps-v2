@@ -88,6 +88,7 @@ public class DeliverableWrapper implements Deliverable,
 		attributes.put("fileEntryId", getFileEntryId());
 		attributes.put("dossierId", getDossierId());
 		attributes.put("docSync", getDocSync());
+		attributes.put("fileAttachs", getFileAttachs());
 
 		return attributes;
 	}
@@ -261,6 +262,12 @@ public class DeliverableWrapper implements Deliverable,
 		if (docSync != null) {
 			setDocSync(docSync);
 		}
+
+		String fileAttachs = (String)attributes.get("fileAttachs");
+
+		if (fileAttachs != null) {
+			setFileAttachs(fileAttachs);
+		}
 	}
 
 	@Override
@@ -396,6 +403,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public Date getExpireDate() {
 		return _deliverable.getExpireDate();
+	}
+
+	/**
+	* Returns the file attachs of this deliverable.
+	*
+	* @return the file attachs of this deliverable
+	*/
+	@Override
+	public String getFileAttachs() {
+		return _deliverable.getFileAttachs();
 	}
 
 	/**
@@ -747,6 +764,16 @@ public class DeliverableWrapper implements Deliverable,
 	@Override
 	public void setExpireDate(Date expireDate) {
 		_deliverable.setExpireDate(expireDate);
+	}
+
+	/**
+	* Sets the file attachs of this deliverable.
+	*
+	* @param fileAttachs the file attachs of this deliverable
+	*/
+	@Override
+	public void setFileAttachs(String fileAttachs) {
+		_deliverable.setFileAttachs(fileAttachs);
 	}
 
 	/**

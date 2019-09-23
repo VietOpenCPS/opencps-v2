@@ -82,7 +82,8 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			{ "content", Types.VARCHAR },
 			{ "deliverableAction", Types.INTEGER },
 			{ "actionDate", Types.TIMESTAMP },
-			{ "payload", Types.VARCHAR }
+			{ "payload", Types.VARCHAR },
+			{ "fileEntryId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -102,9 +103,10 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		TABLE_COLUMNS_MAP.put("deliverableAction", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("actionDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("payload", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId LONG,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId LONG,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null,fileEntryId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverablelog";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableLog.deliverableLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverablelog.deliverableLogId ASC";
@@ -180,6 +182,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		attributes.put("deliverableAction", getDeliverableAction());
 		attributes.put("actionDate", getActionDate());
 		attributes.put("payload", getPayload());
+		attributes.put("fileEntryId", getFileEntryId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -277,6 +280,12 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 
 		if (payload != null) {
 			setPayload(payload);
+		}
+
+		Long fileEntryId = (Long)attributes.get("fileEntryId");
+
+		if (fileEntryId != null) {
+			setFileEntryId(fileEntryId);
 		}
 	}
 
@@ -527,6 +536,16 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 	}
 
 	@Override
+	public long getFileEntryId() {
+		return _fileEntryId;
+	}
+
+	@Override
+	public void setFileEntryId(long fileEntryId) {
+		_fileEntryId = fileEntryId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DeliverableLog.class.getName()));
@@ -578,6 +597,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		deliverableLogImpl.setDeliverableAction(getDeliverableAction());
 		deliverableLogImpl.setActionDate(getActionDate());
 		deliverableLogImpl.setPayload(getPayload());
+		deliverableLogImpl.setFileEntryId(getFileEntryId());
 
 		deliverableLogImpl.resetOriginalValues();
 
@@ -750,12 +770,14 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			deliverableLogCacheModel.payload = null;
 		}
 
+		deliverableLogCacheModel.fileEntryId = getFileEntryId();
+
 		return deliverableLogCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -787,6 +809,8 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		sb.append(getActionDate());
 		sb.append(", payload=");
 		sb.append(getPayload());
+		sb.append(", fileEntryId=");
+		sb.append(getFileEntryId());
 		sb.append("}");
 
 		return sb.toString();
@@ -794,7 +818,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(52);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DeliverableLog");
@@ -860,6 +884,10 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 			"<column><column-name>payload</column-name><column-value><![CDATA[");
 		sb.append(getPayload());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fileEntryId</column-name><column-value><![CDATA[");
+		sb.append(getFileEntryId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -893,6 +921,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 	private int _deliverableAction;
 	private Date _actionDate;
 	private String _payload;
+	private long _fileEntryId;
 	private long _columnBitmask;
 	private DeliverableLog _escapedModel;
 }

@@ -37,10 +37,12 @@ import java.util.Date;
  * @generated
  */
 @ProviderType
-public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
-	Externalizable {
+public class DeliverableLogCacheModel
+	implements CacheModel<DeliverableLog>, Externalizable {
+
 	@Override
 	public boolean equals(Object obj) {
+
 		if (this == obj) {
 			return true;
 		}
@@ -49,7 +51,8 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 			return false;
 		}
 
-		DeliverableLogCacheModel deliverableLogCacheModel = (DeliverableLogCacheModel)obj;
+		DeliverableLogCacheModel deliverableLogCacheModel =
+			(DeliverableLogCacheModel) obj;
 
 		if (deliverableLogId == deliverableLogCacheModel.deliverableLogId) {
 			return true;
@@ -60,12 +63,14 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 
 	@Override
 	public int hashCode() {
+
 		return HashUtil.hash(0, deliverableLogId);
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -97,6 +102,8 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 		sb.append(actionDate);
 		sb.append(", payload=");
 		sb.append(payload);
+		sb.append(", fileEntryId=");
+		sb.append(fileEntryId);
 		sb.append("}");
 
 		return sb.toString();
@@ -104,6 +111,7 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 
 	@Override
 	public DeliverableLog toEntityModel() {
+
 		DeliverableLogImpl deliverableLogImpl = new DeliverableLogImpl();
 
 		if (uuid == null) {
@@ -178,13 +186,17 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 			deliverableLogImpl.setPayload(payload);
 		}
 
+		deliverableLogImpl.setFileEntryId(fileEntryId);
+
 		deliverableLogImpl.resetOriginalValues();
 
 		return deliverableLogImpl;
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws IOException {
+
 		uuid = objectInput.readUTF();
 
 		deliverableLogId = objectInput.readLong();
@@ -206,11 +218,14 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 		deliverableAction = objectInput.readInt();
 		actionDate = objectInput.readLong();
 		payload = objectInput.readUTF();
+
+		fileEntryId = objectInput.readLong();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
+
 		if (uuid == null) {
 			objectOutput.writeUTF("");
 		}
@@ -268,6 +283,8 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 		else {
 			objectOutput.writeUTF(payload);
 		}
+
+		objectOutput.writeLong(fileEntryId);
 	}
 
 	public String uuid;
@@ -285,4 +302,5 @@ public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
 	public int deliverableAction;
 	public long actionDate;
 	public String payload;
+	public long fileEntryId;
 }
