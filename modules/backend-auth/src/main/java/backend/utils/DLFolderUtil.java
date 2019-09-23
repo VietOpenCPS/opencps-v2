@@ -72,8 +72,8 @@ public class DLFolderUtil {
 				PermissionChecker checker =
 					PermissionCheckerFactoryUtil.create(user);
 				PermissionThreadLocal.setPermissionChecker(checker);
-				//serviceContext.setAddGroupPermissions(true);
-				//serviceContext.setAddGuestPermissions(true);
+				// serviceContext.setAddGroupPermissions(true);
+				// serviceContext.setAddGuestPermissions(true);
 
 				dlFolder = DLFolderLocalServiceUtil.addFolder(
 					userId, groupId, repositoryId, mountPoint, parentFolderId,
@@ -104,8 +104,8 @@ public class DLFolderUtil {
 			folderId = dlFolder.getFolderId();
 		}
 		return getFolder(
-			userId, groupId, repositoryId, mountPoint, folderId,
-			name, description, hidden, serviceContext);
+			userId, groupId, repositoryId, mountPoint, folderId, name,
+			description, hidden, serviceContext);
 
 	}
 
@@ -120,7 +120,7 @@ public class DLFolderUtil {
 		}
 		catch (SystemException e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 		}
 
 		return dlFolder;
@@ -129,33 +129,39 @@ public class DLFolderUtil {
 	public static DLFolder getTargetFolder(
 		long userId, long groupId, long repositoryId, boolean mountPoint,
 		long parentFolderId, String destination, String description,
-		boolean hidden, ServiceContext serviceContext) throws Exception {
+		boolean hidden, ServiceContext serviceContext)
+		throws Exception {
 
 		DLFolder dlFolder = null;
+		try {
+			String[] folderNames =
+				StringUtil.split(destination, StringPool.SLASH);
 
-		String[] folderNames = StringUtil.split(destination, StringPool.SLASH);
+			if (folderNames != null && folderNames.length > 0) {
+				String name = folderNames[0];
 
-		if (folderNames != null && folderNames.length > 0) {
-			String name = folderNames[0];
+				dlFolder = makeFolder(
+					userId, groupId, repositoryId, mountPoint, parentFolderId,
+					name, description, hidden, serviceContext);
+				// LamTV_Fix sonarqube
+				if (dlFolder != null) {
+					setFolderPermissions(dlFolder);
 
-			dlFolder = makeFolder(
-				userId, groupId, repositoryId, mountPoint, parentFolderId, name,
-				description, hidden, serviceContext);
-			//LamTV_Fix sonarqube
-			if (dlFolder != null) {
-				setFolderPermissions(dlFolder);
-
-				folderNames = ArrayUtil.remove(folderNames, name);
-				if (folderNames.length > 0) {
-					dlFolder = getTargetFolder(
-						userId, groupId, repositoryId, mountPoint,
-						dlFolder.getFolderId(),
-						StringUtil.merge(folderNames, StringPool.FORWARD_SLASH),
-						description, hidden, serviceContext);
+					folderNames = ArrayUtil.remove(folderNames, name);
+					if (folderNames.length > 0) {
+						dlFolder = getTargetFolder(
+							userId, groupId, repositoryId, mountPoint,
+							dlFolder.getFolderId(),
+							StringUtil.merge(
+								folderNames, StringPool.FORWARD_SLASH),
+							description, hidden, serviceContext);
+					}
 				}
 			}
 		}
-
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		return dlFolder;
 	}
 
@@ -195,7 +201,7 @@ public class DLFolderUtil {
 		}
 		catch (SystemException e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 		}
 
 		result = dlFolder != null ? true : false;
@@ -231,12 +237,12 @@ public class DLFolderUtil {
 			ActionKeys.VIEW, ActionKeys.ACCESS
 		};
 		try {
-//			resourcePermission =
-				ResourcePermissionLocalServiceUtil.getResourcePermission(
-					fileEntry.getCompanyId(), DLFileEntry.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(fileEntry.getPrimaryKey()),
-					guestMemberRole.getRoleId());
+			// resourcePermission =
+			ResourcePermissionLocalServiceUtil.getResourcePermission(
+				fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getPrimaryKey()),
+				guestMemberRole.getRoleId());
 
 			ResourcePermissionLocalServiceUtil.setResourcePermissions(
 				fileEntry.getCompanyId(), DLFileEntry.class.getName(),
@@ -251,7 +257,7 @@ public class DLFolderUtil {
 		}
 		catch (NoSuchResourcePermissionException e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -300,7 +306,7 @@ public class DLFolderUtil {
 		}
 		catch (NoSuchResourcePermissionException e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -349,7 +355,7 @@ public class DLFolderUtil {
 		}
 		catch (NoSuchResourcePermissionException e) {
 			_log.debug(e);
-			//_log.error(e);
+			// _log.error(e);
 			resourcePermission =
 				ResourcePermissionLocalServiceUtil.createResourcePermission(
 					CounterLocalServiceUtil.increment());
@@ -366,50 +372,49 @@ public class DLFolderUtil {
 	}
 
 	public static void removeGuestPermissions(FileEntry fileEntry)
-			throws Exception {
+		throws Exception {
 
-			ResourcePermission resourcePermission = null;
-			final Role guestMemberRole = RoleLocalServiceUtil.getRole(
-				fileEntry.getCompanyId(), RoleConstants.GUEST);
-			ResourceAction resourceAction =
-				ResourceActionLocalServiceUtil.getResourceAction(
-					DLFileEntry.class.getName(), ActionKeys.VIEW);
-			String[] actionIdsGuest = new String[] {
-			};
-			try {
-//				resourcePermission =
-					ResourcePermissionLocalServiceUtil.getResourcePermission(
-						fileEntry.getCompanyId(), DLFileEntry.class.getName(),
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(fileEntry.getPrimaryKey()),
-						guestMemberRole.getRoleId());
+		ResourcePermission resourcePermission = null;
+		final Role guestMemberRole = RoleLocalServiceUtil.getRole(
+			fileEntry.getCompanyId(), RoleConstants.GUEST);
+		ResourceAction resourceAction =
+			ResourceActionLocalServiceUtil.getResourceAction(
+				DLFileEntry.class.getName(), ActionKeys.VIEW);
+		String[] actionIdsGuest = new String[] {};
+		try {
+			// resourcePermission =
+			ResourcePermissionLocalServiceUtil.getResourcePermission(
+				fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getPrimaryKey()),
+				guestMemberRole.getRoleId());
 
-				ResourcePermissionLocalServiceUtil.setResourcePermissions(
-					fileEntry.getCompanyId(), DLFileEntry.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(fileEntry.getPrimaryKey()),
-					guestMemberRole.getRoleId(), actionIdsGuest);
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				fileEntry.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getPrimaryKey()),
+				guestMemberRole.getRoleId(), actionIdsGuest);
 
-				// if (Validator.isNotNull(resourcePermission)){
-				// resourcePermission.setActionIds(resourceAction.getBitwiseValue());
-				// ResourcePermissionLocalServiceUtil.updateResourcePermission(resourcePermission);
-				// }
-			}
-			catch (NoSuchResourcePermissionException e) {
-				_log.debug(e);
-				//_log.error(e);
-				resourcePermission =
-					ResourcePermissionLocalServiceUtil.createResourcePermission(
-						CounterLocalServiceUtil.increment());
-				resourcePermission.setCompanyId(fileEntry.getCompanyId());
-				resourcePermission.setName(DLFileEntry.class.getName());
-				resourcePermission.setScope(ResourceConstants.SCOPE_INDIVIDUAL);
-				resourcePermission.setPrimKey(
-					String.valueOf(fileEntry.getPrimaryKey()));
-				resourcePermission.setRoleId(guestMemberRole.getRoleId());
-				resourcePermission.setActionIds(resourceAction.getBitwiseValue());// (ActionKeys.VIEW);
-				ResourcePermissionLocalServiceUtil.addResourcePermission(
-					resourcePermission);
-			}
+			// if (Validator.isNotNull(resourcePermission)){
+			// resourcePermission.setActionIds(resourceAction.getBitwiseValue());
+			// ResourcePermissionLocalServiceUtil.updateResourcePermission(resourcePermission);
+			// }
 		}
+		catch (NoSuchResourcePermissionException e) {
+			_log.debug(e);
+			// _log.error(e);
+			resourcePermission =
+				ResourcePermissionLocalServiceUtil.createResourcePermission(
+					CounterLocalServiceUtil.increment());
+			resourcePermission.setCompanyId(fileEntry.getCompanyId());
+			resourcePermission.setName(DLFileEntry.class.getName());
+			resourcePermission.setScope(ResourceConstants.SCOPE_INDIVIDUAL);
+			resourcePermission.setPrimKey(
+				String.valueOf(fileEntry.getPrimaryKey()));
+			resourcePermission.setRoleId(guestMemberRole.getRoleId());
+			resourcePermission.setActionIds(resourceAction.getBitwiseValue());// (ActionKeys.VIEW);
+			ResourcePermissionLocalServiceUtil.addResourcePermission(
+				resourcePermission);
+		}
+	}
 }
