@@ -76,6 +76,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setWaitingCount(model.getWaitingCount());
 		soapModel.setOutsideCount(model.getOutsideCount());
 		soapModel.setInsideCount(model.getInsideCount());
+		soapModel.setSystemId(model.getSystemId());
 
 		return soapModel;
 	}
@@ -471,6 +472,14 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_insideCount = insideCount;
 	}
 
+	public int getSystemId() {
+		return _systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		_systemId = systemId;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -513,4 +522,5 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _waitingCount;
 	private int _outsideCount;
 	private int _insideCount;
+	private int _systemId;
 }

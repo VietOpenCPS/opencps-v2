@@ -809,7 +809,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote, Integer delegateType,
-		String documentNo, java.util.Date documentDate,
+		String documentNo, java.util.Date documentDate, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierFull(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -820,7 +820,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateName, delegateIdNo, delegateTelNo, delegateEmail,
 			delegateAddress, delegateCityCode, delegateDistrictCode,
 			delegateWardCode, sampleCount, dossierName, briefNote,
-			delegateType, documentNo, documentDate, serviceContext);
+			delegateType, documentNo, documentDate, systemId, serviceContext);
 	}
 
 	@Override

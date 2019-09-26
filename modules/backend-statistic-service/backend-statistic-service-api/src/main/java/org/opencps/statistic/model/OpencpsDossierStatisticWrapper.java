@@ -103,6 +103,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("waitingCount", getWaitingCount());
 		attributes.put("outsideCount", getOutsideCount());
 		attributes.put("insideCount", getInsideCount());
+		attributes.put("systemId", getSystemId());
 
 		return attributes;
 	}
@@ -360,6 +361,12 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 
 		if (insideCount != null) {
 			setInsideCount(insideCount);
+		}
+
+		Integer systemId = (Integer)attributes.get("systemId");
+
+		if (systemId != null) {
+			setSystemId(systemId);
 		}
 	}
 
@@ -731,6 +738,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public boolean getReporting() {
 		return _opencpsDossierStatistic.getReporting();
+	}
+
+	/**
+	* Returns the system ID of this opencps dossier statistic.
+	*
+	* @return the system ID of this opencps dossier statistic
+	*/
+	@Override
+	public int getSystemId() {
+		return _opencpsDossierStatistic.getSystemId();
 	}
 
 	/**
@@ -1237,6 +1254,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setReporting(boolean reporting) {
 		_opencpsDossierStatistic.setReporting(reporting);
+	}
+
+	/**
+	* Sets the system ID of this opencps dossier statistic.
+	*
+	* @param systemId the system ID of this opencps dossier statistic
+	*/
+	@Override
+	public void setSystemId(int systemId) {
+		_opencpsDossierStatistic.setSystemId(systemId);
 	}
 
 	/**

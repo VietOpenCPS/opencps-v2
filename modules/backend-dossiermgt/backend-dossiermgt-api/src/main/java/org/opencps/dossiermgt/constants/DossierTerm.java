@@ -267,4 +267,5 @@ public class DossierTerm {
 	public static final String PAUSE_OVERDUE_LOCK_STATE = "PAUSE_OVERDUE";
 	
 	public static final String PAUSE_LOCK_STATE_TERM = "LOCK";
+	public static final String SYSTEM_ID = "systemId";
 }

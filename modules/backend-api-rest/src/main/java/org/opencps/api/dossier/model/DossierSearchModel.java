@@ -119,7 +119,8 @@ import javax.xml.bind.annotation.XmlType;
     "permission",
     "delegateType",
     "documentNo",
-    "documentDate"
+    "documentDate",
+    "systemId"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -247,7 +248,18 @@ public class DossierSearchModel {
     protected String delegateType;
     @QueryParam(value = "documentNo")
     protected String documentNo;
-    public String getDelegateType() {
+    @QueryParam(value = "systemId")
+    protected Integer systemId;
+
+	public Integer getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(Integer systemId) {
+		this.systemId = systemId;
+	}
+
+	public String getDelegateType() {
 		return delegateType;
 	}
 

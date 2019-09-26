@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlType;
 	"dossiers",
 	"dossierMarkArr",
 	"dossierFileArr",
-	"payment"
+	"payment",
+	"systemId"
 })
 @XmlRootElement(name = "DossierMultipleInputModel")
 public class DossierMultipleInputModel {
@@ -43,6 +44,8 @@ public class DossierMultipleInputModel {
 	private String dossierFileArr;
 	@FormParam(value = "payment")
 	private String payment;
+	@FormParam(value = "systemId")
+	private Integer systemId;
 
 	public String getServiceCode() {
 		return serviceCode;
@@ -91,6 +94,12 @@ public class DossierMultipleInputModel {
 	}
 	public void setPayment(String payment) {
 		this.payment = payment;
+	}
+	public Integer getSystemId() {
+		return systemId;
+	}
+	public void setSystemId(Integer systemId) {
+		this.systemId = systemId;
 	}
 
 }

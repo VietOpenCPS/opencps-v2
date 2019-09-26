@@ -117,7 +117,8 @@ import javax.xml.bind.annotation.XmlType;
 	"metaData",
 	"delegateType",
 	"documentNo",
-	"documentDate"
+	"documentDate",
+	"systemId"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -246,9 +247,19 @@ public class DossierInputModel {
 	private String payment;
 	@FormParam(value = "serverNo")
 	private String serverNo;
-	
 	@FormParam(value = "metaData")
 	private String metaData;
+	@FormParam(value = "systemId")
+	private Integer systemId;
+
+	public Integer getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(Integer systemId) {
+		this.systemId = systemId;
+	}
+
 	public Integer getDelegateType() {
 		return delegateType;
 	}

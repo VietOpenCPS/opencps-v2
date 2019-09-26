@@ -698,6 +698,20 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setInsideCount(int insideCount);
 
+	/**
+	 * Returns the system ID of this opencps dossier statistic.
+	 *
+	 * @return the system ID of this opencps dossier statistic
+	 */
+	public int getSystemId();
+
+	/**
+	 * Sets the system ID of this opencps dossier statistic.
+	 *
+	 * @param systemId the system ID of this opencps dossier statistic
+	 */
+	public void setSystemId(int systemId);
+
 	@Override
 	public boolean isNew();
 

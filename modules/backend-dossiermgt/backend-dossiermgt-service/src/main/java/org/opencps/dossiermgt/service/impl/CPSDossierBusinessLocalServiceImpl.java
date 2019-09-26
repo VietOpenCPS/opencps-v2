@@ -4032,6 +4032,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierName(serviceName);
 			}
 			dossier.setSampleCount(sampleCount);
+			dossier.setSystemId(input.getSystemId());
 			
 			//Delegate dossier
 			dossier.setDelegateType(input.getDelegateType() != null ? input.getDelegateType() : 0);
@@ -4324,6 +4325,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				//dossier.setRegisterBookCode(registerBookCode);
 				//dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
+				dossier.setSystemId(input.getSystemId());
 				if (Validator.isNotNull(input.getMetaData()))
 					dossier.setMetaData(input.getMetaData());
 
@@ -4698,6 +4700,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				if (Validator.isNotNull(metaData))
 					dossier.setMetaData(metaData);
+				//
+				dossier.setSystemId(input.getSystemId());
 
 			//TODO: Process then
 			//updateDelegateApplicant(dossier, input);
@@ -5158,6 +5162,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				if (Validator.isNotNull(metaData))
 					dossier.setMetaData(metaData);
+				//
+				dossier.setSystemId(input.getSystemId());
 
 			//TODO: Process then
 			//updateDelegateApplicant(dossier, input);

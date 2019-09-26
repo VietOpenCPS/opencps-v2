@@ -72,6 +72,16 @@ public class DossierInputModel {
 	private String serverNo;
 	private String metaData;
 	private Integer delegateType;
+	private int systemId;
+
+	public int getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		this.systemId = systemId;
+	}
+
 	public Integer getDelegateType() {
 		return delegateType;
 	}

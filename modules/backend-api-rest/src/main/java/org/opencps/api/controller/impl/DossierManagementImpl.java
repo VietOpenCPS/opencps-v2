@@ -357,6 +357,14 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MAPPING_PERMISSION, permissionUserId);
 			}
 
+			//SystemId
+			Integer systemId = query.getSystemId();
+			if (systemId != null) {
+				params.put(DossierTerm.SYSTEM_ID, systemId);
+			} else {
+				params.put(DossierTerm.SYSTEM_ID, 0);
+			}
+
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -714,6 +722,14 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.USER_ID, user.getUserId());
 			}
 
+			//SystemId
+			Integer systemId = query.getSystemId();
+			if (systemId != null) {
+				params.put(DossierTerm.SYSTEM_ID, systemId);
+			} else {
+				params.put(DossierTerm.SYSTEM_ID, 0);
+			}
+
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -973,6 +989,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if (input.getDocumentDate() != null && Validator.isNotNull(input.getDocumentDate())) {
 				documentDate = new Date(input.getDocumentDate());
 			}
+			//
+			int systemId = input.getSystemId() != null ? input.getSystemId() : 0;
 
 //			Dossier dossier = actions.initDossier(groupId, id, referenceUid, counter, input.getServiceCode(),
 //					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, input.getApplicantName(),
@@ -993,7 +1011,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateIdNo(), input.getDelegateTelNo(), input.getDelegateEmail(),
 					input.getDelegateAddress(), input.getDelegateCityCode(), input.getDelegateDistrictCode(),
 					input.getDelegateWardCode(), input.getSampleCount(), input.getDossierName(), input.getBriefNote(),
-					delegateType, documentNo, documentDate,
+					delegateType, documentNo, documentDate, systemId,
 					serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
