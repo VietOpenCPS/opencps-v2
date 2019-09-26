@@ -2530,19 +2530,22 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			//
 			List<DossierAction> dActionList = DossierActionLocalServiceUtil.findByG_DID(groupId, dossierId);
-			JSONObject result = JSONFactoryUtil.createJSONObject();
+			ServiceProcess serviceProcess = null;
 			if (dActionList != null && dActionList.size() > 0) {
 				long serviceProcessId = dActionList.get(0).getServiceProcessId();
 				if (serviceProcessId > 0) {
-					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
-					if (serviceProcess == null) {
-						throw new Exception("Không tìm thấy hồ sơ");
-					}
-					
-					result = getDossierProcessSequencesJSON(groupId, dossier, serviceProcess);
+					serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 				}
+			} else {
+				serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, dossier.getServiceCode(),
+						dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
 			}
 			
+			if (serviceProcess == null) {
+				throw new Exception("Không tìm thấy hồ sơ");
+			}
+			
+			JSONObject result = getDossierProcessSequencesJSON(groupId, dossier, serviceProcess);
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
