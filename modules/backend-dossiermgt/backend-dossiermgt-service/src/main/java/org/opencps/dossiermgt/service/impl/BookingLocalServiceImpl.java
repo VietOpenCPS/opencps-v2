@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -41,6 +42,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
@@ -85,8 +88,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		String state = GetterUtil.getString((params.get(BookingTerm.STATE)));
 		String from = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String to = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
-		String bookingFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
-		String bookingTo = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
+		String checkinFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CHECK_IN_DATE));
+		String checkinTo = GetterUtil.getString(params.get(BookingTerm.TO_CHECK_IN_DATE));
 		String gateNumber = GetterUtil.getString(params.get(BookingTerm.GATE_NUMBER));
 		String className = GetterUtil.getString(params.get(BookingTerm.CLASS_NAME));
 
@@ -211,25 +214,25 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			}
 		}
 
-		String fromBookingDateFilter = bookingFrom + ConstantsTerm.HOUR_START;
-		String toBookingDateFilter = bookingTo + ConstantsTerm.HOUR_END;
+		String fromCheckinDateFilter = checkinFrom + ConstantsTerm.HOUR_START;
+		String toCheckinDateFilter = checkinTo + ConstantsTerm.HOUR_END;
 
-		if (Validator.isNotNull(bookingFrom)) {
-			if (Validator.isNotNull(bookingTo)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, true, true);
+		if (Validator.isNotNull(checkinFrom)) {
+			if (Validator.isNotNull(checkinTo)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, true, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, true, false);
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, true, false);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		} else {
-			if (Validator.isNotNull(bookingTo)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, false, true);
+			if (Validator.isNotNull(checkinTo)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
@@ -404,7 +407,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, ServiceContext serviceContext) {
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode,
+			ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -428,10 +432,35 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 					booking.setCheckinDate(checkinDate);
 				if (Validator.isNotNull(gateNumber))
 					booking.setGateNumber(gateNumber);
-				if (Validator.isNotNull(state))
-					booking.setState(state);
 				if (Validator.isNotNull(bookingDate))
 					booking.setBookingDate(bookingDate);
+				if (Validator.isNotNull(serviceGroupCode))
+					booking.setServiceGroupCode(serviceGroupCode);
+
+				//Check date before
+				Calendar calUpdate = Calendar.getInstance();
+				Calendar calNow = Calendar.getInstance();
+				calUpdate.setTime(booking.getCheckinDate());
+				calNow.setTime(now);
+
+				int dayUpdate = calUpdate.get(Calendar.DAY_OF_YEAR);
+				int dayNow = calNow.get(Calendar.DAY_OF_YEAR);
+				_log.info("dayUpdate: "+dayUpdate);
+				_log.info("dayNow: "+dayNow);
+				
+				if (booking.getState() == 3 || dayUpdate < dayNow) {
+					//Get max count booking in day
+					int countCode = bookingFinder.findBookingMaxByServiceGroupCode(groupId, booking.getServiceGroupCode());
+					_log.info("bookingCode: "+JSONFactoryUtil.looseSerialize(countCode));
+					if (countCode > 0) {
+						booking.setCount(countCode + 1);
+					} else {
+						booking.setCount(1);
+					}
+				}
+				
+				if (Validator.isNotNull(state))
+					booking.setState(state);
 				booking.setSpeaking(speaking);
 			}
 			//
@@ -456,6 +485,16 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			booking.setState(state);
 			booking.setBookingDate(bookingDate);
 			booking.setSpeaking(speaking);
+			booking.setServiceGroupCode(serviceGroupCode);
+			//Get max count booking in day
+			_log.info("serviceGroupCode: "+serviceGroupCode);
+			int countCode = bookingFinder.findBookingMaxByServiceGroupCode(groupId, serviceGroupCode);
+			_log.info("bookingCode: "+JSONFactoryUtil.looseSerialize(countCode));
+			if (countCode > 0) {
+				booking.setCount(countCode + 1);
+			} else {
+				booking.setCount(1);
+			}
 
 			return bookingPersistence.update(booking);
 		}

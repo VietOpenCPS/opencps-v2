@@ -2528,21 +2528,20 @@ public class DossierManagementImpl implements DossierManagement {
 			if (dossier == null) {
 				throw new Exception("Không tìm thấy hồ sơ");
 			}
-			String serviceCode = dossier.getServiceCode();
-			ServiceProcess serviceProcess = null;
-			List<DossierAction> listDa = DossierActionLocalServiceUtil.findByG_DID(dossier.getGroupId(), dossier.getDossierId());
-			if (listDa.size() > 0) {
-				long serviceProcessId = listDa.get(0).getServiceProcessId();
-				serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+			//
+			List<DossierAction> dActionList = DossierActionLocalServiceUtil.findByG_DID(groupId, dossierId);
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			if (dActionList != null && dActionList.size() > 0) {
+				long serviceProcessId = dActionList.get(0).getServiceProcessId();
+				if (serviceProcessId > 0) {
+					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
+					if (serviceProcess == null) {
+						throw new Exception("Không tìm thấy hồ sơ");
+					}
+					
+					result = getDossierProcessSequencesJSON(groupId, dossier, serviceProcess);
+				}
 			}
-			else {
-				serviceProcess = ServiceProcessLocalServiceUtil.getServiceByCode(groupId, serviceCode, dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());				
-			}
-			if (serviceProcess == null) {
-				throw new Exception("Không tìm thấy hồ sơ");
-			}
-			
-			JSONObject result = getDossierProcessSequencesJSON(groupId, dossier, serviceProcess);
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {

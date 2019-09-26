@@ -125,16 +125,22 @@ public class EFormNumberGenerator {
 					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
 					String number = countByNumber(key, tmp);
 
-					_log.debug("//////////////////////////////////////////////////////////// "
+					_log.info("//////////////////////////////////////////////////////////// "
 							+ "|certNumber= " + number);
 
+					_log.info("tmp: "+ tmp);
 					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					_log.info("tmp: "+ tmp);
 
+					_log.info("number.length(): "+ number.length());
+					_log.info("tmp.length(): "+ tmp.length());
 					if (number.length() < tmp.length()) {
 						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						_log.info("number: "+ number);
 					}
 
 					seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+					_log.info("seriNumberPattern: "+ seriNumberPattern);
 
 					// Pattern follow GovAgencyCode
 				} else if (r.toString().equals(codePatternService)) {
@@ -222,11 +228,31 @@ public class EFormNumberGenerator {
 
 	private static String countByNumber(String pattern, String tmp) {
 
-		long counter = CounterLocalServiceUtil.increment(pattern);
+		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
 		String format = "%0" + lengthPatern + "d";
 
-		return String.format(format, counter); 
+		long _counterNumber = 0;
+		_log.info("pattern" + pattern);
+		Counter counterConfig = CounterLocalServiceUtil.fetchCounter(pattern);
+
+		if (Validator.isNotNull(counterConfig)) {
+			// create counter config
+			_counterNumber = counterConfig.getCurrentId() + 1;
+			//
+			counterConfig.setCurrentId(_counterNumber);
+			CounterLocalServiceUtil.updateCounter(counterConfig);
+				
+			} else {
+				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+				counterConfig = CounterLocalServiceUtil.createCounter(pattern);
+				//increment CurrentCounter 
+				counterConfig.setCurrentId(1);
+				_counterNumber = 1;
+				CounterLocalServiceUtil.updateCounter(counterConfig);
+			}
+
+		return String.format(format, _counterNumber); 
 	}
 
 	private static String countByInit(String pattern, long dossierid, String tmp, long groupId) {

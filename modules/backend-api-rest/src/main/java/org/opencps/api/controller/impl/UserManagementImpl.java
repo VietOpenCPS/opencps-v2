@@ -730,7 +730,18 @@ public class UserManagementImpl implements UserManagement {
 		}
 	    
 	    builder.cacheControl(cc);
-	    return builder.build();		
+	    return builder.build();
+		
+//	    if (OpenCPSConfigUtil.isHttpCacheEnable()) {
+//			CacheControl cc = new CacheControl();
+//		    cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//		    cc.setPrivate(true);
+//		    
+//			return Response.status(200).cacheControl(cc).entity(dataUser.toJSONString()).build();	    	
+//	    }
+//	    else {
+//			return Response.status(200).entity(dataUser.toJSONString()).build();	    		    	
+//	    }
 	}
 
 }
