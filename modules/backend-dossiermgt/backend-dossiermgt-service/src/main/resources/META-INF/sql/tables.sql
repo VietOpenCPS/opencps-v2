@@ -75,7 +75,8 @@ create table opencps_deliverable (
 	deliverableState INTEGER,
 	fileEntryId LONG,
 	dossierId LONG,
-	docSync INTEGER
+	docSync INTEGER,
+	fileAttachs VARCHAR(75) null
 );
 
 create table opencps_deliverablelog (
@@ -93,7 +94,8 @@ create table opencps_deliverablelog (
 	content TEXT null,
 	deliverableAction INTEGER,
 	actionDate DATE null,
-	payload TEXT null
+	payload TEXT null,
+	fileEntryId LONG
 );
 
 create table opencps_deliverabletype (

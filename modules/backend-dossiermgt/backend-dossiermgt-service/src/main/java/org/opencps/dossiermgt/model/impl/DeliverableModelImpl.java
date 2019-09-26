@@ -95,7 +95,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			{ "deliverableState", Types.INTEGER },
 			{ "fileEntryId", Types.BIGINT },
 			{ "dossierId", Types.BIGINT },
-			{ "docSync", Types.INTEGER }
+			{ "docSync", Types.INTEGER },
+			{ "fileAttachs", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -128,9 +129,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("dossierId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("fileAttachs", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(75) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState INTEGER,fileEntryId LONG,dossierId LONG,docSync INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverable (uuid_ VARCHAR(75) null,deliverableId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableCode VARCHAR(75) null,deliverableName VARCHAR(75) null,deliverableType VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantName VARCHAR(75) null,subject VARCHAR(75) null,formData TEXT null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,expireDate DATE null,issueDate DATE null,revalidate DATE null,deliverableState INTEGER,fileEntryId LONG,dossierId LONG,docSync INTEGER,fileAttachs VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverable";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverable.deliverableId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverable.deliverableId ASC";
@@ -224,6 +226,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		attributes.put("fileEntryId", getFileEntryId());
 		attributes.put("dossierId", getDossierId());
 		attributes.put("docSync", getDocSync());
+		attributes.put("fileAttachs", getFileAttachs());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -399,6 +402,12 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 		if (docSync != null) {
 			setDocSync(docSync);
+		}
+
+		String fileAttachs = (String)attributes.get("fileAttachs");
+
+		if (fileAttachs != null) {
+			setFileAttachs(fileAttachs);
 		}
 	}
 
@@ -878,6 +887,21 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	}
 
 	@Override
+	public String getFileAttachs() {
+		if (_fileAttachs == null) {
+			return "";
+		}
+		else {
+			return _fileAttachs;
+		}
+	}
+
+	@Override
+	public void setFileAttachs(String fileAttachs) {
+		_fileAttachs = fileAttachs;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Deliverable.class.getName()));
@@ -942,6 +966,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		deliverableImpl.setFileEntryId(getFileEntryId());
 		deliverableImpl.setDossierId(getDossierId());
 		deliverableImpl.setDocSync(getDocSync());
+		deliverableImpl.setFileAttachs(getFileAttachs());
 
 		deliverableImpl.resetOriginalValues();
 
@@ -1212,12 +1237,20 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 		deliverableCacheModel.docSync = getDocSync();
 
+		deliverableCacheModel.fileAttachs = getFileAttachs();
+
+		String fileAttachs = deliverableCacheModel.fileAttachs;
+
+		if ((fileAttachs != null) && (fileAttachs.length() == 0)) {
+			deliverableCacheModel.fileAttachs = null;
+		}
+
 		return deliverableCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(59);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1275,6 +1308,8 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 		sb.append(getDossierId());
 		sb.append(", docSync=");
 		sb.append(getDocSync());
+		sb.append(", fileAttachs=");
+		sb.append(getFileAttachs());
 		sb.append("}");
 
 		return sb.toString();
@@ -1282,7 +1317,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(88);
+		StringBundler sb = new StringBundler(91);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Deliverable");
@@ -1400,6 +1435,10 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 			"<column><column-name>docSync</column-name><column-value><![CDATA[");
 		sb.append(getDocSync());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fileAttachs</column-name><column-value><![CDATA[");
+		sb.append(getFileAttachs());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1454,6 +1493,7 @@ public class DeliverableModelImpl extends BaseModelImpl<Deliverable>
 	private long _originalDossierId;
 	private boolean _setOriginalDossierId;
 	private int _docSync;
+	private String _fileAttachs;
 	private long _columnBitmask;
 	private Deliverable _escapedModel;
 }

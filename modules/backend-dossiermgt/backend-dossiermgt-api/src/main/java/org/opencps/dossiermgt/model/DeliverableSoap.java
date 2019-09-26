@@ -61,6 +61,7 @@ public class DeliverableSoap implements Serializable {
 		soapModel.setFileEntryId(model.getFileEntryId());
 		soapModel.setDossierId(model.getDossierId());
 		soapModel.setDocSync(model.getDocSync());
+		soapModel.setFileAttachs(model.getFileAttachs());
 
 		return soapModel;
 	}
@@ -337,6 +338,14 @@ public class DeliverableSoap implements Serializable {
 		_docSync = docSync;
 	}
 
+	public String getFileAttachs() {
+		return _fileAttachs;
+	}
+
+	public void setFileAttachs(String fileAttachs) {
+		_fileAttachs = fileAttachs;
+	}
+
 	private String _uuid;
 	private long _deliverableId;
 	private long _companyId;
@@ -365,4 +374,5 @@ public class DeliverableSoap implements Serializable {
 	private long _fileEntryId;
 	private long _dossierId;
 	private int _docSync;
+	private String _fileAttachs;
 }

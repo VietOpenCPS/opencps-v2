@@ -129,6 +129,7 @@
 		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="fileAttachs" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableLogImpl" table="opencps_deliverablelog">
 		<id name="deliverableLogId" type="long">
@@ -148,6 +149,7 @@
 		<property name="deliverableAction" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="actionDate" type="org.hibernate.type.TimestampType" />
 		<property name="payload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="fileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableTypeImpl" table="opencps_deliverabletype">
 		<id name="deliverableTypeId" type="long">

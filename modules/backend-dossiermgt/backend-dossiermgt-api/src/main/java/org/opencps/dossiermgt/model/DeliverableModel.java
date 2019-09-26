@@ -501,6 +501,21 @@ public interface DeliverableModel extends BaseModel<Deliverable>, GroupedModel,
 	 */
 	public void setDocSync(int docSync);
 
+	/**
+	 * Returns the file attachs of this deliverable.
+	 *
+	 * @return the file attachs of this deliverable
+	 */
+	@AutoEscape
+	public String getFileAttachs();
+
+	/**
+	 * Sets the file attachs of this deliverable.
+	 *
+	 * @param fileAttachs the file attachs of this deliverable
+	 */
+	public void setFileAttachs(String fileAttachs);
+
 	@Override
 	public boolean isNew();
 

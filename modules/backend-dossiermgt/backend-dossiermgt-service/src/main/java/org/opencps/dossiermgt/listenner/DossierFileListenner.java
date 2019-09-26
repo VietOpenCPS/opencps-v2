@@ -1,6 +1,8 @@
 
 package org.opencps.dossiermgt.listenner;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -11,6 +13,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Document;
@@ -19,6 +23,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
@@ -27,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -505,14 +513,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			serviceContext.setUserId(model.getUserId());
 
 			try {
+				// Nhung ho so co chung deliverableType va deliverableCode se
+				// chung 1 giay phep
 				DossierPart dossierPart =
 					DossierPartLocalServiceUtil.fetchByTemplatePartNo(
 						model.getGroupId(), model.getDossierTemplateNo(),
 						model.getDossierPartNo());
+
+				// Neu ho so khong co ky so thi khong can tao giay phep
 				if (!dossierPart.getESign() ||
 					Validator.isNull(dossierPart.getDeliverableType())) {
 					return;
 				}
+
 				// DeliverableType
 				DeliverableType dlvType =
 					DeliverableTypeLocalServiceUtil.getByCode(
@@ -541,33 +554,39 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						JSONFactoryUtil.createJSONObject(model.getFormData());
 				_log.info("jsFormData: " + jsFormData);
 
-				if (jsMappingData.has("deliverables") &&
-					Validator.isNotNull(jsMappingData.get("deliverbles"))) {
-					formDataContent = mappingContent(
+				// All mappingData from deliverableType must format like:
+				// "deliverableCode": "#deliverableCode@KQGP"
+
+				if (jsMappingData.has("deliverables")) {
+
+					// map data with fileTemplateNo
+					JSONObject mapp = mappingContent(
 						jsMappingData, jsFormData, model.getDossierId());
+					// uu tien cac truong thong tin formData
+					formDataContent =
+						mergeObject(mapp.toString(), jsFormData.toString());
 				}
-				else if (jsMappingData.has("deliverables")) {
-					formDataContent = mappingContent(jsMappingData, jsFormData);
+				// else if (jsMappingData.has("deliverables")) {
+				// formDataContent = mappingContent(jsMappingData, jsFormData);
+				// }
+
+				// them truong luu danh sach cac file quyet dinh
+				String fileAttachs = StringPool.BLANK;
+				if (jsMappingData.has("fileAttachs")) {
+
+					fileAttachs = getFileAttachsInDeliverable(
+						model.getDossierId(),
+						jsMappingData.getString("fileAttachs"));
+					System.out.println(
+						"==========fileAttachs===========" + fileAttachs);
 				}
-
-				long dFileEntryId = dossierFileAttach == null
-					? model.getFileEntryId()
-					: dossierFileAttach.getFileEntryId();
-
-				Deliverable deliverable =
-					Validator.isNotNull(model.getDeliverableCode())
-						? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-							model.getGroupId(), model.getDeliverableCode())
-						: DeliverableLocalServiceUtil.fetchByGID_DID(
-							model.getGroupId(), model.getDossierId());
-							System.out.println("======search deliverable==============" + deliverable);
-							System.out.println("======search model.getGroupId()==============" + model.getGroupId());
-							System.out.println("======search model.getDossierId()==============" + model.getDossierId());
-
+				System.out.println(
+					"==========fileAttachs=====74======" + fileAttachs);
 
 				String dDeliverableCode = model.getDeliverableCode();
 
 				if (model.getEForm()) {
+					// TODO: check ton tai
 					dDeliverableCode = formDataContent.has("deliverableCode")
 						? formDataContent.getString("deliverableCode")
 						: dDeliverableCode;
@@ -576,22 +595,28 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					DossierFileLocalServiceUtil.updateDossierFile(model);
 				}
 
+				String applicantName =
+					formDataContent.getString("applicantName");
+				String subject = formDataContent.getString("subject");
+				String issueDate = formDataContent.getString("issueDate");
+				String expireDate = formDataContent.getString("expireDate");
+				String revalidate = formDataContent.getString("revalidate");
+
+				// check exits deliverable
+				Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
+					? DeliverableLocalServiceUtil.getByF_GID_DCODE(
+						model.getGroupId(), dDeliverableCode)
+					: DeliverableLocalServiceUtil.fetchByGID_DID(
+						model.getGroupId(), model.getDossierId());
+
 				if (dossierPart.getDeliverableAction() == 0 &&
 					Validator.isNull(deliverable)) {
 
 					// add new deliverable
 
-					System.out.println(
+					_log.debug(
 						"============addDeliverableSign=============" +
 							model.getDeliverableCode() + "___" + deliverable);
-					System.out.println(
-						"============addDeliverableSign=============");
-					System.out.println(
-						"============addDeliverableSign=============");
-					System.out.println(
-						"============addDeliverableSign=============");
-					System.out.println(
-						"============addDeliverableSign=============");
 					deliverable =
 						DeliverableLocalServiceUtil.addDeliverableSign(
 							model.getGroupId(),
@@ -599,30 +624,21 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							dlvType.getTypeName(), dDeliverableCode,
 							dossier.getGovAgencyCode(),
 							dossier.getGovAgencyName(),
-							dossier.getApplicantIdNo(),
-							formDataContent.getString("applicantName"),
-							formDataContent.getString("subject"),
-							formDataContent.getString("issueDate"),
-							formDataContent.getString("expireDate"),
-							formDataContent.getString("revalidate"), "0",
-							dossier.getDossierId(), dFileEntryId,
+							dossier.getApplicantIdNo(), applicantName, subject,
+							issueDate, expireDate, revalidate, "0",
+							dossier.getDossierId(),
+							dossierFileAttach != null
+								? dossierFileAttach.getFileEntryId() : 0l,
 							dlvType.getFormScriptFileId(),
 							dlvType.getFormReportFileId(),
-							formDataContent.toString(), serviceContext);
+							formDataContent.toString(), fileAttachs,
+							serviceContext);
 				}
 				else if (Validator.isNotNull(deliverable)) {
 
 					// backup a deliverable log and update deliverable
 
-					System.out.println(
-						"============backup a deliverable log and update deliverable=============");
-					System.out.println(
-						"============backup a deliverable log and update deliverable=============");
-					System.out.println(
-						"============backup a deliverable log and update deliverable=============");
-					System.out.println(
-						"============backup a deliverable log and update deliverable=============");
-					System.out.println(
+					_log.debug(
 						"============backup a deliverable log and update deliverable=============");
 					// backup
 					JSONObject deliverableLog =
@@ -648,43 +664,108 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						dossierPart.getDeliverableAction());
 					deliverableLog.put("actionDate", actionDate);
 					deliverableLog.put("payload", deliverable.getFormData());
+					deliverableLog.put(
+						"fileEntryId", deliverable.getFileEntryId());
 					DeliverableLogLocalServiceUtil.adminProcessData(
 						deliverableLog);
 
 					// update
 					deliverable.setDeliverableCode(dDeliverableCode);
-					deliverable.setFileEntryId(dFileEntryId);
+					deliverable.setFileEntryId(
+						dossierFileAttach != null
+							? dossierFileAttach.getFileEntryId() : 0l);
 					deliverable.setApplicantName(
-						formDataContent.getString("applicantName"));
+						Validator.isNotNull(applicantName)
+							? applicantName : deliverable.getApplicantName());
 					deliverable.setSubject(
-						formDataContent.getString("subject"));
+						Validator.isNotNull(subject)
+							? applicantName : deliverable.getSubject());
 					deliverable.setIssueDate(
-						APIDateTimeUtils.convertStringToDate(
-							formDataContent.getString("issueDate"),
-							APIDateTimeUtils._NORMAL_DATE));
+						Validator.isNotNull(issueDate)
+							? APIDateTimeUtils.convertStringToDate(
+								issueDate, APIDateTimeUtils._NORMAL_DATE)
+							: deliverable.getIssueDate());
 					deliverable.setExpireDate(
-						APIDateTimeUtils.convertStringToDate(
-							formDataContent.getString("expireDate"),
-							APIDateTimeUtils._NORMAL_DATE));
+						Validator.isNotNull(expireDate)
+							? APIDateTimeUtils.convertStringToDate(
+								expireDate, APIDateTimeUtils._NORMAL_DATE)
+							: deliverable.getExpireDate());
 					deliverable.setRevalidate(
-						APIDateTimeUtils.convertStringToDate(
-							formDataContent.getString("revalidate"),
-							APIDateTimeUtils._NORMAL_DATE));
+						Validator.isNotNull(revalidate)
+							? APIDateTimeUtils.convertStringToDate(
+								revalidate, APIDateTimeUtils._NORMAL_DATE)
+							: deliverable.getRevalidate());
+
+					formDataContent = mergeObject(
+						deliverable.getFormData(), formDataContent.toString());
 					deliverable.setFormData(formDataContent.toString());
+
+					deliverable.setFileAttachs(fileAttachs);
 
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 				}
 				else {
-					System.out.println(
+					_log.debug(
 						"==============deliverable other key update============");
-					System.out.println(
-						"==============deliverable other key update============");
-					System.out.println(
-						"==============deliverable other key update============");
-					System.out.println(
-						"==============deliverable other key update============");
-					System.out.println(
-						"==============deliverable other key update============");
+				}
+
+				// update fileEntryId if not exits dossierFileAttach
+				long formReportFileId = deliverable.getFormReportFileId() > 0
+					? deliverable.getFormReportFileId()
+					: dlvType.getFormReportFileId();
+
+				if (deliverable != null && formReportFileId > 0 &&
+					!(dossierFileAttach != null &&
+						dossierFileAttach.getFileEntryId() > 0)) {
+
+					InputStream is = null;
+					String jrxmlTemplate = StringPool.BLANK;
+
+					try {
+						DLFileEntry dlFileEntry =
+							DLFileEntryLocalServiceUtil.getFileEntry(
+								formReportFileId);
+
+						is = dlFileEntry.getContentStream();
+
+						jrxmlTemplate =
+							IOUtils.toString(is, StandardCharsets.UTF_8);
+
+					}
+					catch (Exception e) {
+						_log.debug(e);
+						jrxmlTemplate = StringPool.BLANK;
+					}
+					finally {
+						if (is != null) {
+							try {
+								is.close();
+							}
+							catch (IOException e) {
+								_log.debug(e);
+							}
+						}
+					}
+
+					_log.debug(
+						"========update fileEntryId if not exits dossierFileAttach");
+					// Process update deliverable file Id
+					Message message = new Message();
+
+					JSONObject msgData = JSONFactoryUtil.createJSONObject();
+					msgData.put("className", Deliverable.class.getName());
+					msgData.put("classPK", deliverable.getDeliverableId());
+					msgData.put("jrxmlTemplate", jrxmlTemplate);
+					msgData.put(
+						"formData",
+						formDataContent != null
+							? formDataContent.toJSONString()
+							: StringPool.BLANK);
+					msgData.put("userId", model.getUserId());
+
+					message.put("msgToEngine", msgData);
+					MessageBusUtil.sendMessage(
+						"jasper/engine/out/destination", message);
 				}
 			}
 			catch (Exception e) {
@@ -692,6 +773,78 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 		}
 
+	}
+
+	public String getFileAttachsInDeliverable(
+		long dossierId, String filesTemplateNo) {
+
+		String fileAttachs = StringPool.BLANK;
+		String commaFlag = StringPool.BLANK;
+		if (dossierId <= 0 || Validator.isNull(filesTemplateNo)) {
+
+			return fileAttachs;
+		}
+		try {
+			String[] filesTemplateNoArr =
+				filesTemplateNo.split(StringPool.COMMA);
+			// fileTemplateNo in mappingData
+			for (String fileTemplateNo : filesTemplateNoArr) {
+
+				List<DossierFile> dfs =
+					DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(
+						dossierId, fileTemplateNo.trim(), false);
+
+				// all dossierFile in fileTemplateNo
+				for (DossierFile df : dfs) {
+
+					if (df.getFileEntryId() > 0) {
+
+						fileAttachs += commaFlag + df.getFileEntryId();
+						commaFlag = StringPool.COMMA;
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+		return fileAttachs;
+	}
+
+	public JSONObject mergeObject(String oldObj, String newObj) {
+
+		JSONObject mergedObj = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			System.out.println("=======map=======" + oldObj + " " + newObj);
+			JSONObject o1 = Validator.isNotNull(oldObj)
+				? JSONFactoryUtil.createJSONObject(oldObj)
+				: JSONFactoryUtil.createJSONObject();
+			JSONObject o2 = Validator.isNotNull(newObj)
+				? JSONFactoryUtil.createJSONObject(newObj)
+				: JSONFactoryUtil.createJSONObject();
+			Iterator i1 = o1.keys();
+			Iterator i2 = o2.keys();
+			String tmp_key;
+			while (i1.hasNext()) {
+				tmp_key = (String) i1.next();
+				mergedObj.put(tmp_key, o1.get(tmp_key));
+			}
+			while (i2.hasNext()) {
+				tmp_key = (String) i2.next();
+				// only update if not null
+				if (Validator.isNotNull(o2.get(tmp_key))) {
+					mergedObj.put(tmp_key, o2.get(tmp_key));
+				}
+			}
+		}
+		catch (Exception e) {
+			// e.printStackTrace();
+			_log.error(e);
+		}
+
+		return mergedObj;
 	}
 
 	public Map<String, Object> jsonToMap(JSONObject json) {

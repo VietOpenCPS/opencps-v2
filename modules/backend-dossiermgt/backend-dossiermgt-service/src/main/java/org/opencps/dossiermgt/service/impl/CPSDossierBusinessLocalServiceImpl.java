@@ -186,6 +186,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -429,7 +430,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	private void createDossierDocument(long groupId, long userId, ActionConfig actionConfig, 
 			Dossier dossier, DossierAction dossierAction, 
 			JSONObject payloadObject, Employee employee, User user,
-			ServiceContext context) throws com.liferay.portal.kernel.search.ParseException, JSONException {
+			ServiceContext context) throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
 		ActionConfig ac = actionConfig;
 		if (ac != null) {
@@ -440,7 +441,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					for (String documentType : documentTypes) {
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 						if (dt != null) {
-							String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+							String documentCode = DocumentTypeNumberGenerator.generateDossierDocumentNumber(groupId,
+									dossier.getCompanyId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
+									dt.getCodePattern());
 							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
 									dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
 									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
@@ -488,7 +491,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	private boolean createDossierDocumentPostAction(long groupId, long userId, 
 			Dossier dossier, DossierAction dossierAction, 
 			JSONObject payloadObject, Employee employee, User user, String documentTypeList,
-			ServiceContext context) throws com.liferay.portal.kernel.search.ParseException, JSONException {
+			ServiceContext context) throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 			// Generate document
@@ -496,8 +499,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			for (String documentType : documentTypes) {
 				DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 				if (dt != null) {
-					String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId,
-							dossier.getCompanyId(), dt.getDocumentTypeId());
+					String documentCode = DocumentTypeNumberGenerator.generateDossierDocumentNumber(groupId,
+							dossier.getCompanyId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
+							dt.getCodePattern());
 					DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
 							dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
 							dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
