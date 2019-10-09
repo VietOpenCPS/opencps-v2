@@ -28,9 +28,9 @@ public class StatisticEngineFetch {
 		for (GetDossierData dossierData : lsDossierData) {
 			if (Validator.isNotNull(dossierData.getDomainCode())) {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
-				// all site, all domain
+				// all site, all domain, all system
 				
-				String type1 = "all@all@" + groupId;
+				String type1 = "all@all@all@" + groupId;
 	
 				DossierStatisticData dataType1 = new DossierStatisticData();
 				dataType1.setGroupId(groupId);
@@ -38,27 +38,29 @@ public class StatisticEngineFetch {
 				dataType1.setGovAgencyName(StringPool.BLANK);
 				dataType1.setDomainCode(StringPool.BLANK);
 				dataType1.setDomainName(StringPool.BLANK);
-	
+				dataType1.setSystem(StringPool.BLANK);
+
 				if (statisticData.containsKey(type1)) {
 					dataType1 = statisticData.get(type1);
 				}
-	
+
 				engineFetchEntry.updateDossierStatisticData(dataType1, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType1 = processOnTimePercent(dataType1);
 	
 				statisticData.put(type1, dataType1);
+
+				// all site, all domain, each system
 				
+				String type2 = "all@all@" + dossierData.getSystem() +"@" + groupId;
 	
-				// all site each domain
-				String type2 = "all@" + dossierData.getDomainCode() + "@" + groupId;
-				
 				DossierStatisticData dataType2 = new DossierStatisticData();
+				dataType2.setGroupId(groupId);
 				dataType2.setGovAgencyCode(StringPool.BLANK);
 				dataType2.setGovAgencyName(StringPool.BLANK);
-				dataType2.setDomainCode(dossierData.getDomainCode());
-				dataType2.setDomainName(dossierData.getDomainName());
-				dataType2.setGroupId(groupId);
+				dataType2.setDomainCode(StringPool.BLANK);
+				dataType2.setDomainName(StringPool.BLANK);
+				dataType2.setSystem(dossierData.getSystem());
 	
 				if (statisticData.containsKey(type2)) {
 					dataType2 = statisticData.get(type2);
@@ -70,54 +72,138 @@ public class StatisticEngineFetch {
 	
 				statisticData.put(type2, dataType2);
 	
-				// each site all domain
+				// all site, each domain, all system
+				String type3 = "all@" + dossierData.getDomainCode() + "@all@" + groupId;
 				
-				String type3 = dossierData.getGovAgencyCode() + "@all@" + groupId;
-				//System.out.println("type3: "+type3);
-	
 				DossierStatisticData dataType3 = new DossierStatisticData();
-				dataType3.setGovAgencyCode(dossierData.getGovAgencyCode());
-				dataType3.setGovAgencyName(dossierData.getGovAgencyName());
-				dataType3.setDomainCode(StringPool.BLANK);
-				dataType3.setDomainName(StringPool.BLANK);
 				dataType3.setGroupId(groupId);
-
+				dataType3.setGovAgencyCode(StringPool.BLANK);
+				dataType3.setGovAgencyName(StringPool.BLANK);
+				dataType3.setDomainCode(dossierData.getDomainCode());
+				dataType3.setDomainName(dossierData.getDomainName());
+				dataType3.setSystem(StringPool.BLANK);
+	
 				if (statisticData.containsKey(type3)) {
-					//System.out.println("type3_TRUE: "+type3);
 					dataType3 = statisticData.get(type3);
 				}
 	
 				engineFetchEntry.updateDossierStatisticData(dataType3, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType3 = processOnTimePercent(dataType3);
-				//System.out.println("dataType3: "+dataType3.getTotalCount());
 	
-				statisticData.put(type3, dataType3);
-				//System.out.println("statisticData: "+statisticData.get(type3).getTotalCount());
-
-			// each site each domain
-			
-				String type4 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@" + groupId;
+				statisticData.put(type2, dataType3);
+	
+				// each site all domain
 				
+				String type4 = dossierData.getGovAgencyCode() + "@all@all@" + groupId;
+				//System.out.println("type3: "+type3);
+	
 				DossierStatisticData dataType4 = new DossierStatisticData();
+				dataType4.setGroupId(groupId);
 				dataType4.setGovAgencyCode(dossierData.getGovAgencyCode());
 				dataType4.setGovAgencyName(dossierData.getGovAgencyName());
-				dataType4.setDomainCode(dossierData.getDomainCode());
-				dataType4.setDomainName(dossierData.getDomainName());
-				dataType4.setGroupId(groupId);
-				
+				dataType4.setDomainCode(StringPool.BLANK);
+				dataType4.setDomainName(StringPool.BLANK);
+				dataType4.setSystem(StringPool.BLANK);
+
 				if (statisticData.containsKey(type4)) {
 					dataType4 = statisticData.get(type4);
 				}
-
+	
 				engineFetchEntry.updateDossierStatisticData(dataType4, dossierData, fromStatisticDate, toStatisticDate,
 						reporting);
 				dataType4 = processOnTimePercent(dataType4);
-
+				//System.out.println("dataType3: "+dataType3.getTotalCount());
+	
 				statisticData.put(type4, dataType4);
+				//System.out.println("statisticData: "+statisticData.get(type3).getTotalCount());
+
+				// all site, each domain, each system
+				String type5 = "all@" + dossierData.getDomainCode() + "@" + dossierData.getSystem() + "@"+ groupId;
+				
+				DossierStatisticData dataType5 = new DossierStatisticData();
+				dataType5.setGroupId(groupId);
+				dataType5.setGovAgencyCode(StringPool.BLANK);
+				dataType5.setGovAgencyName(StringPool.BLANK);
+				dataType5.setDomainCode(dossierData.getDomainCode());
+				dataType5.setDomainName(dossierData.getDomainName());
+				dataType5.setSystem(dossierData.getSystem());
+
+				if (statisticData.containsKey(type5)) {
+					dataType5 = statisticData.get(type5);
+				}
+
+				engineFetchEntry.updateDossierStatisticData(dataType5, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType5 = processOnTimePercent(dataType5);
+
+				statisticData.put(type5, dataType5);
+
+				// all site, each domain, each system
+				String type6 = dossierData.getGovAgencyCode() + "@all@" + dossierData.getSystem() + "@"+ groupId;
+				
+				DossierStatisticData dataType6 = new DossierStatisticData();
+				dataType6.setGroupId(groupId);
+				dataType6.setGovAgencyCode(dossierData.getGovAgencyCode());
+				dataType6.setGovAgencyName(dossierData.getGovAgencyName());
+				dataType6.setDomainCode(StringPool.BLANK);
+				dataType6.setDomainName(StringPool.BLANK);
+				dataType6.setSystem(dossierData.getSystem());
+
+				if (statisticData.containsKey(type6)) {
+					dataType6 = statisticData.get(type6);
+				}
+
+				engineFetchEntry.updateDossierStatisticData(dataType6, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType6 = processOnTimePercent(dataType6);
+
+				statisticData.put(type6, dataType6);
+
+				// each site, each domain, all system
+				String type7 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() +"@all@" + groupId;
+				
+				DossierStatisticData dataType7 = new DossierStatisticData();
+				dataType7.setGroupId(groupId);
+				dataType7.setGovAgencyCode(dossierData.getGovAgencyCode());
+				dataType7.setGovAgencyName(dossierData.getGovAgencyName());
+				dataType7.setDomainCode(dossierData.getDomainCode());
+				dataType7.setDomainName(dossierData.getDomainName());
+				dataType7.setSystem(StringPool.BLANK);
+
+				if (statisticData.containsKey(type7)) {
+					dataType7 = statisticData.get(type7);
+				}
+
+				engineFetchEntry.updateDossierStatisticData(dataType7, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType7 = processOnTimePercent(dataType7);
+
+				statisticData.put(type7, dataType7);
+
+				// each site, each domain, all system
+				String type8 = dossierData.getGovAgencyCode() + "@" + dossierData.getDomainCode() + "@"
+						+ dossierData.getSystem() + "@" + groupId;
+				
+				DossierStatisticData dataType8 = new DossierStatisticData();
+				dataType8.setGroupId(groupId);
+				dataType8.setGovAgencyCode(dossierData.getGovAgencyCode());
+				dataType8.setGovAgencyName(dossierData.getGovAgencyName());
+				dataType8.setDomainCode(dossierData.getDomainCode());
+				dataType8.setDomainName(dossierData.getDomainName());
+				dataType8.setSystem(dossierData.getSystem());
+
+				if (statisticData.containsKey(type8)) {
+					dataType8 = statisticData.get(type8);
+				}
+
+				engineFetchEntry.updateDossierStatisticData(dataType8, dossierData, fromStatisticDate, toStatisticDate,
+						reporting);
+				dataType8 = processOnTimePercent(dataType8);
+
+				statisticData.put(type8, dataType8);
+
 			}
-			
-			//}
 		}
 	}
 

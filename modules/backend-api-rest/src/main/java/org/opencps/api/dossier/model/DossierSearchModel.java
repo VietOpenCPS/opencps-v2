@@ -249,13 +249,13 @@ public class DossierSearchModel {
     @QueryParam(value = "documentNo")
     protected String documentNo;
     @QueryParam(value = "systemId")
-    protected Integer systemId;
+    protected String systemId;
 
-	public Integer getSystemId() {
+	public String getSystemId() {
 		return systemId;
 	}
 
-	public void setSystemId(Integer systemId) {
+	public void setSystemId(String systemId) {
 		this.systemId = systemId;
 	}
 

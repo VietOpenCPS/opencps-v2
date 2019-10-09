@@ -358,9 +358,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			//SystemId
-			Integer systemId = query.getSystemId();
-			if (systemId != null) {
-				params.put(DossierTerm.SYSTEM_ID, systemId);
+			String strSystemId = query.getSystemId();
+			if (Validator.isNotNull(strSystemId)) {
+				params.put(DossierTerm.SYSTEM_ID, strSystemId);
 			} else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
@@ -723,9 +723,9 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			//SystemId
-			Integer systemId = query.getSystemId();
-			if (systemId != null) {
-				params.put(DossierTerm.SYSTEM_ID, systemId);
+			String strSystemId = query.getSystemId();
+			if (Validator.isNotNull(strSystemId)) {
+				params.put(DossierTerm.SYSTEM_ID, strSystemId);
 			} else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}

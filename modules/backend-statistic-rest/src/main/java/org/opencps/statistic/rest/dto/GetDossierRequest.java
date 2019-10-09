@@ -261,6 +261,12 @@ public class GetDossierRequest extends CommonRequest {
 	public void setOnlineStatistic(String onlineStatistic) {
 		this.onlineStatistic = onlineStatistic;
 	}
+	public String getSystem() {
+		return system;
+	}
+	public void setSystem(String system) {
+		this.system = system;
+	}
 
 	private String month;
 	private String year;
@@ -305,4 +311,5 @@ public class GetDossierRequest extends CommonRequest {
 	private String dossierNo;
 	private String domain;
 	private String onlineStatistic;
+	private String system;
 }

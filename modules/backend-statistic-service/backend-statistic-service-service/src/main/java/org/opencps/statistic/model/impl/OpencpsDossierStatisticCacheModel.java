@@ -151,8 +151,8 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		sb.append(outsideCount);
 		sb.append(", insideCount=");
 		sb.append(insideCount);
-		sb.append(", systemId=");
-		sb.append(systemId);
+		sb.append(", system=");
+		sb.append(system);
 		sb.append("}");
 
 		return sb.toString();
@@ -260,7 +260,13 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		opencpsDossierStatisticImpl.setWaitingCount(waitingCount);
 		opencpsDossierStatisticImpl.setOutsideCount(outsideCount);
 		opencpsDossierStatisticImpl.setInsideCount(insideCount);
-		opencpsDossierStatisticImpl.setSystemId(systemId);
+
+		if (system == null) {
+			opencpsDossierStatisticImpl.setSystem("");
+		}
+		else {
+			opencpsDossierStatisticImpl.setSystem(system);
+		}
 
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
@@ -344,8 +350,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		outsideCount = objectInput.readInt();
 
 		insideCount = objectInput.readInt();
-
-		systemId = objectInput.readInt();
+		system = objectInput.readUTF();
 	}
 
 	@Override
@@ -469,7 +474,12 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 		objectOutput.writeInt(insideCount);
 
-		objectOutput.writeInt(systemId);
+		if (system == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(system);
+		}
 	}
 
 	public String uuid;
@@ -514,5 +524,5 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public int waitingCount;
 	public int outsideCount;
 	public int insideCount;
-	public int systemId;
+	public String system;
 }

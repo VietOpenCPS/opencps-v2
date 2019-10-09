@@ -31,6 +31,9 @@ public class StatisticEngineUpdateAction {
 		if (Validator.isNull(payload.getGovAgencyCode())) {
 			payload.setGovAgencyCode((String) null);
 		}
+		if (Validator.isNull(payload.getSystem())) {
+			payload.setSystem((String) null);
+		}
 
 //		long dossierStatisticId = 0L;
 //
@@ -69,17 +72,17 @@ public class StatisticEngineUpdateAction {
 
 		try {
 			return OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(payload.getCompanyId(),
-					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
-					payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
-					payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
-					payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
-					payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
-					payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
-					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
-					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
-					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
-					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-					payload.getInsideCount());
+					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getSystem(),
+					payload.getTotalCount(), payload.getDeniedCount(), payload.getCancelledCount(),
+					payload.getProcessCount(), payload.getRemainingCount(), payload.getReceivedCount(),
+					payload.getOnlineCount(), payload.getReleaseCount(), payload.getBetimesCount(),
+					payload.getOntimeCount(), payload.getOvertimeCount(), payload.getDoneCount(),
+					payload.getReleasingCount(), payload.getUnresolvedCount(), payload.getProcessingCount(),
+					payload.getUndueCount(), payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(),
+					payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
+					payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
+					payload.getDomainCode(), payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(),
+					payload.getOutsideCount(), payload.getInsideCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;

@@ -273,6 +273,14 @@ public class DossierStatisticData {
 		this.insideCount = insideCount;
 	}
 
+	public String getSystem() {
+		return system;
+	}
+
+	public void setSystem(String system) {
+		this.system = system;
+	}
+
 	private int month = 0;
 	private int year = 0;
 	private int totalCount = 0;
@@ -308,4 +316,5 @@ public class DossierStatisticData {
 	private boolean reporting;
 	private long companyId;
 	private long groupId;
+	private String system;
 }

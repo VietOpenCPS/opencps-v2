@@ -80,6 +80,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic checkExsit(long groupId, int month,
 		int year, String govAgency, String domain);
 
+	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month,
+		int year, String govAgency, String domain, String system);
+
 	public OpencpsDossierStatistic checkNotDuplicate(long groupId,
 		String govAgencyCode, int month, int year, String domainCode);
 
@@ -109,16 +112,16 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
 		long groupId, long userId, String userName, int month, int year,
-		int totalCount, int deniedCount, int cancelledCount, int processCount,
-		int remainingCount, int receivedCount, int onlineCount,
-		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
-		int doneCount, int releasingCount, int unresolvedCount,
-		int processingCount, int undueCount, int overdueCount,
-		int pausingCount, int ontimePercentage, int overtimeInside,
-		int overtimeOutside, int interoperatingCount, int waitingCount,
-		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		String system, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount)
 		throws PortalException, SystemException;
 
 	/**
@@ -212,6 +215,12 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId,
 		int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId,
+		int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
 		throws PortalException, SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -365,9 +374,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int month, int year) throws NoSuchOpencpsDossierStatisticException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId,
-		int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, int start, int end)
+	public List<OpencpsDossierStatistic> searchDossierStatisticSystem(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateOnlyStatistic(

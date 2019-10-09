@@ -154,6 +154,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		int year = query.getYear();
 		String govAgencyCode = query.getAgency();
 		String domain = query.getDomain();
+		String system = query.getSystem();
 		String groupAgencyCode = query.getGroupAgencyCode();
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
@@ -244,6 +245,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				//payload.setTop(top);
 				payload.setDossierNo(dossierIdNo);
 				payload.setOnlineStatistic(query.getOnline());
+				payload.setSystem(query.getSystem());
 				
 				GetDossierResponse dossierResponse = new GetDossierResponse();
 						
@@ -280,6 +282,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.TEMPLATE, payload.getTemplate());
 					params.put(DossierConstants.STEP, payload.getStep());
 					params.put(DossierConstants.DOSSIER_NO, payload.getDossierNo());
+					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
 					params.put("top", "statistic");
 					
@@ -312,6 +315,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
 						model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 						model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
 						
 						dossierData.add(model);
 					}
@@ -370,6 +374,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				} else {
 					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
 				}
+				dossierStatisticRequest.setSystem(system);
 				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
 				//dossierStatisticRequest.setReporting(reporting);
 				dossierStatisticRequest.setGroupId(groupId);
@@ -379,7 +384,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setYear(year);
 				//
 				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
-						.finderDossierStatistic(dossierStatisticRequest);
+						.finderDossierStatisticSystem(dossierStatisticRequest);
 				if (statisticResponse != null) {
 					statisticResponse.setAgency(govAgencyCode);
 				}
@@ -960,14 +965,20 @@ public class OpencpsStatisticRestApplication extends Application {
 	public DossierStatisticModel fixDossierStatistic(@HeaderParam("groupId") long groupId,
 			@BeanParam DossierStatisticModel input) {
 		try {
-			OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(
-					0l, groupId, -1, "ADM", input.getMonth(), input.getYear(), input.getTotalCount(), input.getDeniedCount(), 
-					input.getCancelledCount(), input.getProcessCount(), input.getRemainingCount(), input.getReceivedCount(), 
-					input.getOnlineCount(), input.getReleaseCount(), input.getBetimesCount(), input.getOntimeCount(), input.getOvertimeCount(), input.getDoneCount(), 
-					input.getReleasingCount(), input.getUnresolvedCount(), input.getProcessingCount(), input.getUndueCount(), 
-					input.getOverdueCount(), input.getPausingCount(), input.getOntimePercentage(), input.getOvertimeInside(), 
-					input.getOvertimeOutside(), input.getInteroperatingCount(), input.getWaitingCount(), input.getGovAgencyCode(), input.getGovAgencyName(), input.getDomainCode(), input.getDomainName(), input.getReporting(), input.getOnegateCount(), 
-					input.getOutsideCount(), input.getInsideCount());
+			if (Validator.isNotNull(input.getSystem())) {
+				input.setSystem((String) null);
+			}
+			OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(0l,
+					groupId, -1, "ADM", input.getMonth(), input.getYear(), input.getSystem(), input.getTotalCount(),
+					input.getDeniedCount(), input.getCancelledCount(), input.getProcessCount(),
+					input.getRemainingCount(), input.getReceivedCount(), input.getOnlineCount(),
+					input.getReleaseCount(), input.getBetimesCount(), input.getOntimeCount(), input.getOvertimeCount(),
+					input.getDoneCount(), input.getReleasingCount(), input.getUnresolvedCount(),
+					input.getProcessingCount(), input.getUndueCount(), input.getOverdueCount(), input.getPausingCount(),
+					input.getOntimePercentage(), input.getOvertimeInside(), input.getOvertimeOutside(),
+					input.getInteroperatingCount(), input.getWaitingCount(), input.getGovAgencyCode(),
+					input.getGovAgencyName(), input.getDomainCode(), input.getDomainName(), input.getReporting(),
+					input.getOnegateCount(), input.getOutsideCount(), input.getInsideCount());
 			input.setDomainCode(statistic.getDomainCode());
 		} catch (SystemException e) {
 			_log.debug(e);

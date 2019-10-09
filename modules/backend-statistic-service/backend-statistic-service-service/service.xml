@@ -52,7 +52,7 @@
 		
 		<column name="outsideCount" type="int"/>
 		<column name="insideCount" type="int"/>
-		<column name="systemId" type="int" />
+		<column name="system" type="String" />
 		
 		<!-- Order -->
 
@@ -78,6 +78,15 @@
 			<finder-column name="year"/>
 			<finder-column name="govAgencyCode"/>
 			<finder-column name="domainCode"/>
+		</finder>
+		
+		<finder return-type="OpencpsDossierStatistic" name="G_M_Y_G_D_S">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="system"/>
 		</finder>
 		
 		<finder return-type="OpencpsDossierStatistic" name="M_Y_G">

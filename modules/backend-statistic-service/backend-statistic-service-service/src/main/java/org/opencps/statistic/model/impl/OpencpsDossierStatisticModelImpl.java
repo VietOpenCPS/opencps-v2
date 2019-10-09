@@ -110,7 +110,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			{ "waitingCount", Types.INTEGER },
 			{ "outsideCount", Types.INTEGER },
 			{ "insideCount", Types.INTEGER },
-			{ "systemId", Types.INTEGER }
+			{ "system", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -157,10 +157,10 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		TABLE_COLUMNS_MAP.put("waitingCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("outsideCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("insideCount", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("systemId", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("system", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(75) null,groupAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,systemId INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(75) null,groupAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsDossierStatistic.dossierStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_statistic.dossierStatisticId ASC";
@@ -182,10 +182,11 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long MONTH_COLUMN_BITMASK = 16L;
 	public static final long REPORTING_COLUMN_BITMASK = 32L;
-	public static final long USERID_COLUMN_BITMASK = 64L;
-	public static final long UUID_COLUMN_BITMASK = 128L;
-	public static final long YEAR_COLUMN_BITMASK = 256L;
-	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 512L;
+	public static final long SYSTEM_COLUMN_BITMASK = 64L;
+	public static final long USERID_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long YEAR_COLUMN_BITMASK = 512L;
+	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 1024L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(StatisticService.backend.statistic.service.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.statistic.model.OpencpsDossierStatistic"));
 
@@ -268,7 +269,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		attributes.put("waitingCount", getWaitingCount());
 		attributes.put("outsideCount", getOutsideCount());
 		attributes.put("insideCount", getInsideCount());
-		attributes.put("systemId", getSystemId());
+		attributes.put("system", getSystem());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -531,10 +532,10 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			setInsideCount(insideCount);
 		}
 
-		Integer systemId = (Integer)attributes.get("systemId");
+		String system = (String)attributes.get("system");
 
-		if (systemId != null) {
-			setSystemId(systemId);
+		if (system != null) {
+			setSystem(system);
 		}
 	}
 
@@ -1121,13 +1122,28 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	}
 
 	@Override
-	public int getSystemId() {
-		return _systemId;
+	public String getSystem() {
+		if (_system == null) {
+			return "";
+		}
+		else {
+			return _system;
+		}
 	}
 
 	@Override
-	public void setSystemId(int systemId) {
-		_systemId = systemId;
+	public void setSystem(String system) {
+		_columnBitmask |= SYSTEM_COLUMN_BITMASK;
+
+		if (_originalSystem == null) {
+			_originalSystem = _system;
+		}
+
+		_system = system;
+	}
+
+	public String getOriginalSystem() {
+		return GetterUtil.getString(_originalSystem);
 	}
 
 	@Override
@@ -1209,7 +1225,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		opencpsDossierStatisticImpl.setWaitingCount(getWaitingCount());
 		opencpsDossierStatisticImpl.setOutsideCount(getOutsideCount());
 		opencpsDossierStatisticImpl.setInsideCount(getInsideCount());
-		opencpsDossierStatisticImpl.setSystemId(getSystemId());
+		opencpsDossierStatisticImpl.setSystem(getSystem());
 
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
@@ -1303,6 +1319,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		opencpsDossierStatisticModelImpl._originalReporting = opencpsDossierStatisticModelImpl._reporting;
 
 		opencpsDossierStatisticModelImpl._setOriginalReporting = false;
+
+		opencpsDossierStatisticModelImpl._originalSystem = opencpsDossierStatisticModelImpl._system;
 
 		opencpsDossierStatisticModelImpl._columnBitmask = 0;
 	}
@@ -1451,7 +1469,13 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 
 		opencpsDossierStatisticCacheModel.insideCount = getInsideCount();
 
-		opencpsDossierStatisticCacheModel.systemId = getSystemId();
+		opencpsDossierStatisticCacheModel.system = getSystem();
+
+		String system = opencpsDossierStatisticCacheModel.system;
+
+		if ((system != null) && (system.length() == 0)) {
+			opencpsDossierStatisticCacheModel.system = null;
+		}
 
 		return opencpsDossierStatisticCacheModel;
 	}
@@ -1544,8 +1568,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		sb.append(getOutsideCount());
 		sb.append(", insideCount=");
 		sb.append(getInsideCount());
-		sb.append(", systemId=");
-		sb.append(getSystemId());
+		sb.append(", system=");
+		sb.append(getSystem());
 		sb.append("}");
 
 		return sb.toString();
@@ -1728,8 +1752,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		sb.append(getInsideCount());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>systemId</column-name><column-value><![CDATA[");
-		sb.append(getSystemId());
+			"<column><column-name>system</column-name><column-value><![CDATA[");
+		sb.append(getSystem());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
@@ -1799,7 +1823,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	private int _waitingCount;
 	private int _outsideCount;
 	private int _insideCount;
-	private int _systemId;
+	private String _system;
+	private String _originalSystem;
 	private long _columnBitmask;
 	private OpencpsDossierStatistic _escapedModel;
 }
