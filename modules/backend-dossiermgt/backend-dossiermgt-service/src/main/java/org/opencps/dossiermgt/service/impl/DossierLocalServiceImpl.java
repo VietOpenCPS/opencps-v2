@@ -2482,6 +2482,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2512,7 +2513,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
+				documentDate, strSystemId, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2596,6 +2598,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2623,7 +2626,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
+				documentDate, strSystemId, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2726,8 +2730,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			String assignedUserId, Integer delegateType, String documentNo, String documentDate, BooleanQuery booleanQuery) throws ParseException {
+			String assignedUserId, Integer delegateType, String documentNo, String documentDate, String strSystemId,
+			BooleanQuery booleanQuery) throws ParseException {
 
+		//System Id
+		if (Validator.isNotNull(strSystemId)) {
+			String[] systemIdArr = StringUtil.split(strSystemId);
+
+			if (systemIdArr != null && systemIdArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < systemIdArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(systemIdArr[i]);
+					query.addField(DossierTerm.SYSTEM_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strSystemId);
+				query.addFields(DossierTerm.SYSTEM_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -5326,7 +5349,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
-			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate, ServiceContext serviceContext) {
+			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
+			String documentNo, Date documentDate, int systemId, ServiceContext serviceContext) {
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 
@@ -5460,7 +5484,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (documentDate != null && Validator.isNotNull(documentDate)) {
 			dossier.setDocumentDate(documentDate);
 		}
-		return dossierPersistence.update(dossier);		
+
+		if (systemId > 0) {
+			dossier.setSystemId(systemId);
+		}
+
+		return dossierPersistence.update(dossier);
 	}
 	
 	public List<Dossier> getByGroupAndOriginDossierNo(long groupId, String originDossierNo) {

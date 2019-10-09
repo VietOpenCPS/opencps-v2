@@ -35,4 +35,5 @@ public interface DossierConstants {
 	String STEP = "step";
 	String TOP = "top";
 	String DOSSIER_NO = "dossierNo";
+	String SYSTEM = "system";
 }

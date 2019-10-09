@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 		"toSubmitDate", "online", "domain", "domainName", "applicantName", "applicantIdNo", "serviceName",
 		"fromReleaseDate", "toReleaseDate", "originality", "fromFinishDate", "toFinishDate", "fromReceiveNotDoneDate",
 		"toReceiveNotDoneDate", "fromStatisticDate", "toStatisticDate", "origin", "originDossierId", "time",
-		"groupAgencyCode", "reporting", "reCalculate"})
+		"groupAgencyCode", "reporting", "reCalculate", "system"})
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
 
@@ -117,6 +117,8 @@ public class DossierSearchModel {
 	protected boolean reporting;
 	@QueryParam(value = "reCalculate")
 	protected Integer reCalculate;
+	@QueryParam(value = "system")
+	protected String system;
 
 	public String getKeyword() {
 		return keyword;
@@ -375,6 +377,12 @@ public class DossierSearchModel {
 	}
 	public void setReCalculate(Integer reCalculate) {
 		this.reCalculate = reCalculate;
+	}
+	public String getSystem() {
+		return system;
+	}
+	public void setSystem(String system) {
+		this.system = system;
 	}
 
 }

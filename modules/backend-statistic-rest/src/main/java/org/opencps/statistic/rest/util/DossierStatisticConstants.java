@@ -45,4 +45,6 @@ public interface DossierStatisticConstants {
 	
 	String SERVICE_DOMAIN_CODE = "SERVICE_DOMAIN";
 	String GOV_AGENCY_CODE = "GOVERNMENT_AGENCY";
+	//ALL SYSTEM
+	String ALL_SYSTEM = "0,1,2";
 }

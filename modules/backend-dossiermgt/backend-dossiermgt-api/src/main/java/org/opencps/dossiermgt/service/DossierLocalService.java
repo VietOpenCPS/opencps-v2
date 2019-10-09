@@ -554,7 +554,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, String dossierName,
 		String briefNote, Integer delegateType, String documentNo,
-		Date documentDate, ServiceContext serviceContext);
+		Date documentDate, int systemId, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,

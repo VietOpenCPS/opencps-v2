@@ -771,7 +771,7 @@ public class DossierLocalServiceUtil {
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote, Integer delegateType,
-		String documentNo, java.util.Date documentDate,
+		String documentNo, java.util.Date documentDate, int systemId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierFull(groupId, id, applicantName,
@@ -783,7 +783,7 @@ public class DossierLocalServiceUtil {
 			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
-			documentDate, serviceContext);
+			documentDate, systemId, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier postDossier(

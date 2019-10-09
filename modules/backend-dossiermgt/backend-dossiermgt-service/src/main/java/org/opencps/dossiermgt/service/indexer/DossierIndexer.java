@@ -694,6 +694,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (paymentFile != null) {
 				document.addNumberSortable(PaymentFileTerm.PAYMENT_STATUS, paymentFile.getPaymentStatus());
 			}
+			//
+			document.addNumberSortable(DossierTerm.SYSTEM_ID, object.getSystemId());
 		} catch (Exception e) {
 			_log.error(e);
 		}

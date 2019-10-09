@@ -3482,7 +3482,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierAction.getDossierActionId());
 					DossierAction dAction = dossierAction;
 					if (dAction != null) {
-						addDossierActionUserByAssigned(allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
+						addDossierActionUserByAssigned(groupId, allowAssignUser, userIdAssigned, dossierAction.getDossierActionId(), moderator, false,
 								dAction.getStepCode(), dossier.getDossierId(), assigned, 0);
 					} 
 //					else {
@@ -3515,8 +3515,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 	}
 	
-	private void addDossierActionUserByAssigned(int allowAssignUser, long userId, long dossierActionId, int moderator,
-			boolean visited, String stepCode, long dossierId, int assigned, int delegacy) {
+	private void addDossierActionUserByAssigned(long groupId, int allowAssignUser, long userId, long dossierActionId,
+			int moderator, boolean visited, String stepCode, long dossierId, int assigned, int delegacy) {
 		org.opencps.dossiermgt.model.DossierActionUser model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 	
 //		int assigned = DossierActionUserTerm.NOT_ASSIGNED;
@@ -3526,7 +3526,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		model.setAssigned(assigned);
 		model.setDelegacy(delegacy);
 		//Check employee is exits and wokingStatus
-		Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 		//_log.debug("Employee : " + employee);
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
@@ -3671,7 +3671,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				// Get list user
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				for (User user : users) {
-					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(user.getUserId());
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
 					//_log.debug("Employee : " + employee);
 					if (employee != null && employee.getWorkingStatus() == 1) {
 						List<DossierAction> lstDoneActions = dossierActionLocalService
@@ -3699,11 +3699,11 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 						
 						if (lastDau != null) {
-							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(), user.getUserId(),
 								dossierAction.getDossierActionId(), lastDau.getModerator(), false, stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());	
 						}
 						else {
-							addDossierActionUserByAssigned(processAction.getAllowAssignUser(), user.getUserId(),
+							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(), user.getUserId(),
 									dossierAction.getDossierActionId(), mod, false, stepCode, dossier.getDossierId(), assigned, 0);							
 						}
 					}
@@ -3759,7 +3759,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						dau.setAssigned(assigned);
 						dossierActionUserLocalService.updateDossierActionUser(dau);
 					} else {						
-						addDossierActionUserByAssigned(allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), assigned, 0);
+						addDossierActionUserByAssigned(groupId, allowAssignUser, user.getUserId(), dossierAction.getDossierActionId(), mod, false, da.getStepCode(), dossier.getDossierId(), assigned, 0);
 					}
 				}				
 			}
@@ -4032,6 +4032,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierName(serviceName);
 			}
 			dossier.setSampleCount(sampleCount);
+			dossier.setSystemId(input.getSystemId());
 			
 			//Delegate dossier
 			dossier.setDelegateType(input.getDelegateType() != null ? input.getDelegateType() : 0);
@@ -4324,6 +4325,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				//dossier.setRegisterBookCode(registerBookCode);
 				//dossier.setRegisterBookName(registerBookName);
 				dossier.setSampleCount(sampleCount);
+				dossier.setSystemId(input.getSystemId());
 				if (Validator.isNotNull(input.getMetaData()))
 					dossier.setMetaData(input.getMetaData());
 
@@ -4698,6 +4700,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				if (Validator.isNotNull(metaData))
 					dossier.setMetaData(metaData);
+				//
+				dossier.setSystemId(input.getSystemId());
 
 			//TODO: Process then
 			//updateDelegateApplicant(dossier, input);
@@ -5158,6 +5162,8 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				if (Validator.isNotNull(metaData))
 					dossier.setMetaData(metaData);
+				//
+				dossier.setSystemId(input.getSystemId());
 
 			//TODO: Process then
 			//updateDelegateApplicant(dossier, input);

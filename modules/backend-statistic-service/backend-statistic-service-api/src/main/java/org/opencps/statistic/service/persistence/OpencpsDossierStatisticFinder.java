@@ -25,11 +25,27 @@ public interface OpencpsDossierStatisticFinder {
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkContains(
 		long groupId, int month, int year, String domain, String govAgency);
 
+	public org.opencps.statistic.model.OpencpsDossierStatistic checkContainsSystem(
+		long groupId, int month, int year, String domain, String govAgency,
+		String system);
+
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int year, String domain, String govAgency,
 		String groupAgencyCode, int start, int end);
 
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
+		long groupId, int year, String domain, String govAgency, String system,
+		String groupAgencyCode, int start, int end);
+
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchYearDossierStatistic(
+		long groupId, int month, String domain, String govAgency,
+		String system, String groupAgencyCode, int start, int end);
+
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchByDomainGovAgencyGroup(
 		long groupId, int month, int year, String domain, String govAgency,
 		String groupAgencyCode, int start, int end);
+
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchByDomainAgencySystem(
+		long groupId, int month, int year, String domain, String govAgency,
+		String system, String groupAgencyCode, int start, int end);
 }

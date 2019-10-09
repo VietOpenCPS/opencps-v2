@@ -59,6 +59,14 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().checkExsit(groupId, month, year, govAgency, domain);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic checkExsitSystem(
+		long groupId, int month, int year, String govAgency, String domain,
+		String system) {
+		return getService()
+				   .checkExsitSystem(groupId, month, year, govAgency, domain,
+			system);
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(
 		long groupId, String govAgencyCode, int month, int year,
 		String domainCode) {
@@ -106,10 +114,10 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic createOrUpdateStatistic(
 		long companyId, long groupId, long userId, String userName, int month,
-		int year, int totalCount, int deniedCount, int cancelledCount,
-		int processCount, int remainingCount, int receivedCount,
-		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
-		int overtimeCount, int doneCount, int releasingCount,
+		int year, String system, int totalCount, int deniedCount,
+		int cancelledCount, int processCount, int remainingCount,
+		int receivedCount, int onlineCount, int releaseCount, int betimesCount,
+		int ontimeCount, int overtimeCount, int doneCount, int releasingCount,
 		int unresolvedCount, int processingCount, int undueCount,
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
@@ -120,14 +128,15 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .createOrUpdateStatistic(companyId, groupId, userId,
-			userName, month, year, totalCount, deniedCount, cancelledCount,
-			processCount, remainingCount, receivedCount, onlineCount,
-			releaseCount, betimesCount, ontimeCount, overtimeCount, doneCount,
-			releasingCount, unresolvedCount, processingCount, undueCount,
-			overdueCount, pausingCount, ontimePercentage, overtimeInside,
-			overtimeOutside, interoperatingCount, waitingCount, govAgencyCode,
-			govAgencyName, domainCode, domainName, reporting, onegateCount,
-			outsideCount, insideCount);
+			userName, month, year, system, totalCount, deniedCount,
+			cancelledCount, processCount, remainingCount, receivedCount,
+			onlineCount, releaseCount, betimesCount, ontimeCount,
+			overtimeCount, doneCount, releasingCount, unresolvedCount,
+			processingCount, undueCount, overdueCount, pausingCount,
+			ontimePercentage, overtimeInside, overtimeOutside,
+			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
+			domainCode, domainName, reporting, onegateCount, outsideCount,
+			insideCount);
 	}
 
 	/**
@@ -250,6 +259,16 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService()
 				   .fetchDossierStatistic(groupId, month, year, domain,
 			govAgencyCode, groupAgenvyCode, start, end);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .fetchDossierStatistic(groupId, month, year, domain,
+			govAgencyCode, system, groupAgenvyCode, start, end);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchOpencpsDossierStatistic(
@@ -458,14 +477,14 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			.removeDossierStatisticByYear(companyId, groupId, month, year);
 	}
 
-	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatisticSystem(
 		long groupId, int month, int year, String domain, String govAgencyCode,
-		String groupAgenvyCode, int start, int end)
+		String system, String groupAgenvyCode, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .searchDossierStatistic(groupId, month, year, domain,
-			govAgencyCode, groupAgenvyCode, start, end);
+				   .searchDossierStatisticSystem(groupId, month, year, domain,
+			govAgencyCode, system, groupAgenvyCode, start, end);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic updateOnlyStatistic(

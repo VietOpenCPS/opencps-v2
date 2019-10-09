@@ -247,7 +247,8 @@ create table opencps_dossier (
 	dossierName VARCHAR(1000) null,
 	originDossierNo VARCHAR(255) null,
 	groupDossierId LONG,
-	metaData TEXT null
+	metaData TEXT null,
+	systemId INTEGER
 );
 
 create table opencps_dossieraction (

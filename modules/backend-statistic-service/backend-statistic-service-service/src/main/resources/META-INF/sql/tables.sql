@@ -66,7 +66,8 @@ create table opencps_statistic (
 	interoperatingCount INTEGER,
 	waitingCount INTEGER,
 	outsideCount INTEGER,
-	insideCount INTEGER
+	insideCount INTEGER,
+	system VARCHAR(75) null
 );
 
 create table opencps_voting_statistic (

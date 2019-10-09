@@ -199,7 +199,8 @@ import javax.xml.bind.annotation.XmlType;
     "delegateType",
     "documentNo",
     "documentDate",
-    "serverNo"
+    "serverNo",
+    "systemId"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -306,8 +307,17 @@ public class DossierDetailModel {
 	protected String documentNo;
 	protected String documentDate;
 	protected String serverNo;
-	
-    public String getServerNo() {
+	protected int systemId;
+
+	public int getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		this.systemId = systemId;
+	}
+
+	public String getServerNo() {
 		return serverNo;
 	}
 
