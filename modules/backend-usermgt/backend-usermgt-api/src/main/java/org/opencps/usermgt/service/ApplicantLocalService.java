@@ -222,6 +222,8 @@ public interface ApplicantLocalService extends BaseLocalService,
 
 	public List<Applicant> findByAppIds(String applicantIdNo);
 
+	public List<Applicant> findByContactEmailList(String contactEmail);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -317,6 +319,14 @@ public interface ApplicantLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant importApplicationDB(long groupId, long userId,
+		long applicantId, String applicantIdNo, String applicantName,
+		String applicantIdType, Date applicantIdDate, String contactEmail,
+		String contactTelNo, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName, ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant lockoutApplicant(long applicantId)

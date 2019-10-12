@@ -282,7 +282,7 @@ public class StatisticSumYearCalcular {
 
 		/** #5 */
 		/* case domain = null && agency != null &&  system != null */
-		if (!isDomain && !isAgency) {
+		if (!isDomain && isAgency && isSystem) {
 			/* statistic by all */
 			String[] systemArr = DossierStatisticConstants.ALL_SYSTEM.split(StringPool.COMMA);
 			//
@@ -555,7 +555,6 @@ public class StatisticSumYearCalcular {
 
 							for (DomainResponse domainResponse : domainResponses) {
 								dossierStatisticRequest.setDomain(domainResponse.getItemCode());
-								dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
 
 								DossierStatisticResponse dossierStatisticResponse;
 
@@ -626,7 +625,7 @@ public class StatisticSumYearCalcular {
 				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 						.finderDossierStatistics(dossierStatisticRequest);
 				
-				_log.info("dossierStatisticResponse: "+dossierStatisticResponse);
+//				_log.info("dossierStatisticResponse2222: "+dossierStatisticResponse);
 				_log.info("dossierStatisticResponse111: "+JSONFactoryUtil.looseSerialize(dossierStatisticResponse));
 
 				Optional<List<DossierStatisticData>> dossierStatisticData = Optional

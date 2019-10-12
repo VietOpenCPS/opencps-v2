@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 
 
 public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService {
@@ -59,15 +60,6 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 				dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getSystem(),
 				dossierStatisticRequest.getGroupAgencyCode(), dossierStatisticRequest.getStart(),
 				dossierStatisticRequest.getEnd());
-		if (dossierStatisticRequest.getGroupId() == 35166 && 
-				dossierStatisticRequest.getMonth() == 0 && dossierStatisticRequest.getYear() == -1 
-				&& dossierStatisticRequest.getGovAgencyCode().equals("total")
-				&& dossierStatisticRequest.getDomain().equals("total")
-				&& dossierStatisticRequest.getSystem().equals("total")) {
-			
-			LOG.info("dossierStatistics: "+dossierStatistics);
-			return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
-		}
 
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
 	}

@@ -260,6 +260,12 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.Applicant> findByContactEmailList(
+		String contactEmail) {
+		return _applicantLocalService.findByContactEmailList(contactEmail);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _applicantLocalService.getActionableDynamicQuery();
 	}
@@ -384,6 +390,22 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _applicantLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Applicant importApplicationDB(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _applicantLocalService.importApplicationDB(groupId, userId,
+			applicantId, applicantIdNo, applicantName, applicantIdType,
+			applicantIdDate, contactEmail, contactTelNo, address, cityCode,
+			cityName, districtCode, districtName, wardCode, wardName, context);
 	}
 
 	@Override

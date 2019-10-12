@@ -16,7 +16,7 @@ public class DossierStatisticUpdateServiceImpl implements DossierStatisticUpdate
 		
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
-		if (payload.getGroupId() != 0 && payload.getYear() != 0) {
+		if (payload.getGroupId() != 0) {
 			
 			engineUpdateAction.updateStatistic(payload);
 		}
