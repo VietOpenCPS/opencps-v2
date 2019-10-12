@@ -582,6 +582,10 @@
 			<finder-column name="applicantIdNo"/>
 		</finder>
 		
+		<finder return-type="Collection" name="F_EMAIL">
+			<finder-column name="contactEmail"/>
+		</finder>
+		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>

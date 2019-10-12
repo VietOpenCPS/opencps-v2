@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -31,8 +33,11 @@ import java.util.List;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -381,4 +386,77 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		return jsonObject;
 	}
 
+	@Override
+	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String applicantName,
+			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
+			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException {
+		
+		// Check exits applicantIdNo
+		int flagUser = 0;
+		if (Validator.isNotNull(applicantIdNo)) {
+			List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
+			if (appList != null && appList.size() > 0) {
+				for (Applicant applicant : appList) {
+					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+					if (flagUser == 2) break;
+				}
+			}
+		}
+		// Check exits contactEmail
+		if (flagUser != 2 && Validator.isNotNull(contactEmail)) {
+			List<Applicant> appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
+			if (appList != null && appList.size() > 0) {
+				for (Applicant applicant : appList) {
+					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+					if (flagUser == 2) break;
+				}
+			}
+		}
+
+		if (flagUser != 2) {
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("ADMINISTRATIVE_REGION", groupId);
+			String cityName = getDictItemName(groupId, dc, cityCode);
+			String districtName = getDictItemName(groupId, dc, districtCode);
+			String wardName = getDictItemName(groupId, dc, wardCode);
+			//
+			Date appDate = null;
+			if (Validator.isNotNull(applicantIdDate)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				try {
+					appDate = sdf.parse(applicantIdDate);
+				} catch (ParseException e) {
+				}
+			}
+			
+			//Process update applicant and user
+			if (flagUser == 0) {
+				//Add applicant and user
+				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, serviceContext);
+				//Add applicant search
+				ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
+						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
+			} else if (flagUser == 1) {
+				//Add applicant and user
+				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, serviceContext);
+			}
+		}
+	}
+
+	private String getDictItemName(long groupId, DictCollection dc, String itemCode) {
+		if (Validator.isNotNull(dc)) {
+			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
+			if(Validator.isNotNull(it)){
+				return it.getItemName();
+			}else{
+				return StringPool.BLANK;
+			}
+		} else {
+			return StringPool.BLANK;
+		}
+	}
 }

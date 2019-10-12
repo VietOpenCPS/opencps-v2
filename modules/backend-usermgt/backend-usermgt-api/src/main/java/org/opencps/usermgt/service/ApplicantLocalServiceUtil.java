@@ -249,6 +249,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().findByAppIds(applicantIdNo);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Applicant> findByContactEmailList(
+		String contactEmail) {
+		return getService().findByContactEmailList(contactEmail);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
@@ -362,6 +367,22 @@ public class ApplicantLocalServiceUtil {
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static org.opencps.usermgt.model.Applicant importApplicationDB(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .importApplicationDB(groupId, userId, applicantId,
+			applicantIdNo, applicantName, applicantIdType, applicantIdDate,
+			contactEmail, contactTelNo, address, cityCode, cityName,
+			districtCode, districtName, wardCode, wardName, context);
 	}
 
 	public static org.opencps.usermgt.model.Applicant lockoutApplicant(
