@@ -224,20 +224,29 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response downloadByDossierId_ReferenceUid(
 		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext, long id,
+		Locale locale, User user, ServiceContext serviceContext, String id,
 		String referenceUid, String password) {
 
 		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
+			//
+			long dossierId = GetterUtil.getLong(id);
+			if (dossierId == 0) {
+				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+				if (dossier != null) {
+					dossierId = dossier.getDossierId();
+				}
+			}
 
 			DossierFile dossierFile =
 				DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
-					id, referenceUid);
+						dossierId, referenceUid);
 
 			// download file with dossierFileID
 			if (Validator.isNull(dossierFile) &&
