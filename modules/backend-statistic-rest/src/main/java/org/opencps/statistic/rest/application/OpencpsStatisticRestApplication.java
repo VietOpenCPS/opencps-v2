@@ -155,6 +155,9 @@ public class OpencpsStatisticRestApplication extends Application {
 		String govAgencyCode = query.getAgency();
 		String domain = query.getDomain();
 		String system = query.getSystem();
+		if (Validator.isNull(system)) {
+			system = "0";
+		}
 		String groupAgencyCode = query.getGroupAgencyCode();
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
