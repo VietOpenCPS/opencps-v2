@@ -1246,10 +1246,8 @@ public class StatisticSumYearCalcular {
 		doneCount = releaseCount - (releasingCount + unresolvedCount);
 		
 		/* value get in the latest month */
-		
-		
 		if (releaseCount > 0) {
-			ontimePercentage = (betimesCount + ontimeCount)*100/releaseCount;
+			ontimePercentage = Math.round(((betimesCount + ontimeCount)*100)/releaseCount);
 		}
 		
 		dossierStatisticData.setTotalCount(totalCount);
