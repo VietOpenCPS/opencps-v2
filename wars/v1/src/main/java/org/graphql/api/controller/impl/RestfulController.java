@@ -68,6 +68,7 @@ import javax.ws.rs.QueryParam;
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
+import org.graphql.api.controller.utils.GraphQLUtils;
 import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
@@ -1059,7 +1060,8 @@ public class RestfulController {
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
-			@QueryParam("keyword") String keyword) {
+			@QueryParam("keyword") String keyword,
+			@QueryParam("formDataKey") String formDataKey) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -1125,6 +1127,8 @@ public class RestfulController {
 
 						}
 					}
+					
+					String queryDataFrom = GraphQLUtils.buildDeliverableSearchDataForm(formDataKey);
 
 					System.out.println("queryBuilderLike:" + queryBuilderLike);
 					System.out.println("queryBuilder:" + queryBuilder);
@@ -1141,12 +1145,12 @@ public class RestfulController {
 							+ ", \"size\" : " + size
 							+ ", \"sort\" : [{\"issueDate_Number_sortable\" : { \"order\" : \"desc\"}}]"
 							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
 							+ "}");
 
 					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
 							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
 							+ "}");
 
 					System.out.println("query:" + query);
