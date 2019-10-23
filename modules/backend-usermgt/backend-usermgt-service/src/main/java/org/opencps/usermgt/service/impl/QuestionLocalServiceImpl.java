@@ -41,7 +41,7 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.QuestionLocalServiceUtil} to access the question local service.
 	 */
 	public Question updateQuestion(long companyId, long groupId, long questionId, String fullname, String email,
-			String content, int publish, String govAgencyCode, String govAgencyName, String questionType) {
+			String content, int publish, String govAgencyCode, String govAgencyName, String questionType, String subDomainCode, String subDomainName) {
 		Question question = null;
 		Date now = new Date();
 		
@@ -60,6 +60,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 			question.setGovAgencyCode(govAgencyCode);
 			question.setGovAgencyName(govAgencyName);
 			question.setQuestionType(questionType);
+			question.setSubDomainCode(subDomainCode);
+			question.setSubDomainName(subDomainName);
 		}
 		else {
 			question = questionPersistence.fetchByPrimaryKey(questionId);
@@ -74,6 +76,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 			question.setGovAgencyCode(govAgencyCode);
 			question.setGovAgencyName(govAgencyName);
 			question.setQuestionType(questionType);
+			question.setSubDomainCode(subDomainCode);
+			question.setSubDomainName(subDomainName);
 		}
 		return questionPersistence.update(question);
 	}
@@ -87,12 +91,12 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 	}
 
 	public List<Question> findByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish,
-			String questionType, Boolean answer,
+			String questionType, Boolean answer, String subDomainCode,
 			int start, int limit) {
-		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer, start, limit);
+		return questionFinder.findQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer, subDomainCode, start, limit);
 	}
 
-	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer) {
-		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer);
+	public int countByQuerySearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer, String subDomainCode) {
+		return questionFinder.countQuestionSearch(groupId, keyword, govAgencyCode, publish, questionType, answer, subDomainCode);
 	}
 }

@@ -86,7 +86,7 @@ public class FaqManagementImpl implements FaqManagement {
 
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId, 0l,
 					input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
-					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType());
+					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType(), input.getSubDomainCode(), input.getSubDomainName());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -97,6 +97,8 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(question.getQuestionId());
 				result.setGovAgencyCode(question.getGovAgencyCode());
 				result.setGovAgencyName(question.getGovAgencyName());
+				result.setSubDomainCode(question.getSubDomainCode());
+				result.setSubDomainName(question.getSubDomainName());
 				
 				return Response.status(200).entity(result)
 						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
@@ -117,7 +119,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response getQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword, String questionType,
-			String answer,
+			String answer, String subDomainCode,
 			ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		_log.debug("IN GET QUESTION: " + groupId);
@@ -139,10 +141,10 @@ public class FaqManagementImpl implements FaqManagement {
 				filterAnswer = Boolean.parseBoolean(answer);
 			}
 			List<Question> lstQuestions = QuestionLocalServiceUtil.findByQuerySearch(groupId, keyword, govAgencyCode,
-					publish, questionType, filterAnswer, start, end);
+					publish, questionType, filterAnswer, subDomainCode, start, end);
 			
 			QuestionResultsModel result = new QuestionResultsModel();
-			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish, questionType, filterAnswer));
+			result.setTotal(QuestionLocalServiceUtil.countByQuerySearch(groupId, keyword, govAgencyCode, publish, questionType, filterAnswer, subDomainCode));
 			
 			List<QuestionModel> lstModels = new ArrayList<>();
 			if (lstQuestions != null && lstQuestions.size() > 0) {
@@ -157,6 +159,8 @@ public class FaqManagementImpl implements FaqManagement {
 					model.setGovAgencyCode(q.getGovAgencyCode());
 					model.setGovAgencyName(q.getGovAgencyName());
 					model.setQuestionType(q.getQuestionType());
+					model.setSubDomainCode(q.getSubDomainCode());
+					model.setSubDomainName(q.getSubDomainName());
 					
 					int count = AnswerLocalServiceUtil.countByG_Q_PL(groupId, q.getQuestionId(), new int[] { 0, 1 } );
 					model.setAnswered(false);
@@ -276,7 +280,7 @@ public class FaqManagementImpl implements FaqManagement {
 		try {
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId,
 					questionId, input.getFullname(), input.getEmail(), input.getContent(), input.getPublish(),
-					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType());
+					input.getGovAgencyCode(), input.getGovAgencyName(), input.getQuestionType(), input.getSubDomainCode(), input.getSubDomainName());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -287,6 +291,8 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(question.getQuestionId());
 				result.setGovAgencyCode(question.getGovAgencyCode());
 				result.setGovAgencyName(input.getGovAgencyName());
+				result.setSubDomainCode(question.getSubDomainCode());
+				result.setSubDomainName(input.getSubDomainName());
 				
 				return Response.status(200).entity(result)
 						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
@@ -378,7 +384,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response optionQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
-			String questionType, String answer, ServiceContext serviceContext) {
+			String questionType, String answer, String subDomainCode, ServiceContext serviceContext) {
 		return Response.status(200).entity("")
 				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
 				.header("Access-Control-Allow-Credentials", "true")

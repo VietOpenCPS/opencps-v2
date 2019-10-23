@@ -60,10 +60,10 @@ public class QuestionLocalServiceUtil {
 
 	public static int countByQuerySearch(long groupId, String keyword,
 		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer) {
+		Boolean answer, String subDomainCode) {
 		return getService()
 				   .countByQuerySearch(groupId, keyword, govAgencyCode,
-			publish, questionType, answer);
+			publish, questionType, answer, subDomainCode);
 	}
 
 	/**
@@ -200,10 +200,11 @@ public class QuestionLocalServiceUtil {
 
 	public static java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
 		long groupId, String keyword, String govAgencyCode, Integer publish,
-		String questionType, Boolean answer, int start, int limit) {
+		String questionType, Boolean answer, String subDomainCode, int start,
+		int limit) {
 		return getService()
 				   .findByQuerySearch(groupId, keyword, govAgencyCode, publish,
-			questionType, answer, start, limit);
+			questionType, answer, subDomainCode, start, limit);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -270,10 +271,12 @@ public class QuestionLocalServiceUtil {
 	public static org.opencps.usermgt.model.Question updateQuestion(
 		long companyId, long groupId, long questionId, String fullname,
 		String email, String content, int publish, String govAgencyCode,
-		String govAgencyName, String questionType) {
+		String govAgencyName, String questionType, String subDomainCode,
+		String subDomainName) {
 		return getService()
 				   .updateQuestion(companyId, groupId, questionId, fullname,
-			email, content, publish, govAgencyCode, govAgencyName, questionType);
+			email, content, publish, govAgencyCode, govAgencyName,
+			questionType, subDomainCode, subDomainName);
 	}
 
 	/**

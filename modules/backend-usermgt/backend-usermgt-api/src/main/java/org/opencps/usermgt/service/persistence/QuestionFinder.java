@@ -24,9 +24,10 @@ import aQute.bnd.annotation.ProviderType;
 public interface QuestionFinder {
 	public java.util.List<org.opencps.usermgt.model.Question> findQuestionSearch(
 		long groupId, String keyword, String govAgencyCode, Integer publish,
-		String questionType, Boolean answer, int start, int limit);
+		String questionType, Boolean answer, String subDomainCode, int start,
+		int limit);
 
 	public int countQuestionSearch(long groupId, String keyword,
 		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer);
+		Boolean answer, String subDomainCode);
 }

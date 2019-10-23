@@ -74,7 +74,7 @@ public interface QuestionLocalService extends BaseLocalService,
 
 	public int countByQuerySearch(long groupId, String keyword,
 		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer);
+		Boolean answer, String subDomainCode);
 
 	/**
 	* Creates a new question with the primary key. Does not add the question to the database.
@@ -178,7 +178,7 @@ public interface QuestionLocalService extends BaseLocalService,
 
 	public List<Question> findByQuerySearch(long groupId, String keyword,
 		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer, int start, int limit);
+		Boolean answer, String subDomainCode, int start, int limit);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -233,7 +233,7 @@ public interface QuestionLocalService extends BaseLocalService,
 	public Question updateQuestion(long companyId, long groupId,
 		long questionId, String fullname, String email, String content,
 		int publish, String govAgencyCode, String govAgencyName,
-		String questionType);
+		String questionType, String subDomainCode, String subDomainName);
 
 	/**
 	* Updates the question in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
