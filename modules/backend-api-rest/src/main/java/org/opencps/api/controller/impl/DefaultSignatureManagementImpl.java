@@ -621,7 +621,22 @@ public class DefaultSignatureManagementImpl
 							Deliverable deliverable =
 								DeliverableLocalServiceUtil.getByCode(
 									deliverableCode);
-							if (deliverable != null) {
+							if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+								String deliState = String.valueOf(
+									deliverable.getDeliverableState());
+								if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+									
+									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+									DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								} else if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState(1);
+									DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								}
+							} else if (deliverable != null) {
+								
 								String deliState = String.valueOf(
 									deliverable.getDeliverableState());
 								if (!"1".equals(deliState)) {
@@ -773,7 +788,22 @@ public class DefaultSignatureManagementImpl
 						Deliverable deliverable =
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
-						if (deliverable != null) {
+						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+							String deliState = String.valueOf(
+								deliverable.getDeliverableState());
+							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							} else if (!"1".equals(deliState)) {
+								deliverable.setDeliverableState(1);
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							}
+						} else if (deliverable != null) {
+							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!"1".equals(deliState)) {
@@ -843,7 +873,22 @@ public class DefaultSignatureManagementImpl
 						Deliverable deliverable =
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
-						if (deliverable != null) {
+						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+							String deliState = String.valueOf(
+								deliverable.getDeliverableState());
+							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							} else if (!"1".equals(deliState)) {
+								deliverable.setDeliverableState(1);
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							}
+						} else if (deliverable != null) {
+							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!"1".equals(deliState)) {
@@ -977,7 +1022,22 @@ public class DefaultSignatureManagementImpl
 						Deliverable deliverable =
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
-						if (deliverable != null) {
+						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+							String deliState = String.valueOf(
+								deliverable.getDeliverableState());
+							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							} else if (!"1".equals(deliState)) {
+								deliverable.setDeliverableState(1);
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							}
+						} else if (deliverable != null) {
+							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!"1".equals(deliState)) {
@@ -1052,7 +1112,22 @@ public class DefaultSignatureManagementImpl
 						Deliverable deliverable =
 							DeliverableLocalServiceUtil.getByCode(
 								deliverableCode);
-						if (deliverable != null) {
+						if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+							String deliState = String.valueOf(
+								deliverable.getDeliverableState());
+							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							} else if (!"1".equals(deliState)) {
+								deliverable.setDeliverableState(1);
+								DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+							}
+						} else if (deliverable != null) {
+							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!"1".equals(deliState)) {
@@ -1189,10 +1264,25 @@ public class DefaultSignatureManagementImpl
 						if (deliverable != null) {
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (!"1".equals(deliState)) {
-								deliverable.setDeliverableState(1);
-								System.out.println(deliverable);
-								// DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+							if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
+								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
+								if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+									
+									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+									DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								} else if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState(1);
+									DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								}
+							} else if (deliverable != null) {
+								
+								if (!"1".equals(deliState)) {
+									deliverable.setDeliverableState(1);
+									DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+								}
 							}
 							if (deliverable.getFileEntryId() > 0 &&
 								file != null) {
