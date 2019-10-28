@@ -248,7 +248,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				//payload.setTop(top);
 				payload.setDossierNo(dossierIdNo);
 				payload.setOnlineStatistic(query.getOnline());
-				payload.setSystem(query.getSystem());
+				payload.setSystem(system);
 				
 				GetDossierResponse dossierResponse = new GetDossierResponse();
 						

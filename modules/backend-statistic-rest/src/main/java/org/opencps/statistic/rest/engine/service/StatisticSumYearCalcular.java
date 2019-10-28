@@ -78,25 +78,27 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
 
-					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+					if (dossierStatisticResponse != null) {
+						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-					dossierStatisticData.ifPresent(source -> {
-						if (source.size() > 0) {
-							
-							//LOG.info("***DATA****" + source.size());
-							DossierStatisticData latestMonthStatisticData = source.get(0);
+						dossierStatisticData.ifPresent(source -> {
+							if (source.size() > 0) {
+								
+								//LOG.info("***DATA****" + source.size());
+								DossierStatisticData latestMonthStatisticData = source.get(0);
 
-							try {
-								getDetailData(companyId, groupId, 0, year, null, null, null, null, null, source,
-										latestMonthStatisticData);
-							} catch (SystemException e) {
-								_log.error(e);
-							} catch (PortalException e) {
-								_log.error(e);
+								try {
+									getDetailData(companyId, groupId, 0, year, null, null, null, null, null, source,
+											latestMonthStatisticData);
+								} catch (SystemException e) {
+									_log.error(e);
+								} catch (PortalException e) {
+									_log.error(e);
+								}
 							}
-						}
-					});
+						});
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -124,25 +126,27 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
 
-					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
-
-					dossierStatisticData.ifPresent(source -> {
-						if (source.size() > 0) {
-							
-							//LOG.info("***DATA****" + source.size());
-							DossierStatisticData latestMonthStatisticData = source.get(0);
-
-							try {
-								getDetailData(companyId, groupId, 0, year, null, null, null, null, strSystem, source,
-										latestMonthStatisticData);
-							} catch (SystemException e) {
-								_log.error(e);
-							} catch (PortalException e) {
-								_log.error(e);
+					if (dossierStatisticResponse != null) {
+						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+	
+						dossierStatisticData.ifPresent(source -> {
+							if (source.size() > 0) {
+								
+								//LOG.info("***DATA****" + source.size());
+								DossierStatisticData latestMonthStatisticData = source.get(0);
+	
+								try {
+									getDetailData(companyId, groupId, 0, year, null, null, null, null, strSystem, source,
+											latestMonthStatisticData);
+								} catch (SystemException e) {
+									_log.error(e);
+								} catch (PortalException e) {
+									_log.error(e);
+								}
 							}
-						}
-					});
+						});
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -201,25 +205,27 @@ public class StatisticSumYearCalcular {
 						dossierStatisticResponse = dossierStatisticFinderService
 								.finderDossierStatistics(dossierStatisticRequest);
 
-						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+						if (dossierStatisticResponse != null) {
+							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-						dossierStatisticData.ifPresent(source2 -> {
-							if (dossierStatisticData.get().size() > 0) {
+							dossierStatisticData.ifPresent(source2 -> {
+								if (dossierStatisticData.get().size() > 0) {
 
-								DossierStatisticData latestMonthStatisticData = source2.get(0);
+									DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-								try {
-									getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
-											data.getItemName(), null, source2, latestMonthStatisticData);
-								} catch (SystemException e) {
-									_log.error(e);
-								} catch (PortalException e) {
-									_log.error(e);
+									try {
+										getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
+												data.getItemName(), null, source2, latestMonthStatisticData);
+									} catch (SystemException e) {
+										_log.error(e);
+									} catch (PortalException e) {
+										_log.error(e);
+									}
 								}
-							}
 
-						});
+							});
+						}
 
 					} catch (PortalException e) {
 						_log.error(e);
@@ -251,26 +257,28 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
 
-					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+					if (dossierStatisticResponse != null) {
+						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-					dossierStatisticData.ifPresent(source -> {
-						if (source.size() > 0) {
-							
-							//LOG.info("***DATA****" + source.size());
-							DossierStatisticData latestMonthStatisticData = source.get(0);
+						dossierStatisticData.ifPresent(source -> {
+							if (source.size() > 0) {
+								
+								//LOG.info("***DATA****" + source.size());
+								DossierStatisticData latestMonthStatisticData = source.get(0);
 
-							try {
-								getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-										domainResponse.getItemName(), null, null, null, source,
-										latestMonthStatisticData);
-							} catch (SystemException e) {
-								_log.error(e);
-							} catch (PortalException e) {
-								_log.error(e);
+								try {
+									getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
+											domainResponse.getItemName(), null, null, null, source,
+											latestMonthStatisticData);
+								} catch (SystemException e) {
+									_log.error(e);
+								} catch (PortalException e) {
+									_log.error(e);
+								}
 							}
-						}
-					});
+						});
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -334,25 +342,27 @@ public class StatisticSumYearCalcular {
 							dossierStatisticResponse = dossierStatisticFinderService
 									.finderDossierStatistics(dossierStatisticRequest);
 
-							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+							if (dossierStatisticResponse != null) {
+								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-							dossierStatisticData.ifPresent(source2 -> {
-								if (dossierStatisticData.get().size() > 0) {
+								dossierStatisticData.ifPresent(source2 -> {
+									if (dossierStatisticData.get().size() > 0) {
 
-									DossierStatisticData latestMonthStatisticData = source2.get(0);
+										DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-									try {
-										getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
-												data.getItemName(), strSystem, source2, latestMonthStatisticData);
-									} catch (SystemException e) {
-										_log.error(e);
-									} catch (PortalException e) {
-										_log.error(e);
+										try {
+											getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
+													data.getItemName(), strSystem, source2, latestMonthStatisticData);
+										} catch (SystemException e) {
+											_log.error(e);
+										} catch (PortalException e) {
+											_log.error(e);
+										}
 									}
-								}
 
-							});
+								});
+							}
 
 						} catch (PortalException e) {
 							_log.error(e);
@@ -387,25 +397,27 @@ public class StatisticSumYearCalcular {
 							dossierStatisticResponse = dossierStatisticFinderService
 									.finderDossierStatistics(dossierStatisticRequest);
 
-							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+							if (dossierStatisticResponse != null) {
+								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-							dossierStatisticData.ifPresent(source2 -> {
-								if (dossierStatisticData.get().size() > 0) {
-									DossierStatisticData latestMonthStatisticData = source2.get(0);
+								dossierStatisticData.ifPresent(source2 -> {
+									if (dossierStatisticData.get().size() > 0) {
+										DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-									try {
-										getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-												domainResponse.getItemName(), null, null, strSystem, source2,
-												latestMonthStatisticData);
-									} catch (SystemException e) {
-										_log.error(e);
-									} catch (PortalException e) {
-										_log.error(e);
+										try {
+											getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
+													domainResponse.getItemName(), null, null, strSystem, source2,
+													latestMonthStatisticData);
+										} catch (SystemException e) {
+											_log.error(e);
+										} catch (PortalException e) {
+											_log.error(e);
+										}
 									}
-								}
 
-							});
+								});
+							}
 
 						} catch (PortalException e) {
 							_log.error(e);
@@ -471,25 +483,27 @@ public class StatisticSumYearCalcular {
 								dossierStatisticResponse = dossierStatisticFinderService
 										.finderDossierStatistics(dossierStatisticRequest);
 
-								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+								if (dossierStatisticResponse != null) {
+									Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+											.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-								dossierStatisticData.ifPresent(source2 -> {
-									if (dossierStatisticData.get().size() > 0) {
-										DossierStatisticData latestMonthStatisticData = source2.get(0);
+									dossierStatisticData.ifPresent(source2 -> {
+										if (dossierStatisticData.get().size() > 0) {
+											DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-										try {
-											getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-													domainResponse.getItemName(), data.getItemCode(),
-													data.getItemName(), null, source2, latestMonthStatisticData);
-										} catch (SystemException e) {
-											_log.error(e);
-										} catch (PortalException e) {
-											_log.error(e);
+											try {
+												getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
+														domainResponse.getItemName(), data.getItemCode(),
+														data.getItemName(), null, source2, latestMonthStatisticData);
+											} catch (SystemException e) {
+												_log.error(e);
+											} catch (PortalException e) {
+												_log.error(e);
+											}
 										}
-									}
 
-								});
+									});
+								}
 
 							} catch (PortalException e) {
 								_log.error(e);
@@ -562,32 +576,33 @@ public class StatisticSumYearCalcular {
 									dossierStatisticResponse = dossierStatisticFinderService
 											.finderDossierStatistics(dossierStatisticRequest);
 
-									Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-											.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+									if (dossierStatisticResponse != null) {
+										Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+												.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-									dossierStatisticData.ifPresent(source2 -> {
-										if (dossierStatisticData.get().size() > 0) {
-											DossierStatisticData latestMonthStatisticData = source2.get(0);
+										dossierStatisticData.ifPresent(source2 -> {
+											if (dossierStatisticData.get().size() > 0) {
+												DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-											try {
-												getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-														domainResponse.getItemName(), data.getItemCode(),
-														data.getItemName(), strSystem, source2, latestMonthStatisticData);
-											} catch (SystemException e) {
-												_log.error(e);
-											} catch (PortalException e) {
-												_log.error(e);
+												try {
+													getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
+															domainResponse.getItemName(), data.getItemCode(),
+															data.getItemName(), strSystem, source2, latestMonthStatisticData);
+												} catch (SystemException e) {
+													_log.error(e);
+												} catch (PortalException e) {
+													_log.error(e);
+												}
 											}
-										}
 
-									});
+										});
+									}
 
 								} catch (PortalException e) {
 									_log.error(e);
 								}
 							}
 						}
-
 					}
 				});
 			}
@@ -626,27 +641,29 @@ public class StatisticSumYearCalcular {
 						.finderDossierStatistics(dossierStatisticRequest);
 				
 //				_log.info("dossierStatisticResponse2222: "+dossierStatisticResponse);
-				_log.info("dossierStatisticResponse111: "+JSONFactoryUtil.looseSerialize(dossierStatisticResponse));
+				//_log.info("dossierStatisticResponse111: "+JSONFactoryUtil.looseSerialize(dossierStatisticResponse));
 
-				Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-						.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+				if (dossierStatisticResponse != null) {
+					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-				dossierStatisticData.ifPresent(source -> {
-					if (source.size() > 0) {
+					dossierStatisticData.ifPresent(source -> {
+						if (source.size() > 0) {
 
-						// LOG.info("***DATA****" + source.size());
-						DossierStatisticData latestMonthStatisticData = source.get(0);
+							// LOG.info("***DATA****" + source.size());
+							DossierStatisticData latestMonthStatisticData = source.get(0);
 
-						try {
-							getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, source,
-									latestMonthStatisticData);
-						} catch (SystemException e) {
-							_log.error(e);
-						} catch (PortalException e) {
-							_log.error(e);
+							try {
+								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, source,
+										latestMonthStatisticData);
+							} catch (SystemException e) {
+								_log.error(e);
+							} catch (PortalException e) {
+								_log.error(e);
+							}
 						}
-					}
-				});
+					});
+				}
 
 			} catch (Exception e) {
 				_log.error(e);
@@ -658,6 +675,7 @@ public class StatisticSumYearCalcular {
 		/* case domain = null && agency = null && system != null */
 		if (!isDomain && !isAgency && isSystem) {
 			/* statistic by all */
+			_log.info("Case 2222222");
 
 			String[] systemArr = DossierStatisticConstants.ALL_SYSTEM.split(StringPool.COMMA);
 
@@ -673,25 +691,28 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
 
-					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+					if (dossierStatisticResponse != null) {
+						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-					dossierStatisticData.ifPresent(source -> {
-						if (source.size() > 0) {
+						dossierStatisticData.ifPresent(source -> {
+							if (source.size() > 0) {
 
-							// LOG.info("***DATA****" + source.size());
-							DossierStatisticData latestMonthStatisticData = source.get(0);
+								// LOG.info("***DATA****" + source.size());
+								DossierStatisticData latestMonthStatisticData = source.get(0);
+								_log.info("latestMonthStatisticData: "+latestMonthStatisticData);
 
-							try {
-								getDetailData(companyId, groupId, 0, 0, null, null, null, null, strSystem, source,
-										latestMonthStatisticData);
-							} catch (SystemException e) {
-								_log.error(e);
-							} catch (PortalException e) {
-								_log.error(e);
+								try {
+									getDetailData(companyId, groupId, 0, 0, null, null, null, null, strSystem, source,
+											latestMonthStatisticData);
+								} catch (SystemException e) {
+									_log.error(e);
+								} catch (PortalException e) {
+									_log.error(e);
+								}
 							}
-						}
-					});
+						});
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -750,25 +771,27 @@ public class StatisticSumYearCalcular {
 						dossierStatisticResponse = dossierStatisticFinderService
 								.finderDossierStatistics(dossierStatisticRequest);
 
-						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+						if (dossierStatisticResponse != null) {
+							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-						dossierStatisticData.ifPresent(source2 -> {
-							if (dossierStatisticData.get().size() > 0) {
+							dossierStatisticData.ifPresent(source2 -> {
+								if (dossierStatisticData.get().size() > 0) {
 
-								DossierStatisticData latestMonthStatisticData = source2.get(0);
+									DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-								try {
-									getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
-											data.getItemName(), null, source2, latestMonthStatisticData);
-								} catch (SystemException e) {
-									_log.error(e);
-								} catch (PortalException e) {
-									_log.error(e);
+									try {
+										getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
+												data.getItemName(), null, source2, latestMonthStatisticData);
+									} catch (SystemException e) {
+										_log.error(e);
+									} catch (PortalException e) {
+										_log.error(e);
+									}
 								}
-							}
 
-						});
+							});
+						}
 
 					} catch (PortalException e) {
 						_log.error(e);
@@ -800,26 +823,28 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
 
-					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+					if (dossierStatisticResponse != null) {
+						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-					dossierStatisticData.ifPresent(source -> {
-						if (source.size() > 0) {
+						dossierStatisticData.ifPresent(source -> {
+							if (source.size() > 0) {
 
-							// LOG.info("***DATA****" + source.size());
-							DossierStatisticData latestMonthStatisticData = source.get(0);
+								// LOG.info("***DATA****" + source.size());
+								DossierStatisticData latestMonthStatisticData = source.get(0);
 
-							try {
-								getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-										domainResponse.getItemName(), null, null, null, source,
-										latestMonthStatisticData);
-							} catch (SystemException e) {
-								_log.error(e);
-							} catch (PortalException e) {
-								_log.error(e);
+								try {
+									getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
+											domainResponse.getItemName(), null, null, null, source,
+											latestMonthStatisticData);
+								} catch (SystemException e) {
+									_log.error(e);
+								} catch (PortalException e) {
+									_log.error(e);
+								}
 							}
-						}
-					});
+						});
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -883,25 +908,27 @@ public class StatisticSumYearCalcular {
 							dossierStatisticResponse = dossierStatisticFinderService
 									.finderDossierStatistics(dossierStatisticRequest);
 
-							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+							if (dossierStatisticResponse != null) {
+								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-							dossierStatisticData.ifPresent(source2 -> {
-								if (dossierStatisticData.get().size() > 0) {
+								dossierStatisticData.ifPresent(source2 -> {
+									if (dossierStatisticData.get().size() > 0) {
 
-									DossierStatisticData latestMonthStatisticData = source2.get(0);
+										DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-									try {
-										getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
-												data.getItemName(), strSystem, source2, latestMonthStatisticData);
-									} catch (SystemException e) {
-										_log.error(e);
-									} catch (PortalException e) {
-										_log.error(e);
+										try {
+											getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
+													data.getItemName(), strSystem, source2, latestMonthStatisticData);
+										} catch (SystemException e) {
+											_log.error(e);
+										} catch (PortalException e) {
+											_log.error(e);
+										}
 									}
-								}
 
-							});
+								});
+							}
 
 						} catch (PortalException e) {
 							_log.error(e);
@@ -936,25 +963,27 @@ public class StatisticSumYearCalcular {
 							dossierStatisticResponse = dossierStatisticFinderService
 									.finderDossierStatistics(dossierStatisticRequest);
 
-							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+							if (dossierStatisticResponse != null) {
+								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-							dossierStatisticData.ifPresent(source2 -> {
-								if (dossierStatisticData.get().size() > 0) {
-									DossierStatisticData latestMonthStatisticData = source2.get(0);
+								dossierStatisticData.ifPresent(source2 -> {
+									if (dossierStatisticData.get().size() > 0) {
+										DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-									try {
-										getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-												domainResponse.getItemName(), null, null, strSystem, source2,
-												latestMonthStatisticData);
-									} catch (SystemException e) {
-										_log.error(e);
-									} catch (PortalException e) {
-										_log.error(e);
+										try {
+											getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
+													domainResponse.getItemName(), null, null, strSystem, source2,
+													latestMonthStatisticData);
+										} catch (SystemException e) {
+											_log.error(e);
+										} catch (PortalException e) {
+											_log.error(e);
+										}
 									}
-								}
 
-							});
+								});
+							}
 
 						} catch (PortalException e) {
 							_log.error(e);
@@ -1020,25 +1049,27 @@ public class StatisticSumYearCalcular {
 								dossierStatisticResponse = dossierStatisticFinderService
 										.finderDossierStatistics(dossierStatisticRequest);
 
-								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-										.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+								if (dossierStatisticResponse != null) {
+									Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+											.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-								dossierStatisticData.ifPresent(source2 -> {
-									if (dossierStatisticData.get().size() > 0) {
-										DossierStatisticData latestMonthStatisticData = source2.get(0);
+									dossierStatisticData.ifPresent(source2 -> {
+										if (dossierStatisticData.get().size() > 0) {
+											DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-										try {
-											getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-													domainResponse.getItemName(), data.getItemCode(),
-													data.getItemName(), null, source2, latestMonthStatisticData);
-										} catch (SystemException e) {
-											_log.error(e);
-										} catch (PortalException e) {
-											_log.error(e);
+											try {
+												getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
+														domainResponse.getItemName(), data.getItemCode(),
+														data.getItemName(), null, source2, latestMonthStatisticData);
+											} catch (SystemException e) {
+												_log.error(e);
+											} catch (PortalException e) {
+												_log.error(e);
+											}
 										}
-									}
 
-								});
+									});
+								}
 
 							} catch (PortalException e) {
 								_log.error(e);
@@ -1112,25 +1143,27 @@ public class StatisticSumYearCalcular {
 									dossierStatisticResponse = dossierStatisticFinderService
 											.finderDossierStatistics(dossierStatisticRequest);
 
-									Optional<List<DossierStatisticData>> dossierStatisticData = Optional
-											.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+									if (dossierStatisticResponse != null) {
+										Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+												.ofNullable(dossierStatisticResponse.getDossierStatisticData());
 
-									dossierStatisticData.ifPresent(source2 -> {
-										if (dossierStatisticData.get().size() > 0) {
-											DossierStatisticData latestMonthStatisticData = source2.get(0);
+										dossierStatisticData.ifPresent(source2 -> {
+											if (dossierStatisticData.get().size() > 0) {
+												DossierStatisticData latestMonthStatisticData = source2.get(0);
 
-											try {
-												getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-														domainResponse.getItemName(), data.getItemCode(),
-														data.getItemName(), strSystem, source2,
-														latestMonthStatisticData);
-											} catch (SystemException e) {
-												_log.error(e);
-											} catch (PortalException e) {
-												_log.error(e);
+												try {
+													getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
+															domainResponse.getItemName(), data.getItemCode(),
+															data.getItemName(), strSystem, source2,
+															latestMonthStatisticData);
+												} catch (SystemException e) {
+													_log.error(e);
+												} catch (PortalException e) {
+													_log.error(e);
+												}
 											}
-										}
-									});
+										});
+									}
 								} catch (PortalException e) {
 									_log.error(e);
 								}

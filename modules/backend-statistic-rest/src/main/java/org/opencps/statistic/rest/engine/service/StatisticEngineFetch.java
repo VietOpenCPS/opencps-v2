@@ -91,7 +91,7 @@ public class StatisticEngineFetch {
 						reporting);
 				dataType3 = processOnTimePercent(dataType3);
 	
-				statisticData.put(type2, dataType3);
+				statisticData.put(type3, dataType3);
 	
 				// each site all domain
 				
