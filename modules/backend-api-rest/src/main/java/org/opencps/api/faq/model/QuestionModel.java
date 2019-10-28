@@ -53,7 +53,9 @@ import javax.xml.bind.annotation.XmlType;
     "questionType",
     "govAgencyCode",
     "govAgencyName",
-    "answered"
+    "answered",
+    "subDomainCode",
+    "subDomainName"
 })
 public class QuestionModel {
 
@@ -74,6 +76,10 @@ public class QuestionModel {
     @XmlElement(required = true)
     protected String govAgencyName;
     protected boolean answered;
+    @XmlElement(required = true)
+    protected String subDomainCode;
+    @XmlElement(required = true)
+    protected String subDomainName;
 
     /**
      * Gets the value of the questionId property.
@@ -289,6 +295,55 @@ public class QuestionModel {
      */
     public void setAnswered(boolean value) {
         this.answered = value;
+    }
+
+
+    /**
+     * Gets the value of the subDomainCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubDomainCode() {
+        return subDomainCode;
+    }
+
+    /**
+     * Sets the value of the subDomainCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubDomainCode(String value) {
+        this.subDomainCode = value;
+    }
+
+    /**
+     * Gets the value of the subDomainName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubDomainName() {
+        return subDomainName;
+    }
+
+    /**
+     * Sets the value of the subDomainName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubDomainName(String value) {
+        this.subDomainName = value;
     }
 
 }

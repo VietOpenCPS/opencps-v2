@@ -49,7 +49,9 @@ import javax.xml.bind.annotation.XmlType;
     "publish",
     "questionType",
     "govAgencyCode",
-    "govAgencyName"
+    "govAgencyName",
+    "subDomainCode",
+    "subDomainName"
 })
 @XmlRootElement(name = "QuestionInputModel")
 public class QuestionInputModel {
@@ -71,6 +73,10 @@ public class QuestionInputModel {
     protected String govAgencyName;
     @FormParam("questionType")
     protected String questionType;
+    @FormParam("subDomainCode")
+    protected String subDomainCode;
+    @FormParam("subDomainName")
+    protected String subDomainName;
 
 
     /**
@@ -231,6 +237,54 @@ public class QuestionInputModel {
      */
     public void setGovAgencyName(String value) {
         this.govAgencyName = value;
+    }
+
+    /**
+     * Gets the value of the subDomainCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubDomainCode() {
+        return subDomainCode;
+    }
+
+    /**
+     * Sets the value of the subDomainCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubDomainCode(String value) {
+        this.subDomainCode = value;
+    }
+
+    /**
+     * Gets the value of the subDomainName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSubDomainName() {
+        return subDomainName;
+    }
+
+    /**
+     * Sets the value of the subDomainName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSubDomainName(String value) {
+        this.subDomainName = value;
     }
 
 }

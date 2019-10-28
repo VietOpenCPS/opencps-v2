@@ -96,9 +96,10 @@ public class ImportDataUtils {
 			jsonData.put("domain", currentRow.getCell(1).getStringCellValue().trim());
 			jsonData.put("question", currentRow.getCell(2).getStringCellValue().trim());
 			jsonData.put("answer", currentRow.getCell(3).getStringCellValue().trim());
-			jsonData.put("subDomain", currentRow.getCell(4).getStringCellValue().trim());
-			jsonData.put("govAgencyCode", currentRow.getCell(5).getStringCellValue().trim());
-			jsonData.put("govAgencyName", currentRow.getCell(5).getStringCellValue().trim());
+			jsonData.put("subDomainCode", currentRow.getCell(4).getStringCellValue().trim());
+			jsonData.put("subDomainName", currentRow.getCell(5).getStringCellValue().trim());
+			jsonData.put("govAgencyCode", currentRow.getCell(6).getStringCellValue().trim());
+			jsonData.put("govAgencyName", currentRow.getCell(7).getStringCellValue().trim());
 
 		} catch (Exception e) {
 			_log.error(e);

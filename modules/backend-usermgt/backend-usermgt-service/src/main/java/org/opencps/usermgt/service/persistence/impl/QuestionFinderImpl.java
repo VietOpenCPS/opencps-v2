@@ -24,7 +24,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 
 	@SuppressWarnings("unchecked")
 	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, 
-			Boolean answer,
+			Boolean answer, String subDomainCode,
 			int start,
 			int limit) {
 
@@ -44,6 +44,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		} else if(Validator.isNotNull(govAgencyCode)){
 			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
@@ -52,14 +55,25 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		} else if (Validator.isNotNull(publish)) {
 			sb.append("WHERE q.publish = " + publish + " ");
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		}
 		else if (Validator.isNotNull(questionType)) {
 			sb.append("WHERE q.questionType = '" + questionType + "' ");
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
+		} else if (Validator.isNotNull(subDomainCode)) {
+			sb.append("WHERE q.subDomainCode = '" + subDomainCode + "' ");
 		}
 		
 		if (answer != null) {
@@ -103,7 +117,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer) {
+	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer, String subDomainCode) {
 
 		Session session = null;
 		int countQuestion = 0;
@@ -121,6 +135,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		} else if(Validator.isNotNull(govAgencyCode)){
 			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
 			if (Validator.isNotNull(publish)) {
@@ -129,14 +146,25 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		} else if (Validator.isNotNull(publish)) {
 			sb.append("WHERE q.publish = " + publish + " ");
 			if (Validator.isNotNull(questionType)) {
 				sb.append("AND q.questionType = '" + questionType + "' ");
 			}
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
 		}
 		else if (Validator.isNotNull(questionType)) {
 			sb.append("WHERE q.questionType = '" + questionType + "' ");
+			if (Validator.isNotNull(subDomainCode)) {
+				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
+			}
+		} else if (Validator.isNotNull(subDomainCode)) {
+			sb.append("WHERE q.subDomainCode = '" + subDomainCode + "' ");
 		}
 		
 		if (answer != null) {

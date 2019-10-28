@@ -239,6 +239,36 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	 */
 	public void setQuestionType(String questionType);
 
+	/**
+	 * Returns the sub domain code of this question.
+	 *
+	 * @return the sub domain code of this question
+	 */
+	@AutoEscape
+	public String getSubDomainCode();
+
+	/**
+	 * Sets the sub domain code of this question.
+	 *
+	 * @param subDomainCode the sub domain code of this question
+	 */
+	public void setSubDomainCode(String subDomainCode);
+
+	/**
+	 * Returns the sub domain name of this question.
+	 *
+	 * @return the sub domain name of this question
+	 */
+	@AutoEscape
+	public String getSubDomainName();
+
+	/**
+	 * Sets the sub domain name of this question.
+	 *
+	 * @param subDomainName the sub domain name of this question
+	 */
+	public void setSubDomainName(String subDomainName);
+
 	@Override
 	public boolean isNew();
 
