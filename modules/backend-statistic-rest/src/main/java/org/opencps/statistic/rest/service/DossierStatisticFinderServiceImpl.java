@@ -61,7 +61,11 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 				dossierStatisticRequest.getGroupAgencyCode(), dossierStatisticRequest.getStart(),
 				dossierStatisticRequest.getEnd());
 
-		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
+		if (dossierStatistics != null && dossierStatistics.size() > 0) {
+			return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
+		}
+
+		return null;
 	}
 
 }
