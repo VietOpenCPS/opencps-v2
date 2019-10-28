@@ -69,6 +69,8 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("questionType", getQuestionType());
+		attributes.put("subDomainCode", getSubDomainCode());
+		attributes.put("subDomainName", getSubDomainName());
 
 		return attributes;
 	}
@@ -145,6 +147,18 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 
 		if (questionType != null) {
 			setQuestionType(questionType);
+		}
+
+		String subDomainCode = (String)attributes.get("subDomainCode");
+
+		if (subDomainCode != null) {
+			setSubDomainCode(subDomainCode);
+		}
+
+		String subDomainName = (String)attributes.get("subDomainName");
+
+		if (subDomainName != null) {
+			setSubDomainName(subDomainName);
 		}
 	}
 
@@ -296,6 +310,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public String getQuestionType() {
 		return _question.getQuestionType();
+	}
+
+	/**
+	* Returns the sub domain code of this question.
+	*
+	* @return the sub domain code of this question
+	*/
+	@Override
+	public String getSubDomainCode() {
+		return _question.getSubDomainCode();
+	}
+
+	/**
+	* Returns the sub domain name of this question.
+	*
+	* @return the sub domain name of this question
+	*/
+	@Override
+	public String getSubDomainName() {
+		return _question.getSubDomainName();
 	}
 
 	@Override
@@ -482,6 +516,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setQuestionType(String questionType) {
 		_question.setQuestionType(questionType);
+	}
+
+	/**
+	* Sets the sub domain code of this question.
+	*
+	* @param subDomainCode the sub domain code of this question
+	*/
+	@Override
+	public void setSubDomainCode(String subDomainCode) {
+		_question.setSubDomainCode(subDomainCode);
+	}
+
+	/**
+	* Sets the sub domain name of this question.
+	*
+	* @param subDomainName the sub domain name of this question
+	*/
+	@Override
+	public void setSubDomainName(String subDomainName) {
+		_question.setSubDomainName(subDomainName);
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public interface FaqManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
 			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword, @QueryParam("questionType") String questionType,
-			@QueryParam("answered") String answer,
+			@QueryParam("answered") String answer, @QueryParam("subDomainCode") String subDomainCode,
 			@Context ServiceContext serviceContext);
 
 	@PUT
@@ -223,6 +223,6 @@ public interface FaqManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
 			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword, @QueryParam("questionType") String questionType,
-			@QueryParam("answered") String answer,
+			@QueryParam("answered") String answer, @QueryParam("subDomainCode") String subDomainCode,
 			@Context ServiceContext serviceContext);	
 }

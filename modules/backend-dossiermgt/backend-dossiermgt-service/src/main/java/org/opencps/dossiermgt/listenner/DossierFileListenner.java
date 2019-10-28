@@ -506,271 +506,276 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			return;
 		}
 
-		if (!model.getIsNew()) {
+		ServiceContext serviceContext = new ServiceContext();
+		serviceContext.setCompanyId(model.getCompanyId());
+		serviceContext.setUserId(model.getUserId());
 
-			ServiceContext serviceContext = new ServiceContext();
-			serviceContext.setCompanyId(model.getCompanyId());
-			serviceContext.setUserId(model.getUserId());
+		try {
+			// Nhung ho so co chung deliverableType va deliverableCode se
+			// chung 1 giay phep
+			DossierPart dossierPart =
+				DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+					model.getGroupId(), model.getDossierTemplateNo(),
+					model.getDossierPartNo());
 
-			try {
-				// Nhung ho so co chung deliverableType va deliverableCode se
-				// chung 1 giay phep
-				DossierPart dossierPart =
-					DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-						model.getGroupId(), model.getDossierTemplateNo(),
-						model.getDossierPartNo());
+			// Neu ho so khong co ky so thi khong can tao giay phep
+			if (!dossierPart.getESign() ||
+				Validator.isNull(dossierPart.getDeliverableType())) {
+				return;
+			}
 
-				// Neu ho so khong co ky so thi khong can tao giay phep
-				if (!dossierPart.getESign() ||
-					Validator.isNull(dossierPart.getDeliverableType())) {
-					return;
-				}
+			// DeliverableType
+			DeliverableType dlvType =
+				DeliverableTypeLocalServiceUtil.getByCode(
+					model.getGroupId(), dossierPart.getDeliverableType());
 
-				// DeliverableType
-				DeliverableType dlvType =
-					DeliverableTypeLocalServiceUtil.getByCode(
-						model.getGroupId(), dossierPart.getDeliverableType());
+			Dossier dossier =
+				DossierLocalServiceUtil.getDossier(model.getDossierId());
 
-				Dossier dossier =
-					DossierLocalServiceUtil.getDossier(model.getDossierId());
+			DossierFile dossierFileAttach =
+				DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
+					model.getGroupId(), model.getDossierId(),
+					model.getDossierTemplateNo(), model.getDossierPartNo(),
+					false, false);
 
-				DossierFile dossierFileAttach =
-					DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
-						model.getGroupId(), model.getDossierId(),
-						model.getDossierTemplateNo(), model.getDossierPartNo(),
-						false, false);
+			JSONObject formDataContent =
+				JSONFactoryUtil.createJSONObject(model.getFormData());
 
-				JSONObject formDataContent =
+			JSONObject jsMappingData =
+				JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
+			_log.debug("jsMappingData: " + jsMappingData);
+
+			JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNotNull(model.getFormData()))
+				jsFormData =
 					JSONFactoryUtil.createJSONObject(model.getFormData());
+			_log.debug("jsFormData: " + jsFormData);
 
-				JSONObject jsMappingData =
-					JSONFactoryUtil.createJSONObject(dlvType.getMappingData());
-				_log.info("jsMappingData: " + jsMappingData);
+			// All mappingData from deliverableType must format like:
+			// "deliverableCode": "#deliverableCode@KQGP"
 
-				JSONObject jsFormData = JSONFactoryUtil.createJSONObject();
+			if (jsMappingData.has("deliverables")) {
 
-				if (Validator.isNotNull(model.getFormData()))
-					jsFormData =
-						JSONFactoryUtil.createJSONObject(model.getFormData());
-				_log.info("jsFormData: " + jsFormData);
+				// map data with fileTemplateNo
+				JSONObject mapp = mappingContent(
+					jsMappingData, jsFormData, model.getDossierId());
+				// uu tien cac truong thong tin formData
+				formDataContent =
+					mergeObject(mapp.toString(), jsFormData.toString());
+			}
+			// else if (jsMappingData.has("deliverables")) {
+			// formDataContent = mappingContent(jsMappingData, jsFormData);
+			// }
 
-				// All mappingData from deliverableType must format like:
-				// "deliverableCode": "#deliverableCode@KQGP"
+			// them truong luu danh sach cac file quyet dinh
+			String fileAttachs = StringPool.BLANK;
+			if (jsMappingData.has("fileAttachs")) {
 
-				if (jsMappingData.has("deliverables")) {
+				fileAttachs = getFileAttachsInDeliverable(
+					model.getDossierId(),
+					jsMappingData.getString("fileAttachs"));
+			}
 
-					// map data with fileTemplateNo
-					JSONObject mapp = mappingContent(
-						jsMappingData, jsFormData, model.getDossierId());
-					// uu tien cac truong thong tin formData
-					formDataContent =
-						mergeObject(mapp.toString(), jsFormData.toString());
+			// them trang thai mong muon khi hoan thanh thu tuc
+			String expertState = "1";
+			if (jsMappingData.has("expertState") && Validator.isNotNull(dossier)) {
+
+				String expertStates = jsMappingData.getString("expertState");
+				if (expertStates.contains(dossier.getServiceCode())) {
+
+					expertState = StringUtil.split(expertStates, dossier.getServiceCode() + "@")[1].substring(0, 1);
 				}
-				// else if (jsMappingData.has("deliverables")) {
-				// formDataContent = mappingContent(jsMappingData, jsFormData);
-				// }
+			}
+			formDataContent.put("expertState", expertState);
 
-				// them truong luu danh sach cac file quyet dinh
-				String fileAttachs = StringPool.BLANK;
-				if (jsMappingData.has("fileAttachs")) {
+			String dDeliverableCode = model.getDeliverableCode();
 
-					fileAttachs = getFileAttachsInDeliverable(
-						model.getDossierId(),
-						jsMappingData.getString("fileAttachs"));
-					System.out.println(
-						"==========fileAttachs===========" + fileAttachs);
-				}
-				System.out.println(
-					"==========fileAttachs=====74======" + fileAttachs);
+			if (model.getEForm()) {
+				// TODO: check ton tai
+				dDeliverableCode = formDataContent.has("deliverableCode")
+					? formDataContent.getString("deliverableCode")
+					: dDeliverableCode;
+				model.setDeliverableCode(dDeliverableCode);
+				model.setIsNew(true);
+				DossierFileLocalServiceUtil.updateDossierFile(model);
+			}
 
-				String dDeliverableCode = model.getDeliverableCode();
+			String applicantName =
+				formDataContent.getString("applicantName");
+			String subject = formDataContent.getString("subject");
+			String issueDate = formDataContent.getString("issueDate");
+			String expireDate = formDataContent.getString("expireDate");
+			String revalidate = formDataContent.getString("revalidate");
 
-				if (model.getEForm()) {
-					// TODO: check ton tai
-					dDeliverableCode = formDataContent.has("deliverableCode")
-						? formDataContent.getString("deliverableCode")
-						: dDeliverableCode;
-					model.setDeliverableCode(dDeliverableCode);
-					model.setIsNew(true);
-					DossierFileLocalServiceUtil.updateDossierFile(model);
-				}
+			// check exits deliverable
+			Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
+				? DeliverableLocalServiceUtil.getByF_GID_DCODE(
+					model.getGroupId(), dDeliverableCode)
+				: DeliverableLocalServiceUtil.fetchByGID_DID(
+					model.getGroupId(), model.getDossierId());
 
-				String applicantName =
-					formDataContent.getString("applicantName");
-				String subject = formDataContent.getString("subject");
-				String issueDate = formDataContent.getString("issueDate");
-				String expireDate = formDataContent.getString("expireDate");
-				String revalidate = formDataContent.getString("revalidate");
+			if (dossierPart.getDeliverableAction() == 0 &&
+				Validator.isNull(deliverable)) {
 
-				// check exits deliverable
-				Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
-					? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-						model.getGroupId(), dDeliverableCode)
-					: DeliverableLocalServiceUtil.fetchByGID_DID(
-						model.getGroupId(), model.getDossierId());
+				// add new deliverable
 
-				if (dossierPart.getDeliverableAction() == 0 &&
-					Validator.isNull(deliverable)) {
-
-					// add new deliverable
-
-					_log.debug(
-						"============addDeliverableSign=============" +
-							model.getDeliverableCode() + "___" + deliverable);
-					deliverable =
-						DeliverableLocalServiceUtil.addDeliverableSign(
-							model.getGroupId(),
-							dossierPart.getDeliverableType(),
-							dlvType.getTypeName(), dDeliverableCode,
-							dossier.getGovAgencyCode(),
-							dossier.getGovAgencyName(),
-							dossier.getApplicantIdNo(), applicantName, subject,
-							issueDate, expireDate, revalidate, "0",
-							dossier.getDossierId(),
-							dossierFileAttach != null
-								? dossierFileAttach.getFileEntryId() : 0l,
-							dlvType.getFormScriptFileId(),
-							dlvType.getFormReportFileId(),
-							formDataContent.toString(), fileAttachs,
-							serviceContext);
-				}
-				else if (Validator.isNotNull(deliverable)) {
-
-					// backup a deliverable log and update deliverable
-
-					_log.debug(
-						"============backup a deliverable log and update deliverable=============");
-					// backup
-					JSONObject deliverableLog =
-						JSONFactoryUtil.createJSONObject();
-					long actionDate =
-						Validator.isNotNull(deliverable.getIssueDate())
-							? deliverable.getIssueDate().getTime()
-							: Validator.isNotNull(deliverable.getRevalidate())
-								? deliverable.getRevalidate().getTime()
-								: new Date().getTime();
-
-					deliverableLog.put("groupId", model.getGroupId());
-					deliverableLog.put("companyId", model.getCompanyId());
-					deliverableLog.put("userId", model.getUserId());
-					deliverableLog.put("userName", model.getUserName());
-					deliverableLog.put(
-						"deliverableId", deliverable.getDeliverableId());
-					deliverableLog.put("dossierUid", dossier.getReferenceUid());
-					deliverableLog.put("author", model.getUserName());
-					deliverableLog.put("content", "Backup a deliverable log");
-					deliverableLog.put(
-						"deliverableAction",
-						dossierPart.getDeliverableAction());
-					deliverableLog.put("actionDate", actionDate);
-					deliverableLog.put("payload", deliverable.getFormData());
-					deliverableLog.put(
-						"fileEntryId", deliverable.getFileEntryId());
-					DeliverableLogLocalServiceUtil.adminProcessData(
-						deliverableLog);
-
-					// update
-					deliverable.setDeliverableCode(dDeliverableCode);
-					deliverable.setFileEntryId(
+				_log.debug(
+					"============addDeliverableSign=============" +
+						model.getDeliverableCode() + "___" + deliverable);
+				deliverable =
+					DeliverableLocalServiceUtil.addDeliverableSign(
+						model.getGroupId(),
+						dossierPart.getDeliverableType(),
+						dlvType.getTypeName(), dDeliverableCode,
+						dossier.getGovAgencyCode(),
+						dossier.getGovAgencyName(),
+						dossier.getApplicantIdNo(), applicantName, subject,
+						issueDate, expireDate, revalidate, "0",
+						dossier.getDossierId(),
 						dossierFileAttach != null
-							? dossierFileAttach.getFileEntryId() : 0l);
-					deliverable.setApplicantName(
-						Validator.isNotNull(applicantName)
-							? applicantName : deliverable.getApplicantName());
-					deliverable.setSubject(
-						Validator.isNotNull(subject)
-							? applicantName : deliverable.getSubject());
-					deliverable.setIssueDate(
-						Validator.isNotNull(issueDate)
-							? APIDateTimeUtils.convertStringToDate(
-								issueDate, APIDateTimeUtils._NORMAL_DATE)
-							: deliverable.getIssueDate());
-					deliverable.setExpireDate(
-						Validator.isNotNull(expireDate)
-							? APIDateTimeUtils.convertStringToDate(
-								expireDate, APIDateTimeUtils._NORMAL_DATE)
-							: deliverable.getExpireDate());
-					deliverable.setRevalidate(
-						Validator.isNotNull(revalidate)
-							? APIDateTimeUtils.convertStringToDate(
-								revalidate, APIDateTimeUtils._NORMAL_DATE)
-							: deliverable.getRevalidate());
+							? dossierFileAttach.getFileEntryId() : 0l,
+						dlvType.getFormScriptFileId(),
+						dlvType.getFormReportFileId(),
+						formDataContent.toString(), fileAttachs,
+						serviceContext);
+			}
+			else if (Validator.isNotNull(deliverable)) {
 
-					formDataContent = mergeObject(
-						deliverable.getFormData(), formDataContent.toString());
-					deliverable.setFormData(formDataContent.toString());
+				// backup a deliverable log and update deliverable
 
-					deliverable.setFileAttachs(fileAttachs);
+				_log.debug(
+					"============backup a deliverable log and update deliverable=============");
+				// backup
+				JSONObject deliverableLog =
+					JSONFactoryUtil.createJSONObject();
+				long actionDate =
+					Validator.isNotNull(deliverable.getIssueDate())
+						? deliverable.getIssueDate().getTime()
+						: Validator.isNotNull(deliverable.getRevalidate())
+							? deliverable.getRevalidate().getTime()
+							: new Date().getTime();
 
-					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				deliverableLog.put("groupId", model.getGroupId());
+				deliverableLog.put("companyId", model.getCompanyId());
+				deliverableLog.put("userId", model.getUserId());
+				deliverableLog.put("userName", model.getUserName());
+				deliverableLog.put(
+					"deliverableId", deliverable.getDeliverableId());
+				deliverableLog.put("dossierUid", dossier.getReferenceUid());
+				deliverableLog.put("author", model.getUserName());
+				deliverableLog.put("content", "Backup a deliverable log");
+				deliverableLog.put(
+					"deliverableAction",
+					dossierPart.getDeliverableAction());
+				deliverableLog.put("actionDate", actionDate);
+				deliverableLog.put("payload", deliverable.getFormData());
+				deliverableLog.put(
+					"fileEntryId", deliverable.getFileEntryId());
+				DeliverableLogLocalServiceUtil.adminProcessData(
+					deliverableLog);
+
+				// update
+				deliverable.setDeliverableCode(dDeliverableCode);
+				deliverable.setFileEntryId(
+					dossierFileAttach != null
+						? dossierFileAttach.getFileEntryId() : 0l);
+				deliverable.setApplicantName(
+					Validator.isNotNull(applicantName)
+						? applicantName : deliverable.getApplicantName());
+				deliverable.setSubject(
+					Validator.isNotNull(subject)
+						? applicantName : deliverable.getSubject());
+				deliverable.setIssueDate(
+					Validator.isNotNull(issueDate)
+						? APIDateTimeUtils.convertStringToDate(
+							issueDate, APIDateTimeUtils._NORMAL_DATE)
+						: deliverable.getIssueDate());
+				deliverable.setExpireDate(
+					Validator.isNotNull(expireDate)
+						? APIDateTimeUtils.convertStringToDate(
+							expireDate, APIDateTimeUtils._NORMAL_DATE)
+						: deliverable.getExpireDate());
+				deliverable.setRevalidate(
+					Validator.isNotNull(revalidate)
+						? APIDateTimeUtils.convertStringToDate(
+							revalidate, APIDateTimeUtils._NORMAL_DATE)
+						: deliverable.getRevalidate());
+
+				formDataContent = mergeObject(
+					deliverable.getFormData(), formDataContent.toString());
+				deliverable.setFormData(formDataContent.toString());
+
+				deliverable.setFileAttachs(fileAttachs);
+
+				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+			}
+			else {
+				_log.debug(
+					"==============deliverable other key update============");
+			}
+
+			// update fileEntryId if not exits dossierFileAttach
+			long formReportFileId = deliverable.getFormReportFileId() > 0
+				? deliverable.getFormReportFileId()
+				: dlvType.getFormReportFileId();
+
+			if (deliverable != null && formReportFileId > 0 &&
+				!(dossierFileAttach != null &&
+					dossierFileAttach.getFileEntryId() > 0)) {
+
+				InputStream is = null;
+				String jrxmlTemplate = StringPool.BLANK;
+
+				try {
+					DLFileEntry dlFileEntry =
+						DLFileEntryLocalServiceUtil.getFileEntry(
+							formReportFileId);
+
+					is = dlFileEntry.getContentStream();
+
+					jrxmlTemplate =
+						IOUtils.toString(is, StandardCharsets.UTF_8);
+
 				}
-				else {
-					_log.debug(
-						"==============deliverable other key update============");
+				catch (Exception e) {
+					_log.debug(e);
+					jrxmlTemplate = StringPool.BLANK;
 				}
-
-				// update fileEntryId if not exits dossierFileAttach
-				long formReportFileId = deliverable.getFormReportFileId() > 0
-					? deliverable.getFormReportFileId()
-					: dlvType.getFormReportFileId();
-
-				if (deliverable != null && formReportFileId > 0 &&
-					!(dossierFileAttach != null &&
-						dossierFileAttach.getFileEntryId() > 0)) {
-
-					InputStream is = null;
-					String jrxmlTemplate = StringPool.BLANK;
-
-					try {
-						DLFileEntry dlFileEntry =
-							DLFileEntryLocalServiceUtil.getFileEntry(
-								formReportFileId);
-
-						is = dlFileEntry.getContentStream();
-
-						jrxmlTemplate =
-							IOUtils.toString(is, StandardCharsets.UTF_8);
-
-					}
-					catch (Exception e) {
-						_log.debug(e);
-						jrxmlTemplate = StringPool.BLANK;
-					}
-					finally {
-						if (is != null) {
-							try {
-								is.close();
-							}
-							catch (IOException e) {
-								_log.debug(e);
-							}
+				finally {
+					if (is != null) {
+						try {
+							is.close();
+						}
+						catch (IOException e) {
+							_log.debug(e);
 						}
 					}
-
-					_log.debug(
-						"========update fileEntryId if not exits dossierFileAttach");
-					// Process update deliverable file Id
-					Message message = new Message();
-
-					JSONObject msgData = JSONFactoryUtil.createJSONObject();
-					msgData.put("className", Deliverable.class.getName());
-					msgData.put("classPK", deliverable.getDeliverableId());
-					msgData.put("jrxmlTemplate", jrxmlTemplate);
-					msgData.put(
-						"formData",
-						formDataContent != null
-							? formDataContent.toJSONString()
-							: StringPool.BLANK);
-					msgData.put("userId", model.getUserId());
-
-					message.put("msgToEngine", msgData);
-					MessageBusUtil.sendMessage(
-						"jasper/engine/out/destination", message);
 				}
+
+				_log.debug(
+					"========update fileEntryId if not exits dossierFileAttach");
+				// Process update deliverable file Id
+				Message message = new Message();
+
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put("className", Deliverable.class.getName());
+				msgData.put("classPK", deliverable.getDeliverableId());
+				msgData.put("jrxmlTemplate", jrxmlTemplate);
+				msgData.put(
+					"formData",
+					formDataContent != null
+						? formDataContent.toJSONString()
+						: StringPool.BLANK);
+				msgData.put("userId", model.getUserId());
+
+				message.put("msgToEngine", msgData);
+				MessageBusUtil.sendMessage(
+					"jasper/engine/out/destination", message);
 			}
-			catch (Exception e) {
-				_log.error(e);
-			}
+		}
+		catch (Exception e) {
+			_log.error(e);
 		}
 
 	}
@@ -817,7 +822,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		try {
 
-			System.out.println("=======map=======" + oldObj + " " + newObj);
+			_log.debug("=======map=======" + oldObj + " " + newObj);
 			JSONObject o1 = Validator.isNotNull(oldObj)
 				? JSONFactoryUtil.createJSONObject(oldObj)
 				: JSONFactoryUtil.createJSONObject();

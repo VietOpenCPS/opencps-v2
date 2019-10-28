@@ -245,6 +245,8 @@
 		<field name="govAgencyCode" type="String" />
 		<field name="govAgencyName" type="String" />
 		<field name="questionType" type="String" />
+		<field name="subDomainCode" type="String" />
+		<field name="subDomainName" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />

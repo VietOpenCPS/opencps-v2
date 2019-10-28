@@ -45,6 +45,8 @@ public class QuestionSoap implements Serializable {
 		soapModel.setGovAgencyCode(model.getGovAgencyCode());
 		soapModel.setGovAgencyName(model.getGovAgencyName());
 		soapModel.setQuestionType(model.getQuestionType());
+		soapModel.setSubDomainCode(model.getSubDomainCode());
+		soapModel.setSubDomainName(model.getSubDomainName());
 
 		return soapModel;
 	}
@@ -193,6 +195,22 @@ public class QuestionSoap implements Serializable {
 		_questionType = questionType;
 	}
 
+	public String getSubDomainCode() {
+		return _subDomainCode;
+	}
+
+	public void setSubDomainCode(String subDomainCode) {
+		_subDomainCode = subDomainCode;
+	}
+
+	public String getSubDomainName() {
+		return _subDomainName;
+	}
+
+	public void setSubDomainName(String subDomainName) {
+		_subDomainName = subDomainName;
+	}
+
 	private long _questionId;
 	private long _companyId;
 	private long _groupId;
@@ -205,4 +223,6 @@ public class QuestionSoap implements Serializable {
 	private String _govAgencyCode;
 	private String _govAgencyName;
 	private String _questionType;
+	private String _subDomainCode;
+	private String _subDomainName;
 }

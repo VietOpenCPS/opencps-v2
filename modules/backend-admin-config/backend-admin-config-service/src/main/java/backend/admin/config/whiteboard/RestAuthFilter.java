@@ -67,7 +67,7 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\S+/filetemplates/\\S+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers/\\S+/files/\\S+", "/o/rest/v2/dossiers/\\S+", /*"/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems",*/ "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid" };
+	final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\S+/filetemplates/\\S+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers/\\S+/files/\\S+", "/o/rest/v2/dossiers/\\S+", /*"/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems",*/ "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid", "/o/rest/v2/jaspers/preview" };
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	
 	final static String[] DISALLOW_METHODS = new String[] { "OPTIONS" };
@@ -95,7 +95,7 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-		System.out.println("RestAuthFilter.doFilter()");
+
 		_log.debug("RestAuthFilter.doFilter()");
 		
 		String allowIps = PropsUtil.get(OPENCPS_ALLOW_CORS_IPS);

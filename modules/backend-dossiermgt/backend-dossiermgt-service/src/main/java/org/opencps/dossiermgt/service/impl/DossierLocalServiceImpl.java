@@ -4943,15 +4943,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		} else {
 
-			long id = CounterLocalServiceUtil.increment(ServiceProcess.class.getName());
+			long id = CounterLocalServiceUtil.increment(Dossier.class.getName());
 
 			object = dossierPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
 		}
+
+		object.setGroupId(objectData.getLong("groupId"));
+		object.setCompanyId(objectData.getLong("companyId"));
 
 		object.setUserId(objectData.getLong("userId"));
 		object.setUserName(objectData.getString("userName"));
@@ -4967,7 +4968,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
 		object.setApplicantIdType(objectData.getString("applicantIdType"));
 		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
-		object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		if (Validator.isNotNull(objectData.getLong("applicantIdDate"))) {
+			
+			object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		} else {
+
+			object.setApplicantIdDate(object.getApplicantIdDate());
+		}
 		object.setAddress(objectData.getString("address"));
 		object.setApplicantName(objectData.getString("applicantName"));
 		object.setPostalAddress(objectData.getString("postalAddress"));
@@ -5075,15 +5082,61 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setBriefNote(objectData.getString("briefNote"));
 		object.setDossierNo(objectData.getString("dossierNo"));
 		object.setSubmitting(objectData.getBoolean("submitting"));
-		object.setProcessDate(new Date(objectData.getLong("processDate")));
-		object.setSubmitDate(new Date(objectData.getLong("submitDate")));
-		object.setReceiveDate(new Date(objectData.getLong("receiveDate")));
-		object.setDueDate(new Date(objectData.getLong("dueDate")));
-		object.setExtendDate(new Date(objectData.getLong("extendDate")));
-		object.setReleaseDate(new Date(objectData.getLong("releaseDate")));
-		object.setFinishDate(new Date(objectData.getLong("finishDate")));
-		object.setCancellingDate(new Date(objectData.getLong("cancellingDate")));
-		object.setCorrecttingDate(new Date(objectData.getLong("correcttingDate")));
+		if (Validator.isNotNull(objectData.getLong("processDate"))) {
+			
+			object.setProcessDate(new Date(objectData.getLong("processDate")));
+		} else {
+			object.setProcessDate(object.getProcessDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("submitDate"))) {
+			
+			object.setSubmitDate(new Date(objectData.getLong("submitDate")));
+		} else {
+			
+			object.setSubmitDate(object.getSubmitDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("receiveDate"))) {
+			
+			object.setReceiveDate(new Date(objectData.getLong("receiveDate")));
+		} else {
+			object.setReceiveDate(object.getReceiveDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("dueDate"))) {
+			
+			object.setDueDate(new Date(objectData.getLong("dueDate")));
+		} else {
+			object.setDueDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("extendDate"))) {
+			
+			object.setExtendDate(new Date(objectData.getLong("extendDate")));
+		} else {
+			object.setExtendDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("releaseDate"))) {
+			
+			object.setReleaseDate(new Date(objectData.getLong("releaseDate")));
+		} else {
+			object.setReleaseDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("finishDate"))) {
+			
+			object.setFinishDate(new Date(objectData.getLong("finishDate")));
+		} else {
+			object.setFinishDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("cancellingDate"))) {
+			
+			object.setCancellingDate(new Date(objectData.getLong("cancellingDate")));
+		} else {
+			object.setCancellingDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("correcttingDate"))) {
+			
+			object.setCorrecttingDate(new Date(objectData.getLong("correcttingDate")));
+		} else {
+			object.setCorrecttingDate(null);
+		}
 		// object.setFolderId(objectData.getString("userName")folderId);
 		object.setDossierActionId(objectData.getLong("dossierActionId"));
 		object.setViaPostal(objectData.getInt("viaPostal"));
@@ -5093,7 +5146,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setOnline(objectData.getBoolean("online"));
 		object.setOriginal(objectData.getBoolean("original"));
 		object.setServerNo(objectData.getString("serverNo"));
-		object.setEndorsementDate(new Date(objectData.getLong("endorsementDate")));
+		if (Validator.isNotNull(objectData.getLong("endorsementDate"))) {
+			
+			object.setApplicantIdDate(new Date(objectData.getLong("endorsementDate")));
+		}
 		object.setLockState(objectData.getString("lockState"));
 		object.setOriginality(objectData.getInt("originality"));
 		object.setOriginDossierId(objectData.getLong("originDossierId"));

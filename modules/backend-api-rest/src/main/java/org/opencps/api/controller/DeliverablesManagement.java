@@ -386,4 +386,26 @@ public interface DeliverablesManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 		@ApiParam(value = "deliverableType of Deliverable", required = true) @Multipart("deliverableType") String deliverableType);
+	
+	@GET
+	@Path("/deliverables/pdf")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get info formscript for deliverable id")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class)
+	})
+	public Response getDeliverableUrl(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "deliverableCode of Deliverable", required = true) @FormParam("deliverableCode") String deliverableCode,
+		@ApiParam(value = "id of DossierFile", required = true) @FormParam("dossierFileId") Long dossierFileId);
 }

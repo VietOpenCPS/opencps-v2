@@ -74,7 +74,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			{ "publish", Types.INTEGER },
 			{ "govAgencyCode", Types.VARCHAR },
 			{ "govAgencyName", Types.VARCHAR },
-			{ "questionType", Types.VARCHAR }
+			{ "questionType", Types.VARCHAR },
+			{ "subDomainCode", Types.VARCHAR },
+			{ "subDomainName", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -91,9 +93,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("questionType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("subDomainCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("subDomainName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,questionType VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";
@@ -113,7 +117,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
 	public static final long PUBLISH_COLUMN_BITMASK = 4L;
 	public static final long QUESTIONTYPE_COLUMN_BITMASK = 8L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
+	public static final long SUBDOMAINCODE_COLUMN_BITMASK = 16L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Question"));
 
@@ -166,6 +171,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("questionType", getQuestionType());
+		attributes.put("subDomainCode", getSubDomainCode());
+		attributes.put("subDomainName", getSubDomainName());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -245,6 +252,18 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		if (questionType != null) {
 			setQuestionType(questionType);
+		}
+
+		String subDomainCode = (String)attributes.get("subDomainCode");
+
+		if (subDomainCode != null) {
+			setSubDomainCode(subDomainCode);
+		}
+
+		String subDomainName = (String)attributes.get("subDomainName");
+
+		if (subDomainName != null) {
+			setSubDomainName(subDomainName);
 		}
 	}
 
@@ -450,6 +469,46 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		return GetterUtil.getString(_originalQuestionType);
 	}
 
+	@Override
+	public String getSubDomainCode() {
+		if (_subDomainCode == null) {
+			return "";
+		}
+		else {
+			return _subDomainCode;
+		}
+	}
+
+	@Override
+	public void setSubDomainCode(String subDomainCode) {
+		_columnBitmask |= SUBDOMAINCODE_COLUMN_BITMASK;
+
+		if (_originalSubDomainCode == null) {
+			_originalSubDomainCode = _subDomainCode;
+		}
+
+		_subDomainCode = subDomainCode;
+	}
+
+	public String getOriginalSubDomainCode() {
+		return GetterUtil.getString(_originalSubDomainCode);
+	}
+
+	@Override
+	public String getSubDomainName() {
+		if (_subDomainName == null) {
+			return "";
+		}
+		else {
+			return _subDomainName;
+		}
+	}
+
+	@Override
+	public void setSubDomainName(String subDomainName) {
+		_subDomainName = subDomainName;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -493,6 +552,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionImpl.setGovAgencyCode(getGovAgencyCode());
 		questionImpl.setGovAgencyName(getGovAgencyName());
 		questionImpl.setQuestionType(getQuestionType());
+		questionImpl.setSubDomainCode(getSubDomainCode());
+		questionImpl.setSubDomainName(getSubDomainName());
 
 		questionImpl.resetOriginalValues();
 
@@ -566,6 +627,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionModelImpl._originalGovAgencyCode = questionModelImpl._govAgencyCode;
 
 		questionModelImpl._originalQuestionType = questionModelImpl._questionType;
+
+		questionModelImpl._originalSubDomainCode = questionModelImpl._subDomainCode;
 
 		questionModelImpl._columnBitmask = 0;
 	}
@@ -648,12 +711,28 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			questionCacheModel.questionType = null;
 		}
 
+		questionCacheModel.subDomainCode = getSubDomainCode();
+
+		String subDomainCode = questionCacheModel.subDomainCode;
+
+		if ((subDomainCode != null) && (subDomainCode.length() == 0)) {
+			questionCacheModel.subDomainCode = null;
+		}
+
+		questionCacheModel.subDomainName = getSubDomainName();
+
+		String subDomainName = questionCacheModel.subDomainName;
+
+		if ((subDomainName != null) && (subDomainName.length() == 0)) {
+			questionCacheModel.subDomainName = null;
+		}
+
 		return questionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{questionId=");
 		sb.append(getQuestionId());
@@ -679,6 +758,10 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		sb.append(getGovAgencyName());
 		sb.append(", questionType=");
 		sb.append(getQuestionType());
+		sb.append(", subDomainCode=");
+		sb.append(getSubDomainCode());
+		sb.append(", subDomainName=");
+		sb.append(getSubDomainName());
 		sb.append("}");
 
 		return sb.toString();
@@ -686,7 +769,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Question");
@@ -740,6 +823,14 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			"<column><column-name>questionType</column-name><column-value><![CDATA[");
 		sb.append(getQuestionType());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>subDomainCode</column-name><column-value><![CDATA[");
+		sb.append(getSubDomainCode());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>subDomainName</column-name><column-value><![CDATA[");
+		sb.append(getSubDomainName());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -769,6 +860,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	private String _govAgencyName;
 	private String _questionType;
 	private String _originalQuestionType;
+	private String _subDomainCode;
+	private String _originalSubDomainCode;
+	private String _subDomainName;
 	private long _columnBitmask;
 	private Question _escapedModel;
 }
