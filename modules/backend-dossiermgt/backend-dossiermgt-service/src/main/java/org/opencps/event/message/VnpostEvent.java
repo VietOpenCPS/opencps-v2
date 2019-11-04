@@ -64,7 +64,7 @@ public class VnpostEvent implements MessageListener {
 		
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
 				VNPOST_BASE_PATH, "", "", properties, params, context);
-		
+		System.out.println("===========" + baseUrl + "      " + VNPOST_BASE_PATH);
 		_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
 		
 		if(resultObj != null) {

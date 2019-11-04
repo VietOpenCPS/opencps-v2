@@ -273,6 +273,13 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.Employee> findByWorkstatus(
+		long mappingUserId, int workingStatus) {
+		return _employeeLocalService.findByWorkstatus(mappingUserId,
+			workingStatus);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _employeeLocalService.getActionableDynamicQuery();
 	}

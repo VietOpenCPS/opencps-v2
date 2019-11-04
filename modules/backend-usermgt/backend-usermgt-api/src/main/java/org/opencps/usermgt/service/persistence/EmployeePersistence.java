@@ -1274,6 +1274,154 @@ public interface EmployeePersistence extends BasePersistence<Employee> {
 	public int countByG_EMPID(long groupId, long[] employeeIds);
 
 	/**
+	* Returns all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @return the matching employees
+	*/
+	public java.util.List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus);
+
+	/**
+	* Returns a range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @return the range of matching employees
+	*/
+	public java.util.List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end);
+
+	/**
+	* Returns an ordered range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching employees
+	*/
+	public java.util.List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching employees
+	*/
+	public java.util.List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public Employee findByF_EMP_WORK_First(long mappingUserId,
+		int workingStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException;
+
+	/**
+	* Returns the first employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public Employee fetchByF_EMP_WORK_First(long mappingUserId,
+		int workingStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator);
+
+	/**
+	* Returns the last employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public Employee findByF_EMP_WORK_Last(long mappingUserId,
+		int workingStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException;
+
+	/**
+	* Returns the last employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public Employee fetchByF_EMP_WORK_Last(long mappingUserId,
+		int workingStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator);
+
+	/**
+	* Returns the employees before and after the current employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param employeeId the primary key of the current employee
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next employee
+	* @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	*/
+	public Employee[] findByF_EMP_WORK_PrevAndNext(long employeeId,
+		long mappingUserId, int workingStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException;
+
+	/**
+	* Removes all the employees where mappingUserId &gt; &#63; and workingStatus = &#63; from the database.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	*/
+	public void removeByF_EMP_WORK(long mappingUserId, int workingStatus);
+
+	/**
+	* Returns the number of employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param workingStatus the working status
+	* @return the number of matching employees
+	*/
+	public int countByF_EMP_WORK(long mappingUserId, int workingStatus);
+
+	/**
 	* Caches the employee in the entity cache if it is enabled.
 	*
 	* @param employee the employee
