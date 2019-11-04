@@ -48,5 +48,8 @@ public class ZaloHookConstantKeys {
 	public static final String ZALO_V2_PARAM_USER_ID_BY_APP = "user_id_by_app";
 
 	public static final String ZALO_V2_ACTION_USER_SEND_TEXT = "user_send_text";
+	
+	public static final String ATTRIBUTE_KEY_SESSION_ACTIVE = "c_session_counter_active";
+	public static final String ATTRIBUTE_KEY_ALL_SESSION = "c_session_counter";
 
 }

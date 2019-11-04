@@ -5063,6 +5063,537 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 	private static final String _FINDER_COLUMN_G_EMPID_GROUPID_2 = "employee.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_EMPID_EMPLOYEEID_2 = "employee.employeeId = ?";
 	private static final String _FINDER_COLUMN_G_EMPID_EMPLOYEEID_7 = "employee.employeeId IN (";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_EMP_WORK =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_EMP_WORK",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_EMP_WORK =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_EMP_WORK",
+			new String[] { Long.class.getName(), Integer.class.getName() });
+
+	/**
+	 * Returns all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @return the matching employees
+	 */
+	@Override
+	public List<Employee> findByF_EMP_WORK(long mappingUserId, int workingStatus) {
+		return findByF_EMP_WORK(mappingUserId, workingStatus,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end) {
+		return findByF_EMP_WORK(mappingUserId, workingStatus, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end,
+		OrderByComparator<Employee> orderByComparator) {
+		return findByF_EMP_WORK(mappingUserId, workingStatus, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByF_EMP_WORK(long mappingUserId,
+		int workingStatus, int start, int end,
+		OrderByComparator<Employee> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_EMP_WORK;
+		finderArgs = new Object[] {
+				mappingUserId, workingStatus,
+				
+				start, end, orderByComparator
+			};
+
+		List<Employee> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Employee>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((mappingUserId >= employee.getMappingUserId()) ||
+							(workingStatus != employee.getWorkingStatus())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_EMP_WORK_MAPPINGUSERID_2);
+
+			query.append(_FINDER_COLUMN_F_EMP_WORK_WORKINGSTATUS_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(mappingUserId);
+
+				qPos.add(workingStatus);
+
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByF_EMP_WORK_First(long mappingUserId,
+		int workingStatus, OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByF_EMP_WORK_First(mappingUserId,
+				workingStatus, orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append(", workingStatus=");
+		msg.append(workingStatus);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByF_EMP_WORK_First(long mappingUserId,
+		int workingStatus, OrderByComparator<Employee> orderByComparator) {
+		List<Employee> list = findByF_EMP_WORK(mappingUserId, workingStatus, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByF_EMP_WORK_Last(long mappingUserId,
+		int workingStatus, OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByF_EMP_WORK_Last(mappingUserId,
+				workingStatus, orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append(", workingStatus=");
+		msg.append(workingStatus);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByF_EMP_WORK_Last(long mappingUserId,
+		int workingStatus, OrderByComparator<Employee> orderByComparator) {
+		int count = countByF_EMP_WORK(mappingUserId, workingStatus);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Employee> list = findByF_EMP_WORK(mappingUserId, workingStatus,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the employees before and after the current employee in the ordered set where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param employeeId the primary key of the current employee
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next employee
+	 * @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	 */
+	@Override
+	public Employee[] findByF_EMP_WORK_PrevAndNext(long employeeId,
+		long mappingUserId, int workingStatus,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = findByPrimaryKey(employeeId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Employee[] array = new EmployeeImpl[3];
+
+			array[0] = getByF_EMP_WORK_PrevAndNext(session, employee,
+					mappingUserId, workingStatus, orderByComparator, true);
+
+			array[1] = employee;
+
+			array[2] = getByF_EMP_WORK_PrevAndNext(session, employee,
+					mappingUserId, workingStatus, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Employee getByF_EMP_WORK_PrevAndNext(Session session,
+		Employee employee, long mappingUserId, int workingStatus,
+		OrderByComparator<Employee> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+		query.append(_FINDER_COLUMN_F_EMP_WORK_MAPPINGUSERID_2);
+
+		query.append(_FINDER_COLUMN_F_EMP_WORK_WORKINGSTATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(mappingUserId);
+
+		qPos.add(workingStatus);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(employee);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Employee> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the employees where mappingUserId &gt; &#63; and workingStatus = &#63; from the database.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 */
+	@Override
+	public void removeByF_EMP_WORK(long mappingUserId, int workingStatus) {
+		for (Employee employee : findByF_EMP_WORK(mappingUserId, workingStatus,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(employee);
+		}
+	}
+
+	/**
+	 * Returns the number of employees where mappingUserId &gt; &#63; and workingStatus = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param workingStatus the working status
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByF_EMP_WORK(long mappingUserId, int workingStatus) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_EMP_WORK;
+
+		Object[] finderArgs = new Object[] { mappingUserId, workingStatus };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_F_EMP_WORK_MAPPINGUSERID_2);
+
+			query.append(_FINDER_COLUMN_F_EMP_WORK_WORKINGSTATUS_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(mappingUserId);
+
+				qPos.add(workingStatus);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_EMP_WORK_MAPPINGUSERID_2 = "employee.mappingUserId > ? AND ";
+	private static final String _FINDER_COLUMN_F_EMP_WORK_WORKINGSTATUS_2 = "employee.workingStatus = ?";
 
 	public EmployeePersistenceImpl() {
 		setModelClass(Employee.class);
