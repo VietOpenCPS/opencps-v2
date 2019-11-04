@@ -8,6 +8,7 @@
 
 package org.opencps.api.voting.model;
 
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -51,7 +52,9 @@ import javax.xml.bind.annotation.XmlType;
     "className",
     "classPK",
     "email",
-    "votingCode"
+    "votingCode",
+    "fromVotingDate",
+    "toVotingDate"
 })
 @XmlRootElement(name = "VotingSearchModel")
 public class VotingSearchModel {
@@ -73,6 +76,10 @@ public class VotingSearchModel {
     protected String email;
     @XmlElement(defaultValue = "")
     protected String votingCode;
+    @QueryParam(value = "fromVotingDate")
+    protected String fromVotingDate;
+    @QueryParam(value = "toVotingDate")
+    protected String toVotingDate;
 
     /**
      * Gets the value of the keywords property.
@@ -240,6 +247,22 @@ public class VotingSearchModel {
 
 	public void setVotingCode(String votingCode) {
 		this.votingCode = votingCode;
+	}
+
+	public String getFromVotingDate() {
+		return fromVotingDate;
+	}
+
+	public void setFromVotingDate(String fromVotingDate) {
+		this.fromVotingDate = fromVotingDate;
+	}
+
+	public String getToVotingDate() {
+		return toVotingDate;
+	}
+
+	public void setToVotingDate(String toVotingDate) {
+		this.toVotingDate = toVotingDate;
 	}
 
 }

@@ -81,7 +81,12 @@ public class ProxyManagementImpl implements ProxyManagement {
 				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
 					}
 			        
-					apiUrl = serverUrl + url;
+					
+					if ("/statistics".equalsIgnoreCase(url) && serverUrl.contains("/v2")) {
+						apiUrl = serverUrl.replace("/v2", url);
+					} else {
+						apiUrl = serverUrl + url;
+					}
 			        if ("GET".equals(method)) {
 						urlVal = new URL(apiUrl + "?" + postData.toString());			        	
 			        }
@@ -118,15 +123,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        _log.debug("RESULT PROXY: " + sb.toString());
 					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
 			    }
-			    catch(IOException e)
-			    {
-			        _log.debug("Something went wrong while reading/writing in stream!!");
-			    }
-			    return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+				catch (IOException e) {
+					_log.error(e);
+					_log.debug("Something went wrong while reading/writing in stream!!");
+				}
+			    //return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
 			}
-			else {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
-			}		
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

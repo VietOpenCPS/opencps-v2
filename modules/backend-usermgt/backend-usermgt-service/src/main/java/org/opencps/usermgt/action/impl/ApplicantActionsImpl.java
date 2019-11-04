@@ -434,15 +434,89 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
 						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, serviceContext);
+				if (app != null) {
+					//Send Email active account
+					Date now = new Date();
+					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+					queue.setCreateDate(now);
+					queue.setModifiedDate(now);
+					queue.setGroupId(groupId);
+					queue.setCompanyId(serviceContext.getCompanyId());
+					
+					queue.setNotificationType("APPICANT_OLD_ACTIVE");
+					queue.setClassName(Applicant.class.getName());
+					queue.setClassPK(String.valueOf(app.getApplicantId()));
+					queue.setToUsername(applicantName);
+					queue.setToUserId(app.getMappingUserId());
+					queue.setToEmail(contactEmail);
+					queue.setToTelNo(StringPool.BLANK);
+					
+					JSONObject payload = JSONFactoryUtil.createJSONObject();
+					try {
+						//_log.info("START PAYLOAD: ");
+						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					}
+					catch (JSONException parse) {
+						_log.error(parse);
+					}
+					//_log.info("payloadTest: "+payload.toJSONString());
+					queue.setPayload(payload.toJSONString());
+					
+					queue.setExpireDate(cal.getTime());
+					
+					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+				}
 				//Add applicant search
 				ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
 						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 			} else if (flagUser == 1) {
 				//Add applicant and user
-				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
 						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, serviceContext);
+				if (app != null) {
+					//Send Email active account
+					Date now = new Date();
+					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+					queue.setCreateDate(now);
+					queue.setModifiedDate(now);
+					queue.setGroupId(groupId);
+					queue.setCompanyId(serviceContext.getCompanyId());
+					
+					queue.setNotificationType("APPICANT_OLD_ACTIVE");
+					queue.setClassName(Applicant.class.getName());
+					queue.setClassPK(String.valueOf(app.getApplicantId()));
+					queue.setToUsername(applicantName);
+					queue.setToUserId(app.getMappingUserId());
+					queue.setToEmail(contactEmail);
+					queue.setToTelNo(StringPool.BLANK);
+					
+					JSONObject payload = JSONFactoryUtil.createJSONObject();
+					try {
+						//_log.info("START PAYLOAD: ");
+						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					}
+					catch (JSONException parse) {
+						_log.error(parse);
+					}
+					//_log.info("payloadTest: "+payload.toJSONString());
+					queue.setPayload(payload.toJSONString());
+					
+					queue.setExpireDate(cal.getTime());
+					
+					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+				}
 			}
 		}
 	}

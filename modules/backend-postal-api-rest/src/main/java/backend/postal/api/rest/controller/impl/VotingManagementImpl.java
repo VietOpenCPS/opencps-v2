@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,21 +74,28 @@ public class VotingManagementImpl implements VotingManagement {
 			params.put(VotingTerm.CLASS_NAME, className);
 			params.put(VotingTerm.CLASS_PK, classPK);
 
-			// Sort[] sorts = new Sort[] {
-			// SortFactoryUtil.create(VotingTerm.CREATE_DATE_SORTABLE,
-			// Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(VotingTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE, false) };
 //			Sort[] sorts = new Sort[] {};
 
 //			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 //					query.getStart(), query.getEnd(), serviceContext);
+			String fromVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromVotingDate());
+			String toVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToVotingDate());
+			//
+			params.put("fromVotingDate", fromVotingDate);
+			params.put("toVotingDate", toVotingDate);
 
-			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, className, classPK,
-					query.getStart(), query.getEnd(), serviceContext);
+			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, className, classPK,
+						params, query.getStart(), query.getEnd(), serviceContext);
 
-
-			result.setTotal(jsonData.getLong("total"));
-			result.getData()
-					.addAll(VotingUtils.mappingVotingDataList((List<Voting>) jsonData.get("data"), serviceContext));
+			if (jsonData != null) {
+				result.setTotal(jsonData.getLong("total"));
+				result.getData()
+						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get("data"), serviceContext));
+			} else {
+				result.setTotal(0l);
+			}
 
 			return Response.status(200).entity(result).build();
 
