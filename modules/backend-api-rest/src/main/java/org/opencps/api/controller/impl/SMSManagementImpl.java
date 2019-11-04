@@ -87,7 +87,7 @@ public class SMSManagementImpl implements SMSManagement {
 		// ============input.getUser()==============gtsms2019
 		// ============input.getUserId()============84978266524
 
-		_log.info("===============" + input.getPassword());
+//		_log.info("===============" + input.getPassword());
 		_log.info("===============" + input.getServiceNumber());
 		_log.info("===============" + input.getUser());
 

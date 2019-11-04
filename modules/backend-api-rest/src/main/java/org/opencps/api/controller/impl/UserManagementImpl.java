@@ -272,8 +272,8 @@ public class UserManagementImpl implements UserManagement {
 			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
 				throw new PermissionDeniedDataAccessException("Do not have permission", null);
 			}
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
+//			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
+//					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
 					serviceContext);
 
