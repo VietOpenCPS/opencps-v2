@@ -49,6 +49,7 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.constants.UserMGTConstants;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -117,6 +118,10 @@ public class UserActions implements UserInterface {
 		return file;
 	}
 
+	public static final String CURRENT_SITE = "currentSite";
+	public static final String DATA = "data";
+	public static final String TOTAL = "total";
+	public static final String ROLE_NAME = "roleName";
 	@Override
 	public String getType(long id, ServiceContext serviceContext) {
 
@@ -153,18 +158,18 @@ public class UserActions implements UserInterface {
 				if (Validator.isNotNull(officeSite)) {
 
 					document.addNumberSortable(
-						"entryClassPK", officeSite.getOfficeSiteId());
-					document.addTextSortable("siteName", officeSite.getName());
+							UserMGTConstants.ENTRY_CLASS_PK, officeSite.getOfficeSiteId());
+					document.addTextSortable(UserMGTConstants.SITE_NAME, officeSite.getName());
 
 				}
 				else {
 
-					document.addNumberSortable("entryClassPK", 0);
-					document.addTextSortable("siteName", group.getName(locale));
+					document.addNumberSortable(UserMGTConstants.ENTRY_CLASS_PK, 0);
+					document.addTextSortable(UserMGTConstants.SITE_NAME, group.getName(locale));
 
 				}
 
-				document.addNumberSortable("siteGroupId", group.getGroupId());
+				document.addNumberSortable(UserMGTConstants.SITE_GROUP_ID, group.getGroupId());
 
 				boolean isCurrent = false;
 
@@ -777,14 +782,14 @@ public class UserActions implements UserInterface {
 					// _log.info("user.getScreenName():
 					// "+user.getScreenName()+"|user.getEmailAddress():
 					// "+user.getEmailAddress());
-					payLoad.put("USERNAME", user.getScreenName());
-					payLoad.put("USEREMAIL", user.getEmailAddress());
-					payLoad.put("PASSWORD", newPassword);
+					payLoad.put(UserMGTConstants.USERNAME, user.getScreenName());
+					payLoad.put(UserMGTConstants.USEREMAIL, user.getEmailAddress());
+					payLoad.put(UserMGTConstants.SCRECT_CODE, newPassword);
 					// _log.info("STRAT addNotificationQueue: ");
 					NotificationQueueLocalServiceUtil.addNotificationQueue(
 						user.getUserId(), groupId, Constants.USER_04,
 						User.class.getName(), String.valueOf(user.getUserId()),
-						payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+						payLoad.toJSONString(), UserMGTConstants.SYSTEM, user.getFullName(),
 						user.getUserId(), email, phone, new Date(),
 						expired, serviceContext);
 					// _log.info("END addNotificationQueue: ");
@@ -842,9 +847,12 @@ public class UserActions implements UserInterface {
 
 				JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-				payLoad.put("USERNAME", user.getScreenName());
-				payLoad.put("USEREMAIL", user.getEmailAddress());
-				payLoad.put("PASSWORD", newPassword);
+//				payLoad.put("USERNAME", user.getScreenName());
+//				payLoad.put("USEREMAIL", user.getEmailAddress());
+//				payLoad.put("PASSWORD", newPassword);
+				payLoad.put(UserMGTConstants.USERNAME, user.getScreenName());
+				payLoad.put(UserMGTConstants.USEREMAIL, user.getEmailAddress());
+				payLoad.put(UserMGTConstants.SCRECT_CODE, newPassword);
 
 				Date now = new Date();
 		        Calendar cal = Calendar.getInstance();
@@ -854,9 +862,9 @@ public class UserActions implements UserInterface {
 		        cal.add(Calendar.MINUTE, 10);
 				
 		        if (notiTemplate != null) {
-					if ("minutely".equals(notiTemplate.getInterval())) {
+					if (UserMGTConstants.MINUTELY.equals(notiTemplate.getInterval())) {
 						cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
-					} else if ("hourly".equals(notiTemplate.getInterval())) {
+					} else if (UserMGTConstants.HOURLY.equals(notiTemplate.getInterval())) {
 						cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
 					} else {
 						cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
@@ -869,7 +877,7 @@ public class UserActions implements UserInterface {
 				NotificationQueueLocalServiceUtil.addNotificationQueue(
 					user.getUserId(), groupId, Constants.USER_04,
 					User.class.getName(), String.valueOf(user.getUserId()),
-					payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+					payLoad.toJSONString(), UserMGTConstants.SYSTEM, user.getFullName(),
 					user.getUserId(), email, phone, new Date(), expired,
 					serviceContext);
 				// _log.info("END addNotificationQueue: ");

@@ -5,6 +5,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
+import org.opencps.api.constants.ConstantUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -19,25 +20,21 @@ import com.liferay.portal.kernel.util.Portal;
 public class UserContextProvider implements ContextProvider<User> {
 
     @Override
-    public User createContext(Message message) {
-        try {
-            return _portal.getUser(
-                (HttpServletRequest)message.getContextualProperty(
-                    "HTTP.REQUEST"));
-        }
-        catch (PortalException pe) {
-            if (_log.isWarnEnabled()) {
-                _log.warn("Unable to get user", pe);
-            }
+	public User createContext(Message message) {
+		try {
+			return _portal.getUser((HttpServletRequest) message.getContextualProperty(ConstantUtils.HTTP_REQUEST));
+		} catch (PortalException pe) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get user", pe);
+			}
 
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 
-    private static final Log _log = LogFactoryUtil.getLog(
-        UserContextProvider.class);
+	private static final Log _log = LogFactoryUtil.getLog(UserContextProvider.class);
 
-    @Reference
-    private Portal _portal;
+	@Reference
+	private Portal _portal;
 
 }

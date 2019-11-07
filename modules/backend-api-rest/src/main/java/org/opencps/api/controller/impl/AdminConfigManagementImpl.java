@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -95,18 +95,58 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String END = "end";
 
 	private static final String START = "start";
+	private static final String COMPANY_ID = "companyId";
+	private static final String DYNAMIC_QUERY = "dynamicQuery";
+	private static final String RESPONSE_TYPE = "responeType";
+	private static final String DETAIL = "detail";
+	private static final String TITLE = "title";
+	private static final String COLUMN = "column";
+	private static final String LIST_TABLE_MENU = "listTableMenu";
+	private static final String PUBLIC_MANAGER = "publicManager";
+	private static final String MENU = "menu";
+	private static final String NAME = "name";
+	private static final String VALUE_FILTER = "value_filter";
+	private static final String NUMBER = "number";
+	private static final String AUTO_COMPLETE = "autocomplete";
+	private static final String TYPE_INT = "int";
+	private static final String DATA_TYPE = "data_type";
+	private static final String KEY = "key";
+	private static final String CHECK_BOX = "checkbox";
+	private static final String QUERY_LIKE = "like";
+	private static final String COMPARE_LT = "lt";
+	private static final String COMPARE_LE = "le";
+	private static final String COMPARE_GT = "gt";
+	private static final String COMPARE_GE = "ge";
+	private static final String LOCAL_ACCESSS = "localaccess";
+	private static final String P_AUTH = "Token";
+	private static final String USER_REQUEST_ID = "userid";
+	private static final String USER_ID = "USER_ID";
+	private static final String CLASSNAME_WORKING_UNIT = "opencps_workingunit";
+	private static final String CLASSNAME_APPLICANT = "opencps_applicant";
+	private static final String HEARDER_NAME = "headersName";
+	private static final String DETAIL_COLUMN = "detailColumns";
+	private static final String EXT_FORM = "extForm";
+	private static final String DEPENDENCY_TITLE = "dependency_title";
+	private static final String DEPENDENCY_LINK = "dependency_link";
+	private static final String DYNAMIC_COUNT = "dynamicQueryCount";
+	private static final String PROCESS_DELETE = "adminProcessDelete";
+	private static final String PROCESS_DATA = "adminProcessData";
+	private static final String HEADERS = "headers";
+	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
+	private static final String ACCEPT = "Accept";
+	private static final String CONTENT_TYPE = "Content-Type";
+	private static final String APP_JSON = "application/json";
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
 			ServiceContext serviceContext, String text) {
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.debug("SOCKET WEB: " + groupId);
-		String portalURL = PortalUtil.getPortalURL(request);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//String portalURL = PortalUtil.getPortalURL(request);
 		
 		try {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
-			_log.debug("SOCKET MESSAGE: " + message.toJSONString());
 			try {
 				
 				if (message.getString(TYPE).equals(ADMIN)) {
@@ -138,174 +178,160 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					
 					if (message.getString(CMD).equals(GET)) {
 	
-						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr != null ? serviceUtilStr : StringPool.BLANK).getMethod("dynamicQuery");
+						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr != null ? serviceUtilStr : StringPool.BLANK).getMethod(DYNAMIC_QUERY);
 	
 						DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 	
-						if (Validator.isNotNull(adminConfig) && !"detail".equalsIgnoreCase(message.getString("responeType"))) {
-	
+						if (Validator.isNotNull(adminConfig) && !DETAIL.equals(message.getString(RESPONSE_TYPE))) {
 							String columns = adminConfig.getColumns();
-	
 							JSONArray arraysColumn = JSONFactoryUtil.createJSONArray(columns);
-							
 							if (arraysColumn.length() > 0) {
 								
 								lengColumns = arraysColumn.length();
 								
 								ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
-	
+
 								for (int i = 0; i < arraysColumn.length(); i++) {
-	
+
 									JSONObject column = arraysColumn.getJSONObject(i);
 									
-									projectionList.add(ProjectionFactoryUtil.property(column.getString("column")));
-	
+									projectionList.add(ProjectionFactoryUtil.property(column.getString(COLUMN)));
+
 								}
 								
-								if ("listTableMenu".equalsIgnoreCase(message.getString(RESPONE))) {
-									projectionList.add(ProjectionFactoryUtil.property("publicManager"));
+								if (LIST_TABLE_MENU.equals(message.getString(RESPONE))) {
+									projectionList.add(ProjectionFactoryUtil.property(PUBLIC_MANAGER));
 								}
-	
+
 								dynamicQuery.setProjection(projectionList);
-	
+
 							}
-	
-						} else if ("menu".equalsIgnoreCase(message.getString("responeType"))) {
+
+						} else if (MENU.equals(message.getString(RESPONSE_TYPE))) {
 							ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
-	
-							projectionList.add(ProjectionFactoryUtil.property("code"));
-							projectionList.add(ProjectionFactoryUtil.property("name"));
-	
+
+							projectionList.add(ProjectionFactoryUtil.property(CODE));
+							projectionList.add(ProjectionFactoryUtil.property(NAME));
+
 							dynamicQuery.setProjection(projectionList);
 						}
 	
 						if (Validator.isNotNull(message.getJSONArray(FILTER))
 								&& message.getJSONArray(FILTER).length() > 0) {
-	
+
 							for (int i = 0; i < message.getJSONArray(FILTER).length(); i++) {
-	
+
 								JSONObject filter = message.getJSONArray(FILTER).getJSONObject(i);
-	
-								if (Validator.isNotNull(filter.getString("value_filter"))
-										&& filter.getString("value_filter").length() > 0) {
-	
-									if ("=".equals(filter.getString(COMPARE))) {
-										if ("number".equalsIgnoreCase(filter.getString("type")) || "autocomplete".equalsIgnoreCase(filter.getString("type"))) {
-											if (filter.getBoolean("int")) {
-												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-														.eq(filter.getInt("value_filter")));
+
+								if (Validator.isNotNull(filter.getString(VALUE_FILTER))
+										&& filter.getString(VALUE_FILTER).length() > 0) {
+
+									if (StringPool.EQUAL.equals(filter.getString(COMPARE))) {
+										if (NUMBER.equals(filter.getString(TYPE)) || AUTO_COMPLETE.equals(filter.getString(TYPE))) {
+											if (filter.getBoolean(TYPE_INT)) {
+												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+														.eq(filter.getInt(VALUE_FILTER)));
 											} else {
-												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-														.eq(filter.getLong("value_filter")));
+												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+														.eq(filter.getLong(VALUE_FILTER)));
 											}
 											
-										} else if ("checkbox".equalsIgnoreCase(filter.getString("type"))) {
-											if ("int".equalsIgnoreCase(filter.getString("data_type"))) {
-												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-														.eq(filter.getBoolean("value_filter") ? 1 : 0));
+										} else if (CHECK_BOX.equals(filter.getString(TYPE))) {
+											if (TYPE_INT.equals(filter.getString(DATA_TYPE))) {
+												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+														.eq(filter.getBoolean(VALUE_FILTER) ? 1 : 0));
 											} else {
-												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-														.eq(filter.getBoolean("value_filter")));
+												dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+														.eq(filter.getBoolean(VALUE_FILTER)));
 											}
 										} else {
-											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-													.eq(filter.getString("value_filter")));
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(filter.getString(VALUE_FILTER)));
 										}
-									} else if ("like".equalsIgnoreCase(filter.getString(COMPARE))) {
+									} else if (QUERY_LIKE.equals(filter.getString(COMPARE))) {
 										dynamicQuery.add(
-												PropertyFactoryUtil.forName(filter.getString("key")).like(StringPool.PERCENT
-														+ filter.getString("value_filter") + StringPool.PERCENT));
-									} else if ("lt".equalsIgnoreCase(filter.getString(COMPARE))) {
-										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-												.lt(filter.getLong("value_filter")));
-									} else if ("le".equalsIgnoreCase(filter.getString(COMPARE))) {
-										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-												.le(filter.getLong("value_filter")));
-									} else if ("gt".equalsIgnoreCase(filter.getString(COMPARE))) {
-										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-												.gt(filter.getLong("value_filter")));
-									} else if ("ge".equalsIgnoreCase(filter.getString(COMPARE))) {
-										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-												.ge(filter.getLong("value_filter")));
+												PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
+														+ filter.getString(VALUE_FILTER) + StringPool.PERCENT));
+									} else if (COMPARE_LT.equals(filter.getString(COMPARE))) {
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+												.lt(filter.getLong(VALUE_FILTER)));
+									} else if (COMPARE_LE.equals(filter.getString(COMPARE))) {
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+												.le(filter.getLong(VALUE_FILTER)));
+									} else if (COMPARE_GT.equals(filter.getString(COMPARE))) {
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+												.gt(filter.getLong(VALUE_FILTER)));
+									} else if (COMPARE_GE.equals(filter.getString(COMPARE))) {
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+												.ge(filter.getLong(VALUE_FILTER)));
 									}
-	
+
 								}
-	
+
 							}
-	
+
 						}
 	
 						if (groupId > 0 && adminConfig.getGroupFilter()) {
 							Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 							if (Validator.isNotNull(code)
-									&& ("opencps_workingunit".equalsIgnoreCase(code)) || "opencps_applicant".equalsIgnoreCase(code)) {
-								disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+									&& (CLASSNAME_WORKING_UNIT.equals(code) || CLASSNAME_APPLICANT.equals(code))) {
+								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 							} else {
-								disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-								disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
+								disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 							}
 							dynamicQuery.add(disjunction);
 						}
 	
-						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery",
+						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(DYNAMIC_QUERY,
 								DynamicQuery.class, int.class, int.class);
 	
 						messageData.put(STATUS, HttpStatus.OK);
 	
 						JSONObject headersObj = JSONFactoryUtil.createJSONObject(adminConfig.getHeadersName());
 	
-	//					System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
 						
 						if (message.getBoolean(CONFIG)) {
-	
+
 							JSONObject config = JSONFactoryUtil.createJSONObject();
-							config.put("code", adminConfig.getCode());
-							config.put("name", adminConfig.getName());
-							config.put("headersName", headersObj.getJSONArray("headers"));
-							config.put("columns", adminConfig.getColumns());
-							config.put("detailColumns", adminConfig.getDetailColumns());
-							config.put("extForm", adminConfig.getExtForm());
-							config.put("dependency_title", headersObj.get("dependency_title"));
-							config.put("dependency_link", headersObj.get("dependency_link"));
-	
+							config.put(CODE, adminConfig.getCode());
+							config.put(NAME, adminConfig.getName());
+							config.put(HEARDER_NAME, headersObj.getJSONArray(HEADERS));
+							config.put(COLUMN, adminConfig.getColumns());
+							config.put(DETAIL_COLUMN, adminConfig.getDetailColumns());
+							config.put(EXT_FORM, adminConfig.getExtForm());
+							config.put(DEPENDENCY_TITLE, headersObj.get(DEPENDENCY_TITLE));
+							config.put(DEPENDENCY_LINK, headersObj.get(DEPENDENCY_LINK));
+
 							messageData.put(message.getString(RESPONE), config);
-	
+
 						} else if (message.getBoolean(COUNTER)) {
-	
-							Method methodCounter = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQueryCount",
+
+							Method methodCounter = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(DYNAMIC_COUNT,
 									DynamicQuery.class);
 							
 							messageData.put(message.getString(RESPONE), methodCounter.invoke(model, dynamicQuery));
-	
+
 						} else {
-	
+
 							int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 							int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
-							
-	//						System.out.println("code: " + code.equals("opencps_employee"));
-							_log.debug("code: " + "opencps_employee".equalsIgnoreCase(code));
-							_log.debug("lengColumns: " + lengColumns);
-							if ("opencps_employee".equalsIgnoreCase(code)) {
+							if (CLASSNAME_EMPLOYEE.equals(code)) {
 								
 								List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
-	
-								_log.debug("employees: " + employees);
+
 								if (lengColumns > 0) {
 									for (Object[] obj: employees) {
-	
-										_log.debug("obj[lengColumns - 1]: " + obj[lengColumns - 1]);
 										if (Validator.isNotNull(obj[lengColumns - 1])) {
 											long userIdMapping = (long) obj[lengColumns - 1];
 											User user = UserLocalServiceUtil.fetchUser(userIdMapping);
-											if (user != null && user.getLoginDate() != null) {
-												obj[lengColumns - 1] = convertDateToString(user.getLoginDate());												
-											}
+											obj[lengColumns - 1] = convertDateToString(user.getLoginDate());
 										}
 										
 									}
 								}
-	//							System.out.println("employees.employees()" + employees);
+//								System.out.println("employees.employees()" + employees);
 								messageData.put(message.getString(RESPONE), employees);
 								
 							} else {
@@ -314,13 +340,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							
 						}
 	
-						messageData.put("title", headersObj.getString("title"));
+						messageData.put(TITLE, headersObj.getString(TITLE));
 	
 					} else {
 	
 						if (message.getString(CMD).equals(DELETE)) {
 	
-							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("adminProcessDelete",
+							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DELETE,
 									Long.class);
 	
 							messageData.put(message.getString(RESPONE), method.invoke(model, message.getLong(ID)));
@@ -328,18 +354,18 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 						} else {
 	
-							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("adminProcessData",
+							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
 							
-							postData.put("groupId", groupId);
-							postData.put("companyId", company.getCompanyId());
-							postData.put("userId", u.getUserId());
-							postData.put("userName", u.getFullName());
+							postData.put(Field.GROUP_ID, groupId);
+							postData.put(COMPANY_ID, company.getCompanyId());
+							postData.put(Field.USER_ID, u.getUserId());
+							postData.put(Field.USER_NAME, u.getFullName());
 							
 							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
-	
+
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						}
@@ -347,57 +373,16 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					}
 				} else if (message.getString(TYPE).equals(API)) {
 
-//					RestTemplate restTemplate = new RestTemplate();
-//
-//					restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-//
-//					org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-//
-//					headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//
-//					JSONObject headerObject = message.getJSONObject("headers");
-//
-//					JSONArray keys = headerObject.names();
-//
-//					for (int i = 0; i < keys.length(); ++i) {
-//
-//						String key = keys.getString(i);
-//						String value = headerObject.getString(key);
-//
-//						headers.set(key, value);
-//
-//					}
-//					headers.set("localaccess", headerObject.getString("Token"));
-//					headers.set("userid", headerObject.getString("USER_ID"));
-//					
-//					HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-//					
-//					HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
-//							HttpMethod.GET, entity, String.class);
-//
-//					String resultString = response.getBody();
-//
-//					JSONArray responeData = JSONFactoryUtil.createJSONArray();
-//					try {
-//						responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
-//					} catch (Exception e) {
-//						_log.debug(e);
-//						responeData = JSONFactoryUtil.createJSONArray(resultString);
-//					}
-//					messageData.put(message.getString(RESPONE), responeData);
-//
-//					messageData.put(STATUS, HttpStatus.OK);
-					
 				    String apiUrl = StringPool.BLANK;
 				    
 				    StringBuilder sb = new StringBuilder();
 				    try
 				    {
 				        URL urlVal = null;
-						apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString("api");
+						apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString(API);
 						urlVal = new URL(apiUrl);
 						
-						JSONObject headerObject = message.getJSONObject("headers");
+						JSONObject headerObject = message.getJSONObject(HEADERS);
 						HttpURLConnection conn = (HttpURLConnection) urlVal.openConnection();
 
 						JSONArray keys = headerObject.names();
@@ -410,13 +395,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							conn.setRequestProperty(key, value);
 
 						}
-				        
-						conn.setRequestProperty("localaccess", headerObject.getString("Token"));
-						conn.setRequestProperty("userid", headerObject.getString("USER_ID"));
+				
+						conn.setRequestProperty(LOCAL_ACCESSS, headerObject.getString(P_AUTH));
+						conn.setRequestProperty(USER_REQUEST_ID, headerObject.getString(USER_ID));
 
 				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
-				        conn.setRequestProperty("Accept", "application/json");
-				        conn.setRequestProperty("Content-Type", "application/json");
+				        conn.setRequestProperty(ACCEPT, APP_JSON);
+				        conn.setRequestProperty(CONTENT_TYPE, APP_JSON);
 				        
 				        conn.setDoInput(true);
 						conn.setDoOutput(true);
@@ -431,7 +416,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				        }
 						JSONArray responeData = JSONFactoryUtil.createJSONArray();
 						try {
-							responeData = JSONFactoryUtil.createJSONObject(sb.toString()).getJSONArray("data");
+							responeData = JSONFactoryUtil.createJSONObject(sb.toString()).getJSONArray(DATA);
 						} catch (Exception e) {
 							_log.debug(e);
 							responeData = JSONFactoryUtil.createJSONArray(sb.toString());

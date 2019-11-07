@@ -45,7 +45,6 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.service.DossierSyncLocalService;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
-import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
@@ -64,7 +63,6 @@ import org.opencps.dossiermgt.service.persistence.DossierPartPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierRequestUDPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierStatisticPersistence;
-import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
@@ -464,24 +462,6 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	 */
 	public void setBookingPersistence(BookingPersistence bookingPersistence) {
 		this.bookingPersistence = bookingPersistence;
-	}
-
-	/**
-	 * Returns the booking finder.
-	 *
-	 * @return the booking finder
-	 */
-	public BookingFinder getBookingFinder() {
-		return bookingFinder;
-	}
-
-	/**
-	 * Sets the booking finder.
-	 *
-	 * @param bookingFinder the booking finder
-	 */
-	public void setBookingFinder(BookingFinder bookingFinder) {
-		this.bookingFinder = bookingFinder;
 	}
 
 	/**
@@ -1164,24 +1144,6 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	public void setDossierSyncPersistence(
 		DossierSyncPersistence dossierSyncPersistence) {
 		this.dossierSyncPersistence = dossierSyncPersistence;
-	}
-
-	/**
-	 * Returns the dossier sync finder.
-	 *
-	 * @return the dossier sync finder
-	 */
-	public DossierSyncFinder getDossierSyncFinder() {
-		return dossierSyncFinder;
-	}
-
-	/**
-	 * Sets the dossier sync finder.
-	 *
-	 * @param dossierSyncFinder the dossier sync finder
-	 */
-	public void setDossierSyncFinder(DossierSyncFinder dossierSyncFinder) {
-		this.dossierSyncFinder = dossierSyncFinder;
 	}
 
 	/**
@@ -2361,8 +2323,6 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.BookingLocalService bookingLocalService;
 	@BeanReference(type = BookingPersistence.class)
 	protected BookingPersistence bookingPersistence;
-	@BeanReference(type = BookingFinder.class)
-	protected BookingFinder bookingFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
 	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)
@@ -2435,8 +2395,6 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	protected DossierSyncLocalService dossierSyncLocalService;
 	@BeanReference(type = DossierSyncPersistence.class)
 	protected DossierSyncPersistence dossierSyncPersistence;
-	@BeanReference(type = DossierSyncFinder.class)
-	protected DossierSyncFinder dossierSyncFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierTemplateLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierTemplateLocalService dossierTemplateLocalService;
 	@BeanReference(type = DossierTemplatePersistence.class)

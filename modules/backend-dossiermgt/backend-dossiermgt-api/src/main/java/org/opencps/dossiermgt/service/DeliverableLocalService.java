@@ -229,9 +229,6 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Deliverable fetchDeliverableByUuidAndGroupId(String uuid,
 		long groupId);
 
-	public List<Deliverable> findDeliverableByState(String strDeliverableCode,
-		int state);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -254,10 +251,6 @@ public interface DeliverableLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable getDeliverable(long deliverableId)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Deliverable> getDeliverableByModifiedDate(String synsDate,
-		String deliverableType, long deliverableState);
 
 	/**
 	* Returns the deliverable matching the UUID and group.

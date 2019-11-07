@@ -4,7 +4,6 @@ public class ConstantUtils {
 
 	public static final String ORIGINAL_TODO = "2,3";
 	public static final String EXTENTION_JSON = ".json";
-	public static final String EXTENTION_XML = ".xml";
 	public static final String EXTENTION_TXT = ".txt";
 
 	//Destination import file
@@ -69,4 +68,64 @@ public class ConstantUtils {
 	public static final String HTML_NEW_LINE = "<br/>";
 	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
 	public static final int DEFAULT_FONT_SIZE = 16;
+	//
+	public static final String BAR_CODE = "barcode";
+	public static final String MONO_SPACED = "Monospaced";
+	public static final String FILE_PNG = "png";
+	public static final String HTTP_REQUEST = "HTTP.REQUEST";
+	public static final String TOTAL = "total";
+	public static final String DATA = "data";
+	public static final String KEY = "key";
+	public static final String VALUE = "value";
+	public static final String ADMIN_STRATOR = "Administrator";
+	public static final String SORT_ABLE = "_sortable";
+	public static final String MAIL_AD = "email";
+	public static final String TOKEN = "Token";
+	
+	/** TOKEN VNPOST */
+	public static final String TOKEN_URL = "org.opencps.token.url";
+	public static final String CONSUMER_KEY = "org.opencps.consumer.key";
+	public static final String SCRECT_KEY = "org.opencps.screct.key";
+	public static final String API_URL = "org.opencps.api.url";
+	public static final String ACCESS_TOKEN = "org.opencps.access.token";
+
+	/** METHOD SYNC */
+	public static final String NGSP_PROTOCOL = "org.opencps.ngsp.protocol";
+
+	/** CONSTANT ERROR */
+	public static final String ATTACHMENT_ERROR = "org.opencps.error.attachment";
+	public static final String ERROR_GROUP = "org.opencps.error.group";
+	public static final String ERROR_FOLDER = "org.opencps.error.folder";
+	public static final String MSG_ERROR = "org.opencps.message.error";
+	public static final String ERROR_MSG_BUSSINESS = "org.opencps.error.bussiness";
+	public static final String ERROR_NAME_BUSSINESS = "org.opencps.error.name.bussiness";
+	public static final String ERROR_CAPTCHA_INCORRECT = "org.opencps.captcha.error.incorrect";
+	
+	/** EXTENTION FILE */
+	public static final String EXTENTION_ZIP = "org.opencps.extention.file.zip";
+	public static final String EXTENTION_XML = "org.opencps.extention.file.xml";
+	public static final String EXTENTION_PNG = "org.opencps.extention.file.png";
+	public static final String CONTENT_TYPE_PNG = "org.opencps.contenttype.png";
+	
+	/** EXTENTION TYPE */
+	public static final String MIME_TYPE_ZIP = "org.opencps.mimetype.zip";
+	public static final String TYPE_DISPOSITON = "org.opencps.type.dispositon";
+	public static final String NO_CONTENT = "org.opencps.error.nocontent";
+	public static final String MSG_STATUS = "org.opencps.message.status";
+	public static final String MSG_SUCCESS = "org.opencps.message.success";
+	public static final String MESSAGE_MSG = "org.opencps.message.msg";
+	
+	
+	/** MSG VALUE */
+	public static final String VALUE_NAME = "org.opencps.value.name";
+	public static final String VALUE_TYPE = "org.opencps.value.type";
+	public static final String VALUE_DESCRIPTION = "org.opencps.value.description";
+	public static final String VALUE_ADMINISTRATIVE_REGION = "org.opencps.value.region";
+
+	public static final String CAPTCHA = "org.opencps.access.captcha";
+	
+	
+	
+	
+	
 }

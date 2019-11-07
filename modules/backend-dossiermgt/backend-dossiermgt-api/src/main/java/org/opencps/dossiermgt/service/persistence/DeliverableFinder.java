@@ -22,12 +22,6 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public interface DeliverableFinder {
-	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
-		String strDeliverableCode, int state);
-
-	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByModifiedDate(
-		String syncDate, String deliverableType, long deliverableState);
-
 	public org.opencps.dossiermgt.model.DossierFile findFileTemplateNo(
 		long id, String fileTemplateNo);
 }

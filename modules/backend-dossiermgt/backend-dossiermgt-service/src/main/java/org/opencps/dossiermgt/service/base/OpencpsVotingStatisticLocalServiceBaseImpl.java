@@ -69,7 +69,6 @@ import org.opencps.dossiermgt.service.persistence.DossierPartPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierRequestUDPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierStatisticPersistence;
-import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
@@ -1205,24 +1204,6 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	public void setDossierSyncPersistence(
 		DossierSyncPersistence dossierSyncPersistence) {
 		this.dossierSyncPersistence = dossierSyncPersistence;
-	}
-
-	/**
-	 * Returns the dossier sync finder.
-	 *
-	 * @return the dossier sync finder
-	 */
-	public DossierSyncFinder getDossierSyncFinder() {
-		return dossierSyncFinder;
-	}
-
-	/**
-	 * Sets the dossier sync finder.
-	 *
-	 * @param dossierSyncFinder the dossier sync finder
-	 */
-	public void setDossierSyncFinder(DossierSyncFinder dossierSyncFinder) {
-		this.dossierSyncFinder = dossierSyncFinder;
 	}
 
 	/**
@@ -2509,8 +2490,6 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierSyncLocalService dossierSyncLocalService;
 	@BeanReference(type = DossierSyncPersistence.class)
 	protected DossierSyncPersistence dossierSyncPersistence;
-	@BeanReference(type = DossierSyncFinder.class)
-	protected DossierSyncFinder dossierSyncFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierTemplateLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierTemplateLocalService dossierTemplateLocalService;
 	@BeanReference(type = DossierTemplatePersistence.class)

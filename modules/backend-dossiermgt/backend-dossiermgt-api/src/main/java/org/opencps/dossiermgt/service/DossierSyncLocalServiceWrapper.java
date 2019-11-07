@@ -60,19 +60,6 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
-	public long countDossierSyncByIdList(Long dossierId, Integer model,
-		int actionCodeNo) {
-		return _dossierSyncLocalService.countDossierSyncByIdList(dossierId,
-			model, actionCodeNo);
-	}
-
-	@Override
-	public long countDossierSyncList(String actionCode, int syncType) {
-		return _dossierSyncLocalService.countDossierSyncList(actionCode,
-			syncType);
-	}
-
-	@Override
 	public long countForApplicantAndActionCode(long groupId, String actionCode) {
 		return _dossierSyncLocalService.countForApplicantAndActionCode(groupId,
 			actionCode);
@@ -309,14 +296,6 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 		return _dossierSyncLocalService.getDossierSync(DossierSyncId);
 	}
 
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.DossierSync> getDossierSyncByIdList(
-		Long dossierId, Integer model, int actionCodeNo, Integer start,
-		Integer limit) {
-		return _dossierSyncLocalService.getDossierSyncByIdList(dossierId,
-			model, actionCodeNo, start, limit);
-	}
-
 	/**
 	* Returns the dossier sync matching the UUID and group.
 	*
@@ -331,13 +310,6 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierSyncLocalService.getDossierSyncByUuidAndGroupId(uuid,
 			groupId);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.DossierSync> getDossierSyncList(
-		String actionCode, int syncType, Integer start, Integer limit) {
-		return _dossierSyncLocalService.getDossierSyncList(actionCode,
-			syncType, start, limit);
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class AdminBundleChecker {
 			_log.error(e);
 		}
 		
-		System.out.println("START OPENCPS KERNEL ^_^");
+		//System.out.println("START OPENCPS KERNEL ^_^");
 	}
 	
 	private Log _log = LogFactoryUtil.getLog(getClass());

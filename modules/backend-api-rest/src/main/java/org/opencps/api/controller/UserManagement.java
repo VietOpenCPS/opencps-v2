@@ -207,12 +207,12 @@ public interface UserManagement {
 			@Multipart("fileName") String fileName, @Multipart("fileType") String fileType,
 			@Multipart("fileSize") long fileSize);
 	
-	@GET
-	@Path("/{id}/esign")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getUserEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
+//	@GET
+//	@Path("/{id}/esign")
+//	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+//	public Response getUserEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
+//			@Context Company company, @Context Locale locale, @Context User user,
+//			@Context ServiceContext serviceContext, @PathParam("id") long id);
 	
 	@GET
 	@Path("/{id}/esigncert")

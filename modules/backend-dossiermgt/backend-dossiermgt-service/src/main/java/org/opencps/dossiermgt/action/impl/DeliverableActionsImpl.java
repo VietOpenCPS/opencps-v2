@@ -145,13 +145,5 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		return DeliverableLocalServiceUtil.updateFormData(groupId, id, formData, serviceContext);
 	}
 
-	@Override
-	public List<Deliverable> getDeliverableByState(String strDeliverableCode, int state) {
-		if (Validator.isNotNull(strDeliverableCode)) {
-			return DeliverableLocalServiceUtil.findDeliverableByState(strDeliverableCode, state);
-		} else {
-			return null;
-		}
-	}
 
 }

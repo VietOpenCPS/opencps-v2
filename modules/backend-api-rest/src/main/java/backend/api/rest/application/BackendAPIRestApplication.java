@@ -39,9 +39,6 @@ import javax.ws.rs.core.UriInfo;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
-import org.opencps.api.controller.impl.BackupDataManagementImpl;
-import org.opencps.api.controller.impl.BookingManagementImpl;
-import org.opencps.api.controller.impl.CacheTestManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
@@ -114,6 +111,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -205,14 +203,11 @@ public class BackendAPIRestApplication extends Application {
 
 		singletons.add(new MenuRoleManagementImpl());
 		singletons.add(new SMSManagementImpl());
-		singletons.add(new BackupDataManagementImpl());
 
 		singletons.add(new NotificationManagementImpl());
 		singletons.add(new FaqManagementImpl());
-		singletons.add(new CacheTestManagementImpl());
 		singletons.add(new ImportDataManagementImpl());
 		singletons.add(new EFormManagementImpl());
-		singletons.add(new BookingManagementImpl());
 		singletons.add(new AdminConfigManagementImpl());
 		singletons.add(new ProxyManagementImpl());
 		singletons.add(new MenuConfigManagementImpl());
@@ -247,12 +242,8 @@ public class BackendAPIRestApplication extends Application {
 
 	@GET
 	@Path("/barcode")
-	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 
 	public Response getBarcode(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
@@ -263,7 +254,7 @@ public class BackendAPIRestApplication extends Application {
 
 		try {
 			Code128 barcode = new Code128();
-			barcode.setFontName("Monospaced");
+			barcode.setFontName(ConstantUtils.MONO_SPACED);
 			barcode.setFontSize(
 				Validator.isNotNull(font)
 					? Integer.valueOf(font) : ConstantUtils.DEFAULT_FONT_SIZE);
@@ -288,22 +279,20 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BAR_CODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("barcode/" + uuid + ".png");
+			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ConstantUtils.FILE_PNG);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.FILE_PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
 				responseBuilder.header("Content-Type", "image/png");
 
 				return responseBuilder.build();
@@ -352,22 +341,20 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(qrcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BAR_CODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("barcode/" + uuid + ".png");
+			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ConstantUtils.FILE_PNG);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.FILE_PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
 				responseBuilder.header("Content-Type", "image/png");
 
 				return responseBuilder.build();
@@ -387,13 +374,8 @@ public class BackendAPIRestApplication extends Application {
 
 	@POST
 	@Path("/login")
-	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-		MediaType.APPLICATION_FORM_URLENCODED
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response authenticateUser(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
@@ -410,11 +392,11 @@ public class BackendAPIRestApplication extends Application {
 			// Issue a token for the user
 			String token = issueToken(user.getEmailAddress());
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("token", token);
+			result.put(TOKEN, token);
 
 			// Return the token on the response
 			return Response.ok().header(
-				AUTHORIZATION, "Bearer " + token).entity(
+				AUTHORIZATION, BEARER + token).entity(
 					result.toJSONString()).build();
 
 		}
@@ -447,12 +429,8 @@ public class BackendAPIRestApplication extends Application {
 
 	@GET
 	@Path("/count/{className}")
-	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 
 	public Response countEntity(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
@@ -461,7 +439,7 @@ public class BackendAPIRestApplication extends Application {
 		@PathParam("className") String className) {
 
 		CountEntity result = new CountEntity();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long countDatabase = 0;
 		long countLucene = 0;
 
@@ -483,7 +461,7 @@ public class BackendAPIRestApplication extends Application {
 					user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext);
-				countLucene = jsonData.getInt("total");
+				countLucene = jsonData.getInt(TOTAL);
 			}
 			catch (PortalException e) {
 				_log.error(e);
@@ -500,7 +478,7 @@ public class BackendAPIRestApplication extends Application {
 				user.getUserId(), company.getCompanyId(), groupId, params, null,
 				-1, -1, serviceContext);
 
-			countLucene = jsonData.getLong("total");
+			countLucene = jsonData.getLong(TOTAL);
 			countDatabase =
 				DossierLocalServiceUtil.countDossierByGroup(groupId);
 		}
@@ -525,4 +503,7 @@ public class BackendAPIRestApplication extends Application {
 	@Reference
 	private ServiceContextProvider _serviceContextProvider;
 
+	private static final String TOKEN = "token";
+	private static final String BEARER = "Bearer ";
+	private static final String TOTAL = "total";
 }

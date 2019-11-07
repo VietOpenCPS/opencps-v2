@@ -26,16 +26,10 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -45,8 +39,6 @@ import org.opencps.dossiermgt.model.Booking;
 
 import java.io.Serializable;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -80,9 +72,6 @@ public interface BookingLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking addBooking(Booking booking);
-
-	public long countLucene(LinkedHashMap<String, Object> params,
-		SearchContext searchContext) throws ParseException, SearchException;
 
 	/**
 	* Creates a new booking with the primary key. Does not add the booking to the database.
@@ -265,9 +254,6 @@ public interface BookingLocalService extends BaseLocalService,
 	public int getBookingsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Booking getByClassName_PK(String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -286,11 +272,6 @@ public interface BookingLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits searchLucene(LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
-
 	/**
 	* Updates the booking in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -299,11 +280,4 @@ public interface BookingLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking updateBooking(Booking booking);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Booking updateBooking(long userId, long groupId, long bookingId,
-		String className, long classPK, String serviceCode, String codeNumber,
-		String bookingName, String gateNumber, Integer state, Date checkinDate,
-		Date bookingDate, boolean speaking, String serviceGroupCode,
-		ServiceContext serviceContext);
 }

@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -48,7 +47,6 @@ import org.opencps.api.user.model.UserSitesResults;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -556,37 +554,37 @@ public class UserManagementImpl implements UserManagement {
 
 	}
 
-	@Override
-	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id) {
-
-//		UserInterface actions = new UserActions();
-
-		// HARD CODE groupId = 55301
-
-		long groupId = 55301;
-
-		try {
-
-
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
-			File targetFile = new File(buildFileName);
-
-			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
-					.header("Content-Type", "image/png");
-
-			return responseBuilder.build();
-			
-			
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-
-	}
+//	@Override
+//	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+//			User user, ServiceContext serviceContext, long id) {
+//
+////		UserInterface actions = new UserActions();
+//
+//		// HARD CODE groupId = 55301
+//
+//		long groupId = 55301;
+//
+//		try {
+//
+//
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
+//			
+//			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+//			File targetFile = new File(buildFileName);
+//
+//			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
+//
+//			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
+//					.header("Content-Type", "image/png");
+//
+//			return responseBuilder.build();
+//			
+//			
+//		} catch (Exception e) {
+//			return BusinessExceptionImpl.processException(e);
+//		}
+//
+//	}
 
 	@Override
 	public Response getUserEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
@@ -635,8 +633,8 @@ public class UserManagementImpl implements UserManagement {
 				throw new PermissionDeniedDataAccessException("Do not have permission", null);
 			}
 
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
+//			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
+//					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
 

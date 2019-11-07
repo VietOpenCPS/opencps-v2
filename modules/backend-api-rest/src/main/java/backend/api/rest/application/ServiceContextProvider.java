@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
+import org.opencps.api.constants.ConstantUtils;
 import org.osgi.service.component.annotations.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class ServiceContextProvider implements ContextProvider<ServiceContext> {
 
 		// get the current HttpServletRequest for building the service context
 		// instance.
-		HttpServletRequest request = (HttpServletRequest) message.getContextualProperty(PROPKEY_HTTP_REQUEST);
+		HttpServletRequest request = (HttpServletRequest) message.getContextualProperty(ConstantUtils.HTTP_REQUEST);
 
 		try {
 			// now we can create a service context
@@ -37,8 +38,6 @@ public class ServiceContextProvider implements ContextProvider<ServiceContext> {
 		// return the new instance.
 		return serviceContext;
 	}
-
-	private static final String PROPKEY_HTTP_REQUEST = "HTTP.REQUEST";
 
 	private static final Log _log = LogFactoryUtil.getLog(ServiceContextProvider.class);
 

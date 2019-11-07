@@ -261,11 +261,6 @@ public class DeliverableLocalServiceUtil {
 		return getService().fetchDeliverableByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
-		String strDeliverableCode, int state) {
-		return getService().findDeliverableByState(strDeliverableCode, state);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
@@ -296,13 +291,6 @@ public class DeliverableLocalServiceUtil {
 		long deliverableId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getDeliverable(deliverableId);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.Deliverable> getDeliverableByModifiedDate(
-		String synsDate, String deliverableType, long deliverableState) {
-		return getService()
-				   .getDeliverableByModifiedDate(synsDate, deliverableType,
-			deliverableState);
 	}
 
 	/**
