@@ -58,6 +58,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictCollectionException;
@@ -318,7 +320,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	@ThreadLocalCachable
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if ("ADMINISTRATIVE_REGION".toLowerCase().equalsIgnoreCase(collectionCode)) {
+		if (ConfigProps.get(ConfigConstants.ADMINISTRATIVE_REGION).toLowerCase().equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 
@@ -379,7 +381,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollection.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -427,7 +429,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+				!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
@@ -490,7 +493,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollection.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -535,7 +538,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+				!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);

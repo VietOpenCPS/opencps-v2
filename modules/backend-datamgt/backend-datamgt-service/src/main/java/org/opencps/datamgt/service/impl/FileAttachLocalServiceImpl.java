@@ -15,6 +15,7 @@
 package org.opencps.datamgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -52,6 +53,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.base.FileAttachLocalServiceBaseImpl;
@@ -345,7 +347,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -402,7 +404,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(docFileId)) {
-			String[] keyword = docFileId.split(",");
+			String[] keyword = docFileId.split(StringPool.COMMA);
 
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
@@ -434,7 +436,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -487,7 +489,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(docFileId)) {
-			String[] keyword = docFileId.split(",");
+			String[] keyword = docFileId.split(StringPool.COMMA);
 
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)

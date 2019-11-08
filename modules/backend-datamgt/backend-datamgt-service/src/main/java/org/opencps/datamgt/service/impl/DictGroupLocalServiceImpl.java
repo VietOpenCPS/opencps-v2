@@ -54,6 +54,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.exception.NoSuchDictGroupException;
 import org.opencps.datamgt.model.DictGroup;
@@ -360,7 +362,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroup.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -399,7 +401,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
@@ -448,7 +451,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroup.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -484,7 +487,8 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 

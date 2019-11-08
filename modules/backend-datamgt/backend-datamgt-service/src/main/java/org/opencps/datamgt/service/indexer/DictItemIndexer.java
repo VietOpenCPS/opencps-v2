@@ -23,6 +23,8 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -104,7 +106,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			//}
 			
 		}  else {
-			parentCode = "0";
+			parentCode = ConfigProps.get(ConfigConstants.PARENT_ITEMCODE_DEFAULT);
 		}
 		
 		document.addTextSortable(DictItemTerm.PARENT_ITEM_CODE, parentCode);

@@ -49,6 +49,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.HolidayTerm;
 import org.opencps.datamgt.exception.NoSuchHolidayException;
 import org.opencps.datamgt.model.Holiday;
@@ -226,7 +227,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Holiday.class.getName());
 		searchContext.setEntryClassNames(new String[] { Holiday.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -300,7 +301,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Holiday.class.getName());
 		searchContext.setEntryClassNames(new String[] { Holiday.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
