@@ -109,6 +109,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
@@ -259,7 +260,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					DossierActions actions = new DossierActionsImpl();
 					Sort[] sorts = null;
 					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-							GetterUtil.getBoolean("true")) };
+							Boolean.TRUE) };
 					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 					params.put(Field.GROUP_ID, String.valueOf(groupId));
 					if (payload.isCalculate()) {
@@ -287,7 +288,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.DOSSIER_NO, payload.getDossierNo());
 					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
-					params.put("top", "statistic");
+					params.put("top", DossierStatisticConstants.TOP_STATISTIC);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId(); 
@@ -355,7 +356,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(HttpStatus.INTERNAL_SERVER_ERROR.name());
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -397,7 +398,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -520,7 +521,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -558,7 +559,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -687,7 +688,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -721,7 +722,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -738,7 +739,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		//LocalDate localDate = LocalDate.now();
 
 		if (end < start) {
-			serviceExceptionDetails.setFaultCode("400");
+			serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
 			serviceExceptionDetails.setFaultMessage("Invalid start, end");
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
@@ -752,7 +753,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		if (month != -1) {
 			if (month < 0 || month > 12) {
-				serviceExceptionDetails.setFaultCode("400");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
 				serviceExceptionDetails.setFaultMessage("Invalid month");
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
 
@@ -769,7 +770,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	 */
 	public static void throwException(OpencpsServiceException serviceException) throws ServiceException {
 		ResponseBuilder builder = Response.status(Response.Status.NOT_ACCEPTABLE);
-		builder.type("application/json");
+		builder.type(MediaType.APPLICATION_JSON);
 		builder.entity(serviceException.getFaultDetails());
 		throw new WebApplicationException(builder.build());
 	}
@@ -845,7 +846,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			DossierActions actions = new DossierActionsImpl();
 			Sort[] sorts = null;
 			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean("true")) };
+					Boolean.TRUE) };
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			if (payload.isCalculate()) {
@@ -863,7 +864,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put("toStatisticDate", payload.getToStatisticDate());
 				}				
 			}
-			params.put("top", "statistic");
+			params.put("top", DossierStatisticConstants.TOP_STATISTIC);
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get("data");

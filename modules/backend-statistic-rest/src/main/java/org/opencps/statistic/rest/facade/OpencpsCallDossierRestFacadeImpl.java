@@ -1,5 +1,7 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -96,20 +98,20 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			buildUrlQueryParams(urlQueryParams, payload);
 		}
 		//Add common params
-		urlQueryParams.add("systemId", "0,1,2");
+		urlQueryParams.add("systemId", DossierStatisticConstants.ALL_SYSTEM);
 		urlQueryParams.add("top", "statistic");
 
 		if (payload.getStart() != 0) {
 			urlQueryParams.add("start", String.valueOf(payload.getStart()));			
 		}
 		else {
-			urlQueryParams.add("start", "-1");
+			urlQueryParams.add("start", String.valueOf(QueryUtil.ALL_POS));
 		}
 		if (payload.getEnd() != 0) {
 			urlQueryParams.add("end", String.valueOf(payload.getEnd()));
 		}
 		else {
-			urlQueryParams.add("end", "-1");
+			urlQueryParams.add("end", String.valueOf(QueryUtil.ALL_POS));
 		}
 		//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
 		//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
@@ -134,7 +136,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
-			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + StringPool.COLON + payload.getPassword()).getBytes()));			
 		}
 
 		return (GetDossierResponse) this
