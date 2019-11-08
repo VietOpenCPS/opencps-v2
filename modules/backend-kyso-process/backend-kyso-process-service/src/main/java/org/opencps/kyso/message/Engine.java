@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.kyso.process.service.util.ConfigConstants;
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
 
@@ -80,7 +81,7 @@ public class Engine implements MessageListener {
 
 //				String rootPath = "/Users/binhth/Downloads/apache-tomcat-8.0.45/webapps/WebApplication1/";
 //				String fullPath = rootPath + "TestFile.pdf";
-				String rootPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+				String rootPath = PropsUtil.get(ConfigProps.CER_HOME) + StringPool.FORWARD_SLASH;
 //				String fullPath = StringPool.BLANK;
 				
 				if (fileEntryId > 0) {
@@ -90,12 +91,12 @@ public class Engine implements MessageListener {
 					FileUtil.move(fileTemp, file);
 					String fullPath = file.getAbsolutePath();
 
-					String signImagePath = new File(rootPath + emailUser + ".png").getAbsolutePath();
+					String signImagePath = new File(rootPath + emailUser + ConfigConstants.FILE_EXTENTION_PNG).getAbsolutePath();
 					String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
 	
 					BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
 	
-					Certificate cert = CertUtil.getCertificateByPath(new File(rootPath + emailUser + ".cer").getAbsolutePath());
+					Certificate cert = CertUtil.getCertificateByPath(new File(rootPath + emailUser + ConfigConstants.FILE_EXTENTION_CER).getAbsolutePath());
 	
 					boolean showSignatureInfo = true;
 	
@@ -158,10 +159,10 @@ public class Engine implements MessageListener {
 //					inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
 					fieldName = signer.getSignatureName();
 	
-					signature = Base64.getDecoder().decode("");
+					signature = Base64.getDecoder().decode(StringPool.BLANK);
 					signer.completeSign(signature, fieldName);
 	
-					File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+					File fileSigned = new File(fullPath.replace(ConfigConstants.FILE_EXTENTION_PDF, ConfigConstants.FILE_EXTENTION_SIGNED_PDF));
 	
 					ServiceContext serviceContext = new ServiceContext();
 	
@@ -177,7 +178,7 @@ public class Engine implements MessageListener {
 					msgDataIn.put("userId", userId);
 					
 					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 					
 //					FileUtil.delete(file);
 //					FileUtil.delete(fileSigned);
