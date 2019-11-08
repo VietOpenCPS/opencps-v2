@@ -23,7 +23,7 @@ public class UserContextProvider implements ContextProvider<User> {
         try {
             return _portal.getUser(
                 (HttpServletRequest)message.getContextualProperty(
-                    "HTTP.REQUEST"));
+                	PROPKEY_HTTP_REQUEST));
         }
         catch (PortalException pe) {
             if (_log.isWarnEnabled()) {
@@ -34,6 +34,7 @@ public class UserContextProvider implements ContextProvider<User> {
         }
     }
 
+	private static final String PROPKEY_HTTP_REQUEST = "HTTP.REQUEST";
     private static final Log _log = LogFactoryUtil.getLog(
         UserContextProvider.class);
 
