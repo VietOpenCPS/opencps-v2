@@ -14,6 +14,14 @@
 
 package backend.feedback.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.ws.rs.NotFoundException;
+
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -41,19 +49,11 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.ws.rs.NotFoundException;
-
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.model.Voting;
 import backend.feedback.service.base.VotingLocalServiceBaseImpl;
+import backend.feedback.service.util.ConfigConstants;
 
 /**
  * The implementation of the voting local service.
@@ -180,7 +180,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -292,7 +292,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 		searchContext.setAttribute("params", params);

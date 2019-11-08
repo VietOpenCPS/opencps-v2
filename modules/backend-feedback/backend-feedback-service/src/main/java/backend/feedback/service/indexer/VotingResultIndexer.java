@@ -40,6 +40,8 @@ import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
+import backend.feedback.service.util.ConfigConstants;
+import backend.feedback.service.util.ConfigProps;
 
 public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 
@@ -115,7 +117,7 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 				if (classPK > 0) {
 					//_log.info("classPK: "+classPK);
 					//_log.info("className: "+className);
-					if ("employee".equals(className)) {
+					if (ConfigProps.get(ConfigConstants.VOTING_CLASSNAME_EMPLOYEE).equals(className)) {
 						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(classPK);
 						if (employee != null) {
 							List<Dossier> dossierList = DossierLocalServiceUtil.findByGID(employee.getGroupId(), 0, 2);
@@ -128,7 +130,7 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 							}
 							
 						}
-					} else if ("dossier".equals(className)) {
+					} else if (ConfigProps.get(ConfigConstants.VOTING_CLASSNAME_DOSSIER).equals(className)) {
 						Dossier dossier = DossierLocalServiceUtil.fetchDossier(classPK);
 						if (dossier != null) {
 							document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
