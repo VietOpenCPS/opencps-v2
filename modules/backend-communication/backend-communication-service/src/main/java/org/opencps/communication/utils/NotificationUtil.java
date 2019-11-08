@@ -29,10 +29,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import backend.communication.service.util.ConfigProps;
 
 /**
  * @author trungnt
@@ -378,11 +382,11 @@ public class NotificationUtil {
 
 			data.put("user_id", toTelNo);
 
-			String endPoint = ZALO_ENDPOID_GET_USER_INFO + "?access_token=" +
-				token + "&data=" + data.toJSONString();
+			String endPoint = ConfigProps.get(ZALO_ENDPOID_GET_USER_INFO) + ConfigProps.get(ZALO_PARAM_TOKEN) +
+				token + ConfigProps.get(ZALO_PARAM_DATA) + data.toJSONString();
 
 			JSONObject resPostDossier = _callAPI(
-				HttpMethods.GET, "application/json", ZALO_PATH_BASE, endPoint,
+				HttpMethods.GET, ConfigProps.get(ZALO_MEDIA_TYPE), ConfigProps.get(ZALO_PATH_BASE), endPoint,
 				StringPool.BLANK, StringPool.BLANK, properties);
 
 			String uid = resPostDossier.getString("message");
@@ -425,16 +429,16 @@ public class NotificationUtil {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
-				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) ||
+				(pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -442,7 +446,7 @@ public class NotificationUtil {
 			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
 
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setRequestProperty("groupId", StringPool.BLANK);
@@ -450,13 +454,13 @@ public class NotificationUtil {
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
 
-				String authString = username + ":" + password;
+				String authString = username + StringPool.COLON + password;
 
 				String authStringEnc = new String(
 					java.util.Base64.getEncoder().encodeToString(
 						authString.getBytes()));
 				conn.setRequestProperty(
-					"Authorization", "Basic " + authStringEnc);
+					HttpHeaders.AUTHORIZATION, ConfigProps.get(ZALO_AUTHOR_TYPE) + StringPool.SPACE + authStringEnc);
 			}
 
 			if (!properties.isEmpty()) {
@@ -496,8 +500,12 @@ public class NotificationUtil {
 		return response;
 	}
 
-	private static final String ZALO_PATH_BASE = "https://openapi.zalo.me";
-	private static final String ZALO_ENDPOID_GET_USER_INFO = "/v2.0/oa/getprofile";
+	private static final String ZALO_PATH_BASE = "opencps.open.zalo.path.base";
+	private static final String ZALO_ENDPOID_GET_USER_INFO = "opencps.open.zalo.endpoint.getuserinfo";
+	private static final String ZALO_PARAM_TOKEN = "opencps.open.zalo.param.token";
+	private static final String ZALO_PARAM_DATA = "opencps.open.zalo.param.data";
+	private static final String ZALO_MEDIA_TYPE = "opencps.open.zalo.mediatype";
+	private static final String ZALO_AUTHOR_TYPE = "opencps.open.zalo.header.author.type";
 	private static final String ZALO_UID = "zaloUid";
 	private static final String ZALO_TOKEN = "zaloToken";
 
@@ -512,7 +520,7 @@ class RESTFulConfiguration {
 
 	public static final String SUBMIT = "submit";
 	public static final String TIMER = "timer";
-
+	
 	public static final int TIME_OUT = 3000;
 
 }
