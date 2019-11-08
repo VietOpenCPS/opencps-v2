@@ -14,6 +14,16 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.exception.NoSuchResourceRoleException;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -40,15 +50,6 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.ResourceRoleTerm;
-import org.opencps.usermgt.exception.NoSuchResourceRoleException;
-import org.opencps.usermgt.model.ResourceRole;
-import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -255,7 +256,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceRole.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceRole.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -334,7 +335,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceRole.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceRole.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

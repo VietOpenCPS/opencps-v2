@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.action.ResourceUserInterface;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceUser;
@@ -83,7 +84,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 
 				searchContext.addFullQueryEntryClassName(User.class.getName());
 				searchContext.setEntryClassNames(new String[] { User.class.getName() });
-				searchContext.setAttribute("paginationType", "regular");
+				searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 				searchContext.setLike(true);
 				searchContext.setStart(QueryUtil.ALL_POS);
 				searchContext.setEnd(QueryUtil.ALL_POS);

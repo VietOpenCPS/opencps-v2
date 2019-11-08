@@ -14,6 +14,16 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.ResourceUserTerm;
+import org.opencps.usermgt.exception.NoSuchResourceUserException;
+import org.opencps.usermgt.model.ResourceUser;
+import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -38,15 +48,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.ResourceUserTerm;
-import org.opencps.usermgt.exception.NoSuchResourceUserException;
-import org.opencps.usermgt.model.ResourceUser;
-import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -261,7 +262,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceUser.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceUser.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -340,7 +341,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceUser.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceUser.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
