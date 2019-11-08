@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -253,7 +254,7 @@ public class RestAuthFilter implements Filter {
 //		    	if (!httpResponse.containsHeader("Content-Encoding")
 //		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
 //		    		httpResponse.addHeader("Content-Encoding", "gzip");
-//		    		httpResponse.setCharacterEncoding("UTF-8");
+//		    		httpResponse.setCharacterEncoding(StandardCharsets.UTF_8);
 //			        GZipServletResponseWrapper gzipResponse =
 //			        		new GZipServletResponseWrapper(httpResponse);
 //			        filterChain.doFilter(servletRequest, gzipResponse);
