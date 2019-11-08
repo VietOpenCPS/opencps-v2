@@ -16,6 +16,9 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.util.FileUtil;
 
+import backend.jasper.process.service.util.ConfigConstants;
+import backend.jasper.process.service.util.ConfigProps;
+
 public class EnginePreview implements MessageListener {
 
 	@Override
@@ -60,7 +63,7 @@ public class EnginePreview implements MessageListener {
 		String formData = message.getString("formData");
 		String className = message.getString("className");
 		_log.info("Object or array: " + isJsonObject(formData));
-		if ("org.opencps.dossiermgt.model.DossierDocument".equals(className)) {
+		if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DOSSIERDOCUMENT).equals(className)) {
 			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 			
 			try {
@@ -84,12 +87,12 @@ public class EnginePreview implements MessageListener {
 				_log.error("Generate file exception........."+e);
 				}
 		} else {
-			String reportType = message.contains("reportType") ? message.getString("reportType") : "pdf";
+			String reportType = message.contains("reportType") ? message.getString("reportType") : ConfigConstants.JASPER_DOCTYPE_PDF;
 			File file = null;
-			if ("excel".equals(reportType)) {
+			if (ConfigConstants.JASPER_DOCTYPE_EXCEL.equals(reportType)) {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.XLS.toString());						
 			}
-			else if ("word".equals(reportType)) {
+			else if (ConfigConstants.JASPER_DOCTYPE_WORD.equals(reportType)) {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.DOC.toString());	
 			}
 			else {
