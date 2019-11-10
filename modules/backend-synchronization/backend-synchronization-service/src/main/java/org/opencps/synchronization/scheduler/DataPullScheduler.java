@@ -132,7 +132,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
 
-			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 			for (int i = 0; i < jsArrayData.length(); i++) {
 				JSONObject object = jsArrayData.getJSONObject(i);
 				String collectionName = object.getString("collectionName");
@@ -233,7 +233,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
 
-			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 			for (int i = 0; i < jsArrayData.length(); i++) {
 				JSONObject object = jsArrayData.getJSONObject(i);
 	
@@ -349,7 +349,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictItemGroup.getString(RESTFulConfiguration.MESSAGE));
 
-			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 			for (int i = 0; i < jsArrayData.length(); i++) {
 				JSONObject object = jsArrayData.getJSONObject(i);
 	
@@ -459,7 +459,7 @@ public class DataPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDictCollection.getString(RESTFulConfiguration.MESSAGE));
 
-			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 			
 			for (int i = 0; i < jsArrayData.length(); i++) {

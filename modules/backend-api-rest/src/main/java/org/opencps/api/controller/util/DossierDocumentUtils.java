@@ -22,6 +22,7 @@ import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -134,10 +135,10 @@ public class DossierDocumentUtils {
 						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
 						//_log.info("jsonDueDate: " + jsonDueDate);
 						if (jsonDueDate != null) {
-							JSONObject hours = jsonDueDate.getJSONObject("hour");
-							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
+							JSONObject hours = jsonDueDate.getJSONObject(ProcessActionTerm.DUE_DATE_HOUR);
+							JSONObject processHours = jsonDueDate.getJSONObject(ProcessActionTerm.PROCESS_HOUR);
 							//_log.info("hours: " + hours);
-							if (hours != null && hours.has("AM") && hours.has("PM")) {
+							if (hours != null && hours.has(ProcessActionTerm.DATE_AM) && hours.has(ProcessActionTerm.DATE_PM)) {
 								//_log.info("AM-PM: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
@@ -147,7 +148,7 @@ public class DossierDocumentUtils {
 								if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
 									dueCalendar.setTime(dossier.getDueDate());
 
-									String hoursAfterNoon = hours.getString("AM");
+									String hoursAfterNoon = hours.getString(ProcessActionTerm.DATE_AM);
 									//_log.info("hoursAfterNoon: " + hoursAfterNoon);
 
 									if (Validator.isNotNull(hoursAfterNoon)) {
@@ -159,7 +160,7 @@ public class DossierDocumentUtils {
 									}
 								} else {
 									dueCalendar.setTime(dossier.getDueDate());
-									String hoursAfterNoon = hours.getString("PM");
+									String hoursAfterNoon = hours.getString(ProcessActionTerm.DATE_PM);
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
@@ -168,7 +169,6 @@ public class DossierDocumentUtils {
 												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
 												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
 											} else {
-												//dueCalendar.add(Calendar.DAY_OF_MONTH, 1);
 												dueCalendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(splitAfter[0]));
 												dueCalendar.set(Calendar.MINUTE, Integer.valueOf(splitAfter[1]));
 											}
@@ -177,12 +177,12 @@ public class DossierDocumentUtils {
 								}
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
-							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+							} else if (processHours != null && processHours.has(ProcessActionTerm.START_HOUR) && processHours.has(ProcessActionTerm.DUE_HOUR)) {
 								//_log.info("STRART check new: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
 								//
-								String receiveHour = processHours.getString("startHour");
+								String receiveHour = processHours.getString(ProcessActionTerm.START_HOUR);
 								//_log.info("receiveHour: " + receiveHour);
 
 								if (Validator.isNotNull(receiveHour)) {
@@ -190,7 +190,7 @@ public class DossierDocumentUtils {
 									if (splitHour != null) {
 										int hourStart = GetterUtil.getInteger(splitHour[0]);
 										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
-											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+											String[] splitdueHour = StringUtil.split(processHours.getString(ProcessActionTerm.DUE_HOUR),
 													StringPool.COLON);
 											Calendar dueCalendar = Calendar.getInstance();
 											if (splitdueHour != null) {
@@ -267,13 +267,12 @@ public class DossierDocumentUtils {
 				jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 				jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 				jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
-//				String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 				dossierMarkArr.put(jsonMark);
 			}
 		}
 		
 		//Hot fix TP99
-		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, DossierPartTerm.TP_DIFFERENT);
 		if (dossierMark != null) {
 			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
@@ -292,7 +291,6 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
-//						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 						dossierMarkArr.put(jsonMark);
 					}
 				}
@@ -346,7 +344,6 @@ public class DossierDocumentUtils {
 
 	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONObject json) {
 
-//		List<Object[]> objects = new ArrayList<Object[]>();
 		if (json != null) {
 			Iterator<String> itr = json.keys();
 			while (itr.hasNext()) {
@@ -359,7 +356,6 @@ public class DossierDocumentUtils {
 					keyValue[0] = key;
 					if (Validator.isNotNull(valueObject.toString())) {
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
-//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 					} else {
 						keyValue[1] = valueObject.toString();
 					}
@@ -371,7 +367,6 @@ public class DossierDocumentUtils {
 					Object[] keyValue = new Object[2];
 					keyValue[0] = key;
 					if (Validator.isNotNull(strObject.toString())) {
-//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
 					} else {
 						keyValue[1] = strObject.toString();
@@ -395,9 +390,8 @@ public class DossierDocumentUtils {
 				try {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
-//						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
 					} else {
 						keyValue[1] = valueObject.toString();
@@ -408,9 +402,8 @@ public class DossierDocumentUtils {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
-//						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
 					} else {
 						keyValue[1] = strObject.toString();

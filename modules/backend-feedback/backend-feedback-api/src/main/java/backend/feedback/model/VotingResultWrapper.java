@@ -63,14 +63,14 @@ public class VotingResultWrapper implements VotingResult,
 		attributes.put("uuid", getUuid());
 		attributes.put("votingResultId", getVotingResultId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("votingId", getVotingId());
 		attributes.put("fullname", getFullname());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("comment", getComment());
 		attributes.put("selected", getSelected());
 
@@ -97,7 +97,7 @@ public class VotingResultWrapper implements VotingResult,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -139,7 +139,7 @@ public class VotingResultWrapper implements VotingResult,
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

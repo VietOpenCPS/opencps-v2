@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="processNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="durationUnit" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="data" type="{}ProcessSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.DATA type="{}ProcessSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "durationCount",
     "durationUnit",
-    "data"
+    ConstantUtils.DATA
 })
 public class DossierActionResult21Model {
 

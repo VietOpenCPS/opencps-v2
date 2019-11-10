@@ -140,11 +140,11 @@ public class DossierActionsImpl implements DossierActions {
 
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -172,11 +172,11 @@ public class DossierActionsImpl implements DossierActions {
 			if (groupId == 55217) {
 				hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 				return result;
 			}
@@ -226,11 +226,11 @@ public class DossierActionsImpl implements DossierActions {
 
 					hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 					if (hits != null && hits.getLength() > 0) {
-						result.put("data", hits.toList());
+						result.put(ConstantUtils.DATA, hits.toList());
 //						_log.info("hits.toList(): " + hits.toList().size());
 						total = DossierLocalServiceUtil.countLucene(params, searchContext);
 //						_log.info("total: " + total);
-						result.put("total", total);
+						result.put(ConstantUtils.TOTAL, total);
 					}
 				}
 			} else { /* Get list dossier follow roles user login */
@@ -327,8 +327,8 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 					// Add all list dossier of multiple status
-					result.put("data", allDocsList);
-					result.put("total", total);
+					result.put(ConstantUtils.DATA, allDocsList);
+					result.put(ConstantUtils.TOTAL, total);
 				}
 			}
 
@@ -354,11 +354,11 @@ public class DossierActionsImpl implements DossierActions {
 
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			return result;
 
@@ -423,7 +423,7 @@ public class DossierActionsImpl implements DossierActions {
 		List<Role> userRolesAdminCheck = user.getRoles();
 		boolean isAdministratorData = false;
 		for (Role r : userRolesAdminCheck) {
-			if ("Administrator".equalsIgnoreCase(r.getName())) {
+			if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equalsIgnoreCase(r.getName())) {
 				isAdministratorData = true;
 				break;
 			}
@@ -492,7 +492,7 @@ public class DossierActionsImpl implements DossierActions {
 						boolean isAdmin = false;
 						for (Role r : userRoles) {
 //							_log.info("SONDT userRoles: " + JSONFactoryUtil.looseSerialize(r));
-							if ("Administrator".equalsIgnoreCase(r.getName())) {
+							if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equalsIgnoreCase(r.getName())) {
 								isAdmin = true;
 								break;
 							}
@@ -2881,9 +2881,9 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 
-			result.put("data", statistics);
+			result.put(ConstantUtils.DATA, statistics);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -3117,9 +3117,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				}
 			}
 
-			result.put("data", statistics);
+			result.put(ConstantUtils.DATA, statistics);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -3181,10 +3181,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				}
 			}
 
-			result.put("data", statistics);
+			result.put(ConstantUtils.DATA, statistics);
 //			_log.info("statistics: "+statistics);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 //			_log.info("total: "+total);
 
 		} catch (Exception e) {

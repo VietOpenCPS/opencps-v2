@@ -63,7 +63,7 @@ public class ServiceProcessWrapper implements ServiceProcess,
 		attributes.put("uuid", getUuid());
 		attributes.put("serviceProcessId", getServiceProcessId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -109,7 +109,7 @@ public class ServiceProcessWrapper implements ServiceProcess,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

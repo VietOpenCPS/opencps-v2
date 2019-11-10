@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetVotingResultResponse {
 	private int total;
 	
-	@XmlElement(name = "data")
+	@XmlElement(name = ConstantUtils.DATA)
 	private List<GetVotingResultData> data;
 
 	public int getTotal() {

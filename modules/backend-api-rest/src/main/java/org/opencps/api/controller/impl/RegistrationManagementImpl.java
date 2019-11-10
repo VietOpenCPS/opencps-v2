@@ -76,7 +76,7 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 public class RegistrationManagementImpl implements RegistrationManagement {
 	private static Log _log = LogFactoryUtil.getLog(RegistrationManagementImpl.class);
 
-	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	private static String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
 
 	@SuppressWarnings("unchecked")
 	@GET
@@ -97,7 +97,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -116,10 +116,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
 			//
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
+					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -137,7 +137,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		long companyId = company.getCompanyId();
 		_log.info("companyId: "+companyId);
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			_log.info("groupId: "+groupId);
 			String cityName = "";
 			String districtName = "";
@@ -200,7 +200,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			ServiceContext serviceContext, RegistrationInputModel input, long registrationId) {
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationActions action = new RegistrationActionsImpl();
 			String cityName = "";
 			String districtName = "";
@@ -237,7 +237,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	@Override
 	public Response delete(HttpHeaders header, long id) {
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationActions action = new RegistrationActionsImpl();
 
@@ -256,7 +256,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response getFormsbyRegId(HttpHeaders header, long id) throws PortalException {
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
@@ -294,7 +294,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			// long fileEntryId = getfileEntryId(input.getFormData(),
 			// input.getFormScript(), input.getFormReport());
@@ -335,7 +335,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
@@ -361,7 +361,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
@@ -374,9 +374,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
@@ -437,7 +437,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Registration regInfo = null;
 			long registrationId = 0;
@@ -494,8 +494,8 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			JSONObject jsonData = actions.getFormDataByFormNo(serviceContext.getUserId(), serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			results.put("total", jsonData.getInt("total"));
-			List<Document> docList =(List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList =(List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -510,7 +510,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					formDataArr.put(formDataJson);
 				}
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -539,9 +539,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			}
 			
 			//
-			results.put("total", JsonArr != null ? JsonArr.length() : 0);
+			results.put(ConstantUtils.TOTAL, JsonArr != null ? JsonArr.length() : 0);
 
-			results.put("data", JsonArr);
+			results.put(ConstantUtils.DATA, JsonArr);
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 

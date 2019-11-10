@@ -71,12 +71,12 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String CMD = "cmd";
 	private static final String GET = "get";
 	private static final String DELETE = "delete";
-	private static final String ADMIN = "admin";
+	private static final String ADMIN = ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN);
 	private static final String API = "api";
 	private static final String BUNDLE_NAME = "bundle_name";
 	private static final String SERVICE_UTIL_NAME = "service_util_name";
 	private static final String MODEL_NAME = "model_name";
-	private static final String DATA = "data";
+	private static final String DATA = ConstantUtils.DATA;
 	private static final String ID = "id";
 	private static final String STATUS = "status";
 
@@ -110,7 +110,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String AUTO_COMPLETE = "autocomplete";
 	private static final String TYPE_INT = "int";
 	private static final String DATA_TYPE = "data_type";
-	private static final String KEY = "key";
+	private static final String KEY = ConstantUtils.VALUE_KEY;
 	private static final String CHECK_BOX = "checkbox";
 	private static final String QUERY_LIKE = "like";
 	private static final String COMPARE_LT = "lt";
@@ -134,7 +134,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String HEADERS = "headers";
 	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
 	private static final String ACCEPT = "Accept";
-	private static final String CONTENT_TYPE = "Content-Type";
+	private static final String CONTENT_TYPE = ConstantUtils.CONTENT_TYPE;
 	private static final String APP_JSON = "application/json";
 
 	@SuppressWarnings("unchecked")

@@ -58,11 +58,11 @@ public class HolidayActions implements HolidayInterface {
 
 			hits = HolidayLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = HolidayLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

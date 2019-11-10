@@ -28,7 +28,7 @@ public class SiteCleanDataHandlerStatusMessageSenderUtil {
 		message.put("backgroundTaskId",
 				BackgroundTaskThreadLocal.getBackgroundTaskId());
 		
-		message.put("percentage", messageContent.getPercentage());
+		message.put(ConstantUtils.VALUE_PERCENTAGE, messageContent.getPercentage());
 		message.put("executionLog", messageContent.getExecutionLog());
 
 		return message;

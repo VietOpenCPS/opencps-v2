@@ -4,6 +4,21 @@ package backend.api.rest.application;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -36,16 +51,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
-import org.opencps.api.controller.impl.DataTempManagementImpl;
-import org.opencps.api.controller.impl.DefaultSignatureManagementImpl;
 import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
-import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
 import org.opencps.api.controller.impl.DeliverablesManagementImpl;
 import org.opencps.api.controller.impl.DossierActionManagementImpl;
 import org.opencps.api.controller.impl.DossierActionUserManagementImpl;
@@ -60,7 +71,6 @@ import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FaqManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
-import org.opencps.api.controller.impl.ImportDataManagementImpl;
 import org.opencps.api.controller.impl.JasperUtilsManagermentImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
 import org.opencps.api.controller.impl.MenuConfigManagementImpl;
@@ -84,12 +94,10 @@ import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
-import org.opencps.api.controller.impl.SignatureManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
 import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
-import org.opencps.api.controller.impl.VotingManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
 import org.opencps.api.filter.KeyGenerator;
@@ -104,27 +112,14 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -178,16 +173,12 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DeliverableTypesManagementImpl());
 		//
 		singletons.add(new DeliverablesManagementImpl());
-		singletons.add(new DeliverablesLogManagementImpl());
-		//
 		singletons.add(new RegistrationTemplatesManagementImpl());
 		singletons.add(new CommentManagementImpl());
 		singletons.add(new RegistrationManagementImpl());
 		singletons.add(new RegistrationFormManagementImpl());
 		singletons.add(new RegistrationLogManagementImpl());
 		singletons.add(new ProcessPluginManagementImpl());
-		singletons.add(new SignatureManagementImpl());
-		singletons.add(new DataTempManagementImpl());
 		singletons.add(new UserInfoLogManagementImpl());
 		//
 		singletons.add(new CertNumberManagementImpl());
@@ -196,17 +187,13 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DossierSyncManagementImpl());
 
 		singletons.add(new SystemManagementImpl());
-		singletons.add(new VotingManagementImpl());
 
 		singletons.add(new DossierActionUserManagementImpl());
-		singletons.add(new DefaultSignatureManagementImpl());
-
 		singletons.add(new MenuRoleManagementImpl());
 		singletons.add(new SMSManagementImpl());
 
 		singletons.add(new NotificationManagementImpl());
 		singletons.add(new FaqManagementImpl());
-		singletons.add(new ImportDataManagementImpl());
 		singletons.add(new EFormManagementImpl());
 		singletons.add(new AdminConfigManagementImpl());
 		singletons.add(new ProxyManagementImpl());
@@ -283,17 +270,17 @@ public class BackendAPIRestApplication extends Application {
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ConstantUtils.FILE_PNG);
+			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG));
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.FILE_PNG, file);
+				ImageIO.write(image, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "image/png");
 
 				return responseBuilder.build();
 			}
@@ -345,17 +332,17 @@ public class BackendAPIRestApplication extends Application {
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ConstantUtils.FILE_PNG);
+			File file = new File(ConstantUtils.BAR_CODE + StringPool.FORWARD_SLASH + uuid + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG));
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.FILE_PNG, file);
+				ImageIO.write(image, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "image/png");
 
 				return responseBuilder.build();
 			}
@@ -505,5 +492,5 @@ public class BackendAPIRestApplication extends Application {
 
 	private static final String TOKEN = "token";
 	private static final String BEARER = "Bearer ";
-	private static final String TOTAL = "total";
+	private static final String TOTAL = ConstantUtils.TOTAL;
 }

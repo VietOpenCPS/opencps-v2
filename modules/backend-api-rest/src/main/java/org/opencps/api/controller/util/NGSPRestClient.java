@@ -1,13 +1,12 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import javax.swing.text.StyleConstants.CharacterConstants;
 
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 public class NGSPRestClient {
-	private Log _log = LogFactoryUtil.getLog(NGSPRestClient.class);
 	private String consumerKey;
 	private String consumerSecret;
 	private String consumerAdapter;

@@ -62,10 +62,10 @@ public class StatisticDataUtil {
 			long groupId = GetterUtil.getLong(payload.getGroupId());
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(DossierStatisticConstants.SERVICE_DOMAIN_CODE))
+			if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(DossierStatisticConstants.SERVICE_DOMAIN_CODE))
 				groupId = 0;
 
-			params.put("groupId", groupId);
+			params.put(Field.GROUP_ID, groupId);
 			params.put("keywords", StringPool.BLANK);
 			params.put("itemLv", StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
@@ -79,8 +79,8 @@ public class StatisticDataUtil {
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<ServiceDomainData> lstSDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
 				ServiceDomainData sd = new ServiceDomainData();
@@ -104,7 +104,7 @@ public class StatisticDataUtil {
 
 		long groupId = payload.getGroupId();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put("groupId", String.valueOf(groupId));
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
@@ -141,8 +141,8 @@ public class StatisticDataUtil {
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 	
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetPersonData> lstDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
 				GetPersonData data = new GetPersonData();
@@ -189,7 +189,7 @@ public class StatisticDataUtil {
 
 		long groupId = payload.getGroupId();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put("groupId", String.valueOf(groupId));
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
@@ -222,8 +222,8 @@ public class StatisticDataUtil {
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 	
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetVotingResultData> lstDatas = new ArrayList<>();
 			
 			for (Document doc : lstDocs) {
@@ -272,7 +272,7 @@ public class StatisticDataUtil {
 			long groupId = GetterUtil.getLong(payload.getGroupId());
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", groupId);
+			params.put(Field.GROUP_ID, groupId);
 			params.put("keywords", StringPool.BLANK);
 			params.put("itemLv", StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
@@ -286,8 +286,8 @@ public class StatisticDataUtil {
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GovAgencyData> lstSDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
 				GovAgencyData sd = new GovAgencyData();

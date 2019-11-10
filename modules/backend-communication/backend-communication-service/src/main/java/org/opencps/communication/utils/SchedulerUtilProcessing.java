@@ -71,7 +71,7 @@ public class SchedulerUtilProcessing {
 								JSONObject currenObj = jsonArray.getJSONObject(i);
 
 								if (notificationtemplate.getNotificationType().equals(currenObj.get("settingType"))) {
-									if (!currenObj.getBoolean("email")) {
+									if (!currenObj.getBoolean(ConstantUtils.VALUE_EMAIL)) {
 										sendMail = false;
 									}
 								}

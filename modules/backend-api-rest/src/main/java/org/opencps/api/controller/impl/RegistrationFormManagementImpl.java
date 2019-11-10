@@ -38,7 +38,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			action.deleteRegistrationForm(referenceUid);
@@ -60,7 +60,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
 
@@ -80,7 +80,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			RegistrationForm registrationForm = action.updateRegFormFormData(groupId, registrationId, referenceUid,
@@ -105,7 +105,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
 
@@ -125,7 +125,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationFormLocalServiceUtil.registrationFormSync(groupId, registrationUUID, referenceUid, formNo,
 					formName, formData, formScript, formReport, removed, serviceContext);

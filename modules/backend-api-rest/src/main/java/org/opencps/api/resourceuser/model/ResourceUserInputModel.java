@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "classPK",
     "toUserId",
     "fullName",
-    "email",
+    ConstantUtils.VALUE_EMAIL,
     "readonly"
 })
 @XmlRootElement(name = "ResourceUserInputModel")
@@ -57,7 +57,7 @@ public class ResourceUserInputModel {
     protected Long userId;
 	@FormParam(value = "fullName")
     protected String fullName;
-	@FormParam(value = "email")
+	@FormParam(value = ConstantUtils.VALUE_EMAIL)
     protected String email;
 	@FormParam(value = "readonly")
     protected String readonly;

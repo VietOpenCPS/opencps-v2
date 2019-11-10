@@ -950,7 +950,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			return dossier;
 		}
 
-	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	private final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
 //	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
 	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 //	private final int DUE_DATE_DEFAULT = 5;
@@ -4951,7 +4951,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		}
 
-		object.setGroupId(objectData.getLong("groupId"));
+		object.setGroupId(objectData.getLong(Field.GROUP_ID));
 		object.setCompanyId(objectData.getLong("companyId"));
 
 		object.setUserId(objectData.getLong("userId"));
@@ -4980,7 +4980,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setPostalAddress(objectData.getString("postalAddress"));
 
 		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
-				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+				objectData.getString("govAgencyCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(govAgencyName)) {
 			object.setGovAgencyName(govAgencyName.getItemName());
@@ -4997,63 +4997,63 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setPostalWardCode(objectData.getString("postalWardCode"));
 		
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("cityCode"), objectData.getLong("groupId"));
+				objectData.getString("cityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("districtCode"), objectData.getLong("groupId"));
+				objectData.getString("districtCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("wardCode"), objectData.getLong("groupId"));
+				objectData.getString("wardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());
 		}
 		
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateCityCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateCityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateDistrictCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateDistrictCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateWardCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateWardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateWardName(dictItem.getItemName());
 		}
 		
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalCityCode"), objectData.getLong("groupId"));
+				objectData.getString("postalCityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalDistrictCode"), objectData.getLong("groupId"));
+				objectData.getString("postalDistrictCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalWardCode"), objectData.getLong("groupId"));
+				objectData.getString("postalWardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalWardName(dictItem.getItemName());

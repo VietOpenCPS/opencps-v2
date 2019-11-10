@@ -86,7 +86,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 	public Response getInvoice(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, InvoiceInputModel input) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		InvoiceServerConfigModel config = getServerConfig(groupId, "EINVOICE");
 		
@@ -174,7 +174,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 			MimeHeaders mimeHeader = message.getMimeHeaders();
 			mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/Fs_NH_GTGT");
-			mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
+			mimeHeader.setHeader(ConstantUtils.CONTENT_TYPE, "text/xml; charset=utf-8");
 			mimeHeader.setHeader("Proxy-Connection", "keep-alive");
 
 			JAXBContext context = JAXBContext.newInstance(fsNHGTGT.getClass());
@@ -196,7 +196,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 					protected URLConnection openConnection(URL url) throws IOException {
 						URL clone = new URL(url.toString());
 						HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
-						connection.setRequestProperty("Content-Type", "text/xml");
+						connection.setRequestProperty(ConstantUtils.CONTENT_TYPE, "text/xml");
 
 						connection.setRequestProperty("Accept", "application/soap+xml, text/*");
 

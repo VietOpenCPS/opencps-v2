@@ -78,7 +78,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierSync.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				// Grouping DossierSync by DossierId and order by SyncMethod
 				Map<Long, SortedMap<Integer, JSONObject>> dossierSyncs = new TreeMap<Long, SortedMap<Integer, JSONObject>>();
@@ -151,7 +151,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 
 				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < jsArrayData.length(); i++) {
 					JSONObject elm = jsArrayData.getJSONObject(i);
@@ -181,7 +181,7 @@ public class DossierSyncScheduler extends BaseSchedulerEntryMessageListener {
 			if (response.getInt(RESTFulConfiguration.STATUS) == 200) {
 
 				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
-				groupId = jsData.getLong("groupId");
+				groupId = jsData.getLong(Field.GROUP_ID);
 			}
 
 		} catch (Exception e) {

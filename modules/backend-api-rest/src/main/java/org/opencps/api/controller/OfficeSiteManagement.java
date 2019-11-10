@@ -99,7 +99,7 @@ public interface OfficeSiteManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getOfficeSitePreferencesByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key);
 	
 	@PUT
 	@Path("/{id}/preferences")
@@ -115,6 +115,6 @@ public interface OfficeSiteManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response updateOfficeSitePreferencesByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key, @FormParam("value") String value);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key, @FormParam("value") String value);
 
 }

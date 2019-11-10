@@ -61,7 +61,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierId", getDossierId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -174,7 +174,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 			setDossierId(dossierId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

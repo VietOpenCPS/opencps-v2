@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -18,6 +19,8 @@ import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.employee.model.EmployeeJobposModel;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.MappingUser;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
@@ -44,15 +47,15 @@ public class EmployeeUtils {
 			for (Document document : listDocument) {
 				ett = new EmployeeModel();
 
-				ett.setEmployeeId(Long.valueOf(document.get("entryClassPK")));
+				ett.setEmployeeId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setUserId(Long.valueOf(document.get(EmployeeTerm.USER_ID)));
 				ett.setUserName(document.get(EmployeeTerm.USER_NAME));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(EmployeeTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(EmployeeTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.getDate(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 				ett.setEmployeeNo(document.get(EmployeeTerm.EMPLOYEE_NO));
 				ett.setFullName(document.get(EmployeeTerm.FULL_NAME));
@@ -67,7 +70,7 @@ public class EmployeeUtils {
 						Validator.isNotNull(document.get(EmployeeTerm.BIRTH_DATE)) ? APIDateTimeUtils.convertDateToString(
 								document.getDate(EmployeeTerm.BIRTH_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				// TODO
-				ett.setPermission("read");
+				ett.setPermission(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 
 				// mapping userID
 				long mappingUserId = GetterUtil.get(document.get(EmployeeTerm.MAPPING_USER_ID), 0);
@@ -117,7 +120,7 @@ public class EmployeeUtils {
 			for (Document document : listDocument) {
 				ett = new EmployeeJobposModel();
 
-				ett.setEmployeeJobPosId(Long.valueOf(document.get("entryClassPK")));
+				ett.setEmployeeJobPosId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setWorkingUnitId(Long.valueOf(document.get(EmployeeJobPosTerm.WORKING_UNIT_ID)));
 				ett.setWorkingUnitName(document.get(EmployeeJobPosTerm.WORKING_UNIT_NAME));
 				ett.setJobPosId(Long.valueOf(document.get(EmployeeJobPosTerm.JOBPOST_ID)));
@@ -126,10 +129,9 @@ public class EmployeeUtils {
 				
 				boolean isMain = false;
 				
-				if(Long.valueOf(document.get(EmployeeJobPosTerm.JOBPOST_ID)) == employee.getMainJobPostId() && employee.getMainJobPostId() > 0){
-					
+				if (Long.valueOf(document.get(EmployeeJobPosTerm.JOBPOST_ID)) == employee.getMainJobPostId()
+						&& employee.getMainJobPostId() > 0) {
 					isMain = true;
-					
 				}
 				
 				ett.setMainJobPos(isMain);
@@ -216,8 +218,8 @@ public class EmployeeUtils {
 			ett.setBirthdate(Validator.isNotNull(employee.getBirthdate())
 					? APIDateTimeUtils.convertDateToString(employee.getBirthdate(), APIDateTimeUtils._TIMESTAMP)
 					: StringPool.BLANK);
-			// TODO
-			ett.setPermission("read");
+
+			ett.setPermission(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 			
 			EmployeeJobPos employeeJobPos = EmployeeJobPosLocalServiceUtil.fetchByF_EmployeeId_jobPostId(
 					employee.getGroupId(), employee.getEmployeeId(), employee.getMainJobPostId());
@@ -274,16 +276,12 @@ public class EmployeeUtils {
 		EmployeeAccountModel ett = new EmployeeAccountModel();
 
 		try {
-
 			if (Validator.isNotNull(jsonObject)) {
 				
-				ett.setScreenName(jsonObject.getString("screenName"));
-				ett.setEmail(jsonObject.getString("email"));
-				ett.setExist(jsonObject.getBoolean("exist"));
+				ett.setScreenName(jsonObject.getString(ConstantUtils.VALUE_SCREEN_NAME));
+				ett.setEmail(jsonObject.getString(ConstantUtils.VALUE_EMAIL));
+				ett.setExist(jsonObject.getBoolean(ConstantUtils.VALUE_EXITS));
 			}
-
-			// Roles
-
 		} catch (Exception e) {
 			_log.error(e);
 		}

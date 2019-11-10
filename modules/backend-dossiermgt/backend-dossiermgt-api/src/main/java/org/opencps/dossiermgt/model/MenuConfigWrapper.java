@@ -62,7 +62,7 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 		attributes.put("uuid", getUuid());
 		attributes.put("menuConfigId", getMenuConfigId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -99,7 +99,7 @@ public class MenuConfigWrapper implements MenuConfig, ModelWrapper<MenuConfig> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

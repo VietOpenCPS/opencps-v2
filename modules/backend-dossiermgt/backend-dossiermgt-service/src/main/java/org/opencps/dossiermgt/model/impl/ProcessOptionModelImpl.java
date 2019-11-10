@@ -70,7 +70,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "processOptionId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -92,7 +92,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("processOptionId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -176,7 +176,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 		attributes.put("uuid", getUuid());
 		attributes.put("processOptionId", getProcessOptionId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -213,7 +213,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			setProcessOptionId(processOptionId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

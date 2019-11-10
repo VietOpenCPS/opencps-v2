@@ -59,7 +59,7 @@ public class ServerConfigWrapper implements ServerConfig,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("serverConfigId", getServerConfigId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -83,7 +83,7 @@ public class ServerConfigWrapper implements ServerConfig,
 			setServerConfigId(serverConfigId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

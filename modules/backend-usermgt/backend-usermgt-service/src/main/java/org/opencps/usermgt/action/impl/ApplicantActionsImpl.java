@@ -89,11 +89,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 			hits = ApplicantLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = ApplicantLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -414,7 +414,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 		if (flagUser != 2) {
-			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("ADMINISTRATIVE_REGION", groupId);
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), groupId);
 			String cityName = getDictItemName(groupId, dc, cityCode);
 			String districtName = getDictItemName(groupId, dc, districtCode);
 			String wardName = getDictItemName(groupId, dc, wardCode);

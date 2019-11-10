@@ -72,7 +72,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 			{ "uuid_", Types.VARCHAR },
 			{ "registrationLogId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
@@ -87,7 +87,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("registrationLogId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
@@ -161,7 +161,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 		attributes.put("uuid", getUuid());
 		attributes.put("registrationLogId", getRegistrationLogId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -196,7 +196,7 @@ public class RegistrationLogModelImpl extends BaseModelImpl<RegistrationLog>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

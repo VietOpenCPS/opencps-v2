@@ -37,7 +37,7 @@ public class RegistrationLogManagementImpl implements RegistrationLogManagement 
 	public Response getRegistrationLogsbyRegId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long registrationId) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -66,7 +66,7 @@ public class RegistrationLogManagementImpl implements RegistrationLogManagement 
 	public Response getRegistrationLogs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long registrationId, RegistrationLogSearchModel query) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -79,8 +79,8 @@ public class RegistrationLogManagementImpl implements RegistrationLogManagement 
 
 			JSONObject registrationLog =  action.getRegistrationLog(groupId, registrationId, query.getStart(), query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
 
-			List<Document> documents = (List<Document>) registrationLog.get("data");
-			results.setTotal(registrationLog.getInt("total"));
+			List<Document> documents = (List<Document>) registrationLog.get(ConstantUtils.DATA);
+			results.setTotal(registrationLog.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(RegistrationLogUtils.mappingToRegistrationLoggDataListDocument(documents));
 
 			return Response.status(200).entity(results).build();
@@ -97,7 +97,7 @@ public class RegistrationLogManagementImpl implements RegistrationLogManagement 
 			String content) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			if(!auth.isAuth(serviceContext)){
 				throw new UnauthenticationException();

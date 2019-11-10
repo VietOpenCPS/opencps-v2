@@ -9,8 +9,8 @@ public class SiteCleanBackgroundTaskStatusMessageTranslator implements Backgroun
 	@Override
 	public void translate(BackgroundTaskStatus backgroundTaskStatus, Message message) {
     	backgroundTaskStatus.setAttribute(
-    			"percentage",
-    			message.getInteger("percentage"));	
+    			ConstantUtils.VALUE_PERCENTAGE,
+    			message.getInteger(ConstantUtils.VALUE_PERCENTAGE));	
     	backgroundTaskStatus.setAttribute(
     			"executionLog",
     			message.getString("executionLog"));	

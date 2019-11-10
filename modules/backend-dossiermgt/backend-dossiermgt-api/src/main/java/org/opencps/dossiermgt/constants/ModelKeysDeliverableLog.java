@@ -3,7 +3,7 @@ package org.opencps.dossiermgt.constants;
 public class ModelKeysDeliverableLog {
 
 	public static final String DELIVERABLELOGID = "deliverableLogId";
-	public static final String GROUPID = "groupId";
+	public static final String GROUPID = Field.GROUP_ID;
 	public static final String COMPANYID = "companyId";
 	public static final String USERID = "userId";
 	public static final String USERNAME = "userName";

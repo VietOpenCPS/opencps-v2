@@ -238,7 +238,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 
 		BooleanQuery booleanQuery = null;
@@ -287,7 +287,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 
 		BooleanQuery booleanQuery = null;
@@ -358,7 +358,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 			object = workTimePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

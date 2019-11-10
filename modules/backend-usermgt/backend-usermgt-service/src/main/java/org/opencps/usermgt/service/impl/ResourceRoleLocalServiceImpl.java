@@ -266,7 +266,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(ResourceRoleTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceRoleTerm.CLASS_PK);
@@ -342,7 +342,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(ResourceRoleTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceRoleTerm.CLASS_PK);
@@ -434,7 +434,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 			object = resourceRolePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

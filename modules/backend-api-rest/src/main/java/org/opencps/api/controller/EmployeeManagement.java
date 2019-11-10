@@ -150,7 +150,7 @@ public interface EmployeeManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, 
 			@DefaultValue(StringPool.BLANK) @PathParam("employeeNo") String employeeNo, 
-			@DefaultValue(StringPool.BLANK) @PathParam("email") String email);
+			@DefaultValue(StringPool.BLANK) @PathParam(ConstantUtils.VALUE_EMAIL) String email);
 
 	// Get employee follow inspectors
 	@GET

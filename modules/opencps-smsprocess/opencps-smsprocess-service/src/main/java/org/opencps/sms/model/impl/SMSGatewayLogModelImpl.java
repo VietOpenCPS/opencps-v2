@@ -76,7 +76,7 @@ public class SMSGatewayLogModelImpl extends BaseModelImpl<SMSGatewayLog>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "smsId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "createDate", Types.TIMESTAMP },
@@ -99,7 +99,7 @@ public class SMSGatewayLogModelImpl extends BaseModelImpl<SMSGatewayLog>
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("smsId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -237,7 +237,7 @@ public class SMSGatewayLogModelImpl extends BaseModelImpl<SMSGatewayLog>
 
 		attributes.put("uuid", getUuid());
 		attributes.put("smsId", getSmsId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
@@ -275,7 +275,7 @@ public class SMSGatewayLogModelImpl extends BaseModelImpl<SMSGatewayLog>
 			setSmsId(smsId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

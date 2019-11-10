@@ -40,9 +40,9 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 
 			JSONObject jsonData = actions.getNotificationQueues(serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationQueueShortModel().addAll(NotificationTemplateUtils
-					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get("data")));
+					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -57,7 +57,7 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 		NotificationQueueInterface actions = new NotificationQueueActions();
 		NotificationQueueShortModel notificationQueueModel;
 
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		NotificationQueue notificationQueue = actions.read(id, serviceContext);
 

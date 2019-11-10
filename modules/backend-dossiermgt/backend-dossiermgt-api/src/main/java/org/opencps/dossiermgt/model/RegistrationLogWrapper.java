@@ -63,7 +63,7 @@ public class RegistrationLogWrapper implements RegistrationLog,
 		attributes.put("uuid", getUuid());
 		attributes.put("registrationLogId", getRegistrationLogId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -95,7 +95,7 @@ public class RegistrationLogWrapper implements RegistrationLog,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

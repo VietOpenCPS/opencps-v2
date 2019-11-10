@@ -62,7 +62,7 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 		attributes.put("uuid", getUuid());
 		attributes.put("evaluationId", getEvaluationId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -93,7 +93,7 @@ public class EvaluationWrapper implements Evaluation, ModelWrapper<Evaluation> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

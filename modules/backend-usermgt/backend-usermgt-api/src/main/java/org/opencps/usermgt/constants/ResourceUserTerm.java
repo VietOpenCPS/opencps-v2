@@ -11,7 +11,7 @@ public class ResourceUserTerm {
 
 	public static final String RESOURCEUSER_ID = "resourceUserId";
 
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 
 	public static final String COMPANY_ID = "companyId";
 
@@ -33,7 +33,7 @@ public class ResourceUserTerm {
 
 	public static final String FULLNAME = "fullName";
 
-	public static final String EMAIL = "email";
+	public static final String EMAIL = ConstantUtils.VALUE_EMAIL;
 
 	public static final String TELNO = "telNo";
 

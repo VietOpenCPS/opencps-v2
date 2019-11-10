@@ -65,11 +65,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "questionId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "fullname", Types.VARCHAR },
-			{ "email", Types.VARCHAR },
+			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
 			{ "content", Types.VARCHAR },
 			{ "publish", Types.INTEGER },
 			{ "govAgencyCode", Types.VARCHAR },
@@ -83,11 +83,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	static {
 		TABLE_COLUMNS_MAP.put("questionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("fullname", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("publish", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("govAgencyCode", Types.VARCHAR);
@@ -161,11 +161,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		attributes.put("questionId", getQuestionId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("fullname", getFullname());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
 		attributes.put("govAgencyCode", getGovAgencyCode());
@@ -194,7 +194,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -218,7 +218,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

@@ -4,7 +4,7 @@ public class RegistrationTerm {
 	public static final String UUID = "uuid_";
 	public static final String REGISTRATIONSTATE = "registrationState";
 	public static final String REGISTRATION_ID = "registrationId";
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";
 	public static final String OWNER = "owner";
 	public static final String REGISTRATION_CLASS = "registrationClass";

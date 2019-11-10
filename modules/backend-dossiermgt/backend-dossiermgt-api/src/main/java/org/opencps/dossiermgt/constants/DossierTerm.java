@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class DossierTerm {
 	public static final String DOSSIER_ID = "dossierId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -98,7 +97,6 @@ public class DossierTerm {
 	public static final String STEP = "step";
 	public static final String TOP = "top";
 	public static final String STATE = "state";
-	public static final String TOTAL = "total";
 
 	public static final String FROM_RECEIVEDATE = "fromReceiveDate";
 	public static final String TO_RECEIVEDATE = "toReceiveDate";
@@ -139,7 +137,6 @@ public class DossierTerm {
 	public static final String POSTAL_WARD_NAME = "postalWardName";
 	
 	public static final String DOSSIER_STATUS_INTEROPERATING = "interoperating";
-	public static final String DOSSIER_STATUS_NEW = "new";
 	public static final String DOSSIER_STATUS_RECEIVING = "receiving";
 	public static final String DOSSIER_STATUS_WAITING = "waiting";
 	public static final String DOSSIER_STATUS_PROCESSING = "processing";
@@ -192,7 +189,6 @@ public class DossierTerm {
 	public static final String MONTH_FINISH = "monthFinish";
 	public static final String YEAR_RELEASE = "yearRelease";
 	public static final String MONTH_RELEASE = "monthRelease";
-	public static final String STATISTIC = "statistic";
 	public static final String COMPARE_DELAY_DATE = "delayDate";
 	public static final String OVER_DUE = "overdue";
 	public static final String UN_DUE = "undue";

@@ -61,7 +61,7 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("eFormId", getEFormId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -74,7 +74,7 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 		attributes.put("formScriptFileId", getFormScriptFileId());
 		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("eFormData", getEFormData());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("secret", getSecret());
 
 		return attributes;
@@ -94,7 +94,7 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 			setEFormId(eFormId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -172,7 +172,7 @@ public class EFormWrapper implements EForm, ModelWrapper<EForm> {
 			setEFormData(eFormData);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

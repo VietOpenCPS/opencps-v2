@@ -42,7 +42,7 @@ public class InvokeREST {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {
@@ -101,7 +101,7 @@ public class InvokeREST {
 			conn.setDoOutput(true);
 
 			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {

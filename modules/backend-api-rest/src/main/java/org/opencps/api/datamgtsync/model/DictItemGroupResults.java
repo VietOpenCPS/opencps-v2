@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name=ConstantUtils.TOTAL type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element ref="{}DictItemGroupModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -39,14 +39,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "total",
+    ConstantUtils.TOTAL,
     "dictItemGroupModel"
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class DictItemGroupResults {
 
     protected long total;
-    @XmlElement(name = "data")
+    @XmlElement(name = ConstantUtils.DATA)
     protected List<DictItemGroupModel> dictItemGroupModel;
 
     /**

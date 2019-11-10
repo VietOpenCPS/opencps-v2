@@ -48,7 +48,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		Locale locale, User user, ServiceContext serviceContext, String code,
 		JSONObject requestBody, String cmd) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		InvokeResultModel invokeResultModel = new InvokeResultModel();
 
@@ -223,7 +223,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("Content-Type", contentType);
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, contentType);
 
 			if ("POST".equals(method)) {
 				if ("application/json".equals(contentType)) {

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.opencps.api.booking.model.BookingDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
@@ -63,8 +64,8 @@ public class BookingUtils {
 					model.setBookingDate(0l);
 				}
 				model.setSpeaking(Boolean.valueOf(doc.get(BookingTerm.SPEAKING)));
-				model.setServiceGroupCode(doc.get("serviceGroupCode"));
-				model.setCount(Integer.valueOf(Validator.isNotNull(doc.get("count")) ? doc.get("count") : "0"));
+				model.setServiceGroupCode(doc.get(BookingTerm.SERVICE_GROUP_CODE));
+				model.setCount(Integer.valueOf(Validator.isNotNull(doc.get(ConstantUtils.VALUE_COUNT)) ? doc.get(ConstantUtils.VALUE_COUNT) : String.valueOf(0)));
 
 				ouputs.add(model);
 			}

@@ -45,7 +45,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -68,7 +68,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			List<RegistrationTemplates> lstRegistrationTemplate = (List<RegistrationTemplates>) registrationTemplateJsonObject
 					.get("lstRegistrationTemplate");
 
-			results.setTotal(registrationTemplateJsonObject.getInt("total"));
+			results.setTotal(registrationTemplateJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(
 					RegistrationTemplatesUtils.mappingToRegistrationTemplatesResultsModel(lstRegistrationTemplate));
 
@@ -85,7 +85,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -116,7 +116,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -147,7 +147,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -177,7 +177,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -202,7 +202,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -238,7 +238,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegTempbyRegId(groupId, registrationTemplateId);
 
@@ -257,7 +257,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		//  Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -293,7 +293,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegTempbyRegId(groupId, registrationTemplateId);
 
@@ -312,7 +312,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		// Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -340,7 +340,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		// Get RegistrationTemplates by Id
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

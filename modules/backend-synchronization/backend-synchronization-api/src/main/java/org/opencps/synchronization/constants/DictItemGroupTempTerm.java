@@ -24,7 +24,7 @@ public class DictItemGroupTempTerm {
 	
 	public static final String COMPANY_ID = "companyId";
 	
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 	
 	public static final String USER_ID = "userId";
 	

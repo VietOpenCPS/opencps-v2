@@ -3,8 +3,6 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -21,13 +19,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
 import org.opencps.api.controller.DossierTemplateManagement;
 import org.opencps.api.controller.util.DossierTemplateUtils;
 import org.opencps.api.dossiertemplate.model.DossierPartContentInputUpdateModel;
@@ -44,7 +38,8 @@ import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -55,14 +50,13 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DossierTemplateManagementImpl implements DossierTemplateManagement {
 
-	private static Log _log = LogFactoryUtil.getLog(DossierTemplateManagementImpl.class);
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierTemplates(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierTemplateSearchModel query) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DossierTemplateResultsModel results = new DossierTemplateResultsModel();
 
@@ -77,16 +71,17 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
+							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getDossierTemplates(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(DossierTemplateUtils.mappingToDossierTemplateList((List<Document>) jsonData.get("data")));
+					.addAll(DossierTemplateUtils.mappingToDossierTemplateList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -101,7 +96,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, DossierTemplateInputModel input) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -113,10 +108,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String description = HtmlUtil.escape(input.getDescription());
 			String newFormScript = input.getNewFormScript();
-			
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, 0l, templateName,
 					templateNo, description, newFormScript, serviceContext);
@@ -135,7 +126,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 	public Response getDossierTemplateDetail(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, Request requestCC) {
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DossierTemplateDetailModel result = new DossierTemplateDetailModel();
 
@@ -149,22 +140,12 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			if (Validator.isNull(dossierTemplate)) {
-				throw new NotFoundException("NotFoundException");
+				throw new NotFoundException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				return builder.entity(result).cacheControl(cc).build();
-//			}
-//			else {
-				return Response.status(200).entity(result).build();
-//			}
+
+			return Response.status(200).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -175,7 +156,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			Locale locale, User user, ServiceContext serviceContext, long id, DossierTemplateInputModel input) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -188,10 +169,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			String templateNo = HtmlUtil.escape(input.getTemplateNo());
 			String description = HtmlUtil.escape(input.getDescription());
 			String newFormScript = input.getNewFormScript();
-
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			DossierTemplate dossierTemplate = actions.updateDossierTemplate(groupId, id, templateName,
 					templateNo, description, newFormScript, serviceContext);
@@ -218,10 +195,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
-
 			DossierTemplate dossierTemplate = actions.removeDossierTemplate(id);
 
 			DossierTemplateInputModel result = DossierTemplateUtils.mappingForTemplatePOST(dossierTemplate);
@@ -240,7 +213,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, long id, DossierPartSearchModel query) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DossierPartResultsModel results = new DossierPartResultsModel();
 
@@ -263,7 +236,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				if (Validator.isNotNull(dossierTemplate)) {
 					templateNo = dossierTemplate.getTemplateNo();
 				} else {
-					throw new Exception("No DossierTemplate was found");
+					throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 				}
 			} else {
 				templateNo = StringPool.BLANK;
@@ -298,16 +271,16 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				params.put(DossierPartTerm.REQUIRED, required);
 			}
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getDossierParts(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(DossierTemplateUtils.mappingToDossierPartList((List<Document>) jsonData.get("data")));
+					.addAll(DossierTemplateUtils.mappingToDossierPartList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -321,7 +294,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, long id, DossierPartInputModel query) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -338,21 +311,10 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			String fileTemplateNo = HtmlUtil.escape(query.getFileTemplateNo());
 			String eSign = HtmlUtil.escape(String.valueOf(query.getEsign()));
 			
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
-
 			DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(id);
 
 			DossierPartInputModel result;
 
-/*			DossierPart dossierPart = actions.updateDossierPart(groupId, 0l, dossierTemplate.getTemplateNo(),
-					query.getPartNo(), query.getPartName(), query.getPartTip(), query.getPartType(),
-					GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-					GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
-					GetterUtil.getBoolean(query.getEsign()), serviceContext);
-*/
-			
 			DossierPart dossierPart = actions.updateDossierPart(groupId, 0l,
 					dossierTemplate.getTemplateNo(), partNo, partName, partTip,
 					query.getPartType(), GetterUtil.getBoolean(multiple), StringPool.BLANK, StringPool.BLANK,
@@ -378,7 +340,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 	public Response updateDossierParts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String partNo, DossierPartInputModel query) {
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -387,9 +349,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 				throw new UnauthenticationException();
 			}
 
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 			String newPartNo = HtmlUtil.escape(query.getPartNo());
 			String partName = HtmlUtil.escape(query.getPartName());
 			String partTip = HtmlUtil.escape(query.getPartTip());
@@ -405,12 +364,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierPart partUpdate = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId,
 					dossierTemplate.getTemplateNo(), partNo);
 
-/*			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
-					dossierTemplate.getTemplateNo(), query.getPartNo(), query.getPartName(), query.getPartTip(),
-					query.getPartType(), GetterUtil.getBoolean(query.getMultiple()), StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, GetterUtil.getBoolean(query.getRequired()), query.getFileTemplateNo(),
-					GetterUtil.getBoolean(query.getEsign()), serviceContext);
-*/			
 			DossierPart dossierPart = actions.updateDossierPart(groupId, partUpdate.getPrimaryKey(),
 					dossierTemplate.getTemplateNo(), newPartNo, partName, partTip,
 					query.getPartType(), GetterUtil.getBoolean(multiple), StringPool.BLANK, StringPool.BLANK,
@@ -436,7 +389,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 	public Response removeDossierParts(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String partNo) {
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -444,10 +397,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			DossierPartInputModel result;
 
@@ -473,12 +422,9 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, String id, String partNo) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierTempId = GetterUtil.getLong(id);
-		_log.info("dossierTempId: "+dossierTempId+"|id: "+id+"|partNo: "+partNo);
 		
-
-//		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
 
 		try {
 
@@ -492,10 +438,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			result.put("value", content);
 
-//			result.setValue(content);
-
 			return Response.status(200).entity(content).build();
-//			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -508,7 +451,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, long id, String partNo) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
 
@@ -531,7 +474,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			User user, ServiceContext serviceContext, long id, String partNo) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DossierPartContentInputUpdateModel result = new DossierPartContentInputUpdateModel();
 
@@ -557,7 +500,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierPartContentInputUpdateModel input) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -567,10 +510,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			String content = actions.updateFormScript(groupId, id, partNo, input.getValue(), serviceContext);
 
@@ -592,7 +531,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierPartContentInputUpdateModel input) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -602,10 +541,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			String content = actions.updateFormReport(groupId, id, partNo, input.getValue(), serviceContext);
 
@@ -625,7 +560,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			DossierPartContentInputUpdateModel input) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -635,10 +570,6 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
-//			if (!auth.hasResource(serviceContext, DossierTemplate.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			String content = actions.updateSample(groupId, id, partNo, input.getValue(), serviceContext);
 
@@ -656,7 +587,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 	public Response getDossierPart(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String fileTemplateNo) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 

@@ -65,11 +65,11 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(FileAttachTerm.CLASS_NAME, className);
 			params.put(FileAttachTerm.CLASS_PK, classPK);
@@ -80,9 +80,9 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			JSONObject jsonData = actions.getFileAttachs(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getFileAttachModel()
-					.addAll(FileAttachUtils.mapperFileAttachList((List<Document>) jsonData.get("data")));
+					.addAll(FileAttachUtils.mapperFileAttachList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -107,8 +107,8 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + "\"")
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
@@ -134,7 +134,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			FileAttach fileAttach = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					input.getClassName(), input.getClassPK(), StringPool.BLANK, StringPool.BLANK, 0, input.getSource(),
@@ -180,7 +180,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			inputStream = dataHandler.getInputStream();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			FileAttach fileAttach = actions.upload(user.getUserId(), company.getCompanyId(), groupId, className,
 					classPK, inputStream, fileName, fileType, fileSize, "FileAttach/", "FileAttach file upload",
@@ -215,7 +215,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			DataHandler dataHandler = attachment.getDataHandler();
 
@@ -253,7 +253,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			JSONObject jsonData = actions.getFileAttachVersions(fileAttachId, serviceContext);
 
-			long total = jsonData.getLong("total");
+			long total = jsonData.getLong(ConstantUtils.TOTAL);
 			String fileName = jsonData.getString("fileName");
 			JSONArray versions = jsonData.getJSONArray("versions");
 
@@ -286,8 +286,8 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + "\"")
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {

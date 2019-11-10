@@ -987,13 +987,13 @@ public class CPSDossierBusinessLocalServiceImpl
 //										_log.debug("API URL: " + apiUrl);
 //										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
 //												.openConnection();
-//										conn.setRequestProperty("groupId", groupIdRequest);
+//										conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 //										conn.setRequestMethod(method);
 //										conn.setRequestProperty("Accept", "application/json");
 //										conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 //										_log.debug("BASIC AUTHEN: " + authStrEnc);
 //										if ("POST".equals(method) || "PUT".equals(method)) {
-//											conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//											conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 //											conn.setRequestProperty("Content-Length",
 //													"" + Integer.toString(postData.toString().getBytes().length));
 //
@@ -5671,7 +5671,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								oldDossierFile.getReferenceUid(), displayName, displayName, 0, null, fileType, isSync,
 								serviceContext);
 						}
-						
+	
 						_log.debug("__End add file at:" + new Date());
 						
 						if(Validator.isNotNull(formData)) {
@@ -6669,7 +6669,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	}
 
 	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
-	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	public static final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
 	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
 	public static final String REGISTER_BOOK = "REGISTER_BOOK";
 	

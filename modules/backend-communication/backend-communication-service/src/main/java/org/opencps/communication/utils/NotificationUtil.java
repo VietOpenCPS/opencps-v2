@@ -267,7 +267,7 @@ public class NotificationUtil {
 					// object.has(queue.getClassName())) {
 					// JSONObject conf = object.getJSONObject(
 					// queue.getClassName());
-					// sendEmail = conf.getBoolean("email");
+					// sendEmail = conf.getBoolean(ConstantUtils.VALUE_EMAIL);
 					// sendNotify = conf.getBoolean("notify");
 					// sendSMS = conf.getBoolean("sms");
 					// }
@@ -349,11 +349,11 @@ public class NotificationUtil {
 				JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 					_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 
-				if (resultApi.has("data")) {
+				if (resultApi.has(ConstantUtils.DATA)) {
 
 					Map<Long, String> mappingZaloUid = new HashMap<>();
 					String zOId =
-						resultApi.getJSONObject("data").getString("user_id");
+						resultApi.getJSONObject(ConstantUtils.DATA).getString("user_id");
 
 					mappingZaloUid.put(
 						toUserId > 0 ? toUserId : new Long(0), zOId);
@@ -445,7 +445,7 @@ public class NotificationUtil {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {

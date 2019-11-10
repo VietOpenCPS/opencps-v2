@@ -61,7 +61,7 @@ public class SyncQueueWrapper implements SyncQueue, ModelWrapper<SyncQueue> {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("syncQueueId", getSyncQueueId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -92,7 +92,7 @@ public class SyncQueueWrapper implements SyncQueue, ModelWrapper<SyncQueue> {
 			setSyncQueueId(syncQueueId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

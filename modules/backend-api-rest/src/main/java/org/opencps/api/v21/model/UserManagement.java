@@ -114,7 +114,7 @@ import javax.xml.bind.annotation.XmlType;
  *                                 &lt;/restriction>
  *                               &lt;/simpleType>
  *                             &lt;/element>
- *                             &lt;element name="email">
+ *                             &lt;element name=ConstantUtils.VALUE_EMAIL>
  *                               &lt;simpleType>
  *                                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *                                   &lt;maxLength value="255"/>
@@ -486,7 +486,7 @@ public class UserManagement {
      *                       &lt;/restriction>
      *                     &lt;/simpleType>
      *                   &lt;/element>
-     *                   &lt;element name="email">
+     *                   &lt;element name=ConstantUtils.VALUE_EMAIL>
      *                     &lt;simpleType>
      *                       &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
      *                         &lt;maxLength value="255"/>
@@ -606,7 +606,7 @@ public class UserManagement {
          *             &lt;/restriction>
          *           &lt;/simpleType>
          *         &lt;/element>
-         *         &lt;element name="email">
+         *         &lt;element name=ConstantUtils.VALUE_EMAIL>
          *           &lt;simpleType>
          *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
          *               &lt;maxLength value="255"/>

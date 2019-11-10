@@ -62,7 +62,7 @@ public class DossierFileWrapper implements DossierFile,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierFileId", getDossierFileId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -105,7 +105,7 @@ public class DossierFileWrapper implements DossierFile,
 			setDossierFileId(dossierFileId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

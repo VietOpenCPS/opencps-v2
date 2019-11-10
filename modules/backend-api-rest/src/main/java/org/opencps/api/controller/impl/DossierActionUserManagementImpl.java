@@ -22,6 +22,8 @@ import org.opencps.api.dossieractionuser.model.DossierActionUserResultModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -45,7 +47,7 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		
@@ -54,8 +56,8 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			if (!auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();
 			}
 			Dossier dossier = null;
 			try {
@@ -133,11 +135,11 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					
 					indexer.reindex(dossier);
 					
-					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier action user already exists!").build();									
+					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();									
 				}
 			}
 			else {
-				return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier not exists!").build();				
+				return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NAME_BUSSINESS)).build();				
 			}
 			
 		} catch (Exception e) {

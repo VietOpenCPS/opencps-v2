@@ -70,7 +70,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "paymentConfigId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -91,7 +91,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("paymentConfigId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -172,7 +172,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 
 		attributes.put("uuid", getUuid());
 		attributes.put("paymentConfigId", getPaymentConfigId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -208,7 +208,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 			setPaymentConfigId(paymentConfigId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

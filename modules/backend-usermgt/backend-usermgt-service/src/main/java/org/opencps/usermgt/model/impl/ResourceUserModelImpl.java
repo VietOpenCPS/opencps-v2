@@ -71,7 +71,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "resourceUserId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -81,7 +81,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 			{ "classPK", Types.VARCHAR },
 			{ "toUserId", Types.BIGINT },
 			{ "fullname", Types.VARCHAR },
-			{ "email", Types.VARCHAR },
+			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
 			{ "readonly", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -89,7 +89,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("resourceUserId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -99,7 +99,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 		TABLE_COLUMNS_MAP.put("classPK", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("toUserId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("fullname", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("readonly", Types.BOOLEAN);
 	}
 
@@ -168,7 +168,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 
 		attributes.put("uuid", getUuid());
 		attributes.put("resourceUserId", getResourceUserId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -178,7 +178,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 		attributes.put("classPK", getClassPK());
 		attributes.put("toUserId", getToUserId());
 		attributes.put("fullname", getFullname());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("readonly", isReadonly());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
@@ -201,7 +201,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 			setResourceUserId(resourceUserId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -261,7 +261,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

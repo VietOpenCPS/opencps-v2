@@ -601,7 +601,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 			object = registrationPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -636,28 +636,28 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
 
 		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
-				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+				objectData.getString("govAgencyCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(govAgencyName)) {
 			object.setGovAgencyName(govAgencyName.getItemName());
 		}
 
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("cityCode"), objectData.getLong("groupId"));
+				objectData.getString("cityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("districtCode"), objectData.getLong("groupId"));
+				objectData.getString("districtCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("wardCode"), objectData.getLong("groupId"));
+				objectData.getString("wardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());
@@ -665,25 +665,25 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 
-		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong("groupId"),
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong(Field.GROUP_ID),
 				objectData.getString("applicantIdNo"), objectData.getString("govAgencyCode"), 2);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setUserId(objectData.getLong("userId"));
-		serviceContext.setScopeGroupId(objectData.getLong("groupId"));
+		serviceContext.setScopeGroupId(objectData.getLong(Field.GROUP_ID));
 		serviceContext.setCompanyId(objectData.getLong("companyId"));
 
 		try {
 
 			if (registrations.size() == 0) {
 
-				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong("groupId"),
+				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong(Field.GROUP_ID),
 						objectData.getLong("companyId"), objectData.getLong("registrationId"),
 						objectData.getString("govAgencyCode"), serviceContext);
 
 			} else {
 				Registration oldRegistration = registrations.get(0);
-				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong("groupId"),
+				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong(Field.GROUP_ID),
 						oldRegistration.getRegistrationId(), objectData.getLong("registrationId"), serviceContext);
 			}
 

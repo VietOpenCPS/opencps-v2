@@ -29,8 +29,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="processNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="durationUnit" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="data" type="{}DossierSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.TOTAL type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.DATA type="{}DossierSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -44,10 +44,10 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "durationCount",
     "durationUnit",
-    "total",
-    "data"
+    ConstantUtils.TOTAL,
+    ConstantUtils.DATA
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class DossierSequenceResultModel {
 
     protected String processNo;

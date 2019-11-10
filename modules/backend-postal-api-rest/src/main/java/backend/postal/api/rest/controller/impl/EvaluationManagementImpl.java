@@ -107,7 +107,7 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //				throw new UnauthenticationException();
 //			}
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Evaluation evaluation = EvaluationLocalServiceUtil.addEvaluation(groupId, employeeId,
 					model.getEmployeeName(), model.getScore(), serviceContext);

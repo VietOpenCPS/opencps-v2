@@ -57,7 +57,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 //			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			int stepType = 0;
 

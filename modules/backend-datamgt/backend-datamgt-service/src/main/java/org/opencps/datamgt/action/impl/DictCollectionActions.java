@@ -74,12 +74,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			//_log.info("data: "+hits);
 			//_log.info("hits.toList(): "+hits.toList());
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictCollectionLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			/*
 			if (DictCollectionLocalServiceUtil.initDictCollection(groupId)) {
@@ -340,12 +340,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictGroupLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictGroupLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -387,12 +387,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictItemGroupLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictItemGroupLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -677,7 +677,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 					DictItemGroup dictItemGroup =
 						DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
 							groupId, dictGroup.getDictGroupId(),
-							Long.valueOf(document.get("entryClassPK")));
+							Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -694,12 +694,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 				}
 
-				result.put("data", list);
+				result.put(ConstantUtils.DATA, list);
 
 				long total = DictItemLocalServiceUtil.countLuceneSearchEngine(
 					params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 			else {
@@ -711,13 +711,13 @@ public class DictCollectionActions implements DictcollectionInterface {
 				 * for (Document doc : hits.toList()) { _log.info(doc); }
 				 */
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total =
 					DictItemGroupLocalServiceUtil.countLuceneSearchEngine(
 						params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 
@@ -749,12 +749,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -1003,11 +1003,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			collectionArr.put(obj);
 		}
-		result.put("data", collectionArr);
+		result.put(ConstantUtils.DATA, collectionArr);
 
 		long total = DictCollectionLocalServiceUtil.countOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;	
 	}
@@ -1032,11 +1032,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			
 			collectionArr.put(obj);
 		}
-		result.put("data", collectionArr);
+		result.put(ConstantUtils.DATA, collectionArr);
 
 		long total = DictItemLocalServiceUtil.countByOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;		
 	}
@@ -1099,11 +1099,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			
 			groupArr.put(obj);
 		}
-		result.put("data", groupArr);
+		result.put(ConstantUtils.DATA, groupArr);
 
 		long total = DictGroupLocalServiceUtil.countOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;	
 	}
@@ -1292,10 +1292,10 @@ public class DictCollectionActions implements DictcollectionInterface {
 			Hits hits = DictCollectionLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			// _log.info("data: "+hits);
 			// _log.info("hits.toList(): "+hits.toList());
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictCollectionLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -1318,12 +1318,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 				hits = DictGroupLocalServiceUtil.luceneSearchEngine(
 					params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = DictGroupLocalServiceUtil.countLuceneSearchEngine(
 					params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 			catch (ParseException e) {
@@ -1350,11 +1350,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

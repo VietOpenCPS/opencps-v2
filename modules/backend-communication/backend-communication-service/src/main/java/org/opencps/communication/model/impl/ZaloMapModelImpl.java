@@ -67,7 +67,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 	public static final String TABLE_NAME = "opencps_zalomap";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "zaloMapId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -83,7 +83,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 
 	static {
 		TABLE_COLUMNS_MAP.put("zaloMapId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -158,7 +158,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("zaloMapId", getZaloMapId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -184,7 +184,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 			setZaloMapId(zaloMapId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

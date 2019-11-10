@@ -53,11 +53,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictCollectionTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictCollectionTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			if (DictCollectionTempLocalServiceUtil.initDictCollectionTemp(groupId)) {
 
@@ -220,11 +220,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -248,11 +248,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -478,7 +478,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				for (Document document : list) {
 
 					DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
-							groupId, dictGroup.getDictGroupId(), Long.valueOf(document.get("entryClassPK")));
+							groupId, dictGroup.getDictGroupId(), Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -494,11 +494,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 				}
 
-				result.put("data", list);
+				result.put(ConstantUtils.DATA, list);
 
 				long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			} else {
 
@@ -508,11 +508,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				 * for (Document doc : hits.toList()) { _log.info(doc); }
 				 */
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 
@@ -538,11 +538,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictItemTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

@@ -72,14 +72,14 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 			{ "uuid_", Types.VARCHAR },
 			{ "votingResultId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "votingId", Types.BIGINT },
 			{ "fullname", Types.VARCHAR },
-			{ "email", Types.VARCHAR },
+			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
 			{ "comment_", Types.VARCHAR },
 			{ "selected", Types.VARCHAR }
 		};
@@ -89,14 +89,14 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("votingResultId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("votingId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("fullname", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("comment_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("selected", Types.VARCHAR);
 	}
@@ -167,14 +167,14 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 		attributes.put("uuid", getUuid());
 		attributes.put("votingResultId", getVotingResultId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("votingId", getVotingId());
 		attributes.put("fullname", getFullname());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("comment", getComment());
 		attributes.put("selected", getSelected());
 
@@ -204,7 +204,7 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -246,7 +246,7 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

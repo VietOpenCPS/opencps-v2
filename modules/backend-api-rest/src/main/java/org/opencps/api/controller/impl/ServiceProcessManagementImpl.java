@@ -49,6 +49,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.DuplicateStepNoException;
@@ -79,7 +81,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		ServiceProcessResultsModel results = new ServiceProcessResultsModel();
 
@@ -101,15 +103,15 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceProcesses(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-					.addAll(ServiceProcessUtils.mappingToServiceProcessData((List<Document>) jsonData.get("data")));
+					.addAll(ServiceProcessUtils.mappingToServiceProcessData((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -125,7 +127,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -134,14 +136,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
-
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -157,7 +155,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String generateDossierNo = HtmlUtil.escape(String.valueOf(input.getGenerateDossierNo()));
 			String dossierNoPattern = HtmlUtil.escape(input.getDossierNoPattern());
 			String generateDueDate = HtmlUtil.escape(String.valueOf(input.getGenerateDueDate()));
-//			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
 			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
@@ -213,7 +210,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, ServiceProcessInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -228,7 +225,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String generateDossierNo = HtmlUtil.escape(String.valueOf(input.getGenerateDossierNo()));
 			String dossierNoPattern = HtmlUtil.escape(input.getDossierNoPattern());
 			String generateDueDate = HtmlUtil.escape(String.valueOf(input.getGenerateDueDate()));
-//			String dueDatePattern = HtmlUtil.escape(input.getDueDatePattern());
 			String dueDatePattern = input.getDueDatePattern();
 			String generatePassword = HtmlUtil.escape(String.valueOf(input.getGeneratePassword()));
 			String directNotification = HtmlUtil.escape(String.valueOf(input.getDirectNotification()));
@@ -262,7 +258,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 
 		try {
@@ -274,7 +270,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -284,10 +280,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
-
 			ServiceProcess serviceProcess = actions.removeServiceProcess(userId, groupId, id, serviceContext);
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
@@ -311,17 +303,17 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
+				throw new UnauthenticationException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
 
 			JSONObject jsonData = actions.getServiceProcessRoles(id);
 
 			RoleResultsModel results = new RoleResultsModel();
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(ServiceProcessUtils.mappingToServiceRole((List<ServiceProcessRole>) jsonData.get("data")));
+					.addAll(ServiceProcessUtils.mappingToServiceRole((List<ServiceProcessRole>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -336,17 +328,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		//BackendAuth auth = new BackendAuthImpl();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException("UnauthenticationException");
-//			}
-//
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
 
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, input.getRoleId(),
 					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
@@ -368,18 +352,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		//BackendAuth auth = new BackendAuthImpl();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException("UnauthenticationException");
-//			}
-//
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
-
 			ServiceProcessRole role = actions.updateServiceProcessRole(groupId, id, roleid,
 					GetterUtil.getBoolean(input.getModerator()), input.getCondition(), input.getRoleCode(),
 					input.getRoleName());
@@ -403,15 +378,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, long roleid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		//BackendAuth auth = new BackendAuthImpl();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException("UnauthenticationException");
-//			}
-//
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
 
 			ServiceProcessRole role = actions.removeServiceProcessRole(id, roleid);
 
@@ -432,7 +399,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -453,7 +420,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 			params.put(ProcessStepTerm.SERVICE_PROCESS_ID, id);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			ProcessStepResultsModel results = new ProcessStepResultsModel();
@@ -461,9 +428,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			JSONObject jsonData = actions.getProcessSteps(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-					.addAll(ServiceProcessUtils.mappingToProcessStepData((List<Document>) jsonData.get("data")));
+					.addAll(ServiceProcessUtils.mappingToProcessStepData((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -479,7 +446,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -491,7 +458,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -503,7 +470,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep addstep = ProcessStepLocalServiceUtil.fetchBySC_GID(input.getStepCode(), groupId, id);
 
 			if (Validator.isNotNull(addstep)) {
-				throw new DuplicateStepNoException("DuplicateStepNoException");
+				throw new DuplicateStepNoException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_CONFIG));
 			}
 
 			String stepCode = HtmlUtil.escape(input.getStepCode());
@@ -539,7 +506,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, String code, ProcessStepInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -551,7 +518,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -564,7 +531,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep addstep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(addstep)) {
-				throw new DuplicateStepNoException("InvalidStepCode");
+				throw new DuplicateStepNoException(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 			}
 			
 			String stepCode = HtmlUtil.escape(input.getStepCode());
@@ -601,18 +568,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, String code) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
-
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
-//
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
 
 			ProcessStep serviceProcess = actions.deleteProcessStep(code, groupId, id);
 
@@ -635,12 +593,12 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
+				throw new UnauthenticationException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
 
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
@@ -654,10 +612,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleResultsModel results = new RoleResultsModel();
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(ServiceProcessUtils.mappingToStepRole((List<ProcessStepRole>) jsonData.get("data")));
+					.addAll(ServiceProcessUtils.mappingToStepRole((List<ProcessStepRole>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -672,17 +630,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		//BackendAuth auth = new BackendAuthImpl();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException("UnauthenticationException");
-//			}
-//
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
 
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
@@ -712,23 +662,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
+				throw new UnauthenticationException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
-
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
 
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -764,19 +710,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String code, long roleid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException("UnauthenticationException");
+				throw new UnauthenticationException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
 
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -811,7 +757,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -832,7 +778,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 			params.put(ProcessActionTerm.SERVICE_PROCESS_ID, id);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			ProcessActionResultsModel results = new ProcessActionResultsModel();
@@ -840,9 +786,9 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			JSONObject jsonData = actions.getProcessActions(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-					.addAll(ServiceProcessUtils.mappingToProcessActionData((List<Document>) jsonData.get("data")));
+					.addAll(ServiceProcessUtils.mappingToProcessActionData((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -856,7 +802,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, ProcessActionInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -869,7 +815,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -890,7 +836,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String allowAssignUser = HtmlUtil.escape(String.valueOf(input.getAllowAssignUser()));
 			String assignUserId = HtmlUtil.escape(String.valueOf(input.getAssignUserId()));
 			String requestPayment = HtmlUtil.escape(String.valueOf(input.getRequestPayment()));
-//			String paymentFee = HtmlUtil.escape(input.getPaymentFee());
 			String paymentFee = input.getPaymentFee();
 			String createDossierFiles = HtmlUtil.escape(input.getCreateDossierFiles());
 			String returnDossierFiles = HtmlUtil.escape(input.getReturnDossierFiles());
@@ -900,14 +845,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			String configNote = HtmlUtil.escape(input.getConfigNote());
 			String dossierTemplateNo = HtmlUtil.escape(input.getDossierTemplateNo());
 			
-/*			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					serviceContext);
-*/
 			ProcessAction processAction = actions.updateProcessAction(groupId, 0, id, preStepCode,
 					postStepCode, autoEvent, preCondition, actionCode,
 					actionName, GetterUtil.getInteger(allowAssignUser),
@@ -939,7 +876,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -952,7 +889,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -964,14 +901,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			ProcessActionReturnModel results;
 
-/*			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
-					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
-					input.getActionName(), GetterUtil.getBoolean(input.getAllowAssignUser()),
-					GetterUtil.getLong(input.getAssignUserId()), GetterUtil.getBoolean(input.getRequestPayment()),
-					input.getPaymentFee(), input.getCreateDossierFiles(), input.getReturnDossierFiles(),
-					input.getMakeBriefNote(), input.getSyncActionCode(), GetterUtil.getBoolean(input.getRollbackable()),
-					serviceContext);
-*/
 			ProcessAction processAction = actions.updateProcessAction(groupId, actionid, id, input.getPreStepCode(),
 					input.getPostStepCode(), input.getAutoEvent(), input.getPreCondition(), input.getActionCode(),
 					input.getActionName(), Integer.parseInt(input.getAllowAssignUser()),
@@ -1010,14 +939,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-//			if (!auth.hasResource(serviceContext, ProcessAction.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
-
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1046,7 +971,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext) {
 		
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1056,14 +981,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
-
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1073,7 +994,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			String results = "Init Done";
+			String results = ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE);
 
 			ServiceProcessLocalServiceUtil.initServiceProcess(groupId, serviceContext);
 
@@ -1087,7 +1008,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	@Override
 	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String processNo, String processName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1097,14 +1018,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-//			if (!auth.hasResource(serviceContext, ServiceProcess.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException("UnauthorizationException");
-//			}
-
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1114,7 +1031,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				throw new UnauthenticationException();
 			}
 			
-			String results = "Clone done";
+			String results = ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE);
 
 			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, processNo, processName, serviceContext);
 
@@ -1130,7 +1047,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	public Response getProcessSequences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1141,7 +1058,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1177,7 +1094,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	public Response addProcessSequence(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ProcessSequenceInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1188,7 +1105,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1213,7 +1130,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String sequenceNo,
 			ProcessSequenceInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1224,7 +1141,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1249,7 +1166,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	@Override
 	public Response getProcessStep(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1261,7 +1178,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep foundStep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(foundStep)) {
-				throw new NotFoundException("InvalidStepCode");
+				throw new NotFoundException(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 			}
 			
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
@@ -1278,7 +1195,6 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, long actionid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -1313,7 +1229,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1400,7 +1316,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -1421,7 +1337,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();				
 			}
 			else {
-				throw new NotFoundException("Service process not found");
+				throw new NotFoundException(ReadFilePropertiesUtils.get(ConstantUtils.MSG_SUCCESS));
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="dictItemId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="companyId" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="groupId" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name=Field.GROUP_ID type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="userId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="modifiedDate" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "dictItemId",
     "companyId",
-    "groupId",
+    Field.GROUP_ID,
     "userId",
     "createDate",
     "modifiedDate",

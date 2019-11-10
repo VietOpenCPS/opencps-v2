@@ -613,7 +613,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 			object = workingUnitPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -628,12 +628,12 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		object.setAddress(objectData.getString("address"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		object.setWebsite(objectData.getString("website"));
 //		object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
 		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));
 		
-		String sibling = getSibling(objectData.getLong("groupId"), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
+		String sibling = getSibling(objectData.getLong(Field.GROUP_ID), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
 		
 		object.setSibling(sibling);
 		

@@ -11,7 +11,7 @@ public class EmployeeJobPosTerm {
 
 	public static final String EMPLOYEE_JOBPOST_ID = "employeeJobPosId";
 
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 
 	public static final String COMPANY_ID = "companyId";
 	

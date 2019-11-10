@@ -142,7 +142,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
-	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
+	public DossierStatisticResponse searchDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam DossierSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -293,7 +293,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					long companyId = company.getCompanyId(); 
 					
 					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-					List<Document> datas = (List<Document>) jsonData.get("data");
+					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
 					for (Document doc : datas) {
@@ -409,7 +409,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/votings")
-	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
+	public VotingResultResponse searchVotingStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -571,7 +571,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/persons")
-	public PersonResponse searchPersonStatistic(@HeaderParam("groupId") long groupId,
+	public PersonResponse searchPersonStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -866,7 +866,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			params.put("top", "statistic");
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			dossierResponse.setTotal(datas.size());
 			List<GetDossierData> dossierData = new ArrayList<>();
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -965,7 +965,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public DossierStatisticModel fixDossierStatistic(@HeaderParam("groupId") long groupId,
+	public DossierStatisticModel fixDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam DossierStatisticModel input) {
 		try {
 			if (Validator.isNotNull(input.getSystem())) {
@@ -996,7 +996,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports/fixed")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public StatisticFixedResult fixedStatistic(@HeaderParam("groupId") long groupId, @BeanParam StatisticFixedModel input) {
+	public StatisticFixedResult fixedStatistic(@HeaderParam(Field.GROUP_ID) long groupId, @BeanParam StatisticFixedModel input) {
 		int month = input.getMonth();
 		int year = input.getYear();
 		int monthCurrent = LocalDate.now().getMonthValue();
@@ -1084,7 +1084,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	
 	@GET
 	@Path("/testsearch")
-	public String searchDossierStatistic(@HeaderParam("groupId") long groupId,
+	public String searchDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@QueryParam("month") Integer month, @QueryParam("year") Integer year, @QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode) {
 		List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(groupId);
 		

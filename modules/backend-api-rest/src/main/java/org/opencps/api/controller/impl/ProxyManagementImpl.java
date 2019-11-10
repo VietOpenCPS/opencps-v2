@@ -39,7 +39,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 	@Override
 	public Response proxy(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "SERVER_DVC";
 			
@@ -95,13 +95,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        }
 			        _log.debug("API URL: " + apiUrl);
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty("groupId", groupIdRequest);
+			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 			        conn.setRequestMethod(method);
 			        conn.setRequestProperty("Accept", "application/json");
 			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 			        _log.debug("BASIC AUTHEN: " + authStrEnc);
 			        if ("POST".equals(method) || "PUT".equals(method)) {
-				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
 
 						conn.setUseCaches(false);

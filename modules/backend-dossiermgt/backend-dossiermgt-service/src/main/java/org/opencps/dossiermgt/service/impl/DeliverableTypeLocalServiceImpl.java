@@ -341,7 +341,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 			object = deliverableTypePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -379,7 +379,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	
 	class ModelKeys {
 		public static final String DELIVERABLETYPEID = "deliverableTypeId";
-		public static final String GROUPID = "groupId";
+		public static final String GROUPID = Field.GROUP_ID;
 		public static final String COMPANYID = "companyId";
 		public static final String USERID = "userId";
 		public static final String USERNAME = "userName";

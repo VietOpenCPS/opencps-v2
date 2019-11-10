@@ -1,6 +1,10 @@
 
 package org.opencps.api.controller.util;
 
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +12,9 @@ import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchIdModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
-
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableTypesUtils {
 
@@ -90,9 +91,7 @@ public class DeliverableTypesUtils {
 
 			DossierLogSearchIdModel model = new DossierLogSearchIdModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
-			// int notificationType =
-			// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
+			long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
 
 			model.setDossierLogId(dossierLogId);
 			model.setAuthor(document.get(DossierLogTerm.AUTHOR));

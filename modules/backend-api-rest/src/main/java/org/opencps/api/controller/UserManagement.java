@@ -105,7 +105,7 @@ public interface UserManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getPreferenceByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key);
 
 	@PUT
 	@Path("/{id}/preferences")
@@ -122,7 +122,7 @@ public interface UserManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response updatePreferences(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key,
 			@FormParam("value") String value);
 
 	@POST
@@ -206,20 +206,6 @@ public interface UserManagement {
 			@Context ServiceContext serviceContext, @PathParam("id") long id, @Multipart("file") Attachment attachment,
 			@Multipart("fileName") String fileName, @Multipart("fileType") String fileType,
 			@Multipart("fileSize") long fileSize);
-	
-//	@GET
-//	@Path("/{id}/esign")
-//	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-//	public Response getUserEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
-//			@Context Company company, @Context Locale locale, @Context User user,
-//			@Context ServiceContext serviceContext, @PathParam("id") long id);
-	
-	@GET
-	@Path("/{id}/esigncert")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getUserEsignCert(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
 	
 	@GET
 	@Path("/login")

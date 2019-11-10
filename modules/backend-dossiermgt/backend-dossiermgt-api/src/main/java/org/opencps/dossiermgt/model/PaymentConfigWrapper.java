@@ -62,7 +62,7 @@ public class PaymentConfigWrapper implements PaymentConfig,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("paymentConfigId", getPaymentConfigId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -95,7 +95,7 @@ public class PaymentConfigWrapper implements PaymentConfig,
 			setPaymentConfigId(paymentConfigId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

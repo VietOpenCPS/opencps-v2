@@ -27,7 +27,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 	private static final String SEARCH_VOTING_STATISTIC = OpencpsVotingStatisticFinder.class.getName()
 			+ ".searchStatisic";
 
-	private static final String TOTAL = "total";
+	private static final String TOTAL = ConstantUtils.TOTAL;
 
 	private static final String CONDITION_DOMAIN = "(opencps_voting_statistic.domainCode = ?) AND";
 	private static final String CONDITION_DOMAIN_REPLACE = "(opencps_voting_statistic.domainCode IS NULL) AND";

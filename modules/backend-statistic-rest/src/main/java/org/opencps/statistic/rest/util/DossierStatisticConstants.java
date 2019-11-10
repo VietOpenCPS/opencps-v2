@@ -3,10 +3,10 @@ package org.opencps.statistic.rest.util;
 import java.util.Locale;
 
 public interface DossierStatisticConstants {
-	String DOMAIN_TOTAL = "total";
-	String AGENCY_TOTAL = "total";
-	String DOMAIN_AGENCY = "total";
-	String TOTAL = "total";
+	String DOMAIN_TOTAL = ConstantUtils.TOTAL;
+	String AGENCY_TOTAL = ConstantUtils.TOTAL;
+	String DOMAIN_AGENCY = ConstantUtils.TOTAL;
+	String TOTAL = ConstantUtils.TOTAL;
 	int REPORTING_TYPE_0 = 0;
 	int REPORTING_TYPE_1 = 1;
 	
@@ -27,7 +27,7 @@ public interface DossierStatisticConstants {
 	
 	String STATISTIC_REPORT_ENDPOINT = "opencps.rest.enpoint.statistic.report";
 	
-	String GROUP_ID = "groupId";
+	String GROUP_ID = Field.GROUP_ID;
 	
 	int START_YEARS = 1990;
 	

@@ -42,11 +42,11 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 		try {
 			hits = NotificationtemplateLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = NotificationtemplateLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 //			if (NotificationtemplateLocalServiceUtil.initTemplate(groupId)) {
 
@@ -190,9 +190,9 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 		Map<String, String> initTemplates = NotificationMGTConstants.getNotificationTempMap();
 
-		result.put("data", initTemplates);
+		result.put(ConstantUtils.DATA, initTemplates);
 
-		result.put("total", initTemplates.size());
+		result.put(ConstantUtils.TOTAL, initTemplates.size());
 
 		return result;
 	}

@@ -30,7 +30,7 @@ public class BackendAuthImpl implements BackendAuth {
 		try {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
-					if ("Administrator".equals(role.getName())) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
 						hasPermission = true;
 						break;
 					}

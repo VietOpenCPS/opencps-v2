@@ -60,7 +60,7 @@ public interface ResourceUserManagement {
 	public Response delete(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@DefaultValue(StringPool.BLANK) @PathParam("className") String className, @DefaultValue(StringPool.BLANK) @PathParam("classPK") String classPK,
-			@DefaultValue("0") @PathParam("email") String email);
+			@DefaultValue("0") @PathParam(ConstantUtils.VALUE_EMAIL) String email);
 	
 	@GET
 	@Path("/{className}/{classPK}/cloning/{sourcePK}")

@@ -272,7 +272,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(ResourceUserTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceUserTerm.CLASS_PK);
@@ -348,7 +348,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(ResourceUserTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceUserTerm.CLASS_PK);
@@ -441,7 +441,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 			object = resourceUserPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -453,7 +453,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		object.setClassPK(objectData.getString("classPK"));
 		object.setToUserId(objectData.getLong("toUserId"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		object.setReadonly(objectData.getBoolean("readonly"));
 
 		resourceUserPersistence.update(object);

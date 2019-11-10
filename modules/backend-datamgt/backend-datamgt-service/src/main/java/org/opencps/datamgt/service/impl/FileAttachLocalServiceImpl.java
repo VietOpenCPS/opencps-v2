@@ -356,7 +356,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
@@ -442,7 +442,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
@@ -543,7 +543,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 			object = fileAttachPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -554,7 +554,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		object.setClassName(objectData.getString("className"));
 		object.setClassPK(objectData.getString("classPK"));
 		object.setFullName(objectData.getString("fullName"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);
 		object.setSource(objectData.getString("source"));
 		object.setSourceUrl(objectData.getString("sourceUrl"));

@@ -2,10 +2,6 @@ package org.opencps.usermgt.constants;
 
 public class ApplicantTerm {
 	
-	public static final String COMPANY_ID = "companyId";
-	public static final String GROUP_ID = "groupId";
-	
-
 	public static final String APPLICANTNAME = "applicantName";
 	public static final String APPLICANTIDTYPE = "applicantIdType";
 	public static final String APPLICANTIDNO = "applicantIdNo";

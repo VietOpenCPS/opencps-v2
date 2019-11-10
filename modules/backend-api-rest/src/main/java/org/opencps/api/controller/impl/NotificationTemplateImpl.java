@@ -50,11 +50,11 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 				query.setEnd(-1);
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("notificationType_sortable", Sort.STRING_TYPE,
@@ -63,9 +63,9 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			JSONObject jsonData = actions.getNotificationTemplates(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationtemplateModel().addAll(
-					NotificationTemplateUtils.mapperNotificationtemplateList((List<Document>) jsonData.get("data")));
+					NotificationTemplateUtils.mapperNotificationtemplateList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -81,7 +81,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 		NotificationTemplateInterface actions = new NotificationTemplateActions();
 		NotificationtemplateModel notificationtemplateModel;
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		Notificationtemplate notificationtemplate = actions.read(user.getUserId(), groupId, type, serviceContext);
 
@@ -112,7 +112,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String sendEmail = String.valueOf(input.getSendEmail());
 			String notificationType = type;
@@ -147,7 +147,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = actions.delete(user.getUserId(), groupId, type, serviceContext);
 
@@ -180,7 +180,7 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String sendEmail = String.valueOf(input.getSendEmail());
 			String notificationType = input.getNotificationType();

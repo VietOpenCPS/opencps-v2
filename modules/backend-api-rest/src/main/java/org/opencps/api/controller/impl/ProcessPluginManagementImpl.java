@@ -59,7 +59,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	public Response getPlugins(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -89,7 +89,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					int total = plugins.size();
 
-					results.put("total", total);
+					results.put(ConstantUtils.TOTAL, total);
 
 					JSONArray dataArr = JSONFactoryUtil.createJSONArray();
 
@@ -102,7 +102,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						dataArr.put(elm);
 					}
 
-					results.put("data", dataArr);
+					results.put(ConstantUtils.DATA, dataArr);
 
 					return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -124,7 +124,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	public Response getFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, long pluginid) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -173,7 +173,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	@Override
 	public Response getFormScript(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, long pluginid) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -244,7 +244,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -316,9 +316,9 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "application/pdf");
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");
 
 						return responseBuilder.build();
 
@@ -528,7 +528,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			User user, ServiceContext serviceContext, String id, long pluginid) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 

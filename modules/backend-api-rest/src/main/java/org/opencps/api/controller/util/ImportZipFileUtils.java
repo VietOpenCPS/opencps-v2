@@ -35,17 +35,13 @@ public class ImportZipFileUtils {
 			String filePath = StringPool.BLANK;
 			while (entry != null) {
 				filePath = destDirectory + File.separator + entry.getName();
-				_log.info("LamTV_filePath: " + filePath);
 				if (!entry.isDirectory()) {
 					// if the entry is a file, extracts it
 					extractFile(zipIn, filePath);
 				} else {
 					// if the entry is a directory, make the directory
 					File dir = new File(filePath);
-					_log.info("LamTV_AbsolutePath: " + dir.getAbsolutePath());
-					_log.info("LamTV_File Path: " + dir.getPath());
 					dir.mkdir();
-					_log.info("LamTV_dir.mkdir(): " + dir.mkdir());
 				}
 				entry = zipIn.getNextEntry();
 			}
@@ -124,14 +120,14 @@ public class ImportZipFileUtils {
 	}
 
 	public static String compress(String str) throws IOException {
-	    if (str == null || str.length() == 0) {
-	        return str;
-	    }
-	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    GZIPOutputStream gzip = new GZIPOutputStream(out);
-	    gzip.write(str.getBytes());
-	    gzip.close();
-	    String outStr = out.toString();
-	    return outStr;
-	 }	
+		if (str == null || str.length() == 0) {
+			return str;
+		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		GZIPOutputStream gzip = new GZIPOutputStream(out);
+		gzip.write(str.getBytes());
+		gzip.close();
+		String outStr = out.toString();
+		return outStr;
+	}
 }

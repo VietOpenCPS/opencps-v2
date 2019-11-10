@@ -30,7 +30,7 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 
 			int total = lstRegistrationTemplates.size();
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
 
 		} catch (Exception e) {
@@ -54,7 +54,7 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 						.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 			}
 
-			result.put("total", lstRegistrationTemplates.size());
+			result.put(ConstantUtils.TOTAL, lstRegistrationTemplates.size());
 			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
 
 		} catch (Exception e) {

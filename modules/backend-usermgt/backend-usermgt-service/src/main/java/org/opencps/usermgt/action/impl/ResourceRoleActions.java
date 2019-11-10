@@ -92,21 +92,21 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 				}
 
-				result.put("data", list);
+				result.put(ConstantUtils.DATA, list);
 
 				long total = list.size();
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			} else {
 
 				hits = ResourceRoleLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = ResourceRoleLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 

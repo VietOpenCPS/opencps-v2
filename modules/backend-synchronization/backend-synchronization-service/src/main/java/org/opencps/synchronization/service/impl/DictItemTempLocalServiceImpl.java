@@ -509,7 +509,7 @@ public class DictItemTempLocalServiceImpl
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf((params.get("groupId")));
+		String groupId = String.valueOf((params.get(Field.GROUP_ID)));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);
@@ -638,7 +638,7 @@ public class DictItemTempLocalServiceImpl
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf(params.get("groupId"));
+		String groupId = String.valueOf(params.get(Field.GROUP_ID));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);

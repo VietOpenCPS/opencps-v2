@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class DocumentTypeInputModel  {
+@XmlRootElement(name = ConstantUtils.DATA) public class DocumentTypeInputModel  {
   
   @ApiModelProperty(example = "1110", required = true, value = "")
   private String typeCode = null;

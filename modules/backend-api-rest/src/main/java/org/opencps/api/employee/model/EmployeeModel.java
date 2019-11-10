@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="birthdate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="telNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="mobile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="workingStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="permission" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="jobPosTitle" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -67,7 +67,7 @@ import javax.xml.bind.annotation.XmlType;
     "birthdate",
     "telNo",
     "mobile",
-    "email",
+    ConstantUtils.VALUE_EMAIL,
     "workingStatus",
     "permission",
     "jobPosTitle",

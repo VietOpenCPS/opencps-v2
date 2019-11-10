@@ -57,7 +57,7 @@ public class InvokeREST {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -133,7 +133,7 @@ public class InvokeREST {
 			conn.setDoOutput(true);
 
 			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -365,7 +365,7 @@ public class InvokeREST {
 			conn.setDoOutput(true);
 
 			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -549,7 +549,7 @@ public class InvokeREST {
 
 			conn.setRequestProperty("Accept", accept);
 			conn.setRequestProperty("Authorization", "Bearer " + token);
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json");
 			
 			byte[] postDataBytes = raw.getBytes("UTF-8");
 

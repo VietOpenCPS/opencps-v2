@@ -32,7 +32,8 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.CertNumberManagement;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.dossiermgt.constants.ConstantsUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
@@ -49,17 +50,12 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			User user, ServiceContext serviceContext) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -85,16 +81,16 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 					elm.put("certId", cnt.getName());
 					elm.put("pattern", splitPattern[1]);
-					elm.put("groupId", splitPattern[2]);
+					elm.put(Field.GROUP_ID, splitPattern[2]);
 					elm.put("initNumber", cnt.getCurrentId());
 
 					jsArr.put(elm);
 				}
 			}
 			
-			jsObj.put("total", jsArr.length());
+			jsObj.put(ConstantUtils.TOTAL, jsArr.length());
 
-			jsObj.put("data", jsArr);
+			jsObj.put(ConstantUtils.DATA, jsArr);
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
@@ -106,20 +102,11 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	public Response getDetailCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String certid) {
 
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-//		BackendAuth auth = new BackendAuthImpl();
-
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -153,18 +140,12 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 		
-//		BackendAuth auth = new BackendAuthImpl();
-
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
 
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -176,13 +157,9 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			
 			if (Validator.isNotNull(pattern)) {
 				String[] patternArr = StringUtil.split(pattern);
-				_log.info("pattern: "+pattern);
-				_log.info("patternArr: "+patternArr);
 				if (patternArr != null && patternArr.length > 0) {
 					for (String strPattern : patternArr) {
-						_log.info("strPattern: "+strPattern);
-						String certId = ConstantsUtils.PRE_FIX_CERT + strPattern + StringPool.AT + groupId;
-						_log.info("strPattern: "+strPattern);
+						String certId = ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE) + strPattern + StringPool.AT + groupId;
 						Counter counter = null;
 						try {
 							counter = CounterLocalServiceUtil.getCounter(certId);
@@ -190,16 +167,15 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 							_log.error(e);
 						}
 						if (counter != null) {
-							String contentError = certId + "đã tồn tại trong hệ thống";
+							String contentError = certId + ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR);
 							return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(contentError).build(); 
 						}
-						_log.info("counter: "+counter);
 						Counter counterInit = CounterLocalServiceUtil.createCounter(certId);
 						counterInit.setCurrentId(initNumber);
 
 						CounterLocalServiceUtil.updateCounter(counterInit);
 					}
-					jsObj.put("status", "done");
+					jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 				}
 			} else {
 				if (initNumber == 0) {
@@ -208,7 +184,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 						for (ServiceProcess serviceProcess : processList) {
 							String servicePattern = serviceProcess.getProcessNo();
 							if (Validator.isNotNull(servicePattern)) {
-								String certId = ConstantsUtils.PRE_FIX_CERT + servicePattern + StringPool.AT + groupId;
+								String certId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT) + servicePattern + StringPool.AT + groupId;
 								Counter counter = null;
 								try {
 									counter = CounterLocalServiceUtil.getCounter(certId);
@@ -222,7 +198,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 								CounterLocalServiceUtil.updateCounter(counterInit);
 							}
 						}
-						jsObj.put("status", "done");
+						jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 					}
 				}
 			}
@@ -230,7 +206,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -240,20 +216,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	public Response updateSertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String certid, String pattern, int initNumber) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
-//		BackendAuth auth = new BackendAuthImpl();
-
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -262,7 +231,6 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			if (!isAdmin) {
 				throw new UnauthenticationException();
 			}
-//			String certId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
 
 			Counter counter = CounterLocalServiceUtil.getCounter(certid);
 
@@ -270,11 +238,11 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			
 			CounterLocalServiceUtil.updateCounter(counter);
 
-			jsObj.put("status", "done");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -284,17 +252,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	public Response generatorCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String pattern, long dossierid) {
 
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
 		String certNumber;
-
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
+			if (!auth.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+						.entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();
 			}
 
 			long _counterNumber = 0;
@@ -305,23 +269,17 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			//int curYear = cal.get(Calendar.YEAR);
 			
-			DateFormat df = new SimpleDateFormat("yyyy");
-			DateFormat sdf = new SimpleDateFormat("yy");
+			DateFormat df = new SimpleDateFormat(ReadFilePropertiesUtils.get(ConstantUtils.PATTERN_YEAR_FULL));
+			DateFormat sdf = new SimpleDateFormat(ReadFilePropertiesUtils.get(ConstantUtils.PATTERN_YEAR_HALF));
 			
 			String curYear = df.format(cal.getTime());
 			String shortCurYear = sdf.format(cal.getTime());
 
-			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + curYear;
-			
-			_log.info("___certConfigId" + certConfigId);
-
-			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + curYear;
-			
-			_log.info("___certConfigCurrId" + certConfigCurrId);
-
+			String certConfigId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT) + pattern + StringPool.AT + curYear;
+			String certConfigCurrId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT_CURR) + pattern + StringPool.AT + curYear;
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
-			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
+			String elmCertId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT_ELM) + pattern + StringPool.AT + curYear + StringPool.AT + dossierid;
 
 			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
 
@@ -331,7 +289,6 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 				Counter currCounter = CounterLocalServiceUtil.fetchCounter(certConfigCurrId);
 
 				if (Validator.isNull(currCounter)) {
-					_log.info("COUTER_CURR_CONFIG_IS_NULL");
 
 					currCounter = CounterLocalServiceUtil.createCounter(certConfigCurrId);
 
@@ -349,18 +306,14 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 					CounterLocalServiceUtil.updateCounter(elmCounter);
 					
 				} else {
-					_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
 
 					//check counter for element
 					Counter elmCounter = CounterLocalServiceUtil.fetchCounter(elmCertId);
 					
 					if (Validator.isNotNull(elmCounter)) {
-						_log.info("ELM_COUTER_CONFIG_IS_NOT_NULL");
-
 						_counterNumber = elmCounter.getCurrentId();
 					} else {
 						//create elm Counter 
-						_log.info("ELM_COUTER_CONFIG_IS_NULL");
 						elmCounter = CounterLocalServiceUtil.createCounter(elmCertId);
 						
 						//increment CurrentCounter 
@@ -382,7 +335,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 				certNumber = String.format("%05d", _counterNumber) + StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
 				
 			} else {
-				throw new Exception("Don't have counter config");
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_CONFIG));
 			}
 
 			return Response.status(200).entity(certNumber).build();
@@ -395,23 +348,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	@Override
 	public Response removeCertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String certId) {
-		// long groupId =
-		// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
-//		_log.info("certId: "+certId);
-
-//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
-//			String nameCounter = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + year;
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -422,11 +365,11 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			}
 			CounterLocalServiceUtil.deleteCounter(certId);
 
-			jsObj.put("status", "done");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -438,17 +381,12 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
-//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-//			if (!auth.isAdmin(serviceContext, "admin")) {
-//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-//						.entity("User not permission process action!!!").build();
-//			}
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -467,13 +405,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 						CounterLocalServiceUtil.deleteCounter(certName);
 					}
 				}
-				jsObj.put("status", "done");
+				jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			}
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}

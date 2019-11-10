@@ -54,7 +54,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 		// TODO: check user is loged or password for access dossier file
 		_log.debug("====START DOWNLOAD DOCUMENT==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long dossierId = GetterUtil.getLong(id);
 
 		try {
@@ -77,9 +77,9 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 //				return responseBuilder.build();
 				_log.info("====END DOWNLOAD DOCUMENT==== ");
@@ -118,11 +118,11 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			DossierDocumentActions actions = new DossierDocumentActionsImpl();
 			JSONObject jsonData = actions.getDossierDocumentByDossierId(dossierId, start, end);
 
-			int total = jsonData.getInt("total");
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			results.setTotal(total);
 			if (jsonData != null && total > 0) {
 				results.getData().addAll(
-						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get("data")));
+						DossierDocumentParser.mappingDocumentResultModel((List<DossierDocument>) jsonData.get(ConstantUtils.DATA)));
 			}
 			_log.debug("====END GET LIST DOCUMENT==== ");
 		} catch (Exception e) {
@@ -138,7 +138,7 @@ public class DossierDocumentApiImpl implements DossierDocumentsApi {
 			String documentName, String documentCode) {
 
 		_log.debug("====START CREATE DOCUMENT==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long dossierId = GetterUtil.getLong(id);
 		DossierDocumentModel result = null;
 		ServiceContext context = new ServiceContext();

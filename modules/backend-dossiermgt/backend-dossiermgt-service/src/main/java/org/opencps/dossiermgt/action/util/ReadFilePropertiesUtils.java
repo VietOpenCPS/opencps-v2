@@ -1,4 +1,4 @@
-package org.opencps.api.controller.util;
+package org.opencps.dossiermgt.action.util;
 
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;

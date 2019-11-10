@@ -63,7 +63,7 @@ public class DynamicReportWrapper implements DynamicReport,
 		attributes.put("uuid", getUuid());
 		attributes.put("dynamicReportId", getDynamicReportId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -99,7 +99,7 @@ public class DynamicReportWrapper implements DynamicReport,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

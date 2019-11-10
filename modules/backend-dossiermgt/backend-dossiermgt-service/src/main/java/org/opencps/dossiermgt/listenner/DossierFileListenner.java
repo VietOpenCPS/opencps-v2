@@ -656,7 +656,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							? deliverable.getRevalidate().getTime()
 							: new Date().getTime();
 
-				deliverableLog.put("groupId", model.getGroupId());
+				deliverableLog.put(Field.GROUP_ID, model.getGroupId());
 				deliverableLog.put("companyId", model.getCompanyId());
 				deliverableLog.put("userId", model.getUserId());
 				deliverableLog.put("userName", model.getUserName());

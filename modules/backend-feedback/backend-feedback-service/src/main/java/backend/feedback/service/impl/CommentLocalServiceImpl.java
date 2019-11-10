@@ -313,7 +313,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		String keywords = GetterUtil.getString(params.get("keywords"));
 
-		String groupId = GetterUtil.getString(params.get("groupId"));
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
 		BooleanQuery booleanQuery = null;
 
@@ -381,7 +381,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		String keywords = GetterUtil.getString(params.get("keywords"));
 
-		String groupId = GetterUtil.getString(params.get("groupId"));
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
 		BooleanQuery booleanQuery = null;
 
@@ -459,7 +459,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 			object = commentPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -470,7 +470,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		object.setClassName(objectData.getString("className"));
 		object.setClassPK(objectData.getString("classPK"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		object.setParent(objectData.getLong("parent"));
 		object.setContent(objectData.getString("content"));
 		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);

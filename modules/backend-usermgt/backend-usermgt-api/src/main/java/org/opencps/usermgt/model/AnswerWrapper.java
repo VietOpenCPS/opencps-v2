@@ -59,7 +59,7 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 
 		attributes.put("answerId", getAnswerId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -85,7 +85,7 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

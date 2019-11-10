@@ -63,7 +63,7 @@ public class DeliverableTypeWrapper implements DeliverableType,
 		attributes.put("uuid", getUuid());
 		attributes.put("deliverableTypeId", getDeliverableTypeId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -105,7 +105,7 @@ public class DeliverableTypeWrapper implements DeliverableType,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

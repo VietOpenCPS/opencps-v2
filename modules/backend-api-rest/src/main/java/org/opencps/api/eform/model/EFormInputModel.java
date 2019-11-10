@@ -58,7 +58,7 @@ import javax.xml.bind.annotation.XmlType;
  "formScriptFileId",
  "formReportFileId",
  "eFormData",
- "email",
+ ConstantUtils.VALUE_EMAIL,
  "secret",
  "checkinDate",
  "gateNumber",
@@ -83,7 +83,7 @@ public class EFormInputModel {
 	protected Long formReportFileId;
 	@FormParam(value = "eFormData")
 	protected String eFormData;
-	@FormParam(value = "email")
+	@FormParam(value = ConstantUtils.VALUE_EMAIL)
 	protected String email;
 	@FormParam(value = "secret")
 	protected String secret;

@@ -62,7 +62,7 @@ public class PreferencesWrapper implements Preferences,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("preferencesId", getPreferencesId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -87,7 +87,7 @@ public class PreferencesWrapper implements Preferences,
 			setPreferencesId(preferencesId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

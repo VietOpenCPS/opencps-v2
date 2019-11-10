@@ -725,7 +725,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			try {
 				valdiate(objectData.getString("serviceCode"), objectData.getString("serviceName"),
 						objectData.getString("administrationCode"), objectData.getString("domainCode"),
-						objectData.getLong("groupId"));
+						objectData.getLong(Field.GROUP_ID));
 			} catch (PortalException e) {
 				_log.error(e);
 				return null;
@@ -735,7 +735,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			object = serviceInfoPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -762,9 +762,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		object.setDomainCode(objectData.getString("domainCode"));
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
-				objectData.getString("administrationCode"), objectData.getLong("groupId"));
+				objectData.getString("administrationCode"), objectData.getLong(Field.GROUP_ID));
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN,
-				objectData.getString("domainCode"), objectData.getLong("groupId"));
+				objectData.getString("domainCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(adm)) {
 			object.setAdministrationName(adm.getItemName());

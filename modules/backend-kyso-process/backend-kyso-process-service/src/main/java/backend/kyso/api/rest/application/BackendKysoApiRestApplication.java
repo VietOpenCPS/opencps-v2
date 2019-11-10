@@ -60,7 +60,7 @@ public class BackendKysoApiRestApplication extends Application {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getByTokens(@Context HttpHeaders header, @BeanParam DigitalSignatureInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		_log.info("START: =========");
 			try {
@@ -119,7 +119,7 @@ public class BackendKysoApiRestApplication extends Application {
 	public Response completeSignature(@Context HttpHeaders header,
 			@BeanParam DigitalSignatureInputModel input) {
 
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			

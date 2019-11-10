@@ -60,7 +60,7 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("notificationTemplateId", getNotificationTemplateId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -92,7 +92,7 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 			setNotificationTemplateId(notificationTemplateId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

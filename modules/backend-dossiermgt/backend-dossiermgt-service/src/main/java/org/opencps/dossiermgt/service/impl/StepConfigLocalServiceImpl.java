@@ -274,7 +274,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		} else {
 
 			try {
-				validate(objectData.getLong("groupId"), objectData.getString("stepCode"),
+				validate(objectData.getLong(Field.GROUP_ID), objectData.getString("stepCode"),
 						objectData.getLong("stepConfigId"));
 			} catch (PortalException e) {
 				_log.debug(e);
@@ -285,7 +285,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 
 			object = stepConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

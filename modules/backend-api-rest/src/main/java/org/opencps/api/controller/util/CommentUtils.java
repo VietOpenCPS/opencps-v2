@@ -108,28 +108,12 @@ public class CommentUtils {
 		String fullname = StringPool.BLANK;
 		String emailAddress = StringPool.BLANK;
 		String profileURL = StringPool.BLANK;
-		String userHasUpvoted = document.get("userHasUpvoted");
+		String userHasUpvoted = document.get(CommentTerm.USER_HAS_UPVOTE);
 
 		String createDate = APIDateTimeUtils.convertDateToString(document.getDate(Field.CREATE_DATE),
 				DateTimeUtils._TIMESTAMP);
 		String modifiedDate = APIDateTimeUtils.convertDateToString(document.getDate(Field.MODIFIED_DATE),
 				DateTimeUtils._TIMESTAMP);
-
-		User userLogin = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
-		if (userLogin != null) {
-			emailAddress = userLogin.getEmailAddress();
-			if(emailAddress.contains("default")) {
-				if (email != null && email.length > 0) {
-					emailAddress = email[0];
-					
-					// TODO check createdByCurrentUser by email
-					if (Validator.isNotNull(emailAddress) && emailAddress.equals(document.get(CommentTerm.EMAIL))) {
-						createdByCurrentUser = true;
-					}
-					
-				}
-			}
-		}
 
 		// get profileURL
 		CommentModel commentModel = processUpdateComment(createDate, createdByCurrentUser, emailAddress, fileEntryId,
@@ -168,7 +152,6 @@ public class CommentUtils {
 			try {
 				commentListModel.getCommentModel().add(mappingComment(doc, header, serviceContext, query, email));
 			} catch (Exception e) {
-				//_log.error(e);
 				_log.debug(e);
 			}
 		}
@@ -186,7 +169,6 @@ public class CommentUtils {
 			try {
 				commentListModel.getCommentTopModel().add(mappingCommentTopModel(comment, serviceContext));
 			} catch (Exception e) {
-				//_log.error(e);
 				_log.debug(e);
 			}
 		}
@@ -213,9 +195,7 @@ public class CommentUtils {
 				createDate = dateFormat.format(date);
 			}
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
-			_log.warn("Can't not get createDate " + e.getMessage());
 		}
 
 		// Convert modifiedDate
@@ -228,9 +208,7 @@ public class CommentUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
-			_log.warn("Can't not get modifiedDate " + e.getMessage());
 		}
 
 		commentModel.setCreateDate(createDate);

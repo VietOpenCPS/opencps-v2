@@ -291,7 +291,7 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 			object = registrationTemplatesPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCreateDate(new Date());
 
 		}

@@ -34,7 +34,7 @@ public class ElasticQueryWrapUtil {
 
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "Content-Type: application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
@@ -79,7 +79,7 @@ public class ElasticQueryWrapUtil {
 
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "Content-Type: application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
@@ -164,7 +164,7 @@ public class ElasticQueryWrapUtil {
 
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "Content-Type: application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json");
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());

@@ -72,7 +72,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 			{ "uuid_", Types.VARCHAR },
 			{ "officeSiteId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
@@ -83,7 +83,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 			{ "address", Types.VARCHAR },
 			{ "telNo", Types.VARCHAR },
 			{ "faxNo", Types.VARCHAR },
-			{ "email", Types.VARCHAR },
+			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
 			{ "website", Types.VARCHAR },
 			{ "logoFileEntryId", Types.BIGINT },
 			{ "siteGroupId", Types.BIGINT },
@@ -97,7 +97,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("officeSiteId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -108,7 +108,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 		TABLE_COLUMNS_MAP.put("address", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("faxNo", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("website", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("logoFileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("siteGroupId", Types.BIGINT);
@@ -181,7 +181,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 		attributes.put("uuid", getUuid());
 		attributes.put("officeSiteId", getOfficeSiteId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -192,7 +192,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 		attributes.put("address", getAddress());
 		attributes.put("telNo", getTelNo());
 		attributes.put("faxNo", getFaxNo());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("website", getWebsite());
 		attributes.put("logoFileEntryId", getLogoFileEntryId());
 		attributes.put("siteGroupId", getSiteGroupId());
@@ -226,7 +226,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -292,7 +292,7 @@ public class OfficeSiteModelImpl extends BaseModelImpl<OfficeSite>
 			setFaxNo(faxNo);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

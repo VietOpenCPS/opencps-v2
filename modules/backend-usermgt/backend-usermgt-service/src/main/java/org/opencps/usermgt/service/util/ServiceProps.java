@@ -29,9 +29,9 @@ import java.util.Properties;
 @ProviderType
 public class ServiceProps {
 	
-	public static final String APPLICANT_ROLE_NAME = "APPLICANT";
+	public static final String APPLICANT_ROLE_NAME = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT);
 	public static final int PASSWORD_LENGHT = 10;
-	public static final String ADM_ROLE_NAME = "Administrator";
+	public static final String ADM_ROLE_NAME = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN);
 	public static final String APPLICANT_JOB_TITLE = "Applicant";
 	
 //	public static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd/mm/yyyy hh:MM:ss");

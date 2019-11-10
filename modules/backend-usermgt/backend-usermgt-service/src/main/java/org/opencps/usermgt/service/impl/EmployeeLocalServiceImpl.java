@@ -832,7 +832,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 			object = employeePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -858,7 +858,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setGender(objectData.getInt("gender"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setMobile(objectData.getString("mobile"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));

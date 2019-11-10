@@ -119,8 +119,8 @@ public class UserActions implements UserInterface {
 	}
 
 	public static final String CURRENT_SITE = "currentSite";
-	public static final String DATA = "data";
-	public static final String TOTAL = "total";
+	public static final String DATA = ConstantUtils.DATA;
+	public static final String TOTAL = ConstantUtils.TOTAL;
 	public static final String ROLE_NAME = "roleName";
 	@Override
 	public String getType(long id, ServiceContext serviceContext) {
@@ -185,11 +185,11 @@ public class UserActions implements UserInterface {
 
 			}
 
-			result.put("data", list);
+			result.put(ConstantUtils.DATA, list);
 
 			long total = listGroup.size();
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (PortalException e) {
@@ -215,17 +215,17 @@ public class UserActions implements UserInterface {
 
 			Document document = new DocumentImpl();
 
-			document.addNumberSortable("entryClassPK", role.getRoleId());
+			document.addNumberSortable(ConstantUtils.ENTRY_CLASS_PK, role.getRoleId());
 			document.addTextSortable("roleName", role.getName());
 
 			list.add(document);
 		}
 
-		result.put("data", list);
+		result.put(ConstantUtils.DATA, list);
 
 		long total = listRole.size();
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -257,7 +257,7 @@ public class UserActions implements UserInterface {
 			"classPK", String.valueOf(employee.getEmployeeId()));
 
 		document.addTextSortable("screenName", screenName);
-		document.addTextSortable("email", email);
+		document.addTextSortable(ConstantUtils.VALUE_EMAIL, email);
 		document.addTextSortable("fullName", employee.getFullName());
 
 		document.addTextSortable("contactEmail", employee.getEmail());
@@ -405,11 +405,11 @@ public class UserActions implements UserInterface {
 
 		List<User> users = UserLocalServiceUtil.getGroupUsers(groupId);
 
-		result.put("data", users);
+		result.put(ConstantUtils.DATA, users);
 
 		long total = users.size();
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -525,13 +525,13 @@ public class UserActions implements UserInterface {
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
 				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put("email", employee.getEmail());
+				subPayload.put(ConstantUtils.VALUE_EMAIL, employee.getEmail());
 				subPayload.put("telNo", employee.getTelNo());
 			}
 			else if (applicant != null) {
 				subPayload.put("userName", applicant.getApplicantName());
 				subPayload.put("userId", applicant.getUserId());
-				subPayload.put("email", applicant.getContactEmail());
+				subPayload.put(ConstantUtils.VALUE_EMAIL, applicant.getContactEmail());
 				subPayload.put("telNo", applicant.getContactTelNo());
 			}
 			subPayload.put("secretKey", secretKey);
@@ -679,13 +679,13 @@ public class UserActions implements UserInterface {
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
 				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put("email", employee.getEmail());
+				subPayload.put(ConstantUtils.VALUE_EMAIL, employee.getEmail());
 				subPayload.put("telNo", employee.getTelNo());
 			}
 			else if (applicant != null) {
 				subPayload.put("userName", applicant.getApplicantName());
 				subPayload.put("userId", applicant.getUserId());
-				subPayload.put("email", applicant.getContactEmail());
+				subPayload.put(ConstantUtils.VALUE_EMAIL, applicant.getContactEmail());
 				subPayload.put("telNo", applicant.getContactTelNo());
 			}
 			subPayload.put("secretKey", secretKey);

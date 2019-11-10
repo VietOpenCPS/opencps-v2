@@ -58,11 +58,11 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 			hits = ServiceInfoLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -130,8 +130,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(serviceInfoId);
 
-		result.put("data", data);
-		result.put("total", total);
+		result.put(ConstantUtils.DATA, data);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -244,8 +244,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -298,8 +298,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -342,8 +342,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 		}
 
 		return result;
@@ -488,8 +488,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -507,8 +507,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService_EForm(serviceInfoId,
 						eForm, start, end);
 
-				result.put("data", data);
-				result.put("total", total);
+				result.put(ConstantUtils.DATA, data);
+				result.put(ConstantUtils.TOTAL, total);
 			} else {
 				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
 				if (service != null) {
@@ -517,8 +517,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
 							.getByService_EForm(service.getServiceInfoId(), eForm, start, end);
 
-					result.put("data", data);
-					result.put("total", total);
+					result.put(ConstantUtils.DATA, data);
+					result.put(ConstantUtils.TOTAL, total);
 				}
 			}
 		} catch (Exception e) {
@@ -539,8 +539,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService(serviceInfoId, start,
 						end);
 
-				result.put("data", data);
-				result.put("total", total);
+				result.put(ConstantUtils.DATA, data);
+				result.put(ConstantUtils.TOTAL, total);
 			} else {
 				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
 				if (service != null) {
@@ -548,8 +548,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
 							.getByService(service.getServiceInfoId(), start, end);
 
-					result.put("data", data);
-					result.put("total", total);
+					result.put(ConstantUtils.DATA, data);
+					result.put(ConstantUtils.TOTAL, total);
 				}
 			}
 		} catch (Exception e) {

@@ -20,7 +20,7 @@ public class DossierSyncTerm {
 	public static final String SERVER_CONFIG_USERNAME = "username";
 	public static final String SERVER_CONFIG_SECRET = "password";
 	public static final String SERVER_CONFIG_URL = "url";
-	public static final String SERVER_CONFIG_GROUP_ID = "groupId";
+	public static final String SERVER_CONFIG_GROUP_ID = Field.GROUP_ID;
 	
 	public static final String PAYLOAD_SYNC_FILES = "dossierFiles";
 	public static final String PAYLOAD_SYNC_DOCUMENTS = "dossierDocuments";

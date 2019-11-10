@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetDossierResponse {
 	private int total;
 	
-	@XmlElement(name = "data")
+	@XmlElement(name = ConstantUtils.DATA)
 	private List<GetDossierData> data;
 
 	public int getTotal() {

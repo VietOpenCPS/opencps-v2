@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class DossierStatisticModel  {
+@XmlRootElement(name = ConstantUtils.DATA) public class DossierStatisticModel  {
   
   @ApiModelProperty(example = "stepCode of stepConfig", required = true, value = "")
   private String stepCode = null;

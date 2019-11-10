@@ -56,11 +56,11 @@ public class JobposManagementImpl implements JobposManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -69,8 +69,8 @@ public class JobposManagementImpl implements JobposManagement {
 			JSONObject jsonData = actions.getJobpos(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -112,7 +112,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -137,7 +137,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -178,9 +178,9 @@ public class JobposManagementImpl implements JobposManagement {
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -231,16 +231,16 @@ public class JobposManagementImpl implements JobposManagement {
 		JobposPermissionResults result = new JobposPermissionResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.createPermissionsPatch(user.getUserId(), company.getCompanyId(), groupId, id, permissions,
 					serviceContext);
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 

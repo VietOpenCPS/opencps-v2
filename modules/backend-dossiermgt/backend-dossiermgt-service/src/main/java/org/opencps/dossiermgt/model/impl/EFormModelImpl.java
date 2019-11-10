@@ -69,7 +69,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "eFormId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -82,7 +82,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			{ "formScriptFileId", Types.BIGINT },
 			{ "formReportFileId", Types.BIGINT },
 			{ "eFormData", Types.VARCHAR },
-			{ "email", Types.VARCHAR },
+			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
 			{ "secret", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -90,7 +90,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("eFormId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -103,7 +103,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		TABLE_COLUMNS_MAP.put("formScriptFileId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("formReportFileId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("eFormData", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("secret", Types.VARCHAR);
 	}
 
@@ -171,7 +171,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("eFormId", getEFormId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -184,7 +184,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		attributes.put("formScriptFileId", getFormScriptFileId());
 		attributes.put("formReportFileId", getFormReportFileId());
 		attributes.put("eFormData", getEFormData());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("secret", getSecret());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
@@ -207,7 +207,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			setEFormId(eFormId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -285,7 +285,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 			setEFormData(eFormData);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

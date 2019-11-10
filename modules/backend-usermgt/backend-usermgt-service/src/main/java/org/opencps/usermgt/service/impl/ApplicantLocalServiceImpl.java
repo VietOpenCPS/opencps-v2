@@ -836,7 +836,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			object = applicantPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -868,7 +868,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
-			objectData.getString("cityCode"), objectData.getLong("groupId"));
+			objectData.getString("cityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
@@ -877,7 +877,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
 			objectData.getString("districtCode"),
-			objectData.getLong("groupId"));
+			objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
@@ -885,7 +885,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
-			objectData.getString("wardCode"), objectData.getLong("groupId"));
+			objectData.getString("wardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());

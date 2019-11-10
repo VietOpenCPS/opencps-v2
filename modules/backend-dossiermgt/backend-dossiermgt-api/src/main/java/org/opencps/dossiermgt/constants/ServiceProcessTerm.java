@@ -2,7 +2,7 @@ package org.opencps.dossiermgt.constants;
 
 public class ServiceProcessTerm {
 	public static final String SERVICEPROCESS_ID = "serviceProcessId";
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";

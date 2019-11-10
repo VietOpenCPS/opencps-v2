@@ -28,6 +28,8 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -75,11 +77,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DeliverableSearchModel search) {
 
-		// TODO
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-
 			// Check user is login
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -91,19 +91,19 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			// Default sort by modifiedDate
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					Field.MODIFIED_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE, true)
 			};
 
 			if (Validator.isNotNull(search.getSort()) &&
 				Validator.isNotNull(search.getOrder())) {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						search.getSort() + "_sortable", Sort.STRING_TYPE,
+						search.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder()))
 				};
 			}
@@ -118,30 +118,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(Field.KEYWORD_SEARCH, search.getKeyword());
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, search.getType());
 			params.put(DeliverableTerm.APPLICANT_ID_NO, search.getApplicant());
-			// String owner = search.getOwner();
-			// if (Validator.isNotNull(owner)) {
-			// params.put(DossierTerm.OWNER, search.getOwner());
-			// } else {
-			// params.put(DossierTerm.OWNER, String.valueOf(true));
-			// }
 			params.put(DossierTerm.USER_ID, user.getUserId());
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			// DeliverableResultModel results = new DeliverableResultModel();
 
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getListDeliverable(
 				user.getUserId(), serviceContext.getCompanyId(), params, sorts,
 				search.getStart(), search.getEnd(), serviceContext);
-			// JSONObject result = action.getListDeliverable(state, agency,
-			// type, applicant);
-			// results.setTotal(jsonData.getInt("total"));
-			results.put("total", jsonData.getInt("total"));
-			// results.getData()
-			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -156,11 +143,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
-			// return Response.status(200).entity(results).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -174,10 +160,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DeliverableInputModel input) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -220,10 +204,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -257,22 +238,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
 
-			// _log.info("groupId: "+groupId +"*keyword*: "+ id);
 			DeliverableActions actions = new DeliverableActionsImpl();
 			DeliverableModel results;
 
 			Deliverable deliverableInfo = actions.deleteById(id);
-			// _log.info("deliverableInfo: "+ deliverableInfo);
 			if (Validator.isNotNull(deliverableInfo)) {
 				results = DeliverableUtils.mappingToDeliverableDetailModel(
 					deliverableInfo);
@@ -296,7 +272,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -307,7 +282,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			//
 			LinkedHashMap<String, Object> params =
@@ -325,7 +300,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			JSONObject results = JSONFactoryUtil.createJSONObject(
 				DeliverableUtils.mappingToDeliverableFormDataModel(
-					(List<Document>) jsonData.get("data")));
+					(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
@@ -344,7 +319,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -374,10 +349,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -412,10 +384,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -449,10 +418,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -477,10 +443,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext, Long id,
 		DeliverableUpdateModel input) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -524,7 +489,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-
 			// Check user is login
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -532,15 +496,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			int startSearch = -1;
 			int endSearch = -1;
-			if (Validator.isNotNull(end) && !"0".equals(end)) {
+			if (Validator.isNotNull(end) && Integer.getInteger(end) > 0) {
 				startSearch = Integer.parseInt(start);
 				endSearch = Integer.parseInt(end);
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
-			_log.info("groupId: " + groupId + "*keyword*: " + keyword);
-			_log.info("agencyNo: " + agencyNo + "*typeCode*: " + typeCode);
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 
 			String pattern = String.valueOf(keyJson.get("query"));
@@ -564,22 +526,15 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					Field.MODIFIED_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE, true)
 			};
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByTypecode(
 				serviceContext.getCompanyId(), params, sorts, startSearch,
 				endSearch, serviceContext);
 
-			// _log.info("total: "+jsonData.getInt("total"));
-			// results.setTotal(jsonData.getInt("total"));
-			// results.getData()
-			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
-
-			// TODO
-			results.put("total", jsonData.getInt("total"));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -594,7 +549,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
@@ -611,8 +566,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id,
 		String deliverableAction) {
-
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -623,7 +576,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		String deliverableCode) {
 
 		_log.info("START*********1");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("groupId: " + groupId);
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -633,7 +586,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new UnauthenticationException();
 			}
 
-			_log.info("deliverableCode: " + deliverableCode);
 			DossierDetailModel dossierInfo = null;
 			DossierFile dossierFile =
 				DossierFileLocalServiceUtil.getByDeliverableCode(
@@ -661,8 +613,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		// long userId = user.getUserId();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DeliverableActions actions = new DeliverableActionsImpl();
 		Indexer<Deliverable> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
@@ -671,20 +622,15 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			new LinkedHashMap<String, Object>();
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 
-		// JSONObject jsonData = actions.getDossiers(user.getUserId(),
-		// company.getCompanyId(), groupId, params, null,
-		// -1, -1, serviceContext);
-
 		// get JSON data deliverable
 		JSONObject jsonData = actions.getListDeliverable(
 			user.getUserId(), serviceContext.getCompanyId(), params, null, -1,
 			-1, serviceContext);
 
-		long total = jsonData.getLong("total");
-		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+		long total = jsonData.getLong(ConstantUtils.TOTAL);
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long deliverableId = GetterUtil.getLong(
 					document.get(DeliverableTerm.DELIVERABLE_ID));
@@ -704,7 +650,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 		}
 
-		return Response.status(200).entity("{}").build();
+		return Response.status(200).entity(ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE)).build();
 	}
 
 	@Override
@@ -717,8 +663,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		BackendAuth auth = new BackendAuthImpl();
-		backend.auth.api.BackendAuth auth2 =
-			new backend.auth.api.BackendAuthImpl();
 
 		try {
 
@@ -726,20 +670,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				// return Response.status(
-				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
-				// "User not permission process!").build();
-			}
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
-			long userId = user.getUserId();
-
-			// List<Deliverable> deliverables =
-			// DeliverableUtils.readWorkBooksDeliverabe(
-			// file, userId, groupId, serviceContext);
-			//
-			// result.put("total", deliverables.size());
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
@@ -754,10 +684,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, Long id) {
 
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
-
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -802,13 +729,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			long companyId = user.getCompanyId();
 			String userName = user.getFullName();
@@ -831,7 +758,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					deliverable.put(
 						"deliverableId", Validator.isNotNull(deliverableObj)
 							? deliverableObj.getDeliverableId() : 0);
-					deliverable.put("groupId", groupId);
+					deliverable.put(Field.GROUP_ID, groupId);
 					deliverable.put("userId", userId);
 					deliverable.put("companyId", companyId);
 					deliverable.put("userName", userName);
@@ -845,7 +772,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				}
 			}
 
-			result.put("total", size);
+			result.put(ConstantUtils.TOTAL, size);
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
@@ -870,7 +797,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			_log.info(
 				"================GET===========================" +
 					deliverableCode + " " + deliverableCode + " " +
-					header.getHeaderString("groupId"));
+					header.getHeaderString(Field.GROUP_ID));
 
 			if (Validator.isNull(deliverableCode)) {
 				return Response.status(204).entity(
@@ -878,20 +805,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			BackendAuth auth = new BackendAuthImpl();
-			backend.auth.api.BackendAuth auth2 =
-				new backend.auth.api.BackendAuthImpl();
 
 			// Check user is login
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				// return Response.status(
-				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
-				// "User not permission process!").build();
-			}
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Deliverable deliverable =
 				DeliverableLocalServiceUtil.getByF_GID_DCODE(

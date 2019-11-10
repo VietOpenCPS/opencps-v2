@@ -62,7 +62,7 @@ public class DossierTemplateWrapper implements DossierTemplate,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierTemplateId", getDossierTemplateId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -90,7 +90,7 @@ public class DossierTemplateWrapper implements DossierTemplate,
 			setDossierTemplateId(dossierTemplateId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

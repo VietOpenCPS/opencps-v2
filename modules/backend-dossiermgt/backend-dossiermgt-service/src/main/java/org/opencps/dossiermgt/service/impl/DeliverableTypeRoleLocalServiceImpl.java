@@ -148,7 +148,7 @@ public class DeliverableTypeRoleLocalServiceImpl
 
 	class ModelKeys {
 		public static final String DELIVERABLETYPEROLEID = "deliverableTypeRoleId";
-		public static final String GROUPID = "groupId";
+		public static final String GROUPID = Field.GROUP_ID;
 		public static final String COMPANYID = "companyId";
 		public static final String USERID = "userId";
 		public static final String USERNAME = "userName";

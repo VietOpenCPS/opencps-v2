@@ -59,11 +59,11 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 
 		attributes.put("questionId", getQuestionId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("fullname", getFullname());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
 		attributes.put("govAgencyCode", getGovAgencyCode());
@@ -89,7 +89,7 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -113,7 +113,7 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

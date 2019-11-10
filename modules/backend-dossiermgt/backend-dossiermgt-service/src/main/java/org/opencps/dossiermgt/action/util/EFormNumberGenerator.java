@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
-import org.opencps.dossiermgt.constants.ConstantsUtils;
 
 public class EFormNumberGenerator {
 
@@ -274,17 +273,17 @@ public class EFormNumberGenerator {
 //			String curYear = df.format(cal.getTime());
 //			String shortCurYear = sdf.format(cal.getTime());
 
-			String certConfigId = ConstantsUtils.PRE_FIX_CERT + pattern + StringPool.AT + groupId;
+			String certConfigId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT) + pattern + StringPool.AT + groupId;
 			
 			_log.debug("___certConfigId" + certConfigId);
 
-			String certConfigCurrId = ConstantsUtils.PRE_FIX_CERT_CURR + pattern + StringPool.AT + groupId;
+			String certConfigCurrId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT_CURR) + pattern + StringPool.AT + groupId;
 			
 			_log.debug("___certConfigCurrId" + certConfigCurrId);
 
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigId);
 
-			String elmCertId = ConstantsUtils.PRE_FIX_CERT_ELM + pattern + StringPool.AT + groupId + StringPool.AT + dossierid;
+			String elmCertId = ReadFilePropertiesUtils.get(ConstantUtils.PRE_FIX_CERT_ELM) + pattern + StringPool.AT + groupId + StringPool.AT + dossierid;
 
 			//Counter counter = CounterLocalServiceUtil.fetchCounter(certId);
 

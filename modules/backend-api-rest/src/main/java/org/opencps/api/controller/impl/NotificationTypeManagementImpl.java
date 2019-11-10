@@ -36,9 +36,9 @@ public class NotificationTypeManagementImpl implements NotificationTypeManagemen
 
 			JSONObject jsonData = actions.getNotificationTypes();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationTypeModel().addAll(
-					NotificationTemplateUtils.mapperNotificationTypeList((Map<String, String>) jsonData.get("data")));
+					NotificationTemplateUtils.mapperNotificationTypeList((Map<String, String>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 

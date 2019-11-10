@@ -190,7 +190,7 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
@@ -300,7 +300,7 @@ public class DossierMgtUtils {
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -311,7 +311,7 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = null;
 		if (dossierActionId > 0) {
@@ -453,7 +453,7 @@ public class DossierMgtUtils {
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -750,12 +750,12 @@ public class DossierMgtUtils {
 		ServiceContext context = new ServiceContext();
 		context.setUserId(dossier.getUserId());
 		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
-		jsonObj.put("key", key);
+		jsonObj.put(ConstantUtils.VALUE_KEY, key);
 		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
 		JSONObject resultObj;
 		try {
 			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
-			if (resultObj.has("key") && resultObj.getString("key").equals(value)) {
+			if (resultObj.has(ConstantUtils.VALUE_KEY) && resultObj.getString(ConstantUtils.VALUE_KEY).equals(value)) {
 				return true;
 			}
 			else {

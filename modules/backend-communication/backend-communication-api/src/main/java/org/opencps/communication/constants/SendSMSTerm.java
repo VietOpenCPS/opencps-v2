@@ -41,7 +41,7 @@ public class SendSMSTerm {
 	// public static final String SERVER_CONFIG_PROTOCOL_ZALO_INF = "ZALO_INF";
 	public static final String SERVER_CONFIG_SERVERNO_ZALO = "ZALO";
 	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
-	public static final String ZALO_GROUPID = "groupId";
+	public static final String ZALO_GROUPID = Field.GROUP_ID;
 	// public static final String ZALO_UID = "ZALO_UID";
 	// public static final String UID = "uid";
 	// public static final String ZALO_TEL_NO_EXITS_MES = "telNoExitsMes";
@@ -68,13 +68,13 @@ public class SendSMSTerm {
 	// public static final String ZALO_URLS_URLS = "urls";
 	// public static final String ZALO_URLS_PATH_BASE = "pathBase";
 	// public static final String ZALO_URLS_END_POINT = "endPoint";
-	// public static final String ZALO_URLS_GROUP_ID = "groupId";
+	// public static final String ZALO_URLS_GROUP_ID = Field.GROUP_ID;
 	// public static final String ZALO_URLS_USER_NAME = "userName";
 	// public static final String ZALO_URLS_PASS_WORD = "password";
 
 	public static final String SERVER_CONFIG_SERVERNO_EPACIFIC =
 		"SMS_EPACIFIC_SERVER";
-	public static final String EPACIFIC_GROUPID = "groupId";
+	public static final String EPACIFIC_GROUPID = Field.GROUP_ID;
 	public static final String EPACIFIC_MINE = "mine";
 	public static final String EPACIFIC_USER = "user";
 	public static final String EPACIFIC_PASSWORD = "password";

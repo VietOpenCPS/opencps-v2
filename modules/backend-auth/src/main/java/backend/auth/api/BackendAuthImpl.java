@@ -30,7 +30,7 @@ public class BackendAuthImpl implements BackendAuth {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
-					if ("Administrator".equals(role.getName())) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
 						hasPermission = true;
 						break;
 					}
@@ -87,7 +87,7 @@ public class BackendAuthImpl implements BackendAuth {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
-					if ("Administrator".equals(role.getName())) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
 						isAdmin = true;
 						break;
 					}

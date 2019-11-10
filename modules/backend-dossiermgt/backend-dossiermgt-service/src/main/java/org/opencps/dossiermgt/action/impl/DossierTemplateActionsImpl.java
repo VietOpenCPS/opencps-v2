@@ -42,11 +42,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 		hits = DossierTemplateLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		long total = DossierTemplateLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 
@@ -87,11 +87,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 		hits = DossierPartLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -107,11 +107,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
 				GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO)));
 
-		result.put("data", dossierParts);
+		result.put(ConstantUtils.DATA, dossierParts);
 
 		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}

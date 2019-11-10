@@ -42,7 +42,7 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		payloadJSON.put("notificationText", messageEntry.getTextMessage());
 		payloadJSON.put("userUrl", messageEntry.getUserUrl());
 		payloadJSON.put("guestUrl", messageEntry.getGuestUrl());
-		payloadJSON.put("data", messageEntry.getData());
+		payloadJSON.put(ConstantUtils.DATA, messageEntry.getData());
 		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
 
 		List<Long> toUserList = messageEntry.getToUserIds();
@@ -136,7 +136,7 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 			String charset = "UTF-8";
 			URLConnection connection = new URL(url).openConnection();
 			connection.setDoOutput(true); // Triggers POST.
-			connection.setRequestProperty("Content-Type", "application/json;");
+			connection.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json;");
 
 			OutputStream output = connection.getOutputStream();
 			output.write(param.getBytes(charset));

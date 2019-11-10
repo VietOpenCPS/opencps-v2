@@ -35,7 +35,7 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 			int total = DeliverableTypeLocalServiceUtil.getDeliverableTypesCount();
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			result.put("lstDeliverableType", lstDeliverableType);
 
 		} catch (Exception e) {

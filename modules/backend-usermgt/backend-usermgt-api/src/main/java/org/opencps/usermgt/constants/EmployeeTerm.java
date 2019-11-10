@@ -11,7 +11,7 @@ public class EmployeeTerm {
 
 	public static final String EMPLOYEE_ID = "employeeId";
 
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 
 	public static final String COMPANY_ID = "companyId";
 	
@@ -35,7 +35,7 @@ public class EmployeeTerm {
 	
 	public static final String MOBILE = "mobile";
 	
-	public static final String EMAIL = "email";
+	public static final String EMAIL = ConstantUtils.VALUE_EMAIL;
 	
 	public static final String WORKING_STATUS = "workingStatus";
 	

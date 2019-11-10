@@ -67,7 +67,7 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "registrationTemplateId", Types.BIGINT },
-			{ "groupId", Types.BIGINT },
+			{ Field.GROUP_ID, Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
@@ -86,7 +86,7 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("registrationTemplateId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -164,7 +164,7 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 
 		attributes.put("uuid", getUuid());
 		attributes.put("registrationTemplateId", getRegistrationTemplateId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -199,7 +199,7 @@ public class RegistrationTemplatesModelImpl extends BaseModelImpl<RegistrationTe
 			setRegistrationTemplateId(registrationTemplateId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

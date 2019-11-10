@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="fullname" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="publish" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="questionType" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "fullname",
-    "email",
+    ConstantUtils.VALUE_EMAIL,
     "content",
     "publish",
     "questionType",
@@ -60,7 +60,7 @@ public class QuestionInputModel {
     @FormParam("fullname")
     protected String fullname;
     @XmlElement(required = true)
-    @FormParam("email")
+    @FormParam(ConstantUtils.VALUE_EMAIL)
     protected String email;
     @XmlElement(required = true)
     @FormParam("content")

@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="screenName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="exist" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "screenName",
-    "email",
+    ConstantUtils.VALUE_EMAIL,
     "exist"
 })
 @XmlRootElement(name = "EmployeeAccountInputModel")
@@ -47,7 +47,7 @@ public class EmployeeAccountInputModel {
 
 	@FormParam(value = "screenName")
     protected String screenName;
-	@FormParam(value = "email")
+	@FormParam(value = ConstantUtils.VALUE_EMAIL)
     protected String email;
 	@FormParam(value = "exist")
     protected boolean exist;

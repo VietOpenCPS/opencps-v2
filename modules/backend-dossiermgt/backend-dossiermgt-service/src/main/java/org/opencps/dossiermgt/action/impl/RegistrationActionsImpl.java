@@ -130,7 +130,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			JSONObject mediaItemsJsonObject = JSONFactoryUtil.createJSONObject();
 
 			mediaItemsJsonObject.put("registrationFormId", registrationForm.getRegistrationFormId());
-			mediaItemsJsonObject.put("groupId", registrationForm.getGroupId());
+			mediaItemsJsonObject.put(Field.GROUP_ID, registrationForm.getGroupId());
 			mediaItemsJsonObject.put("userId", registrationForm.getUserId());
 			mediaItemsJsonObject.put("createDate", registrationForm.getCreateDate());
 			mediaItemsJsonObject.put("modifiedDate", registrationForm.getModifiedDate());
@@ -173,9 +173,9 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 			hits = RegistrationLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
-			result.put("total",
+			result.put(ConstantUtils.TOTAL,
 					RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
@@ -209,11 +209,11 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			
 			hits = RegistrationFormLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
 			
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 			
 			long total = RegistrationFormLocalServiceUtil.countLucene(params, searchContext);
 			
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);

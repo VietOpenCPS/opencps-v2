@@ -146,12 +146,12 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			Hits hits = DossierFileLocalServiceUtil.searchLucene(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total =
 				DossierFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (Exception e) {

@@ -216,7 +216,7 @@ public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseIm
 
 			object = documentTypePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCreateDate(new Date());
 
 		}

@@ -62,7 +62,7 @@ public class StepConfigWrapper implements StepConfig, ModelWrapper<StepConfig> {
 		attributes.put("uuid", getUuid());
 		attributes.put("stepConfigId", getStepConfigId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -98,7 +98,7 @@ public class StepConfigWrapper implements StepConfig, ModelWrapper<StepConfig> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

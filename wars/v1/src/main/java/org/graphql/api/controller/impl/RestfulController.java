@@ -183,17 +183,17 @@ public class RestfulController {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		result.put("email", StringPool.BLANK);
+		result.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
 		result.put("screenName", StringPool.BLANK);
-		result.put("deactiveAccountFlag", 0);
+		result.put(ConstantUtils.DEACTIVE_ACCOUNT, 0);
 
 		try {
 
 			User user = UserLocalServiceUtil.fetchUser(id);
 
-			result.put("email", user.getEmailAddress());
+			result.put(ConstantUtils.VALUE_EMAIL, user.getEmailAddress());
 			result.put("screenName", user.getScreenName());
-			result.put("deactiveAccountFlag", user.getStatus());
+			result.put(ConstantUtils.DEACTIVE_ACCOUNT, user.getStatus());
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -210,9 +210,9 @@ public class RestfulController {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		result.put("email", StringPool.BLANK);
-		result.put("role", StringPool.BLANK);
-		result.put("deactiveAccountFlag", 0);
+		result.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
+		result.put(ConstantUtils.VALUE_ROLE, StringPool.BLANK);
+		result.put(ConstantUtils.DEACTIVE_ACCOUNT, 0);
 		try {
 
 			long userId = 0;
@@ -227,21 +227,21 @@ public class RestfulController {
 
 				for (Role role : roles) {
 
-					if ("Administrator".equals(role.getName())) {
-						roleName = "Administrator";
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
+						roleName = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN);
 						break;
 					}
 
-					if ("Administrator_data".equals(role.getName())) {
-						roleName = "Administrator_data";
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN_DATA).equals(role.getName())) {
+						roleName = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN_DATA);
 						break;
 					}
 
 				}
 
-				result.put("email", user.getEmailAddress());
-				result.put("role", roleName);
-				result.put("deactiveAccountFlag", user.getStatus());
+				result.put(ConstantUtils.VALUE_EMAIL, user.getEmailAddress());
+				result.put(ConstantUtils.VALUE_ROLE, roleName);
+				result.put(ConstantUtils.DEACTIVE_ACCOUNT, user.getStatus());
 
 			}
 
@@ -422,8 +422,8 @@ public class RestfulController {
 
 		long groupId = 0;
 
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
@@ -469,8 +469,8 @@ public class RestfulController {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 		}
 		long groupId = 0;
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 		long companyId = CompanyThreadLocal.getCompanyId();
 		String desc = "FileAttach file upload";
@@ -528,12 +528,12 @@ public class RestfulController {
 						File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 								true);
 						if ("org.opencps.usermgt.model.ApplicantEsign".equals(className)) {
-							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG);
 							File targetFile = new File(buildFileName);
 							employee.setFileSignId(fileAttach.getFileEntryId());
 							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						} else {
-							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_CER);
 							File targetFile = new File(buildFileName);
 							employee.setFileCertId(fileAttach.getFileEntryId());
 							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -587,8 +587,8 @@ public class RestfulController {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 		}
 		long groupId = 0;
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 		long companyId = CompanyThreadLocal.getCompanyId();
 		String desc = "FileAttach file upload";
@@ -645,7 +645,7 @@ public class RestfulController {
 
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(pk);
 
-		result.put("total", serviceFileTemplates.size());
+		result.put(ConstantUtils.TOTAL, serviceFileTemplates.size());
 
 		JSONObject object = null;
 		for (ServiceFileTemplate serviceFileTemplate : serviceFileTemplates) {
@@ -668,7 +668,7 @@ public class RestfulController {
 			}
 
 		}
-		result.put("data", resultArray);
+		result.put(ConstantUtils.DATA, resultArray);
 
 		return result.toJSONString();
 
@@ -685,13 +685,13 @@ public class RestfulController {
 
 		long groupId = 0;
 
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
 
-		result.put("total", fileAttachs.size());
+		result.put(ConstantUtils.TOTAL, fileAttachs.size());
 
 		JSONObject object = null;
 		for (FileAttach ett : fileAttachs) {
@@ -722,7 +722,7 @@ public class RestfulController {
 			}
 
 		}
-		result.put("data", resultArray);
+		result.put(ConstantUtils.DATA, resultArray);
 
 		return result.toJSONString();
 
@@ -738,8 +738,8 @@ public class RestfulController {
 
 		long groupId = 0;
 
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(groupId, className, pk);
@@ -776,7 +776,7 @@ public class RestfulController {
 			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 
 			response.setContentType("application/force-download");
-			response.setHeader("Content-Disposition",
+			response.setHeader(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
 					"attachment; filename=" + fileEntry.getFileName() + fileEntry.getExtension());
 
 			InputStream inputStream = fileEntry.getContentStream();
@@ -823,7 +823,7 @@ public class RestfulController {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(serviceFileTemplate.getFileEntryId());
 
 				response.setContentType("application/force-download");
-				response.setHeader("Content-Disposition",
+				response.setHeader(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
 						"attachment; filename=" + serviceFileTemplate.getTemplateName() + fileEntry.getExtension());
 
 				InputStream inputStream = fileEntry.getContentStream();
@@ -921,9 +921,9 @@ public class RestfulController {
 			dynamicQuery.setProjection(projectionList);
 
 			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-			disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-			if (Validator.isNotNull(request.getHeader("groupId"))) {
-				disjunction.add(RestrictionsFactoryUtil.eq("groupId", Long.valueOf(request.getHeader("groupId"))));
+			disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
+			if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+				disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, Long.valueOf(request.getHeader(Field.GROUP_ID))));
 			}
 			dynamicQuery.add(disjunction);
 
@@ -938,7 +938,7 @@ public class RestfulController {
 
 				if ("int".equals(request.getParameter("type"))) {
 					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
-							request.getParameter("collectionCode"), Long.valueOf(request.getHeader("groupId")));
+							request.getParameter("collectionCode"), Long.valueOf(request.getHeader(Field.GROUP_ID)));
 
 					if (Validator.isNotNull(dictCollection)) {
 						dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
@@ -1073,8 +1073,8 @@ public class RestfulController {
 
 				long groupId = 0;
 
-				if (Validator.isNotNull(request.getHeader("groupId"))) {
-					groupId = Long.valueOf(request.getHeader("groupId"));
+				if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+					groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 				}
 
 				try {
@@ -1160,7 +1160,7 @@ public class RestfulController {
 
 					result = ElasticQueryWrapUtil.query(query.toJSONString());
 
-					result.getJSONObject("hits").put("total", count.getLong("count"));
+					result.getJSONObject("hits").put(ConstantUtils.TOTAL, count.getLong("count"));
 
 				} catch (JSONException e) {
 					_log.debug(e);
@@ -1188,7 +1188,7 @@ public class RestfulController {
 				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 
 				//long groupId = 0;
-				//if (Validator.isNotNull(request.getHeader("groupId"))) {
+				//if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
 				//}
 
 				//JSONObject query = JSONFactoryUtil.createJSONObject(
@@ -1253,9 +1253,9 @@ public class RestfulController {
 			DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 
 			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-			disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-			if (Validator.isNotNull(request.getHeader("groupId"))) {
-				disjunction.add(RestrictionsFactoryUtil.eq("groupId", Long.valueOf(request.getHeader("groupId"))));
+			disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
+			if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+				disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, Long.valueOf(request.getHeader(Field.GROUP_ID))));
 			}
 			dynamicQuery.add(disjunction);
 
@@ -1280,8 +1280,8 @@ public class RestfulController {
 		
 		long groupId = 0;
 
-		if (Validator.isNotNull(request.getHeader("groupId"))) {
-			groupId = Long.valueOf(request.getHeader("groupId"));
+		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
+			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 		
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
@@ -1316,7 +1316,7 @@ public class RestfulController {
 			    BufferedImage challengeImage = instance.getImageChallengeForID(
 			    captchaId, Locale.US );
 			    try {
-					ImageIO.write( challengeImage, "png", file );
+					ImageIO.write( challengeImage, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file );
 				    
 				} catch (IOException e) {
 					_log.debug(e);

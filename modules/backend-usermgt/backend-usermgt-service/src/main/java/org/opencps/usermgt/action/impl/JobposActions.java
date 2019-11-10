@@ -51,11 +51,11 @@ public class JobposActions implements JobposInterface {
 
 			hits = JobPosLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = JobPosLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -114,9 +114,9 @@ public class JobposActions implements JobposInterface {
 
 		String[] permissionData = ActionKeys.getListPermissionData();
 
-		result.put("data", permissionData);
+		result.put(ConstantUtils.DATA, permissionData);
 
-		result.put("total", permissionData.length);
+		result.put(ConstantUtils.TOTAL, permissionData.length);
 
 		return result;
 	}

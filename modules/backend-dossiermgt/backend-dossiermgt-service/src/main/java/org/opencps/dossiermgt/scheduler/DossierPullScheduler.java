@@ -117,7 +117,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			JSONObject jsData = JSONFactoryUtil
 					.createJSONObject(resDossierSearch.getString(RESTFulConfiguration.MESSAGE));
 
-			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+			JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.getJSONObject(i);
@@ -450,7 +450,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			InvokeREST rest = new InvokeREST();
 
 			HashMap<String, String> properties = new HashMap<String, String>();
-			properties.put("Content-Type", "application/x-www-form-urlencoded");
+			properties.put(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
 			String path = "dossiers/" + srcDossierId + "/payments";
 
@@ -468,7 +468,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);
@@ -537,7 +537,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
 					conn.setRequestProperty("Accept", "application/json");
-					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+					conn.setRequestProperty(Field.GROUP_ID, String.valueOf(srcGroupId));
 
 					int responseCode = conn.getResponseCode();
 
@@ -550,7 +550,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 						InputStream is = conn.getInputStream();
 
-						String raw = conn.getHeaderField("Content-Disposition");
+						String raw = conn.getHeaderField(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON));
 						// raw = "attachment; filename=abc.jpg"
 						File tempFile = null;
 
@@ -634,7 +634,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
 					conn.setRequestProperty("Accept", "application/json");
-					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+					conn.setRequestProperty(Field.GROUP_ID, String.valueOf(srcGroupId));
 
 					int responseCode = conn.getResponseCode();
 
@@ -702,7 +702,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 		HashMap<String, String> properties = new HashMap<String, String>();
 
-		properties.put("Content-Type", "application/x-www-form-urlencoded");
+		properties.put(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
 		String path = "dossiers/" + refId + "/reset";
 
@@ -726,7 +726,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 			InvokeREST rest = new InvokeREST();
 
 			HashMap<String, String> properties = new HashMap<String, String>();
-			properties.put("Content-Type", "application/x-www-form-urlencoded");
+			properties.put(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
 			String path = "dossiers/" + dossierId + "/all/files";
 
@@ -744,7 +744,7 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);
@@ -825,9 +825,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 					conn.setRequestMethod(HttpMethods.GET);
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
-					conn.setRequestProperty("Content-Type", "application/json");
+					conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json");
 					conn.setRequestProperty("Accept", "application/json");
-					conn.setRequestProperty("groupId", String.valueOf(srcGroupId));
+					conn.setRequestProperty(Field.GROUP_ID, String.valueOf(srcGroupId));
 
 					int responseCode = conn.getResponseCode();
 					_log.info("responseCode: " + responseCode);

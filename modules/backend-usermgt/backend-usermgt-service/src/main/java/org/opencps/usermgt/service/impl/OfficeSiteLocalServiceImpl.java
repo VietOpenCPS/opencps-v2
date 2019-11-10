@@ -231,7 +231,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		// TODO
 		MultiMatchQuery query = null;
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
@@ -276,7 +276,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		// TODO
 		MultiMatchQuery query = null;
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
@@ -353,7 +353,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 			object = officeSitePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -367,7 +367,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		object.setAddress(objectData.getString("address"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString("email"));
+		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
 		object.setWebsite(objectData.getString("website"));
 		// object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
 		object.setSiteGroupId(objectData.getLong("siteGroupId"));

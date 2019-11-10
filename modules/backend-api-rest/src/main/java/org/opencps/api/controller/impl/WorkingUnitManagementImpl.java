@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -36,6 +37,8 @@ import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
 import org.opencps.api.workingunit.model.WorkingUnitModel;
 import org.opencps.api.workingunit.model.WorkingUnitResults;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.WorkingUnitInterface;
 import org.opencps.usermgt.action.impl.WorkingUnitActions;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
@@ -66,23 +69,23 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put(WorkingUnitTerm.PARENT_WORKING_UNIT_ID, query.getParent());
 			
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };
+					SortFactoryUtil.create(ConstantUtils.TREE_INDEX, Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getWorkingUnits(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getWorkingUnitModel()
-					.addAll(WorkingUnitUtils.mapperWorkingUnitList((List<Document>) jsonData.get("data")));
+					.addAll(WorkingUnitUtils.mapperWorkingUnitList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -106,9 +109,9 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
+			error.setCode(500);
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(404).entity(error).build();
 
@@ -123,7 +126,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String name = HtmlUtil.escape(input.getName());
 			String enName = HtmlUtil.escape(input.getEnName());
@@ -156,7 +159,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String name = HtmlUtil.escape(input.getName());
 			String enName = HtmlUtil.escape(input.getEnName());
@@ -206,12 +209,12 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
 			File file = actions.updateLogo(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "WorkingUnit/", "WorkingUnit file upload", serviceContext);
+					fileName, fileType, fileSize, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_WORKING_UNIT), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_WORKING_UPLOAD), serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
@@ -219,8 +222,8 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileNameRespone + StringPool.QUOTE)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -251,8 +254,8 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + StringPool.QUOTE)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 

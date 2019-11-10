@@ -21,8 +21,6 @@ import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
 import org.opencps.api.serviceinfo.model.ServiceRecentDetailModel;
-import org.opencps.dossiermgt.action.ServiceConfigActions;
-import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -31,9 +29,10 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 
+import backend.utils.APIDateTimeUtils;
+
 public class ServiceInfoUtils {
 
-	@SuppressWarnings("unchecked")
 	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
@@ -62,12 +61,9 @@ public class ServiceInfoUtils {
 				model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 				model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 				model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
-				//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
 				model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
 				
 				List<ServiceInfoServiceConfig> lsServiceConfig = new ArrayList<ServiceInfoServiceConfig>();
-
-				//ServiceConfigActions serviceConfigActions = new ServiceConfigActionImpl();
 
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -75,17 +71,9 @@ public class ServiceInfoUtils {
 
 				params.put(ServiceConfigTerm.SERVICE_CODE, doc.get(ServiceInfoTerm.SERVICE_CODE));
 
-//				Sort[] sorts = new Sort[] {
-//						SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, Boolean.valueOf(StringPool.BLANK)) };
-
-//				JSONObject jsonData = serviceConfigActions.getServiceConfigs(serviceContext.getUserId(),
-//						serviceContext.getCompanyId(), Long.parseLong(doc.get(Field.GROUP_ID)), params, sorts,
-//						QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 				List<ServiceConfig> lstScs = ServiceConfigLocalServiceUtil.getByServiceInfo(Long.valueOf(doc.get(Field.GROUP_ID)), GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 				
-//				List<Document> serviceConfigs = (List<Document>) jsonData.get("data");
-
 				for (ServiceConfig sc : lstScs) {
 					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
 
@@ -98,18 +86,6 @@ public class ServiceInfoUtils {
 					
 					lsServiceConfig.add(cf);
 				}
-//				for (Document serviceConfig : serviceConfigs) {
-//					ServiceInfoServiceConfig cf = new ServiceInfoServiceConfig();
-	//
-//					cf.setGovAgencyCode(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_CODE));
-//					cf.setGovAgencyName(serviceConfig.get(ServiceConfigTerm.GOVAGENCY_NAME));
-//					cf.setServiceInstruction(serviceConfig.get(ServiceConfigTerm.SERVICE_INSTRUCTION));
-//					cf.setServiceUr(serviceConfig.get(ServiceConfigTerm.SERVICE_URL));
-//					cf.setServiceLevel(Integer.parseInt(serviceConfig.get(ServiceConfigTerm.SERVICE_LEVEL)));
-//					cf.setServiceConfigId(GetterUtil.getLong(serviceConfig.get(Field.ENTRY_CLASS_PK)));
-//					
-//					lsServiceConfig.add(cf);
-//				}
 				
 				model.getServiceConfigs().addAll(lsServiceConfig);
 				
@@ -154,7 +130,7 @@ public class ServiceInfoUtils {
 
 		ServiceInfoDetailModel model = new ServiceInfoDetailModel();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(org.opencps.auth.utils.APIDateTimeUtils._NORMAL_DATE_TIME);
 		
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
 		model.setServiceName(serviceInfo.getServiceName());
@@ -230,7 +206,6 @@ public class ServiceInfoUtils {
 
 					} catch (Exception e) {
 						_log.debug(e);
-						_log.error("Can't get ServiceFileTemplate");
 					}
 				}
 
@@ -264,8 +239,6 @@ public class ServiceInfoUtils {
 
 			} catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
-				_log.error("Can't get ServiceFileTemplate");
 			}
 		}
 
@@ -276,7 +249,7 @@ public class ServiceInfoUtils {
 
 		ServiceRecentDetailModel model = new ServiceRecentDetailModel();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(org.opencps.auth.utils.APIDateTimeUtils._NORMAL_DATE_TIME);
 		
 		model.setServiceInfoId(serviceInfo.getServiceInfoId());
 		model.setServiceName(serviceInfo.getServiceName());

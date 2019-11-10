@@ -220,7 +220,7 @@ public class RegistrationSyncScheduler extends BaseMessageListener {
 
 				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray jsArrayData = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < jsArrayData.length(); i++) {
 					JSONObject elm = jsArrayData.getJSONObject(i);
@@ -315,7 +315,7 @@ public class RegistrationSyncScheduler extends BaseMessageListener {
 			if (response.getInt(RESTFulConfiguration.STATUS) == 200) {
 
 				JSONObject jsData = JSONFactoryUtil.createJSONObject(response.getString(RESTFulConfiguration.MESSAGE));
-				groupId = jsData.getLong("groupId");
+				groupId = jsData.getLong(Field.GROUP_ID);
 			}
 
 		} catch (Exception e) {

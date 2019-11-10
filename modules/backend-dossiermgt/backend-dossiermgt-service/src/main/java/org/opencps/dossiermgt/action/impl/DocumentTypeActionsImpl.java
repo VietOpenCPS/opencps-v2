@@ -31,11 +31,11 @@ public class DocumentTypeActionsImpl implements DocumentTypeActions {
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DocumentTypeLocalServiceUtil.getDocumentTypesCount();
 			_log.info("total:"+total);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);

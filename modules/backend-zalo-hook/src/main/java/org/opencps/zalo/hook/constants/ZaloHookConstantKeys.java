@@ -22,7 +22,7 @@ public class ZaloHookConstantKeys {
 
 	public static final String ZALO_C_PARAM_TEL_NO = "telNo";
 	public static final String ZALO_C_PARAM_UID = "uId";
-	public static final String ZALO_C_PARAM_GROUP_ID = "groupId";
+	public static final String ZALO_C_PARAM_GROUP_ID = Field.GROUP_ID;
 	public static final String ZALO_C_PARAM_PAYLOAD = "payload";
 
 	public static final String ZALO_ACTION_UNFOLLOW = "unfollow";

@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -98,8 +99,6 @@ public class NotificationTemplateUtils {
 	public static List<NotificationtemplateModel> mapperNotificationtemplateList(List<Document> listDocument) {
 
 		List<NotificationtemplateModel> results = new ArrayList<>();
-//		Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
-
 		try {
 
 			NotificationtemplateModel ett = null;
@@ -107,12 +106,11 @@ public class NotificationTemplateUtils {
 			for (Document document : listDocument) {
 				ett = new NotificationtemplateModel();
 
-				ett.setModifiedDate( Validator.isNotNull(document.get("modified")) &&
-						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+				ett.setModifiedDate( Validator.isNotNull(document.get(Field.MODIFIED_DATE)) &&
+						Validator.isNotNull(document.getDate(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				ett.setNotificationType(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE));
 
-//				ett.setTypeName(initTemplates.get(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
 				ett.setTypeName(NotificationMGTConstants
 						.getNotificationTemp(document.get(NotificationTemplateTerm.NOTIFICATTION_TYPE)));
 
@@ -147,8 +145,6 @@ public class NotificationTemplateUtils {
 					Validator.isNotNull(notificationtemplate.getModifiedDate()) ? APIDateTimeUtils.convertDateToString(
 							notificationtemplate.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 			ett.setNotificationType(notificationtemplate.getNotificationType());
-
-//			Map<String, String> initTemplates = NotificationMGTConstants.NOTIFICATION_TEMPLATE_INIT;
 
 			ett.setTypeName(NotificationMGTConstants.getNotificationTemp(notificationtemplate.getNotificationType()));
 			ett.setEmailSubject(notificationtemplate.getEmailSubject());
@@ -188,12 +184,6 @@ public class NotificationTemplateUtils {
 					notificationQueue.getExpireDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 			ett.setPublicationDate(Validator.isNotNull(notificationQueue.getCreateDate()) ? APIDateTimeUtils.convertDateToString(
 					notificationQueue.getCreateDate(), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
-//			ett.setEmailSubject(notificationQueue.get);
-//			ett.setEmailBody(notificationQueue.get);
-//			ett.setTextMessage(notificationQueue.get);
-//			ett.setUrlLink(notificationQueue.get);
-//			ett.setSendEmail(notificationQueue.get);
-//			ett.setSendSMS(notificationQueue.get);
 			
 		} catch (Exception e) {
 			_log.error(e);

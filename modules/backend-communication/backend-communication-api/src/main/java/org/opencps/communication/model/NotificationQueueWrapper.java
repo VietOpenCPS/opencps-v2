@@ -59,7 +59,7 @@ public class NotificationQueueWrapper implements NotificationQueue,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("notificationQueueId", getNotificationQueueId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -88,7 +88,7 @@ public class NotificationQueueWrapper implements NotificationQueue,
 			setNotificationQueueId(notificationQueueId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

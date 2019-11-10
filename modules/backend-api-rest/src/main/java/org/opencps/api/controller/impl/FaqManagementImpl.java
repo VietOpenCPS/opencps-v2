@@ -59,7 +59,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response addQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, QuestionInputModel input, String jCaptchaResponse) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
@@ -121,7 +121,7 @@ public class FaqManagementImpl implements FaqManagement {
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword, String questionType,
 			String answer, String subDomainCode,
 			ServiceContext serviceContext) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.debug("IN GET QUESTION: " + groupId);
 		try {
 			if (Validator.isNull(start)) {
@@ -188,7 +188,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response addAnswer(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long questionId, AnswerInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			Answer answer = AnswerLocalServiceUtil.updateAnswer(user.getUserId(), groupId, 0l, questionId, input.getContent(), input.getPublish());
 			
@@ -224,7 +224,7 @@ public class FaqManagementImpl implements FaqManagement {
 			Integer end,
 			Integer publish,
 			ServiceContext serviceContext) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			if (Validator.isNull(start)) {
 				start = QueryUtil.ALL_POS;
@@ -275,7 +275,7 @@ public class FaqManagementImpl implements FaqManagement {
 	public Response updateQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, QuestionInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long questionId = GetterUtil.getLong(id);
 		try {
 			Question question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(), groupId,
@@ -333,7 +333,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response updateAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long questionId, long answerId, AnswerInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			Answer answer = AnswerLocalServiceUtil.updateAnswer(user.getUserId(), groupId, answerId, questionId, input.getContent(), input.getPublish());
 
@@ -429,7 +429,7 @@ public class FaqManagementImpl implements FaqManagement {
 	@Override
 	public Response proxyQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String url, String method, String data) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, "SERVER_DVC");
 			if (sc != null) {
@@ -477,13 +477,13 @@ public class FaqManagementImpl implements FaqManagement {
 			        }
 
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty("groupId", groupIdRequest);
+			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 			        conn.setRequestMethod(method);
 			        conn.setRequestProperty("Accept", "application/json");
 			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 			        
 			        if ("POST".equals(method) || "PUT".equals(method)) {
-				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
 
 						conn.setUseCaches(false);

@@ -95,7 +95,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 
 				query = new MultiMatchQuery(String.valueOf(groupId));
 
-				query.addFields("groupId");
+				query.addFields(Field.GROUP_ID);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -108,7 +108,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 				for (Document document : list) {
 
 					ResourceUser ResourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(
-							groupId, className, classPK, Long.valueOf(document.get("entryClassPK")));
+							groupId, className, classPK, Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -117,27 +117,27 @@ public class ResourceUserActions implements ResourceUserInterface {
 						selected = Boolean.TRUE.toString();
 
 					}
-					document.addTextSortable(ResourceUserTerm.TO_USERID, document.get("entryClassPK"));
+					document.addTextSortable(ResourceUserTerm.TO_USERID, document.get(ConstantUtils.ENTRY_CLASS_PK));
 					document.addTextSortable(ResourceUserTerm.TO_USERNAME, document.get("fullName"));
 					document.addTextSortable("selected", selected);
 
 				}
 
-				result.put("data", list);
+				result.put(ConstantUtils.DATA, list);
 
 				long total = list.size();
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			} else {
 
 				hits = ResourceUserLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = ResourceUserLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 
 			}
 
@@ -187,7 +187,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 				} else {
 
 					ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK,
-							user.getLong("userId"), user.getString("fullname"), user.getString("email"),
+							user.getLong("userId"), user.getString("fullname"), user.getString(ConstantUtils.VALUE_EMAIL),
 							user.getBoolean("readonly"), serviceContext);
 
 				}

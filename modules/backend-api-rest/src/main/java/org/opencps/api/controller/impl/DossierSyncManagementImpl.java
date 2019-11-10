@@ -19,12 +19,15 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.DossierSync;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -49,15 +52,15 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				end = -1;
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getDossierSyncByAction(groupId, action, start, end, serviceContext);
 			DossierSyncV21ResultsModel results = new DossierSyncV21ResultsModel();
 			
-			results.setTotal(jsonData.getInt("total"));
-			if (jsonData != null && jsonData.getInt("total") > 0) {
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 				List<DossierSyncV21DataModel> lstDatas = new ArrayList<>();
-				List<DossierSync> lstSyncs = (List<DossierSync>)jsonData.get("data");
+				List<DossierSync> lstSyncs = (List<DossierSync>)jsonData.get(ConstantUtils.DATA);
 				for (DossierSync ds : lstSyncs) {
 					DossierSyncV21DataModel model = new DossierSyncV21DataModel();
 					model.setActionCode(ds.getActionCode());
@@ -86,22 +89,22 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 			} else {
 				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
+					error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
+					error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
 
-					error.setMessage("Internal Server Error");
+					error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 

@@ -43,7 +43,7 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 		String jsonDataStr, String scriptStr) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		_log.info("jsonDataStr: " + jsonDataStr);
 		_log.info("documentScriptStr: " + scriptStr);
@@ -87,9 +87,9 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "application/pdf");
+					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");
 
 				Date dateEnd1 = new Date();
 				_log.info(

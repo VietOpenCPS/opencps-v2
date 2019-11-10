@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplayFac
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -39,7 +40,7 @@ public class SiteCleanBackgroundTaskExecutor extends BaseBackgroundTaskExecutor 
 	public BackgroundTaskResult execute(BackgroundTask backgroundTask) throws Exception {
         Map<String,Serializable> taskContextMap = backgroundTask.getTaskContextMap();
 
-        Long siteId = (Long)taskContextMap.get("groupId") ;
+        Long siteId = (Long)taskContextMap.get(Field.GROUP_ID) ;
         Group site = GroupLocalServiceUtil.fetchGroup(GetterUtil.getLong(siteId));
         int progress = 0;
         

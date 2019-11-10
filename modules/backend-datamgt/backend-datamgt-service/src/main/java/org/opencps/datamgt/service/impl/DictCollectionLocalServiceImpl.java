@@ -318,7 +318,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	@ThreadLocalCachable
 	public DictCollection fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if ("ADMINISTRATIVE_REGION".toLowerCase().equalsIgnoreCase(collectionCode)) {
+		if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).toLowerCase().equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 
@@ -726,7 +726,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 			object = dictCollectionPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

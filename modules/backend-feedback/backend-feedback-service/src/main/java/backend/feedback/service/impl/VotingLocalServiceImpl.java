@@ -191,7 +191,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		_log.info("groupId: " + groupId);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
@@ -299,7 +299,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
@@ -403,7 +403,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 			object = votingPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

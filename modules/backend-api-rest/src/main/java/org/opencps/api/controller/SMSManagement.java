@@ -97,7 +97,7 @@ public interface SMSManagement {
 		@FormParam("startDate") String startDate,
 		@FormParam("durationCount") double durationCount,
 		@FormParam("durationUnit") int durationUnit,
-		@FormParam("groupId") long groupId);
+		@FormParam(Field.GROUP_ID) long groupId);
 	
 	@POST
 	@Path("/test/createinvoice")

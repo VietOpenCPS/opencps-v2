@@ -177,7 +177,7 @@ public class ZaloMapUtilsV2 {
 			String charset = "UTF-8";
 			URLConnection connection = new URL(url).openConnection();
 			connection.setDoOutput(true); // Triggers POST.
-			connection.setRequestProperty("Content-Type", "application/json;");
+			connection.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json;");
 
 			OutputStream output = connection.getOutputStream();
 			output.write(param.getBytes(charset));

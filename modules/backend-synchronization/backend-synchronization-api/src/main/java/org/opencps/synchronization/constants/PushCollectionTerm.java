@@ -3,7 +3,7 @@ package org.opencps.synchronization.constants;
 public class PushCollectionTerm {
 	public static final String PUBLISH_DICT_COLLECTION_ID = "publishDictCollectionId";	
 	public static final String COMPANY_ID = "companyId";
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 	public static final String USER_ID = "userId";
 	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";

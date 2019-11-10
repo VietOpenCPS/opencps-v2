@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class ActionConfigItemResult  {
+@XmlRootElement(name = ConstantUtils.DATA) public class ActionConfigItemResult  {
   
   @ApiModelProperty(example = "null", required = true, value = "")
   private Long total = null;

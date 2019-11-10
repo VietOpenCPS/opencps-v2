@@ -75,7 +75,7 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -37,12 +38,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
-import org.opencps.api.controller.util.CheckFileUtils;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
-import org.opencps.api.controller.util.ReadFilePropertiesUtils;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
@@ -54,7 +52,10 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.action.util.CheckFileUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -243,9 +244,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -441,9 +442,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				query.getOrder(), serviceContext);
 
 			List<Document> documents =
-				(List<Document>) dossierFileJsonObject.get("data");
+				(List<Document>) dossierFileJsonObject.get(ConstantUtils.DATA);
 
-			results.setTotal(dossierFileJsonObject.getInt("total"));
+			results.setTotal(dossierFileJsonObject.getInt(ConstantUtils.TOTAL));
 
 			results.getData().addAll(
 				DossierFileUtils.mappingToDossierFileSearchResultsModel(
@@ -544,9 +545,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 				ResponseBuilder responseBuilder = Response.ok(fi);
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fi.getName() + StringPool.QUOTE);
-				responseBuilder.header("Content-Type", ReadFilePropertiesUtils.get(ConstantUtils.MIME_TYPE_ZIP));
+					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fi.getName() + StringPool.QUOTE);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.MIME_TYPE_ZIP));
 
 				return responseBuilder.build();
 			}
@@ -785,9 +786,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + StringPool.QUOTE);
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -824,7 +825,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
 				return Response.status(
 					HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 						"User not permission process!").build();

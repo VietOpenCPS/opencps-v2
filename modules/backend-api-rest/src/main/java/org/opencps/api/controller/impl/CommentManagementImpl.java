@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
@@ -45,6 +46,8 @@ import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.model.Comment;
 import org.opencps.datamgt.service.CommentLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -57,7 +60,7 @@ public class CommentManagementImpl implements CommentManagement {
 	public Response addComment(HttpServletRequest request, HttpHeaders header, ServiceContext serviceContext,
 			CommentInputModel commentInputModel) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -88,19 +91,12 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
-			List<String> lstSecureFiles = new ArrayList<>();
-			lstSecureFiles.add("text/x-sh");
-			lstSecureFiles.add("application/macbinary");
-			lstSecureFiles.add("application/x-msdownload");
 
 			long userId = serviceContext.getUserId();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
-			if (lstSecureFiles.contains(fileType)) {
-				return Response.status(405).entity(StringPool.BLANK).build();
-			}
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, className, classPK, fullname, email,
 					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, opinion, serviceContext);
 
@@ -144,15 +140,15 @@ public class CommentManagementImpl implements CommentManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + "\"")
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}else{
 				ErrorMsg error = new ErrorMsg();
-				error.setMessage("file not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("file not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				return Response.status(404).entity(error).build();
 			}
 
@@ -178,7 +174,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			if (query.getEnd() == 0) {
 
@@ -187,7 +183,7 @@ public class CommentManagementImpl implements CommentManagement {
 				query.setEnd(-1);
 			}
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put("className", className);
 			params.put("classPK", String.valueOf(classPK));
@@ -196,13 +192,10 @@ public class CommentManagementImpl implements CommentManagement {
 			}
 			
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, query.isOrder()) };
+					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE, query.isOrder()) };
 
 			hits = CommentLocalServiceUtil.luceneSearchEngine(params, sorts, query.getStart(), query.getEnd(),
 					searchContext);
-
-			// results = (_Results) CommentUtils.mappingCommentList(
-			// hits.toList(), serviceContext, header, query);
 
 			CommentListModel results = CommentUtils.mappingCommentList(hits.toList(), serviceContext, header, query);
 
@@ -226,7 +219,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			result.put("message", "remove success");
+			result.put("message", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 
 			return Response.status(200).entity(result.toString()).build();
 		} catch (Exception e) {
@@ -241,11 +234,6 @@ public class CommentManagementImpl implements CommentManagement {
 		try {
 
 			String email = commentInputModel.getEmail();
-			// Truong hop co userId thi lay email va fullname tu user
-
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
-				email = user.getEmailAddress();
-			}
 
 			Comment comment = CommentLocalServiceUtil.updateComment(commentId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), email, -1, serviceContext);
@@ -268,11 +256,6 @@ public class CommentManagementImpl implements CommentManagement {
 		try {
 			String email = commentInputModel.getEmail();
 			String fullname = commentInputModel.getFullname();
-			// Truong hop co userId thi lay email va fullname tu user
-
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
-				email = user.getEmailAddress();
-			}
 
 			Comment comment = CommentLocalServiceUtil.updateComment(serviceContext.getUserId(), commentId,
 					commentInputModel.getClassName(), commentInputModel.getClassPK(), fullname, email,
@@ -298,10 +281,6 @@ public class CommentManagementImpl implements CommentManagement {
 
 			String email = commentInputModel.getEmail();
 
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
-				email = user.getEmailAddress();
-			}
-
 			Comment comment = CommentLocalServiceUtil.updateComment(commentId, commentInputModel.getClassName(),
 					commentInputModel.getClassPK(), email, 0, serviceContext);
 
@@ -321,7 +300,6 @@ public class CommentManagementImpl implements CommentManagement {
 	@Override
 	public Response getCommentTop(HttpServletRequest request, HttpHeaders header, ServiceContext serviceContext,
 			CommentSearchModel query) {
-		// _Results results = new _Results();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -329,18 +307,15 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			if (query.getEnd() == 0) {
-
 				query.setStart(-1);
-
 				query.setEnd(-1);
 			}
 
 			List<Comment> listComments = new ArrayList<>(CommentLocalServiceUtil.findByF_groupId(groupId, query.getStart(), query.getEnd()));
-			
-			
+
 			Collections.reverse(listComments);
 			
 			CommentTopList results = CommentUtils.mappingCommentTopList(listComments, serviceContext);

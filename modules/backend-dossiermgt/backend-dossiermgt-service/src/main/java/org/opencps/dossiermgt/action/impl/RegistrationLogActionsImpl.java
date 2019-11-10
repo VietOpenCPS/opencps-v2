@@ -52,7 +52,7 @@ public class RegistrationLogActionsImpl implements RegistrationLogActions {
 			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("registrationId", String.valueOf(registrationId));
 			
 			
@@ -61,11 +61,11 @@ public class RegistrationLogActionsImpl implements RegistrationLogActions {
 
 			Hits hits = RegistrationLogLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = RegistrationLogLocalServiceUtil.countLucense(params, sorts, start, end, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);

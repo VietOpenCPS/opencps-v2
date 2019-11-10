@@ -92,7 +92,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 	@Override
 	public Response sendPostalRequest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, "VIA_POSTAL");
 		//_log.info("sendPostalRequest groupId ============= " + groupId);
@@ -187,7 +187,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		// String tokenUrl = "https://api.mitc.vn/token";
 		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
 		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// _log.info("groupId = =========" + groupId);
 		VNPostServerConfigModel config = getServerConfig(groupId, "VIA_POSTAL");
 
@@ -212,7 +212,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 	@Override
 	public Response cancelOrder(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostCancelOrderModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, "VIA_POSTAL");
 		// _log.info("config ============= " + JSONFactoryUtil.looseSerialize(config));

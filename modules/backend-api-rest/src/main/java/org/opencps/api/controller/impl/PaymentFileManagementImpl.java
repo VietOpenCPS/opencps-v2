@@ -103,7 +103,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //				search.setEnd(-1);
 //			}
 //
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //			long dossierId = GetterUtil.getLong(id);
 //
 //			// Default sort by modifiedDate
@@ -123,8 +123,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //					search.getStart(), search.getEnd(), serviceContext);
 //
 //			// Parse JSONObejct to PaymentFileResultModel Object
-//			results.setTotal(jsonData.getInt("total"));
-//			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileModel((List<Document>) jsonData.get("data")));
+//			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+//			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileModel((List<Document>) jsonData.get(ConstantUtils.DATA)));
 //
 //			return Response.status(200).entity(results).build();
 //
@@ -150,7 +150,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //	public Response createPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 //			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 //
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		
 //		_log.info("groupId_"+groupId);
 //		_log.info("groupId_"+id);
@@ -210,7 +210,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //	public Response getPaymentFileByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 //			Locale locale, User user, ServiceContext serviceContext, Long id, String referenceUid) {
 //
-//		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		long dossierId = GetterUtil.getLong(id);
 //
 //		// TODO get Dossier by referenceUid if dossierId = 0
@@ -365,7 +365,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long dossierId = GetterUtil.getLong(id);
 
@@ -406,7 +406,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //		BackendAuth auth = new BackendAuthImpl();
 //
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -448,7 +448,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			String approveDatetime, String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo,
 //			String invoiceIssueNo, String invoiceNo) {
 //		BackendAuth auth = new BackendAuthImpl();
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -488,7 +488,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			Company company, Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid,
 //			PaymentFileInputModel input) {
 //		BackendAuth auth = new BackendAuthImpl();
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -576,9 +576,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 
@@ -626,9 +626,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 //			} else {
@@ -664,7 +664,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //				search.setEnd(-1);
 //			}
 //			/* Search full Query -END */
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //			PaymentFileSearchResultModel results = new PaymentFileSearchResultModel();
 //			PaymentFileActions action = new PaymentFileActionsImpl();
@@ -692,9 +692,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //					serviceContext.getCompanyId(), groupId, params, sorts, search.getStart(), search.getEnd(),
 //					serviceContext);
 //
-//			List<Document> documents = (List<Document>) paymentFileJsonObject.get("data");
+//			List<Document> documents = (List<Document>) paymentFileJsonObject.get(ConstantUtils.DATA);
 //
-//			results.setTotal(paymentFileJsonObject.getInt("total"));
+//			results.setTotal(paymentFileJsonObject.getInt(ConstantUtils.TOTAL));
 //
 //			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileSearchResultModel(documents));
 //
@@ -712,7 +712,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		//URI uri = null;
 		try {
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
 			_log.info("SONDT PROCESS KEYPAY  ======== " + JSONFactoryUtil.looseSerialize(dossier));
 			
@@ -764,7 +764,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -796,7 +796,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@Override
 	public Response createPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			PaymentFile paymentFile = CPSDossierBusinessLocalServiceUtil.createPaymentFileByDossierId(groupId, serviceContext, id, PaymentFileUtils.convertFormModelToInputModel(input));		
@@ -815,7 +815,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -886,9 +886,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/pdf");
+					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");
 
 					return responseBuilder.build();
 

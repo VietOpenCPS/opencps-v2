@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -18,6 +19,7 @@ import org.opencps.api.officesite.model.OfficeSiteModel;
 import org.opencps.api.officesite.model.SiteGroup;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.LocationTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.constants.OfficeSiteTerm;
 import org.opencps.usermgt.model.OfficeSite;
 
@@ -34,13 +36,13 @@ public class OfficeSiteUtils {
 			for (Document document : listDocument) {
 				ett = new OfficeSiteModel();
 
-				ett.setOfficeSiteId(Long.valueOf(document.get("entryClassPK")));
+				ett.setOfficeSiteId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(LocationTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(LocationTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.getDate(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 				ett.setName(document.get(OfficeSiteTerm.NAME));
 				ett.setEnName(document.get(OfficeSiteTerm.EN_NAME));
@@ -53,9 +55,9 @@ public class OfficeSiteUtils {
 				
 				SiteGroup siteGroup = new SiteGroup();
 				
-				Group group = GroupLocalServiceUtil.fetchGroup(Long.valueOf(document.get(OfficeSiteTerm.GROUP_ID)));
+				Group group = GroupLocalServiceUtil.fetchGroup(Long.valueOf(document.get(Field.GROUP_ID)));
 				
-				siteGroup.setGroupId(Long.valueOf(document.get(OfficeSiteTerm.GROUP_ID)));
+				siteGroup.setGroupId(Long.valueOf(document.get(Field.GROUP_ID)));
 				siteGroup.setGroupName(group.getNameCurrentValue());
 				
 				ett.getSiteGroup().add(siteGroup);
@@ -63,8 +65,8 @@ public class OfficeSiteUtils {
 				AdminUser adminUser = new AdminUser();
 				
 				adminUser.setUserId(Long.valueOf(document.get(OfficeSiteTerm.ADMIN_USER_ID)));
-				adminUser.setScreenName(document.get("adminUser_screenName"));
-				adminUser.setEmail(document.get("adminUser_email"));
+				adminUser.setScreenName(document.get(OfficeSiteTerm.ADMIN_USER_SCREEN_NAME));
+				adminUser.setEmail(document.get(OfficeSiteTerm.ADMIN_USER_EMAIL));
 				
 				ett.getAdminUser().add(adminUser);
 				

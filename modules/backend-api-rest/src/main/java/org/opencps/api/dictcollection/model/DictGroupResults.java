@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name=ConstantUtils.TOTAL type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element ref="{http://benchresources.in/cdm/Player}DictGroupModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -41,15 +41,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "total",
+    ConstantUtils.TOTAL,
     "dictGroupModel"
 })
 @XmlRootElement(name = "DictGroupResults")
 public class DictGroupResults {
 
     protected int total;
-    @XmlElement(name = "data")
-    @JsonProperty("data")
+    @XmlElement(name = ConstantUtils.DATA)
+    @JsonProperty(ConstantUtils.DATA)
     protected List<DictGroupModel> dictGroupModel;
 
     /**

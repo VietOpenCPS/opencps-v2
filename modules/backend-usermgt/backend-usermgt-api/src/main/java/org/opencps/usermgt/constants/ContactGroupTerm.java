@@ -25,7 +25,7 @@ public class ContactGroupTerm {
 
 	public static final String CREATE_DATE = "createDate";
 
-	public static final String GROUP_ID = "groupId";
+	public static final String GROUP_ID = Field.GROUP_ID;
 
 	public static final String MODIFIED_DATE = "modifiedDate";
 

@@ -47,7 +47,7 @@ public class OpencpsCallStatisticRestFacadeImpl extends OpencpsRestFacade<Dossie
 		String url = buildUrl(endPoint, urlPathSegments, urlQueryParams);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 		httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		

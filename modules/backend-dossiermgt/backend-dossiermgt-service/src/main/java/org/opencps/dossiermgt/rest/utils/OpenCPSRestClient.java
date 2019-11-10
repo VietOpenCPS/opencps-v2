@@ -212,7 +212,7 @@ public class OpenCPSRestClient {
 			InvokeREST rest = new InvokeREST();
 
 			HashMap<String, String> properties = new HashMap<String, String>();
-			properties.put("Content-Type", "application/x-www-form-urlencoded");
+			properties.put(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
 			String path = DOSSIERS_BASE_PATH + "/" + id + "/all/files";
 			_log.debug("id: "+id);
@@ -231,7 +231,7 @@ public class OpenCPSRestClient {
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);

@@ -53,21 +53,6 @@ public class ApplicantUtils {
 			model.setMappingUser(mappingUser);
 		}
 
-//		MappingUser mappingUser = new MappingUser();
-//		User user = null;
-//		try {
-//			user = UserLocalServiceUtil.getUser(mappingUserId);
-//		} catch (Exception e) {
-//			//_log.error(e);
-//			_log.debug(e);
-//		}
-//		if (user != null) {
-//			mappingUser.setUserId(Long.toString(mappingUserId));
-//			mappingUser.setScreenName(user.getScreenName());
-//			mappingUser.setLocking(user.getLockout());
-//		}
-//		model.setMappingUser(mappingUser);
-
 		return model;
 	}
 
@@ -121,7 +106,6 @@ public class ApplicantUtils {
 			
 			user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 		
@@ -142,7 +126,6 @@ public class ApplicantUtils {
 				return mappingUser;
 			}
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 

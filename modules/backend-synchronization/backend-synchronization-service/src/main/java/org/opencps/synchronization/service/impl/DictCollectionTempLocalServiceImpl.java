@@ -316,7 +316,7 @@ public class DictCollectionTempLocalServiceImpl
 	 */
 	public DictCollectionTemp fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(collectionCode)) {
+		if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 

@@ -59,7 +59,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 
 		// System.out.println(">>>>>>>>>>>>>>>>>>>bbb>>>>>>>>>>" + bbb);
 		long userId = user.getUserId();
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Boolean archivedParam = archived != null ? archived : true;
 		
 		try {
@@ -97,7 +97,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 				record.put("userName", finduser.getFullName());
 				
 				try {
-					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString("data")).getJSONObject("Dossier");
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString(ConstantUtils.DATA)).getJSONObject("Dossier");
 					if (dataObj.has(DossierTerm.GROUP_ID) && dataObj.has(DossierTerm.DOSSIER_ID)) {
 						long groupId = dataObj.getLong(DossierTerm.GROUP_ID);
 						Group site = GroupLocalServiceUtil.fetchGroup(groupId);
@@ -116,8 +116,8 @@ public class NotificationManagementImpl implements NotificationManagement{
 			int userNotificationEventsCount = UserNotificationEventLocalServiceUtil.
 					getArchivedUserNotificationEventsCount(userId, false, archivedParam);
 
-			result.put("total", userNotificationEventsCount);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, userNotificationEventsCount);
+			result.put(ConstantUtils.DATA, data);
 //			writeJSON(actionRequest, actionResponse, result);
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -188,10 +188,10 @@ public class NotificationManagementImpl implements NotificationManagement{
 			int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
 					.getArchivedUserNotificationEventsCount(userId, false, archivedParam);
 
-			result.put("total", userNotificationEventsCount);
+			result.put(ConstantUtils.TOTAL, userNotificationEventsCount);
 		} catch (Exception e) {
 			_log.debug(e);
-			result.put("total", 0);
+			result.put(ConstantUtils.TOTAL, 0);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
 		}
 

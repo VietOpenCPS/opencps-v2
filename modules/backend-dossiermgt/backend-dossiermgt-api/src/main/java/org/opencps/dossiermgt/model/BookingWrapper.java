@@ -61,7 +61,7 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("bookingId", getBookingId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -97,7 +97,7 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 			setBookingId(bookingId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

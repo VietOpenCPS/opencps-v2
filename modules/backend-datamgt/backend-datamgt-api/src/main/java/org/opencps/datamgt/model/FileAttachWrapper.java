@@ -58,7 +58,7 @@ public class FileAttachWrapper implements FileAttach, ModelWrapper<FileAttach> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("fileAttachId", getFileAttachId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -67,7 +67,7 @@ public class FileAttachWrapper implements FileAttach, ModelWrapper<FileAttach> {
 		attributes.put("className", getClassName());
 		attributes.put("classPK", getClassPK());
 		attributes.put("fullName", getFullName());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("fileEntryId", getFileEntryId());
 		attributes.put("source", getSource());
 		attributes.put("sourceUrl", getSourceUrl());
@@ -85,7 +85,7 @@ public class FileAttachWrapper implements FileAttach, ModelWrapper<FileAttach> {
 			setFileAttachId(fileAttachId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -139,7 +139,7 @@ public class FileAttachWrapper implements FileAttach, ModelWrapper<FileAttach> {
 			setFullName(fullName);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

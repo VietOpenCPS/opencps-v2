@@ -1,6 +1,8 @@
-package org.opencps.api.controller.util;
+package org.opencps.dossiermgt.action.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,18 +10,17 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.activation.MimeType;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.opencps.api.constants.ConstantUtils;
 
 public class CheckFileUtils {
 
-	private static final Log log = LogFactory.getLog(CheckFileUtils.class);
+	private static final Log log = LogFactoryUtil.getLog(CheckFileUtils.class);
 
 	public static boolean checkFileUpload(Attachment attachment) {
 		if (attachment == null) {
@@ -38,18 +39,23 @@ public class CheckFileUtils {
 		}
 
 		String contentDispositionHeaderValue = attachment.getHeader(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON));
-		//String contentType = attachment.getHeader("Content-Type");
-//		System.out.println("contentDisposition:" + contentDispositionHeaderValue);
-//		System.out.println("contentType:" + contentType);
-
 		if (contentDispositionHeaderValue != null) {
 			contentDispositionHeaderValue = contentDispositionHeaderValue.trim();
 			Map<String, String> contentDispositionHeaderValueMap = processContentDispositionHeader(contentDispositionHeaderValue);
 			String dispositionName = contentDispositionHeaderValueMap
 					.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_NAME));
 			InputStream stream = null;
+			DataHandler handle = attachment.getDataHandler();
+			if (handle == null) {
+				return false;
+			}
+			// Check extention
+			if (!checkExtentionFile(handle)) {
+				return false;
+			}
+			
 			try {
-				stream = attachment.getDataHandler().getInputStream();
+				stream = handle.getInputStream();
 				if (stream == null || (stream != null && stream.available() == 0)) {
 					return false;
 				}
@@ -136,5 +142,28 @@ public class CheckFileUtils {
 
 		return null;
 	}
+
+	private static boolean checkExtentionFile(DataHandler handle) {
+		//return false;
+		String[] extentionArr = { ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PDF),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_DOC),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_DOCX),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XLS),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XLSX),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPEG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_TXT),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_RTF) };
+		
+		String extentFile = FilenameUtils.getExtension(handle.getName());
+		for (String extend : extentionArr) {
+			if (extentFile.equalsIgnoreCase(extend)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 }

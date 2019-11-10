@@ -29,7 +29,7 @@ public class MenuConfigManagementImpl implements MenuConfigManagement {
 	@Override
 	public Response getMenuConfigDetail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, String menuGroup, ServiceContext serviceContext) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			MenuConfig menuConfig = MenuConfigLocalServiceUtil.getByG_MENU(groupId, menuGroup);
 			JSONObject jsonObj = JSONFactoryUtil.createJSONObject();

@@ -63,7 +63,7 @@ public class WorkingUnitWrapper implements WorkingUnit,
 		attributes.put("uuid", getUuid());
 		attributes.put("workingUnitId", getWorkingUnitId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -77,7 +77,7 @@ public class WorkingUnitWrapper implements WorkingUnit,
 		attributes.put("address", getAddress());
 		attributes.put("telNo", getTelNo());
 		attributes.put("faxNo", getFaxNo());
-		attributes.put("email", getEmail());
+		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
 		attributes.put("website", getWebsite());
 		attributes.put("logoFileEntryId", getLogoFileEntryId());
 		attributes.put("level", getLevel());
@@ -106,7 +106,7 @@ public class WorkingUnitWrapper implements WorkingUnit,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -190,7 +190,7 @@ public class WorkingUnitWrapper implements WorkingUnit,
 			setFaxNo(faxNo);
 		}
 
-		String email = (String)attributes.get("email");
+		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
 
 		if (email != null) {
 			setEmail(email);

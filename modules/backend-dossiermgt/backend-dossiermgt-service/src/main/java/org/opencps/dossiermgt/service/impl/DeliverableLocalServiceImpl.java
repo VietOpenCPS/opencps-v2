@@ -1356,7 +1356,7 @@ public class DeliverableLocalServiceImpl
 		Deliverable object = null;
 
 		long deliverableId = objectData.getLong("deliverableId");
-		long groupId = objectData.getLong("groupId");
+		long groupId = objectData.getLong(Field.GROUP_ID);
 		boolean flagAttach = false;
 		if (deliverableId > 0) {
 

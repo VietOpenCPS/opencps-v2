@@ -81,7 +81,7 @@ public class VotingActionsImpl implements VotingActions {
 //			} else {
 //				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
 //			}
-//			result.put("data", votingList);
+//			result.put(ConstantUtils.DATA, votingList);
 			
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(companyId);
@@ -94,14 +94,14 @@ public class VotingActionsImpl implements VotingActions {
 				params.put("toVotingDate", "");
 				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			}
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			//long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -187,11 +187,11 @@ public class VotingActionsImpl implements VotingActions {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -318,10 +318,10 @@ public class VotingActionsImpl implements VotingActions {
 		try {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

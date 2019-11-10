@@ -4,7 +4,7 @@ public class ActionKeys extends com.liferay.portal.kernel.security.permission.Ac
 	
 	//define action key here
 	public static final String SAMPLE_ACTION = "sample_action";
-	public static final String AMINISTRATOR_ROLE_NAME = "Administrator";
+	public static final String AMINISTRATOR_ROLE_NAME = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN);
 	public static final String DATAADMIN_ROLE_NAME = "ADMINDATA";
 	
 	public static final String APPLICANT_CTZ = "citizen";

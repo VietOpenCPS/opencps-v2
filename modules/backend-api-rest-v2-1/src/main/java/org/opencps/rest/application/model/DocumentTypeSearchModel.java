@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class DocumentTypeSearchModel  {
+@XmlRootElement(name = ConstantUtils.DATA) public class DocumentTypeSearchModel  {
   
   @ApiModelProperty(example = "key search", value = "")
   private String keyword = null;

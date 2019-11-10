@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -35,13 +34,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.controller.util.NGSPRestClient;
-import org.opencps.api.controller.util.ReadFilePropertiesUtils;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -61,7 +58,8 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -181,8 +179,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ConstantUtils.SORT_ABLE, Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
+							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getApplicants(serviceContext, serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
@@ -519,7 +518,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith(ConstantUtils.ADMIN_STRATOR)) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -739,9 +738,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					ImageIO.write( challengeImage, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file );
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + StringPool.QUOTE);
-					responseBuilder.header("Content-Type", ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PNG));
+					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+							ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PNG));
 
 					return responseBuilder.build();
 
@@ -778,7 +777,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith(ConstantUtils.ADMIN_STRATOR)) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}

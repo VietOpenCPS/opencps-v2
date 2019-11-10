@@ -52,11 +52,11 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(ResourceUserTerm.CLASS_NAME, String.valueOf(className));
 			params.put(ResourceUserTerm.CLASS_PK, String.valueOf(classPK));
@@ -67,9 +67,9 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			JSONObject jsonData = actions.getResourceUsers(className, classPK, user.getUserId(), company.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext, query.isFull());
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceUserModel()
-					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -86,7 +86,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ResourceUser ResourceUser = actions.create(user.getUserId(), groupId, input.getClassName(),
 					input.getClassPK(), input.getUserId(), input.getFullName(), input.getEmail(), Boolean.valueOf(input.getReadonly()), serviceContext);
@@ -108,7 +108,7 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = actions.delete(user.getUserId(), groupId, company.getCompanyId(), className, classPK, email,
 					serviceContext);
@@ -143,14 +143,14 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.createResourceUserPatch(input.getClassName(), input.getClassPK(), user.getUserId(),
 					company.getCompanyId(), groupId, users, serviceContext);
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ResourceUserTerm.CLASS_NAME, input.getClassName());
 			params.put(ResourceUserTerm.CLASS_PK, input.getClassPK());
 
@@ -158,9 +158,9 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 					company.getCompanyId(), groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext, false);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceUserModel()
-					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -178,14 +178,14 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.clone(className, classPK, user.getUserId(), company.getCompanyId(), groupId, sourcePK,
 					serviceContext);
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ResourceUserTerm.CLASS_NAME, className);
 			params.put(ResourceUserTerm.CLASS_PK, sourcePK);
 
@@ -193,9 +193,9 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 					company.getCompanyId(), groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext, false);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceUserModel()
-					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceUserUtils.mapperResourceUserList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 

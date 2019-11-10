@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
@@ -20,6 +21,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
@@ -60,13 +62,13 @@ public class JobposUtils {
 			for (Document document : listDocument) {
 				ett = new JobposModel();
 
-				ett.setJobPosId(Long.valueOf(document.get("entryClassPK")));
+				ett.setJobPosId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(JobPosTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(JobPosTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.getDate(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 				ett.setTitle(document.get(JobPosTerm.TITLE));
 				ett.setDescription(document.get(JobPosTerm.DESCRIPTION));
 				ett.setLeader(Integer.valueOf(document.get(JobPosTerm.LEADER)));
@@ -99,20 +101,6 @@ public class JobposUtils {
 					: StringPool.BLANK);
 			ett.setTitle(jobPos.getTitle());
 			ett.setDescription(jobPos.getDescription());
-			// ett.setWorkingUnitId(jobPos.getWorkingUnitId());
-
-			// WorkingUnit workingUnit =
-			// WorkingUnitLocalServiceUtil.fetchWorkingUnit(jobPos.getWorkingUnitId());
-			//
-			// String workingUnitName = StringPool.BLANK;
-			//
-			// if (Validator.isNotNull(workingUnit)) {
-			//
-			// workingUnitName = workingUnit.getName();
-			//
-			// }
-			//
-			// ett.setWorkingUnitName(workingUnitName);
 			ett.setLeader(jobPos.getLeader());
 			ett.setRoleId(jobPos.getMappingRoleId());
 
@@ -131,8 +119,6 @@ public class JobposUtils {
 		serviceContext.setUserId(userId);
 		
 		List<JobposPermissionModel> results = new ArrayList<>();
-
-//		BackendAuthImpl authImpl = new BackendAuthImpl();
 
 		try {
 			
@@ -153,10 +139,7 @@ public class JobposUtils {
 						ResourceConstants.SCOPE_INDIVIDUAL,
 						String.valueOf(mappingRoleId), mappingRoleId,
 						actionKey);
-						
-//						authImpl.userHasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-//						actionKey);
-				
+
 				ett.setSelected(selected);
 
 				results.add(ett);

@@ -62,7 +62,7 @@ public class SMSGatewayLogWrapper implements SMSGatewayLog,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("smsId", getSmsId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
@@ -97,7 +97,7 @@ public class SMSGatewayLogWrapper implements SMSGatewayLog,
 			setSmsId(smsId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

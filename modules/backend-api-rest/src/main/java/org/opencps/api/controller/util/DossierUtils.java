@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,13 +37,15 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
@@ -70,12 +73,6 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierUtils {
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
-	private static final long VALUE_HOUR_TO_DAY = 8;
-	private static final String EXTEND_ONE_VALUE = ".0";
-	private static final String EXTEND_TWO_VALUE = ".00";
-
 	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, Integer assigned) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
@@ -86,30 +83,15 @@ public class DossierUtils {
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 			User user = UserLocalServiceUtil.fetchUser(userId);
 			boolean isAdministratorData = false;
-			int assignedCheck = 0;
 			if (user != null) {
 				List<Role> userRoles = user.getRoles();
 				for (Role r : userRoles) {
-					if (r.getName().startsWith("Administrator")) {
+					if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 						isAdministratorData = true;
 						break;
 					}
 				}
 			}
-
-//			if (isAdministratorData || originality == 9) {
-//				assignedCheck = 1;
-//			} else if (Validator.isNotNull(assigned)) {
-//				if (dau != null && dau.getAssigned() != assigned) {
-//					continue;
-//				}
-//				assignedCheck = assigned;
-//			} else {
-//				if (dau == null) {
-//					continue;
-//				}
-//				assignedCheck = dau.getAssigned();
-//			}
 
 			//Process add dossier in result
 			DossierDataModel model = new DossierDataModel();
@@ -147,7 +129,7 @@ public class DossierUtils {
 			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
 			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
 			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
-			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(";", "; ") : StringPool.BLANK);
+			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(StringPool.SEMICOLON, StringPool.SEMICOLON + StringPool.SPACE) : StringPool.BLANK);
 			model.setApplicantNote(doc.get(DossierTerm.APPLICANT_NOTE));
 			model.setApplicantIdType(doc.get(DossierTerm.APPLICANT_ID_TYPE));
 			model.setApplicantIdNo(doc.get(DossierTerm.APPLICANT_ID_NO));
@@ -197,146 +179,9 @@ public class DossierUtils {
 //			_log.info("doc.get(DossierTerm.DUE_DATE): "+doc.get(DossierTerm.DUE_DATE));
 //			}
 			//Process OverDue
-			String lockState = doc.get(DossierTerm.LOCK_STATE);
-			String dossierStatus = doc.get(DossierTerm.DOSSIER_STATUS);
-			Date now = new Date();
-			long dateNowTimeStamp = now.getTime();
-			Long dueDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
-			Long releaseDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
-			Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
-			Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
-			int valueCompareRelease = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_RELEASE));
-			int valueCompareFinish = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_FINISH));
 			
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
-			double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0;
-			long groupId = GetterUtil.getLong(doc.get(Field.GROUP_ID));
-			
-			Date dueDateCalc = (dueDateTimeStamp != 0 ? new Date(dueDateTimeStamp) : null);
-			
 			//Check lockState
-			if (checkWaiting(lockState, dossierStatus)){
-				model.setDossierOverdue("Tạm dừng xử lý");
-				model.setStepOverdue("Tạm dừng xử lý");
-			} else if (checkReceiving(dossierStatus)){
-				model.setDossierOverdue(StringPool.BLANK);
-				model.setStepOverdue(StringPool.BLANK);
-			} else if (!checkWaiting(lockState, dossierStatus) || !checkReceiving(dossierStatus)) {
-				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-//					if (processBeTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-//							extendDateTimeStamp)) {
-//						model.setDossierOverdue("Sớm hạn");
-//					} 
-//					if (dueDateTimeStamp != 0 && extendDateTimeStamp != 0 && 3 == valueCompareRelease) {
-					if (dueDateTimeStamp != 0 && 3 == valueCompareRelease) {
-						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
-						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierOverdue("Sớm hạn");
-					}
-					if (dueDateTimeStamp != 0 && 3 == valueCompareFinish) {
-						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
-						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierFinishOverdue("Sớm hạn");
-					}
-//					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-//							extendDateTimeStamp)){
-//						if (dueDateTimeStamp!=0) {
-//							model.setDossierOverdue("Đúng hạn");
-//						} else {
-//							model.setDossierOverdue(StringPool.BLANK);
-//						}
-//					}
-					if (dueDateTimeStamp == 0 || 2 == valueCompareRelease) {
-						model.setDossierOverdue("Đúng hạn");
-					}
-					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish) {
-						model.setDossierFinishOverdue("Đúng hạn");
-					}
-//					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
-//							extendDateTimeStamp)) {
-//						model.setDossierOverdue("Quá hạn");
-//					}
-					if (1 == valueCompareRelease) {
-						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
-						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierOverdue("Quá hạn");
-					}
-					if (1 == valueCompareFinish) {
-						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
-						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierFinishOverdue("Qúa hạn");
-					}
-				} else {
-					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-						long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-	//					_log.info("subTimeStamp: "+subTimeStamp);
-						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
-								dueDateTimeStamp, groupId, false);
-						if (Validator.isNotNull(strOverDue)) {
-							if (subTimeStamp > 0) {
-	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-	//									dueDateTimeStamp, groupId, true);
-								model.setDossierOverdue("Quá " + strOverDue);
-							} else {
-								model.setDossierOverdue("Còn " + strOverDue);
-							}
-						} else {
-							model.setDossierOverdue(StringPool.BLANK);
-						}
-					} else {
-						model.setDossierOverdue(StringPool.BLANK);
-					}
-				}
-				//Process StepOverDue
-//				double durationCount = (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) ? Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)) : 0.0;
-//				if (Double.compare(durationCount, 0.0) != 0) {
-//				_log.info("dossierActionId: "+dossierActionId);
-				if (releaseDateTimeStamp != null && releaseDateTimeStamp > 0) {
-					model.setStepOverdue(StringPool.BLANK);
-				} else {
-					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-					if (dAction != null) {
-						int state = dAction.getState();
-//						if (model.getDossierId() == 9102) {
-//							_log.info("ACTION OVERDUE: " + dAction.getActionOverdue());
-//						}
-						if (state > 0) {
-							int actionOverDue = dAction.getActionOverdue();
-							if (actionOverDue > 0) {
-								model.setStepOverdue("Quá "+actionOverDue + " ngày");
-							} else {
-								model.setStepOverdue(StringPool.BLANK);
-							}
-						} else {
-							Date dueDate = dAction.getDueDate();
-//							_log.info("dueDate: "+dueDate);
-							if (dueDate != null) {
-								long dueDateActionTimeStamp = dueDate.getTime();
-								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
-//								_log.info("START STEP OVERDUE");
-								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateActionTimeStamp, groupId, true);
-								if (Validator.isNotNull(stepOverDue)) {
-									if (subTimeStamp > 0) {
-//										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
-//												dueDateTimeStamp, groupId, true);
-										model.setStepOverdue("Quá " + stepOverDue);
-									} else {
-										model.setStepOverdue("Còn " + stepOverDue);
-									}
-								} else {
-									model.setStepOverdue(StringPool.BLANK);
-								}
-							} else {
-								model.setStepOverdue(StringPool.BLANK);
-							}
-						}
-					} else {
-						model.setStepOverdue(StringPool.BLANK);
-					}
-				}
-			}
-
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
 			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
@@ -363,20 +208,18 @@ public class DossierUtils {
 							try {
 								for (Role role : roles) {
 									//LamTV_Fix sonarqube
-									if ("Administrator".equals(role.getName())) {
-
+									if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
 										isAdmin = true;
 										break;
 
 									}
 								}
-
 							}
 							catch (Exception e) {
 								_log.error(e);
 							}			
 							if (isAdmin) {
-								model.setPermission("read");
+								model.setPermission(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 							}
 							else {
 								model.setPermission(StringPool.BLANK);
@@ -390,7 +233,7 @@ public class DossierUtils {
 				model.setPermission(StringPool.BLANK);
 			}
 			if (isAdministratorData) {
-				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + "," : "") + userId + "_read");
+				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + StringPool.COMMA : StringPool.BLANK) + userId + StringPool.UNDERLINE + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 			}
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
@@ -416,13 +259,6 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
-			model.setCertNo(doc.get("so_chung_chi"));
-			if (Validator.isNotNull(doc.get("ngay_ky_cc"))) {
-				Date certDate = APIDateTimeUtils.convertStringToDate(doc.get("ngay_ky_cc"), APIDateTimeUtils._LUCENE_PATTERN);
-				model.setCertDate(APIDateTimeUtils.convertDateToString(certDate, APIDateTimeUtils._NORMAL_DATE));
-			} else {
-				model.setCertDate(doc.get("ngay_ky_cc"));
-			}
 
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
 			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
@@ -469,13 +305,6 @@ public class DossierUtils {
 //				_log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
 				model.setDocumentDate(APIDateTimeUtils.convertDateToString(documentDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			}
-			if (DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)) {
-				model.setLock("Yêu cầu bổ sung quá hạn 3 ngày");
-			}
-			else {
-				model.setLock("Yêu cầu bổ sung trong hạn 3 ngày");
-			}
-			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
 			
 			ouputs.add(model);
@@ -484,109 +313,6 @@ public class DossierUtils {
 		return ouputs;
 	}
 
-	public static String calculatorOverDue(double durationCount, int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
-			long dueDateTimeStamp, long groupId, boolean flagStepDue) {
-
-		//Process count day off work
-		long dueCountLong = (long) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
-		int dueCountInt = (int) dueCountLong;
-		double countDayHoliday = 0;
-		if (dueCountInt > 0) {
-//			_log.info("START 1");
-			countDayHoliday = HolidayUtils.getCountDateByHoliday(dueDateTimeStamp, releaseDateTimeStamp,
-					dueCountInt, groupId);
-		} else if (dueCountInt < 0) {
-//			_log.info("START 2");
-			countDayHoliday = HolidayUtils.getCountDateByHoliday(releaseDateTimeStamp, dueDateTimeStamp,
-					Math.abs(dueCountInt), groupId);
-		}
-//		_log.info("countDayHoliday: "+countDayHoliday);
-
-		double countWork = 0;
-		if (flagStepDue) {
-			//Process balance
-			double balance = (double) (subTimeStamp % VALUE_CONVERT_DATE_TIMESTAMP) / VALUE_CONVERT_HOUR_TIMESTAMP;
-			if (balance > 1) {
-				int countHours = HolidayUtils.getCountHoursByHoliday(dueDateTimeStamp, releaseDateTimeStamp, groupId);
-//				_log.info("countHours: "+countHours);
-				countWork += (double) countHours / VALUE_HOUR_TO_DAY;
-			} else if (balance < -1){
-				int countHours = HolidayUtils.getCountHoursByHoliday(releaseDateTimeStamp, dueDateTimeStamp, groupId);
-//				_log.info("countHours: "+countHours);
-				countWork += (double) countHours / VALUE_HOUR_TO_DAY;
-			}
-		}
-		
-//		_log.info("countDayHoliday: "+countDayHoliday);
-
-		if (subTimeStamp < 0) {
-			subTimeStamp = Math.abs(subTimeStamp);
-		}
-
-		String strOverDue;
-		double dueCount;
-		double overDue;
-		int retval = Double.compare(durationUnit, 1.0);
-		if (retval < 0) {
-			strOverDue = " ngày";
-			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP);
-			} else {
-				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
-			}
-//			_log.info("dueCount: "+dueCount);
-//			_log.info("countDayHoliday: "+countDayHoliday);
-			double dueCountReal = dueCount - countDayHoliday + countWork;
-			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
-			overDue = (double) Math.ceil(subDueCount * 4) / 4;
-//			_log.info("overDue: "+overDue);
-			//TODO: Process a.0 = a
-			boolean flagCeil = false;
-			String strOverDueConvert = String.valueOf(overDue);
-			if (Validator.isNotNull(strOverDueConvert)) {
-				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
-					flagCeil = true;
-				}
-			}
-			//Check overDue
-			if (Double.compare(overDue, 0.0) == 0) {
-				return StringPool.BLANK;
-			}
-			if (!flagCeil) {
-				//_log.info("flagCeil: "+flagCeil);
-				//_log.info("overDue: "+overDue);
-				//_log.info("durationCount: "+durationCount);
-				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-					return (int)durationCount + strOverDue;
-				} else {
-					return overDue + strOverDue;
-				}
-			}
-		} else {
-			strOverDue = " giờ";
-			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP);
-			} else {
-				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
-			}
-			double dueCountReal = dueCount - countDayHoliday * 8 + countWork * 8;
-			overDue = (double) Math.round(dueCountReal);
-			//
-			if (Double.compare(overDue, 0.0) == 0) {
-				return StringPool.BLANK;
-			}
-		}
-
-//		_log.info("overDue: "+overDue);
-//		_log.info("strOverDue: "+strOverDue);
-		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return (int)durationCount + strOverDue;
-		} else {
-			return (int)overDue + strOverDue;
-		}
-	}
-
-	//TODO: Process get list Paging
 	public static List<DossierDataModel> mappingForGetListPaging(List<Document> docs, int start, int end, long userId) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		int lengthDossier = docs.size();
@@ -690,23 +416,7 @@ public class DossierUtils {
 			model.setStepName(doc.get(DossierTerm.STEP_NAME));
 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 			//Process OverDue
-//			Date now = new Date();
-//			long dateNowTimeStamp = now.getTime();
-//			Long dueDateTimeStamp = Long.valueOf(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
 			int durationUnit = (Validator.isNotNull(doc.get(DossierTerm.DURATION_UNIT))) ? Integer.valueOf(doc.get(DossierTerm.DURATION_UNIT)) : 1;
-//			double durationUnit = Double.valueOf(doc.get(DossierTerm.DURATION_UNIT));
-//			if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
-//				long subTimeStamp = dateNowTimeStamp - dueDateTimeStamp;
-//				if (subTimeStamp > 0) {
-//					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
-//					model.setDossierOverdue("Quá hạn "+strOverDue);
-//				} else {
-//					String strOverDue = calculatorOverDue(durationUnit, subTimeStamp);
-//					model.setDossierOverdue("Còn "+strOverDue);
-//				}
-//			} else {
-//				model.setDossierOverdue(StringPool.BLANK);
-//			}
 			model.setStepOverdue(StringPool.BLANK);
 			model.setVisited(getVisisted(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
 			model.setPending(getPendding(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK))));
@@ -721,31 +431,9 @@ public class DossierUtils {
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
 			
-			String certNo = doc.get("so_chung_chi");
-			String certDate = doc.get("ngay_ky_cc");
-			if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
-				Date tempDate = APIDateTimeUtils.convertStringToDate(certDate, APIDateTimeUtils._LUCENE_PATTERN);
-				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_DATE));
-				model.setCertNo(doc.get("so_chung_chi"));
-			}
-
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
 			model.setLockState(doc.get(DossierTerm.LOCK_STATE));
 			model.setStatusReg(doc.get(DossierTerm.STATUS_REG));
-//			model.setDelegateAddress(DossierTerm.getDelegateAddress());
-//			model.setDelegateCityCode(DossierTerm.getDelegateCityCode());
-//			model.setDelegateCityName(DossierTerm.getDelegateCityName());
-//			model.setDelegateDistrictCode(DossierTerm.getDelegateDistrictCode());
-//			model.setDelegateDistrictName(DossierTerm.getDelegateDistrictName());
-//			model.setDelegateEmail(DossierTerm.getDelegateEmail());
-//			model.setDelegateIdNo(DossierTerm.getDelegateIdNo());
-//			model.setDelegateName(DossierTerm.getDelegateName());
-//			model.setDelegateTelNo(DossierTerm.getDelegateTelNo());
-//			model.setDelegateWardCode(DossierTerm.getDelegateWardCode());
-//			model.setDelegateWardName(DossierTerm.getDelegateWardName());
-//			if (doc.hasField(DossierTerm.DURATION_COUNT)) {
-//				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
-//			}
 			if (Validator.isNotNull(doc.get(DossierTerm.DURATION_COUNT))) {
 				model.setDurationCount(Double.valueOf(doc.get(DossierTerm.DURATION_COUNT)));				
 			}
@@ -756,9 +444,6 @@ public class DossierUtils {
 			if (doc.hasField(DossierTerm.DURATION_UNIT)) {
 				model.setDurationUnit(durationUnit);				
 			}
-//			if (doc.hasField(DossierTerm.SAMPLE_COUNT)) {
-//				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
-//			}
 			if (Validator.isNotNull(doc.get(DossierTerm.SAMPLE_COUNT))) {
 				model.setSampleCount(Long.valueOf(doc.get(DossierTerm.SAMPLE_COUNT)));				
 			}
@@ -769,7 +454,6 @@ public class DossierUtils {
 
 			ouputs.add(model);
 		}
-//		_log.info("ouputs: "+ouputs.size());
 		return ouputs;
 	}
 
@@ -880,49 +564,6 @@ public class DossierUtils {
 
 				model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
 			}
-			// Check permission process dossier
-			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
-					input.getGroupId());
-			String statusCode = input.getDossierStatus();
-			String subStatusCode = input.getDossierSubStatus();
-			if (Validator.isNotNull(statusCode) || Validator.isNotNull(subStatusCode)) {
-				DictItem dictItem = null;
-				if (Validator.isNotNull(subStatusCode)) {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(subStatusCode,
-							dictCollection.getDictCollectionId(), input.getGroupId());
-				} else {
-					dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(statusCode,
-							dictCollection.getDictCollectionId(), input.getGroupId());
-				}
-				if (dictItem != null) {
-//					_log.info("53");
-					String metaData = dictItem.getMetaData();
-					String specialStatus = StringPool.BLANK;
-					if (Validator.isNotNull(metaData)) {
-//						_log.info("metaData: " +metaData);
-						try {
-							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString("specialStatus");
-//							_log.info("specialStatus: " +specialStatus);
-							
-						} catch (Exception e) {
-							// TODO: handle exception
-							//_log.error(e);
-							_log.debug(e);
-						}
-					}
-					if (Validator.isNotNull(specialStatus) && Boolean.parseBoolean(specialStatus)) {
-			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(input.getDossierActionId(), userId);
-			if (dau != null) {
-				model.setSpecialNo(dau.getModerator());
-			} else {
-				model.setSpecialNo(0);
-			}
-					} else {
-						model.setSpecialNo(1);
-					}
-				}
-			}
 		}
 
 		model.setVisited(getVisisted(input.getPrimaryKey()));
@@ -965,16 +606,7 @@ public class DossierUtils {
 
 		DossierDetailModel model = new DossierDetailModel();
 		
-		try {
-			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
-		} catch (Exception e) {
-			//_log.error(e);
-			_log.debug(e);
-			model.setDossierIdCTN("");
-		}
-		
-
+		model.setDossierIdCTN(StringPool.BLANK);
 		model.setUserName(input.getUserName());
 		model.setGovAgencyName(input.getGovAgencyName());
 		model.setDossierNo(input.getDossierNo());
@@ -986,8 +618,6 @@ public class DossierUtils {
 	}
 
 	private static String getPermission(long dossierId, long userId) {
-		// TODO add logic here
-		// return list of permission, separate by the comma
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 
@@ -1016,7 +646,7 @@ public class DossierUtils {
 									RoleLocalServiceUtil.getUserRoles(userId);
 							try {
 								for (Role role : roles) {
-									if ("Administrator".equals(role.getName())) {
+									if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
 	
 										isAdmin = true;
 										break;
@@ -1029,7 +659,7 @@ public class DossierUtils {
 								_log.error(e);
 							}			
 							if (isAdmin) {
-								return "read";
+								return ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ);
 							}
 						}
 					}
@@ -1048,22 +678,12 @@ public class DossierUtils {
 	}
 
 	private static String getVisisted(long dossierId) {
-		// TODO add logic here
-		// return true or false in String type
 		return StringPool.FALSE;
 	}
 
 	private static String getPendding(long dossierId) {
-		// TODO add logic here
-		// return true or false in String type
 		return StringPool.FALSE;
 	}
-
-//	private static String getApplicationNote(long dossierId) {
-//		// TODO add logic here
-//		// return true or false in String type
-//		return StringPool.BLANK;
-//	}
 
 	//LamTV: Process get dossier follow dossierId and groupId
 	public static Dossier getDossier(String id, long groupId) {
@@ -1106,7 +726,6 @@ public class DossierUtils {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
 
-			_log.debug("GET PROCESS ACTION____" + groupId + "," + actionCode + "," + serviceProcessId);
 
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
@@ -1135,7 +754,6 @@ public class DossierUtils {
 					else {
 						flagCheck = true;
 					}
-					_log.debug("LamTV_preStepCode: "+stepStatus + "," + stepSubStatus + "," + dossierStatus + "," + dossierSubStatus + "," + act.getPreCondition() + "," + flagCheck);
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
@@ -1151,7 +769,6 @@ public class DossierUtils {
 				}
 			}
 		} catch (Exception e) {
-			_log.debug("NOT PROCESS ACTION");
 			_log.debug(e);
 		}
 
@@ -1189,11 +806,9 @@ public class DossierUtils {
 		for (ServiceProcessRole spr : lstProcessRoles) {
 			long roleId = spr.getRoleId();
 			int moderator = spr.getModerator() ? 1 : 0;
-//			JobPos jp = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, roleId);
 			JobPos jp = mapJobPoses.get(roleId);
 			
 			if (jp != null) {
-//				List<EmployeeJobPos> lstEJPs = EmployeeJobPosLocalServiceUtil.getByJobPostId(groupId, jp.getJobPosId());
 				List<EmployeeJobPos> lstEJPs = mapEJPS.get(jp.getJobPosId());
 				long[] employeeIds = new long[lstEJPs.size()];
 				int countEmp = 0;
@@ -1206,12 +821,6 @@ public class DossierUtils {
 					mapEmpls.put(e.getEmployeeId(), e);
 				}
 				List<Employee> lstEmployees = new ArrayList<>();
-//				for (EmployeeJobPos ejp : lstEJPs) {
-//					Employee employee = EmployeeLocalServiceUtil.fetchEmployee(ejp.getEmployeeId());
-//					if (employee != null) {
-//						lstEmployees.add(employee);
-//					}
-//				}
 				for (EmployeeJobPos ejp : lstEJPs) {
 					if (mapEmpls.get(ejp.getEmployeeId()) != null) {
 						lstEmployees.add(mapEmpls.get(ejp.getEmployeeId()));
@@ -1222,12 +831,7 @@ public class DossierUtils {
 					mapDaus.put(du.getUserId(), du);
 				}
 				for (Employee e : lstEmployees) {
-//					DossierUserPK pk = new DossierUserPK();
-//					pk.setDossierId(dossier.getDossierId());
-//					pk.setUserId(e.getMappingUserId());
-//					DossierUser ds = DossierUserLocalServiceUtil.fetchDossierUser(pk);
 					if (mapDaus.get(e.getMappingUserId()) == null) {
-//					if (ds == null) {
 						DossierUserLocalServiceUtil.addDossierUser(groupId, dossier.getDossierId(), e.getMappingUserId(), moderator, Boolean.FALSE);						
 					}
 					else {
@@ -1278,9 +882,7 @@ public class DossierUtils {
 				model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
 			}
 			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-//			_log.info("DueDate: "+ doc.get(DossierTerm.DUE_DATE));
 			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-//			_log.info("FINISH_DATE: "+ doc.get(DossierTerm.FINISH_DATE));
 			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
@@ -1453,27 +1055,4 @@ public class DossierUtils {
 		return model;
 	}
 	
-	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && 
-				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
-	}
-
-	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate != 0 && (dueDate == 0
-				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
-	}
-
-	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
-	}
-
-	private static boolean checkWaiting(String lockState, String dossierStatus) {
-		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)
-				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_STATE.equals(lockState))
-				 || (Validator.isNotNull(lockState) && DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)));
-	}
-
-	private static boolean checkReceiving(String dossierStatus) {
-		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
-	}
 }

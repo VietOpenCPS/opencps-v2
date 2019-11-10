@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="address" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="telNo" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="faxNo" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="website" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="siteGroupId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="adminEmail" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
     "address",
     "telNo",
     "faxNo",
-    "email",
+    ConstantUtils.VALUE_EMAIL,
     "website",
     "siteGroupId",
     "adminEmail",
@@ -73,7 +73,7 @@ public class OfficeSiteInputModel {
     protected String telNo;
     @FormParam(value = "faxNo")
     protected String faxNo;
-    @FormParam(value = "email")
+    @FormParam(value = ConstantUtils.VALUE_EMAIL)
     protected String email;
     @FormParam(value = "website")
     protected String website;

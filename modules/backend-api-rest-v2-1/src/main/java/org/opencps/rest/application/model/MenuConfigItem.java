@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class MenuConfigItem  {
+@XmlRootElement(name = ConstantUtils.DATA) public class MenuConfigItem  {
   
   @ApiModelProperty(example = "null", value = "")
   private Long menuConfigId = null;

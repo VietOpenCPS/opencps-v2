@@ -61,7 +61,7 @@ public class RegistrationTemplatesWrapper implements RegistrationTemplates,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("registrationTemplateId", getRegistrationTemplateId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -93,7 +93,7 @@ public class RegistrationTemplatesWrapper implements RegistrationTemplates,
 			setRegistrationTemplateId(registrationTemplateId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

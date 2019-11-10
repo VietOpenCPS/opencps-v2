@@ -58,7 +58,7 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("zaloMapId", getZaloMapId());
-		attributes.put("groupId", getGroupId());
+		attributes.put(Field.GROUP_ID, getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -81,7 +81,7 @@ public class ZaloMapWrapper implements ZaloMap, ModelWrapper<ZaloMap> {
 			setZaloMapId(zaloMapId);
 		}
 
-		Long groupId = (Long)attributes.get("groupId");
+		Long groupId = (Long)attributes.get(Field.GROUP_ID);
 
 		if (groupId != null) {
 			setGroupId(groupId);

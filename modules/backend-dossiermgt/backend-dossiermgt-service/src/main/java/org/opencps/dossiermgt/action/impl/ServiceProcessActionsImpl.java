@@ -54,8 +54,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		count =
 			ServiceProcessLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", count);
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.TOTAL, count);
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		return result;
 	}
@@ -118,8 +118,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 		long count = processRoles.size();
 
-		results.put("total", count);
-		results.put("data", processRoles);
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, processRoles);
 
 		return results;
 	}
@@ -163,8 +163,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			params, sorts, start, end, searchContext);
 		count = ProcessStepLocalServiceUtil.countLucene(params, searchContext);
 
-		results.put("total", count);
-		results.put("data", hits.toList());
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, hits.toList());
 
 		return results;
 	}
@@ -223,8 +223,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		long count = processStepRoles.size();
 
-		results.put("total", count);
-		results.put("data", processStepRoles);
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, processStepRoles);
 
 		return results;
 	}
@@ -278,8 +278,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		count =
 			ProcessActionLocalServiceUtil.searchCount(params, searchContext);
 
-		results.put("total", count);
-		results.put("data", hits.toList());
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, hits.toList());
 
 		return results;
 	}

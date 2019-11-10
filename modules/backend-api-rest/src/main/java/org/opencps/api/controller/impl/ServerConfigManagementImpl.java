@@ -48,7 +48,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -80,7 +80,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServerConfigInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -119,7 +119,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			boolean checkAuth = true;
@@ -157,7 +157,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response updateServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -247,7 +247,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -282,7 +282,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response updateConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -314,7 +314,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response getBasicServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -328,7 +328,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
-			result.put("total", count);
+			result.put(ConstantUtils.TOTAL, count);
 			JSONArray sLists = JSONFactoryUtil.createJSONArray();
 			for (ServerConfig sc : configs) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject();
@@ -339,14 +339,14 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							&& configObj.has(SyncServerTerm.SERVER_SECRET)
 							&& configObj.has(SyncServerTerm.SERVER_URL)
 							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-				        obj.put("groupId", configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
+				        obj.put(Field.GROUP_ID, configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
 					}
 				}
 				
 				sLists.put(obj);
 			}
 
-			result.put("data", sLists);
+			result.put(ConstantUtils.DATA, sLists);
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 

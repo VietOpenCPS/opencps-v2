@@ -81,11 +81,11 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				query.setEnd(-1);
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 			params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
@@ -115,8 +115,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -157,7 +157,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
@@ -192,7 +192,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
@@ -249,8 +249,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + "\"")
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}else{
@@ -276,7 +276,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
@@ -289,8 +289,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileNameRespone + "\"")
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -319,11 +319,11 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				query.setEnd(-1);
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(EmployeeJobPosTerm.EMPLOYEE_ID, String.valueOf(id));
 
@@ -333,9 +333,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			JSONObject jsonData = actions.getEmployeeJobpos(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getEmployeeJobposModel()
-					.addAll(EmployeeUtils.mapperEmployeeJobposList((List<Document>) jsonData.get("data"), id));
+					.addAll(EmployeeUtils.mapperEmployeeJobposList((List<Document>) jsonData.get(ConstantUtils.DATA), id));
 
 			return Response.status(200).entity(result).build();
 
@@ -352,7 +352,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			EmployeeJobPos employeeJobPos = actions.createEmployeeJobpos(user.getUserId(), company.getCompanyId(),
 					groupId, id, input.getWorkingUnitId(), input.getJobPosId(), Boolean.valueOf(input.getMainJobPos()),
@@ -375,7 +375,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			EmployeeJobPos employeeJobPos = actions.updateEmployeeJobpos(user.getUserId(), company.getCompanyId(),
 					groupId, id, employeeJobPosId, input.getWorkingUnitId(), input.getJobPosId(),
@@ -424,7 +424,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonObject = actions.createEmployeeAccount(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getScreenName(), input.getEmail(), input.isExist(), serviceContext);
@@ -455,7 +455,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonObject = actions.lockEmployeeAccount(user.getUserId(), company.getCompanyId(), groupId, id,
 					locked, serviceContext);
@@ -476,7 +476,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.validateExits(user.getUserId(), company.getCompanyId(), groupId, employeeNo, email, serviceContext);
 
@@ -495,7 +495,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			EmployeeResults result = new EmployeeResults();
 			try {
 
-				long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+				long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 				
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				StringBuilder strUserIdList = new StringBuilder();
@@ -525,7 +525,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-				params.put("groupId", String.valueOf(groupId));
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
 				params.put("keywords", query.getKeywords());
 				params.put("userIdList", strUserIdList.toString());
 
@@ -535,8 +535,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);
 
-				result.setTotal(jsonData.getLong("total"));
-				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+				result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 				return Response.status(200).entity(result).build();
 
@@ -551,7 +551,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Locale locale, User user, ServiceContext serviceContext, String itemCode, DataSearchModel query) {
 		EmployeeInterface actions = new EmployeeActions();
 		EmployeeResults result = new EmployeeResults();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			String serverNo = SERVER + itemCode;
@@ -564,7 +564,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				if (Validator.isNotNull(config)) {
 					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(config);
 					if (jsonConfig != null) {
-						groupIdEmp = GetterUtil.getLong(jsonConfig.getString("groupId"));
+						groupIdEmp = GetterUtil.getLong(jsonConfig.getString(Field.GROUP_ID));
 					}
 				}
 			}
@@ -599,7 +599,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-					params.put("groupId", String.valueOf(groupIdEmp));
+					params.put(Field.GROUP_ID, String.valueOf(groupIdEmp));
 					params.put("keywords", query.getKeywords());
 					params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 					params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
@@ -612,9 +612,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 					JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 							query.getStart(), query.getEnd(), serviceContext);
 
-					result.setTotal(jsonData.getLong("total"));
+					result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 					result.getEmployeeModel()
-							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 				}
 			}
 			return Response.status(200).entity(result).build();

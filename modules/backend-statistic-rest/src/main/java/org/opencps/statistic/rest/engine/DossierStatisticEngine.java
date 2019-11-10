@@ -498,7 +498,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetDossierData> dossierData = new ArrayList<>();
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
 			for (Document doc : datas) {

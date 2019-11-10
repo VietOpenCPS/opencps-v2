@@ -56,11 +56,11 @@ public class FileAttachActions implements FileAttachInterface {
 
 			hits = FileAttachLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = FileAttachLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);
@@ -84,7 +84,7 @@ public class FileAttachActions implements FileAttachInterface {
 			JSONArray versions = JSONFactoryUtil.createJSONArray();
 			List<DLFileVersion> fileVersions = DLFileVersionLocalServiceUtil
 					.getFileVersions(fileAttach.getFileEntryId(), WorkflowConstants.STATUS_APPROVED);
-			result.put("total", fileVersions.size());
+			result.put(ConstantUtils.TOTAL, fileVersions.size());
 
 			for (DLFileVersion dlFileVersion : fileVersions) {
 				JSONObject version = JSONFactoryUtil.createJSONObject();

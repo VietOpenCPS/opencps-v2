@@ -24,9 +24,9 @@ public class NotificationQueueActions implements NotificationQueueInterface {
 		List<NotificationQueue> listQueue = NotificationQueueLocalServiceUtil.getNotificationQueues(QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
-		result.put("data", listQueue);
+		result.put(ConstantUtils.DATA, listQueue);
 
-		result.put("total", listQueue.size());
+		result.put(ConstantUtils.TOTAL, listQueue.size());
 
 		return result;
 	}

@@ -66,7 +66,7 @@ public interface CommentManagement {
 			@Multipart("className") String className, @Multipart("classPK") String classPK,
 			@Multipart("parent") long parent, @Multipart("fileName") String fileName,
 			@Multipart("fileType") String fileType, @Multipart("fileSize") long fileSize,
-			@Multipart("pings") String pings, @Multipart("email") String email, @Multipart("fullname") String fullname,
+			@Multipart("pings") String pings, @Multipart(ConstantUtils.VALUE_EMAIL) String email, @Multipart("fullname") String fullname,
 			@Multipart("opinion") Boolean opinion);
 
 	@PUT

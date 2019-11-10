@@ -53,7 +53,7 @@ public class MultipartUtility {
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
-		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
 		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
 
 		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
@@ -62,7 +62,7 @@ public class MultipartUtility {
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
 		httpConn.setRequestProperty("Accept", "application/json");
-		httpConn.setRequestProperty("groupId", String.valueOf(groupId));
+		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
@@ -80,7 +80,7 @@ public class MultipartUtility {
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
-		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
 		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
 
 		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
@@ -89,7 +89,7 @@ public class MultipartUtility {
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
 		httpConn.setRequestProperty("Accept", "application/json");
-		httpConn.setRequestProperty("groupId", String.valueOf(groupId));
+		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();
 		writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);

@@ -7,7 +7,6 @@ public class OfficeSiteTerm {
 	public static final String OFFICE_SITE_ID = "officeSiteId";
 
 	public static final String COMPANY_ID = "companyId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";
@@ -25,6 +24,8 @@ public class OfficeSiteTerm {
 	public static final String SITE_GROUP_ID = "siteGroupId";
 	public static final String ADMIN_USER_ID = "adminUserId";
 	public static final String PREFERENCES = "preferences";
+	public static final String ADMIN_USER_SCREEN_NAME = "adminUser_screenName";
+	public static final String ADMIN_USER_EMAIL = "adminUser_email";
 	
 	// sortable
 	public static final String OFFICE_SITE_ID_SORTABLE = "officeSiteId_sortable";
