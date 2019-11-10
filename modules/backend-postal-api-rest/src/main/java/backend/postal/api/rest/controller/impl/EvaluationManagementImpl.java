@@ -18,6 +18,7 @@ import org.opencps.api.evaluation.model.EvaluationResultsModel;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -44,8 +45,8 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			if("".equals(score)){
-				score = "0";
+			if(StringPool.BLANK.equals(score)){
+				score = VnPostTerm.EVALUATION_SCORE_DEFAULT;
 			}
 			int number = Integer.parseInt(score);
 			

@@ -28,6 +28,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import backend.kyso.process.service.util.ConfigConstants;
+import backend.kyso.process.service.util.ConfigProps;
+
 /**
  * @author trungnt
  */
@@ -38,23 +41,27 @@ public class PDFUtil {
 
 		InputStream is = null;
 		OutputStream os = null;
-//		String imagePath = StringPool.BLANK;
+		// String imagePath = StringPool.BLANK;
 		try {
 
-			DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileEntryId);
+			DLFileEntry fileEntry =
+				DLFileEntryLocalServiceUtil.getFileEntry(fileEntryId);
 
 			if (fileEntry == null) {
 				return StringPool.BLANK;
 			}
 
-			if (!"pdf".equals(fileEntry.getExtension())) {
+			if (!ConfigConstants.FILE_ENTRY_EXTENTION_PDF.equals(
+				fileEntry.getExtension())) {
 				return StringPool.BLANK;
 			}
 
 			is = fileEntry.getContentStream();
 
-			String imagePath = dest + fileEntry.getTitle() + StringPool.DASH + System.currentTimeMillis() + "_tmp."
-					+ fileEntry.getExtension();
+			String imagePath = dest + fileEntry.getTitle() + StringPool.DASH +
+				System.currentTimeMillis() +
+				ConfigProps.get(ConfigConstants.COMPUTER_HASH_PATH_TMP_PDF) +
+				fileEntry.getExtension();
 
 			os = new FileOutputStream(imagePath);
 
@@ -69,19 +76,23 @@ public class PDFUtil {
 		}
 		catch (Exception e) {
 			_log.error(e);
-		} finally {
+		}
+		finally {
 			try {
 				if (is != null) {
 					is.close();
 				}
-			} catch (IOException e1) {
+			}
+			catch (IOException e1) {
 				_log.error(e1);
-			} finally {
+			}
+			finally {
 				try {
 					if (os != null) {
 						os.close();
 					}
-				} catch (IOException e2) {
+				}
+				catch (IOException e2) {
 					_log.error(e2);
 				}
 			}

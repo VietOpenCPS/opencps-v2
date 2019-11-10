@@ -12,7 +12,7 @@
  * details.
  */
 
-package backend.kyso.process.service.util;
+package backend.jasper.process.service.util;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -28,9 +28,6 @@ import java.util.Properties;
  */
 @ProviderType
 public class ConfigProps {
-	
-	public static final String CER_HOME = "cer.home";
-	
 	public static void addProperties(Properties properties) {
 		_instance._configuration.addProperties(properties);
 	}

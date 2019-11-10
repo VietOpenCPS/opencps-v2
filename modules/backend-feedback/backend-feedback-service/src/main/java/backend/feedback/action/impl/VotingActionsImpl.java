@@ -1,5 +1,18 @@
 package backend.feedback.action.impl;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.ws.rs.NotFoundException;
+
+import org.opencps.backend.usermgt.service.util.ConfigProps;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -16,17 +29,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.ws.rs.NotFoundException;
-
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
 import backend.feedback.action.VotingActions;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.exception.NoSuchVotingResultException;
@@ -34,6 +36,7 @@ import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
+import backend.feedback.service.util.ConfigConstants;
 
 public class VotingActionsImpl implements VotingActions {
 
@@ -47,11 +50,11 @@ public class VotingActionsImpl implements VotingActions {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
-			if (!"0".equals(classPK)) {
+			if (!ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR).equals(classPK)) {
 				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				if (count == 0) {
 					// Add new voting with classPK
-					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
 					if (votingList != null) {
 						String subject;
 						String choices;
@@ -89,9 +92,9 @@ public class VotingActionsImpl implements VotingActions {
 			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			//_log.info("VotingActions.getVotingList(): "+hits.getLength());
 			if (hits.toList() == null || hits.toList().size() == 0) {
-				params.put("classPK", "0");
-				params.put("fromVotingDate", "");
-				params.put("toVotingDate", "");
+				params.put("classPK", ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
+				params.put("fromVotingDate", StringPool.BLANK);
+				params.put("toVotingDate", StringPool.BLANK);
 				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			}
 			result.put("data", hits.toList());
@@ -298,7 +301,7 @@ public class VotingActionsImpl implements VotingActions {
 //					throw new UnauthenticationException();
 //				}
 
-				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), "",
+				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), StringPool.BLANK,
 						email, comment, selected, serviceContext);
 			}
 		}

@@ -134,7 +134,7 @@ public class StatisticDataUtil {
 				params.put(VotingTerm.GOV_AGENCY_CODE, payload.getGovAgencyCode());
 			}
 	
-			params.put(VotingTerm.CLASS_NAME, "employee");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_EMPLOYEE));
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
 	
@@ -215,7 +215,7 @@ public class StatisticDataUtil {
 					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-			params.put(VotingTerm.CLASS_NAME, "dossier");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
 	

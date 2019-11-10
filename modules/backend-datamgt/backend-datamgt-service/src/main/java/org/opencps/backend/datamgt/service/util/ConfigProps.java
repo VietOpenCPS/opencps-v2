@@ -1,36 +1,16 @@
-/**
- * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- */
+package org.opencps.backend.datamgt.service.util;
 
-package backend.kyso.process.service.util;
-
-import aQute.bnd.annotation.ProviderType;
+import java.util.Properties;
 
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 
-import java.util.Properties;
+import aQute.bnd.annotation.ProviderType;
 
-/**
- * @author khoavd
- * @generated
- */
 @ProviderType
 public class ConfigProps {
-	
-	public static final String CER_HOME = "cer.home";
-	
+
 	public static void addProperties(Properties properties) {
 		_instance._configuration.addProperties(properties);
 	}
@@ -66,13 +46,13 @@ public class ConfigProps {
 	public static void set(String key, String value) {
 		_instance._configuration.set(key, value);
 	}
-
+	
 	private ConfigProps() {
-		_configuration = ConfigurationFactoryUtil.getConfiguration(getClass()
-																	   .getClassLoader(),
-				"config");
+		_configuration = ConfigurationFactoryUtil.getConfiguration(getClass().getClassLoader(), CONFIG_PROPERTY);
 	}
-
+	
+	private static String CONFIG_PROPERTY = "config";
 	private static ConfigProps _instance = new ConfigProps();
 	private Configuration _configuration;
+
 }

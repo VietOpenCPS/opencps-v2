@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.communication.service.util.ConfigConstants;
 import backend.communication.service.util.ConfigProps;
 
 /**
@@ -254,45 +255,45 @@ public class NotificationUtil {
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-//				if (queue.getToUserId() > 0) {
-					// Preferences preferences =
-					// PreferencesLocalServiceUtil.fetchByF_userId(
-					// serviceContext.getScopeGroupId(),
-					// queue.getToUserId());
-					// if (preferences != null &&
-					// Validator.isNotNull(preferences.getPreferences())) {
-					// try {
-					// JSONObject pref = JSONFactoryUtil.createJSONObject(
-					// preferences.getPreferences());
-					// if (pref.has(queue.getNotificationType())) {
-					// JSONObject object = pref.getJSONObject(
-					// queue.getNotificationType());
-					// if (object != null &&
-					// object.has(queue.getClassName())) {
-					// JSONObject conf = object.getJSONObject(
-					// queue.getClassName());
-					// sendEmail = conf.getBoolean("email");
-					// sendNotify = conf.getBoolean("notify");
-					// sendSMS = conf.getBoolean("sms");
-					// }
-					// }
-					// }
-					// catch (Exception e) {
-					// _log.debug(e);
-					// //_log.error(e);
-					// }
-					// }
-//					if (template != null) {
-//						// sendEmail = template.getSendEmail();
-//						sendNotify = template.getSendNotification();
-//						// sendSMS = template.getSendSMS();
-//						sendMesZalo = template.getSendNotification();
-//					}
-//				}
-//				else {
-//					sendNotify = false;
-//					sendMesZalo = false;
-//				}
+				// if (queue.getToUserId() > 0) {
+				// Preferences preferences =
+				// PreferencesLocalServiceUtil.fetchByF_userId(
+				// serviceContext.getScopeGroupId(),
+				// queue.getToUserId());
+				// if (preferences != null &&
+				// Validator.isNotNull(preferences.getPreferences())) {
+				// try {
+				// JSONObject pref = JSONFactoryUtil.createJSONObject(
+				// preferences.getPreferences());
+				// if (pref.has(queue.getNotificationType())) {
+				// JSONObject object = pref.getJSONObject(
+				// queue.getNotificationType());
+				// if (object != null &&
+				// object.has(queue.getClassName())) {
+				// JSONObject conf = object.getJSONObject(
+				// queue.getClassName());
+				// sendEmail = conf.getBoolean("email");
+				// sendNotify = conf.getBoolean("notify");
+				// sendSMS = conf.getBoolean("sms");
+				// }
+				// }
+				// }
+				// catch (Exception e) {
+				// _log.debug(e);
+				// //_log.error(e);
+				// }
+				// }
+				// if (template != null) {
+				// // sendEmail = template.getSendEmail();
+				// sendNotify = template.getSendNotification();
+				// // sendSMS = template.getSendSMS();
+				// sendMesZalo = template.getSendNotification();
+				// }
+				// }
+				// else {
+				// sendNotify = false;
+				// sendMesZalo = false;
+				// }
 
 				if (template != null) {
 					sendEmail = template.getSendEmail();
@@ -330,7 +331,7 @@ public class NotificationUtil {
 			}
 			catch (Exception e) {
 				// _log.warn("Can't not create MBMessageEntry " + e);
-				//e.printStackTrace();
+				// e.printStackTrace();
 				_log.debug(e);
 			}
 		}
@@ -382,11 +383,16 @@ public class NotificationUtil {
 
 			data.put("user_id", toTelNo);
 
-			String endPoint = ConfigProps.get(ZALO_ENDPOID_GET_USER_INFO) + ConfigProps.get(ZALO_PARAM_TOKEN) +
-				token + ConfigProps.get(ZALO_PARAM_DATA) + data.toJSONString();
+			String endPoint =
+				ConfigProps.get(ConfigConstants.ZALO_ENDPOID_GET_USER_INFO) +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_TOKEN) + token +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_DATA) +
+					data.toJSONString();
 
 			JSONObject resPostDossier = _callAPI(
-				HttpMethods.GET, ConfigProps.get(ZALO_MEDIA_TYPE), ConfigProps.get(ZALO_PATH_BASE), endPoint,
+				HttpMethods.GET,
+				ConfigProps.get(ConfigConstants.ZALO_MEDIA_TYPE),
+				ConfigProps.get(ConfigConstants.ZALO_PATH_BASE), endPoint,
 				StringPool.BLANK, StringPool.BLANK, properties);
 
 			String uid = resPostDossier.getString("message");
@@ -429,12 +435,15 @@ public class NotificationUtil {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) ||
-				(pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) ||
+				(pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+					!endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
@@ -460,7 +469,9 @@ public class NotificationUtil {
 					java.util.Base64.getEncoder().encodeToString(
 						authString.getBytes()));
 				conn.setRequestProperty(
-					HttpHeaders.AUTHORIZATION, ConfigProps.get(ZALO_AUTHOR_TYPE) + StringPool.SPACE + authStringEnc);
+					HttpHeaders.AUTHORIZATION,
+					ConfigProps.get(ConfigConstants.ZALO_AUTHOR_TYPE) +
+						StringPool.SPACE + authStringEnc);
 			}
 
 			if (!properties.isEmpty()) {
@@ -500,12 +511,6 @@ public class NotificationUtil {
 		return response;
 	}
 
-	private static final String ZALO_PATH_BASE = "opencps.open.zalo.path.base";
-	private static final String ZALO_ENDPOID_GET_USER_INFO = "opencps.open.zalo.endpoint.getuserinfo";
-	private static final String ZALO_PARAM_TOKEN = "opencps.open.zalo.param.token";
-	private static final String ZALO_PARAM_DATA = "opencps.open.zalo.param.data";
-	private static final String ZALO_MEDIA_TYPE = "opencps.open.zalo.mediatype";
-	private static final String ZALO_AUTHOR_TYPE = "opencps.open.zalo.header.author.type";
 	private static final String ZALO_UID = "zaloUid";
 	private static final String ZALO_TOKEN = "zaloToken";
 
@@ -520,7 +525,7 @@ class RESTFulConfiguration {
 
 	public static final String SUBMIT = "submit";
 	public static final String TIMER = "timer";
-	
+
 	public static final int TIME_OUT = 3000;
 
 }

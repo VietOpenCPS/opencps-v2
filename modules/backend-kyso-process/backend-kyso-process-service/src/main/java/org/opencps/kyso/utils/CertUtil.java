@@ -27,6 +27,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import backend.kyso.process.service.util.ConfigConstants;
+import backend.kyso.process.service.util.ConfigProps;
+
 /**
  * @author trungnt
  */
@@ -43,7 +46,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(ConfigProps.get(ConfigConstants.CERTIFICATE_FACTORY));
 
 		Certificate cert = cf
 			.generateCertificate(new FileInputStream(new File(certPath)));
@@ -62,7 +65,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(ConfigProps.get(ConfigConstants.CERTIFICATE_FACTORY));
 
 		X509Certificate cert = (X509Certificate) cf
 			.generateCertificate(new FileInputStream(new File(certPath)));
@@ -81,7 +84,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(ConfigProps.get(ConfigConstants.CERTIFICATE_FACTORY));
 
 		Certificate cert = cf
 			.generateCertificate(new FileInputStream(new File(new URI(url))));

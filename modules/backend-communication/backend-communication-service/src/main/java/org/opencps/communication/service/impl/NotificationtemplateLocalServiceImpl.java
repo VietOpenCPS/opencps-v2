@@ -14,6 +14,15 @@
 
 package org.opencps.communication.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.exception.NoSuchNotificationtemplateException;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
+
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -40,15 +49,6 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.communication.constants.NotificationTemplateTerm;
-import org.opencps.communication.exception.NoSuchNotificationtemplateException;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
-
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.exception.NotFoundException;
@@ -56,6 +56,7 @@ import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
 import backend.auth.api.keys.ActionKeys;
 import backend.auth.api.keys.ModelNameKeys;
+import backend.communication.service.util.ConfigConstants;
 
 /**
  * The implementation of the notificationtemplate local service.
@@ -255,7 +256,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -325,7 +326,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

@@ -477,9 +477,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}				
 			}
 			//Add common params
-			String strSystemId = "0,1,2";
+			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 			params.put("systemId", strSystemId);
-			params.put("top", "statistic");
+			params.put("top", DossierStatisticConstants.TOP_STATISTIC);
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			long companyId = company.getCompanyId(); 

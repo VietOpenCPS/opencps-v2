@@ -61,6 +61,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
 import org.opencps.datamgt.model.DictItem;
@@ -255,7 +257,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem dictItem = dictItemPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId,
 				parentItemId, level, null);
-		if ((Validator.isNotNull(dictItem) && "0".equals(sibling)) || "0".equals(sibling)) {
+		if ((Validator.isNotNull(dictItem) && ConfigProps.get(ConfigConstants.SIBLING_VALIDATOR).equals(sibling)) ||
+			ConfigProps.get(ConfigConstants.SIBLING_VALIDATOR).equals(sibling)) {
 			try {
 				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
 			} catch (Exception e) {
@@ -276,11 +279,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		if (dictParentItemId == 0) {
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
 
-				ext += "0";
+				ext += ConfigProps.get(ConfigConstants.SIBLING_TREE);
 
 			}
 
@@ -297,10 +300,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			// sibling
 			// }
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
-				ext += "0";
+				ext += ConfigProps.get(ConfigConstants.SIBLING_TREE);
 			}
 
 			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
@@ -492,7 +495,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -586,7 +589,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
@@ -627,7 +631,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -715,7 +719,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);

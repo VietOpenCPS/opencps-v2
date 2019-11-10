@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.kyso.process.service.util.ConfigConstants;
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
 
@@ -108,7 +109,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 					.createJSONArray();
 
 //			if (typeSignature == TYPE_KYSO) {
-			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+			String realPath = PropsUtil.get(ConfigProps.CER_HOME) + StringPool.FORWARD_SLASH;
 //			_log.info("realPath_Kyso: "+realPath);
 			_log.info("realPath_Kyso: "+realPath);
 //			} else {
@@ -139,7 +140,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				_log.info("====***typeSignature+===: "+typeSignature);
 				_log.info("====***postStepCode+===: "+postStepCode);
 //				if (TYPE_KYSO.contains(typeSignature) && STEPCODE_KYSO.contains(postStepCode)) {
-				String signImagePath = new File(realPath + email + ".png").getAbsolutePath();
+				String signImagePath = new File(realPath + email + ConfigConstants.FILE_EXTENTION_PNG).getAbsolutePath();
 				_log.info("signImagePath_Kyso: "+realPath);
 //				} else if (TYPE_DONGDAU.contains(typeSignature) && STEPCODE_DONGDAU.equals(postStepCode)){
 //					signImagePath = PropsUtil.get(ConfigProps.CER_HOME)+"/condau/nguyenadmin.png";
@@ -152,7 +153,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 
 				BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
 
-				Certificate cert = CertUtil.getCertificateByPath(new File(realPath + email + ".cer").getAbsolutePath());
+				Certificate cert = CertUtil.getCertificateByPath(new File(realPath + email + ConfigConstants.FILE_EXTENTION_CER).getAbsolutePath());
 
 				boolean showSignatureInfo = true;
 
@@ -306,7 +307,7 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		if (Validator.isNotNull(sign) && Validator.isNotNull(fileName)) {
 			byte[] signature = Base64.decode(sign);
 
-			String realPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+			String realPath = PropsUtil.get(ConfigProps.CER_HOME) + StringPool.FORWARD_SLASH;
 			String fullPath = StringPool.BLANK;
 
 			try {
@@ -315,22 +316,22 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 				_log.info("fileName: "+fileName);
 				
 				ServerSigner signer = new ServerSigner(realPath
-						+ fileName + ".pdf", null);
+						+ fileName + ConfigConstants.FILE_EXTENTION_PDF, null);
 
 				signer.completeSign(signature, signFieldName);
 
 				String signedFile = signer.getSignedFile();
 				_log.info("signedFile: "+signedFile.toString());
 
-				fullPath = realPath + fileName + ".pdf";
+				fullPath = realPath + fileName + ConfigConstants.FILE_EXTENTION_PDF;
 				_log.info("fullPath: "+fullPath.toString());
 				
 				jsonFeed.put("signedFile", signedFile);
 				jsonFeed.put("fullPath", fullPath);
-				jsonFeed.put("msg", "success");
+				jsonFeed.put("msg", API_MSG_SUCCESS);
 			} catch (Exception e) {
 				_log.error(e);
-				jsonFeed.put("msg", "error");
+				jsonFeed.put("msg", API_MSG_ERROR);
 			}
 		} else {
 			jsonFeed.put("msg", "error");
@@ -339,5 +340,8 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 		
 		return jsonFeed;
 	}
+
+	private static final String API_MSG_SUCCESS = "success";
+	private static final String API_MSG_ERROR = "error";
 
 }

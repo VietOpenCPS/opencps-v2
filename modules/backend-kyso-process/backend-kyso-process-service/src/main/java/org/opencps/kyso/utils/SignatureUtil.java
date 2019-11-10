@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.kyso.process.service.util.ConfigConstants;
 import kysovanban.signature.DocContent;
 import kysovanban.signature.PdfContent;
 import kysovanban.signature.Signer;
@@ -231,7 +232,7 @@ public class SignatureUtil {
 				String signInfoStr = jsonArray.getJSONObject(i).getString("SubjectDN");
 
 				stringBuilder.append(signInfoStr);
-				stringBuilder.append("; ");
+				stringBuilder.append(StringPool.SEMICOLON + StringPool.SPACE);
 			}
 
 			return stringBuilder.toString();
@@ -257,14 +258,14 @@ public class SignatureUtil {
 		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
 		
 		try {
-			if ("doc".equalsIgnoreCase(extension)
-					|| "docx".equalsIgnoreCase(extension)) {
+			if (ConfigConstants.SIGN_FILE_EXTENTION_DOC.equalsIgnoreCase(extension)
+					|| ConfigConstants.SIGN_FILE_EXTENTION_DOCX.equalsIgnoreCase(extension)) {
 				doccontent = new DocContent(path);
 				if (signer.verify(doccontent)) {
 					signerInfos = signer.getSignatureInfos(doccontent);
 				}
 
-			} else if ("pdf".equalsIgnoreCase(extension)) {
+			} else if (ConfigConstants.SIGN_FILE_EXTENTION_PDF.equalsIgnoreCase(extension)) {
 				pdfcontent = new PdfContent(path);
 
 				if (signer.verify(pdfcontent)) {

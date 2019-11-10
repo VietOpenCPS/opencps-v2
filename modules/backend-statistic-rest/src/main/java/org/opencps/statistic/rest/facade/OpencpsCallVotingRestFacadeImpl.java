@@ -3,6 +3,8 @@ package org.opencps.statistic.rest.facade;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.feedback.constants.VotingTerm;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -62,7 +64,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 			}
 		}
 
-		urlQueryParams.add("className", "dossier");
+		urlQueryParams.add(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 
 		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		//System.out.println("endPoint: "+endPoint);

@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.CommentTerm;
 import org.opencps.datamgt.exception.NoSuchCommentException;
 import org.opencps.datamgt.model.Comment;
@@ -198,7 +199,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		searchContext.addFullQueryEntryClassName(Comment.class.getName());
 		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
 
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -365,7 +366,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		searchContext.addFullQueryEntryClassName(Comment.class.getName());
 		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
 
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);

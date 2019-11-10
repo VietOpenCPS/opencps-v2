@@ -24,6 +24,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemGroupTempTerm;
@@ -335,7 +336,7 @@ public class DictItemGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictItemGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -454,7 +455,7 @@ public class DictItemGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictItemGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

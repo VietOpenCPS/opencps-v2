@@ -27,7 +27,13 @@ public interface DossierStatisticConstants {
 	
 	String STATISTIC_REPORT_ENDPOINT = "opencps.rest.enpoint.statistic.report";
 	
+	String GOOGLE_ENDPOINT = "opencps.google.enpoint";
+	
 	String GROUP_ID = "groupId";
+	
+	String VOTING_CLASSNAME_DOSSIER = "opencps.voting.classname.dossier";
+	String VOTING_CLASSNAME_EMPLOYEE = "opencps.voting.classname.employee";
+
 	
 	int START_YEARS = 1990;
 	
@@ -47,4 +53,6 @@ public interface DossierStatisticConstants {
 	String GOV_AGENCY_CODE = "GOVERNMENT_AGENCY";
 	//ALL SYSTEM
 	String ALL_SYSTEM = "0,1,2";
+
+	String TOP_STATISTIC = "statistic";
 }

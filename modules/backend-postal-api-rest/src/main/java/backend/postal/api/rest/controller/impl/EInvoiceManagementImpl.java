@@ -40,6 +40,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+
 import backend.postal.api.rest.controller.EInvoiceManagement;
 
 public class EInvoiceManagementImpl implements EInvoiceManagement {
@@ -88,7 +90,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
-		InvoiceServerConfigModel config = getServerConfig(groupId, "EINVOICE");
+		InvoiceServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_EINVOICE);
 		
 		if(config == null) {
 			return null;
@@ -103,12 +105,12 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		LstHoadonCtT lstHoadonCtT = new LstHoadonCtT();
 
 		HoadonT hoadon = new HoadonT();
-		hoadon.setMa("01GTKT0/001");
+		hoadon.setMa(VnPostTerm.HOADONT_MA);
 		// hoadon.setNgHd(formatDate(input.getNghd(),"dd/MM/yyyy"));
 		hoadon.setNgHd(input.getNgayHd());
 		hoadon.setSeri(input.getSeri());
-		hoadon.setMaNthue("01");
-		hoadon.setKieuSo("G");
+		hoadon.setMaNthue(VnPostTerm.HOADONT_MA_N_THUE);
+		hoadon.setKieuSo(VnPostTerm.HOADONT_KIEU_SO);
 		hoadon.setMaKh(input.getMaKhackHang());
 		hoadon.setTen(input.getTen());
 		hoadon.setPhone(input.getPhone());
@@ -154,10 +156,10 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		fsNHGTGT.setBSoId(input.getSoid());
 		fsNHGTGT.setHoadonCt(hoadonCt);
 		fsNHGTGT.setHoadon(hoadon);
-		fsNHGTGT.setBKtraDch("");
+		fsNHGTGT.setBKtraDch(StringPool.BLANK);
 
 		// String results = "khong the ket noi den server HDDT !!!!!";
-		String abc = "";
+		String abc = StringPool.BLANK;
 
 		try {
 			//String soapEndpointUrl = "http://hoadon.cmcsoft.com/Service/iv_v/siv_v_ph_hoadon.asmx";
@@ -173,9 +175,9 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 			soapheader.detachNode();
 
 			MimeHeaders mimeHeader = message.getMimeHeaders();
-			mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/Fs_NH_GTGT");
-			mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
-			mimeHeader.setHeader("Proxy-Connection", "keep-alive");
+			mimeHeader.setHeader("SOAPACTION", VnPostTerm.MIME_HEADER_SOAPACTION);
+			mimeHeader.setHeader(HttpHeaders.CONTENT_TYPE, VnPostTerm.MIME_HEADER_CONTENT_TYPE);
+			mimeHeader.setHeader("Proxy-Connection", VnPostTerm.MIME_HEADER_PROXY_CONNECTION);
 
 			JAXBContext context = JAXBContext.newInstance(fsNHGTGT.getClass());
 
@@ -196,13 +198,13 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 					protected URLConnection openConnection(URL url) throws IOException {
 						URL clone = new URL(url.toString());
 						HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
-						connection.setRequestProperty("Content-Type", "text/xml");
+						connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, VnPostTerm.SOAP_CONNECTION_CONTENT_TYPE);
 
-						connection.setRequestProperty("Accept", "application/soap+xml, text/*");
+						connection.setRequestProperty(HttpHeaders.ACCEPT, VnPostTerm.SOAP_CONNECTION_ACCEPT);
 
 						connection.setDoOutput(true);
-						connection.setConnectTimeout(3 * 1000);
-						connection.setReadTimeout(3 * 1000);
+						connection.setConnectTimeout(VnPostTerm.SOAP_CONNECTION_TIMEOUT);
+						connection.setReadTimeout(VnPostTerm.SOAP_CONNECTION_READ_TIMEOUT);
 						return connection;
 					}
 				});
@@ -220,7 +222,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		        
 		        Node node = (Node) nodes.item(0);
 		        
-		        abc = node != null ? node.getTextContent() : "";
+		        abc = node != null ? node.getTextContent() : StringPool.BLANK;
 		        
 				soapResponse.writeTo(System.out);
 				//_log.info("abc ============ " + abc );
