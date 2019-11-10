@@ -72,7 +72,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			{ "uuid_", Types.VARCHAR },
 			{ "commentId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
@@ -80,7 +80,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			{ "className", Types.VARCHAR },
 			{ "classPK", Types.VARCHAR },
 			{ "fullname", Types.VARCHAR },
-			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
+			{ "email", Types.VARCHAR },
 			{ "parent", Types.BIGINT },
 			{ "content", Types.VARCHAR },
 			{ "fileEntryId", Types.BIGINT },
@@ -96,7 +96,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commentId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -104,7 +104,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("classPK", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fullname", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("parent", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("content", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
@@ -182,7 +182,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		attributes.put("uuid", getUuid());
 		attributes.put("commentId", getCommentId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -190,7 +190,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		attributes.put("className", getClassName());
 		attributes.put("classPK", getClassPK());
 		attributes.put("fullname", getFullname());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("parent", getParent());
 		attributes.put("content", getContent());
 		attributes.put("fileEntryId", getFileEntryId());
@@ -226,7 +226,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -274,7 +274,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

@@ -1,6 +1,19 @@
 
 package backend.postal.api.rest.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,24 +27,14 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.sinvoice.model.InvokeResultModel;
 import org.opencps.api.sinvoice.model.SearchInputModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.GetterUtil;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import backend.postal.api.rest.controller.SInvoiceManagement;
 
@@ -57,9 +60,9 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		if (serverConfig == null) {
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NULL_SERVECE_CONFIG");
+			invokeResultModel.setErrorCode(VnPostTerm.INVOKE_MESSAGE_ERROR_SERVER_CONFIG);
 			invokeResultModel.setDescription(
-				"Not found server config with code = " + code);
+				VnPostTerm.INVOKE_MESSAGE_ERROR_SERVER_CONFIG_DESC + code);
 			return invokeResultModel;
 		}
 
@@ -79,7 +82,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 			System.out.println(inputSchema);
 
-			if ("createInvoice".equals(cmd)) {
+			if (VnPostTerm.S_INVOICE_CMD_CREATE_INVOICE.equals(cmd)) {
 				// fix tam, do chua mapping dc cac truong trong dossier voi
 				// sinvoice
 				// requestBody = inputSchema;
@@ -96,9 +99,9 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 			invokeResultModel.setErrorCode(
-				"NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR");
+				VnPostTerm.INVOKE_MESSAGE_ERROR_NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR);
 			invokeResultModel.setDescription(
-				"Not accept ip address or connected error");
+				VnPostTerm.INVOKE_MESSAGE_ERROR_NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR_DESC);
 			return invokeResultModel;
 		}
 	}
@@ -122,7 +125,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 			InvokeResultModel invokeResultModel = doInvoke(
 				request, header, company, locale, user, serviceContext, code,
-				requestBody, "createInvoice");
+				requestBody, VnPostTerm.S_INVOICE_CMD_CREATE_INVOICE);
 
 			if (invokeResultModel != null) {
 
@@ -168,7 +171,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "getInvoiceFile");
+			requestBody, VnPostTerm.S_INVOICE_CMD_GET_INVOICE_FILE);
 
 		if (invokeResultModel != null) {
 
@@ -200,15 +203,15 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				Object value = inputData.get(key);
-				params.append(key + "=");
-				params.append(URLEncoder.encode(value.toString(), "UTF-8"));
-				params.append("&");
+				params.append(key + StringPool.EQUAL);
+				params.append(URLEncoder.encode(value.toString(), VnPostTerm.S_INVOICE_CHARSET));
+				params.append(StringPool.AMPERSAND);
 			}
 
-			if ("GET".equals(method)) {
+			if (RequestMethod.GET.equals(method)) {
 				// endpoint = endpoint + "?" +
 				// URLEncoder.encode(params.toString(), "UTF-8");
-				endpoint = endpoint + "?" + params.toString();
+				endpoint = endpoint + StringPool.QUESTION + params.toString();
 			}
 
 			System.out.println("endpoint: " + endpoint);
@@ -217,26 +220,26 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestProperty(
-				"Authorization", "Basic " +
-					Base64.encode((userName + ":" + password).getBytes()));
+				HttpHeaders.AUTHORIZATION, "Basic " +
+					Base64.encode((userName + StringPool.COLON + password).getBytes()));
 			conn.setRequestMethod(method);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, contentType);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
 
-			if ("POST".equals(method)) {
-				if ("application/json".equals(contentType)) {
+			if (RequestMethod.POST.equals(method)) {
+				if (MediaType.APPLICATION_JSON.equals(contentType)) {
 					// body json
 					try (OutputStream os = conn.getOutputStream()) {
 						byte[] input =
-							inputData.toJSONString().getBytes("utf-8");
+							inputData.toJSONString().getBytes(VnPostTerm.S_INVOICE_CHARSET_LOWER);
 						os.write(input, 0, input.length);
 						os.flush();
 					}
 
 				}
-				else if ("application/x-www-form-urlencoded".equals(
+				else if (MediaType.APPLICATION_FORM_URLENCODED.equals(
 					contentType)) {
 
 					try (OutputStream os = conn.getOutputStream()) {
@@ -359,7 +362,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "getInvoiceFilePortal");
+			requestBody, VnPostTerm.S_INVOICE_CMD_GET_INVOICE_FILE_PORTAL);
 
 		if (invokeResultModel != null) {
 
@@ -392,7 +395,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "createExchangeInvoiceFile");
+			requestBody, VnPostTerm.S_INVOICE_CMD_CREATE_EXCHANGE_INVOICE_FILE);
 
 		if (invokeResultModel != null) {
 
@@ -427,7 +430,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "cancelTransactionInvoice");
+			requestBody, VnPostTerm.S_INVOICE_CMD_CANCEL_TRANSACTION_INVOICE);
 
 		if (invokeResultModel != null) {
 
@@ -464,7 +467,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "updatePaymentStatus");
+			requestBody, VnPostTerm.S_INVOICE_CMD_UPDATE_PAYMENT_STATUS);
 
 		if (invokeResultModel != null) {
 
@@ -495,7 +498,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = doInvoke(
 			request, header, company, locale, user, serviceContext, code,
-			requestBody, "cancelPaymentStatus");
+			requestBody, VnPostTerm.S_INVOICE_CMD_CANCEL_PAYMENT_STATUS);
 
 		if (invokeResultModel != null) {
 
@@ -523,7 +526,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 				request, header, company, locale, user, serviceContext, code,
 				JSONFactoryUtil.createJSONObject(
 					JSONFactoryUtil.looseSerialize(body)),
-				"getInvoices");
+				VnPostTerm.S_INVOICE_CMD_GET_INVOICES);
 
 			if (invokeResultModel != null) {
 

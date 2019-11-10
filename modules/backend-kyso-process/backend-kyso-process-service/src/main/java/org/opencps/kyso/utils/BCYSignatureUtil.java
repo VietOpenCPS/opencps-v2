@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.kyso.process.service.util.ConfigConstants;
+import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
 
 public class BCYSignatureUtil extends SignatureUtil {
@@ -49,11 +51,11 @@ public class BCYSignatureUtil extends SignatureUtil {
 
 		// String result = StringPool.BLANK;
 		
-		float offsetX = ParamUtil.getFloat(resourceRequest, "offsetX");
-		float offsetY = ParamUtil.getFloat(resourceRequest, "offsetY");
-		float imageZoom = ParamUtil.getFloat(resourceRequest, "imageZoom");
+		float offsetX = ParamUtil.getFloat(resourceRequest, ConfigConstants.COMPUTER_HASH_OFFSETX);
+		float offsetY = ParamUtil.getFloat(resourceRequest, ConfigConstants.COMPUTER_HASH_OFFSETY);
+		float imageZoom = ParamUtil.getFloat(resourceRequest, ConfigConstants.COMPUTER_HASH_IMAGE_ZOOM);
 		
-		boolean showSignatureInfo = ParamUtil.getBoolean(resourceRequest, "showSignatureInfo");
+		boolean showSignatureInfo = ParamUtil.getBoolean(resourceRequest, ConfigConstants.COMPUTER_HASH_SHOW_SIGNATURE_INFO);
 
 		long userId = PortalUtil.getUserId(resourceRequest);
 
@@ -92,17 +94,17 @@ public class BCYSignatureUtil extends SignatureUtil {
 
 			String realPath = ReportUtils
 					.getTemplateReportFilePath(resourceRequest);
-			String realExportPath = realPath + "resources/";
+			String realExportPath = realPath + ConfigProps.get(ConfigConstants.COMPUTER_HASH_PATH_RESOURCE);
 
 			String imageBase64 = StringPool.BLANK;
 			String cer = realExportPath;
-			String cerPath = cer + userName + ".cer";
+			String cerPath = cer + userName + ConfigConstants.FILE_EXTENTION_CER;
 			String signImagePath = StringPool.BLANK;
 			String imgsrc = realExportPath;
 			if (symbolType == 1) {
-				signImagePath = imgsrc + userName + ".png";
+				signImagePath = imgsrc + userName + ConfigConstants.FILE_EXTENTION_PNG;
 			} else {
-				signImagePath = imgsrc + userName + "_condau.png";
+				signImagePath = imgsrc + userName + ConfigConstants.FILE_EXTENTION_CONDAU_PNG;
 			}
 
 			imageBase64 = ImageUtil
@@ -115,7 +117,7 @@ public class BCYSignatureUtil extends SignatureUtil {
 			// TODO 
 //			String realExportDir = PortletProps
 //					.get("opencps.file.system.temp.dir");
-			String realExportDir = "/opt/";
+			String realExportDir = ConfigProps.get(ConfigConstants.COMPUTER_HASH_PATH_ROOT_EXPORT);
 			filePath = PDFUtil.saveAsPdf(realExportDir,
 					fileEntry.getFileEntryId());
 			file = new File(filePath);

@@ -1,11 +1,6 @@
 
 package backend.auth.api;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -15,6 +10,13 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+
+import org.opencps.auth.api.keys.ActionKeys;
 
 public class BackendAuthImpl implements BackendAuth {
 
@@ -30,7 +32,7 @@ public class BackendAuthImpl implements BackendAuth {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
-					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
+					if (ActionKeys.AMINISTRATOR_ROLE_NAME.equals(role.getName())) {
 						hasPermission = true;
 						break;
 					}
@@ -87,7 +89,7 @@ public class BackendAuthImpl implements BackendAuth {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
-					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equals(role.getName())) {
+					if (ActionKeys.AMINISTRATOR_ROLE_NAME.equals(role.getName())) {
 						isAdmin = true;
 						break;
 					}

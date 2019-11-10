@@ -67,7 +67,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 	public static final String TABLE_NAME = "m_fileattach";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "fileAttachId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -76,7 +76,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 			{ "className", Types.VARCHAR },
 			{ "classPK", Types.VARCHAR },
 			{ "fullName", Types.VARCHAR },
-			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
+			{ "email", Types.VARCHAR },
 			{ "fileEntryId", Types.BIGINT },
 			{ "source", Types.VARCHAR },
 			{ "sourceUrl", Types.VARCHAR },
@@ -87,7 +87,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 
 	static {
 		TABLE_COLUMNS_MAP.put("fileAttachId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -96,7 +96,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("classPK", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fullName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("source", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sourceUrl", Types.VARCHAR);
@@ -166,7 +166,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("fileAttachId", getFileAttachId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -175,7 +175,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 		attributes.put("className", getClassName());
 		attributes.put("classPK", getClassPK());
 		attributes.put("fullName", getFullName());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("fileEntryId", getFileEntryId());
 		attributes.put("source", getSource());
 		attributes.put("sourceUrl", getSourceUrl());
@@ -196,7 +196,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 			setFileAttachId(fileAttachId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -250,7 +250,7 @@ public class FileAttachModelImpl extends BaseModelImpl<FileAttach>
 			setFullName(fullName);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

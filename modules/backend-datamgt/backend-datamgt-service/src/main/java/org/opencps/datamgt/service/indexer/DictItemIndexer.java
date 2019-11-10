@@ -23,6 +23,8 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -65,7 +67,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictItem.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictItem.getUserName()));
 
-		document.addNumberSortable(DictItemTerm.GROUP_ID, dictItem.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, dictItem.getGroupId());
 		document.addNumberSortable(DictItemTerm.DICT_ITEM_ID, dictItem.getDictItemId());
 		document.addNumberSortable(DictItemTerm.DICT_COLLECTION_ID, dictItem.getDictCollectionId());
 		document.addTextSortable(DictItemTerm.ITEM_CODE, dictItem.getItemCode());
@@ -104,7 +106,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 			//}
 			
 		}  else {
-			parentCode = "0";
+			parentCode = ConfigProps.get(ConfigConstants.PARENT_ITEMCODE_DEFAULT);
 		}
 		
 		document.addTextSortable(DictItemTerm.PARENT_ITEM_CODE, parentCode);

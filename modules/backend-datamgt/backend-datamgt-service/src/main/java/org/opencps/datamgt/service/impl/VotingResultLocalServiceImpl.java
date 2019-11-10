@@ -16,6 +16,7 @@ package org.opencps.datamgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -97,7 +98,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		object.setVotingId(objectData.getLong("votingId"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setComment(objectData.getString("comment"));
 		object.setSelected(objectData.getString("selected"));
 

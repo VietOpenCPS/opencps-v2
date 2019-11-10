@@ -64,10 +64,10 @@ public class VotingUtils {
 		for (String aswerStr : answerlist) {
 			sb.append(aswerStr);
 			sb.append(StringPool.SPACE);
-			sb.append("\n");
+			sb.append(StringPool.NEW_LINE);
 		}
 
-		 String stringAnswer = sb.toString().replaceAll("\n$", StringPool.BLANK);
+		 String stringAnswer = sb.toString().replaceAll(StringPool.NEW_LINE + StringPool.DOLLAR, StringPool.BLANK);
 
 		return stringAnswer;
 	}

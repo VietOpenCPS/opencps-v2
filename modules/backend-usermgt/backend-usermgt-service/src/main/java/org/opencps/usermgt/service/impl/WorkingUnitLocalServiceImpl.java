@@ -14,6 +14,18 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.WorkingUnitTerm;
+import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
+import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
+
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -40,17 +52,6 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.CommonTerm;
-import org.opencps.usermgt.constants.WorkingUnitTerm;
-import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -391,7 +392,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(WorkingUnit.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkingUnit.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -471,7 +472,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(WorkingUnit.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkingUnit.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

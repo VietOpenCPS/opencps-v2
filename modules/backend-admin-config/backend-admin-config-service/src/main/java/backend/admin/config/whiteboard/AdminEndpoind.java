@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -402,7 +403,7 @@ public class AdminEndpoind extends Endpoint {
 
 				RestTemplate restTemplate = new RestTemplate();
 
-				restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(ENCODING)));
+				restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
 				HttpHeaders headers = new HttpHeaders();
 

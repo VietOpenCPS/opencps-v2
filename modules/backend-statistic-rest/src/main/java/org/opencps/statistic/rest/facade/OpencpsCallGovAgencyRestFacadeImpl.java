@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Base64;
@@ -56,7 +57,7 @@ public class OpencpsCallGovAgencyRestFacadeImpl extends OpencpsRestFacade<GovAge
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
-			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + StringPool.COLON + payload.getPassword()).getBytes()));			
 		}
 		
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, GovAgencyResponse.class).getBody();

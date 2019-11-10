@@ -3,6 +3,7 @@ package backend.admin.config.whiteboard;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -84,7 +85,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 		if (this.printWriter == null) {
 			this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
 			this.printWriter = new PrintWriter(
-					new OutputStreamWriter(this.gzipOutputStream, ENCODING));
+					new OutputStreamWriter(this.gzipOutputStream, StandardCharsets.UTF_8));
 		}
 		return this.printWriter;
 	}

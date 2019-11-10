@@ -56,6 +56,7 @@ import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
 import backend.auth.api.keys.ActionKeys;
 import backend.auth.api.keys.ModelNameKeys;
+import backend.communication.service.util.ConfigConstants;
 
 /**
  * The implementation of the notificationtemplate local service.
@@ -255,7 +256,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -325,7 +326,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

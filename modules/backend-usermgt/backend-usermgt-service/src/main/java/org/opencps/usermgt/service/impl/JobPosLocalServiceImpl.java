@@ -14,6 +14,20 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.constants.UserMGTConstants;
+import org.opencps.usermgt.exception.NoSuchJobPosException;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
+
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -47,19 +61,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.opencps.usermgt.constants.JobPosTerm;
-import org.opencps.usermgt.constants.UserMGTConstants;
-import org.opencps.usermgt.exception.NoSuchJobPosException;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -331,7 +332,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPos.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -385,7 +386,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPos.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

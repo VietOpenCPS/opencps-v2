@@ -16,6 +16,9 @@ import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.jasper.process.service.util.ConfigConstants;
+import backend.jasper.process.service.util.ConfigProps;
+
 public class Engine implements MessageListener {
 
 	@Override
@@ -43,7 +46,7 @@ public class Engine implements MessageListener {
 
 			String className = msgData.getString("className");
 
-			if ("org.opencps.dossiermgt.model.DossierFile".equals(className)) {
+			if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DOSSIERFILE).equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
@@ -65,10 +68,10 @@ public class Engine implements MessageListener {
 					msgDataIn.put("filePath", fileExport );
 					
 					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 				}				
 			}
-			else if ("org.opencps.dossiermgt.model.Deliverable".equals(className)) {
+			else if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DELIVERABLE).equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
@@ -90,10 +93,10 @@ public class Engine implements MessageListener {
 					msgDataIn.put("filePath", fileExport );
 					
 					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 				}								
 			}
-			else if ("org.opencps.deliverable.model.OpenCPSDeliverable".equals(className)) {
+			else if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_OPENCPSDELIVERABLE).equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
@@ -115,10 +118,10 @@ public class Engine implements MessageListener {
 					msgDataIn.put("filePath", fileExport );
 					
 					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 				}								
 			}
-			else if ("org.opencps.dossiermgt.model.DossierDocument".equals(className)) {
+			else if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DOSSIERDOCUMENT).equals(className)) {
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 				try {
 					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
@@ -140,7 +143,7 @@ public class Engine implements MessageListener {
 					msgDataIn.put("filePath", fileExport );
 					
 					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 				}												
 			}
 		} catch (Exception e) {

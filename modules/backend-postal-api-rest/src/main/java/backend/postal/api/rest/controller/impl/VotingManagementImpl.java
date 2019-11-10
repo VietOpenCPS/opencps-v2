@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.controller.util.PostalConstantUtils;
 import org.opencps.api.controller.util.VotingUtils;
 import org.opencps.api.voting.model.VotingInputModel;
 import org.opencps.api.voting.model.VotingModel;
@@ -94,9 +94,9 @@ public class VotingManagementImpl implements VotingManagement {
 						params, query.getStart(), query.getEnd(), serviceContext);
 
 			if (jsonData != null) {
-				result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+				result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 				result.getData()
-						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(ConstantUtils.DATA), serviceContext));
+						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 			} else {
 				result.setTotal(0l);
 			}
@@ -220,9 +220,9 @@ public class VotingManagementImpl implements VotingManagement {
 			JSONObject jsonData = actions.getVotingResults(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get(ConstantUtils.DATA), serviceContext));
+					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -306,9 +306,9 @@ public class VotingManagementImpl implements VotingManagement {
 			JSONObject jsonData = actions.getVotingResultStatistic(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get(ConstantUtils.DATA), serviceContext));
+					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -336,11 +336,11 @@ public class VotingManagementImpl implements VotingManagement {
 		JSONObject jsonData = actions.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, "", "",
 				params, -1, -1, serviceContext);
 
-		long total = jsonData.getLong(ConstantUtils.TOTAL);
+		long total = jsonData.getLong(PostalConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			List<Document> lstDocuments = (List<Document>) jsonData.get(PostalConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long votingId = GetterUtil.getLong(document.get(VotingTerm.VOTING_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));

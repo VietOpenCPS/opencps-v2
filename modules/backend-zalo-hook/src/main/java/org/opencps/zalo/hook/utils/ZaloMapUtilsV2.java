@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.ws.rs.core.MediaType;
+
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -41,7 +44,7 @@ public class ZaloMapUtilsV2 {
 				String message = zaloInfo.getJSONObject(
 					ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE).getString(
 						ZaloHookConstantKeys.ZALO_V2_PARAM_MESSAGE_TEXT);
-				
+
 				String toUId = zaloInfo.getJSONObject(
 					ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER).getString(
 						ZaloHookConstantKeys.ZALO_V2_PARAM_SENDER_ID);
@@ -145,21 +148,20 @@ public class ZaloMapUtilsV2 {
 				Validator.isNotNull(oAIdToken)) {
 
 				String targetURL =
-					"https://openapi.zalo.me/v2.0/oa/message?access_token=" +
-						oAIdToken;
+					ConfigProps.get(ZaloHookConstantKeys.ZALO_ENPOINT) + oAIdToken;
 
 				JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(
-					"{\"recipient\":{\"user_id\":\"1893010867233038754\"}, \"message\":{\"text\":\"1893010867233038754\"}}");
+					ConfigProps.get(ZaloHookConstantKeys.ZALO_PAYLOAD));
 				JSONObject recipient = JSONFactoryUtil.createJSONObject();
 				JSONObject message = JSONFactoryUtil.createJSONObject();
 
-				recipient.put("user_id", zaloUid);
+				recipient.put(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_USER_ID, zaloUid);
 
-				message.put("text", textMessage);
+				message.put(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_TEXT, textMessage);
 
-				payloadJSON.put("recipient", recipient);
+				payloadJSON.put(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_RECIPIENT, recipient);
 
-				payloadJSON.put("message", message);
+				payloadJSON.put(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_MESSAGE, message);
 
 				_postMessZalo(targetURL, payloadJSON.toJSONString());
 			}
@@ -174,16 +176,16 @@ public class ZaloMapUtilsV2 {
 	private static void _postMessZalo(String url, String param) {
 
 		try {
-			String charset = "UTF-8";
+			String charset = ConfigProps.get(ZaloHookConstantKeys.ZALO_V2_ACTION_POST_API_CHARSET);
 			URLConnection connection = new URL(url).openConnection();
 			connection.setDoOutput(true); // Triggers POST.
-			connection.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/json;");
+			connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
 			OutputStream output = connection.getOutputStream();
 			output.write(param.getBytes(charset));
 
 			connection.getInputStream();
-			_log.info("Send zalo message success");
+			_log.debug("Send zalo message success");
 		}
 		catch (Exception e) {
 			_log.error(e);

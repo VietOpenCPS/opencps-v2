@@ -14,6 +14,15 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.OfficeSiteTerm;
+import org.opencps.usermgt.exception.NoSuchOfficeSiteException;
+import org.opencps.usermgt.model.OfficeSite;
+import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -38,14 +47,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import org.opencps.usermgt.constants.OfficeSiteTerm;
-import org.opencps.usermgt.exception.NoSuchOfficeSiteException;
-import org.opencps.usermgt.model.OfficeSite;
-import org.opencps.usermgt.service.base.OfficeSiteLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -237,7 +238,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
 		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -282,7 +283,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
 		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

@@ -14,24 +14,19 @@
 
 package org.opencps.communication.service.impl;
 
-import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.communication.model.ZaloMap;
-import org.opencps.communication.model.ZaloMap;
-import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
-
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 	/*
@@ -39,9 +34,6 @@ public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.communication.service.ZaloMapLocalServiceUtil} to access the zalo map local service.
 	 */
-
-	private static Log _log =
-		LogFactoryUtil.getLog(ZaloMapLocalServiceImpl.class);
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override

@@ -77,7 +77,7 @@ public class SendMTConverterUtils {
 				//
 				MimeHeaders mimeHeader = message.getMimeHeaders();
 				mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/SendMT");
-				mimeHeader.setHeader(ConstantUtils.CONTENT_TYPE, "text/xml; charset=utf-8");
+				mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
 				mimeHeader.setHeader("Proxy-Connection", "keep-alive");
 	
 //				ByteArrayOutputStream stream = null;
@@ -92,7 +92,7 @@ public class SendMTConverterUtils {
 							URL clone = new URL(url.toString());
 							HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
 	
-							connection.setRequestProperty(ConstantUtils.CONTENT_TYPE, "text/xml");
+							connection.setRequestProperty("Content-Type", "text/xml");
 							connection.setRequestProperty("Accept", "application/soap+xml, text/*");
 	
 							connection.setDoOutput(true);

@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;

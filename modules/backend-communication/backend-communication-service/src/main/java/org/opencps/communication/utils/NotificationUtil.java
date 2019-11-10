@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -250,46 +252,6 @@ public class NotificationUtil {
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-//				if (queue.getToUserId() > 0) {
-					// Preferences preferences =
-					// PreferencesLocalServiceUtil.fetchByF_userId(
-					// serviceContext.getScopeGroupId(),
-					// queue.getToUserId());
-					// if (preferences != null &&
-					// Validator.isNotNull(preferences.getPreferences())) {
-					// try {
-					// JSONObject pref = JSONFactoryUtil.createJSONObject(
-					// preferences.getPreferences());
-					// if (pref.has(queue.getNotificationType())) {
-					// JSONObject object = pref.getJSONObject(
-					// queue.getNotificationType());
-					// if (object != null &&
-					// object.has(queue.getClassName())) {
-					// JSONObject conf = object.getJSONObject(
-					// queue.getClassName());
-					// sendEmail = conf.getBoolean(ConstantUtils.VALUE_EMAIL);
-					// sendNotify = conf.getBoolean("notify");
-					// sendSMS = conf.getBoolean("sms");
-					// }
-					// }
-					// }
-					// catch (Exception e) {
-					// _log.debug(e);
-					// //_log.error(e);
-					// }
-					// }
-//					if (template != null) {
-//						// sendEmail = template.getSendEmail();
-//						sendNotify = template.getSendNotification();
-//						// sendSMS = template.getSendSMS();
-//						sendMesZalo = template.getSendNotification();
-//					}
-//				}
-//				else {
-//					sendNotify = false;
-//					sendMesZalo = false;
-//				}
-
 				if (template != null) {
 					sendEmail = template.getSendEmail();
 					sendSMS = template.getSendSMS();
@@ -326,7 +288,7 @@ public class NotificationUtil {
 			}
 			catch (Exception e) {
 				// _log.warn("Can't not create MBMessageEntry " + e);
-				//e.printStackTrace();
+				// e.printStackTrace();
 				_log.debug(e);
 			}
 		}
@@ -349,11 +311,11 @@ public class NotificationUtil {
 				JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 					_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 
-				if (resultApi.has(ConstantUtils.DATA)) {
+				if (resultApi.has(SendSMSTerm.DATA)) {
 
 					Map<Long, String> mappingZaloUid = new HashMap<>();
 					String zOId =
-						resultApi.getJSONObject(ConstantUtils.DATA).getString("user_id");
+						resultApi.getJSONObject(SendSMSTerm.DATA).getString("user_id");
 
 					mappingZaloUid.put(
 						toUserId > 0 ? toUserId : new Long(0), zOId);
@@ -378,11 +340,16 @@ public class NotificationUtil {
 
 			data.put("user_id", toTelNo);
 
-			String endPoint = ZALO_ENDPOID_GET_USER_INFO + "?access_token=" +
-				token + "&data=" + data.toJSONString();
+			String endPoint =
+				ConfigProps.get(ConfigConstants.ZALO_ENDPOID_GET_USER_INFO) +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_TOKEN) + token +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_DATA) +
+					data.toJSONString();
 
 			JSONObject resPostDossier = _callAPI(
-				HttpMethods.GET, "application/json", ZALO_PATH_BASE, endPoint,
+				HttpMethods.GET,
+				ConfigProps.get(ConfigConstants.ZALO_MEDIA_TYPE),
+				ConfigProps.get(ConfigConstants.ZALO_PATH_BASE), endPoint,
 				StringPool.BLANK, StringPool.BLANK, properties);
 
 			String uid = resPostDossier.getString("message");
@@ -425,16 +392,19 @@ public class NotificationUtil {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
-				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) ||
+				(pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+					!endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -442,7 +412,7 @@ public class NotificationUtil {
 			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
 
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
@@ -450,13 +420,15 @@ public class NotificationUtil {
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
 
-				String authString = username + ":" + password;
+				String authString = username + StringPool.COLON + password;
 
 				String authStringEnc = new String(
 					java.util.Base64.getEncoder().encodeToString(
 						authString.getBytes()));
 				conn.setRequestProperty(
-					"Authorization", "Basic " + authStringEnc);
+					HttpHeaders.AUTHORIZATION,
+					ConfigProps.get(ConfigConstants.ZALO_AUTHOR_TYPE) +
+						StringPool.SPACE + authStringEnc);
 			}
 
 			if (!properties.isEmpty()) {
@@ -496,8 +468,6 @@ public class NotificationUtil {
 		return response;
 	}
 
-	private static final String ZALO_PATH_BASE = "https://openapi.zalo.me";
-	private static final String ZALO_ENDPOID_GET_USER_INFO = "/v2.0/oa/getprofile";
 	private static final String ZALO_UID = "zaloUid";
 	private static final String ZALO_TOKEN = "zaloToken";
 

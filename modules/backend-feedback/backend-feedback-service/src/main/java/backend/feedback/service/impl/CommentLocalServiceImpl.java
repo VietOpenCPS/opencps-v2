@@ -14,6 +14,13 @@
 
 package backend.feedback.service.impl;
 
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
+import javax.ws.rs.NotFoundException;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -48,16 +55,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-
-import javax.ws.rs.NotFoundException;
-
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
+import backend.feedback.service.util.ConfigConstants;
 
 /**
  * The implementation of the comment local service.
@@ -298,7 +299,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		searchContext.addFullQueryEntryClassName(Comment.class.getName());
 		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
 
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -369,7 +370,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		searchContext.addFullQueryEntryClassName(Comment.class.getName());
 		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
 
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

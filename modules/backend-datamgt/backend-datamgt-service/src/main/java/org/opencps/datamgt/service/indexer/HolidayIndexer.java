@@ -63,7 +63,7 @@ public class HolidayIndexer extends BaseIndexer<Holiday> {
 		document.addNumberSortable(HolidayTerm.HOLIDAY_ID, holiday.getHolidayId());
 		document.addDateSortable(HolidayTerm.HOLIDAY_DATE, holiday.getHolidayDate());
 		
-		document.addNumberSortable(HolidayTerm.GROUP_ID, holiday.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, holiday.getGroupId());
 		document.addTextSortable(HolidayTerm.DESCRIPTION, holiday.getDescription());
 		
 		Calendar cal = Calendar.getInstance();

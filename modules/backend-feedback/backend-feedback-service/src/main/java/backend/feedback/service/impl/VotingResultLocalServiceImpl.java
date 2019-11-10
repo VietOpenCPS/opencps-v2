@@ -14,6 +14,14 @@
 
 package backend.feedback.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+import javax.ws.rs.NotFoundException;
+
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -39,19 +47,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import javax.ws.rs.NotFoundException;
-
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-
 import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.base.VotingResultLocalServiceBaseImpl;
+import backend.feedback.service.util.ConfigConstants;
 
 /**
  * The implementation of the voting result local service.
@@ -183,7 +184,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(VotingResult.class.getName());
 		searchContext.setEntryClassNames(new String[] { VotingResult.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -317,7 +318,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(VotingResult.class.getName());
 		searchContext.setEntryClassNames(new String[] { VotingResult.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

@@ -3,10 +3,10 @@ package org.opencps.statistic.rest.util;
 import java.util.Locale;
 
 public interface DossierStatisticConstants {
-	String DOMAIN_TOTAL = ConstantUtils.TOTAL;
-	String AGENCY_TOTAL = ConstantUtils.TOTAL;
-	String DOMAIN_AGENCY = ConstantUtils.TOTAL;
-	String TOTAL = ConstantUtils.TOTAL;
+	String DOMAIN_TOTAL = "total";
+	String AGENCY_TOTAL = "total";
+	String DOMAIN_AGENCY = "total";
+	String TOTAL = "total";
 	int REPORTING_TYPE_0 = 0;
 	int REPORTING_TYPE_1 = 1;
 	
@@ -27,7 +27,13 @@ public interface DossierStatisticConstants {
 	
 	String STATISTIC_REPORT_ENDPOINT = "opencps.rest.enpoint.statistic.report";
 	
-	String GROUP_ID = Field.GROUP_ID;
+	String GOOGLE_ENDPOINT = "opencps.google.enpoint";
+	
+	String GROUP_ID = "groupId";
+	
+	String VOTING_CLASSNAME_DOSSIER = "opencps.voting.classname.dossier";
+	String VOTING_CLASSNAME_EMPLOYEE = "opencps.voting.classname.employee";
+
 	
 	int START_YEARS = 1990;
 	
@@ -47,4 +53,6 @@ public interface DossierStatisticConstants {
 	String GOV_AGENCY_CODE = "GOVERNMENT_AGENCY";
 	//ALL SYSTEM
 	String ALL_SYSTEM = "0,1,2";
+
+	String TOP_STATISTIC = "statistic";
 }

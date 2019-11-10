@@ -182,7 +182,7 @@ public abstract class OpencpsRestFacade<T, R> {
 	 */
 	protected HttpHeaders setHttpHeadersAuthorization(HttpHeaders httpHeaders, String authorizationField) {
 
-		httpHeaders.add("Authorization", "Basic " + authorizationField);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + authorizationField);
 
 		return httpHeaders;
 	}
@@ -192,7 +192,7 @@ public abstract class OpencpsRestFacade<T, R> {
 		
 		String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-		httpHeaders.add("Authorization", "Basic " + authStringEnc);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + authStringEnc);
 
 		return httpHeaders;
 	}

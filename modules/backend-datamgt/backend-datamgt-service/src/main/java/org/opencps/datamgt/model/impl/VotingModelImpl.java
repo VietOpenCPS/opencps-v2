@@ -72,7 +72,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 			{ "uuid_", Types.VARCHAR },
 			{ "votingId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
@@ -90,7 +90,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("votingId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -166,7 +166,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 		attributes.put("uuid", getUuid());
 		attributes.put("votingId", getVotingId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -204,7 +204,7 @@ public class VotingModelImpl extends BaseModelImpl<Voting>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

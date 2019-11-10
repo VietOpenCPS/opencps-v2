@@ -51,6 +51,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
@@ -327,7 +328,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
@@ -341,7 +342,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroup.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -364,7 +365,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -447,7 +448,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
@@ -458,7 +459,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroup.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -478,7 +479,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 

@@ -27,6 +27,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
@@ -39,7 +41,6 @@ import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
-import org.opencps.statistic.rest.engine.service.StatisticSumYearCalcular;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -134,7 +135,7 @@ public class StatisticDataUtil {
 				params.put(VotingTerm.GOV_AGENCY_CODE, payload.getGovAgencyCode());
 			}
 	
-			params.put(VotingTerm.CLASS_NAME, "employee");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_EMPLOYEE));
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
 	
@@ -215,7 +216,7 @@ public class StatisticDataUtil {
 					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-			params.put(VotingTerm.CLASS_NAME, "dossier");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 						
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
 	

@@ -14,6 +14,15 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosWorkTerm;
+import org.opencps.usermgt.model.JobPosWork;
+import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;
+
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.model.User;
@@ -34,14 +43,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.JobPosWorkTerm;
-import org.opencps.usermgt.model.JobPosWork;
-import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -224,7 +225,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -271,7 +272,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

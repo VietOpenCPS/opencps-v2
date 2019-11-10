@@ -81,11 +81,7 @@ public class ViettelSMSUtils {
 			}
 			else {
 
-				// handle with hashCode
-				portType = locator.getCcApiPort();
-				result = portType.wsCpMt(
-					"viettelmcdt", "789456a@#123", "VIETTELMCDT", "1", toTelNo,
-					toTelNo, "ViettelMCDT", "bulksms", body, "F");
+				_log.debug("Config send sms isnot exactly");
 			}
 		}
 

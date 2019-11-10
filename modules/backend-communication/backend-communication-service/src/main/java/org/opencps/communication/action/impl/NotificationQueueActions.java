@@ -1,17 +1,18 @@
 package org.opencps.communication.action.impl;
 
-import java.util.List;
-
-import org.opencps.communication.action.NotificationQueueInterface;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.List;
+
+import org.opencps.communication.action.NotificationQueueInterface;
+import org.opencps.communication.constants.SendSMSTerm;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 
 public class NotificationQueueActions implements NotificationQueueInterface {
 
@@ -24,9 +25,9 @@ public class NotificationQueueActions implements NotificationQueueInterface {
 		List<NotificationQueue> listQueue = NotificationQueueLocalServiceUtil.getNotificationQueues(QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
-		result.put(ConstantUtils.DATA, listQueue);
+		result.put(SendSMSTerm.DATA, listQueue);
 
-		result.put(ConstantUtils.TOTAL, listQueue.size());
+		result.put(SendSMSTerm.TOTAL, listQueue.size());
 
 		return result;
 	}

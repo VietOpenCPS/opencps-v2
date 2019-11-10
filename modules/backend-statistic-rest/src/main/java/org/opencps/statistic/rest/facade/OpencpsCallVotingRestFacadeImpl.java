@@ -1,6 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -10,12 +10,12 @@ import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import backend.feedback.constants.VotingTerm;
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
@@ -62,7 +62,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 			}
 		}
 
-		urlQueryParams.add("className", "dossier");
+		urlQueryParams.add(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 
 		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		//System.out.println("endPoint: "+endPoint);

@@ -4,6 +4,15 @@
 
 package org.opencps.zalo.hook.utils;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -15,18 +24,10 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.model.ZaloMap;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.communication.service.ZaloMapLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author thanhnv

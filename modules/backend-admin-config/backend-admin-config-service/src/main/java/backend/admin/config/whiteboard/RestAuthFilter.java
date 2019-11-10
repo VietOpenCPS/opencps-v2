@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -251,8 +252,8 @@ public class RestAuthFilter implements Filter {
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain,
 			long userId) throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-		HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-		filterChain.doFilter(servletRequest, httpResponse);
+	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+	    	filterChain.doFilter(servletRequest, httpResponse);
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {
