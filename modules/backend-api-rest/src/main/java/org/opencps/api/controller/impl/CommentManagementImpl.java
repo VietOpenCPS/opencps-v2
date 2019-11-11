@@ -184,9 +184,9 @@ public class CommentManagementImpl implements CommentManagement {
 			}
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-			params.put("className", className);
-			params.put("classPK", String.valueOf(classPK));
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
+			params.put(CommentTerm.CLASS_NAME, className);
+			params.put(CommentTerm.CLASS_PK, String.valueOf(classPK));
 			if (Validator.isNotNull(query.getOpinion())) {
 				params.put(CommentTerm.OPINION, query.getOpinion());				
 			}
@@ -219,7 +219,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			result.put("message", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+			result.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 
 			return Response.status(200).entity(result.toString()).build();
 		} catch (Exception e) {

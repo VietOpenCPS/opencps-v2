@@ -2,6 +2,7 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -58,7 +59,7 @@ public class DossierLogUtils {
 
 			DossierLogModel model = new DossierLogModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
+			long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 			long dossierId = GetterUtil.getLong(document.get(DossierLogTerm.DOSSIER_ID));
 			int counter = GetterUtil.getInteger(document.get(DossierLogTerm.COUNTER));
 
@@ -99,7 +100,7 @@ public class DossierLogUtils {
 
 			DossierLogSearchIdModel model = new DossierLogSearchIdModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
+			long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 
 			model.setDossierLogId(dossierLogId);
 			model.setAuthor(document.get(DossierLogTerm.AUTHOR));

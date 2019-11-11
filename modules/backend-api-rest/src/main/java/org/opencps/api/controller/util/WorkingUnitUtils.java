@@ -33,7 +33,7 @@ public class WorkingUnitUtils {
 			for (Document document : listDocument) {
 				ett = new WorkingUnitModel();
 
-				ett.setWorkingUnitId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setWorkingUnitId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(WorkspaceTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(WorkspaceTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);

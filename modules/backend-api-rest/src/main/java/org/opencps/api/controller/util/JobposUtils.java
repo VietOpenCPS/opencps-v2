@@ -62,7 +62,7 @@ public class JobposUtils {
 			for (Document document : listDocument) {
 				ett = new JobposModel();
 
-				ett.setJobPosId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setJobPosId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(JobPosTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(JobPosTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);

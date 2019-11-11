@@ -22,7 +22,6 @@ public class ConstantUtils {
 	public static final String VALUE_TITLE = "title";
 	public static final String VALUE_COUNT = "count";
 	public static final String VALUE_LOW_USER_ID = "user_id";
-	public static final String ENTRY_CLASS_PK = "entryClassPK";
 	public static final String FILE_ENTRY_ID = "fileEntryId";
 	public static final String VERSION = "version";
 	public static final String SITE_NAME = "siteName";

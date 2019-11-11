@@ -114,7 +114,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 				JSONObject model = JSONFactoryUtil.createJSONObject();
 
-				long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
+				long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 
 				model.put("dossierLogId", dossierLogId);
 

@@ -43,7 +43,7 @@ public class UserUtils {
 			for (Document document : listDocument) {
 				ett = new UserSitesModel();
 
-				ett.setOfficeSiteId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setOfficeSiteId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setSiteName(document.get(ConstantUtils.SITE_NAME));
 				ett.setSiteGroupId(Long.valueOf(document.get(ConstantUtils.SITE_GROUP_ID)));
 				ett.setCurrentSite(Boolean.valueOf(document.get(ConstantUtils.CURRENT_SITE)));
@@ -69,7 +69,7 @@ public class UserUtils {
 			for (Document document : listDocument) {
 				ett = new UserRolesModel();
 
-				ett.setRoleId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setRoleId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setRoleName(document.get(ConstantUtils.ROLE_NAME));
 
 				results.add(ett);

@@ -47,7 +47,7 @@ public class EmployeeUtils {
 			for (Document document : listDocument) {
 				ett = new EmployeeModel();
 
-				ett.setEmployeeId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setEmployeeId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setUserId(Long.valueOf(document.get(EmployeeTerm.USER_ID)));
 				ett.setUserName(document.get(EmployeeTerm.USER_NAME));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(EmployeeTerm.CREATE_DATE)) ? APIDateTimeUtils
@@ -120,7 +120,7 @@ public class EmployeeUtils {
 			for (Document document : listDocument) {
 				ett = new EmployeeJobposModel();
 
-				ett.setEmployeeJobPosId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setEmployeeJobPosId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setWorkingUnitId(Long.valueOf(document.get(EmployeeJobPosTerm.WORKING_UNIT_ID)));
 				ett.setWorkingUnitName(document.get(EmployeeJobPosTerm.WORKING_UNIT_NAME));
 				ett.setJobPosId(Long.valueOf(document.get(EmployeeJobPosTerm.JOBPOST_ID)));

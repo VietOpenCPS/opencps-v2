@@ -41,7 +41,7 @@ public class FileAttachUtils {
 			for (Document doc : list) {
 				ett = new FileAttachModel();
 
-				ett.setFileAttachId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setFileAttachId(Long.valueOf(doc.get(Field.ENTRY_CLASS_PK)));
 
 				ett.setCreateDate(
 					Validator.isNotNull(doc.get(FileAttachTerm.CREATE_DATE))

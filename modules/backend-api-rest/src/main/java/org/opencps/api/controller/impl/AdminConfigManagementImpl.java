@@ -66,9 +66,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		return dateFormat.format(calendar.getTime());
 	}
 
-	public static final String _TIMESTAMP = "dd/MM/yyyy HH:mm";
 	private static final Log _log = LogFactoryUtil.getLog(AdminConfigManagementImpl.class);
 
+	public static final String _TIMESTAMP = "dd/MM/yyyy HH:mm";
 	private static final String TYPE = "type";
 	private static final String CMD = "cmd";
 	private static final String GET = "get";
@@ -79,21 +79,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String MODEL_NAME = "model_name";
 	private static final String ID = "id";
 	private static final String STATUS = "status";
-
 	private static final String CODE = "code";
-
 	private static final String CONFIG = "config";
-
 	private static final String FILTER = "filter";
-
 	private static final String RESPONE = "respone";
-
 	private static final String COMPARE = "compare";
-
 	private static final String COUNTER = "counter";
-
 	private static final String END = "end";
-
 	private static final String START = "start";
 	private static final String COMPANY_ID = "companyId";
 	private static final String DYNAMIC_QUERY = "dynamicQuery";

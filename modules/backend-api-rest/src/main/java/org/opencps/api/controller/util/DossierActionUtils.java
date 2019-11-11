@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -30,7 +31,6 @@ import org.opencps.api.dossieraction.model.DossierNextActionModel;
 import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.api.dossieraction.model.ReceivingModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
@@ -519,7 +519,7 @@ public class DossierActionUtils {
 		for (Document document : documents) {
 			org.opencps.api.dossieraction.model.DossierActionModel model = new org.opencps.api.dossieraction.model.DossierActionModel();
 
-			long dossierActionId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
+			long dossierActionId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 			long userId = GetterUtil.getLong(document.get(DossierActionTerm.USER_ID));
 			long actionOverDue = GetterUtil.getLong(document.get(DossierActionTerm.ACTION_OVER_DUE));
 			long actionNote = GetterUtil.getLong(document.get(DossierActionTerm.ACTION_OVER_DUE));
