@@ -154,7 +154,8 @@ public class CheckFileUtils {
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPG),
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPEG),
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_TXT),
-				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_RTF) };
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_RTF),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XML)};
 		
 		String extentFile = FilenameUtils.getExtension(handle.getName());
 		for (String extend : extentionArr) {
