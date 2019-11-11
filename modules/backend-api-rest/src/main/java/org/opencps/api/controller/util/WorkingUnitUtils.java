@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.opencps.api.workingunit.model.WorkingUnitModel;
 import org.opencps.datamgt.constants.WorkspaceTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.WorkingUnit;
 
@@ -31,13 +33,13 @@ public class WorkingUnitUtils {
 			for (Document document : listDocument) {
 				ett = new WorkingUnitModel();
 
-				ett.setWorkingUnitId(Long.valueOf(document.get("entryClassPK")));
+				ett.setWorkingUnitId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(WorkspaceTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(WorkspaceTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.getDate("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.getDate(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 				ett.setName(document.get(WorkingUnitTerm.NAME));
 				ett.setEnName(document.get(WorkingUnitTerm.NAME));

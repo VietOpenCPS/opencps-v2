@@ -28,6 +28,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.rest.application.api.StatisticReportApi;
@@ -105,23 +107,23 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 						_log.debug(e);
 					}
 					if ("excel".equals(reportType)) {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".xls\"");
-//						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
-						responseBuilder.header("Content-Type", "application/vnd.ms-excel");	
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + ".xls\"");
+//						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/vnd.ms-excel");	
 //						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
 					else if ("word".equals(reportType)) {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".doc\"");
-						responseBuilder.header("Content-Type", "application/msword");	
-//						responseBuilder.header("Content-Type", "application/octet-stream");
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + ".doc\"");
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/msword");	
+//						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/octet-stream");
 //						responseBuilder.header("Content-Transfer-Encoding", "binary");
 					}
 					else {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".pdf\"");
-						responseBuilder.header("Content-Type", "application/pdf");						
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + ".pdf\"");
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");						
 					}
 					return responseBuilder.build();
 				}
@@ -200,7 +202,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			result.put("toDate", resultBody.getString("toDate"));
 			result.put("actionUser", "");
 
-			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONArray dossierData = resultBody.getJSONArray(ConstantUtils.DATA);
 			JSONObject currentObject = null;
 
 			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
@@ -309,7 +311,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			//Process statistic all agency
 			int flagAgency = resultBody.getInt("flagAgency");
 			result.put("flagAgency", flagAgency);
-			JSONArray statistics = resultBody.getJSONArray("data");
+			JSONArray statistics = resultBody.getJSONArray(ConstantUtils.DATA);
 			JSONArray statisticsData = JSONFactoryUtil.createJSONArray();
 			
 			if (statistics.length() > 0) {

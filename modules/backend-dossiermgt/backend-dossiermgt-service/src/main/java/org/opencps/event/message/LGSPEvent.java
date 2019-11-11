@@ -1,5 +1,15 @@
 package org.opencps.event.message;
 
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageListener;
+import com.liferay.portal.kernel.messaging.MessageListenerException;
+import com.liferay.portal.kernel.search.Field;
+
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -9,15 +19,6 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
-
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageListener;
-import com.liferay.portal.kernel.messaging.MessageListenerException;
 
 public class LGSPEvent implements MessageListener {
 	@Override
@@ -32,7 +33,7 @@ public class LGSPEvent implements MessageListener {
 	private void _doReceiveRequest(Message message) {		
 		_log.info("LGSP dossier event");
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
-		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
+		long groupId = dossierObj.getLong(Field.GROUP_ID);
 		List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.LGSP_PROTOCOL);
 		for (ServerConfig sc : lstServers) {
 			try {

@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -43,8 +42,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.SystemManagement;
-import org.opencps.api.controller.util.ServiceProcessUtils;
-import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -57,11 +54,11 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
-import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -69,7 +66,6 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -83,11 +79,11 @@ public class SystemManagementImpl implements SystemManagement {
 	@Override
 	public Response cleanSite(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, Long siteId) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		BackgroundTaskResult result = new BackgroundTaskResult();
 	    Map<String, Serializable> taskContextMap = new HashMap<>();
-	    taskContextMap.put("groupId", siteId);
+	    taskContextMap.put(Field.GROUP_ID, siteId);
 
 	    try {
 			BackgroundTask backgroundTask = BackgroundTaskManagerUtil.addBackgroundTask(user.getUserId(),
@@ -108,19 +104,18 @@ public class SystemManagementImpl implements SystemManagement {
 			User user, ServiceContext serviceContext, Long backgroundTaskId) {
 		BackgroundTaskProgress result = new BackgroundTaskProgress();
 		
-		BackgroundTaskStatus backgroundTaskStatus =
-			    BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(
-			            backgroundTaskId);
+		BackgroundTaskStatus backgroundTaskStatus = BackgroundTaskStatusRegistryUtil
+				.getBackgroundTaskStatus(backgroundTaskId);
 		
-		if (backgroundTaskStatus != null && Validator.isNotNull(backgroundTaskStatus.getAttribute("percentage"))) {
-			result.setPercentage((int)backgroundTaskStatus.getAttribute("percentage"));			
+		if (backgroundTaskStatus != null && Validator.isNotNull(backgroundTaskStatus.getAttribute(ConstantUtils.VALUE_PERCENTAGE))) {
+			result.setPercentage((int)backgroundTaskStatus.getAttribute(ConstantUtils.VALUE_PERCENTAGE));			
 		}
 		else {
 			result.setPercentage(100);
 		}
 		result.setBackgroundTaskId(backgroundTaskId);
 		if (backgroundTaskStatus != null) {
-			result.setExecutionLog((String)backgroundTaskStatus.getAttribute("executionLog"));			
+			result.setExecutionLog((String)backgroundTaskStatus.getAttribute(ConstantUtils.VALUE_EXE_LOG));
 		}
 		else {
 			result.setExecutionLog(StringPool.BLANK);
@@ -142,7 +137,7 @@ public class SystemManagementImpl implements SystemManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -152,41 +147,41 @@ public class SystemManagementImpl implements SystemManagement {
 				throw new UnauthenticationException();
 			}
 			
-			Role oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "APPLICANT");
+			Role oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			Map<Locale, String> titleMap = new HashMap<>();
-			titleMap.put(Locale.getDefault(), "APPLICANT");
+			titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			
 			Map<Locale, String> titleDesc = new HashMap<>();
-			titleDesc.put(Locale.getDefault(), "APPLICANT");
+			titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 
 			if (oldApplicantRole == null) {
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"APPLICANT", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "APPLICANT", serviceContext);				
-				oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "APPLICANT");
-				oldApplicantRole.setTitle("APPLICANT");
-				oldApplicantRole.setDescription("APPLICANT");
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT), serviceContext);				
+				oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
+				oldApplicantRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
+				oldApplicantRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 				RoleLocalServiceUtil.updateRole(oldApplicantRole);
 			}
-			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "EMPLOYEE");
+			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
 			if (oldEmployeeRole == null) {
-				titleMap.put(Locale.getDefault(), "EMPLOYEE");
-				titleDesc.put(Locale.getDefault(), "EMPLOYEE");				
+				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
+				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));				
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"EMPLOYEE", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "EMPLOYEE", serviceContext);				
-				oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
-				oldEmployeeRole.setTitle("EMPLOYEE");
-				oldEmployeeRole.setDescription("EMPLOYEE");
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE), serviceContext);				
+				oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldEmployeeRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
+				oldEmployeeRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
 				RoleLocalServiceUtil.updateRole(oldEmployeeRole);
 			}
-			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
+			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 			if (oldCitizenRole == null) {
-				titleMap.put(Locale.getDefault(), "CITIZEN");
-				titleDesc.put(Locale.getDefault(), "CITIZEN");
+				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						"CITIZEN", titleMap, titleDesc, RoleConstants.TYPE_REGULAR, "CITIZEN", serviceContext);
-				oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), "CITIZEN");
-				oldCitizenRole.setTitle("CITIZEN");
-				oldCitizenRole.setDescription("CITIZEN");
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN), serviceContext);
+				oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldCitizenRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldCitizenRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 				RoleLocalServiceUtil.updateRole(oldCitizenRole);
 			}
 			
@@ -200,7 +195,7 @@ public class SystemManagementImpl implements SystemManagement {
 	@Override
 	public Response verifyMasterData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -211,7 +206,7 @@ public class SystemManagementImpl implements SystemManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -406,7 +401,7 @@ public class SystemManagementImpl implements SystemManagement {
 			User user, ServiceContext serviceContext) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 		Indexer<ProcessAction> indexer = IndexerRegistryUtil
@@ -427,9 +422,9 @@ public class SystemManagementImpl implements SystemManagement {
 			JSONObject jsonData = actions.getProcessActions(user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			long total = jsonData.getInt("total");
+			long total = jsonData.getInt(ConstantUtils.TOTAL);
 			if (total > 0) {
-				List<Document> lstDocuments = (List<Document>) jsonData.get("data");	
+				List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);	
 				for (Document document : lstDocuments) {
 					long processActionId = GetterUtil.getLong(document.get(ProcessActionTerm.PROCESS_ACTION_ID));
 					long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));

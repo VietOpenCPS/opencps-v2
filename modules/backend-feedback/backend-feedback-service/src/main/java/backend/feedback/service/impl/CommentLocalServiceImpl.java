@@ -314,7 +314,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		String keywords = GetterUtil.getString(params.get("keywords"));
 
-		String groupId = GetterUtil.getString(params.get("groupId"));
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
 		BooleanQuery booleanQuery = null;
 
@@ -340,7 +340,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(CommentTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -382,7 +382,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		String keywords = GetterUtil.getString(params.get("keywords"));
 
-		String groupId = GetterUtil.getString(params.get("groupId"));
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
 		BooleanQuery booleanQuery = null;
 
@@ -408,7 +408,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(CommentTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -460,7 +460,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 			object = commentPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

@@ -1,13 +1,5 @@
 package org.opencps.datamgt.action.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import org.opencps.datamgt.action.HolidayInterface;
-import org.opencps.datamgt.model.Holiday;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
-import org.opencps.datamgt.utils.DateTimeUtils;
-
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -22,9 +14,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.action.HolidayInterface;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.Holiday;
+import org.opencps.datamgt.service.HolidayLocalServiceUtil;
+import org.opencps.datamgt.utils.DateTimeUtils;
 
 public class HolidayActions implements HolidayInterface {
 
@@ -58,11 +58,11 @@ public class HolidayActions implements HolidayInterface {
 
 			hits = HolidayLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = HolidayLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

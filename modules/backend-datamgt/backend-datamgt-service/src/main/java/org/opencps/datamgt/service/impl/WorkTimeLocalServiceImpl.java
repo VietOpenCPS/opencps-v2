@@ -51,7 +51,6 @@ import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.WorkTimeTerm;
 import org.opencps.datamgt.exception.NoSuchWorkTimeException;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.base.WorkTimeLocalServiceBaseImpl;
 
@@ -239,7 +238,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 
 		BooleanQuery booleanQuery = null;
@@ -253,7 +252,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(WorkTimeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -288,7 +287,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 
 		BooleanQuery booleanQuery = null;
@@ -302,7 +301,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(WorkTimeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -359,7 +358,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 			object = workTimePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

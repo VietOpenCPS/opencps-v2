@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -25,6 +26,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
@@ -32,16 +34,14 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import backend.auth.api.exception.BusinessExceptionImpl;
 
 public class DeliverableTypesManagementImpl implements DeliverableTypesManagement {
-//	private Log _log = LogFactoryUtil.getLog(DeliverableTypesManagementImpl.class);
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDeliverableTypes(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		// TODO Get All Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -58,7 +58,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject
 					.get("lstDeliverableType");
 
-			results.setTotal(deliverableTypeJsonObject.getInt("total"));
+			results.setTotal(deliverableTypeJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(lstDeliverableType));
 
 			return Response.status(200).entity(results).build();
@@ -74,7 +74,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String counter = String.valueOf(input.getCounter());
 
 		try {
@@ -104,7 +104,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String counter = String.valueOf(model.getCounter());
 
 		try {
@@ -134,7 +134,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Remove Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -158,7 +158,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getFormScriptByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
-		// TODO Get FormScript of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -181,7 +180,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update FormScript of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -206,7 +205,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getFormReportByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
-		// TODO Get FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -229,7 +227,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -254,7 +252,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getMappingDataByDeliverableTypeId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId) {
-		// TODO Get MappingData of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -274,10 +271,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 	public Response updateDeliverableTypeMappingData(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String mappingData) {
-		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -302,9 +298,8 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getDeliverabletypebyId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
-		// TODO Get Deliverable Type by Id or typeCode
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -327,7 +322,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			User user, ServiceContext serviceContext, String id) {
 		// TODO Auto-generated method stub
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {

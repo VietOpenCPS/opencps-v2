@@ -766,7 +766,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			object = paymentFilePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

@@ -2,7 +2,6 @@ package backend.feedback.constants;
 
 public class CommentTerm {
 	public static final String COMMENT_ID = "commentId";
-	public static final String GROUP_ID = "groupId";
 	public static final String COMPANY_ID = "companyId";
 	
 	public static final String EMAIL = "email";

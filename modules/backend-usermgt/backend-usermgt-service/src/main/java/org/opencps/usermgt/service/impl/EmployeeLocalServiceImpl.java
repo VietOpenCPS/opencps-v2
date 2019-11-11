@@ -333,7 +333,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
@@ -434,7 +434,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -540,7 +540,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
@@ -638,7 +638,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -833,7 +833,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 			object = employeePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

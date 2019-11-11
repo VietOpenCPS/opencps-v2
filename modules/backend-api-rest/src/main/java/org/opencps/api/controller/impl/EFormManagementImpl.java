@@ -19,10 +19,12 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +36,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharSet;
 import org.opencps.api.controller.EFormManagement;
 import org.opencps.api.controller.util.EFormUtils;
 import org.opencps.api.eform.model.EFormDataModel;
@@ -46,6 +49,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.EFormActions;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.EFormActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.EForm;
@@ -62,7 +67,7 @@ public class EFormManagementImpl implements EFormManagement{
 			User user, ServiceContext serviceContext, EFormSearchModel search) {
 		
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -97,10 +102,10 @@ public class EFormManagementImpl implements EFormManagement{
 				
 				Sort[] sorts = null;
 				if (Validator.isNull(search.getSort())) {
-					sorts = new Sort[] { SortFactoryUtil.create(EFormTerm.CHECK_IN_DATE + "_sortable", Sort.STRING_TYPE,
+					sorts = new Sort[] { SortFactoryUtil.create(EFormTerm.CHECK_IN_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 							GetterUtil.getBoolean(search.getOrder())) };
 				} else {
-					sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
+					sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 							GetterUtil.getBoolean(search.getOrder())) };
 				}
 
@@ -109,9 +114,9 @@ public class EFormManagementImpl implements EFormManagement{
 				JSONObject jsonData = actions.getEFormList(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 							search.getStart(), search.getEnd(), serviceContext);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
-				results.getData().addAll(EFormUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				results.getData().addAll(EFormUtils.mappingForGetList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -125,15 +130,10 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response addEFromOfFileTemplate(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, EFormInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
-		//BackendAuth auth = new BackendAuthImpl();
-		//EFormInputModel eFromInputModel = new EFormInputModel();
 		try {
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
 
 			EFormActions actions = new EFormActionsImpl();
 
@@ -147,14 +147,6 @@ public class EFormManagementImpl implements EFormManagement{
 			String eFormData = Validator.isNotNull(input.geteFormData()) ? input.geteFormData() : StringPool.BLANK;
 			String email = Validator.isNotNull(input.getEmail()) ? input.getEmail() : StringPool.BLANK;
 			String secret = Validator.isNotNull(input.getSecret()) ? input.getSecret() : StringPool.BLANK;
-
-//			Date checkDate = null;
-//			if (Validator.isNotNull(input.getCheckinDate())) {
-//				checkDate = APIDateTimeUtils.convertStringToDate(input.getCheckinDate(),
-//						APIDateTimeUtils._NORMAL_PARTTERN);
-//			}
-//			String gateNumber = Validator.isNotNull(input.getGateNumber()) ? input.getGateNumber() : StringPool.BLANK;
-//			Integer state = input.getState() != null ? input.getState() : 0;
 
 			EForm eFormInfo = actions.updateEForm(userId, groupId, 0, eFormNo, serviceInfoId, fileTemplateNo, eFormName,
 					formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
@@ -174,17 +166,15 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response getEFromBySecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String eFormNo, String secret) {
 
-		DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (Validator.isNotNull(secret)) {
 				try {
 					EForm eForm = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
 
-					//
 					EFormUtils.checkPassword(eForm, secret);
 
 					EFormDataModel result = EFormUtils.mappingForGetDetail(eForm);
@@ -192,13 +182,12 @@ public class EFormManagementImpl implements EFormManagement{
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
 					_log.debug(e);
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 							.build();
 				}
 
 			}
 			else {
-//				_log.info("START");
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
@@ -221,11 +210,10 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response updateEFromBySecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String eFormNo, String secret, EFormInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		//EFormInputModel eFromInputModel = new EFormInputModel();
 		EFormActions actions = new EFormActionsImpl();
 
 		String eFormData = input.geteFormData();
@@ -234,18 +222,6 @@ public class EFormManagementImpl implements EFormManagement{
 			if (Validator.isNotNull(secret)) {
 				try {
 					EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
-
-//					List<Role> userRoles = user.getRoles();
-//					boolean isAdmin = false;
-//					for (Role r : userRoles) {
-//						if (r.getName().startsWith("Administrator")) {
-//							isAdmin = true;
-//							break;
-//						}
-//					}
-//					if (!isAdmin) {
-//						dossierPermission.checkPassword(dossier, secretKey);
-//					}
 
 					if (eform != null && secret.equalsIgnoreCase(eform.getSecret())) {
 						eform = actions.updateDataByEFormNo(eform.getEFormId(),eFormData, serviceContext);
@@ -256,11 +232,10 @@ public class EFormManagementImpl implements EFormManagement{
 					_log.debug(e);
 				}
 
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 						.build();
 			}
 			else {
-//				_log.info("START");
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
 				}
@@ -277,7 +252,7 @@ public class EFormManagementImpl implements EFormManagement{
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
-		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("secretKey not sucess")
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 				.build();
 	}
 
@@ -285,17 +260,11 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response updateEFromById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, EFormInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 		long eFormId = GetterUtil.getLong(id);
 
-		//BackendAuth auth = new BackendAuthImpl();
-		//EFormInputModel eFromInputModel = new EFormInputModel();
 		try {
-
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
 
 			EForm eform = null;
 			if (eFormId > 0) {
@@ -316,13 +285,6 @@ public class EFormManagementImpl implements EFormManagement{
 				Long formReportFileId = input.getFormReportFileId();
 				String eFormData = input.geteFormData();
 				String email = input.getEmail();
-				//String checkinDate = input.getCheckinDate();
-				//String gateNumber = input.getGateNumber();
-				//Integer state = input.getState();
-				//Date checkinDate = null;
-				//if (state == 1) {
-				//	checkinDate = new Date();
-				//}
 
 				eform = actions.updateEForm(userId, groupId, eform.getEFormId(), eFormNo, serviceInfoId, fileTemplateNo,
 						eFormName, formScriptFileId, formReportFileId, eFormData, email, secret, serviceContext);
@@ -341,9 +303,6 @@ public class EFormManagementImpl implements EFormManagement{
 	@Override
 	public Response deleteEFromById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
-
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		//long userId = serviceContext.getUserId();
 
 		BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -370,7 +329,7 @@ public class EFormManagementImpl implements EFormManagement{
 			User user, ServiceContext serviceContext, String id, String secret) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long eFormId = GetterUtil.getLong(id);
 
 		try {
@@ -398,7 +357,7 @@ public class EFormManagementImpl implements EFormManagement{
 						DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
 
 						is = dlFileEntry.getContentStream();
-						formReport = IOUtils.toString(is, "UTF-8");
+						formReport = IOUtils.toString(is, StandardCharsets.UTF_8.name());
 					} catch (Exception e) {
 						_log.error(e);
 					} finally {
@@ -422,7 +381,7 @@ public class EFormManagementImpl implements EFormManagement{
 				jsonData.put("eFormName", eform.getEFormName());
 				jsonData.put("formScriptFileId", eform.getFormScriptFileId());
 				jsonData.put("formReportFileId", eform.getFormReportFileId());
-				jsonData.put("email", eform.getEmail());
+				jsonData.put(ConstantUtils.VALUE_EMAIL, eform.getEmail());
 				jsonData.put("secret", eform.getSecret());
 				jsonData.put("eFormId", eform.getEFormId());
 //				jsonData.put("gateNumber", eform.getGateNumber());
@@ -440,15 +399,15 @@ public class EFormManagementImpl implements EFormManagement{
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/pdf");
+					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+							ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));
 
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception("Preview rendering not avariable");
+					throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 				}
 			}
 
@@ -464,13 +423,8 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response getEFromById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
-		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-
-			//if (!auth.isAuth(serviceContext)) {
-			//	throw new UnauthenticationException();
-			//}
 
 			EForm eform = null;
 			long eFormId = GetterUtil.getLong(id);
@@ -495,7 +449,7 @@ public class EFormManagementImpl implements EFormManagement{
 			User user, ServiceContext serviceContext, String id, String secret) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (Validator.isNull(secret)) {
@@ -521,7 +475,7 @@ public class EFormManagementImpl implements EFormManagement{
 			_log.debug(e);
 		}
 
-		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 				.build();
 	}
 
@@ -530,7 +484,7 @@ public class EFormManagementImpl implements EFormManagement{
 			User user, ServiceContext serviceContext, String id, String secret, EFormInputModel input) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (Validator.isNull(secret)) {
@@ -558,7 +512,7 @@ public class EFormManagementImpl implements EFormManagement{
 			_log.debug(e);
 		}
 
-		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+		return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 				.build();
 	}
 
@@ -566,16 +520,8 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response getEFormByBarCodeAndSecret(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String eFormNo) {
 
-		//DossierPermission dossierPermission = new DossierPermission();
-		//BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-
-//				_log.info("START");
-//				if (!auth.isAuth(serviceContext)) {
-//					throw new UnauthenticationException();
-//				}
 
 			EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
 
@@ -594,8 +540,7 @@ public class EFormManagementImpl implements EFormManagement{
 	public Response getEFormDataByEFormNo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String eFormNo) {
 
-		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			EForm eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
@@ -607,7 +552,7 @@ public class EFormManagementImpl implements EFormManagement{
 			_log.debug(e);
 		}
 
-		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity("No eform exits")
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR))
 				.build();
 	}
 

@@ -30,6 +30,7 @@ import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.FileAttachInterface;
+import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
@@ -56,11 +57,11 @@ public class FileAttachActions implements FileAttachInterface {
 
 			hits = FileAttachLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = FileAttachLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);
@@ -84,7 +85,7 @@ public class FileAttachActions implements FileAttachInterface {
 			JSONArray versions = JSONFactoryUtil.createJSONArray();
 			List<DLFileVersion> fileVersions = DLFileVersionLocalServiceUtil
 					.getFileVersions(fileAttach.getFileEntryId(), WorkflowConstants.STATUS_APPROVED);
-			result.put("total", fileVersions.size());
+			result.put(DataMGTConstants.TOTAL, fileVersions.size());
 
 			for (DLFileVersion dlFileVersion : fileVersions) {
 				JSONObject version = JSONFactoryUtil.createJSONObject();

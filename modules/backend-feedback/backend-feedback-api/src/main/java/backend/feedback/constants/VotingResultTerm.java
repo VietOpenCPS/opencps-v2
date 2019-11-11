@@ -2,7 +2,6 @@ package backend.feedback.constants;
 
 public class VotingResultTerm {
 	public static final String VOTING_RESULT_ID = "votingResultId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	
 	public static final String VOTING_ID = "votingId";

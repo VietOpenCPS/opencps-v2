@@ -1,6 +1,19 @@
 
 package backend.postal.api.rest.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,18 +36,6 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 import backend.postal.api.rest.controller.SInvoiceManagement;
 
 /**
@@ -50,7 +51,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		Locale locale, User user, ServiceContext serviceContext, String code,
 		JSONObject requestBody, String cmd) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		InvokeResultModel invokeResultModel = new InvokeResultModel();
 

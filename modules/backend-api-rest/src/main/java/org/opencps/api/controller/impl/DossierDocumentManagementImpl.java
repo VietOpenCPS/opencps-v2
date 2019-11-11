@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -39,7 +40,9 @@ import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -67,7 +70,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	public Response getPreview(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String typeCode) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		Date dateStart = new Date();
 		try {
@@ -87,7 +90,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (dossierActionId != 0) {
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-					//String payload = StringPool.BLANK;
 					if (dAction != null) {
 						String payload = dAction.getPayload();
 						if (Validator.isNotNull(payload)) {
@@ -98,14 +100,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 					org.opencps.usermgt.model.Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 					if (employee != null) {
-						jsonData.put("userName", employee.getFullName());
+						jsonData.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						jsonData.put("userName", user.getFullName());
+						jsonData.put(Field.USER_NAME, user.getFullName());
 					}
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put("url", serviceContext.getPortalURL());
-					_log.info("jsonData: "+jsonData);
 					Message message = new Message();
 					message.put("formReport", documentScript);
 					message.put("formData", jsonData.toJSONString());
@@ -124,9 +125,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "application/pdf");
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));
 
 						Date dateEnd1 = new Date();
 						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
@@ -134,15 +135,15 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 					} catch (MessageBusException e) {
 						_log.error(e);
-						throw new Exception("Preview rendering not avariable");
+						throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_FOLDER));
 					}
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION) + id);
 			}
 
 		} catch (Exception e) {
@@ -179,9 +180,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 	
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-						responseBuilder.header("Content-Type", fileEntry.getMimeType());
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 	
 						return responseBuilder.build();
 					}
@@ -198,7 +199,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			Locale locale, User user, ServiceContext serviceContext, String typeCode, DossierDocumentInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -206,8 +207,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				throw new UnauthenticationException();
 			}
 
-//			String serviceCode = input.getServiceCode();
-//			String govAgencyCode = input.getGovAgencyCode();
 			String strDossiers = input.getDossiers();
 			JSONArray  dossierIdArr = null;
 			if (Validator.isNotNull(strDossiers)) {
@@ -224,12 +223,10 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				//
 				int length = dossierIdArr.length();
 				formDataJSON = JSONFactoryUtil.createJSONObject();
-				formDataJSON.put(DossierTerm.TOTAL, length);
+				formDataJSON.put(ConstantUtils.TOTAL, length);
 				//Get formScript
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 				String documentScript = StringPool.BLANK;
-				_log.debug("typeCode: "+typeCode);
-				_log.debug("docType: "+docType);
 				if (docType != null) {
 					documentScript = docType.getDocumentScript();
 				}
@@ -242,7 +239,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 						if (Validator.isNotNull(dossier)) {
 							long dossierActionId = dossier.getDossierActionId();
-							_log.debug("dossierActionId: "+dossierActionId);
 							String payload = StringPool.BLANK;
 							if (dossierActionId != 0) {
 								DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
@@ -256,9 +252,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								jsonData = JSONFactoryUtil.createJSONObject(payload);
 								jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 								formDataArr.put(jsonData);
-								_log.debug("jsonData: "+jsonData);
-								_log.debug("formDataArr: "+formDataArr);
-								_log.debug("payload: "+payload);
 							}
 						}
 					}
@@ -268,7 +261,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				Message message = new Message();
 				message.put("formReport", documentScript);
 				message.put("formData", formDataJSON.toJSONString());
-//				message.put("className", DossierDocument.class.getName());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
@@ -281,15 +273,15 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/pdf");
+					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+							ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));
 
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception("Preview rendering not avariable");
+					throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 				}
 			}
 
@@ -305,18 +297,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 	public Response downloadDocByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid) {
 
-//		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long dossierId = GetterUtil.getLong(id);
 
 		try {
-
-//			if (!auth.isAuth(serviceContext)) {
-//				throw new UnauthenticationException();
-//			}
-
 			DossierDocument dossierDoc = DossierDocumentLocalServiceUtil.getDocByReferenceUid(groupId, dossierId, referenceUid);
-//			
 //			// download file with dossierDocumentFileId
 			long documentFileId = 0;
 			if (dossierDoc != null) {
@@ -331,9 +316,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
@@ -353,7 +338,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		if (dAction != null) {
 			long serviceProcessId = dAction.getServiceProcessId();
 			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
-			jsonData.put(DossierTerm.TOTAL, length);
+			jsonData.put(ConstantUtils.TOTAL, length);
 			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
 			String sequenceNo = dAction.getSequenceNo();
 			if (Validator.isNotNull(sequenceNo)) {
@@ -367,24 +352,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			} else {
 				jsonData.put(DossierTerm.SEQUENCE_ROLE, StringPool.BLANK);
 			}
-			// Process get Next sequence Role
-			//List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
-			//		serviceProcessId);
-			//TODO: Using cache
-//			List<ProcessSequence> sequenceList = null;
-//			Serializable data = CacheLocalServiceUtil.getFromCache("ProcessSequence", groupId +"_"+serviceProcessId);
-//			if (data != null) {
-//				sequenceList = (List<ProcessSequence>) data;
-//			} else {
-//				sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
-//						serviceProcessId);
-//				if (sequenceList != null) {
-//					//_log.info("START_ Serlist null");
-//					CacheLocalServiceUtil.addToCache("ProcessSequence",
-//							groupId +"_"+serviceProcessId, (Serializable) sequenceList,
-//							(int) Time.MINUTE * 30);
-//				}
-//			}
 			List<ProcessSequence> sequenceList = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId,
 					serviceProcessId);
 			String[] sequenceArr = null;
@@ -468,7 +435,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			User user, ServiceContext serviceContext, String id, String templateNo, String partNo) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		Date dateStart = new Date();
 		try {
@@ -508,9 +475,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "application/pdf");
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));
 
 						Date dateEnd1 = new Date();
 						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
@@ -558,9 +525,9 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
 		
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-							responseBuilder.header("Content-Type", fileEntry.getMimeType());
+							responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+									ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 		
 							return responseBuilder.build();
 						}

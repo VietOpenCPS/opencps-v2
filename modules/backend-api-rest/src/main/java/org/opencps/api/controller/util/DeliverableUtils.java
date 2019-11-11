@@ -266,70 +266,6 @@ public class DeliverableUtils {
 
 	}
 
-	public static JSONArray readExcelDeliverable(InputStream excelInputStream) {
-
-		Workbook workbook = null;
-		JSONArray results = JSONFactoryUtil.createJSONArray();
-
-		try {
-
-			workbook = new XSSFWorkbook(excelInputStream);
-			//
-			Sheet datatypeSheetOne = workbook.getSheetAt(0);
-			int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
-			int nOfColumns = 1000;
-			_log.debug("nOfRows: " + nOfRows);
-
-			if (nOfRows > 1) {
-
-				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
-				for (int i = 0; i < nOfColumns; i++) {
-					Cell celli = datatypeSheetOne.getRow(0).getCell(i);
-					if (Validator.isNotNull(celli) &&
-						Validator.isNotNull(celli.getStringCellValue())) {
-						formDataFormat.put(
-							String.valueOf(i),
-							datatypeSheetOne.getRow(0).getCell(
-								i).getStringCellValue());
-					}
-					else {
-						nOfColumns = i - 1;
-						break;
-					}
-				}
-				_log.debug("====dataForm__" + formDataFormat);
-				_log.debug("====nOfColumns===" + nOfColumns);
-				for (int i = 1; i < nOfRows; i++) {
-					Row currentRow = datatypeSheetOne.getRow(i);
-					if (currentRow != null) {
-
-						// todo convert
-						JSONObject deliverable = convertRowToDeliverable(
-							currentRow, nOfColumns, formDataFormat);
-						if (Validator.isNotNull(deliverable)) {
-
-							results.put(deliverable);
-						}
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			if (workbook != null) {
-				try {
-					workbook.close();
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-					// _log.debug(e);
-				}
-			}
-		}
-		return results;
-	}
 
 	public static JSONObject convertRowToDeliverable(
 		Row currentRow, int nOfColumns, JSONObject formDataFormat) {
@@ -351,8 +287,7 @@ public class DeliverableUtils {
 			deliverableObj.put("formData", formData);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+			_log.debug(e);
 		}
 
 		return deliverableObj;
@@ -405,7 +340,7 @@ public class DeliverableUtils {
 			in.close();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (out != null || in != null) {
@@ -414,8 +349,7 @@ public class DeliverableUtils {
 					in.close();
 				}
 				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.debug(e);
 				}
 			}
 		}

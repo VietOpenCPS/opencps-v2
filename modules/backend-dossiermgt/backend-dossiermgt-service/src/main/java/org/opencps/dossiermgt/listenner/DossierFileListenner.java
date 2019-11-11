@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -656,7 +657,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							? deliverable.getRevalidate().getTime()
 							: new Date().getTime();
 
-				deliverableLog.put("groupId", model.getGroupId());
+				deliverableLog.put(Field.GROUP_ID, model.getGroupId());
 				deliverableLog.put("companyId", model.getCompanyId());
 				deliverableLog.put("userId", model.getUserId());
 				deliverableLog.put("userName", model.getUserName());

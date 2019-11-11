@@ -71,7 +71,7 @@ public class VotingIndexer extends BaseIndexer<Voting> {
 		document.addDateSortable(Field.MODIFIED_DATE, voting.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(voting.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(voting.getUserName()));
-		document.addNumberSortable(VotingTerm.GROUP_ID, voting.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, voting.getGroupId());
 		
 		User user = UserLocalServiceUtil.fetchUser(voting.getUserId());
 		

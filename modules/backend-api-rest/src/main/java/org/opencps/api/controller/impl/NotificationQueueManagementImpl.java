@@ -1,5 +1,11 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -16,14 +22,9 @@ import org.opencps.api.notificationtemplate.model.NotificationQueueShortModel;
 import org.opencps.communication.action.NotificationQueueInterface;
 import org.opencps.communication.action.impl.NotificationQueueActions;
 import org.opencps.communication.model.NotificationQueue;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Validator;
 
 public class NotificationQueueManagementImpl implements NotificationQueueManagement {
 
@@ -40,9 +41,9 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 
 			JSONObject jsonData = actions.getNotificationQueues(serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationQueueShortModel().addAll(NotificationTemplateUtils
-					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get("data")));
+					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -57,7 +58,7 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 		NotificationQueueInterface actions = new NotificationQueueActions();
 		NotificationQueueShortModel notificationQueueModel;
 
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		NotificationQueue notificationQueue = actions.read(id, serviceContext);
 

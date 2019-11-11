@@ -91,12 +91,6 @@ public class DossierTemplateUtils {
 				elm.setFileTemplateNo(dp.getFileTemplateNo());
 				elm.setFileMark(dp.getFileMark());
 
-//				boolean hasForm = false;
-//
-//				if (Validator.isNotNull(dp.getFormScript())) {
-//					hasForm = true;
-//				}
-
 				elm.setHasForm(Boolean.toString(dp.isEForm()));
 
 				inputs.add(elm);

@@ -45,28 +45,6 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 		return _registrationLocalService.addRegistration(registration);
 	}
 
-	@Override
-	public org.opencps.dossiermgt.model.Registration adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return _registrationLocalService.adminProcessData(objectData);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration adminProcessDelete(Long id) {
-		return _registrationLocalService.adminProcessDelete(id);
-	}
-
-	@Override
-	public long countLucense(long userId,
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _registrationLocalService.countLucense(userId, params, sorts,
-			start, end, searchContext);
-	}
-
 	/**
 	* Creates a new registration with the primary key. Does not add the registration to the database.
 	*
@@ -225,41 +203,6 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 		return _registrationLocalService.getActionableDynamicQuery();
 	}
 
-	/**
-	* Get registration of applicant has registrationState in use
-	*/
-	@Override
-	public org.opencps.dossiermgt.model.Registration getByApplicantAndAgency(
-		long groupId, String applicantNo, String agencyNo) {
-		return _registrationLocalService.getByApplicantAndAgency(groupId,
-			applicantNo, agencyNo);
-	}
-
-	/**
-	* Get registration form ApplicantIdNo using output DB
-	*/
-	@Override
-	public org.opencps.dossiermgt.model.Registration getByApplicantIdNo(
-		String applicantIdNo) {
-		return _registrationLocalService.getByApplicantIdNo(applicantIdNo);
-	}
-
-	/**
-	* Get list registrations have state = 2
-	*/
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.Registration> getByRegistrationState(
-		long groupId, long userId, int state) {
-		return _registrationLocalService.getByRegistrationState(groupId,
-			userId, state);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.Registration> getdByF_submitting(
-		long groupId, boolean submitting) {
-		return _registrationLocalService.getdByF_submitting(groupId, submitting);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
@@ -267,22 +210,8 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 	}
 
 	@Override
-	public int getfileEntryId(String formdata, String formScript,
-		String formReport) {
-		return _registrationLocalService.getfileEntryId(formdata, formScript,
-			formReport);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _registrationLocalService.getIndexableActionableDynamicQuery();
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration getLastSubmittingByUser(
-		long groupId, long userId, boolean submitting) {
-		return _registrationLocalService.getLastSubmittingByUser(groupId,
-			userId, submitting);
 	}
 
 	/**
@@ -314,27 +243,6 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 		long registrationId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _registrationLocalService.getRegistration(registrationId);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration getRegistrationByG_REGID(
-		long groupId, long registrationId) {
-		return _registrationLocalService.getRegistrationByG_REGID(groupId,
-			registrationId);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.Registration> getRegistrationByGID_UID(
-		long groupId, long userId) {
-		return _registrationLocalService.getRegistrationByGID_UID(groupId,
-			userId);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration getRegistrationByGID_UID_Last(
-		long groupId, long userId) {
-		return _registrationLocalService.getRegistrationByGID_UID_Last(groupId,
-			userId);
 	}
 
 	/**
@@ -412,77 +320,6 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 		return _registrationLocalService.getRegistrationsCount();
 	}
 
-	@Override
-	public org.opencps.dossiermgt.model.Registration insert(long groupId,
-		long companyId, String applicantName, String applicantIdType,
-		String applicantIdNo, String applicantIdDate, String address,
-		String cityCode, String cityName, String districtCode,
-		String districtName, String wardCode, String wardName,
-		String contactName, String contactTelNo, String contactEmail,
-		String govAgencyCode, String govAgencyName, int registrationState,
-		String registrationClass, String representativeEnterprise,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationLocalService.insert(groupId, companyId,
-			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
-			address, cityCode, cityName, districtCode, districtName, wardCode,
-			wardName, contactName, contactTelNo, contactEmail, govAgencyCode,
-			govAgencyName, registrationState, registrationClass,
-			representativeEnterprise, serviceContext);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration registrationSync(
-		long groupId, String uuid, String applicantName,
-		String applicantIdType, String applicantIdNo, String applicantIdDate,
-		String address, String cityCode, String cityName, String districtCode,
-		String districtName, String wardCode, String wardName,
-		String contactName, String contactTelNo, String contactEmail,
-		String govAgencyCode, String govAgencyName, int registrationState,
-		String registrationClass, String representativeEnterprise,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationLocalService.registrationSync(groupId, uuid,
-			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
-			address, cityCode, cityName, districtCode, districtName, wardCode,
-			wardName, contactName, contactTelNo, contactEmail, govAgencyCode,
-			govAgencyName, registrationState, registrationClass,
-			representativeEnterprise, serviceContext);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.Hits searchLucene(long userId,
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _registrationLocalService.searchLucene(userId, params, sorts,
-			start, end, searchContext);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration updateRegistration(
-		long groupId, long registrationId, String applicantName,
-		String applicantIdType, String applicantIdNo, String applicantIdDate,
-		String address, String cityCode, String cityName, String districtCode,
-		String districtName, String wardCode, String wardName,
-		String contactName, String contactTelNo, String contactEmail,
-		String govAgencyCode, String govAgencyName, int registrationState,
-		String registrationClass, String representativeEnterprise,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationLocalService.updateRegistration(groupId,
-			registrationId, applicantName, applicantIdType, applicantIdNo,
-			applicantIdDate, address, cityCode, cityName, districtCode,
-			districtName, wardCode, wardName, contactName, contactTelNo,
-			contactEmail, govAgencyCode, govAgencyName, registrationState,
-			registrationClass, representativeEnterprise, serviceContext);
-	}
-
 	/**
 	* Updates the registration in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -493,14 +330,6 @@ public class RegistrationLocalServiceWrapper implements RegistrationLocalService
 	public org.opencps.dossiermgt.model.Registration updateRegistration(
 		org.opencps.dossiermgt.model.Registration registration) {
 		return _registrationLocalService.updateRegistration(registration);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Registration updateSubmitting(
-		long registrationId, boolean submitting)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _registrationLocalService.updateSubmitting(registrationId,
-			submitting);
 	}
 
 	@Override

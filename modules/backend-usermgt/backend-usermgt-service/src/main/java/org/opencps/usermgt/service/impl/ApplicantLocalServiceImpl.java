@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -183,10 +184,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant = applicantPersistence.create(applicantId);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(
-				context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+				context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 			String activationCode =
-				PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+				PwdGenerator.getPassword(ApplicantTerm.PASSWORD_LENGHT);
 
 			boolean autoPassword = false;
 			boolean autoScreenName = true;
@@ -203,12 +204,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			if (Validator.isNull(password)) {
 				password =
-					PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+					PwdGenerator.getPassword(ApplicantTerm.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType)
-				? "Ông/bà" : ("business".equals(applicantIdType)
-					? "Quý công ty" : "Tổ chức"));
+			String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicantIdType)
+				? ConfigProps.get(ConfigConstants.HEADER_USER) : (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicantIdType)
+					? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn =
@@ -222,7 +223,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			Role adminRole = RoleLocalServiceUtil.getRole(
-				context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+				context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 			List<User> adminUsers =
 				userLocalService.getRoleUsers(adminRole.getRoleId());
@@ -247,7 +248,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				password, autoScreenName, screenName, contactEmail, 0l,
 				StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(),
 				spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-				dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds,
+				dayOfMonth, year, ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds,
 				organizationIds, roleIds, userGroupIds, sendEmail, context);
 			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
 			// mappingUser.getFullName());
@@ -523,7 +524,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
@@ -571,7 +572,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ApplicantTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -617,7 +618,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
@@ -662,7 +663,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ApplicantTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -831,7 +832,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			object = applicantPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -863,7 +864,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
-			objectData.getString("cityCode"), objectData.getLong("groupId"));
+			objectData.getString("cityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
@@ -872,7 +873,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
 			objectData.getString("districtCode"),
-			objectData.getLong("groupId"));
+			objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
@@ -880,7 +881,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		dictItem = DictCollectionUtils.getDictItemByCode(
 			DataMGTConstants.ADMINISTRATIVE_REGION,
-			objectData.getString("wardCode"), objectData.getLong("groupId"));
+			objectData.getString("wardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());
@@ -916,7 +917,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant = applicantPersistence.create(applicantId);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(
-				auditUser.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+				auditUser.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 			String activationCode = StringPool.BLANK;
 
@@ -934,12 +935,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			String screenName = null;
 			if (Validator.isNull(password)) {
 				password =
-					PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+					PwdGenerator.getPassword(ApplicantTerm.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType)
-				? "Ông/bà" : ("business".equals(applicantIdType)
-					? "Quý công ty" : "Tổ chức"));
+			String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicantIdType)
+					? ConfigProps.get(ConfigConstants.HEADER_USER) : (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicantIdType)
+						? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn =
@@ -953,7 +954,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			Role adminRole = RoleLocalServiceUtil.getRole(
-				auditUser.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+				auditUser.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 			List<User> adminUsers =
 				userLocalService.getRoleUsers(adminRole.getRoleId());
 			long creatorUserId = 0;
@@ -973,11 +974,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				password, autoScreenName, screenName, contactEmail, 0l,
 				StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(),
 				spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-				dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds,
+				dayOfMonth, year, ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds,
 				organizationIds, roleIds, userGroupIds, sendEmail, context);
 			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
-			// mappingUser.getFullName());
-			// mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
 			userLocalService.updateStatus(
 				mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED,
 				context);
@@ -1068,23 +1067,17 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
-		String password = "12345";
+		String screctCode = ConfigProps.get(ConfigConstants.USER_SCRECT_CODE);
 
 		if (applicantId == 0) {
-			// validateAdd(applicantName, applicantIdType, applicantIdNo,
-			// applicantIdDate);
-			// validateApplicantDuplicate(groupId, context.getCompanyId(),
-			// contactTelNo, applicantIdNo, contactEmail);
 
 			applicantId =
 				counterLocalService.increment(Applicant.class.getName());
 			applicant = applicantPersistence.create(applicantId);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(
-				auditUser.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+				auditUser.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
-			// String activationCode =
-			// PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			String activationCode = StringPool.BLANK;
 
 			boolean autoPassword = false;
@@ -1099,14 +1092,14 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			long[] userGroupIds = null;
 
 			String screenName = null;
-			if (Validator.isNull(password)) {
-				password =
-					PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			if (Validator.isNull(screctCode)) {
+				screctCode =
+					PwdGenerator.getPassword(ApplicantTerm.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType)
-				? "Ông/bà" : ("business".equals(applicantIdType)
-					? "Quý công ty" : "Tổ chức"));
+			String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicantIdType)
+				? ConfigProps.get(ConfigConstants.HEADER_USER) : (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicantIdType)
+					? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn =
@@ -1120,7 +1113,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			Role adminRole = RoleLocalServiceUtil.getRole(
-				auditUser.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+				auditUser.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 			List<User> adminUsers =
 				userLocalService.getRoleUsers(adminRole.getRoleId());
 			long creatorUserId = 0;
@@ -1136,15 +1129,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
 			// spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(
-				creatorUserId, auditUser.getCompanyId(), autoPassword, password,
-				password, autoScreenName, screenName, contactEmail, 0l,
+				creatorUserId, auditUser.getCompanyId(), autoPassword, screctCode,
+				screctCode, autoScreenName, screenName, contactEmail, 0l,
 				StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(),
 				spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-				dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds,
+				dayOfMonth, year, ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds,
 				organizationIds, roleIds, userGroupIds, sendEmail, context);
-			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
-			// mappingUser.getFullName());
-			// mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
 			userLocalService.updateStatus(
 				mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED,
 				context);
@@ -1169,7 +1159,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setContactEmail(contactEmail);
 			applicant.setMappingUserId(mappingUserId);
 			applicant.setActivationCode(activationCode);
-			applicant.setTmpPass(password);
+			applicant.setTmpPass(screctCode);
 
 		}
 		else {
@@ -1210,8 +1200,5 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		return applicantPersistence.findByF_EMAIL(contactEmail);
 	}
-
-	// private Log _log =
-	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 }

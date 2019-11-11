@@ -10,11 +10,14 @@ package org.opencps.api.comment.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 
 /**
@@ -40,10 +43,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "commentModel"
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class CommentListModel {
 
-    @XmlElement(name = "data")
+    @XmlElement(name = ConstantUtils.DATA)
     protected List<CommentModel> commentModel;
 
     /**

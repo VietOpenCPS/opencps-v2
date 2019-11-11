@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -36,6 +37,8 @@ import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 public class DataManagementUtils {
 
@@ -59,7 +62,6 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -77,7 +79,7 @@ public class DataManagementUtils {
 			for (Document document : listDocument) {
 				ett = new Groups();
 
-				ett.setDictGroupId(Long.valueOf(document.get("entryClassPK")));
+				ett.setDictGroupId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setGroupCode(document.get(DictGroupTerm.GROUP_CODE));
 				ett.setGroupName(document.get(DictGroupTerm.GROUP_NAME));
 				ett.setGroupNameEN(document.get(DictGroupTerm.GROUP_NAME_EN));
@@ -134,7 +136,7 @@ public class DataManagementUtils {
 			for (Document document : listDocument) {
 				ett = new DictItemModel();
 
-				ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+				ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
 				ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
 				ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
@@ -147,8 +149,8 @@ public class DataManagementUtils {
 						.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.get(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 				DictItem parentItem = DictItemLocalServiceUtil
 						.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
@@ -169,7 +171,6 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -197,7 +198,6 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -215,19 +215,8 @@ public class DataManagementUtils {
 			ett.setGroupName(dictGroup.getGroupName());
 			ett.setGroupNameEN(dictGroup.getGroupNameEN());
 			ett.setGroupDescription(dictGroup.getGroupDescription());
-			// ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
-			// ?
-			// APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(),
-			// APIDateTimeUtils._TIMESTAMP)
-			// : StringPool.BLANK);
-			// ett.setModifiedDate(
-			// Validator.isNotNull(dictCollection.getModifiedDate()) ?
-			// APIDateTimeUtils.convertDateToString(
-			// dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) :
-			// StringPool.BLANK);
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -249,19 +238,8 @@ public class DataManagementUtils {
 			ett.setItemName(dictItem.getItemName());
 			ett.setItemNameEN(dictItem.getItemNameEN());
 			ett.setItemDescription(String.valueOf(dictItem.getItemDescription()));
-			// ett.setCreateDate(Validator.isNotNull(dictCollection.getCreateDate())
-			// ?
-			// APIDateTimeUtils.convertDateToString(dictCollection.getCreateDate(),
-			// APIDateTimeUtils._TIMESTAMP)
-			// : StringPool.BLANK);
-			// ett.setModifiedDate(
-			// Validator.isNotNull(dictCollection.getModifiedDate()) ?
-			// APIDateTimeUtils.convertDateToString(
-			// dictCollection.getModifiedDate(), APIDateTimeUtils._TIMESTAMP) :
-			// StringPool.BLANK);
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -305,7 +283,7 @@ public class DataManagementUtils {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DictItemGroupTerm.DICT_ITEM_ID, String.valueOf(dictItem.getDictItemId()));
 
 			JSONObject jsonData = dictItemDataUtil.getDictItemsGroup(userId, companyId, groupId, params, new Sort[] {},
@@ -317,7 +295,7 @@ public class DataManagementUtils {
 
 				Groups ettGroup = null;
 
-				for (Document document : (List<Document>) jsonData.get("data")) {
+				for (Document document : (List<Document>) jsonData.get(ConstantUtils.DATA)) {
 
 					ettGroup = new Groups();
 
@@ -377,7 +355,6 @@ public class DataManagementUtils {
 					parentItem = DictItemLocalServiceUtil.fetchDictItem(dc.getParentItemId());
 				}
 				catch (Exception e) {
-					//_log.error(e);
 					_log.debug(e);
 				}
 				model.setDictCollectionCode(collection.getCollectionCode());
@@ -480,25 +457,6 @@ public class DataManagementUtils {
 
 	private static final Log _log = LogFactoryUtil.getLog(DataManagementUtils.class);
 
-//	public static void main(String []args) {
-//		List<String> collectionList = new ArrayList<>();
-//		collectionList.add("abc");
-//		collectionList.add("def");
-//		collectionList.add("ghi");
-//		collectionList.add("xyz");
-//		
-//		if (collectionList.contains("abc")) {
-//			System.out.println("abc");
-//		}
-//		if (collectionList.contains("abcc")) {
-//			System.out.println("ABc");
-//		}
-//		if (collectionList.contains("def")) {
-//			System.out.println("def");
-//		}
-//		
-//	}
-	
 	/** LGSP - START */
 	public static List<DictCollectionShortModel> mapperDictCollectionLGSPModelList(List<Document> listDocument) {
 
@@ -540,9 +498,7 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
-			_log.info("kkkk@@: "+ (11+ 1));
 		}
 
 		return results;
@@ -576,7 +532,7 @@ public class DataManagementUtils {
 				for (Document doc : listDocument) {
 					if (Validator.isNotNull(group)
 							&& group.equals(doc.get(DictGroupTerm.GROUP_CODE))) {
-						ett.setDictGroupId(Long.valueOf(doc.get("entryClassPK")));
+						ett.setDictGroupId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
 						ett.setGroupCode(doc.get(DictGroupTerm.GROUP_CODE));
 						ett.setGroupName(doc.get(DictGroupTerm.GROUP_NAME));
 						ett.setGroupNameEN(doc.get(DictGroupTerm.GROUP_NAME_EN));
@@ -588,7 +544,6 @@ public class DataManagementUtils {
 				}
 			}
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 
@@ -603,11 +558,11 @@ public class DataManagementUtils {
 
 			DictItemModel ett = null;
 
-			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(collectionCode)) {
+			if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(collectionCode)) {
 				for (Document document : listDocument) {
 					ett = new DictItemModel();
 
-					ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+					ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 					ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
 					ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
 					ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
@@ -620,8 +575,8 @@ public class DataManagementUtils {
 							.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 							: StringPool.BLANK);
 					ett.setModifiedDate(
-							Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
-									document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+							Validator.isNotNull(document.get(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+									document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 					DictItem parentItem = DictItemLocalServiceUtil
 							.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
@@ -654,17 +609,14 @@ public class DataManagementUtils {
 						sbItem.append(collectionCode);
 					}
 				}
-				_log.info("sbItem: "+sbItem.toString());
 				String[] splitItem = StringUtil.split(sbItem.toString(), StringPool.COMMA);
 				for (String item : splitItem) {
 					ett = new DictItemModel();
-					_log.info("item: "+item);
 
 					for (Document doc : listDocument) {
-						_log.info("flagEqual 11111: "+doc.get(DictItemTerm.ITEM_CODE));
 						if (Validator.isNotNull(item)
 								&& item.equals(doc.get(DictItemTerm.ITEM_CODE))) {
-							ett.setDictItemId(Long.valueOf(doc.get("entryClassPK")));
+							ett.setDictItemId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
 							ett.setItemCode(doc.get(DictItemTerm.ITEM_CODE));
 							ett.setItemName(doc.get(DictItemTerm.ITEM_NAME));
 							ett.setItemNameEN(doc.get(DictItemTerm.ITEM_NAME_EN));
@@ -677,8 +629,8 @@ public class DataManagementUtils {
 									.convertDateToString(doc.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 									: StringPool.BLANK);
 							ett.setModifiedDate(
-									Validator.isNotNull(doc.get("modified")) ? APIDateTimeUtils.convertDateToString(
-											doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+									Validator.isNotNull(doc.get(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+											doc.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 							DictItem parentItem = DictItemLocalServiceUtil
 									.fetchDictItem(Long.valueOf(doc.get(DictItemTerm.PARENT_ITEM_ID)));
@@ -703,7 +655,6 @@ public class DataManagementUtils {
 			}
 
 		} catch (Exception e) {
-			//_log.error(e);
 			_log.debug(e);
 		}
 

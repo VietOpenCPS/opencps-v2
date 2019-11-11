@@ -23,8 +23,6 @@ public class ContactsTerm {
 
 	public static final String FULL_NAME = "fullName";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String CONTACT_TYPE = "contactType";
 
 	public static final String MODIFIED_DATE = "modifiedDate";

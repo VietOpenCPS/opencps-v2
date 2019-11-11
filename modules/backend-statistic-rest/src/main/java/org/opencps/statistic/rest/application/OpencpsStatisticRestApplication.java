@@ -52,6 +52,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
@@ -85,7 +86,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.dto.VotingSearchModel;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
@@ -143,7 +143,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private static Log _log = LogFactoryUtil.getLog(OpencpsStatisticRestApplication.class);
 
 	@GET
-	public DossierStatisticResponse searchDossierStatistic(@HeaderParam("groupId") long groupId,
+	public DossierStatisticResponse searchDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam DossierSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -294,7 +294,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					long companyId = company.getCompanyId(); 
 					
 					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-					List<Document> datas = (List<Document>) jsonData.get("data");
+					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
 					for (Document doc : datas) {
@@ -410,7 +410,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/votings")
-	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
+	public VotingResultResponse searchVotingStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -572,7 +572,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/persons")
-	public PersonResponse searchPersonStatistic(@HeaderParam("groupId") long groupId,
+	public PersonResponse searchPersonStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
 
 		//LOG.info("GET DossierStatisticResponse");
@@ -867,7 +867,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			params.put("top", DossierStatisticConstants.TOP_STATISTIC);
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			dossierResponse.setTotal(datas.size());
 			List<GetDossierData> dossierData = new ArrayList<>();
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -966,7 +966,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public DossierStatisticModel fixDossierStatistic(@HeaderParam("groupId") long groupId,
+	public DossierStatisticModel fixDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam DossierStatisticModel input) {
 		try {
 			if (Validator.isNotNull(input.getSystem())) {
@@ -997,7 +997,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports/fixed")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public StatisticFixedResult fixedStatistic(@HeaderParam("groupId") long groupId, @BeanParam StatisticFixedModel input) {
+	public StatisticFixedResult fixedStatistic(@HeaderParam(Field.GROUP_ID) long groupId, @BeanParam StatisticFixedModel input) {
 		int month = input.getMonth();
 		int year = input.getYear();
 		int monthCurrent = LocalDate.now().getMonthValue();
@@ -1022,8 +1022,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (Validator.isNotNull(sc.getConfigs())) {
 						try {
 							JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-							if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-								long publishGroupId = configObj.getLong(SyncServerTerm.SERVER_GROUP_ID);
+							if (configObj.has(Field.GROUP_ID)) {
+								long publishGroupId = configObj.getLong(Field.GROUP_ID);
 								OpencpsCallRestFacade<DossierStatisticModel, DossierStatisticModel> callReportService = new OpencpsCallStatisticRestFacadeImpl();
 								DossierStatisticModel request = new DossierStatisticModel();
 								request.setGroupId(publishGroupId);
@@ -1085,7 +1085,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	
 	@GET
 	@Path("/testsearch")
-	public String searchDossierStatistic(@HeaderParam("groupId") long groupId,
+	public String searchDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@QueryParam("month") Integer month, @QueryParam("year") Integer year, @QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode) {
 		List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(groupId);
 		

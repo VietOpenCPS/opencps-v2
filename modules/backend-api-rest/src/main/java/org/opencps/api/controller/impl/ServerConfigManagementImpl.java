@@ -8,12 +8,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +36,7 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -48,7 +49,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -80,7 +81,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServerConfigInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -119,7 +120,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			boolean checkAuth = true;
@@ -157,7 +158,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response updateServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -247,7 +248,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -282,7 +283,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response updateConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -314,7 +315,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response getBasicServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -328,7 +329,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
-			result.put("total", count);
+			result.put(ConstantUtils.TOTAL, count);
 			JSONArray sLists = JSONFactoryUtil.createJSONArray();
 			for (ServerConfig sc : configs) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject();
@@ -338,15 +339,15 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 							&& configObj.has(SyncServerTerm.SERVER_SECRET)
 							&& configObj.has(SyncServerTerm.SERVER_URL)
-							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-				        obj.put("groupId", configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
+							&& configObj.has(Field.GROUP_ID)) {
+				        obj.put(Field.GROUP_ID, configObj.getString(Field.GROUP_ID));
 					}
 				}
 				
 				sLists.put(obj);
 			}
 
-			result.put("data", sLists);
+			result.put(ConstantUtils.DATA, sLists);
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 

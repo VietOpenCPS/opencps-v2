@@ -215,11 +215,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
@@ -285,15 +285,15 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
-			if (system.contains("total")){
+			if (system.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			
@@ -364,15 +364,15 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_YEAR, CONDITION_YEAR_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
-			if (system.contains("total")){
+			if (system.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			

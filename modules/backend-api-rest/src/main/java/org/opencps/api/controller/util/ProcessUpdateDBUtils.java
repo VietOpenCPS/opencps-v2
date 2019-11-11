@@ -5,10 +5,8 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -17,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ActionConfigList.ActionConfig;
 import org.opencps.api.v21.model.Actions;
@@ -82,8 +79,6 @@ import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.action.impl.WorkTimeActions;
-import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -107,14 +102,13 @@ import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class ProcessUpdateDBUtils {
@@ -247,7 +241,7 @@ public class ProcessUpdateDBUtils {
 						Integer docSync = docType.getDocSync();
 						if (Validator.isNotNull(typeCode)) {
 							String filePath = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_XML;
+									+ typeCode + StringPool.PERIOD + ConstantUtils.EXTENTION_XML;
 							File xmlfile = new File(filePath);
 							String documentScript = StringPool.BLANK;
 							if (xmlfile.exists() && !xmlfile.isDirectory()) {
@@ -287,9 +281,9 @@ public class ProcessUpdateDBUtils {
 						String govAgencies = deliType.getGovAgencies();
 						if (Validator.isNotNull(typeCode)) {
 							String filePathReport = folderPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_XML;
+									+ typeCode + StringPool.PERIOD + ConstantUtils.EXTENTION_XML;
 							String filePathForm = folderPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-									+ typeCode + ConstantUtils.EXTENTION_JSON;
+									+ typeCode + StringPool.PERIOD + ConstantUtils.EXTENTION_JSON;
 							File xmlFile = new File(filePathReport);
 							File jsonFile = new File(filePathForm);
 							String formScript = StringPool.BLANK;
@@ -303,10 +297,10 @@ public class ProcessUpdateDBUtils {
 							
 							// Process file Report
 							FileEntry fileEntryReport = FileUploadUtils.uploadDossierFile(userId, groupId, xmlFile, 
-									UUID.randomUUID() + "_" + xmlFile.getName(), serviceContext);
+									UUID.randomUUID() + StringPool.UNDERLINE + xmlFile.getName(), serviceContext);
 							
 							FileEntry fileEntryScript = FileUploadUtils.uploadDossierFile(userId, groupId, jsonFile, 
-									UUID.randomUUID() + "_" + jsonFile.getName(), serviceContext);
+									UUID.randomUUID() + StringPool.UNDERLINE + jsonFile.getName(), serviceContext);
 
 							// Check record exits DB
 							DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
@@ -396,12 +390,6 @@ public class ProcessUpdateDBUtils {
 			ServiceContext serviceContext) {
 
 		try {
-			//Delete all table ServerConfig
-//			List<org.opencps.communication.model.ServerConfig> configList = ServerConfigLocalServiceUtil
-//					.getGroupId(groupId);
-//			if (configList != null && configList.size() > 0) {
-//				ServerConfigLocalServiceUtil.deleteByGroupId(groupId, userId, serviceContext);
-//			}
 			//Update table ServerConfig
 			if (serverList != null) {
 				List<ServerConfig> serverConfigList = serverList.getServerConfig();
@@ -437,8 +425,6 @@ public class ProcessUpdateDBUtils {
 			long userId, ServiceContext serviceContext) {
 
 		try {
-			//Delete all table NotificationTemplate
-			//boolean flagTemp = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
 			//Update table NotificationTemplate
 			if (notiTempList != null) {
 				NotificationTemplateInterface actions = new NotificationTemplateActions();
@@ -482,8 +468,6 @@ public class ProcessUpdateDBUtils {
 			ServiceContext serviceContext) {
 		boolean flagUser = true;
 		try {
-//			//Delete all table NotificationTemplate
-//			boolean flagUser = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
 //			//Update table NotificationTemplate
 			if (userManagement != null) {
 				org.opencps.api.v21.model.UserManagement.Roles roles = userManagement.getRoles();
@@ -495,7 +479,6 @@ public class ProcessUpdateDBUtils {
 				}
 				org.opencps.api.v21.model.UserManagement.Users users = userManagement.getUsers();
 				if (users != null) {
-					_log.info("Process Employee");
 					flagUser = processUpdateEmployee(userId, groupId, users, serviceContext);
 				}
 			}
@@ -829,16 +812,6 @@ public class ProcessUpdateDBUtils {
 				String processNo = process.getProcessNo();
 				String processName = process.getProcessName();
 				String description = process.getDescription();
-//				Double durationCount = process.getDurationCount();
-//				_log.info("durationCount: "+durationCount);
-//				Double durationCountConvert = 0d;
-//				if (Validator.isNotNull(durationCount)) {
-//					String strDurationCount = String.valueOf(durationCount).replaceAll(StringPool.COMMA,
-//							StringPool.PERIOD);
-//					_log.info("strDurationCount: "+strDurationCount);
-//					durationCountConvert = Double.valueOf(strDurationCount);
-//					_log.info("durationCountConvert: "+durationCountConvert);
-//				}
 				String durationCount = process.getDurationCount();
 				_log.info("durationCount: "+durationCount);
 				Double durationCountConvert = 0d;
@@ -932,9 +905,9 @@ public class ProcessUpdateDBUtils {
 						}
 						//TODO
 						String filePathReport = folderParentPath + ConstantUtils.SOURCE_FILE_REPORTS + StringPool.FORWARD_SLASH
-								+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
+								+ fileTemplateNo +StringPool.PERIOD +  ConstantUtils.EXTENTION_XML;
 						String filePathForm = folderParentPath + ConstantUtils.SOURCE_FILE_FORMS + StringPool.FORWARD_SLASH
-								+ fileTemplateNo + ConstantUtils.EXTENTION_JSON;
+								+ fileTemplateNo +StringPool.PERIOD +  ConstantUtils.EXTENTION_JSON;
 
 						File reportFile = new File(filePathReport);
 						File scriptFile = new File(filePathForm);
@@ -1109,13 +1082,13 @@ public class ProcessUpdateDBUtils {
 					if (eForm) {
 						_log.info("eform: "+eForm);
 						String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-								+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+								+ templateNo + StringPool.UNDERLINE + partNo + StringPool.PERIOD + ConstantUtils.EXTENTION_XML;
 						String filePathReportTemp = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
 								+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
 						String filePathForm = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-								+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_JSON;
+								+ templateNo + StringPool.UNDERLINE + partNo + StringPool.PERIOD + ConstantUtils.EXTENTION_JSON;
 						String filePathFormTemp = folderParentPath + ConstantUtils.SOURCE_FORMS + StringPool.FORWARD_SLASH
-								+ fileTemplateNo + ConstantUtils.EXTENTION_JSON;
+								+ fileTemplateNo + StringPool.PERIOD + ConstantUtils.EXTENTION_JSON;
 						File xmlFile = new File(filePathReport);
 						File jsonFile = new File(filePathForm);
 						if (xmlFile.exists() && !xmlFile.isDirectory()) {
@@ -1137,9 +1110,9 @@ public class ProcessUpdateDBUtils {
 					} else {
 						formScript = StringPool.BLANK;
 						String filePathReport = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-								+ templateNo + StringPool.UNDERLINE + partNo + ConstantUtils.EXTENTION_XML;
+								+ templateNo + StringPool.UNDERLINE + partNo + StringPool.PERIOD + ConstantUtils.EXTENTION_XML;
 						String filePathReportTemp = folderParentPath + ConstantUtils.SOURCE_REPORTS + StringPool.FORWARD_SLASH
-								+ fileTemplateNo + ConstantUtils.EXTENTION_XML;
+								+ fileTemplateNo + StringPool.PERIOD + ConstantUtils.EXTENTION_XML;
 						File xmlFile = new File(filePathReport);
 						if (xmlFile.exists() && !xmlFile.isDirectory()) {
 							formReport = ReadXMLFileUtils.convertFiletoString(xmlFile);

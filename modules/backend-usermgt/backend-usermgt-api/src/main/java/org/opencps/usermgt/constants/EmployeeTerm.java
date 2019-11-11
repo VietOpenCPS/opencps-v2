@@ -11,8 +11,6 @@ public class EmployeeTerm {
 
 	public static final String EMPLOYEE_ID = "employeeId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String COMPANY_ID = "companyId";
 	
 	public static final String USER_ID = "userId";

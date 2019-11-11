@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="questionId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="createDate" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="fullname" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="publish" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="questionType" type="{http://www.w3.org/2001/XMLSchema}string"/>

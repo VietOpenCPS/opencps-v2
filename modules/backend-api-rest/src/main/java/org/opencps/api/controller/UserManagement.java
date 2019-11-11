@@ -208,20 +208,6 @@ public interface UserManagement {
 			@Multipart("fileSize") long fileSize);
 	
 	@GET
-	@Path("/{id}/esign")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getUserEsign(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
-	
-	@GET
-	@Path("/{id}/esigncert")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getUserEsignCert(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id);
-	
-	@GET
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserLoginInfo(@Context HttpServletRequest request, @Context HttpHeaders header,

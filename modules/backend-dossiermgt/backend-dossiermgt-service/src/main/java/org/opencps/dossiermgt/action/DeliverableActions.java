@@ -45,6 +45,4 @@ public interface DeliverableActions {
 	public JSONObject getFormDataByTypecode(long companyId, LinkedHashMap<String, Object> params, Sort[] object, int start,
 			int end, ServiceContext serviceContext);
 
-	//
-	public List<Deliverable> getDeliverableByState(String strDeliverableCode, int state);
 }

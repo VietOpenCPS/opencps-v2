@@ -72,7 +72,7 @@ public class FileAttachIndexer extends BaseIndexer<FileAttach> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(fileAttach.getUserName()));
 
 		document.addNumberSortable(FileAttachTerm.FILEATTACH_ID, fileAttach.getFileAttachId());
-		document.addNumberSortable(FileAttachTerm.GROUP_ID, fileAttach.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, fileAttach.getGroupId());
 
 		document.addTextSortable(FileAttachTerm.CLASS_NAME, fileAttach.getClassName());
 

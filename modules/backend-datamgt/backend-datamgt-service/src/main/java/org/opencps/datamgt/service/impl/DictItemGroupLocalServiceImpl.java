@@ -328,7 +328,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
@@ -365,7 +365,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -448,7 +448,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTerm.GROUP_CODE);
@@ -479,7 +479,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -603,7 +603,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 			object = dictItemGroupPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

@@ -1,15 +1,37 @@
 
 package org.opencps.datamgt.action.impl;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import org.opencps.auth.api.exception.DataInUsedException;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.DictcollectionInterface;
+import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
@@ -23,25 +45,6 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-
-import com.liferay.asset.kernel.exception.DuplicateCategoryException;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DictCollectionActions implements DictcollectionInterface {
 
@@ -74,12 +77,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			//_log.info("data: "+hits);
 			//_log.info("hits.toList(): "+hits.toList());
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictCollectionLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 			/*
 			if (DictCollectionLocalServiceUtil.initDictCollection(groupId)) {
@@ -340,12 +343,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictGroupLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictGroupLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -387,12 +390,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictItemGroupLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictItemGroupLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -677,7 +680,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 					DictItemGroup dictItemGroup =
 						DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
 							groupId, dictGroup.getDictGroupId(),
-							Long.valueOf(document.get("entryClassPK")));
+							Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -694,12 +697,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 				}
 
-				result.put("data", list);
+				result.put(DataMGTConstants.DATA, list);
 
 				long total = DictItemLocalServiceUtil.countLuceneSearchEngine(
 					params, searchContext);
 
-				result.put("total", total);
+				result.put(DataMGTConstants.TOTAL, total);
 
 			}
 			else {
@@ -711,13 +714,13 @@ public class DictCollectionActions implements DictcollectionInterface {
 				 * for (Document doc : hits.toList()) { _log.info(doc); }
 				 */
 
-				result.put("data", hits.toList());
+				result.put(DataMGTConstants.DATA, hits.toList());
 
 				long total =
 					DictItemGroupLocalServiceUtil.countLuceneSearchEngine(
 						params, searchContext);
 
-				result.put("total", total);
+				result.put(DataMGTConstants.TOTAL, total);
 
 			}
 
@@ -749,12 +752,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -1003,11 +1006,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			collectionArr.put(obj);
 		}
-		result.put("data", collectionArr);
+		result.put(DataMGTConstants.DATA, collectionArr);
 
 		long total = DictCollectionLocalServiceUtil.countOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(DataMGTConstants.TOTAL, total);
 
 		return result;	
 	}
@@ -1032,11 +1035,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			
 			collectionArr.put(obj);
 		}
-		result.put("data", collectionArr);
+		result.put(DataMGTConstants.DATA, collectionArr);
 
 		long total = DictItemLocalServiceUtil.countByOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(DataMGTConstants.TOTAL, total);
 
 		return result;		
 	}
@@ -1099,11 +1102,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 			
 			groupArr.put(obj);
 		}
-		result.put("data", groupArr);
+		result.put(DataMGTConstants.DATA, groupArr);
 
 		long total = DictGroupLocalServiceUtil.countOlderThanDate(date, groupId);
 
-		result.put("total", total);
+		result.put(DataMGTConstants.TOTAL, total);
 
 		return result;	
 	}
@@ -1292,10 +1295,10 @@ public class DictCollectionActions implements DictcollectionInterface {
 			Hits hits = DictCollectionLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			// _log.info("data: "+hits);
 			// _log.info("hits.toList(): "+hits.toList());
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictCollectionLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -1318,12 +1321,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 				hits = DictGroupLocalServiceUtil.luceneSearchEngine(
 					params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(DataMGTConstants.DATA, hits.toList());
 
 				long total = DictGroupLocalServiceUtil.countLuceneSearchEngine(
 					params, searchContext);
 
-				result.put("total", total);
+				result.put(DataMGTConstants.TOTAL, total);
 
 			}
 			catch (ParseException e) {
@@ -1350,11 +1353,11 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

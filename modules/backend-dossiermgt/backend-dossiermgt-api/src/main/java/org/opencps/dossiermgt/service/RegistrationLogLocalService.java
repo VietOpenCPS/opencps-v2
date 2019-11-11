@@ -25,15 +25,9 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -45,7 +39,6 @@ import org.opencps.dossiermgt.model.RegistrationLog;
 
 import java.io.Serializable;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -70,8 +63,6 @@ public interface RegistrationLogLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link RegistrationLogLocalServiceUtil} to access the registration log local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationLogLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public RegistrationLog addLog(String author, long groupId, long userId,
-		long registrationId, String content, String payload);
 
 	/**
 	* Adds the registration log to the database. Also notifies the appropriate model listeners.
@@ -81,16 +72,6 @@ public interface RegistrationLogLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationLog addRegistrationLog(RegistrationLog registrationLog);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationLog adminProcessData(JSONObject objectData);
-
-	@Indexable(type = IndexableType.DELETE)
-	public RegistrationLog adminProcessDelete(Long id);
-
-	public long countLucense(LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
 
 	/**
 	* Creates a new registration log with the primary key. Does not add the registration log to the database.
@@ -235,10 +216,6 @@ public interface RegistrationLogLocalService extends BaseLocalService,
 	public RegistrationLog getRegistrationLog(long registrationLogId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationLog> getRegistrationLogbyRegId(long groupId,
-		long registrationId);
-
 	/**
 	* Returns the registration log matching the UUID and group.
 	*
@@ -298,11 +275,6 @@ public interface RegistrationLogLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegistrationLogsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits searchLucene(LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
 
 	/**
 	* Updates the registration log in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

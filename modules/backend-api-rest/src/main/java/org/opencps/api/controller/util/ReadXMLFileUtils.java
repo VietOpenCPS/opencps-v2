@@ -5,12 +5,7 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.RoleConstants;
-import com.liferay.portal.kernel.model.RoleModel;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -29,7 +24,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ApplicantList;
 import org.opencps.api.v21.model.BusinessList;
@@ -51,10 +45,12 @@ import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
 import org.opencps.api.v21.model.UserManagement.Roles;
 import org.opencps.api.v21.model.UserManagement.Users;
+import org.opencps.api.v21.model.WorkingTimeList;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -75,8 +71,6 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-import org.opencps.api.v21.model.WorkingTimeList;
-import org.opencps.api.v21.model.WorkingTimeList.WorkingTime;
 
 public class ReadXMLFileUtils {
 
@@ -86,16 +80,14 @@ public class ReadXMLFileUtils {
 	public static String convertFiletoString(File fXmlFile) {
 		BufferedReader bufReader = null;
 		try {
-			bufReader = new BufferedReader(new InputStreamReader(new FileInputStream(fXmlFile), "UTF8"));
+			bufReader = new BufferedReader(new InputStreamReader(new FileInputStream(fXmlFile), StringPool.UTF8));
 			StringBuilder sb = new StringBuilder();
 			String line = bufReader.readLine();
 			while (line != null) {
-				sb.append(line).append("\n");
+				sb.append(line).append(StringPool.NEW_LINE);
 				line = bufReader.readLine();
 			}
 			String xml2String = sb.toString();
-//			_log.info("XML to String using BufferedReader : ");
-//			_log.info(xml2String);
 
 			return xml2String;
 		} catch (Exception e) {
@@ -106,7 +98,6 @@ public class ReadXMLFileUtils {
 					bufReader.close();
 			} catch (IOException e1) {
 				_log.debug(e1);
-				//_log.error(e);
 			}
 		}
 		return StringPool.BLANK;
@@ -741,11 +732,10 @@ public class ReadXMLFileUtils {
 		//for pretty-print XML in JAXB
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		//Store XML to File
-		File file = new File("ActionConfig.xml");
+		File file = new File(ConstantUtils.XML_ACTION_CONFIG);
 
 		// Writes XML file to file-system
 		jaxbMarshaller.marshal(actConfigList, file);
-		//jaxbMarshaller.marshal(citizenList, System.out);
 
 		return file;
 	}
@@ -758,11 +748,10 @@ public class ReadXMLFileUtils {
 		//for pretty-print XML in JAXB
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		//Store XML to File
-		File file = new File("StepConfig.xml");
+		File file = new File(ConstantUtils.XML_STEP_CONFIG);
 
 		// Writes XML file to file-system
 		jaxbMarshaller.marshal(stepConfigList, file);
-		//jaxbMarshaller.marshal(citizenList, System.out);
 
 		return file;
 	}
@@ -775,7 +764,7 @@ public class ReadXMLFileUtils {
 		//for pretty-print XML in JAXB
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		//Store XML to File
-		File file = new File("MenuConfig.xml");
+		File file = new File(ConstantUtils.XML_MENU_CONFIG);
 
 		// Writes XML file to file-system
 		jaxbMarshaller.marshal(meuConfigList, file);

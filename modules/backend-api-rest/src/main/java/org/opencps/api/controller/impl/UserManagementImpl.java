@@ -10,11 +10,11 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -48,7 +48,8 @@ import org.opencps.api.user.model.UserSitesResults;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -77,8 +78,8 @@ public class UserManagementImpl implements UserManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"")
+					.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_IMAGE) + type);
 
 			return responseBuilder.build();
 
@@ -97,21 +98,21 @@ public class UserManagementImpl implements UserManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 			
 			
 
 			File file = actions.uploadPhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "USERPHOTO/", "USERPHOTO file upload", serviceContext);
+					fileName, fileType, fileSize, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_USER_PHOTO), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_USER_PHOTO_UPLOAD), serviceContext);
 
 			String type = actions.getType(id, serviceContext);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE)
+					.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_IMAGE) + type);
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -134,7 +135,7 @@ public class UserManagementImpl implements UserManagement {
 		UserProfileModel result = new UserProfileModel();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Document document = actions.getUserProfile(id, groupId, serviceContext);
 
@@ -155,12 +156,12 @@ public class UserManagementImpl implements UserManagement {
 		UserSitesResults result = new UserSitesResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getSites(id, groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserSitesModel().addAll(UserUtils.mapperUserSitesList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserSitesModel().addAll(UserUtils.mapperUserSitesList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -177,12 +178,12 @@ public class UserManagementImpl implements UserManagement {
 		UserRolesResults result = new UserRolesResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getRoles(id, groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserRolesModel().addAll(UserUtils.mapperUserRolesList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserRolesModel().addAll(UserUtils.mapperUserRolesList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -197,7 +198,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.getPreference(id, groupId, serviceContext);
 
@@ -214,7 +215,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.getPreferenceByKey(id, groupId, key, serviceContext);
 			return Response.status(200).entity(result).build();
@@ -230,7 +231,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.addPreferences(id, groupId, preferences, serviceContext);
 
@@ -247,7 +248,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.updatePreferences(id, groupId, key, value, serviceContext);
 			return Response.status(200).entity(result).build();
@@ -268,12 +269,10 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN)))) {
+				throw new PermissionDeniedDataAccessException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION), null);
 			}
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
 					serviceContext);
 
@@ -294,9 +293,9 @@ public class UserManagementImpl implements UserManagement {
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel()
-					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
+					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -311,28 +310,26 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
-	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
 	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 	        			jCaptchaResponse);
-	        	_log.info("Check captcha result: " + isResponseCorrect);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
 	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
+        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
@@ -354,28 +351,26 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
-	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
 	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 	        			jCaptchaResponse);
-	        	_log.info("Check captcha result: " + isResponseCorrect);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
 	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
+        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
@@ -400,12 +395,12 @@ public class UserManagementImpl implements UserManagement {
 		UserResults result = new UserResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getUsers(groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserModel().addAll(UserUtils.mapperUserList((List<User>) jsonData.get("data"), groupId));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserModel().addAll(UserUtils.mapperUserList((List<User>) jsonData.get(ConstantUtils.DATA), groupId));
 
 			return Response.status(200).entity(result).build();
 
@@ -421,7 +416,7 @@ public class UserManagementImpl implements UserManagement {
 		UserModel userModel = new UserModel();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			User userCustom = actions.getUserById(groupId, company.getCompanyId(), id, serviceContext);
 
@@ -440,7 +435,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = actions.getCheckpass(groupId, company.getCompanyId(), id, password, serviceContext);
 
@@ -463,31 +458,23 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
 			long fileSize) {
 
-//		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
-
-		// HARD CODE groupId = 55301
-
-		long groupId = 55301;
 
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
-			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			
 			inputStream = dataHandler.getInputStream();
 			BufferedImage image = ImageIO.read(inputStream);
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG);
 			File targetFile = new File(buildFileName);
 
-			ImageIO.write(image, "png", targetFile);
+			ImageIO.write(image, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), targetFile);
 			
 			_log.info("Absolute Path buildFileName " + buildFileName);
-			
-			//FileUtils.copyInputStreamToFile(inputStream, targetFile);
 			
 			EmployeeLocalServiceUtil.updatePayload(id, groupId, 0, 0, StringPool.BLANK, buildFileName, serviceContext);
 
@@ -510,24 +497,18 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext, long id, Attachment attachment, String fileName, String fileType,
 			long fileSize) {
 
-//		UserInterface actions = new UserActions();
 		InputStream inputStream = null;
-
-		// HARD CODE groupId = 55301
-
-		long groupId = 55301;
 
 		try {
 
 			DataHandler dataHandler = attachment.getDataHandler();
-			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_CER);
 			File targetFile = new File(buildFileName);
 
 			try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -557,67 +538,6 @@ public class UserManagementImpl implements UserManagement {
 	}
 
 	@Override
-	public Response getUserEsign(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id) {
-
-//		UserInterface actions = new UserActions();
-
-		// HARD CODE groupId = 55301
-
-		long groupId = 55301;
-
-		try {
-
-
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
-			File targetFile = new File(buildFileName);
-
-			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
-					.header("Content-Type", "image/png");
-
-			return responseBuilder.build();
-			
-			
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-
-	}
-
-	@Override
-	public Response getUserEsignCert(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id) {
-
-		// HARD CODE groupId = 55301
-
-		long groupId = 55301;
-
-		try {
-
-
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
-			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
-			File targetFile = new File(buildFileName);
-
-			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
-					.header("Content-Type", "application/x-x509-user-cert");
-
-			return responseBuilder.build();
-
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-
-		}
-	}
-
-	@Override
 	public Response addChangepassApplication(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String oldPassword, String newPassword) {
 		
@@ -630,13 +550,11 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN)))) {
+				throw new PermissionDeniedDataAccessException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION), null);
 			}
 
-			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
-					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
 
@@ -660,9 +578,9 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN)))) {
+				throw new PermissionDeniedDataAccessException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION), null);
 			}
 
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 1,
@@ -689,23 +607,15 @@ public class UserManagementImpl implements UserManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
-				result.put("email", StringPool.BLANK);
-				result.put("role", StringPool.BLANK);
-				result.put("deactiveAccountFlag", 0);
+				result.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
+				result.put(ConstantUtils.VALUE_ROLE, StringPool.BLANK);
+				result.put(ConstantUtils.DEACTIVE_ACCOUNT, 0);
 
-//				if ("Administrator".equalsIgnoreCase(role.getName())) {
-//					roleName = "Administrator";
-//				}
-//
-//				if ("Administrator_data".equalsIgnoreCase(role.getName())) {
-//					roleName = "Administrator_data";
-//				}
-				
 				roleName = role.getName();
 
-				result.put("email", user.getEmailAddress());
-				result.put("role", roleName);
-				result.put("deactiveAccountFlag", user.getStatus());
+				result.put(ConstantUtils.VALUE_EMAIL, user.getEmailAddress());
+				result.put(ConstantUtils.VALUE_ROLE, roleName);
+				result.put(ConstantUtils.DEACTIVE_ACCOUNT, user.getStatus());
 
 				dataUser.put(result);
 			}

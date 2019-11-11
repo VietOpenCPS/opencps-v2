@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="end" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="className" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="classPK" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>

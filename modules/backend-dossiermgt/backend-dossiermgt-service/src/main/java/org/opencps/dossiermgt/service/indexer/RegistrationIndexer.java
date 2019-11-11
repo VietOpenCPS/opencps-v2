@@ -1,15 +1,5 @@
 package org.opencps.dossiermgt.service.indexer;
 
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.dossiermgt.constants.RegistrationTerm;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -22,6 +12,16 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.dossiermgt.constants.RegistrationTerm;
+import org.opencps.dossiermgt.model.Registration;
+import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 @Component(
     immediate = true,
@@ -118,7 +118,7 @@ public class RegistrationIndexer extends BaseIndexer<Registration> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

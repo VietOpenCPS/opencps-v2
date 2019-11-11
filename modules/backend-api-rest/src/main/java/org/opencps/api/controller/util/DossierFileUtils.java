@@ -125,8 +125,6 @@ public class DossierFileUtils {
             
             long fileSize = 0;
             
-            //String fileVersion = StringPool.BLANK;
-
             if (dossierFileId > 0) {
                 try {
                     FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(

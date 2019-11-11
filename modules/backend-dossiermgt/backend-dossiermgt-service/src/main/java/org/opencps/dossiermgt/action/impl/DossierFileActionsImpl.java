@@ -1,31 +1,6 @@
 
 package org.opencps.dossiermgt.action.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.opencps.dossiermgt.action.DossierFileActions;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -42,6 +17,33 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 public class DossierFileActionsImpl implements DossierFileActions {
 
@@ -139,19 +141,19 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					sort + "_sortable", Sort.STRING_TYPE,
+					sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order))
 			};
 
 			Hits hits = DossierFileLocalServiceUtil.searchLucene(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total =
 				DossierFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (Exception e) {
@@ -296,9 +298,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					0);
 			JSONObject defaultDataObj =
 				JSONFactoryUtil.createJSONObject(defaultData);
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
 			defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
 			defaultData = defaultDataObj.toJSONString();
 		}
 
@@ -328,12 +328,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		long groupId, long dossierId, String fileTemplateNo,
 		ServiceContext serviceContext)
 		throws PortalException {
-
-		// List<DossierFile> lsDossierFile =
-		// DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId,
-		// fileTemplateNo, false);
-		_log.info(
-			"DOSSIERID_" + dossierId + "_FILETEMPLATENO_" + fileTemplateNo);
 
 		List<DossierFile> lsDossierFile =
 			DossierFileLocalServiceUtil.getDossierFileByDID_FTN(
@@ -385,20 +379,8 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		String name, InputStream inputStream, ServiceContext serviceContext) {
 		// long userId = serviceContext.getUserId();
 
-		// DossierFile dossierFile =
-		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,
-		// referenceUid);
-
-		// long fileEntryId = 0;
 
 		try {
-			// FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId,
-			// groupId, dossierFile.getFileEntryId(),
-			// inputStream, sourceFileName, null, 0, serviceContext);
-			//
-			// if (fileEntry != null) {
-			// fileEntryId = fileEntry.getFileEntryId();
-			// }
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

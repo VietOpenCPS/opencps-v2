@@ -20,6 +20,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -85,7 +86,7 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 		document.addTextSortable(ProcessActionTerm.ESIGNATURE, Boolean.toString(object.getESignature()));
 		document.addTextSortable(ProcessActionTerm.SIGNATURE_TYPE, object.getSignatureType());		
 		document.addTextSortable(ProcessActionTerm.CONFIG_NOTE, object.getConfigNote());
-		document.addTextSortable("dossierTemplateNo", object.getDossierTemplateNo());
+		document.addTextSortable(DossierTerm.DOSSIER_TEMPLATE_NO, object.getDossierTemplateNo());
 		document.addTextSortable(ProcessActionTerm.PAYMENT_FEE, object.getPaymentFee());
 		document.addTextSortable(ProcessActionTerm.CREATE_DOSSIERS, object.getCreateDossiers());
 		

@@ -58,11 +58,10 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.ApplicantActions;
-import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
-import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -75,6 +74,8 @@ import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
 
+	Log _log = LogFactoryUtil.getLog(ApplicantManagementImpl.class);
+
 	@Override
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
@@ -82,7 +83,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -106,27 +107,25 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
 			
-			if (Validator.isNotNull(input.getCityCode())) {
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
-			}
-			if (Validator.isNotNull(input.getDistrictCode())) {
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
-			}
-			if (Validator.isNotNull(input.getWardCode())) {
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
-			}
+			if (Validator.isNotNull(input.getCityCode()))
+				cityName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getCityCode());
+
+			if (Validator.isNotNull(input.getDistrictCode()))
+				districtName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION),
+						input.getDistrictCode());
+
+			if (Validator.isNotNull(input.getWardCode()))
+				wardName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getWardCode());
+
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
-					cityCode, cityName, districtCode, districtName,
-					wardCode, wardName, contactName, contactTelNo,
-					input.getPassword());
-			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address, cityCode, cityName, districtCode,
+					districtName, wardCode, wardName, contactName, contactTelNo, input.getPassword());
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -148,10 +147,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
-	
-	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
-
-	Log _log = LogFactoryUtil.getLog(ApplicantManagementImpl.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -166,10 +161,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
-
 			if (query.getEnd() == 0) {
 
 				query.setStart(-1);
@@ -178,7 +169,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -188,16 +179,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
+							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getApplicants(serviceContext, serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
-			if (jsonData != null && jsonData.getInt("total") > 0) {
-				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
 			}
 
 			return Response.status(200).entity(results).build();
@@ -259,7 +251,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -296,19 +288,19 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = HtmlUtil.escape(input.getDistrictName());
 			String wardName = HtmlUtil.escape(input.getWardName());
 			
-			if (Validator.isNotNull(input.getCityCode()) && Validator.isNull(cityName)) {
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
-			}
-			if (Validator.isNotNull(input.getDistrictCode()) && Validator.isNull(districtName)) {
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
-			}
-			if (Validator.isNotNull(input.getWardCode()) && Validator.isNull(wardName)) {
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
-			}
-			
+			if (Validator.isNotNull(input.getCityCode()) && Validator.isNull(cityName))
+				cityName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getCityCode());
+
+			if (Validator.isNotNull(input.getDistrictCode()) && Validator.isNull(districtName))
+				districtName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION),
+						input.getDistrictCode());
+
+			if (Validator.isNotNull(input.getWardCode()) && Validator.isNull(wardName))
+				wardName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getWardCode());
+
 			if (isAllowed) {
 				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
 						cityName, districtCode, districtName, wardCode,
@@ -316,7 +308,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -350,7 +342,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -394,7 +386,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 				
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -410,7 +402,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -457,7 +449,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -493,10 +485,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
-				result.put("key", key);
-				result.put("value", input.getValue());
+				result.put(ConstantUtils.KEY, key);
+				result.put(ConstantUtils.VALUE, input.getValue());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -526,7 +518,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -551,7 +543,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 			} else {
 				throw new UnauthorizationException();
@@ -602,8 +594,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 			
-			resultObj.put("email", applicant.getContactEmail());
-			resultObj.put("token", applicant.getTmpPass());
+			resultObj.put(ConstantUtils.MAIL_AD, applicant.getContactEmail());
+			resultObj.put(ConstantUtils.TOKEN, applicant.getTmpPass());
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
@@ -613,10 +605,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	}
 
 	private MToken getToken(NGSPRestClient client) throws Exception {
-		String tokenUrl = "https://api.ngsp.gov.vn/token";
-		String consumer_key = "vDQ9b6f0LEpNeIDAAeZ4ler4mesa";
-		String secret_key = "WVN8QUVA15guZdZyuuxhh_Pw1cUa";
-
+		String tokenUrl = ReadFilePropertiesUtils.get(ConstantUtils.TOKEN_URL);
+		String consumer_key = ReadFilePropertiesUtils.get(ConstantUtils.CONSUMER_KEY);
+		String secret_key = ReadFilePropertiesUtils.get(ConstantUtils.SCRECT_KEY);
 		if (client != null) {
 			tokenUrl = client.getBaseUrl();
 			consumer_key = client.getConsumerKey();
@@ -630,11 +621,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	@Override
 	public Response ngspGetApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
-		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String apiUrl = ReadFilePropertiesUtils.get(ConstantUtils.API_URL);
+		String access_token = ReadFilePropertiesUtils.get(ConstantUtils.ACCESS_TOKEN);
 		
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
+				ReadFilePropertiesUtils.get(ConstantUtils.NGSP_PROTOCOL));
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
 		try {
 			if (sc != null) {
@@ -649,7 +641,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			_log.debug(e);
 		}
 		
-//		String msdn = "0100109106";
 		String msdn = applicantIdNo;
 
 		try {
@@ -666,11 +657,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
 			String contactName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
-		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String apiUrl = ReadFilePropertiesUtils.get(ConstantUtils.API_URL);
+		String access_token = ReadFilePropertiesUtils.get(ConstantUtils.ACCESS_TOKEN);
 		
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
+		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
+				ReadFilePropertiesUtils.get(ConstantUtils.NGSP_PROTOCOL));
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
 		try {
 			if (sc != null) {
@@ -693,25 +685,29 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			
 			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
 				returnObj.put("error", true);
-				returnObj.put("message", "Không tìm thấy thông tin doanh nghiệp");
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
+				returnObj.put("message", ReadFilePropertiesUtils.get(ConstantUtils.ERROR_MSG_BUSSINESS));
+				return Response.status(200).entity(returnObj.toJSONString()).build();
 			}
 			else {
 				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
 				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
 					if (Validator.isNotNull(applicantName) && !applicantName.equals(mainInfoObj.getString("NAME"))) {
 						returnObj.put("warning", true);
-						returnObj.put("message", "Thông tin tên doanh nghiệp có thể chưa đúng!");
+						returnObj.put("message", ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NAME_BUSSINESS));
 					}
 				}
 				JSONObject representativesObj = data.getJSONObject("Representatives");
 				if (representativesObj != null) {
 					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
 						returnObj.put("warning", true);
-						returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+						returnObj.put("message",
+								(Validator.isNotNull(returnObj.getString("message"))
+										? returnObj.getString("message") + StringPool.COMMA
+										: StringPool.BLANK)
+										+ ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NAME_BUSSINESS));
 					}					
 				}
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
+				return Response.status(200).entity(returnObj.toJSONString()).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -725,28 +721,29 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			
 		    String captchaId = request.getSession().getId();
-			File destDir = new File("jcaptcha");
+			File destDir = new File(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA));
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("jcaptcha/" + captchaId  + ".png");
+			File file = new File(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA) + StringPool.FORWARD_SLASH + captchaId  + 
+					StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG));
 			if (!file.exists()) {
-				file.createNewFile();				
+				file.createNewFile();
 			}
 	
 			if (file.exists()) {
 			    BufferedImage challengeImage = instance.getImageChallengeForID(
 			    captchaId, Locale.US );
 			    try {
-					ImageIO.write( challengeImage, "png", file );
+					ImageIO.write( challengeImage, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file );
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "image/png");
+					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+							ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PNG));
 
 					return responseBuilder.build();
-				    
+
 				} catch (IOException e) {
 					_log.debug(e);
 				}
@@ -764,7 +761,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -780,7 +777,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -798,18 +795,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		        	_log.info("Check captcha result: " + isResponseCorrect);
 		        	if (!isResponseCorrect) {
 		        		ErrorMsgModel error = new ErrorMsgModel();
-		        		error.setMessage("Captcha incorrect");
+		        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-		    			error.setDescription("Captcha incorrect");
+		    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
 		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        	}
 		        } catch (CaptchaServiceException e) {
 		        	_log.debug(e);
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        }
@@ -825,27 +822,28 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
 			
-			if (Validator.isNotNull(input.getCityCode())) {
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
-			}
-			if (Validator.isNotNull(input.getDistrictCode())) {
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
-			}
-			if (Validator.isNotNull(input.getWardCode())) {
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
-			}
+			if (Validator.isNotNull(input.getCityCode()))
+				cityName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)), input.getCityCode());
+
+			if (Validator.isNotNull(input.getDistrictCode()))
+				districtName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)),
+						input.getDistrictCode());
+
+			if (Validator.isNotNull(input.getWardCode()))
+				wardName = getDictItemName(groupId,
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)), input.getWardCode());
+
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
 					wardCode, wardName, contactName, contactTelNo,
 					input.getPassword());
-			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+			//_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -858,7 +856,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantActions actions = new ApplicantActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
 		
 		try {

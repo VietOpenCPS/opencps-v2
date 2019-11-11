@@ -49,7 +49,7 @@ public class OfficeSiteIndexer extends BaseIndexer<OfficeSite> {
 			SearchContext searchContext) throws Exception {
 
 		addSearchTerm(searchQuery, searchContext, OfficeSiteTerm.OFFICE_SITE_ID, false);
-		addSearchTerm(searchQuery, searchContext, OfficeSiteTerm.GROUP_ID, false);
+		addSearchTerm(searchQuery, searchContext, Field.GROUP_ID, false);
 		addSearchTerm(searchQuery, searchContext, OfficeSiteTerm.COMPANY_ID, false);
 		addSearchTerm(searchQuery, searchContext, OfficeSiteTerm.USER_ID, false);
 		addSearchTerm(searchQuery, searchContext, OfficeSiteTerm.USER_NAME, false);
@@ -96,7 +96,7 @@ public class OfficeSiteIndexer extends BaseIndexer<OfficeSite> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(officeSite.getUserName()));
 
 		document.addNumberSortable(OfficeSiteTerm.OFFICE_SITE_ID, officeSite.getOfficeSiteId());
-		document.addNumberSortable(OfficeSiteTerm.GROUP_ID, officeSite.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, officeSite.getGroupId());
 		document.addTextSortable(OfficeSiteTerm.NAME, officeSite.getName());
 		document.addTextSortable(OfficeSiteTerm.EN_NAME, officeSite.getEnName());
 		document.addTextSortable(OfficeSiteTerm.GOV_AGENCY_CODE, officeSite.getGovAgencyCode());

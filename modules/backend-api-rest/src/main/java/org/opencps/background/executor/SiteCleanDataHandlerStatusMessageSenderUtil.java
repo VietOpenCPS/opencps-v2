@@ -1,11 +1,12 @@
 package org.opencps.background.executor;
 
-import org.opencps.background.siteclean.BackgroundSiteClean;
-
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+
+import org.opencps.background.siteclean.BackgroundSiteClean;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 public class SiteCleanDataHandlerStatusMessageSenderUtil {
 	public static void sendStatusMessage(BackgroundSiteClean messageContent) {
@@ -28,7 +29,7 @@ public class SiteCleanDataHandlerStatusMessageSenderUtil {
 		message.put("backgroundTaskId",
 				BackgroundTaskThreadLocal.getBackgroundTaskId());
 		
-		message.put("percentage", messageContent.getPercentage());
+		message.put(ConstantUtils.VALUE_PERCENTAGE, messageContent.getPercentage());
 		message.put("executionLog", messageContent.getExecutionLog());
 
 		return message;

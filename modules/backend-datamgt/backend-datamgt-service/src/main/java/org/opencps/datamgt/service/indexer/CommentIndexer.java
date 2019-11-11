@@ -113,7 +113,7 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 			Field.USER_ID, String.valueOf(comment.getUserId()));
 		document.addKeywordSortable(
 			Field.USER_NAME, String.valueOf(comment.getUserName()));
-		document.addNumberSortable(CommentTerm.GROUP_ID, comment.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, comment.getGroupId());
 
 		document.addTextSortable(
 			CommentTerm.CLASS_NAME, comment.getClassName());

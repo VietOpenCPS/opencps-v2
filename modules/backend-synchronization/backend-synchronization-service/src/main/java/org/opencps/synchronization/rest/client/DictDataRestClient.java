@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 
 public class DictDataRestClient {
 	private String username;
@@ -49,12 +50,12 @@ public class DictDataRestClient {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
-				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+				&& configObj.has(Field.GROUP_ID)) {
 			return new DictDataRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
 					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
-					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
+					configObj.getLong(Field.GROUP_ID));
 		}
 		else {
 			return null;
@@ -86,7 +87,7 @@ public class DictDataRestClient {
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
 			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()));
- 			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+ 			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
  			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
  			getRequest.addHeader(groupHeader);
  			
@@ -133,7 +134,7 @@ public class DictDataRestClient {
 			  .build();
 			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/dictitems/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
  			
-			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
  			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
  			getRequest.addHeader(groupHeader);
  			
@@ -179,7 +180,7 @@ public class DictDataRestClient {
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
 			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()) + "/dictgroups/" + URLEncoder.encode(groupCode, StandardCharsets.UTF_8.toString()));
- 			Header groupHeader = new BasicHeader("groupId", String.valueOf(groupId));
+ 			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
  			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
  			getRequest.addHeader(groupHeader);
  			

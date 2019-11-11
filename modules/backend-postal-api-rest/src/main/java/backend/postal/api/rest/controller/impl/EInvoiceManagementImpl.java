@@ -1,6 +1,17 @@
 package backend.postal.api.rest.controller.impl;
 
-import java.io.ByteArrayOutputStream;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -17,7 +28,13 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.MimeHeaders;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPConnection;
+import javax.xml.soap.SOAPConnectionFactory;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
 
 import org.opencps.api.controller.util.InvoiceTerm;
 import org.opencps.api.einvoice.model.FsNHGTGT;
@@ -29,18 +46,8 @@ import org.opencps.api.invoice.model.InvoiceInputModel;
 import org.opencps.api.invoice.model.InvoiceServerConfigModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import backend.postal.api.rest.controller.EInvoiceManagement;
 
@@ -88,7 +95,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 	public Response getInvoice(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, InvoiceInputModel input) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		InvoiceServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_EINVOICE);
 		

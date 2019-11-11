@@ -1,6 +1,21 @@
 
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,6 +42,8 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.datamgt.util.DueDateUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -34,20 +51,6 @@ import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import ws.bulkSms.impl.Result;
@@ -62,7 +65,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Result result = ViettelSMSUtils.sendSMS(
 				groupId, body, StringPool.BLANK, toTelNo);
 
@@ -79,18 +82,6 @@ public class SMSManagementImpl implements SMSManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		IPacificSearchSMS input) {
 
-		// Bgtvt mshs mtc -> 8085
-		// ====GET=====input.getCommandCode()=======BGTVT
-		// ====GET=====input.getInfo()==============Bgtvt mshs mtc
-		// ============input.getPassword()==========Gt.sms@201620182019
-		// ============input.getServiceNumber()=====8085
-		// ============input.getUser()==============gtsms2019
-		// ============input.getUserId()============84978266524
-
-		_log.info("===============" + input.getPassword());
-		_log.info("===============" + input.getServiceNumber());
-		_log.info("===============" + input.getUser());
-
 		return Response.status(200).entity(_buiderResponseSMS(input)).build();
 	}
 
@@ -106,34 +97,21 @@ public class SMSManagementImpl implements SMSManagement {
 				zaloConfig.getString(SendSMSTerm.OAID_TOKEN_ACCESS);
 			JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 				_getZaloUidByTelNo(zaloAccessToken, toTelNo));
-			String uid = "not found";
-			if (resultApi.has("data")) {
+			String uid = ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR);
+			if (resultApi.has(ConstantUtils.DATA)) {
 
-				uid = resultApi.getJSONObject("data").getString("user_id");
+				uid = resultApi.getJSONObject(ConstantUtils.DATA).getString(ConstantUtils.VALUE_LOW_USER_ID);
 			}
 			return Response.status(200).entity(uid).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			return Response.status(500).entity("").build();
+			return Response.status(500).entity(StringPool.BLANK).build();
 		}
 
 	}
 
 	private String _buiderResponseSMS(IPacificSearchSMS iPacific) {
-
-		// contentType;messageType;info;[mobile]
-		// contentType: Loại nội dung trả về.
-		// 0:Text
-		// 2:Logo
-		// 8:wappush
-		// MessageType:Bản tin có hợp lệ không->Có tính tiền được không
-		// 71:Valid->Tính tiền
-		// 72:Invalid->Hoàn cước cho khách hàng
-		// info:Nội dung trả về.
-		// mobile:Số điện thoại khách hàng nhận tin nhắn
-		// "0;72;HE THONG XIN THONG BAO\n BAN KHONG THE NHAN TIN NHAN;|0;0;Nhan
-		// den ban b;0362219930"
 
 		String result = "0;72;He thong chua cau hinh;";
 		JSONObject epacifConfig = JSONFactoryUtil.createJSONObject();
@@ -338,7 +316,7 @@ public class SMSManagementImpl implements SMSManagement {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
@@ -394,7 +372,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			System.out.println(
 				"================groupId====================" + groupId +
 					" ===" + dossierId);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.api.resourceuser.model.ResourceUserModel;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceUser;
 
@@ -31,7 +32,7 @@ public class ResourceUserUtils {
 				ett.setFullName(document.get(ResourceUserTerm.TO_USERID));
 				ett.setUserClass(document.get(ResourceUserTerm.TO_USERID));
 				ett.setReadonly(true);
-				ett.setSelected(Boolean.valueOf(document.get("selected")));
+				ett.setSelected(Boolean.valueOf(document.get(ResourceRoleTerm.SELECTED)));
 
 				results.add(ett);
 			}

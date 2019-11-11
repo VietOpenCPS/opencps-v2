@@ -314,39 +314,6 @@ public interface DataManagement {
 			@ApiParam(value = "itemCode of DictItemthat need to be updated", required = true) @PathParam("itemCode") String itemCode,
 			@BeanParam DictItemInputModel input);
 
-	@PUT
-	@Path("/{code}/dictitems/{itemCode}/metadata/{key}")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Get metadata of DictItem", response = String.class, notes = "Get metadata of DictItem")
-	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return Metadata of DictItem", response = String.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
-	public Response updateMetaDataOfDictItem(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "code of DictCollection of DictItem that need to be updated meatadata", required = true) @PathParam("code") String code,
-			@ApiParam(value = "itemCode of DictItemthat need to be updated", required = true) @PathParam("itemCode") String itemCode,
-			@BeanParam DictItemInputModel input);
-
-	@DELETE
-	@Path("/{code}/dictitems/{itemCode}/metadata/{key}")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@ApiOperation(value = "Delete metadata of DictItem", response = String.class, notes = "Delete metadata of DictItem")
-	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return Metadata of DictItem was deleted", response = String.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized"),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found"),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
-	public Response deleteMetaDataOfDictItem(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@ApiParam(value = "code of DictCollection of DictItem that need to be deleted meatadata", required = true) @PathParam("code") String code,
-			@ApiParam(value = "itemCode of DictItemthat need to be deleted meatadata", required = true) @PathParam("itemCode") String itemCode,
-			@ApiParam(value = "metadata of DictItem that need to deleted", required = true) @PathParam("key") String key,
-			@ApiParam(value = "metadata of DictItem that need to deleted", required = true) String body);
-
 	@POST
 	@Path("/{code}/dictitems/{itemCode}")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })

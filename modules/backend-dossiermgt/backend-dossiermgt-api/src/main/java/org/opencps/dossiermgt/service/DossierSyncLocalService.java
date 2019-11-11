@@ -76,11 +76,6 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public long countByDossierAndInfoTypeArr(long groupId,
 		String dossierRefUid, int[] infoType);
 
-	public long countDossierSyncByIdList(Long dossierId, Integer model,
-		int actionCodeNo);
-
-	public long countDossierSyncList(String actionCode, int syncType);
-
 	public long countForApplicantAndActionCode(long groupId, String actionCode);
 
 	/**
@@ -233,10 +228,6 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public DossierSync getDossierSync(long DossierSyncId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierSync> getDossierSyncByIdList(Long dossierId,
-		Integer model, int actionCodeNo, Integer start, Integer limit);
-
 	/**
 	* Returns the dossier sync matching the UUID and group.
 	*
@@ -248,10 +239,6 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierSync getDossierSyncByUuidAndGroupId(String uuid, long groupId)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DossierSync> getDossierSyncList(String actionCode,
-		int syncType, Integer start, Integer limit);
 
 	/**
 	* Returns a range of all the dossier syncs.

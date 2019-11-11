@@ -354,7 +354,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
 
@@ -406,7 +406,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -443,7 +443,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
 
@@ -492,7 +492,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -611,7 +611,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 			object = dictGroupPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.rest.application.api.DossierSyncApi;
 import org.opencps.rest.application.model.DossierSyncResultModel;
@@ -41,7 +43,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 	@Override
 	public DossierSyncResultModel getDossierSyncList(String action, String top, Integer start, Integer end) {
 		_log.info("====START GET LIST DOSSIER SYNC==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DossierSyncResultModel results = null;
 		try {
 			
@@ -61,10 +63,10 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 //			_log.info("serviceContext: "+serviceContext.getCompanyId());
 			JSONObject jsonData = actions.getDossierSyncByAction(groupId, action, start, end, serviceContext);
 
-			int total = jsonData.getInt("total");
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			results.setTotal(total);
 			if (jsonData != null && total > 0) {
-				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
+				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get(ConstantUtils.DATA)));
 			}
 			_log.info("====END GET LIST DOSSIER SYNC==== ");
 		} catch (Exception e) {
@@ -79,7 +81,7 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 	@Override
 	public DossierSyncResultModel getSyncByDossierId(Integer info, String id, Integer start, Integer end) {
 		_log.info("====START GET DOSSIER SYNC BY ID==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DossierSyncResultModel results = null;
 		try {
 			
@@ -93,12 +95,12 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 			
 			JSONObject jsonData = actions.getDossierSyncByDossierAndInfo(groupId, id, info, start, end, serviceContext);
 			
-			int total = jsonData.getInt("total");
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
 			results.setTotal(total);
 			results.setData(new ArrayList<>());
 			
 			if (jsonData != null && total > 0) {
-				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get("data")));
+				results.setData(DossierSyncParser.mappingDossierSyncResultModel((List<DossierSync>) jsonData.get(ConstantUtils.DATA)));
 			}
 			_log.info("====END GET DOSSIER SYNC BY ID==== ");
 		} catch (Exception e) {

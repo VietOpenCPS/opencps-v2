@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
@@ -81,12 +83,12 @@ public class OpenCPSRestClient {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
-				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+				&& configObj.has(Field.GROUP_ID)) {
 			OpenCPSRestClient client = new OpenCPSRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
 					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
-					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
+					configObj.getLong(Field.GROUP_ID));
 			if (configObj.has(SyncServerTerm.WRITE_LOG)) {
 				client.setWriteLog(configObj.getBoolean(SyncServerTerm.WRITE_LOG));
 			}
@@ -114,6 +116,7 @@ public class OpenCPSRestClient {
 		DossierDetailModel result = null;
 		InvokeREST callRest = new InvokeREST();
 		HashMap<String, String> properties = new HashMap<String, String>();
+		
 		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
 		ServiceContext context = new ServiceContext();
 		
@@ -212,7 +215,7 @@ public class OpenCPSRestClient {
 			InvokeREST rest = new InvokeREST();
 
 			HashMap<String, String> properties = new HashMap<String, String>();
-			properties.put("Content-Type", "application/x-www-form-urlencoded");
+			properties.put(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
 			String path = DOSSIERS_BASE_PATH + "/" + id + "/all/files";
 			_log.debug("id: "+id);
@@ -231,7 +234,7 @@ public class OpenCPSRestClient {
 				JSONObject jsData = JSONFactoryUtil
 						.createJSONObject(resDossierFile.getString(RESTFulConfiguration.MESSAGE));
 
-				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString("data"));
+				JSONArray array = JSONFactoryUtil.createJSONArray(jsData.getString(ConstantUtils.DATA));
 
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);

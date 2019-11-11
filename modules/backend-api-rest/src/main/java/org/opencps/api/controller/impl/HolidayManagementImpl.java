@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -29,6 +30,7 @@ import org.opencps.api.holiday.model.HolidayResults;
 import org.opencps.datamgt.action.HolidayInterface;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.model.Holiday;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -52,11 +54,11 @@ public class HolidayManagementImpl implements HolidayManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			if (Validator.isNotNull(query.getYear())) {
 				params.put("year", query.getYear());				
@@ -68,8 +70,8 @@ public class HolidayManagementImpl implements HolidayManagement {
 			JSONObject jsonData = actions.getHolidays(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getHolidayModel().addAll(HolidayUtils.mapperHolidayList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getHolidayModel().addAll(HolidayUtils.mapperHolidayList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -83,7 +85,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 			ServiceContext serviceContext, String day) {
 		HolidayInterface actions = new HolidayActions();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		Holiday holiday = actions.read(user.getUserId(), groupId, company.getCompanyId(), day, serviceContext);
 				
@@ -114,7 +116,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String description = HtmlUtil.escape(input.getDescription());
 			
 			Holiday holiday = actions.create(user.getUserId(), groupId, input.getHolidayDate(), description,
@@ -137,7 +139,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String description = HtmlUtil.escape(input.getDescription());
 			Holiday holiday = actions.update(user.getUserId(), groupId, day, input.getHolidayDate(), description,
 					serviceContext);
@@ -159,7 +161,7 @@ public class HolidayManagementImpl implements HolidayManagement {
 		
 		try {
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			
 			boolean flag = actions.delete(user.getUserId(), groupId, company.getCompanyId(), day, serviceContext);
 			

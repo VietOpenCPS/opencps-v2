@@ -1,5 +1,12 @@
 package org.opencps.synchronization.scheduler;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.synchronization.util.MultipartUtility;
-
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
 
 public class InvokeREST {
 
@@ -42,7 +43,7 @@ public class InvokeREST {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {
@@ -101,7 +102,7 @@ public class InvokeREST {
 			conn.setDoOutput(true);
 
 			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {

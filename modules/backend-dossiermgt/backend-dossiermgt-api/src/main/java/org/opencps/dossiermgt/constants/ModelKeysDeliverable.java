@@ -3,7 +3,6 @@ package org.opencps.dossiermgt.constants;
 public class ModelKeysDeliverable {
 
 	public static final String DELIVERABLEID = "deliverableId";
-	public static final String GROUPID = "groupId";
 	public static final String COMPANYID = "companyId";
 	public static final String USERID = "userId";
 	public static final String USERNAME = "userName";
@@ -27,5 +26,6 @@ public class ModelKeysDeliverable {
 	public static final String FILEENTRYID = "fileEntryId";
 	public static final String DOCSYNC = "docSync";
 	public static final String DOSSIERID = "dossierId";
+	public static final String STR_DATE = "_date";
 	
 }

@@ -817,22 +817,6 @@ public class DeliverableLocalServiceImpl
 		return deliverablePersistence.update(object);
 	}
 
-	/////////////////////
-	public List<Deliverable> findDeliverableByState(
-		String strDeliverableCode, int state) {
-
-		return deliverableFinder.findDeliverableByState(
-			strDeliverableCode, state);
-	}
-
-	// Get info Output DB
-	public List<Deliverable> getDeliverableByModifiedDate(
-		String synsDate, String deliverableType, long deliverableState) {
-
-		return deliverableFinder.findDeliverableByModifiedDate(
-			synsDate, deliverableType, deliverableState);
-	}
-
 	public Deliverable getByCodeAndState(String deliverableCode, int state) {
 
 		return deliverablePersistence.fetchByFB_DCODE_STATE(
@@ -1372,7 +1356,7 @@ public class DeliverableLocalServiceImpl
 		Deliverable object = null;
 
 		long deliverableId = objectData.getLong("deliverableId");
-		long groupId = objectData.getLong("groupId");
+		long groupId = objectData.getLong(Field.GROUP_ID);
 		boolean flagAttach = false;
 		if (deliverableId > 0) {
 

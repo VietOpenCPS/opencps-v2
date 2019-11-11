@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -19,6 +20,9 @@ import org.opencps.api.user.model.UserModel;
 import org.opencps.api.user.model.UserProfileModel;
 import org.opencps.api.user.model.UserRolesModel;
 import org.opencps.api.user.model.UserSitesModel;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -39,10 +43,10 @@ public class UserUtils {
 			for (Document document : listDocument) {
 				ett = new UserSitesModel();
 
-				ett.setOfficeSiteId(Long.valueOf(document.get("entryClassPK")));
-				ett.setSiteName(document.get("siteName"));
-				ett.setSiteGroupId(Long.valueOf(document.get("siteGroupId")));
-				ett.setCurrentSite(Boolean.valueOf(document.get("currentSite")));
+				ett.setOfficeSiteId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setSiteName(document.get(ConstantUtils.SITE_NAME));
+				ett.setSiteGroupId(Long.valueOf(document.get(ConstantUtils.SITE_GROUP_ID)));
+				ett.setCurrentSite(Boolean.valueOf(document.get(ConstantUtils.CURRENT_SITE)));
 
 				results.add(ett);
 			}
@@ -65,8 +69,8 @@ public class UserUtils {
 			for (Document document : listDocument) {
 				ett = new UserRolesModel();
 
-				ett.setRoleId(Long.valueOf(document.get("entryClassPK")));
-				ett.setRoleName(document.get("roleName"));
+				ett.setRoleId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setRoleName(document.get(ConstantUtils.ROLE_NAME));
 
 				results.add(ett);
 			}
@@ -84,17 +88,15 @@ public class UserUtils {
 
 		try {
 
-			ett.setClassName(document.get("className"));
-			ett.setClassPK(document.get("classPK"));
-			ett.setScreenName(document.get("screenName"));
-			ett.setEmail(document.get("email"));
-			ett.setFullName(document.get("fullName"));
-			ett.setContactEmail(document.get("contactEmail"));
-			ett.setContactTelNo(document.get("contactTelNo"));
-			ett.setGender(document.get("gender"));
-			ett.setBirthdate(Validator.isNotNull(document.getDate("birthdate")) ? APIDateTimeUtils
-					.convertDateToString(document.getDate("birthdate"), APIDateTimeUtils._TIMESTAMP)
-					: StringPool.BLANK);
+			ett.setClassName(document.get(ConstantUtils.CLASS_NAME));
+			ett.setClassPK(document.get(Field.CLASS_PK));
+			ett.setScreenName(document.get(ConstantUtils.VALUE_SCREEN_NAME));
+			ett.setEmail(document.get(ConstantUtils.VALUE_EMAIL));
+			ett.setFullName(document.get(EmployeeTerm.FULL_NAME));
+			ett.setContactEmail(document.get(ApplicantTerm.CONTACTEMAIL));
+			ett.setContactTelNo(document.get(ApplicantTerm.CONTACTTELNO));
+			ett.setGender(document.get(ConstantUtils.GENDER));
+			ett.setBirthdate( StringPool.BLANK);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -109,10 +111,10 @@ public class UserUtils {
 
 		try {
 
-			ett.setUserId(document.get("userId"));
-			ett.setUserName(document.get("userName"));
-			ett.setContactEmail(document.get("contactEmail"));
-			ett.setContactTelNo(document.get("contactTelNo"));
+			ett.setUserId(document.get(Field.USER_ID));
+			ett.setUserName(document.get(Field.USER_NAME));
+			ett.setContactEmail(document.get(ApplicantTerm.CONTACTEMAIL));
+			ett.setContactTelNo(document.get(ApplicantTerm.CONTACTTELNO));
 
 		} catch (Exception e) {
 			_log.error(e);

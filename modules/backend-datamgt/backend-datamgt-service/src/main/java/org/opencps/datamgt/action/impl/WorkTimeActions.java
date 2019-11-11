@@ -1,11 +1,5 @@
 package org.opencps.datamgt.action.impl;
 
-import java.util.LinkedHashMap;
-
-import org.opencps.datamgt.action.WorkTimeInterface;
-import org.opencps.datamgt.model.WorkTime;
-import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -19,9 +13,15 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.LinkedHashMap;
+
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.action.WorkTimeInterface;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.WorkTime;
+import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
 
 public class WorkTimeActions implements WorkTimeInterface {
 
@@ -57,11 +57,11 @@ public class WorkTimeActions implements WorkTimeInterface {
 
 			hits = WorkTimeLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = WorkTimeLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

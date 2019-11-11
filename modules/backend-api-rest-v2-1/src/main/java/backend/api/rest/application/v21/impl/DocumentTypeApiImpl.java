@@ -47,7 +47,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeResultModel getAllDocumentTypes(String keyword, Integer start, Integer end) {
 		_log.info("==== START GET DOCUMENT TYPE==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DocumentTypeResultModel results = null;
 		try {
 			
@@ -96,7 +96,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel createDocumentType(DocumentTypeInputModel input) {
 		_log.info("==== START CREATE DOCUMENT TYPE==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		DocumentTypeModel result = null;
 
@@ -143,7 +143,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel getDocById(String id) {
 		_log.info("==== START GET DOCUMENT TYPE BY ID==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long docId = GetterUtil.getLong(id);
 		DocumentTypeModel result = null;
 		try {
@@ -175,7 +175,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel removeDocById(String id) {
 		_log.info("==== START REMOVE DOCUMENT BY ID==== ");
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long docId = GetterUtil.getLong(id);
 //		BackendAuth auth = new BackendAuthImpl();
 		DocumentTypeModel result = null;
@@ -208,7 +208,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel updateDocById(String id, DocumentTypeInputModel input) {
 		_log.info("==== START UPDATE DOCUMENT BY ID==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		Long docId = GetterUtil.getLong(id);
 //		BackendAuth auth = new BackendAuthImpl();

@@ -2,7 +2,7 @@ package org.opencps.statistic.rest.facade;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -14,7 +14,6 @@ import org.opencps.statistic.rest.dto.GetDossierResponse;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -127,7 +126,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));

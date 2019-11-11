@@ -269,13 +269,6 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.model.Deliverable> findDeliverableByState(
-		String strDeliverableCode, int state) {
-		return _deliverableLocalService.findDeliverableByState(strDeliverableCode,
-			state);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _deliverableLocalService.getActionableDynamicQuery();
 	}
@@ -311,13 +304,6 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		long deliverableId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _deliverableLocalService.getDeliverable(deliverableId);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.Deliverable> getDeliverableByModifiedDate(
-		String synsDate, String deliverableType, long deliverableState) {
-		return _deliverableLocalService.getDeliverableByModifiedDate(synsDate,
-			deliverableType, deliverableState);
 	}
 
 	/**

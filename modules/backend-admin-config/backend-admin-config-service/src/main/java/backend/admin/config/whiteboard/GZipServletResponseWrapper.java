@@ -13,6 +13,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
 	private GZipServletOutputStream gzipOutputStream = null;
 	private PrintWriter printWriter = null;
+	private static final String ENCODING = "UTF-8";
 
 	public GZipServletResponseWrapper(HttpServletResponse response) throws IOException {
 		super(response);
@@ -39,8 +40,6 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
 	@Override
 	public void flushBuffer() throws IOException {
-
-		// PrintWriter.flush() does not throw exception
 		if (this.printWriter != null) {
 			this.printWriter.flush();
 		}
@@ -85,8 +84,6 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 		}
 		if (this.printWriter == null) {
 			this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
-//			this.printWriter = new PrintWriter(
-//					new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()));
 			this.printWriter = new PrintWriter(
 					new OutputStreamWriter(this.gzipOutputStream, StandardCharsets.UTF_8));
 		}
@@ -95,7 +92,5 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
 	@Override
 	public void setContentLength(int len) {
-		// ignore, since content length of zipped content
-		// does not match content length of unzipped content.
 	}
 }

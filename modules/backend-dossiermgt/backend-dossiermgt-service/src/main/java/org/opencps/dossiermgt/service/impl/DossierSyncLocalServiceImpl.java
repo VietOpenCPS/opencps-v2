@@ -43,22 +43,6 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil} to access the dossier sync local service.
 	 */
 
-	public List<DossierSync> getDossierSyncList(String actionCode, int syncType, Integer start, Integer limit) {
-		return dossierSyncFinder.findDossierSyncByActionOrTop(actionCode, syncType, start, limit);
-	}
-
-	public long countDossierSyncList(String actionCode, int syncType) {
-		return dossierSyncFinder.countDossierSyncByActionOrTop(actionCode, syncType);
-	}
-
-	public List<DossierSync> getDossierSyncByIdList(Long dossierId, Integer model, int actionCodeNo, Integer start, Integer limit) {
-		return dossierSyncFinder.findDossierSyncByIdList(dossierId, model, actionCodeNo, start, limit);
-	}
-
-	public long countDossierSyncByIdList(Long dossierId, Integer model, int actionCodeNo) {
-		return dossierSyncFinder.countDossierSyncByIdList(dossierId, model, actionCodeNo);
-	}
-
 	public List<DossierSync> findAll(Integer start, Integer end) {
 		return dossierSyncPersistence.findAll(start, end);
 	}

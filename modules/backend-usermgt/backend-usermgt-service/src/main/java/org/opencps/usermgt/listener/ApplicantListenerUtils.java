@@ -17,7 +17,7 @@ public class ApplicantListenerUtils {
 		try {
 			
 			//_log.info("notiType"+notiType);
-			//_log.info("groupId"+groupId);
+			//_log.info(Field.GROUP_ID+groupId);
 			
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 					.fetchByF_NotificationtemplateByType(groupId, notiType);

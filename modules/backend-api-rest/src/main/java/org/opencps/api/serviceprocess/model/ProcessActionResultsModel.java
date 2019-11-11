@@ -10,10 +10,13 @@ package org.opencps.api.serviceprocess.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 
 /**
@@ -26,8 +29,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="data" type="{}ProcessActionDataModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.TOTAL type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.DATA type="{}ProcessActionDataModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,9 +42,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "total",
-    "data"
+    ConstantUtils.DATA
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class ProcessActionResultsModel {
 
     protected Integer total;

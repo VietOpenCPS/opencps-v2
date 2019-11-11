@@ -3,7 +3,6 @@ package org.opencps.api.controller.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Date;
@@ -11,7 +10,6 @@ import java.util.Date;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -20,7 +18,6 @@ import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -29,19 +26,12 @@ import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class OneGateUtils {
 	private static Log _log = LogFactoryUtil.getLog(OneGateUtils.class);
+
 	public static DossierDetailModel mappingForGetDetail(Dossier input) {
 
 		DossierDetailModel model = new DossierDetailModel();
 		
-		try {
-			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
-		} catch (Exception e) {
-			//_log.error(e);
-			_log.debug(e);
-			model.setDossierIdCTN("");
-		}
-		
+		model.setDossierIdCTN(StringPool.BLANK);
 
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
 		model.setUserId(GetterUtil.getInteger(input.getUserId()));
@@ -141,7 +131,6 @@ public class OneGateUtils {
 		model.setPostalTelNo(input.getPostalTelNo());
 		
 		//Gte serviceProcess
-		
 		long groupId = input.getGroupId();
 		
 		double processBlock = 0;

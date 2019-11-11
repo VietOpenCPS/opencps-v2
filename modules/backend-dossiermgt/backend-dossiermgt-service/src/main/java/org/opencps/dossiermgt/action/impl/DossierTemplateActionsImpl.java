@@ -1,15 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.DossierTemplateActions;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -20,6 +10,17 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.action.DossierTemplateActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 
 public class DossierTemplateActionsImpl implements DossierTemplateActions {
 	private static final Log _log = LogFactoryUtil.getLog(DossierTemplateActionsImpl.class);
@@ -42,11 +43,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 		hits = DossierTemplateLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		long total = DossierTemplateLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 
@@ -87,11 +88,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 		hits = DossierPartLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -107,11 +108,11 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
 				GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO)));
 
-		result.put("data", dossierParts);
+		result.put(ConstantUtils.DATA, dossierParts);
 
 		long total = DossierPartLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", total);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}

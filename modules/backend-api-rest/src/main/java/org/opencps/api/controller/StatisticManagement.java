@@ -53,10 +53,4 @@ public interface StatisticManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam StatisticDossierSearchModel query);
 	
-	@POST
-	@Path("/dossiers/export")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	public Response exportDossierStatistic(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("data") String data);
 }

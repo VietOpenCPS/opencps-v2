@@ -232,7 +232,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		// TODO
 		MultiMatchQuery query = null;
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
@@ -254,7 +254,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
 
-			query.addFields(OfficeSiteTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -277,7 +277,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		// TODO
 		MultiMatchQuery query = null;
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
@@ -296,7 +296,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
 
-			query.addFields(OfficeSiteTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -354,7 +354,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 			object = officeSitePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

@@ -1,6 +1,10 @@
 
 package org.opencps.api.controller.util;
 
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,12 +12,10 @@ import java.util.List;
 import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchIdModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.model.DossierLog;
-
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogUtils {
 
@@ -36,8 +38,6 @@ public class DossierLogUtils {
 		if (dossierLog == null) {
 			return null;
 		}
-		// int notificationType =
-		// GetterUtil.getInteger(dossierLog.getNotificationType());
 		DossierLogModel model = new DossierLogModel();
 
 		model.setCreateDate(APIDateTimeUtils.convertDateToString(dossierLog.getCreateDate()));
@@ -58,10 +58,8 @@ public class DossierLogUtils {
 
 			DossierLogModel model = new DossierLogModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
+			long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
 			long dossierId = GetterUtil.getLong(document.get(DossierLogTerm.DOSSIER_ID));
-			// String notificationType =
-			// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
 			int counter = GetterUtil.getInteger(document.get(DossierLogTerm.COUNTER));
 
 			model.setDossierLogId(dossierLogId);
@@ -71,7 +69,7 @@ public class DossierLogUtils {
 			Date date = null;
 			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, ReadFilePropertiesUtils.get(ConstantUtils.PATTERN_LUCENE));
 			}
 			
 			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);
@@ -101,9 +99,7 @@ public class DossierLogUtils {
 
 			DossierLogSearchIdModel model = new DossierLogSearchIdModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
-			// int notificationType =
-			// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
+			long dossierLogId = GetterUtil.getLong(document.get(ConstantUtils.ENTRY_CLASS_PK));
 
 			model.setDossierLogId(dossierLogId);
 			model.setAuthor(document.get(DossierLogTerm.AUTHOR));
@@ -114,11 +110,10 @@ public class DossierLogUtils {
 			Date date = null;
 			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, ReadFilePropertiesUtils.get(ConstantUtils.PATTERN_LUCENE));
 			}
 			
 			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);	
-			//model.setCreateDate(document.get(DossierLogTerm.CREATE_DATE));
 			model.setNotificationType(document.get(DossierLogTerm.NOTIFICATION_TYPE));
 			model.setPayload(document.get(DossierLogTerm.PAYLOAD));
 

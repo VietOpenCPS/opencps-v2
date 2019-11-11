@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -341,7 +342,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 			object = deliverableTypePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
@@ -379,7 +380,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	
 	class ModelKeys {
 		public static final String DELIVERABLETYPEID = "deliverableTypeId";
-		public static final String GROUPID = "groupId";
+		public static final String GROUPID = Field.GROUP_ID;
 		public static final String COMPANYID = "companyId";
 		public static final String USERID = "userId";
 		public static final String USERNAME = "userName";

@@ -1,7 +1,7 @@
 package org.opencps.statistic.rest.facade;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -12,7 +12,6 @@ import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
@@ -76,7 +75,7 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));

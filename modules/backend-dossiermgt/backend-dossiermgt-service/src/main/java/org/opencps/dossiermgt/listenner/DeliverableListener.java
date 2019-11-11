@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
+		objectData.put(Field.GROUP_ID, model.getGroupId());
 		objectData.put(ModelKeysDeliverableLog.COMPANYID, model.getCompanyId());
 		objectData.put(ModelKeysDeliverableLog.USERID, model.getUserId());
 
@@ -70,7 +71,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 	public void onAfterUpdate(Deliverable model) throws ModelListenerException {
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
+		objectData.put(Field.GROUP_ID, model.getGroupId());
 		objectData.put(ModelKeysDeliverableLog.COMPANYID, model.getCompanyId());
 		objectData.put(ModelKeysDeliverableLog.USERID, model.getUserId());
 

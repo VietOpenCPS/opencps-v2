@@ -11,8 +11,6 @@ public class ResourceUserTerm {
 
 	public static final String RESOURCEUSER_ID = "resourceUserId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String COMPANY_ID = "companyId";
 
 	public static final String USER_ID = "userId";

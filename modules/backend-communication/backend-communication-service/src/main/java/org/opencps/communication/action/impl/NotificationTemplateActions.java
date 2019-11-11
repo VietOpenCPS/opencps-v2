@@ -1,14 +1,5 @@
 package org.opencps.communication.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.communication.action.NotificationTemplateInterface;
-import org.opencps.communication.constants.NotificationMGTConstants;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -22,6 +13,16 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.communication.action.NotificationTemplateInterface;
+import org.opencps.communication.constants.NotificationMGTConstants;
+import org.opencps.communication.constants.SendSMSTerm;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -42,11 +43,11 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 		try {
 			hits = NotificationtemplateLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(SendSMSTerm.DATA, hits.toList());
 
 			long total = NotificationtemplateLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(SendSMSTerm.TOTAL, total);
 
 //			if (NotificationtemplateLocalServiceUtil.initTemplate(groupId)) {
 
@@ -190,9 +191,9 @@ public class NotificationTemplateActions implements NotificationTemplateInterfac
 
 		Map<String, String> initTemplates = NotificationMGTConstants.getNotificationTempMap();
 
-		result.put("data", initTemplates);
+		result.put(SendSMSTerm.DATA, initTemplates);
 
-		result.put("total", initTemplates.size());
+		result.put(SendSMSTerm.TOTAL, initTemplates.size());
 
 		return result;
 	}

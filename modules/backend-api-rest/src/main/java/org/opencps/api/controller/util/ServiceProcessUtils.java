@@ -29,6 +29,7 @@ import org.opencps.api.serviceprocess.model.ServiceProcessInputModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
@@ -164,7 +165,6 @@ public class ServiceProcessUtils {
 
 			model.setRoleId(GetterUtil.getInteger(role.getRoleId()));
 			model.setRoleName(_getRoleName(role.getRoleId()));
-//			model.setRoleName(role.getRoleName());
 			model.setCondition(role.getCondition());
 			model.setModerator(Boolean.toString(role.getModerator()));
 			model.setRoleCode(role.getRoleCode());
@@ -278,7 +278,7 @@ public class ServiceProcessUtils {
 				model.setConfigNote(doc.get(ProcessActionTerm.CONFIG_NOTE));
 
 			}
-			model.setDossierTemplateNo(doc.get("dossierTemplateNo"));
+			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 			
 			outputs.add(model);
 		}

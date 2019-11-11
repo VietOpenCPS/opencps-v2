@@ -6,7 +6,6 @@ public class SyncServerTerm {
 	public static final String SERVER_USERNAME = "username";
 	public static final String SERVER_SECRET = "password";
 	public static final String SERVER_URL = "url";
-	public static final String SERVER_GROUP_ID = "groupId";
 	public static final String SERVER_EXCLUDES = "excludes";
 	
 	public static final String METHOD_CREATE = "create";
@@ -14,9 +13,6 @@ public class SyncServerTerm {
 	public static final String METHOD_DELETE = "delete";
 	public static final String METHOD_UPDATE_DATAFORM = "update_dataform";
 	public static final String METHOD_UPDATE_METADATA = "update_metadata";
-	
-	public static final String METHOD_ADD_TO_GROUP = "add_to_group";
-	public static final String METHOD_REMOVE_FROM_GROUP = "remove_from_group";
 	
 	public static final int SERVER_INACTIVE = 0;
 	public static final int SERVER_ONLINE = 1;

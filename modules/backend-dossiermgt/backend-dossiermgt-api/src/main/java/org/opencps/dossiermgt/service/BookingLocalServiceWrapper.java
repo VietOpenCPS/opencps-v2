@@ -44,14 +44,6 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 		return _bookingLocalService.addBooking(booking);
 	}
 
-	@Override
-	public long countLucene(java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _bookingLocalService.countLucene(params, searchContext);
-	}
-
 	/**
 	* Creates a new booking with the primary key. Does not add the booking to the database.
 	*
@@ -293,12 +285,6 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 	}
 
 	@Override
-	public org.opencps.dossiermgt.model.Booking getByClassName_PK(
-		String className, long classPK) {
-		return _bookingLocalService.getByClassName_PK(className, classPK);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.exportimport.kernel.lar.PortletDataContext portletDataContext) {
 		return _bookingLocalService.getExportActionableDynamicQuery(portletDataContext);
@@ -326,17 +312,6 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 		return _bookingLocalService.getPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.search.Hits searchLucene(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _bookingLocalService.searchLucene(params, sorts, start, end,
-			searchContext);
-	}
-
 	/**
 	* Updates the booking in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -347,19 +322,6 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 	public org.opencps.dossiermgt.model.Booking updateBooking(
 		org.opencps.dossiermgt.model.Booking booking) {
 		return _bookingLocalService.updateBooking(booking);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.Booking updateBooking(long userId,
-		long groupId, long bookingId, String className, long classPK,
-		String serviceCode, String codeNumber, String bookingName,
-		String gateNumber, Integer state, java.util.Date checkinDate,
-		java.util.Date bookingDate, boolean speaking, String serviceGroupCode,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-		return _bookingLocalService.updateBooking(userId, groupId, bookingId,
-			className, classPK, serviceCode, codeNumber, bookingName,
-			gateNumber, state, checkinDate, bookingDate, speaking,
-			serviceGroupCode, serviceContext);
 	}
 
 	@Override

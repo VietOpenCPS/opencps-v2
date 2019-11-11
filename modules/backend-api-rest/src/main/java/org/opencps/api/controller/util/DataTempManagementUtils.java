@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -24,6 +25,7 @@ import org.opencps.api.datatempmgt.model.DictItemTempModel;
 import org.opencps.api.datatempmgt.model.ParentItemModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
 import org.opencps.synchronization.constants.DictGroupTempTerm;
@@ -51,7 +53,7 @@ public class DataTempManagementUtils {
 				ett = new DictCollectionTempModel();
 
 				ett.setCompanyId(Long.valueOf(document.get(DictCollectionTempTerm.COMPANY_ID)));
-				ett.setGroupId(Long.valueOf(document.get(DictCollectionTempTerm.GROUP_ID)));
+				ett.setGroupId(Long.valueOf(document.get(Field.GROUP_ID)));
 				ett.setUserId(Long.valueOf(document.get(DictCollectionTempTerm.USER_ID)));
 				
 				ett.setDictCollectionId(Long.valueOf(document.get(DictCollectionTempTerm.DICT_COLLECTION_ID)));
@@ -214,7 +216,7 @@ public class DataTempManagementUtils {
 			for (Document document : listDocument) {
 				ett = new DictItemTempModel();
 
-				ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+				ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
 				ett.setItemCode(document.get(DictItemTempTerm.ITEM_CODE));
 				ett.setItemName(document.get(DictItemTempTerm.ITEM_NAME));
 				ett.setItemDescription(document.get(DictItemTempTerm.ITEM_DESCRIPTION));
@@ -226,8 +228,8 @@ public class DataTempManagementUtils {
 						.convertDateToString(document.getDate(DictItemTempTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+						Validator.isNotNull(document.get(Field.MODIFIED_DATE)) ? APIDateTimeUtils.convertDateToString(
+								document.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
 
 				DictItemTemp parentItem = DictItemTempLocalServiceUtil
 						.fetchDictItemTemp(Long.valueOf(document.get(DictItemTempTerm.PARENT_ITEM_ID)));
@@ -289,7 +291,7 @@ public class DataTempManagementUtils {
 			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DictItemGroupTerm.DICT_ITEM_ID, String.valueOf(dictItem.getDictItemId()));
 
 			JSONObject jsonData = dictItemDataUtil.getDictItemsGroupTemp(userId, companyId, groupId, params, new Sort[] {},
@@ -301,7 +303,7 @@ public class DataTempManagementUtils {
 
 				DictGroupTempModel ettGroup = null;
 
-				for (Document document : (List<Document>) jsonData.get("data")) {
+				for (Document document : (List<Document>) jsonData.get(ConstantUtils.DATA)) {
 
 					ettGroup = new DictGroupTempModel();
 
@@ -350,7 +352,6 @@ public class DataTempManagementUtils {
 			}
 			catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 			}
 		}
 		else if (o instanceof DictItemTemp) {
@@ -371,7 +372,6 @@ public class DataTempManagementUtils {
 			}
 			catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 			}			
 			try {
 				DictItemTemp parentItem = DictItemTempLocalServiceUtil.fetchDictItemTemp(dictItem.getParentItemId());
@@ -379,7 +379,6 @@ public class DataTempManagementUtils {
 			}
 			catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 			}			
 		}
 		else if (o instanceof DictItemGroupTemp) {
@@ -398,12 +397,10 @@ public class DataTempManagementUtils {
 				}
 				catch (Exception e) {
 					_log.debug(e);
-					//_log.error(e);
 				}			
 			}
 			catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 			}			
 			try {
 				DictGroupTemp dictGroup = DictGroupTempLocalServiceUtil.fetchDictGroupTemp(dictItemGroup.getDictGroupId());
@@ -411,7 +408,6 @@ public class DataTempManagementUtils {
 			}
 			catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 			}
 		}
 		

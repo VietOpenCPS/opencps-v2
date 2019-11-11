@@ -358,7 +358,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
@@ -375,7 +375,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(FileAttachTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -444,7 +444,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
@@ -461,7 +461,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(FileAttachTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -545,7 +545,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 			object = fileAttachPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

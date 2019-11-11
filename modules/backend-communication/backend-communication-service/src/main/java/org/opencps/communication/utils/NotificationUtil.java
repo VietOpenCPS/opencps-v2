@@ -1,6 +1,21 @@
 
 package org.opencps.communication.utils;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,21 +35,6 @@ import org.opencps.kernel.message.MBMessageEntry;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.kernel.template.MessageDataModel;
 import org.opencps.kernel.template.freemarker.TemplateProcessor;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpHeaders;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.communication.service.util.ConfigConstants;
 import backend.communication.service.util.ConfigProps;
@@ -255,46 +255,6 @@ public class NotificationUtil {
 				boolean sendSMS = false;
 				boolean sendMesZalo = false;
 
-				// if (queue.getToUserId() > 0) {
-				// Preferences preferences =
-				// PreferencesLocalServiceUtil.fetchByF_userId(
-				// serviceContext.getScopeGroupId(),
-				// queue.getToUserId());
-				// if (preferences != null &&
-				// Validator.isNotNull(preferences.getPreferences())) {
-				// try {
-				// JSONObject pref = JSONFactoryUtil.createJSONObject(
-				// preferences.getPreferences());
-				// if (pref.has(queue.getNotificationType())) {
-				// JSONObject object = pref.getJSONObject(
-				// queue.getNotificationType());
-				// if (object != null &&
-				// object.has(queue.getClassName())) {
-				// JSONObject conf = object.getJSONObject(
-				// queue.getClassName());
-				// sendEmail = conf.getBoolean("email");
-				// sendNotify = conf.getBoolean("notify");
-				// sendSMS = conf.getBoolean("sms");
-				// }
-				// }
-				// }
-				// catch (Exception e) {
-				// _log.debug(e);
-				// //_log.error(e);
-				// }
-				// }
-				// if (template != null) {
-				// // sendEmail = template.getSendEmail();
-				// sendNotify = template.getSendNotification();
-				// // sendSMS = template.getSendSMS();
-				// sendMesZalo = template.getSendNotification();
-				// }
-				// }
-				// else {
-				// sendNotify = false;
-				// sendMesZalo = false;
-				// }
-
 				if (template != null) {
 					sendEmail = template.getSendEmail();
 					sendSMS = template.getSendSMS();
@@ -354,11 +314,11 @@ public class NotificationUtil {
 				JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 					_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 
-				if (resultApi.has("data")) {
+				if (resultApi.has(SendSMSTerm.DATA)) {
 
 					Map<Long, String> mappingZaloUid = new HashMap<>();
 					String zOId =
-						resultApi.getJSONObject("data").getString("user_id");
+						resultApi.getJSONObject(SendSMSTerm.DATA).getString("user_id");
 
 					mappingZaloUid.put(
 						toUserId > 0 ? toUserId : new Long(0), zOId);
@@ -458,7 +418,7 @@ public class NotificationUtil {
 			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {

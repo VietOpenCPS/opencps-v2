@@ -1,18 +1,11 @@
 package org.opencps.rest.opencps.model;
 
-import javax.validation.constraints.*;
-
-import io.swagger.annotations.ApiModelProperty;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
 
-import javax.xml.bind.annotation.XmlRootElement; 
-@XmlRootElement(name = "data") public class DocumentTypeSearchModel  {
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
+import io.swagger.annotations.ApiModelProperty; 
+@XmlRootElement(name = ConstantUtils.DATA) public class DocumentTypeSearchModel  {
   
   @ApiModelProperty(example = "key search", value = "")
   private String keyword = null;

@@ -1,5 +1,16 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,21 +27,12 @@ import org.opencps.api.resourcerole.model.ResourceRoleInputModel;
 import org.opencps.api.resourcerole.model.ResourceRoleModel;
 import org.opencps.api.resourcerole.model.ResourceRoleResults;
 import org.opencps.api.resourceuser.model.ResourceUserInputModel;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.action.ResourceRoleInterface;
 import org.opencps.usermgt.action.impl.ResourceRoleActions;
 import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceRole;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -54,11 +56,11 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(ResourceRoleTerm.CLASS_NAME, String.valueOf(className));
 			params.put(ResourceRoleTerm.CLASS_PK, String.valueOf(classPK));
@@ -69,9 +71,9 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			JSONObject jsonData = actions.getResourceRoles(className, classPK, user.getUserId(), company.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext, query.isFull());
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceRoleModel()
-					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -88,7 +90,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ResourceRole ResourceRole = actions.create(user.getUserId(), groupId, input.getClassName(),
 					input.getClassPK(), input.getRoleId(), serviceContext);
@@ -110,7 +112,7 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = actions.delete(user.getUserId(), groupId, className, classPK, workspaceId, serviceContext);
 
@@ -144,14 +146,14 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.createResourceRolePatch(input.getClassName(), input.getClassPK(), user.getUserId(),
 					company.getCompanyId(), groupId, roles, serviceContext);
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ResourceUserTerm.CLASS_NAME, input.getClassName());
 			params.put(ResourceUserTerm.CLASS_PK, input.getClassPK());
 
@@ -159,9 +161,9 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 					company.getCompanyId(), groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext, false);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceRoleModel()
-					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -179,23 +181,23 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.clone(className, classPK, user.getUserId(), company.getCompanyId(), groupId, sourcePK,
 					serviceContext);
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ResourceUserTerm.CLASS_NAME, className);
 			params.put(ResourceUserTerm.CLASS_PK, sourcePK);
 
 			JSONObject jsonData = actions.getResourceRoles(className, sourcePK, user.getUserId(), company.getCompanyId(),
 					groupId, params, new Sort[] {}, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext, false);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getResourceRoleModel()
-					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get("data")));
+					.addAll(ResourceRoleUtils.mapperResourceRoleList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 

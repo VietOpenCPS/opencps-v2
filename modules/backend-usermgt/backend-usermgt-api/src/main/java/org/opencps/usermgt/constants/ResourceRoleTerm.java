@@ -11,8 +11,6 @@ public class ResourceRoleTerm {
 
 	public static final String RESOURCEROLE_ID = "resourceRoleId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String COMPANY_ID = "companyId";
 
 	public static final String USER_ID = "userId";
@@ -31,6 +29,8 @@ public class ResourceRoleTerm {
 	
 	public static final String ROLE_NAME = "roleName";
 	
+	public static final String SELECTED = "selected";
+
 	public static final String RESOURCEROLE_ID_SORTABLE = "resourceRoleId_sortable";
 
 	public static final String GROUP_ID_SORTABLE = "groupId_sortable";

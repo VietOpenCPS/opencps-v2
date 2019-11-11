@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -42,7 +43,9 @@ import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
 import org.opencps.dossiermgt.model.Dossier;
@@ -69,7 +72,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String domain, String public_, Request requestCC) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -83,7 +86,7 @@ public class OneGateControllerImpl implements OneGateController {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -206,8 +209,8 @@ public class OneGateControllerImpl implements OneGateController {
 				}
 			}
 			
-			results.put("total", total);
-			results.put("data", data);
+			results.put(ConstantUtils.TOTAL, total);
+			results.put(ConstantUtils.DATA, data);
 			
 //			_log.info(results.toJSONString());
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
@@ -234,7 +237,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		
 //		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
@@ -293,7 +296,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response updateDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input, long dossierId) {
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		//DossierPermission dossierPermission = new DossierPermission();
 		long dActionId = GetterUtil.getLong(input.getDossierActionId());
@@ -337,7 +340,7 @@ public class OneGateControllerImpl implements OneGateController {
 	@Override
 	public Response getDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId) {
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		//DossierPermission dossierPermission = new DossierPermission();
 
@@ -366,7 +369,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response getServiceProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId, String serviceCode, String govAgencyCode,
 			String dossierTemplateNo, String dossierActionId) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		long dActionId = GetterUtil.getLong(dossierActionId);
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 	

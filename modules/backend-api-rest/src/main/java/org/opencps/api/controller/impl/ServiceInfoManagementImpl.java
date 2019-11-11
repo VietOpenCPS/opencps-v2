@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -62,18 +63,15 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -101,7 +99,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -137,24 +135,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			//_log.info("jsonData.hit: "+jsonData.get("data"));
-			results.setTotal(jsonData.getInt("total"));
+			//_log.info("jsonData.hit: "+jsonData.get(ConstantUtils.DATA));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//		    
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(results).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(results).build();				
-//			}
+					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
@@ -167,7 +151,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response addServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -226,7 +210,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ServiceInfo serviceInfo = null;
 
@@ -265,7 +249,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response updateServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -354,7 +338,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getFileTemplatesOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, FileTemplateSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		FileTemplateResultsModel results = new FileTemplateResultsModel();
 
@@ -370,9 +354,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, eformFlag, query.getStart(),
 						query.getEnd());
 				
-				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get(ConstantUtils.DATA);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
 				return Response.status(200).entity(results).build();
@@ -380,9 +364,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(),
 						query.getEnd());
 				
-				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get(ConstantUtils.DATA);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
 				return Response.status(200).entity(results).build();
@@ -399,7 +383,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String fileTemplateNo,
 			String templateName, String fileType, int fileSize, String fileName) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -478,8 +462,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
-			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 
@@ -530,7 +514,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -564,7 +548,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -602,7 +586,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -743,7 +727,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getServiceInfoRecently(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel search) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		//String emailLogin = user.getEmailAddress();
 		//DossierActions actions = new DossierActionsImpl();
@@ -845,7 +829,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		Indexer<ServiceInfo> indexer =
@@ -859,11 +843,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject jsonData = actions.getServiceInfos(user.getUserId(), serviceContext.getCompanyId(), groupId, params,
 				null, -1, -1, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(ConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long serviceInfoId = GetterUtil.getLong(
 					document.get(Field.ENTRY_CLASS_PK));

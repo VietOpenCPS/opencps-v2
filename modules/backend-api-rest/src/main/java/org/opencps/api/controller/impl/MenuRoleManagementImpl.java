@@ -19,6 +19,8 @@ import org.opencps.api.controller.MenuRoleManagement;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 
@@ -39,7 +41,7 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}

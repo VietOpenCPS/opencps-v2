@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -28,6 +29,7 @@ import org.opencps.api.jobpos.model.JobposModel;
 import org.opencps.api.jobpos.model.JobposPermissionModel;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.jobpos.model.JobposResults;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
@@ -56,11 +58,11 @@ public class JobposManagementImpl implements JobposManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -69,8 +71,8 @@ public class JobposManagementImpl implements JobposManagement {
 			JSONObject jsonData = actions.getJobpos(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -112,7 +114,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -137,7 +139,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -178,9 +180,9 @@ public class JobposManagementImpl implements JobposManagement {
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -231,16 +233,16 @@ public class JobposManagementImpl implements JobposManagement {
 		JobposPermissionResults result = new JobposPermissionResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.createPermissionsPatch(user.getUserId(), company.getCompanyId(), groupId, id, permissions,
 					serviceContext);
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
 			return Response.status(200).entity(result).build();
 

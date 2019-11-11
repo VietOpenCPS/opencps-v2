@@ -1,6 +1,5 @@
 package org.opencps.api.controller.util;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -11,16 +10,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.eform.model.EFormDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.exception.DossierPasswordException;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.EForm;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 public class EFormUtils {
 
@@ -85,10 +82,6 @@ public class EFormUtils {
 		model.seteFormData(input.getEFormData());
 		model.setEmail(input.getEmail());
 		model.setSecret(input.getSecret());
-//		model.setCheckinDate(
-//				APIDateTimeUtils.convertDateToString(input.getModifiedDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-//		model.setGateNumber(input.getGateNumber());
-//		model.setState(input.getState());
 
 		return model;
 	}
@@ -96,11 +89,11 @@ public class EFormUtils {
 	public static void checkPassword(EForm eForm, String secret) throws PortalException {
 
 		if (Validator.isNull(eForm.getSecret())) {
-			throw new DossierPasswordException("EFormPasswordException");
+			throw new DossierPasswordException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
 		}
 
 		if (!eForm.getSecret().equalsIgnoreCase(secret)) {
-			throw new DossierPasswordException("EFormPasswordException");
+			throw new DossierPasswordException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
 		}
 	}
 }

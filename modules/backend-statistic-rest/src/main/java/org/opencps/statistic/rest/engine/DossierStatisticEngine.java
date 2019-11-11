@@ -45,6 +45,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
@@ -498,7 +499,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetDossierData> dossierData = new ArrayList<>();
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
 			for (Document doc : datas) {

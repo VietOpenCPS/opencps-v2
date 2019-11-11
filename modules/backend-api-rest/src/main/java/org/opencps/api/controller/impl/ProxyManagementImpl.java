@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,6 +29,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ProxyManagement;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -39,7 +41,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 	@Override
 	public Response proxy(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "SERVER_DVC";
 			
@@ -74,11 +76,11 @@ public class ProxyManagementImpl implements ProxyManagement {
 					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 							&& configObj.has(SyncServerTerm.SERVER_SECRET)
 							&& configObj.has(SyncServerTerm.SERVER_URL)
-							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+							&& configObj.has(Field.GROUP_ID)) {
 						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
 						
 						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+				        groupIdRequest = configObj.getString(Field.GROUP_ID);
 					}
 			        
 					
@@ -95,13 +97,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        }
 			        _log.debug("API URL: " + apiUrl);
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty("groupId", groupIdRequest);
+			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 			        conn.setRequestMethod(method);
 			        conn.setRequestProperty("Accept", "application/json");
 			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 			        _log.debug("BASIC AUTHEN: " + authStrEnc);
 			        if ("POST".equals(method) || "PUT".equals(method)) {
-				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
 						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
 
 						conn.setUseCaches(false);

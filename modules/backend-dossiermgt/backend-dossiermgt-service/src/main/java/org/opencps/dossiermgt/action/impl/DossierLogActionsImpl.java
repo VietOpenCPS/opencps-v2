@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.action.DossierLogActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DossierLog;
@@ -22,6 +24,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 public class DossierLogActionsImpl implements DossierLogActions {
 	
@@ -61,16 +64,16 @@ public class DossierLogActionsImpl implements DossierLogActions {
 				params.put(Field.USER_ID, serviceContext.getUserId());
 			}
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order)) };
 
 			Hits hits = DossierLogLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DossierLogLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -105,16 +108,16 @@ public class DossierLogActionsImpl implements DossierLogActions {
 				params.put(Field.USER_ID, serviceContext.getUserId());
 			}
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("createDate_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(Field.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order)) };
 
 			Hits hits = DossierLogLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DossierLogLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -142,11 +145,11 @@ public class DossierLogActionsImpl implements DossierLogActions {
 
 			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);

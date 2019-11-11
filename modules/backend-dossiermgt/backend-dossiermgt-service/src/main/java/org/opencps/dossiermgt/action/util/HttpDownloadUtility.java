@@ -30,7 +30,7 @@ public class HttpDownloadUtility {
 		// always check HTTP response code first
 		if (responseCode == HttpURLConnection.HTTP_OK) {
 			String fileName = "";
-			String disposition = httpConn.getHeaderField("Content-Disposition");
+			String disposition = httpConn.getHeaderField(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON));
 //			String contentType = httpConn.getContentType();
 //			int contentLength = httpConn.getContentLength();
 

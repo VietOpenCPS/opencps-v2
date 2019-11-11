@@ -1,31 +1,5 @@
 package org.opencps.api.controller.util;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.communication.action.NotificationTemplateInterface;
-import org.opencps.communication.action.impl.NotificationTemplateActions;
-import org.opencps.communication.constants.NotificationTemplateTerm;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierLogTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierLog;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -43,6 +17,33 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.communication.action.NotificationTemplateInterface;
+import org.opencps.communication.action.impl.NotificationTemplateActions;
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+
 public class SystemUtils {
 	private static Log _log = LogFactoryUtil.getLog(SystemUtils.class);
 	public static void cleanNotificationTemplate(long groupId, long userId, ServiceContext serviceContext) throws PortalException {
@@ -58,10 +59,10 @@ public class SystemUtils {
 			
 		jsonData = actions.getNotificationTemplates(userId, serviceContext.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
-		long total = jsonData.getInt("total");
+		long total = jsonData.getInt(ConstantUtils.TOTAL);
 		if (total > 0) {
 			@SuppressWarnings("unchecked")
-			List<Document> lstDocs =  (List<Document>) jsonData.get("data");	
+			List<Document> lstDocs =  (List<Document>) jsonData.get(ConstantUtils.DATA);	
 			for (Document document : lstDocs) {
 				long notificationTemplateId = GetterUtil.getLong(document.get(NotificationTemplateTerm.NOTIFICATIONTEMPLATE_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
@@ -95,10 +96,10 @@ public class SystemUtils {
 
 		JSONObject jsonData = actions.getDossiers(userId, serviceContext.getCompanyId(), groupId, params, null,
 					-1, -1, serviceContext);
-		long total = jsonData.getInt("total");
+		long total = jsonData.getInt(ConstantUtils.TOTAL);
 		if (total > 0) {
 			@SuppressWarnings("unchecked")
-			List<Document> lstDocs =  (List<Document>) jsonData.get("data");	
+			List<Document> lstDocs =  (List<Document>) jsonData.get(ConstantUtils.DATA);	
 			for (Document document : lstDocs) {
 				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
@@ -221,10 +222,10 @@ public class SystemUtils {
 		JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 			groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 		
-		long total = jsonData.getInt("total");
+		long total = jsonData.getInt(ConstantUtils.TOTAL);
 		if (total > 0) {
 			@SuppressWarnings("unchecked")
-			List<Document> lstDocs =  (List<Document>) jsonData.get("data");	
+			List<Document> lstDocs =  (List<Document>) jsonData.get(ConstantUtils.DATA);	
 			for (Document document : lstDocs) {
 				long serviceInfoId = GetterUtil.getLong(document.get(ServiceInfoTerm.SERVICE_INFO_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));

@@ -1,6 +1,20 @@
 
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusException;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.File;
 import java.util.Date;
 import java.util.Locale;
@@ -13,21 +27,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.opencps.api.controller.JasperUtilsManagerment;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusException;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -43,7 +45,7 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 		String jsonDataStr, String scriptStr) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		_log.info("jsonDataStr: " + jsonDataStr);
 		_log.info("documentScriptStr: " + scriptStr);
@@ -87,9 +89,9 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "application/pdf");
+					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");
 
 				Date dateEnd1 = new Date();
 				_log.info(

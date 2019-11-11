@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -67,7 +68,7 @@ public class DossierMgtUtils {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
 		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
-		obj.put(DossierTerm.GROUP_ID, dossier.getGroupId());
+		obj.put(Field.GROUP_ID, dossier.getGroupId());
 		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
 		obj.put(DossierTerm.REFERENCE_UID, dossier.getReferenceUid());
 		obj.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -190,7 +191,7 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
@@ -300,7 +301,7 @@ public class DossierMgtUtils {
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -311,7 +312,7 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = null;
 		if (dossierActionId > 0) {
@@ -453,7 +454,7 @@ public class DossierMgtUtils {
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -750,12 +751,12 @@ public class DossierMgtUtils {
 		ServiceContext context = new ServiceContext();
 		context.setUserId(dossier.getUserId());
 		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
-		jsonObj.put("key", key);
+		jsonObj.put(ConstantUtils.VALUE_KEY, key);
 		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
 		JSONObject resultObj;
 		try {
 			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
-			if (resultObj.has("key") && resultObj.getString("key").equals(value)) {
+			if (resultObj.has(ConstantUtils.VALUE_KEY) && resultObj.getString(ConstantUtils.VALUE_KEY).equals(value)) {
 				return true;
 			}
 			else {

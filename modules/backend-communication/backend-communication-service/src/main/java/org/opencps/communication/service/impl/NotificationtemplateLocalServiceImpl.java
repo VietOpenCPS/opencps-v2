@@ -14,15 +14,6 @@
 
 package org.opencps.communication.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.communication.constants.NotificationTemplateTerm;
-import org.opencps.communication.exception.NoSuchNotificationtemplateException;
-import org.opencps.communication.model.Notificationtemplate;
-import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -48,6 +39,15 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.exception.NoSuchNotificationtemplateException;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.base.NotificationtemplateLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.BackendAuthImpl;
@@ -267,7 +267,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		// // LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String sendEMail = (String) params.get(NotificationTemplateTerm.SEND_EMAIL);
 		BooleanQuery booleanQuery = null;
@@ -334,7 +334,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		// // LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get("userId");
 		String sendEMail = (String) params.get(NotificationTemplateTerm.SEND_EMAIL);
 
@@ -507,7 +507,7 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 			object = notificationtemplatePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

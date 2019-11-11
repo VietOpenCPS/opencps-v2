@@ -1,17 +1,5 @@
 package backend.feedback.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.ws.rs.NotFoundException;
-
-import org.opencps.backend.usermgt.service.util.ConfigProps;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -29,6 +17,18 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.ws.rs.NotFoundException;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+
 import backend.feedback.action.VotingActions;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.exception.NoSuchVotingResultException;
@@ -37,6 +37,7 @@ import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
 import backend.feedback.service.util.ConfigConstants;
+import backend.feedback.service.util.ConfigProps;
 
 public class VotingActionsImpl implements VotingActions {
 
@@ -84,7 +85,7 @@ public class VotingActionsImpl implements VotingActions {
 //			} else {
 //				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
 //			}
-//			result.put("data", votingList);
+//			result.put(ConstantUtils.DATA, votingList);
 			
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(companyId);
@@ -97,14 +98,14 @@ public class VotingActionsImpl implements VotingActions {
 				params.put("toVotingDate", StringPool.BLANK);
 				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			}
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			//long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -190,11 +191,11 @@ public class VotingActionsImpl implements VotingActions {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -321,10 +322,10 @@ public class VotingActionsImpl implements VotingActions {
 		try {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

@@ -372,7 +372,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
 		String status = (String) params.get(DictCollectionTerm.STATUS);
@@ -435,8 +435,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -484,7 +484,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
 		String status = (String) params.get(DictCollectionTerm.STATUS);
@@ -544,8 +544,8 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -730,7 +730,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 			object = dictCollectionPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 

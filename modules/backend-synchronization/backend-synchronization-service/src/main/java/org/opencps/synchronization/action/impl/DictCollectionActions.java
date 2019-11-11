@@ -1,25 +1,6 @@
 
 package org.opencps.synchronization.action.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.datamgt.constants.DictItemGroupTerm;
-import org.opencps.synchronization.action.DictCollectionTempInterface;
-import org.opencps.synchronization.exception.NoSuchDictItemTempException;
-import org.opencps.synchronization.model.DictCollectionTemp;
-import org.opencps.synchronization.model.DictGroupTemp;
-import org.opencps.synchronization.model.DictItemGroupTemp;
-import org.opencps.synchronization.model.DictItemTemp;
-import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
-import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
-import org.opencps.synchronization.service.DictItemGroupTempLocalServiceUtil;
-import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -29,6 +10,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -37,6 +19,26 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.synchronization.action.DictCollectionTempInterface;
+import org.opencps.synchronization.constants.DataMGTTempConstants;
+import org.opencps.synchronization.exception.NoSuchDictItemTempException;
+import org.opencps.synchronization.model.DictCollectionTemp;
+import org.opencps.synchronization.model.DictGroupTemp;
+import org.opencps.synchronization.model.DictItemGroupTemp;
+import org.opencps.synchronization.model.DictItemTemp;
+import org.opencps.synchronization.service.DictCollectionTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictGroupTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictItemGroupTempLocalServiceUtil;
+import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
 public class DictCollectionActions implements DictCollectionTempInterface {
 
@@ -53,33 +55,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictCollectionTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTTempConstants.DATA, hits.toList());
 
 			long total = DictCollectionTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
-
-			if (DictCollectionTempLocalServiceUtil.initDictCollectionTemp(groupId)) {
-
-				// create init dictcollection
-//				Map<String, String> initDictCollection = DataMGTTempConstants.DICTCOLLECTION_INIT;
-//
-//				for (String key : initDictCollection.keySet()) {
-//
-//					try {
-//
-//						DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, key,
-//								initDictCollection.get(key), initDictCollection.get(key), initDictCollection.get(key),
-//								DataMGTTempConstants.DATA_STATUS_DEACTIVE,
-//								DataMGTTempConstants.DATA_MUST_NOT_SYNCHRONIZED, serviceContext);
-//
-//					} catch (Exception e) {
-//						_log.error(e);
-//					}
-//
-//				}
-
-			}
+			result.put(DataMGTTempConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -92,7 +72,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 	@Override
 	public DictCollectionTemp getDictCollectionTempDetail(String dictCollectionCode, long groupId) {
-		// TODO Auto-generated method stub
 		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil
 				.fetchByF_dictCollectionCode(dictCollectionCode, groupId);
 
@@ -104,7 +83,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			String collectionName, String collectionNameEN, String description, int status, int mustSync,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
-		// TODO Auto-generated method stub
 		DictCollectionTemp dictCollection = null;
 
 		dictCollection = DictCollectionTempLocalServiceUtil.addDictCollectionTemp(userId, groupId, collectionCode,
@@ -118,7 +96,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 			String collectionName, String collectionNameEN, String description, int status, int mustSync,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
-		// TODO Auto-generated method stub
 		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
@@ -165,7 +142,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 	@Override
 	public boolean deleteDictCollectionTemp(String code, long groupId, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException {
-		// TODO Auto-generated method stub
 		boolean flag = false;
 
 		DictCollectionTemp dictColl = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
@@ -188,7 +164,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 	public DictCollectionTemp addDataForm(long userId, long groupId, String code, String dataform,
 			ServiceContext serviceContext) throws NoSuchUserException, NotFoundException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException {
-		// TODO Auto-generated method stub
 		DictCollectionTemp dictCollection = DictCollectionTempLocalServiceUtil.fetchByF_dictCollectionCode(code,
 				groupId);
 
@@ -210,7 +185,6 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 	@Override
 	public JSONObject getDictGroupsTemp(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		Hits hits = null;
 		SearchContext searchContext = new SearchContext();
@@ -220,11 +194,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTTempConstants.DATA, hits.toList());
 
 			long total = DictGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTTempConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -248,11 +222,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictItemGroupTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTTempConstants.DATA, hits.toList());
 
 			long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTTempConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -478,7 +452,7 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				for (Document document : list) {
 
 					DictItemGroupTemp dictItemGroup = DictItemGroupTempLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
-							groupId, dictGroup.getDictGroupId(), Long.valueOf(document.get("entryClassPK")));
+							groupId, dictGroup.getDictGroupId(), Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
@@ -494,11 +468,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 				}
 
-				result.put("data", list);
+				result.put(DataMGTTempConstants.DATA, list);
 
 				long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(DataMGTTempConstants.TOTAL, total);
 
 			} else {
 
@@ -508,11 +482,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 				 * for (Document doc : hits.toList()) { _log.info(doc); }
 				 */
 
-				result.put("data", hits.toList());
+				result.put(DataMGTTempConstants.DATA, hits.toList());
 
 				long total = DictItemGroupTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(DataMGTTempConstants.TOTAL, total);
 
 			}
 
@@ -538,11 +512,11 @@ public class DictCollectionActions implements DictCollectionTempInterface {
 
 			hits = DictItemTempLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTTempConstants.DATA, hits.toList());
 
 			long total = DictItemTempLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTTempConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

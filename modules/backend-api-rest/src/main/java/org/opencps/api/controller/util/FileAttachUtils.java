@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -15,10 +16,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.opencps.api.fileattach.model.FileAttachModel;
 import org.opencps.api.fileattach.model.FileVersionModel;
 import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.utils.APIDateTimeUtils;
 
@@ -37,7 +41,7 @@ public class FileAttachUtils {
 			for (Document doc : list) {
 				ett = new FileAttachModel();
 
-				ett.setFileAttachId(Long.valueOf(doc.get("entryClassPK")));
+				ett.setFileAttachId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
 
 				ett.setCreateDate(
 					Validator.isNotNull(doc.get(FileAttachTerm.CREATE_DATE))
@@ -46,9 +50,9 @@ public class FileAttachUtils {
 							APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setModifiedDate(
-					Validator.isNotNull(doc.getDate("modified"))
+					Validator.isNotNull(doc.getDate(Field.MODIFIED_DATE))
 						? APIDateTimeUtils.convertDateToString(
-							doc.getDate("modified"),
+							doc.getDate(Field.MODIFIED_DATE),
 							APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);
 				ett.setFullname(doc.get(FileAttachTerm.FULLNAME));
@@ -154,16 +158,12 @@ public class FileAttachUtils {
 					FileVersionModel fileAttachVersionModel =
 						new FileVersionModel();
 
-					fileAttachVersionModel.setFileEntryId(
-						version.getLong("fileEntryId"));
-					fileAttachVersionModel.setCreateDate(
-						version.getString("createdDate"));
+					fileAttachVersionModel.setFileEntryId(version.getLong(ConstantUtils.FILE_ENTRY_ID));
+					fileAttachVersionModel.setCreateDate(version.getString(DossierTerm.CREATE_DATE));
 					fileAttachVersionModel.setFileName(fileName);
-					fileAttachVersionModel.setUserId(version.getLong("userId"));
-					fileAttachVersionModel.setUserName(
-						version.getString("userName"));
-					fileAttachVersionModel.setVersion(
-						version.getString("version"));
+					fileAttachVersionModel.setUserId(version.getLong(Field.USER_ID));
+					fileAttachVersionModel.setUserName(version.getString(Field.USER_NAME));
+					fileAttachVersionModel.setVersion(version.getString(ConstantUtils.VERSION));
 
 					results.add(fileAttachVersionModel);
 				}

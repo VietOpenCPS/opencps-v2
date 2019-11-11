@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="address" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="telNo" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="faxNo" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name=ConstantUtils.VALUE_EMAIL type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="website" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>

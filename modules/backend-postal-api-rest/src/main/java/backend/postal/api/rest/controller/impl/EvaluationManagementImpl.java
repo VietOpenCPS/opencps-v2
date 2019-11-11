@@ -1,4 +1,14 @@
+
 package backend.postal.api.rest.controller.impl;
+
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +27,6 @@ import org.opencps.api.evaluation.model.EvaluationResultDetailModel;
 import org.opencps.api.evaluation.model.EvaluationResultsModel;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import backend.feedback.model.Evaluation;
 import backend.feedback.service.EvaluationLocalServiceUtil;
@@ -108,7 +110,7 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //				throw new UnauthenticationException();
 //			}
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Evaluation evaluation = EvaluationLocalServiceUtil.addEvaluation(groupId, employeeId,
 					model.getEmployeeName(), model.getScore(), serviceContext);

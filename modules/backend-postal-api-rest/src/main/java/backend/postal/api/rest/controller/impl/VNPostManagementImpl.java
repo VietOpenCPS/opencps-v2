@@ -1,5 +1,16 @@
 package backend.postal.api.rest.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
@@ -14,16 +25,6 @@ import org.opencps.api.vnpost.model.VNPostInputModel;
 import org.opencps.api.vnpost.model.VNPostServerConfigModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import backend.postal.api.rest.controller.VNPostManagement;
 import vn.mitc.ngsp.sdk.VNPost_N_GSP.IOrder;
@@ -92,7 +93,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 	@Override
 	public Response sendPostalRequest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		//_log.info("sendPostalRequest groupId ============= " + groupId);
@@ -187,7 +188,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 		// String tokenUrl = "https://api.mitc.vn/token";
 		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
 		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// _log.info("groupId = =========" + groupId);
 		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 
@@ -212,7 +213,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 	@Override
 	public Response cancelOrder(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VNPostCancelOrderModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		// _log.info("config ============= " + JSONFactoryUtil.looseSerialize(config));

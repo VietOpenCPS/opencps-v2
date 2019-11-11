@@ -1,9 +1,7 @@
 package org.opencps.statistic.rest.facade;
 
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
-
-import backend.feedback.constants.VotingTerm;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -12,12 +10,12 @@ import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import backend.feedback.constants.VotingTerm;
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
@@ -76,7 +74,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));

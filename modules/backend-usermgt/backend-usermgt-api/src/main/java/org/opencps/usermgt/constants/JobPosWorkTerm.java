@@ -11,8 +11,6 @@ public class JobPosWorkTerm {
 
 	public static final String JOBPOS_WORK_ID = "jobPosWorkId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String COMPANY_ID = "companyId";
 
 	public static final String USER_ID = "userId";

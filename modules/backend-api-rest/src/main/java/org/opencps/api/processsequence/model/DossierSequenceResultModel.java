@@ -10,10 +10,13 @@ package org.opencps.api.processsequence.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 
 /**
@@ -29,8 +32,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="processNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="durationCount" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="durationUnit" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="total" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="data" type="{}DossierSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.TOTAL type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name=ConstantUtils.DATA type="{}DossierSequenceModel" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
     "total",
     "data"
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class DossierSequenceResultModel {
 
     protected String processNo;

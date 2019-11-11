@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class ProcessActionTerm {
 	public static final String PROCESS_ACTION_ID = "processActionId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -53,7 +52,28 @@ public class ProcessActionTerm {
 	
 	public static final String DUE_DATE_EDITABLE = "editable";
 	public static final String DUE_DATE_HOUR = "hour";
+	public static final String PROCESS_HOUR = "processHour";
+	public static final String START_HOUR = "startHour";
+	public static final String DUE_HOUR = "dueHour";
+	public static final String DATE_AM = "AM";
+	public static final String DATE_PM = "PM";
 	
-	public static final String paymentFee = "paymentFee";
+	public static final String PAYMENT = "payment";
 	public static final String createDossiers = "createDossiers";
+	public static final String STR_PROCESS_ACTION = "processAction";
+	
+	public static final String LIST_USER = "lstUser";
+	public static final String CREATE_FILES = "createFiles";
+	public static final String PENDING = "pending";
+	public static final String RETURN_FILES = "returnFiles";
+	
+	public static final String PAYMENT_NOTE = "paymentNote";
+	public static final String ADVANCE_AMOUNT = "advanceAmount";
+	public static final String FEE_AMOUNT = "feeAmount";
+	public static final String SERVICE_AMOUNT = "serviceAmount";
+	public static final String SHIP_AMOUNT = "shipAmount";
+	public static final String RECEIVING = "receiving";
+	public static final String REQUIRED = "required";
+	
+	
 }

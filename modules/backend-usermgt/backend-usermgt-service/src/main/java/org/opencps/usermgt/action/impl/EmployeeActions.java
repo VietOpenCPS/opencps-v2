@@ -43,6 +43,7 @@ import java.util.Locale;
 
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
@@ -80,12 +81,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -381,12 +382,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeJobPosLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeJobPosLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -1002,7 +1003,7 @@ public class EmployeeActions implements EmployeeInterface {
 			//_log.info("Employee Update: " + employee);
 
 			// jsonObject.put("screenName", newUser.getScreenName());
-			// jsonObject.put("email", newUser.getEmailAddress());
+			// jsonObject.put(ConstantUtils.VALUE_EMAIL, newUser.getEmailAddress());
 			// jsonObject.put("exist", false);
 			// jsonObject.put("duplicate", Boolean.FALSE.toString());
 
@@ -1010,7 +1011,7 @@ public class EmployeeActions implements EmployeeInterface {
 			_log.debug(e);
 			//_log.error(e);
 			// jsonObject.put("screenName", StringPool.BLANK);
-			// jsonObject.put("email", StringPool.BLANK);
+			// jsonObject.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
 			// jsonObject.put("exist", Boolean.TRUE);
 			// jsonObject.put("duplicate", Boolean.TRUE.toString());
 		}

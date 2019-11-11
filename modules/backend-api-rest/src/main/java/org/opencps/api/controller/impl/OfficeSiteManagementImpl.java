@@ -1,3 +1,4 @@
+
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
@@ -10,6 +11,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -37,6 +39,8 @@ import org.opencps.api.officesite.model.DataSearchModel;
 import org.opencps.api.officesite.model.OfficeSiteInputModel;
 import org.opencps.api.officesite.model.OfficeSiteModel;
 import org.opencps.api.officesite.model.OfficeSiteResults;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.OfficeSiteInterface;
 import org.opencps.usermgt.action.impl.OfficeSiteActions;
 import org.opencps.usermgt.model.OfficeSite;
@@ -62,11 +66,11 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -75,9 +79,9 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			JSONObject jsonData = actions.getOfficeSites(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getOfficeSiteModel()
-					.addAll(OfficeSiteUtils.mapperOfficeSiteList((List<Document>) jsonData.get("data")));
+					.addAll(OfficeSiteUtils.mapperOfficeSiteList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(result).build();
 
@@ -94,7 +98,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					input.getAddress(), input.getAdminEmail(), input.getEmail(), input.getEnName(), input.getFaxNo(),
@@ -143,7 +147,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getAddress(), input.getAdminEmail(), input.getEmail(), input.getEnName(), input.getFaxNo(),
@@ -189,8 +193,8 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileName + "\"")
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 
@@ -215,7 +219,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
@@ -228,8 +232,8 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileNameRespone + "\"")
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -311,7 +315,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.updateOfficeSitePreferences(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getPreferences(), serviceContext);
@@ -331,7 +335,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.updateOfficeSitePreferencesByKey(user.getUserId(), company.getCompanyId(), groupId, id,
 					key, value, serviceContext);

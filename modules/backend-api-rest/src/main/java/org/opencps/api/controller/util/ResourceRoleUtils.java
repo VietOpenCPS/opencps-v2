@@ -28,7 +28,7 @@ public class ResourceRoleUtils {
 
 				ett.setRoleId(Long.valueOf(document.get(ResourceRoleTerm.ROLE_ID)));
 				ett.setRoleName(document.get(ResourceRoleTerm.ROLE_NAME));
-				ett.setSelected(Boolean.valueOf(document.get("selected")));
+				ett.setSelected(Boolean.valueOf(document.get(ResourceRoleTerm.SELECTED)));
 
 				results.add(ett);
 			}

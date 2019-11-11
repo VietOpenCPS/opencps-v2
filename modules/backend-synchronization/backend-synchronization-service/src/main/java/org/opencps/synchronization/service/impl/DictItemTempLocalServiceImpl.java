@@ -99,9 +99,6 @@ public class DictItemTempLocalServiceImpl
 			int status,
 			ServiceContext serviceContext) throws DuplicateCategoryException, UnauthenticationException,
 			UnauthorizationException, NoSuchUserException, NoSuchDictItemTempException, SystemException {
-		// KhoaVD sua tam cho nay
-		// DictItemTemp dictColl =
-		// dictItemTempPersistence.fetchByF_dictItemCode(itemCode, groupId);
 		DictItemTemp dictColl = dictItemTempPersistence.fetchByF_dictItemCode_dictCollectionId(itemCode, dictCollectionId,
 				groupId);
 
@@ -510,7 +507,7 @@ public class DictItemTempLocalServiceImpl
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf((params.get("groupId")));
+		String groupId = String.valueOf((params.get(Field.GROUP_ID)));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);
@@ -583,8 +580,8 @@ public class DictItemTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -639,7 +636,7 @@ public class DictItemTempLocalServiceImpl
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
 		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf(params.get("groupId"));
+		String groupId = String.valueOf(params.get(Field.GROUP_ID));
 		String userId = (String) params.get("userId");
 		String itemLv = (String) params.get("itemLv");
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);
@@ -712,8 +709,8 @@ public class DictItemTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);

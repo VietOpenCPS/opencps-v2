@@ -14,23 +14,6 @@
 
 package org.opencps.synchronization.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.auth.api.BackendAuthImpl;
-import org.opencps.auth.api.exception.NotFoundException;
-import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.backend.datamgt.service.util.ConfigConstants;
-import org.opencps.synchronization.constants.DictGroupTempTerm;
-import org.opencps.synchronization.exception.NoSuchDictGroupTempException;
-import org.opencps.synchronization.model.DictGroupTemp;
-import org.opencps.synchronization.model.impl.DictGroupTempImpl;
-import org.opencps.synchronization.service.base.DictGroupTempLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
@@ -57,6 +40,23 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.synchronization.constants.DictGroupTempTerm;
+import org.opencps.synchronization.exception.NoSuchDictGroupTempException;
+import org.opencps.synchronization.model.DictGroupTemp;
+import org.opencps.synchronization.model.impl.DictGroupTempImpl;
+import org.opencps.synchronization.service.base.DictGroupTempLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -142,12 +142,6 @@ public class DictGroupTempLocalServiceImpl
 		Date now = new Date();
 
 		User user = userPersistence.findByPrimaryKey(userId);
-
-		if (Validator.isNotNull(groupCode)) {
-
-			groupCode = groupCode;
-
-		}
 
 		long dictGroupId = counterLocalService.increment(DictGroupTemp.class.getName());
 
@@ -290,12 +284,6 @@ public class DictGroupTempLocalServiceImpl
 			throw new NotFoundException();
 		}
 
-		if (Validator.isNotNull(groupCode)) {
-
-			groupCode = groupCode;
-
-		}
-
 		// Audit fields
 		dictGroup.setUserId(user.getUserId());
 		dictGroup.setUserName(user.getFullName());
@@ -353,7 +341,7 @@ public class DictGroupTempLocalServiceImpl
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
 		
@@ -404,7 +392,7 @@ public class DictGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -442,7 +430,7 @@ public class DictGroupTempLocalServiceImpl
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
 		
@@ -490,7 +478,7 @@ public class DictGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 

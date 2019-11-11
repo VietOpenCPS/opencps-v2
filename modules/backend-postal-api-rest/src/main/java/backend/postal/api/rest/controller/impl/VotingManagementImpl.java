@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.controller.util.PostalConstantUtils;
 import org.opencps.api.controller.util.VotingUtils;
 import org.opencps.api.voting.model.VotingInputModel;
 import org.opencps.api.voting.model.VotingModel;
@@ -68,12 +68,12 @@ public class VotingManagementImpl implements VotingManagement {
 				query.setStart(-1);
 				query.setEnd(-1);
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			//_log.info("groupId: "+groupId);
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("keywords", query.getKeywords());
 			params.put(VotingTerm.CLASS_NAME, className);
 			params.put(VotingTerm.CLASS_PK, classPK);
@@ -94,9 +94,9 @@ public class VotingManagementImpl implements VotingManagement {
 						params, query.getStart(), query.getEnd(), serviceContext);
 
 			if (jsonData != null) {
-				result.setTotal(jsonData.getLong("total"));
+				result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 				result.getData()
-						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get("data"), serviceContext));
+						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 			} else {
 				result.setTotal(0l);
 			}
@@ -118,7 +118,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String className = HtmlUtil.escape(input.getClassName());
 			String classPK = HtmlUtil.escape(input.getClassPK());
@@ -155,7 +155,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String className = HtmlUtil.escape(input.getClassName());
 			String classPK = HtmlUtil.escape(input.getClassPK());
 			String subject = HtmlUtil.escape(input.getSubject());
@@ -208,11 +208,11 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("votingId", String.valueOf(votingId));
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
@@ -220,9 +220,9 @@ public class VotingManagementImpl implements VotingManagement {
 			JSONObject jsonData = actions.getVotingResults(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get("data"), serviceContext));
+					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -241,7 +241,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String comment = HtmlUtil.escape(input.getComment());
 			String selected = HtmlUtil.escape(input.getSelected());
@@ -282,14 +282,14 @@ public class VotingManagementImpl implements VotingManagement {
 	public Response getVotingResultStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VotingResultSearchModel search) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		VotingActions actions = new VotingActionsImpl();
 		VotingStatisticsResults result = new VotingStatisticsResults();
 
 		try {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put("groupId", String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put("month", String.valueOf(search.getMonth()));
 			params.put("year", String.valueOf(search.getYear()));
 			params.put(VotingTerm.CLASS_NAME, search.getClassName());
@@ -306,9 +306,9 @@ public class VotingManagementImpl implements VotingManagement {
 			JSONObject jsonData = actions.getVotingResultStatistic(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get("data"), serviceContext));
+					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -322,7 +322,7 @@ public class VotingManagementImpl implements VotingManagement {
 	public Response resolveConflictVotings(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		VotingActions actions = new VotingActionsImpl();
 		Indexer<Voting> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Voting.class);
@@ -336,11 +336,11 @@ public class VotingManagementImpl implements VotingManagement {
 		JSONObject jsonData = actions.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, "", "",
 				params, -1, -1, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(PostalConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(PostalConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long votingId = GetterUtil.getLong(document.get(VotingTerm.VOTING_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));

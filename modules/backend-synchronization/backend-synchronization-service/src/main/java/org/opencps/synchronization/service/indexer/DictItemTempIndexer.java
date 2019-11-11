@@ -65,7 +65,7 @@ public class DictItemTempIndexer extends BaseIndexer<DictItemTemp> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictItem.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictItem.getUserName()));
 
-		document.addNumberSortable(DictItemTempTerm.GROUP_ID, dictItem.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, dictItem.getGroupId());
 		document.addNumberSortable(DictItemTempTerm.DICT_ITEM_ID, dictItem.getDictItemId());
 		document.addNumberSortable(DictItemTempTerm.DICT_COLLECTION_ID, dictItem.getDictCollectionId());
 		document.addTextSortable(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());

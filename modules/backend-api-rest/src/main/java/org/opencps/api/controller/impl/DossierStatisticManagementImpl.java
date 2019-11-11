@@ -1,4 +1,16 @@
+
 package org.opencps.api.controller.impl;
+
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -22,6 +34,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierStatisticAction;
 import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
 import org.opencps.dossiermgt.model.DossierStatistic;
 import org.opencps.usermgt.model.Employee;
@@ -32,17 +45,6 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 public class DossierStatisticManagementImpl implements DossierStatisticManagement {
 
@@ -56,7 +58,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		DossierStatisticYearResultsModel results = new DossierStatisticYearResultsModel();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		List<DossierStatisticYearDataModel> lstDossierStatisticYearDataModel = new ArrayList<DossierStatisticYearDataModel>();
 
@@ -99,7 +101,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -115,9 +117,9 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			JSONObject jsonData = actions.getDossierStatistic(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, -1, serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(
-					DossierStatisticUtils.mappingToDossierStatistictModel((List<Document>) jsonData.get("data")));
+					DossierStatisticUtils.mappingToDossierStatistictModel((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -132,7 +134,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 

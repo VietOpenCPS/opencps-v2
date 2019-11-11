@@ -23,8 +23,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BaseBooleanQueryImpl;
-import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -37,21 +35,12 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
-import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.search.filter.FilterTranslator;
-import com.liferay.portal.kernel.search.filter.RangeTermFilter;
-import com.liferay.portal.kernel.search.filter.TermFilter;
-import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -60,15 +49,11 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-import com.sun.xml.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -81,8 +66,10 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -107,7 +94,6 @@ import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -950,7 +936,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			return dossier;
 		}
 
-	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	private final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
 //	private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
 	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 //	private final int DUE_DATE_DEFAULT = 5;
@@ -2853,7 +2839,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+		if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_STATISTIC).equals(top.toLowerCase())) {
 			if (month > 0 && year > 0) {
 				int minDayOfMonth = DossierMgtUtils.minDay(month, year);
 				//_log.debug("minDayOfMonth: "+minDayOfMonth);
@@ -3051,7 +3037,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 				
-			} else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+			} else if (!ReadFilePropertiesUtils.get(ConstantUtils.VALUE_STATISTIC).equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
 				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));
@@ -4951,7 +4937,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		}
 
-		object.setGroupId(objectData.getLong("groupId"));
+		object.setGroupId(objectData.getLong(Field.GROUP_ID));
 		object.setCompanyId(objectData.getLong("companyId"));
 
 		object.setUserId(objectData.getLong("userId"));
@@ -4980,7 +4966,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setPostalAddress(objectData.getString("postalAddress"));
 
 		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
-				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+				objectData.getString("govAgencyCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(govAgencyName)) {
 			object.setGovAgencyName(govAgencyName.getItemName());
@@ -4997,63 +4983,63 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setPostalWardCode(objectData.getString("postalWardCode"));
 		
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("cityCode"), objectData.getLong("groupId"));
+				objectData.getString("cityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("districtCode"), objectData.getLong("groupId"));
+				objectData.getString("districtCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("wardCode"), objectData.getLong("groupId"));
+				objectData.getString("wardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());
 		}
 		
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateCityCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateCityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateDistrictCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateDistrictCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("delegateWardCode"), objectData.getLong("groupId"));
+				objectData.getString("delegateWardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDelegateWardName(dictItem.getItemName());
 		}
 		
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalCityCode"), objectData.getLong("groupId"));
+				objectData.getString("postalCityCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalDistrictCode"), objectData.getLong("groupId"));
+				objectData.getString("postalDistrictCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("postalWardCode"), objectData.getLong("groupId"));
+				objectData.getString("postalWardCode"), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setPostalWardName(dictItem.getItemName());

@@ -22,13 +22,11 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -62,11 +60,6 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link RegistrationTemplatesLocalServiceUtil} to access the registration templates local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationTemplatesLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public RegistrationTemplates addRegistrationTemplates(long groupId,
-		String govAgencyCode, String govAgencyName, String formNo,
-		String formName, boolean multiple, String formScript,
-		String formReport, String sampleData, ServiceContext serviceContext)
-		throws PortalException, SystemException;
 
 	/**
 	* Adds the registration templates to the database. Also notifies the appropriate model listeners.
@@ -77,12 +70,6 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationTemplates addRegistrationTemplates(
 		RegistrationTemplates registrationTemplates);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationTemplates adminProcessData(JSONObject objectData);
-
-	@Indexable(type = IndexableType.DELETE)
-	public RegistrationTemplates adminProcessDelete(Long id);
 
 	/**
 	* Creates a new registration templates with the primary key. Does not add the registration templates to the database.
@@ -214,10 +201,6 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public RegistrationTemplates getRegistrationTemplatebyId(long groupId,
-		String registrationTemplateId) throws PortalException;
-
 	/**
 	* Returns the registration templates with the primary key.
 	*
@@ -228,18 +211,6 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public RegistrationTemplates getRegistrationTemplates(
 		long registrationTemplateId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationTemplates> getRegistrationTemplatesbyFormNo(
-		long groupId, String formNo);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(
-		long groupId, String govAgencyCode);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationTemplates> getRegistrationTemplatesbyGroupId(
-		long groupId);
 
 	/**
 	* Returns the registration templates matching the UUID and group.
@@ -276,31 +247,6 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegistrationTemplatesesCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public RegistrationTemplates getRegTempbyFormNoGovCode(long groupId,
-		String formNo, String govAgencyCode);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public RegistrationTemplates getRegTempbyRegId(long groupId,
-		long registrationTemplatesId);
-
-	public RegistrationTemplates removeRegistrationTemplate(long groupId,
-		String registrationTemplateId) throws PortalException;
-
-	public RegistrationTemplates updateFormReport(long groupId,
-		long registrationTemplatesId, String formReport,
-		ServiceContext serviceContext) throws PortalException, SystemException;
-
-	public RegistrationTemplates updateFormScript(long groupId,
-		long registrationTemplateId, String formScript,
-		ServiceContext serviceContext) throws PortalException, SystemException;
-
-	public RegistrationTemplates updateRegistrationTemplates(long groupId,
-		long registrationTemplateId, String govAgencyCode,
-		String govAgencyName, String formNo, String formName, boolean multiple,
-		String formScript, String formReport, String sampleData,
-		ServiceContext serviceContext) throws PortalException;
-
 	/**
 	* Updates the registration templates in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -310,8 +256,4 @@ public interface RegistrationTemplatesLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationTemplates updateRegistrationTemplates(
 		RegistrationTemplates registrationTemplates);
-
-	public RegistrationTemplates updateSampledata(long groupId,
-		long registrationTemplatesId, String sampleData,
-		ServiceContext serviceContext) throws PortalException, SystemException;
 }

@@ -58,8 +58,8 @@ import org.osgi.service.component.annotations.Component;
 		"url-pattern=/o/v1/opencps/users/*"
 		,
 		"url-pattern=/o/v1/opencps/login",
-//		"url-pattern=/o/rest/v2/*",
-//		"url-pattern=/o/rest/v2_1/*"
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
 public class RestAuthFilter implements Filter {
@@ -77,6 +77,17 @@ public class RestAuthFilter implements Filter {
 	
 	private static final String hostExtractorRegexString = "(?:https?://)?(?:www\\.)?(.+\\.)(com|au\\.uk|co\\.in|be|in|uk|org\\.in|org|net|edu|gov\\.vn|mil)";
 	private static final Pattern hostExtractorRegexPattern = Pattern.compile(hostExtractorRegexString);
+	private static final String CONTENT_TYPE = "application/json; charset=utf-8";
+	private static final String ENCODING = "UTF-8";
+	private static final String ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+	private static final String ALLOW_HEADER = "Access-Control-Allow-Headers";
+	private static final String ALLOW_METHOD = "Access-Control-Allow-Methods";
+	private static final String ALLOW_CREDENTIAL = "Access-Control-Allow-Credentials";
+	private static final String METHOD_ACCESS = "DELETE,POST,GET,PUT,HEAD";
+	private static final String X_FORWARDED_FOR = "X-FORWARDED-FOR";
+	private static final String HEADER_ORIGIN = "Origin";
+	private static final String LOCAL_ACCESSS = "localaccess";
+	private static final String USER_REQUEST_ID = "userid";
 
 	public static String getDomainName(String url){
 	    if (url == null) return null;
@@ -93,6 +104,7 @@ public class RestAuthFilter implements Filter {
 	@Override
 	public void destroy() {
 	}
+	
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
@@ -118,15 +130,15 @@ public class RestAuthFilter implements Filter {
 		}
 		
 		String method = httpRequest.getMethod();
-		String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");  
+		String ipAddress = httpRequest.getHeader(X_FORWARDED_FOR);  
 		if (ipAddress == null) {  
 		   ipAddress = httpRequest.getRemoteAddr();  
 		} 
-		String origin = httpRequest.getHeader("Origin");
+		String origin = httpRequest.getHeader(HEADER_ORIGIN);
 		
-		_log.debug("Request IP: " + ipAddress);
-		_log.debug("Allow ips: " + allowIps);
-		_log.debug("Origin: " + origin);
+//		_log.debug("Request IP: " + ipAddress);
+//		_log.debug("Allow ips: " + allowIps);
+//		_log.debug("Origin: " + origin);
 		String domain = StringPool.BLANK;
 		if (origin != null) {
 			domain = getDomainName(origin);			
@@ -158,10 +170,10 @@ public class RestAuthFilter implements Filter {
 				}
 			}
 		}
-		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
-			pAuth = httpRequest.getParameter("Token");
+		if (Validator.isNotNull(httpRequest.getParameter(P_AUTH))) {
+			pAuth = httpRequest.getParameter(P_AUTH);
 		}
-		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
+		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader(LOCAL_ACCESSS)) ? httpRequest.getHeader(LOCAL_ACCESSS).equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 			//System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
@@ -173,7 +185,7 @@ public class RestAuthFilter implements Filter {
 					authOK(servletRequest, servletResponse, filterChain, 0);
 				}
 			} else {
-				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
+				long sockId = Validator.isNotNull(httpRequest.getHeader(USER_REQUEST_ID)) ? Long.valueOf(httpRequest.getHeader(USER_REQUEST_ID)) : 0;
 				httpRequest.setAttribute(USER_ID, sockId);
 				authOK(servletRequest, servletResponse, filterChain, sockId);
 			}
@@ -199,19 +211,19 @@ public class RestAuthFilter implements Filter {
 			if (isBasic) {
 
 				try {
-					// Get encoded user and password, comes after "BASIC "  
-			        String userpassEncoded = strBasic.substring(6);  
-			        String decodetoken = new String(Base64.decode(userpassEncoded),
-			                StringPool.UTF8);
-			        String account[] = decodetoken.split(":");
-			        
-			        String email = account[0];
-			        String password = account[1];
-		        
-					long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(httpRequest, email, password, CompanyConstants.AUTH_TYPE_EA);
-				
+					// Get encoded user and password, comes after "BASIC "
+					String userpassEncoded = strBasic.substring(6);
+					String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
+					String account[] = decodetoken.split(StringPool.COLON);
+
+					String email = account[0];
+					String password = account[1];
+
+					long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(httpRequest, email, password,
+							CompanyConstants.AUTH_TYPE_EA);
+
 					authOK(servletRequest, servletResponse, filterChain, userId);
-					
+
 				} catch (PortalException e) {
 					_log.debug(e);
 					authFailure(servletResponse);
@@ -225,67 +237,36 @@ public class RestAuthFilter implements Filter {
 
 	}
 
-	private void authOKCORS(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
-			throws IOException, ServletException {
+	private void authOKCORS(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain,
+			long userId) throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-		httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-		httpResponse.addHeader("Access-Control-Allow-Headers", "*");
-		httpResponse.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
-		httpResponse.addHeader("Access-Control-Allow-Credentials", "true");
-		
-	    filterChain.doFilter(servletRequest, httpResponse);
+		HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+		httpResponse.addHeader(ALLOW_ORIGIN, StringPool.STAR);
+		httpResponse.addHeader(ALLOW_HEADER, StringPool.STAR);
+		httpResponse.addHeader(ALLOW_METHOD, METHOD_ACCESS);
+		httpResponse.addHeader(ALLOW_CREDENTIAL, StringPool.TRUE);
+
+		filterChain.doFilter(servletRequest, httpResponse);
 	}
 	
-	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
-			throws IOException, ServletException {
+	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain,
+			long userId) throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-//		response.addHeader("Access-Control-Allow-Origin", "*");
-//		response.addHeader("Access-Control-Allow-Headers", "*");
-//		response.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
-//	    HttpServletRequest  httpRequest  = (HttpServletRequest)  servletRequest;
 	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-//	    String gzipFilterProperty = PropsUtil.get(OPENCPS_GZIP_FILTER);
-//	    boolean gzipFilterEnable = Validator.isNotNull(gzipFilterProperty) ? Boolean.parseBoolean(PropsUtil.get(OPENCPS_GZIP_FILTER)) : false;
-//	    gzipFilterEnable = false;
-//	    if (gzipFilterEnable) {
-//		    if ( acceptsGZipEncoding(httpRequest) 
-//		    		&& !httpRequest.getRequestURI().equals("/o/v1/opencps/login")) {
-//		    	if (!httpResponse.containsHeader("Content-Encoding")
-//		    		|| httpResponse.getHeader("Content-Encoding").indexOf("gzip") == -1) {
-//		    		httpResponse.addHeader("Content-Encoding", "gzip");
-//		    		httpResponse.setCharacterEncoding(StandardCharsets.UTF_8);
-//			        GZipServletResponseWrapper gzipResponse =
-//			        		new GZipServletResponseWrapper(httpResponse);
-//			        filterChain.doFilter(servletRequest, gzipResponse);
-//			        gzipResponse.close();
-//		    	}
-//		    	else {
-//		    		filterChain.doFilter(servletRequest, httpResponse);
-//		    	}
-//		    } else {
-//		    	filterChain.doFilter(servletRequest, httpResponse);
-//		    }
-//	    }
-//	    else {
 	    	filterChain.doFilter(servletRequest, httpResponse);
-//	    }
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {
-		servletResponse.setCharacterEncoding("UTF-8");
-		servletResponse.setContentType("application/json; charset=utf-8");
+		servletResponse.setCharacterEncoding(ENCODING);
+		servletResponse.setContentType(CONTENT_TYPE);
 		
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		// response.addHeader("Access-Control-Allow-Origin", "*");
-		// response.addHeader("Access-Control-Allow-Headers", "*");
-		// response.addHeader("Access-Control-Allow-Methods", "*");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType(CONTENT_TYPE);
 		
-		PrintWriter out = response.getWriter();												
+		PrintWriter out = response.getWriter();
 		
-		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), "permission denied", "");
+		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), "permission denied", StringPool.BLANK);
 		
 		out.println(error.toString());
 		out.flush();
@@ -296,10 +277,4 @@ public class RestAuthFilter implements Filter {
 	public void init(FilterConfig filterConfig) {
 	}
 
-	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
-		String acceptEncoding = httpRequest.getHeader("Accept-Encoding");
-
-	    return acceptEncoding != null && 
-	             acceptEncoding.indexOf("gzip") != -1;
-	}	
 }

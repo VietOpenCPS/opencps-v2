@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -20,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -78,7 +80,7 @@ public class AutoFillFormData {
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
 
-			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
 
 			_curDate = sfd.format(new Date());
 
@@ -92,33 +94,6 @@ public class AutoFillFormData {
 
 				try {
 
-					Registration registration = RegistrationLocalServiceUtil
-							.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
-
-					if (Validator.isNotNull(registration)) {
-
-						JSONObject applicantJSON = JSONFactoryUtil
-								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
-
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
-
-					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
@@ -141,13 +116,12 @@ public class AutoFillFormData {
 						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_representative = applicantJSON.getString("representativeEnterprise");
 
-					}
 
-				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-					_log.error(e1);
-				}
+					} catch (PortalException e1) {
+						// TODO Auto-generated catch block
+	//					e1.printStackTrace();
+						_log.error(e1);
+					}
 
 				try {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
@@ -168,7 +142,6 @@ public class AutoFillFormData {
 					_employee_title = employeeJSON.getString("title");
 
 				} catch (Exception e) {
-					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
 					_log.debug(e);
 					//_log.error(e);
 				}
@@ -187,7 +160,7 @@ public class AutoFillFormData {
 
 				String value = String.valueOf(entry.getValue());
 
-				if (value.startsWith("_") && !value.contains(":")) {
+				if (value.startsWith("_") && !value.contains(StringPool.COLON)) {
 
 					if ("_subjectName".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
@@ -241,9 +214,9 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _serviceName);
 					}
 
-				} else if (value.startsWith("_") && value.contains(":")) {
+				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
+					String[] valueSplit = value.split(StringPool.COLON);
 					for (String string : valueSplit) {
 						if ("_subjectName".equals(string)) {
 							resultBinding += ", " + _subjectName;
@@ -298,16 +271,16 @@ public class AutoFillFormData {
 						}
 					}
 
-					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(", ", StringPool.BLANK));
+					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
-				} else if (value.startsWith("#") && value.contains("@")) {
+				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
 					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
+					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-								paper, false, new DossierFileComparator(false, "createDate", Date.class));
+								paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
@@ -317,12 +290,12 @@ public class AutoFillFormData {
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
+								if (variable.contains(StringPool.COLON)) {
+									String[] variableMuti = variable.split(StringPool.COLON);
 									for (String string : variableMuti) {
-										myCHK += ", " + jsonOtherMap.get(string).toString();
+										myCHK += StringPool.COMMA_AND_SPACE + jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(", ", "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
@@ -332,13 +305,13 @@ public class AutoFillFormData {
 								//_log.error(e);
 							}
 
-							if (myCHK.startsWith("#")) {
-								jsonMap.put(entry.getKey(), "");
+							if (myCHK.startsWith(StringPool.POUND)) {
+								jsonMap.put(entry.getKey(), StringPool.BLANK);
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
 							}
 						} else {
-							jsonMap.put(entry.getKey(), "");
+							jsonMap.put(entry.getKey(), StringPool.BLANK);
 						}
 					} catch (SystemException e) {
 //						e.printStackTrace();
@@ -354,7 +327,7 @@ public class AutoFillFormData {
 					//_log.info("START paper: "+paper);
 					try {
 						DossierAction dossierAction = DossierActionLocalServiceUtil.getByDID_CODE_First(dossierId,
-								paper, new DossierActionComparator(false, "createDate", Date.class));
+								paper, new DossierActionComparator(false, Field.CREATE_DATE, Date.class));
 						//_log.info("START dossierAction: "+dossierAction);
 
 						if (Validator.isNotNull(dossierAction) && Validator.isNotNull(dossierAction.getPayload())
@@ -382,7 +355,7 @@ public class AutoFillFormData {
 				} else if (entry.getValue().getClass().getName().contains("JSONObject")) {
 					result.put(entry.getKey(), (JSONObject) entry.getValue());
 				} else {
-					result.put(entry.getKey(), entry.getValue() + "");
+					result.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
 				}
 			}
 		} catch (JSONException e) {
@@ -484,7 +457,7 @@ public class AutoFillFormData {
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
 
-			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
 
 			_curDate = sfd.format(new Date());
 
@@ -498,33 +471,6 @@ public class AutoFillFormData {
 
 				try {
 
-					Registration registration = RegistrationLocalServiceUtil
-							.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
-
-					if (Validator.isNotNull(registration)) {
-
-						JSONObject applicantJSON = JSONFactoryUtil
-								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
-
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
-
-					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
@@ -547,13 +493,12 @@ public class AutoFillFormData {
 						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_representative = applicantJSON.getString("representativeEnterprise");
 
-					}
 
-				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-					_log.error(e1);
-				}
+					} catch (PortalException e1) {
+						// TODO Auto-generated catch block
+	//					e1.printStackTrace();
+						_log.error(e1);
+					}
 
 				try {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
@@ -593,7 +538,7 @@ public class AutoFillFormData {
 
 				String value = String.valueOf(entry.getValue());
 
-				if (value.startsWith("_") && !value.contains(":")) {
+				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
 					if ("_subjectName".equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
@@ -647,9 +592,9 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _serviceName);
 					}
 
-				} else if (value.startsWith("_") && value.contains(":")) {
+				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
+					String[] valueSplit = value.split(StringPool.COLON);
 					for (String string : valueSplit) {
 						if ("_subjectName".equals(string)) {
 							resultBinding += ", " + _subjectName;
@@ -704,16 +649,16 @@ public class AutoFillFormData {
 						}
 					}
 
-					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(", ", StringPool.BLANK));
+					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
-				} else if (value.startsWith("#") && value.contains("@")) {
+				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
 					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
+					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossier.getDossierId(),
-								paper, false, new DossierFileComparator(false, "createDate", Date.class));
+								paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
@@ -723,12 +668,12 @@ public class AutoFillFormData {
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
+								if (variable.contains(StringPool.COLON)) {
+									String[] variableMuti = variable.split(StringPool.COLON);
 									for (String string : variableMuti) {
-										myCHK += ", " + jsonOtherMap.get(string).toString();
+										myCHK += StringPool.COMMA_AND_SPACE + jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(", ", "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
@@ -738,13 +683,13 @@ public class AutoFillFormData {
 								//_log.error(e);
 							}
 
-							if (myCHK.startsWith("#")) {
-								jsonMap.put(entry.getKey(), "");
+							if (myCHK.startsWith(StringPool.POUND)) {
+								jsonMap.put(entry.getKey(), StringPool.BLANK);
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
 							}
 						} else {
-							jsonMap.put(entry.getKey(), "");
+							jsonMap.put(entry.getKey(), StringPool.BLANK);
 						}
 					} catch (SystemException e) {
 //						e.printStackTrace();
@@ -760,7 +705,7 @@ public class AutoFillFormData {
 					//_log.info("START paper: "+paper);
 					try {
 						DossierAction dossierAction = DossierActionLocalServiceUtil.getByDID_CODE_First(dossier.getDossierId(),
-								paper, new DossierActionComparator(false, "createDate", Date.class));
+								paper, new DossierActionComparator(false, Field.CREATE_DATE, Date.class));
 						//_log.info("START dossierAction: "+dossierAction);
 
 						if (Validator.isNotNull(dossierAction) && Validator.isNotNull(dossierAction.getPayload())
@@ -788,7 +733,7 @@ public class AutoFillFormData {
 				} else if (entry.getValue().getClass().getName().contains("JSONObject")) {
 					result.put(entry.getKey(), (JSONObject) entry.getValue());
 				} else {
-					result.put(entry.getKey(), entry.getValue() + "");
+					result.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
 				}
 			}
 		} catch (JSONException e) {

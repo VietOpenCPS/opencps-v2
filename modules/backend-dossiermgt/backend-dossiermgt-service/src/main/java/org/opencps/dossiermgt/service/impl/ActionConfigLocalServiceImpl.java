@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -26,6 +27,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -264,15 +267,15 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		ActionConfig actionConfig = actionConfigPersistence.fetchByF_BY_ActionCode(groupId, actionCode);
 		if (Validator.isNull(actionCode)) {
-			throw new DuplicateActionCodeException("DuplicateActionCodeException");
+			throw new DuplicateActionCodeException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 		}
 
 		if (Validator.isNotNull(actionConfig) && actionConfigId == 0) {
-			throw new DuplicateActionCodeException("DuplicateActionCodeException");
+			throw new DuplicateActionCodeException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 		}
 
 		if (Validator.isNotNull(actionConfig) && actionConfigId != actionConfig.getActionConfigId()) {
-			throw new DuplicateActionCodeException("DuplicateStepCodeException");
+			throw new DuplicateActionCodeException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 		}
 
 	}
@@ -309,7 +312,7 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 			object = actionConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
