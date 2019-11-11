@@ -49,7 +49,7 @@ import javax.xml.bind.annotation.XmlType;
     "createDate",
     "modifiedDate",
     "fullName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "comment",
     "selected",
     "currentUser"

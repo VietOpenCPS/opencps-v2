@@ -1,17 +1,18 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.io.InputStream;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.DossierDocumentActions;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.io.InputStream;
+import java.util.List;
+
+import org.opencps.dossiermgt.action.DossierDocumentActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 
 public class DossierDocumentActionsImpl implements DossierDocumentActions {
 

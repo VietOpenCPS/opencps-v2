@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 
 /**
 * <p>Java class for anonymous complex type.
@@ -39,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
- "total",
+ ConstantUtils.TOTAL,
  ConstantUtils.DATA
 })
 @XmlRootElement(name = ConstantUtils.DATA)

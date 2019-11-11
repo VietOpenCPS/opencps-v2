@@ -53,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
     "classPK",
     "userId",
     "fullName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "votingId",
     "subject",
     "choice",

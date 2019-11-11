@@ -52,7 +52,9 @@ import javax.ws.rs.HttpMethod;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -287,9 +289,9 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 					long assignedUserId = processAction.getAssignUserId();
 
-					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
-							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
-							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
+//					actions.doAction(syncServiceProcess.getGroupId(), desDossierId, desDossier.getReferenceUid(),
+//							processAction.getActionCode(), processAction.getProcessActionId(), applicantName,
+//							applicantNote, assignedUserId, systemUser.getUserId(), StringPool.BLANK, serviceContext);
 
 				} catch (Exception e) {
 					_log.debug(e);
@@ -392,12 +394,12 @@ public class DossierPullScheduler extends BaseSchedulerEntryMessageListener {
 
 						// String subUsers = StringPool.BLANK;
 						if(processAction != null) {
-							actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
-									desDossier.getReferenceUid(), processAction.getActionCode(),
-									processAction.getProcessActionId(), applicantName, applicantNote,
-	
-									processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-									serviceContext);
+//							actions.doAction(syncServiceProcess.getGroupId(), desDossier.getDossierId(),
+//									desDossier.getReferenceUid(), processAction.getActionCode(),
+//									processAction.getProcessActionId(), applicantName, applicantNote,
+//	
+//									processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
+//									serviceContext);
 						}
 					} else {
 						desDossier.setSubmitting(true);

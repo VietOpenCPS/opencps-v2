@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
@@ -114,6 +115,7 @@ public class OpenCPSRestClient {
 		DossierDetailModel result = null;
 		InvokeREST callRest = new InvokeREST();
 		HashMap<String, String> properties = new HashMap<String, String>();
+		
 		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
 		ServiceContext context = new ServiceContext();
 		

@@ -148,6 +148,7 @@ public class ConstantUtils {
 	public static final String MIME_TYPE_ZIP = "org.opencps.mimetype.zip";
 	public static final String CONTENT_TYPE_PNG = "org.opencps.contenttype.png";
 	public static final String CONTENT_TYPE_PDF = "org.opencps.contenttype.pdf";
+	public static final String CONTENT_TYPE_JSON = "org.opencps.contenttype.json";
 	public static final String CONTENT_TYPE_IMAGE = "org.opencps.contenttype.image";
 	public static final String TYPE_DISPOSITON = "org.opencps.type.dispositon";
 	public static final String NO_CONTENT = "org.opencps.error.nocontent";
@@ -169,11 +170,16 @@ public class ConstantUtils {
 	public static final String VALUE_USER_PHOTO = "org.opencps.value.userphoto";
 	public static final String VALUE_USER_PHOTO_UPLOAD = "org.opencps.value.userphotoupload";
 	public static final String VALUE_PATTERN_FILENAME = "org.opencps.value.pattern.filename";
+	public static final String VNPOST_BASE_PATH = "org.opencps.value.path.vnpost";
 	public static final String VALUE_PATH_CER = "org.opencps.value.pathcert";
 	public static final String VALUE_APPLICANT = "org.opencps.value.applicant";
 	public static final String VALUE_EMPLOYEE = "org.opencps.value.employee";
+	public static final String VALUE_PRE_AGENCY = "org.opencps.value.pre.agency";
+	public static final String VALUE_PRE_TEMPLATE = "org.opencps.value.pre.template";
+	public static final String VALUE_PRE_SERVICE = "org.opencps.value.pre.service";
 	public static final String VALUE_CITIZEN = "org.opencps.value.citizen";
 	public static final String VALUE_PERMISSON_READ = "org.opencps.value.permission.read";
+	public static final String VALUE_PERMISSON_WRITE = "org.opencps.value.permission.write";
 	public static final String VALUE_ADMINISTRATIVE_REGION = "org.opencps.value.region";
 	public static final String ADMINTRATION_CODE = "org.opencps.value.service.administration";
 	public static final String SERVICE_DOMAIN = "org.opencps.value.service.domain";

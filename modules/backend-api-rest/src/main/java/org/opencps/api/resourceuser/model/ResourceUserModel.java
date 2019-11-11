@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "userId",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "fullName",
     "userClass",
     "readonly",

@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "comment",
     "selected",
-    ConstantUtils.VALUE_EMAIL
+    "email"
 })
 @XmlRootElement(name = "VotingResultInputModel")
 public class VotingResultInputModel {
@@ -48,7 +48,7 @@ public class VotingResultInputModel {
     protected String comment;
 	@FormParam(value = "selected")
     protected String selected;
-	@FormParam(value = ConstantUtils.VALUE_EMAIL)
+	@FormParam(value = "email")
     protected String email;
 
     /**

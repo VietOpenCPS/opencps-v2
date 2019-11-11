@@ -28,7 +28,9 @@ import javax.portlet.PortletResponse;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -191,7 +193,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
 			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
 			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
-			long hourMiliseconds = 60 * 60 * 1000;
 			
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
@@ -201,19 +202,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			//
 			if (dueDateTime > 0) {
 				if (releaseTime > 0) {
-					/*
-					long valueCompareRelease = releaseTime - dueDateTime;
-					if (valueCompareRelease > 0) {
-						// OverTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
-					} else if (valueCompareRelease > -hourMiliseconds) {
-						// OnTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
-					} else {
-						// BeTimes
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
-					}
-					*/
 					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
 					if (1 == valueCompareRelease) {
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
@@ -229,19 +217,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				}
 				if (finishTime > 0) {
 					
-					/*
-					long valueCompareFinish = finishTime - dueDateTime;
-					if (valueCompareFinish > 0) {
-						// OverTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 1);
-					} else if (valueCompareFinish > -hourMiliseconds) {
-						// OnTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 2);
-					} else {
-						// BeTimes
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 3);
-					}
-					*/
 					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
 					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getFinishDate(), object.getDueDate()));
 				} else {
@@ -251,17 +226,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			double durationCount = object.getDurationCount();
 			double durationUnit = object.getDurationUnit();
-//			if (durationCount > 0) {
-//				if ((int)durationUnit == 0) {
-//					durationComing = (long) (durationCount * VALUE_CONVERT_DATE_TIMESTAMP / 5);
-//				} else {
-//					durationComing = (long) (durationCount * VALUE_CONVERT_HOUR_TIMESTAMP / 5);
-//				}
-//				long dueDateComing = dueDateTime - durationComing;
-//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dueDateComing);
-//			} else {
-//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
-//			}
 			
 			if (durationCount > 0) {
 				double durationComing = durationCount / 5;
@@ -410,7 +374,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
 						if (dauList != null && dauList.size() > 0) {
 							for (DossierActionUser dau : dauList) {
-								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+								userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
 							}
 						}
 					}
@@ -515,29 +479,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.DOSSIER_OVER_DUE,
 					Boolean.toString(getDossierOverDue(object.getPrimaryKey(), object.getDueDate())));
 
-			// TODO: index dossierAction StepCode
-//			StringBundler sb = new StringBundler();
-//			long dossierActionsUserId = object.getDossierActionId();
-//			if (dossierActionsUserId > 0) {
-//				List<DossierActionUser> dossierActionUsers = DossierActionUserLocalServiceUtil
-//						.getListUser(dossierActionsUserId);
-//				if (dossierActionUsers != null && dossierActionUsers.size() > 0) {
-//					int length = dossierActionUsers.size();
-//					for (int i = 0; i < length; i++) {
-//						DossierActionUser dau = dossierActionUsers.get(i);
-//						long userId = dau.getUserId();
-//						if (i == 0) {
-//							sb.append(userId);
-//						} else {
-//							sb.append(StringPool.SPACE);
-//							sb.append(userId);
-//
-//						}
-//					}
-//				}
-//			}
-//			_log.info("Mapping user:" + sb.toString());
-//			document.addTextSortable(DossierTerm.ACTION_MAPPING_USERID, sb.toString());
 			//
 			StringBundler sb = new StringBundler();
 			StringBundler sbPermission = new StringBundler();
@@ -553,11 +494,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_WRITE));
 							} else {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 							}
 						} else {
 							sb.append(StringPool.SPACE);
@@ -566,11 +507,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_WRITE));
 							} else {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 							}
 
 						}
@@ -600,25 +541,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 				}
 			} catch (Exception e) {
-				_log.error("Can not get list dossierActions by dossierId " + dossierId, e);
+				_log.error(dossierId, e);
 			}
 
 			document.addTextSortable(DossierTerm.ACTION_USERIDS, StringUtil.merge(actionUserIds, StringPool.SPACE));
-
-			// binhth index dossierId CTN
-//			MessageDigest md5 = null;
-//			byte[] ba = null;
-//			try {
-//				md5 = MessageDigest.getInstance("SHA-256");
-//				ba = md5.digest(object.getReferenceUid().getBytes("UTF-8"));
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			DateFormat df = new SimpleDateFormat("yy");
-//			String formattedDate = df.format(Calendar.getInstance().getTime());
-//			String dossierIDCTN;
-//			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
-//			document.addTextSortable(DossierTerm.DOSSIER_ID + "CTN", dossierIDCTN);
 
 			document.addTextSortable(DossierTerm.ENDORSEMENT_DATE, APIDateTimeUtils
 					.convertDateToString(object.getEndorsementDate(), APIDateTimeUtils._NORMAL_PARTTERN));
@@ -754,7 +680,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

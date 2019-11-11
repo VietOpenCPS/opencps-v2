@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    ConstantUtils.TOTAL,
+    "total",
     "votingTopModel"
 })
 @XmlRootElement(name = "VotingTopResults")

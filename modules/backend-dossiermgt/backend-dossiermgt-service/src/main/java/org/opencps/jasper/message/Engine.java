@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
@@ -88,9 +89,9 @@ public class Engine implements MessageListener {
 
 		try {
 
-			long userId = msgData.getLong("userId");
+			long userId = msgData.getLong(Field.USER_ID);
 
-			long classPK = msgData.getLong("classPK");
+			long classPK = msgData.getLong(Field.CLASS_PK);
 
 			String className = msgData.getString("className");
 			
@@ -120,30 +121,6 @@ public class Engine implements MessageListener {
     			dossierFile.setIsNew(false);
     			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
     
-    			//Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
-    			//indexer.reindex(dossierFile);
-    
-			} else if(engineClass.isAssignableFrom(RegistrationForm.class)) {
-			    RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.fetchRegistrationForm(classPK);
-			    
-			    if(registrationForm != null) {
-			        ServiceContext serviceContext = new ServiceContext();
-	                serviceContext.setUserId(registrationForm.getUserId());
-	    
-	                long fileEntryId = 0;
-	    
-	                FileEntry fileEntry = FileUploadUtils.uploadFile(
-	                    userId, registrationForm.getGroupId(), 0, file, filePath, null, "REGISTRATION_FORM",
-	                        serviceContext);
-	    
-	                fileEntryId = fileEntry.getFileEntryId();
-	                
-			        registrationForm.setIsNew(true);
-			        registrationForm.setModifiedDate(new Date());
-			        registrationForm.setFileEntryId(fileEntryId);
-			        
-			        RegistrationFormLocalServiceUtil.updateRegistrationForm(registrationForm);
-			    }
 			}
 			else if (engineClass.isAssignableFrom(Deliverable.class)) {
 				Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
@@ -197,20 +174,6 @@ public class Engine implements MessageListener {
 							}
 						}
 					} else {
-//						String deliverableCode = StringPool.BLANK;
-//						DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-//								dossierFile.getGroupId(), dossierFile.getDossierTemplateNo(),
-//								dossierFile.getDossierPartNo());
-//						if (dossierPart != null && Validator.isNotNull(dossierPart.getDeliverableType())) {
-//							DeliverableType deliverableType = DeliverableTypeLocalServiceUtil
-//									.getByCode(dossierFile.getGroupId(), dossierPart.getDeliverableType());
-//							if (Validator.isNotNull(deliverableType)) {
-//								deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
-//										dossierFile.getGroupId(), serviceContext.getCompanyId(),
-//										deliverableType.getDeliverableTypeId());
-//							}
-//						}
-
 						System.out.println("==========addDossierByDeliverable=========" + deliverable.getDeliverableCode());
 						DossierFileLocalServiceUtil.addDossierByDeliverable(dossierFile.getGroupId(),
 								dossierFile.getCompanyId(), dossierFile.getUserId(), dossierFile.getUserName(),
@@ -243,24 +206,6 @@ public class Engine implements MessageListener {
     			indexer.reindex(dossierDocument);
 				
 			}
-//			else if (engineClass.isAssignableFrom(Deliverable.class)) {
-//				Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);
-//				
-//    			ServiceContext serviceContext = new ServiceContext();
-//    			serviceContext.setUserId(openCPSDeliverable.getUserId());
-//    
-//    			long fileEntryId = 0;
-//    
-//    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, openCPSDeliverable.getGroupId(), file, filePath,
-//    					serviceContext);
-//    
-//    			fileEntryId = fileEntry.getFileEntryId();
-//    
-//    			openCPSDeliverable.setFileEntryId(fileEntryId);
-//    
-//    			DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
-//    
-//			}
 
 		} catch (Exception e) {
 		    _log.error(e);

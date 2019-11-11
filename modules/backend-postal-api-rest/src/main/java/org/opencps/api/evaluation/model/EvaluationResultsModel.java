@@ -38,10 +38,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    ConstantUtils.TOTAL,
-    ConstantUtils.DATA
+    "tatal",
+    "data"
 })
-@XmlRootElement(name = ConstantUtils.DATA)
+@XmlRootElement(name = "data")
 public class EvaluationResultsModel {
 
     protected Integer total;

@@ -14,12 +14,39 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.BufferedReader;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -29,7 +56,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +70,6 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
@@ -70,14 +95,13 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
-import org.opencps.datamgt.util.ExtendDueDateUtils;
-import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -86,13 +110,13 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.KeyPay;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -134,7 +158,6 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
-import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -170,37 +193,6 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.transaction.Isolation;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-
 import backend.auth.api.exception.NotFoundException;
 
 /**
@@ -228,8 +220,6 @@ public class CPSDossierBusinessLocalServiceImpl
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil} to access the cps dossier business local service.
 	 */
 	
-	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
-	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
 	CacheActions cache = new CacheActionsImpl();
 	int ttl = OpenCPSConfigUtil.getCacheTTL();
 	
@@ -251,7 +241,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					
 					if (splitCDs[1].contains(StringPool.AT)) {
 						if (splitCDs[1].split(StringPool.AT).length != 2) {
-							throw new PortalException("Cross dossier config error");
+							throw new PortalException(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 						}
 						else {
 							dossierTemplateNo = splitCDs[1].split(StringPool.AT)[0];
@@ -267,7 +257,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			else {
 				if (createDossiers.contains(StringPool.AT)) {
 					if (createDossiers.split(StringPool.AT).length != 2) {
-						throw new PortalException("Cross dossier config error");
+						throw new PortalException(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 					}
 					else {
 						govAgencyCode = createDossiers.split(StringPool.AT)[0];
@@ -389,16 +379,16 @@ public class CPSDossierBusinessLocalServiceImpl
 						hsltDossier.setOriginDossierNo(dossier.getDossierNo());
 						dossierLocalService.updateDossier(hsltDossier);
 						
-						JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_NEW, StringPool.BLANK);
+						JSONObject jsonDataStatusText = getStatusText(groupId, ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW), StringPool.BLANK);
 						hsltDossier = dossierLocalService.updateStatus(groupId, hsltDossier.getDossierId(), hsltDossier.getReferenceUid(),
-								DossierTerm.DOSSIER_STATUS_NEW,
-								jsonDataStatusText != null ? jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_NEW) : StringPool.BLANK, StringPool.BLANK,
+								ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW),
+								jsonDataStatusText != null ? jsonDataStatusText.getString(ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW)) : StringPool.BLANK, StringPool.BLANK,
 								StringPool.BLANK, StringPool.BLANK, dossierNote, context);
 					}
 					else {
 						return null;								
 					}
-					JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
+					JSONObject jsonDataStatusText = getStatusText(groupId, ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), DossierTerm.DOSSIER_STATUS_INTEROPERATING, StringPool.BLANK);
 					if (curStep != null) {
 						dossier = dossierLocalService.updateStatus(groupId, dossier.getDossierId(),
 								dossier.getReferenceUid(), DossierTerm.DOSSIER_STATUS_INTEROPERATING,
@@ -435,9 +425,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		ActionConfig ac = actionConfig;
 		if (ac != null) {
 			if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
+				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith(StringPool.AT)) {
 					//Generate document
-					String[] documentTypes = ac.getDocumentType().split(",");
+					String[] documentTypes = ac.getDocumentType().split(StringPool.COMMA);
 					for (String documentType : documentTypes) {
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 						if (dt != null) {
@@ -495,7 +485,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Check if generate dossier document
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 			// Generate document
-			String[] documentTypes = documentTypeList.split(",");
+			String[] documentTypes = documentTypeList.split(StringPool.COMMA);
 			for (String documentType : documentTypes) {
 				DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 				if (dt != null) {
@@ -703,7 +693,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (employee != null) {
 					actionUserHslt = actionUser;
 				}
-				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(hslt.getDossierStatus())) {
 					Date now = new Date();
 					hslt.setSubmitDate(now);
 					hslt = dossierLocalService.updateDossier(hslt);
@@ -747,7 +737,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			String stepInstruction = curStep.getStepInstruction();
 			String sequenceNo = curStep.getSequenceNo();
 			
-			JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
+			JSONObject jsonDataStatusText = getStatusText(groupId, ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), curStatus, curSubStatus);
 
 			String fromStepCode = previousAction != null ? previousAction.getStepCode() : StringPool.BLANK;
 			String fromStepName = previousAction != null ? previousAction.getStepName() : StringPool.BLANK;
@@ -1034,7 +1024,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				String curStatus = backCurStep.getDossierStatus();
 				String curSubStatus = backCurStep.getDossierSubStatus();
 				
-				JSONObject jsonDataStatusText = getStatusText(groupId, DOSSIER_SATUS_DC_CODE, curStatus, curSubStatus);
+				JSONObject jsonDataStatusText = getStatusText(groupId, ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), curStatus, curSubStatus);
 
 				//update dossierStatus
 				dossier = DossierLocalServiceUtil.updateStatus(groupId, dossierId, dossier.getReferenceUid(), curStatus,
@@ -2123,7 +2113,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 //		if ((Validator.isNull(prevStatus) && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus)
 //				&& (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA))
-		if ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus))
+		if ((DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus) || ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(curStatus))
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 
 			try {
@@ -2144,9 +2134,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			}		
 		}
 		
-		if ((DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus)
+		if ((ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(prevStatus)
 				&& DossierTerm.DOSSIER_STATUS_RECEIVING.equals(curStatus)) || 
-				(dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA && DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus))) {
+				(dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA && ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(curStatus))) {
 //			try {
 //				DossierLocalServiceUtil.updateSubmittingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
 				if (Validator.isNull(dossier.getSubmitDate())) {
@@ -2160,8 +2150,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT &&
 				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
-				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
-				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
+				|| (ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
+				|| (ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 				|| (dateOption == 2))
 				&& dossier.getReceiveDate() == null) {
 //			try {
@@ -2339,7 +2329,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			bResult.put(DossierTerm.RELEASE_DATE, true);
 			bResult.put(DossierTerm.FINISH_DATE, true);
 		}
-		if (DossierTerm.DOSSIER_STATUS_NEW.equals(prevStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG
+		if (ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(prevStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG
 				&& Validator.isNotNull(dossier.getReceiveDate())) {
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
 		}
@@ -2867,7 +2857,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (dAction != null) {
 			long serviceProcessId = dAction.getServiceProcessId();
 			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
-			jsonData.put(DossierTerm.TOTAL, length);
+			jsonData.put(ConstantUtils.TOTAL, length);
 			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
 			String sequenceNo = dAction.getSequenceNo();
 			if (Validator.isNotNull(sequenceNo)) {
@@ -3298,7 +3288,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 				}
 
-				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equals(hslt.getDossierStatus())) {
 					Date now = new Date();
 					hslt.setSubmitDate(now);
 					hslt = dossierLocalService.updateDossier(hslt);

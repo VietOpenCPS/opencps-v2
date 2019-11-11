@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "EvaluationModels", propOrder = {
     "evaluationId",
     "companyId",
-    Field.GROUP_ID,
+    "groupId",
     "userId",
     "createDate",
     "modifiedDate",

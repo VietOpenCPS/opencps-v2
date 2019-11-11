@@ -48,8 +48,6 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.dossiermgt.action.RegistrationFormActions;
-import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
@@ -129,19 +127,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		model.setRegistrationState(registrationState);
 		model.setSubmitting(false);
 		model.setRepresentativeEnterprise(representativeEnterprise);
-
-		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
-		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(groupId, applicantIdNo,
-				govAgencyCode, 2);
-
-		if (registrations.size() == 0) {
-			actionForm.addRegistrationFormbaseonRegTemplate(groupId, companyId, registrationId, govAgencyCode,
-					serviceContext);
-		} else {
-			Registration oldRegistration = registrations.get(0);
-			actionForm.cloneRegistrationFormByRegistrationId(groupId, oldRegistration.getRegistrationId(),
-					registrationId, serviceContext);
-		}
 
 		return registrationPersistence.update(model);
 	}
@@ -663,7 +648,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 			object.setWardName(dictItem.getItemName());
 		}
 
-		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 
 		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong(Field.GROUP_ID),
 				objectData.getString("applicantIdNo"), objectData.getString("govAgencyCode"), 2);
@@ -673,24 +657,6 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 		serviceContext.setScopeGroupId(objectData.getLong(Field.GROUP_ID));
 		serviceContext.setCompanyId(objectData.getLong("companyId"));
 
-		try {
-
-			if (registrations.size() == 0) {
-
-				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong(Field.GROUP_ID),
-						objectData.getLong("companyId"), objectData.getLong("registrationId"),
-						objectData.getString("govAgencyCode"), serviceContext);
-
-			} else {
-				Registration oldRegistration = registrations.get(0);
-				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong(Field.GROUP_ID),
-						oldRegistration.getRegistrationId(), objectData.getLong("registrationId"), serviceContext);
-			}
-
-		} catch (PortalException e) {
-			_log.debug(e);
-		}
-		
 		registrationPersistence.update(object);
 
 		return object;

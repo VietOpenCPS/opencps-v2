@@ -39,10 +39,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    ConstantUtils.TOTAL,
-    ConstantUtils.DATA
+    "total",
+    "data"
 })
-@XmlRootElement(name = ConstantUtils.DATA)
+@XmlRootElement(name = "data")
 public class VotingStatisticsResults {
 
     protected Long total;

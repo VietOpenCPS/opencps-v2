@@ -84,20 +84,6 @@ public class EFormIndexer extends BaseIndexer<EForm> {
 			document.addTextSortable(EFormTerm.EFORM_DATA, object.getEFormData());
 			document.addTextSortable(EFormTerm.EMAIL, object.getEmail());
 			document.addTextSortable(EFormTerm.SECRET, object.getSecret());
-//			document.addTextSortable(EFormTerm.GATE_NUMBER, object.getGateNumber());
-//
-//			if (Validator.isNotNull(object.getCheckinDate())) {
-//				document.addTextSortable(EFormTerm.CHECK_IN_DATE, APIDateTimeUtils
-//						.convertDateToString(object.getCheckinDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-//			} else {
-//				document.addTextSortable(EFormTerm.CHECK_IN_DATE, StringPool.BLANK);
-//			}
-//
-//			if (Validator.isNotNull(object.getCheckinDate())) {
-//				document.addDateSortable(EFormTerm.CHECK_IN_DATE_LUCENE, object.getCheckinDate());
-//			} else {
-//				document.addTextSortable(EFormTerm.CHECK_IN_DATE_LUCENE, StringPool.BLANK);
-//			}
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -152,7 +138,7 @@ public class EFormIndexer extends BaseIndexer<EForm> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

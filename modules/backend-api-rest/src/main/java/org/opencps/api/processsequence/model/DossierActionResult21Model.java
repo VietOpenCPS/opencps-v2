@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "durationCount",
     "durationUnit",
-    ConstantUtils.DATA
+    "data"
 })
 public class DossierActionResult21Model {
 

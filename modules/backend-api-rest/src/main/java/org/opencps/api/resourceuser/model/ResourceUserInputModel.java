@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -43,7 +45,7 @@ import javax.xml.bind.annotation.XmlType;
     "classPK",
     "toUserId",
     "fullName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "readonly"
 })
 @XmlRootElement(name = "ResourceUserInputModel")

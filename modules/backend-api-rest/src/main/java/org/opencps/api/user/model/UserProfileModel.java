@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "className",
     "classPK",
     "screenName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "fullName",
     "contactEmail",
     "contactTelNo",

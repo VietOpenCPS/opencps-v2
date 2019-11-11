@@ -31,6 +31,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -237,9 +238,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("administrationCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("administrationName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.ADMINISTRATION_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}
@@ -291,9 +292,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}
@@ -337,7 +338,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				elm.put("level", i);
 				elm.put("levelName", i);
-				elm.put("count", levelCount);
+				elm.put(ConstantUtils.VALUE_COUNT, levelCount);
 
 				data.put(elm);
 			}
@@ -481,9 +482,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}

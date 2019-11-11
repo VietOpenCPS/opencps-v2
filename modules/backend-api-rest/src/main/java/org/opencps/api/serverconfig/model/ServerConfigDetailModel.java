@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "serverConfigId",
-    Field.GROUP_ID,
+    "groupId",
     "createDate",
     "modifiedDate",
     "serverNo",
