@@ -322,7 +322,7 @@ public class DictItemGroupTempLocalServiceImpl
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTempTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTempTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTempTerm.GROUP_CODE);
@@ -359,7 +359,7 @@ public class DictItemGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -444,7 +444,7 @@ public class DictItemGroupTempLocalServiceImpl
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictItemGroupTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTempTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTempTerm.DICT_ITEM_ID);
 		String groupCode = (String) params.get(DictGroupTempTerm.GROUP_CODE);
@@ -475,7 +475,7 @@ public class DictItemGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictItemGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 

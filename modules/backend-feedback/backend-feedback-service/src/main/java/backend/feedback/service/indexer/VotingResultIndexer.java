@@ -82,10 +82,9 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 		document.addDateSortable(Field.MODIFIED_DATE, VotingResult.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(VotingResult.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(VotingResult.getUserName()));
-		document.addNumberSortable(VotingResultTerm.GROUP_ID, VotingResult.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, VotingResult.getGroupId());
 		
 		document.addNumberSortable(VotingResultTerm.VOTING_ID, VotingResult.getVotingId());
-//		document.addNumberSortable(VotingResultTerm.TOUSERID, VotingResult.getToUserId());
 		document.addTextSortable(VotingResultTerm.FULLNAME, VotingResult.getFullname());
 		document.addTextSortable(VotingResultTerm.EMAIL, VotingResult.getEmail());
 		document.addTextSortable(VotingResultTerm.COMMENT, VotingResult.getComment());

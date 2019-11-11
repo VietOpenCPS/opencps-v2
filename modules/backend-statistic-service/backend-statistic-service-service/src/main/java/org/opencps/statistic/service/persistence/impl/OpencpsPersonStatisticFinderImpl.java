@@ -29,7 +29,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 	private static final String SEARCH_PERSON_STATISTIC = OpencpsPersonStatisticFinder.class.getName()
 			+ ".searchStatisic";
 
-	private static final String TOTAL = ConstantUtils.TOTAL;
+	private static final String TOTAL = "total";
 
 	private static final String CONDITION_EMPLOYEE = "(opencps_person_statistic.employeeId = ?) AND";
 	private static final String CONDITION_GOV_AGENCY = "(opencps_person_statistic.govAgencyCode = ?) AND";

@@ -71,7 +71,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
 			{ "pushCollectionId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
@@ -90,7 +90,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("pushCollectionId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
@@ -170,7 +170,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 
 		attributes.put("uuid", getUuid());
 		attributes.put("pushCollectionId", getPushCollectionId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -204,7 +204,7 @@ public class PushCollectionModelImpl extends BaseModelImpl<PushCollection>
 			setPushCollectionId(pushCollectionId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

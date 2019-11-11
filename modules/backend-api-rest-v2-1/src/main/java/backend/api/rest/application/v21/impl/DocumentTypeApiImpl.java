@@ -78,10 +78,10 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getDocumentTypeList(user.getUserId(), params, sorts, start, end,
 					serviceContext);
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
+			int total = jsonData.getInt("total");
 			results.setTotal(total);
 			if (jsonData != null && total > 0) {
-				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get(ConstantUtils.DATA)));
+				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get("data")));
 			}
 			_log.info("==== END GET DOCUMENT TYPE==== ");
 

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 
 public class DictDataRestClient {
 	private String username;
@@ -49,12 +50,12 @@ public class DictDataRestClient {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
-				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+				&& configObj.has(Field.GROUP_ID)) {
 			return new DictDataRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
 					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
-					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
+					configObj.getLong(Field.GROUP_ID));
 		}
 		else {
 			return null;

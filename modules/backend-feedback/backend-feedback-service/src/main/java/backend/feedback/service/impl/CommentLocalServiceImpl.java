@@ -340,7 +340,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(CommentTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -408,7 +408,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(CommentTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -471,7 +471,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		object.setClassName(objectData.getString("className"));
 		object.setClassPK(objectData.getString("classPK"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setParent(objectData.getLong("parent"));
 		object.setContent(objectData.getString("content"));
 		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);

@@ -229,7 +229,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingResultTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -360,7 +360,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingResultTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -483,7 +483,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		object.setVotingId(objectData.getLong("votingId"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setComment(objectData.getString("comment"));
 		object.setSelected(objectData.getString("selected"));
 

@@ -1,17 +1,10 @@
 package org.opencps.rest.application.model;
 
-import javax.validation.constraints.*;
-
-import io.swagger.annotations.ApiModelProperty;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
 
-import javax.xml.bind.annotation.XmlRootElement; 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
+import io.swagger.annotations.ApiModelProperty; 
 @XmlRootElement(name = ConstantUtils.DATA) public class MenuConfigStepsItem  {
   
   @ApiModelProperty(example = "", value = "")

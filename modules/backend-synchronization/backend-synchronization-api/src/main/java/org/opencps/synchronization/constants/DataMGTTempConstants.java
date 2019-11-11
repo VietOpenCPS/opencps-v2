@@ -11,5 +11,8 @@ public class DataMGTTempConstants implements Constants, WebKeys {
 	
 	public static final int DATA_MUST_SYNCHRONIZED = 1;
 	public static final int DATA_MUST_NOT_SYNCHRONIZED = 0;
+	
+	public static final String TOTAL = "total";
+	public static final String DATA = "data";
 
 }

@@ -53,7 +53,7 @@ public class DataTempManagementUtils {
 				ett = new DictCollectionTempModel();
 
 				ett.setCompanyId(Long.valueOf(document.get(DictCollectionTempTerm.COMPANY_ID)));
-				ett.setGroupId(Long.valueOf(document.get(DictCollectionTempTerm.GROUP_ID)));
+				ett.setGroupId(Long.valueOf(document.get(Field.GROUP_ID)));
 				ett.setUserId(Long.valueOf(document.get(DictCollectionTempTerm.USER_ID)));
 				
 				ett.setDictCollectionId(Long.valueOf(document.get(DictCollectionTempTerm.DICT_COLLECTION_ID)));

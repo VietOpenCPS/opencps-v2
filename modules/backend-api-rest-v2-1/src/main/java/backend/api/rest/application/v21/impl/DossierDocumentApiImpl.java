@@ -8,13 +8,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.Date;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.dossiermgt.action.DossierDocumentActions;
 import org.opencps.dossiermgt.action.impl.DossierDocumentActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;

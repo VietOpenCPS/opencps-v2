@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = ConstantUtils.DATA)
+@XmlRootElement(name = "data")
 public class SmsSearchResponse {
     private int total;
     
-    @XmlElement(name = ConstantUtils.DATA)
+    @XmlElement(name = "data")
     private List<SmsSearchData> data;
     
     public int getTotal() {

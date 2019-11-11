@@ -1022,8 +1022,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (Validator.isNotNull(sc.getConfigs())) {
 						try {
 							JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-							if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-								long publishGroupId = configObj.getLong(SyncServerTerm.SERVER_GROUP_ID);
+							if (configObj.has(Field.GROUP_ID)) {
+								long publishGroupId = configObj.getLong(Field.GROUP_ID);
 								OpencpsCallRestFacade<DossierStatisticModel, DossierStatisticModel> callReportService = new OpencpsCallStatisticRestFacadeImpl();
 								DossierStatisticModel request = new DossierStatisticModel();
 								request.setGroupId(publishGroupId);

@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.MenuRole;
@@ -35,43 +37,6 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 public class OpenCPSAPIParsing {
 	protected Log _log = LogFactoryUtil.getLog(OpenCPSAPIParsing.class);
 	
-//	private OpenCPSAPIParsing() {
-//		
-//	}
-	
-//	OpenCPSAPIParsing.getLocatorResponseToDealershipResponseConverter(locale).convert(ActionConfig);
-//
-//	public static Converter<ActionConfig, ActionConfigItem> getLocatorResponseToDealershipResponseConverter(
-//			   String locale) {
-//			  return (source) -> {
-//			   DealershipResponse dealershipResponse = new DealershipResponse();
-//
-//			   if (source.getLocatorResult().get(0) != null) {
-//
-//			    Vendor firstVendor = source.getLocatorResult().get(0).getVendor();
-//
-//			    Contact contact = getContactMain(firstVendor.getContact());
-//
-//			    Phone phone = getPhoneMain(contact.getPhone());
-//
-//			    Address address = getAddress(contact);
-//
-//			    List<DealerCode> dealerCodes = getDealerCodeList(source.getLocatorResult().get(0), locale);
-//
-//			    dealershipResponse.setBacCode(String.valueOf(firstVendor.getId()));
-//			    dealershipResponse.setDealerCity(address.getCity());
-//			    dealershipResponse.setDealerCode(firstVendor.getVendorCode());
-//			    dealershipResponse.setDealerPhone(phone.getNumber());
-//			    dealershipResponse.setDealerState(address.getProvince());
-//			    dealershipResponse.setDealerStreet1(getAddressStreet(address).getValue());
-//			    dealershipResponse.setDealerType(firstVendor.getType().value());
-//			    dealershipResponse.setDealerZip(address.getPostalCode());
-//			    dealershipResponse.setName(firstVendor.getPrimaryName());
-//			    dealershipResponse.setDealerCodes(dealerCodes);
-//			   }
-//			   return dealershipResponse;
-//			  };
-//	}
 	public ActionConfigItem getModel(ActionConfig ett) {
 		ActionConfigItem object = new ActionConfigItem();
 		
@@ -80,7 +45,6 @@ public class OpenCPSAPIParsing {
 					ActionConfigItem.class);
 		}
 		catch (Exception e) {
-//			e.printStackTrace();
 			_log.error(e);
 		}
 		return object;
@@ -193,7 +157,7 @@ public class OpenCPSAPIParsing {
 			}
 		}
 		else {
-			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
+			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			long[] arrMenuConfigIds = null;
 			if (job != null) {
 				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());

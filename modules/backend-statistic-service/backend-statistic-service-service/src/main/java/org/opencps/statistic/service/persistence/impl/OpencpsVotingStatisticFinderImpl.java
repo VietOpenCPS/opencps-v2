@@ -27,7 +27,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 	private static final String SEARCH_VOTING_STATISTIC = OpencpsVotingStatisticFinder.class.getName()
 			+ ".searchStatisic";
 
-	private static final String TOTAL = ConstantUtils.TOTAL;
+	private static final String TOTAL = "total";
 
 	private static final String CONDITION_DOMAIN = "(opencps_voting_statistic.domainCode = ?) AND";
 	private static final String CONDITION_DOMAIN_REPLACE = "(opencps_voting_statistic.domainCode IS NULL) AND";
@@ -35,7 +35,6 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 	private static final String CONDITION_GOV_AGENCY_REPLACE = "(opencps_voting_statistic.govAgencyCode IS NULL) AND";
 	private static final String CONDITION_VOTING_CODE = "(opencps_voting_statistic.votingCode = ?) AND";
 	private static final String CONDITION_VOTING_CODE_REPLACE = "(opencps_voting_statistic.votingCode IS NULL) AND";
-	//private static final String CONDITION_GROUP_AGENCY = "(opencps_voting_statistic.groupAgencyCode = ?) AND";
 	private static final String CONDITION_MONTH = "(opencps_voting_statistic.month = ?) AND";
 	private static final String CONDITION_MONTH_REPLACE = "(opencps_voting_statistic.month != 0) AND";
 	private static final String CONDITION_YEAR = "(opencps_voting_statistic.year = ?) AND";

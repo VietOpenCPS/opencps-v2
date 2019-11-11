@@ -62,7 +62,7 @@ public class SMSLookUpQueueWrapper implements SMSLookUpQueue,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("queueId", getQueueId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
@@ -95,7 +95,7 @@ public class SMSLookUpQueueWrapper implements SMSLookUpQueue,
 			setQueueId(queueId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

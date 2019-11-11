@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = ConstantUtils.DATA)
+@XmlRootElement(name = "data")
 public class DossierResponse {
 	private int total;
 	
-	@XmlElement(name = ConstantUtils.DATA)
+	@XmlElement(name = "data")
 	private List<DossierData> data;
 
 	public int getTotal() {

@@ -24,7 +24,6 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
-import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
@@ -64,6 +63,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
+import backend.synchronization.service.util.ConfigConstants;
+import backend.synchronization.service.util.ConfigProps;
 
 /**
  * The implementation of the dict collection temp local service.
@@ -317,7 +318,7 @@ public class DictCollectionTempLocalServiceImpl
 	 */
 	public DictCollectionTemp fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(collectionCode)) {
+		if (ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 
@@ -369,7 +370,7 @@ public class DictCollectionTempLocalServiceImpl
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
 
@@ -430,23 +431,13 @@ public class DictCollectionTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
 			booleanQuery.add(categoryQuery, BooleanClauseOccur.MUST);
 		}
-
-		// if (Validator.isNotNull(groupId)) {
-		//
-		// MultiMatchQuery query = new MultiMatchQuery(groupId);
-		//
-		// query.addFields(DictCollectionTempTerm.GROUP_ID);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		//
-		// }
 
 		if (Validator.isNotNull(userId)) {
 
@@ -469,7 +460,7 @@ public class DictCollectionTempLocalServiceImpl
 			SearchContext searchContext) throws ParseException, SearchException {
 
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTempTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
 
@@ -527,8 +518,8 @@ public class DictCollectionTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
