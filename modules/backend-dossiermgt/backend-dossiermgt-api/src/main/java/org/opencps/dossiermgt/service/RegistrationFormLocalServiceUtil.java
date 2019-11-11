@@ -42,17 +42,6 @@ public class RegistrationFormLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationFormLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static org.opencps.dossiermgt.model.RegistrationForm addRegistrationForm(
-		long groupId, long companyId, long registrationId, String referenceUid,
-		String formNo, String formName, String formData, String formScript,
-		String formReport, long fileEntryId, boolean isNew, boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .addRegistrationForm(groupId, companyId, registrationId,
-			referenceUid, formNo, formName, formData, formScript, formReport,
-			fileEntryId, isNew, removed, serviceContext);
-	}
 
 	/**
 	* Adds the registration form to the database. Also notifies the appropriate model listeners.
@@ -63,24 +52,6 @@ public class RegistrationFormLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.RegistrationForm addRegistrationForm(
 		org.opencps.dossiermgt.model.RegistrationForm registrationForm) {
 		return getService().addRegistrationForm(registrationForm);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return getService().adminProcessData(objectData);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm adminProcessDelete(
-		Long id) {
-		return getService().adminProcessDelete(id);
-	}
-
-	public static long countLucene(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return getService().countLucene(params, searchContext);
 	}
 
 	/**
@@ -125,16 +96,6 @@ public class RegistrationFormLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.RegistrationForm deleteRegistrationForm(
 		org.opencps.dossiermgt.model.RegistrationForm registrationForm) {
 		return getService().deleteRegistrationForm(registrationForm);
-	}
-
-	public static boolean deleteRegistrationForm(String referenceUid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteRegistrationForm(referenceUid);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationForm> deleteRegistrationForms(
-		long groupId, long registrationId) {
-		return getService().deleteRegistrationForms(groupId, registrationId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
@@ -232,24 +193,8 @@ public class RegistrationFormLocalServiceUtil {
 		return getService().fetchRegistrationFormByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationForm> findByG_REGID_ISNEW(
-		long registrationId, boolean isNew) {
-		return getService().findByG_REGID_ISNEW(registrationId, isNew);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm findFormbyRegidRefid(
-		long groupId, long registrationId, String referenceUid) {
-		return getService()
-				   .findFormbyRegidRefid(groupId, registrationId, referenceUid);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm getByRegIdAndFormNo(
-		long registrationId, String formNo) {
-		return getService().getByRegIdAndFormNo(registrationId, formNo);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -257,23 +202,8 @@ public class RegistrationFormLocalServiceUtil {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationForm> getFormDataByFormNo(
-		long groupId, long registrationId, String formNo) {
-		return getService().getFormDataByFormNo(groupId, registrationId, formNo);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationForm> getFormsbyRegId(
-		long groupId, long registrationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getFormsbyRegId(groupId, registrationId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> getOccurs() {
-		return getService().getOccurs();
 	}
 
 	/**
@@ -285,30 +215,10 @@ public class RegistrationFormLocalServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
-	public static java.util.List<String> getParamNames() {
-		return getService().getParamNames();
-	}
-
-	public static java.util.List<Object> getParams() {
-		return getService().getParams();
-	}
-
-	public static java.util.List<Class<?>> getParamTypes() {
-		return getService().getParamTypes();
-	}
-
-	public static String getPattern() {
-		return getService().getPattern();
-	}
-
 	public static com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static com.liferay.portal.kernel.search.BooleanQuery getQuery() {
-		return getService().getQuery();
 	}
 
 	/**
@@ -392,120 +302,6 @@ public class RegistrationFormLocalServiceUtil {
 	*/
 	public static int getRegistrationFormsCount() {
 		return getService().getRegistrationFormsCount();
-	}
-
-	public static com.liferay.portal.kernel.search.SearchContext getSearchContext() {
-		return getService().getSearchContext();
-	}
-
-	public static java.util.List<String> getSubPatterns() {
-		return getService().getSubPatterns();
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.search.BooleanQuery> getSubQueries() {
-		return getService().getSubQueries();
-	}
-
-	public static void LuceneQuery(String pattern, String paramValues,
-		String paramTypes,
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		getService().LuceneQuery(pattern, paramValues, paramTypes, searchContext);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm registrationFormSync(
-		long groupId, String uuidRegistration, String referenceUid,
-		String formNo, String formName, String formData, String formScript,
-		String formReport, Boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .registrationFormSync(groupId, uuidRegistration,
-			referenceUid, formNo, formName, formData, formScript, formReport,
-			removed, serviceContext);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits searchLucene(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return getService()
-				   .searchLucene(params, sorts, start, end, searchContext);
-	}
-
-	public static void setOccurs(
-		java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> occurs) {
-		getService().setOccurs(occurs);
-	}
-
-	public static void setParamNames(java.util.List<String> paramNames) {
-		getService().setParamNames(paramNames);
-	}
-
-	public static void setParams(java.util.List<Object> params) {
-		getService().setParams(params);
-	}
-
-	public static void setParamTypes(java.util.List<Class<?>> paramTypes) {
-		getService().setParamTypes(paramTypes);
-	}
-
-	public static void setPattern(String pattern) {
-		getService().setPattern(pattern);
-	}
-
-	public static void setQuery(
-		com.liferay.portal.kernel.search.BooleanQuery query) {
-		getService().setQuery(query);
-	}
-
-	public static void setSearchContext(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		getService().setSearchContext(searchContext);
-	}
-
-	public static void setSubPatterns(java.util.List<String> subPatterns) {
-		getService().setSubPatterns(subPatterns);
-	}
-
-	public static void setSubQueries(
-		java.util.List<com.liferay.portal.kernel.search.BooleanQuery> subQueries) {
-		getService().setSubQueries(subQueries);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm updateFormData(
-		long groupId, long registrationId, String referenceUid,
-		String formData,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .updateFormData(groupId, registrationId, referenceUid,
-			formData, serviceContext);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm updateIsNew(
-		long groupId, long registrationId, String referenceUid, boolean isNew,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .updateIsNew(groupId, registrationId, referenceUid, isNew,
-			serviceContext);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationForm updateRegistrationForm(
-		long groupId, long registrationId, String referenceUid, String formNo,
-		String formName, String formData, String formScript, String formReport,
-		long fileEntryId, boolean isNew, boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .updateRegistrationForm(groupId, registrationId,
-			referenceUid, formNo, formName, formData, formScript, formReport,
-			fileEntryId, isNew, removed, serviceContext);
 	}
 
 	/**

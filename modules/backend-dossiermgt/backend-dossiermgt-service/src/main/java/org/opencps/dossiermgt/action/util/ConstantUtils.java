@@ -76,7 +76,6 @@ public class ConstantUtils {
 	public static final String NOTIFICATION_TYPE = "notificationType";
 	public static final String DOCUMENT_TYPEAAA = "documentType";
 	//
-	public static final String STATISTIC = "statistic";
 	public static final String OVER_DUE = "overdue";
 	public static final String DELAY = "deplay";
 	public static final String COMMNG = "coming";
@@ -172,12 +171,9 @@ public class ConstantUtils {
 	public static final String VALUE_PATTERN_FILENAME = "org.opencps.value.pattern.filename";
 	public static final String VNPOST_BASE_PATH = "org.opencps.value.path.vnpost";
 	public static final String VALUE_PATH_CER = "org.opencps.value.pathcert";
-	public static final String VALUE_APPLICANT = "org.opencps.value.applicant";
-	public static final String VALUE_EMPLOYEE = "org.opencps.value.employee";
 	public static final String VALUE_PRE_AGENCY = "org.opencps.value.pre.agency";
 	public static final String VALUE_PRE_TEMPLATE = "org.opencps.value.pre.template";
 	public static final String VALUE_PRE_SERVICE = "org.opencps.value.pre.service";
-	public static final String VALUE_CITIZEN = "org.opencps.value.citizen";
 	public static final String VALUE_PERMISSON_READ = "org.opencps.value.permission.read";
 	public static final String VALUE_PERMISSON_WRITE = "org.opencps.value.permission.write";
 	public static final String VALUE_ADMINISTRATIVE_REGION = "org.opencps.value.region";
@@ -213,6 +209,9 @@ public class ConstantUtils {
 	/** ROLE TEXT */
 	public static final String ROLE_ADMIN = "org.opencps.role.admin";
 	public static final String ROLE_ADMIN_DATA = "org.opencps.role.admin.data";
+	public static final String ROLE_APPLICANT = "org.opencps.role.applicant";
+	public static final String ROLE_EMPLOYEE = "org.opencps.role.employee";
+	public static final String ROLE_CITIZEN = "org.opencps.role.citizen";
 	
 	/** USER NAME */
 	public static final String USER_ADMIN = "org.opencps.user.admin";

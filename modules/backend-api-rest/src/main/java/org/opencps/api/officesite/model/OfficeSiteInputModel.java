@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
     "address",
     "telNo",
     "faxNo",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "website",
     "siteGroupId",
     "adminEmail",
@@ -73,7 +73,7 @@ public class OfficeSiteInputModel {
     protected String telNo;
     @FormParam(value = "faxNo")
     protected String faxNo;
-    @FormParam(value = ConstantUtils.VALUE_EMAIL)
+    @FormParam(value = "email")
     protected String email;
     @FormParam(value = "website")
     protected String website;

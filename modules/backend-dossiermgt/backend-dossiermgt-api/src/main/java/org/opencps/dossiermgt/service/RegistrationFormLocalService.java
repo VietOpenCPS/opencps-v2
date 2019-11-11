@@ -25,20 +25,11 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -48,7 +39,6 @@ import org.opencps.dossiermgt.model.RegistrationForm;
 
 import java.io.Serializable;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -73,12 +63,6 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link RegistrationFormLocalServiceUtil} to access the registration form local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationFormLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm addRegistrationForm(long groupId, long companyId,
-		long registrationId, String referenceUid, String formNo,
-		String formName, String formData, String formScript, String formReport,
-		long fileEntryId, boolean isNew, boolean removed,
-		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Adds the registration form to the database. Also notifies the appropriate model listeners.
@@ -89,15 +73,6 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public RegistrationForm addRegistrationForm(
 		RegistrationForm registrationForm);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm adminProcessData(JSONObject objectData);
-
-	@Indexable(type = IndexableType.DELETE)
-	public RegistrationForm adminProcessDelete(Long id);
-
-	public long countLucene(LinkedHashMap<String, Object> params,
-		SearchContext searchContext) throws ParseException, SearchException;
 
 	/**
 	* Creates a new registration form with the primary key. Does not add the registration form to the database.
@@ -135,14 +110,6 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public RegistrationForm deleteRegistrationForm(
 		RegistrationForm registrationForm);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public boolean deleteRegistrationForm(String referenceUid)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public List<RegistrationForm> deleteRegistrationForms(long groupId,
-		long registrationId);
 
 	public DynamicQuery dynamicQuery();
 
@@ -217,36 +184,15 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	public RegistrationForm fetchRegistrationFormByUuidAndGroupId(String uuid,
 		long groupId);
 
-	public List<RegistrationForm> findByG_REGID_ISNEW(long registrationId,
-		boolean isNew);
-
-	public RegistrationForm findFormbyRegidRefid(long groupId,
-		long registrationId, String referenceUid);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public RegistrationForm getByRegIdAndFormNo(long registrationId,
-		String formNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationForm> getFormDataByFormNo(long groupId,
-		long registrationId, String formNo);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RegistrationForm> getFormsbyRegId(long groupId,
-		long registrationId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BooleanClauseOccur> getOccurs();
 
 	/**
 	* Returns the OSGi service identifier.
@@ -255,25 +201,10 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	*/
 	public String getOSGiServiceIdentifier();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<String> getParamNames();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Object> getParams();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Class<?>> getParamTypes();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public String getPattern();
-
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BooleanQuery getQuery();
 
 	/**
 	* Returns the registration form with the primary key.
@@ -345,65 +276,6 @@ public interface RegistrationFormLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegistrationFormsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SearchContext getSearchContext();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<String> getSubPatterns();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BooleanQuery> getSubQueries();
-
-	public void LuceneQuery(String pattern, String paramValues,
-		String paramTypes, SearchContext searchContext);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm registrationFormSync(long groupId,
-		String uuidRegistration, String referenceUid, String formNo,
-		String formName, String formData, String formScript, String formReport,
-		Boolean removed, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits searchLucene(LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
-
-	public void setOccurs(List<BooleanClauseOccur> occurs);
-
-	public void setParamNames(List<String> paramNames);
-
-	public void setParams(List<Object> params);
-
-	public void setParamTypes(List<Class<?>> paramTypes);
-
-	public void setPattern(String pattern);
-
-	public void setQuery(BooleanQuery query);
-
-	public void setSearchContext(SearchContext searchContext);
-
-	public void setSubPatterns(List<String> subPatterns);
-
-	public void setSubQueries(List<BooleanQuery> subQueries);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm updateFormData(long groupId, long registrationId,
-		String referenceUid, String formData, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm updateIsNew(long groupId, long registrationId,
-		String referenceUid, boolean isNew, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public RegistrationForm updateRegistrationForm(long groupId,
-		long registrationId, String referenceUid, String formNo,
-		String formName, String formData, String formScript, String formReport,
-		long fileEntryId, boolean isNew, boolean removed,
-		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Updates the registration form in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

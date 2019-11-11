@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -82,12 +83,12 @@ public class OpenCPSRestClient {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 				&& configObj.has(SyncServerTerm.SERVER_SECRET)
 				&& configObj.has(SyncServerTerm.SERVER_URL)
-				&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+				&& configObj.has(Field.GROUP_ID)) {
 			OpenCPSRestClient client = new OpenCPSRestClient(
 					configObj.getString(SyncServerTerm.SERVER_USERNAME), 
 					configObj.getString(SyncServerTerm.SERVER_SECRET), 
 					configObj.getString(SyncServerTerm.SERVER_URL),
-					configObj.getLong(SyncServerTerm.SERVER_GROUP_ID));
+					configObj.getLong(Field.GROUP_ID));
 			if (configObj.has(SyncServerTerm.WRITE_LOG)) {
 				client.setWriteLog(configObj.getBoolean(SyncServerTerm.WRITE_LOG));
 			}

@@ -49,7 +49,6 @@ public class UserMGTConstants implements Constants, WebKeys {
 	public static final String MINUTELY = "minutely";
 	public static final String HOURLY = "hourly";
 	//
-	public static final String ENTRY_CLASS_PK = ConstantUtils.ENTRY_CLASS_PK;
 	public static final String SITE_NAME = "siteName";
 	public static final String SITE_GROUP_ID = "siteGroupId";
 	

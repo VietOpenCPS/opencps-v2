@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
     "birthdate",
     "telNo",
     "mobile",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "title",
     "workingStatus",
     "recruitDate",
@@ -72,7 +72,7 @@ public class EmployeeInputModel {
     protected String telNo;
     @FormParam(value = "mobile")
     protected String mobile;
-    @FormParam(value = ConstantUtils.VALUE_EMAIL)
+    @FormParam(value = "email")
     protected String email;
     @FormParam(value = "title")
     protected String title;

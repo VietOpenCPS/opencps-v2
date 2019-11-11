@@ -63,7 +63,7 @@ public class ActionConfigWrapper implements ActionConfig,
 		attributes.put("uuid", getUuid());
 		attributes.put("actionConfigId", getActionConfigId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -107,7 +107,7 @@ public class ActionConfigWrapper implements ActionConfig,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

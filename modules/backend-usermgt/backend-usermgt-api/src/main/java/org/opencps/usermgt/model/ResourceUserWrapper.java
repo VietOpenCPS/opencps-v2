@@ -62,7 +62,7 @@ public class ResourceUserWrapper implements ResourceUser,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("resourceUserId", getResourceUserId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -72,7 +72,7 @@ public class ResourceUserWrapper implements ResourceUser,
 		attributes.put("classPK", getClassPK());
 		attributes.put("toUserId", getToUserId());
 		attributes.put("fullname", getFullname());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("readonly", isReadonly());
 
 		return attributes;
@@ -92,7 +92,7 @@ public class ResourceUserWrapper implements ResourceUser,
 			setResourceUserId(resourceUserId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -152,7 +152,7 @@ public class ResourceUserWrapper implements ResourceUser,
 			setFullname(fullname);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

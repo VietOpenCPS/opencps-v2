@@ -367,26 +367,6 @@ public interface DeliverablesManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id);
 
-	@POST
-	@Path("/deliverables/import/files")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@ApiOperation(value = "import deliverable excel file")
-	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return a list Deliverable was imported"),
-		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
-	})
-	public Response importDeliverables2(
-		@Context HttpServletRequest request, @Context HttpHeaders header,
-		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext,
-		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
-		@ApiParam(value = "deliverableType of Deliverable", required = true) @Multipart("deliverableType") String deliverableType);
-	
 	@GET
 	@Path("/deliverables/pdf")
 	@Consumes({

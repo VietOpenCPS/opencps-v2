@@ -59,7 +59,7 @@ import javax.xml.bind.annotation.XmlType;
     "isMonthStatistic",
     "newReception",
     "preExtisting",
-    ConstantUtils.TOTAL,
+    "total",
     "totalSolved",
     "solvedInTime",
     "solvedInTimePercent",

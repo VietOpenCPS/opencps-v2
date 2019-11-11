@@ -296,7 +296,7 @@ public interface DataManagement {
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "code of DictCollection of DictItem that need to be deleted", required = true) @PathParam("code") String code,
 			@ApiParam(value = "itemCode of DictItemthat need to be deleted", required = true) @PathParam("itemCode") String itemCode,
-			 @PathParam(ConstantUtils.VALUE_KEY) String key);
+			 @PathParam("key") String key);
 
 	@PUT
 	@Path("/{code}/dictitems/{itemCode}/metadata")

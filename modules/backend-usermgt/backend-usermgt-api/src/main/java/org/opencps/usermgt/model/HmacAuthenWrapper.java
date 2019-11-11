@@ -58,7 +58,7 @@ public class HmacAuthenWrapper implements HmacAuthen, ModelWrapper<HmacAuthen> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("hmacAuthId", getHmacAuthId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -78,7 +78,7 @@ public class HmacAuthenWrapper implements HmacAuthen, ModelWrapper<HmacAuthen> {
 			setHmacAuthId(hmacAuthId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

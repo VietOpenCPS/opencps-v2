@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "questionId",
     "createDate",
     "fullname",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "content",
     "publish",
     "questionType",

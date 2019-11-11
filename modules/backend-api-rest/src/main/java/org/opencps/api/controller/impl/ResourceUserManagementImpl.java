@@ -1,5 +1,16 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,20 +26,11 @@ import org.opencps.api.resourceuser.model.DataSearchModel;
 import org.opencps.api.resourceuser.model.ResourceUserInputModel;
 import org.opencps.api.resourceuser.model.ResourceUserModel;
 import org.opencps.api.resourceuser.model.ResourceUserResults;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.action.ResourceUserInterface;
 import org.opencps.usermgt.action.impl.ResourceUserActions;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.model.ResourceUser;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 

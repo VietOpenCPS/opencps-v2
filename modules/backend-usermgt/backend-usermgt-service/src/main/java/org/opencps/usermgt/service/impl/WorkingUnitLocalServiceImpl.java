@@ -383,7 +383,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(WorkingUnitTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String parentWorkingUnitId = (String) params.get(WorkingUnitTerm.PARENT_WORKING_UNIT_ID);
 		String workingUnitId = (String) params.get(WorkingUnitTerm.WORKINGUNIT_ID);
 		String govAgencyCodeTree = (String) params.get("govAgencyCodeTree");
@@ -441,7 +441,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(WorkingUnitTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -463,7 +463,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(WorkingUnitTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String parentWorkingUnitId = (String) params.get(WorkingUnitTerm.PARENT_WORKING_UNIT_ID);
 		String workingUnitId = (String) params.get(WorkingUnitTerm.WORKINGUNIT_ID);
 		String govAgencyCodeTree = (String) params.get("govAgencyCodeTree");
@@ -518,7 +518,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(WorkingUnitTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -629,7 +629,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		object.setAddress(objectData.getString("address"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setWebsite(objectData.getString("website"));
 //		object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
 		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));

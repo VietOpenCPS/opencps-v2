@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "dictItemId",
     "companyId",
-    Field.GROUP_ID,
+    "groupId",
     "userId",
     "createDate",
     "modifiedDate",

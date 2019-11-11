@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "screenName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "exist"
 })
 @XmlRootElement(name = "EmployeeAccountModel")

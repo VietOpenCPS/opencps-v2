@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordTrackerLocalServiceUtil;
@@ -49,6 +50,7 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserMGTConstants;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
@@ -119,8 +121,6 @@ public class UserActions implements UserInterface {
 	}
 
 	public static final String CURRENT_SITE = "currentSite";
-	public static final String DATA = ConstantUtils.DATA;
-	public static final String TOTAL = ConstantUtils.TOTAL;
 	public static final String ROLE_NAME = "roleName";
 	@Override
 	public String getType(long id, ServiceContext serviceContext) {
@@ -158,13 +158,13 @@ public class UserActions implements UserInterface {
 				if (Validator.isNotNull(officeSite)) {
 
 					document.addNumberSortable(
-							UserMGTConstants.ENTRY_CLASS_PK, officeSite.getOfficeSiteId());
+							Field.ENTRY_CLASS_PK, officeSite.getOfficeSiteId());
 					document.addTextSortable(UserMGTConstants.SITE_NAME, officeSite.getName());
 
 				}
 				else {
 
-					document.addNumberSortable(UserMGTConstants.ENTRY_CLASS_PK, 0);
+					document.addNumberSortable(Field.ENTRY_CLASS_PK, 0);
 					document.addTextSortable(UserMGTConstants.SITE_NAME, group.getName(locale));
 
 				}
@@ -185,11 +185,11 @@ public class UserActions implements UserInterface {
 
 			}
 
-			result.put(ConstantUtils.DATA, list);
+			result.put(ApplicantTerm.DATA, list);
 
 			long total = listGroup.size();
 
-			result.put(ConstantUtils.TOTAL, total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (PortalException e) {
@@ -215,17 +215,17 @@ public class UserActions implements UserInterface {
 
 			Document document = new DocumentImpl();
 
-			document.addNumberSortable(ConstantUtils.ENTRY_CLASS_PK, role.getRoleId());
+			document.addNumberSortable(Field.ENTRY_CLASS_PK, role.getRoleId());
 			document.addTextSortable("roleName", role.getName());
 
 			list.add(document);
 		}
 
-		result.put(ConstantUtils.DATA, list);
+		result.put(ApplicantTerm.DATA, list);
 
 		long total = listRole.size();
 
-		result.put(ConstantUtils.TOTAL, total);
+		result.put(ApplicantTerm.TOTAL, total);
 
 		return result;
 	}
@@ -257,7 +257,7 @@ public class UserActions implements UserInterface {
 			"classPK", String.valueOf(employee.getEmployeeId()));
 
 		document.addTextSortable("screenName", screenName);
-		document.addTextSortable(ConstantUtils.VALUE_EMAIL, email);
+		document.addTextSortable("email", email);
 		document.addTextSortable("fullName", employee.getFullName());
 
 		document.addTextSortable("contactEmail", employee.getEmail());
@@ -405,11 +405,11 @@ public class UserActions implements UserInterface {
 
 		List<User> users = UserLocalServiceUtil.getGroupUsers(groupId);
 
-		result.put(ConstantUtils.DATA, users);
+		result.put(ApplicantTerm.DATA, users);
 
 		long total = users.size();
 
-		result.put(ConstantUtils.TOTAL, total);
+		result.put(ApplicantTerm.TOTAL, total);
 
 		return result;
 	}
@@ -525,13 +525,13 @@ public class UserActions implements UserInterface {
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
 				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put(ConstantUtils.VALUE_EMAIL, employee.getEmail());
+				subPayload.put("email", employee.getEmail());
 				subPayload.put("telNo", employee.getTelNo());
 			}
 			else if (applicant != null) {
 				subPayload.put("userName", applicant.getApplicantName());
 				subPayload.put("userId", applicant.getUserId());
-				subPayload.put(ConstantUtils.VALUE_EMAIL, applicant.getContactEmail());
+				subPayload.put("email", applicant.getContactEmail());
 				subPayload.put("telNo", applicant.getContactTelNo());
 			}
 			subPayload.put("secretKey", secretKey);
@@ -679,13 +679,13 @@ public class UserActions implements UserInterface {
 			if (employee != null) {
 				subPayload.put("userName", employee.getFullName());
 				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put(ConstantUtils.VALUE_EMAIL, employee.getEmail());
+				subPayload.put("email", employee.getEmail());
 				subPayload.put("telNo", employee.getTelNo());
 			}
 			else if (applicant != null) {
 				subPayload.put("userName", applicant.getApplicantName());
 				subPayload.put("userId", applicant.getUserId());
-				subPayload.put(ConstantUtils.VALUE_EMAIL, applicant.getContactEmail());
+				subPayload.put("email", applicant.getContactEmail());
 				subPayload.put("telNo", applicant.getContactTelNo());
 			}
 			subPayload.put("secretKey", secretKey);

@@ -254,7 +254,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
 
-			query.addFields(OfficeSiteTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -296,7 +296,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			query = new MultiMatchQuery(groupId);
 
-			query.addFields(OfficeSiteTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -368,7 +368,7 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 		object.setAddress(objectData.getString("address"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setWebsite(objectData.getString("website"));
 		// object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
 		object.setSiteGroupId(objectData.getLong("siteGroupId"));

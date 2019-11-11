@@ -62,7 +62,7 @@ public class DossierPartWrapper implements DossierPart,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierPartId", getDossierPartId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -102,7 +102,7 @@ public class DossierPartWrapper implements DossierPart,
 			setDossierPartId(dossierPartId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

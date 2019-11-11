@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "screenName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "exist"
 })
 @XmlRootElement(name = "EmployeeAccountInputModel")
@@ -47,7 +47,7 @@ public class EmployeeAccountInputModel {
 
 	@FormParam(value = "screenName")
     protected String screenName;
-	@FormParam(value = ConstantUtils.VALUE_EMAIL)
+	@FormParam(value = "email")
     protected String email;
 	@FormParam(value = "exist")
     protected boolean exist;

@@ -34,19 +34,6 @@ public class RegistrationFormLocalServiceWrapper
 		_registrationFormLocalService = registrationFormLocalService;
 	}
 
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm addRegistrationForm(
-		long groupId, long companyId, long registrationId, String referenceUid,
-		String formNo, String formName, String formData, String formScript,
-		String formReport, long fileEntryId, boolean isNew, boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _registrationFormLocalService.addRegistrationForm(groupId,
-			companyId, registrationId, referenceUid, formNo, formName,
-			formData, formScript, formReport, fileEntryId, isNew, removed,
-			serviceContext);
-	}
-
 	/**
 	* Adds the registration form to the database. Also notifies the appropriate model listeners.
 	*
@@ -57,26 +44,6 @@ public class RegistrationFormLocalServiceWrapper
 	public org.opencps.dossiermgt.model.RegistrationForm addRegistrationForm(
 		org.opencps.dossiermgt.model.RegistrationForm registrationForm) {
 		return _registrationFormLocalService.addRegistrationForm(registrationForm);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return _registrationFormLocalService.adminProcessData(objectData);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm adminProcessDelete(
-		Long id) {
-		return _registrationFormLocalService.adminProcessDelete(id);
-	}
-
-	@Override
-	public long countLucene(java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _registrationFormLocalService.countLucene(params, searchContext);
 	}
 
 	/**
@@ -125,19 +92,6 @@ public class RegistrationFormLocalServiceWrapper
 	public org.opencps.dossiermgt.model.RegistrationForm deleteRegistrationForm(
 		org.opencps.dossiermgt.model.RegistrationForm registrationForm) {
 		return _registrationFormLocalService.deleteRegistrationForm(registrationForm);
-	}
-
-	@Override
-	public boolean deleteRegistrationForm(String referenceUid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _registrationFormLocalService.deleteRegistrationForm(referenceUid);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.RegistrationForm> deleteRegistrationForms(
-		long groupId, long registrationId) {
-		return _registrationFormLocalService.deleteRegistrationForms(groupId,
-			registrationId);
 	}
 
 	@Override
@@ -247,29 +201,8 @@ public class RegistrationFormLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.model.RegistrationForm> findByG_REGID_ISNEW(
-		long registrationId, boolean isNew) {
-		return _registrationFormLocalService.findByG_REGID_ISNEW(registrationId,
-			isNew);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm findFormbyRegidRefid(
-		long groupId, long registrationId, String referenceUid) {
-		return _registrationFormLocalService.findFormbyRegidRefid(groupId,
-			registrationId, referenceUid);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _registrationFormLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm getByRegIdAndFormNo(
-		long registrationId, String formNo) {
-		return _registrationFormLocalService.getByRegIdAndFormNo(registrationId,
-			formNo);
 	}
 
 	@Override
@@ -279,28 +212,8 @@ public class RegistrationFormLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<org.opencps.dossiermgt.model.RegistrationForm> getFormDataByFormNo(
-		long groupId, long registrationId, String formNo) {
-		return _registrationFormLocalService.getFormDataByFormNo(groupId,
-			registrationId, formNo);
-	}
-
-	@Override
-	public java.util.List<org.opencps.dossiermgt.model.RegistrationForm> getFormsbyRegId(
-		long groupId, long registrationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _registrationFormLocalService.getFormsbyRegId(groupId,
-			registrationId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _registrationFormLocalService.getIndexableActionableDynamicQuery();
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> getOccurs() {
-		return _registrationFormLocalService.getOccurs();
 	}
 
 	/**
@@ -314,35 +227,10 @@ public class RegistrationFormLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<String> getParamNames() {
-		return _registrationFormLocalService.getParamNames();
-	}
-
-	@Override
-	public java.util.List<Object> getParams() {
-		return _registrationFormLocalService.getParams();
-	}
-
-	@Override
-	public java.util.List<Class<?>> getParamTypes() {
-		return _registrationFormLocalService.getParamTypes();
-	}
-
-	@Override
-	public String getPattern() {
-		return _registrationFormLocalService.getPattern();
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _registrationFormLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BooleanQuery getQuery() {
-		return _registrationFormLocalService.getQuery();
 	}
 
 	/**
@@ -432,134 +320,6 @@ public class RegistrationFormLocalServiceWrapper
 	@Override
 	public int getRegistrationFormsCount() {
 		return _registrationFormLocalService.getRegistrationFormsCount();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.SearchContext getSearchContext() {
-		return _registrationFormLocalService.getSearchContext();
-	}
-
-	@Override
-	public java.util.List<String> getSubPatterns() {
-		return _registrationFormLocalService.getSubPatterns();
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.search.BooleanQuery> getSubQueries() {
-		return _registrationFormLocalService.getSubQueries();
-	}
-
-	@Override
-	public void LuceneQuery(String pattern, String paramValues,
-		String paramTypes,
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		_registrationFormLocalService.LuceneQuery(pattern, paramValues,
-			paramTypes, searchContext);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm registrationFormSync(
-		long groupId, String uuidRegistration, String referenceUid,
-		String formNo, String formName, String formData, String formScript,
-		String formReport, Boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationFormLocalService.registrationFormSync(groupId,
-			uuidRegistration, referenceUid, formNo, formName, formData,
-			formScript, formReport, removed, serviceContext);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.Hits searchLucene(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return _registrationFormLocalService.searchLucene(params, sorts, start,
-			end, searchContext);
-	}
-
-	@Override
-	public void setOccurs(
-		java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> occurs) {
-		_registrationFormLocalService.setOccurs(occurs);
-	}
-
-	@Override
-	public void setParamNames(java.util.List<String> paramNames) {
-		_registrationFormLocalService.setParamNames(paramNames);
-	}
-
-	@Override
-	public void setParams(java.util.List<Object> params) {
-		_registrationFormLocalService.setParams(params);
-	}
-
-	@Override
-	public void setParamTypes(java.util.List<Class<?>> paramTypes) {
-		_registrationFormLocalService.setParamTypes(paramTypes);
-	}
-
-	@Override
-	public void setPattern(String pattern) {
-		_registrationFormLocalService.setPattern(pattern);
-	}
-
-	@Override
-	public void setQuery(com.liferay.portal.kernel.search.BooleanQuery query) {
-		_registrationFormLocalService.setQuery(query);
-	}
-
-	@Override
-	public void setSearchContext(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		_registrationFormLocalService.setSearchContext(searchContext);
-	}
-
-	@Override
-	public void setSubPatterns(java.util.List<String> subPatterns) {
-		_registrationFormLocalService.setSubPatterns(subPatterns);
-	}
-
-	@Override
-	public void setSubQueries(
-		java.util.List<com.liferay.portal.kernel.search.BooleanQuery> subQueries) {
-		_registrationFormLocalService.setSubQueries(subQueries);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm updateFormData(
-		long groupId, long registrationId, String referenceUid,
-		String formData,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationFormLocalService.updateFormData(groupId,
-			registrationId, referenceUid, formData, serviceContext);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm updateIsNew(
-		long groupId, long registrationId, String referenceUid, boolean isNew,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return _registrationFormLocalService.updateIsNew(groupId,
-			registrationId, referenceUid, isNew, serviceContext);
-	}
-
-	@Override
-	public org.opencps.dossiermgt.model.RegistrationForm updateRegistrationForm(
-		long groupId, long registrationId, String referenceUid, String formNo,
-		String formName, String formData, String formScript, String formReport,
-		long fileEntryId, boolean isNew, boolean removed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _registrationFormLocalService.updateRegistrationForm(groupId,
-			registrationId, referenceUid, formNo, formName, formData,
-			formScript, formReport, fileEntryId, isNew, removed, serviceContext);
 	}
 
 	/**

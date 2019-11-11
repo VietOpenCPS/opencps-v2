@@ -3,7 +3,6 @@ package org.opencps.dossiermgt.constants;
 public class EFormTerm {
 
 	public static final String EFORM_ID = "eFormId";
-	public static final String GROUP_ID = Field.GROUP_ID;
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -16,7 +15,7 @@ public class EFormTerm {
 	public static final String FORM_SCRIPT_FILE_ID = "formScriptFileId";
 	public static final String FORM_REPORT_FILE_ID = "formReportFileId";
 	public static final String EFORM_DATA = "eFormData";
-	public static final String EMAIL = ConstantUtils.VALUE_EMAIL;
+	public static final String EMAIL = "email";
 	public static final String SECRET = "secret";
 	public static final String CHECK_IN_DATE = "checkinDate";
 	public static final String GATE_NUMBER = "gateNumber";

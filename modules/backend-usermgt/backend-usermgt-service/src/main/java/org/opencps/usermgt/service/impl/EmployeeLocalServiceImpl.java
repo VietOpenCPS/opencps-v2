@@ -333,7 +333,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
@@ -434,7 +434,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -540,7 +540,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
@@ -638,7 +638,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -859,7 +859,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setGender(objectData.getInt("gender"));
 		object.setTelNo(objectData.getString("telNo"));
 		object.setMobile(objectData.getString("mobile"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));

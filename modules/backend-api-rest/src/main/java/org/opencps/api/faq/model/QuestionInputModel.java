@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "fullname",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "content",
     "publish",
     "questionType",
@@ -60,7 +60,7 @@ public class QuestionInputModel {
     @FormParam("fullname")
     protected String fullname;
     @XmlElement(required = true)
-    @FormParam(ConstantUtils.VALUE_EMAIL)
+    @FormParam("email")
     protected String email;
     @XmlElement(required = true)
     @FormParam("content")

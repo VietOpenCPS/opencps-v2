@@ -62,7 +62,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 		attributes.put("uuid", getUuid());
 		attributes.put("employeeId", getEmployeeId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -74,7 +74,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 		attributes.put("birthdate", getBirthdate());
 		attributes.put("telNo", getTelNo());
 		attributes.put("mobile", getMobile());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("workingStatus", getWorkingStatus());
 		attributes.put("mappingUserId", getMappingUserId());
 		attributes.put("mainJobPostId", getMainJobPostId());
@@ -109,7 +109,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -181,7 +181,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 			setMobile(mobile);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

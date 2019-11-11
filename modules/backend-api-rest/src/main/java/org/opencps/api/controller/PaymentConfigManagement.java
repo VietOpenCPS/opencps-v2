@@ -196,7 +196,7 @@ public interface PaymentConfigManagement {
 
 	public Response updateEpaymentconfig(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
 			@BeanParam PaymentConfigSingleInputModel input);
 
 }

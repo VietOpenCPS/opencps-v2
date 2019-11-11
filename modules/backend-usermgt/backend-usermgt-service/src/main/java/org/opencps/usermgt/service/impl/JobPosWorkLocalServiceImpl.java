@@ -218,7 +218,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosWorkTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
 		Indexer<JobPosWork> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPosWork.class);
@@ -251,7 +251,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosWorkTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -265,7 +265,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosWorkTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
 		Indexer<JobPosWork> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPosWork.class);
@@ -295,7 +295,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosWorkTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

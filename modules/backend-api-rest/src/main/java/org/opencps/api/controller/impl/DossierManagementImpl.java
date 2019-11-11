@@ -623,7 +623,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int year = query.getYear();
 			int month = query.getMonth();
 			String top = query.getTop();
-			if (Validator.isNotNull(top) && ReadFilePropertiesUtils.get(ConstantUtils.STATISTIC).equals(top.toLowerCase())) {
+			if (Validator.isNotNull(top) && ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_STATISTIC)).equals(top.toLowerCase())) {
 				Calendar baseDateCal = Calendar.getInstance();
 				baseDateCal.setTime(new Date());
 				if (month == 0) {
@@ -1781,7 +1781,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CANCELLING, body, 1, status, serviceContext);
+					ReadFilePropertiesUtils.get(ConstantUtils.STATUS_CANCELLING), body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 
@@ -1823,7 +1823,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_CORRECTING, body, 1, status, serviceContext);
+					ReadFilePropertiesUtils.get(ConstantUtils.STATUS_CORRECTING), body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(correctingDossier, user.getUserId());
 
@@ -1865,7 +1865,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int status = 3;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_SUBMITTING, body, 1, status, serviceContext);
+					ReadFilePropertiesUtils.get(ConstantUtils.STATUS_SUBMITTING), body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(endorsementDossier, user.getUserId());
 
@@ -1950,7 +1950,7 @@ public class DossierManagementImpl implements DossierManagement {
 			int status = 0;
 
 			DossierRequestUDLocalServiceUtil.updateDossierRequest(0, dossier.getDossierId(), referenceUid,
-					RT_SUBMITTING, body, 1, status, serviceContext);
+					ReadFilePropertiesUtils.get(ConstantUtils.STATUS_SUBMITTING), body, 1, status, serviceContext);
 
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(cancellingDossier, user.getUserId());
 

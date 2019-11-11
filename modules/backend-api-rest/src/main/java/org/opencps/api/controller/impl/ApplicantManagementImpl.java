@@ -824,16 +824,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			
 			if (Validator.isNotNull(input.getCityCode()))
 				cityName = getDictItemName(groupId,
-						ReadFilePropertiesUtils.get(ConstantUtils.EXPORT_ADMINISTRATIVE_REGION), input.getCityCode());
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)), input.getCityCode());
 
 			if (Validator.isNotNull(input.getDistrictCode()))
 				districtName = getDictItemName(groupId,
-						ReadFilePropertiesUtils.get(ConstantUtils.EXPORT_ADMINISTRATIVE_REGION),
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)),
 						input.getDistrictCode());
 
 			if (Validator.isNotNull(input.getWardCode()))
 				wardName = getDictItemName(groupId,
-						ReadFilePropertiesUtils.get(ConstantUtils.EXPORT_ADMINISTRATIVE_REGION), input.getWardCode());
+						ReadFilePropertiesUtils.get(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION)), input.getWardCode());
 
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,

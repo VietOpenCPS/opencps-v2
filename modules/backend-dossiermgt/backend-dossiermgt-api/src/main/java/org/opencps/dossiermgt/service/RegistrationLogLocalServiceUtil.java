@@ -42,13 +42,6 @@ public class RegistrationLogLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationLogLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static org.opencps.dossiermgt.model.RegistrationLog addLog(
-		String author, long groupId, long userId, long registrationId,
-		String content, String payload) {
-		return getService()
-				   .addLog(author, groupId, userId, registrationId, content,
-			payload);
-	}
 
 	/**
 	* Adds the registration log to the database. Also notifies the appropriate model listeners.
@@ -59,26 +52,6 @@ public class RegistrationLogLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.RegistrationLog addRegistrationLog(
 		org.opencps.dossiermgt.model.RegistrationLog registrationLog) {
 		return getService().addRegistrationLog(registrationLog);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationLog adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return getService().adminProcessData(objectData);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationLog adminProcessDelete(
-		Long id) {
-		return getService().adminProcessDelete(id);
-	}
-
-	public static long countLucense(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return getService()
-				   .countLucense(params, sorts, start, end, searchContext);
 	}
 
 	/**
@@ -261,11 +234,6 @@ public class RegistrationLogLocalServiceUtil {
 		return getService().getRegistrationLog(registrationLogId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationLog> getRegistrationLogbyRegId(
-		long groupId, long registrationId) {
-		return getService().getRegistrationLogbyRegId(groupId, registrationId);
-	}
-
 	/**
 	* Returns the registration log matching the UUID and group.
 	*
@@ -334,16 +302,6 @@ public class RegistrationLogLocalServiceUtil {
 	*/
 	public static int getRegistrationLogsCount() {
 		return getService().getRegistrationLogsCount();
-	}
-
-	public static com.liferay.portal.kernel.search.Hits searchLucene(
-		java.util.LinkedHashMap<String, Object> params,
-		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
-		throws com.liferay.portal.kernel.search.ParseException,
-			com.liferay.portal.kernel.search.SearchException {
-		return getService()
-				   .searchLucene(params, sorts, start, end, searchContext);
 	}
 
 	/**

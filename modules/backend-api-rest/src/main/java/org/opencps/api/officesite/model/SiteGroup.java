@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    Field.GROUP_ID,
+    "groupId",
     "groupName"
 })
 @XmlRootElement(name = "siteGroup")

@@ -10,10 +10,13 @@ package org.opencps.api.dossieraction.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 
 /**
@@ -44,8 +47,8 @@ import javax.xml.bind.annotation.XmlType;
  "stepName",
  "stepDueDate",
  "stepOverdue",
- ConstantUtils.TOTAL,
- ConstantUtils.DATA
+ "total",
+ "data"
 })
 @XmlRootElement(name = ConstantUtils.DATA)
 public class DossierNextActionResultsModel {

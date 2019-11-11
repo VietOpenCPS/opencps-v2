@@ -25,18 +25,11 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -46,7 +39,6 @@ import org.opencps.dossiermgt.model.Registration;
 
 import java.io.Serializable;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -80,16 +72,6 @@ public interface RegistrationLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Registration addRegistration(Registration registration);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Registration adminProcessData(JSONObject objectData);
-
-	@Indexable(type = IndexableType.DELETE)
-	public Registration adminProcessDelete(Long id);
-
-	public long countLucense(long userId, LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
 
 	/**
 	* Creates a new registration with the primary key. Does not add the registration to the database.
@@ -203,44 +185,12 @@ public interface RegistrationLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	/**
-	* Get registration of applicant has registrationState in use
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Registration getByApplicantAndAgency(long groupId,
-		String applicantNo, String agencyNo);
-
-	/**
-	* Get registration form ApplicantIdNo using output DB
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Registration getByApplicantIdNo(String applicantIdNo);
-
-	/**
-	* Get list registrations have state = 2
-	*/
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Registration> getByRegistrationState(long groupId, long userId,
-		int state);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Registration> getdByF_submitting(long groupId,
-		boolean submitting);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getfileEntryId(String formdata, String formScript,
-		String formReport);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Registration getLastSubmittingByUser(long groupId, long userId,
-		boolean submitting);
 
 	/**
 	* Returns the OSGi service identifier.
@@ -264,16 +214,6 @@ public interface RegistrationLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Registration getRegistration(long registrationId)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Registration getRegistrationByG_REGID(long groupId,
-		long registrationId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Registration> getRegistrationByGID_UID(long groupId, long userId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Registration getRegistrationByGID_UID_Last(long groupId, long userId);
 
 	/**
 	* Returns the registration matching the UUID and group.
@@ -335,44 +275,6 @@ public interface RegistrationLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegistrationsCount();
 
-	@Indexable(type = IndexableType.REINDEX)
-	public Registration insert(long groupId, long companyId,
-		String applicantName, String applicantIdType, String applicantIdNo,
-		String applicantIdDate, String address, String cityCode,
-		String cityName, String districtCode, String districtName,
-		String wardCode, String wardName, String contactName,
-		String contactTelNo, String contactEmail, String govAgencyCode,
-		String govAgencyName, int registrationState, String registrationClass,
-		String representativeEnterprise, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Registration registrationSync(long groupId, String uuid,
-		String applicantName, String applicantIdType, String applicantIdNo,
-		String applicantIdDate, String address, String cityCode,
-		String cityName, String districtCode, String districtName,
-		String wardCode, String wardName, String contactName,
-		String contactTelNo, String contactEmail, String govAgencyCode,
-		String govAgencyName, int registrationState, String registrationClass,
-		String representativeEnterprise, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits searchLucene(long userId, LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Registration updateRegistration(long groupId, long registrationId,
-		String applicantName, String applicantIdType, String applicantIdNo,
-		String applicantIdDate, String address, String cityCode,
-		String cityName, String districtCode, String districtName,
-		String wardCode, String wardName, String contactName,
-		String contactTelNo, String contactEmail, String govAgencyCode,
-		String govAgencyName, int registrationState, String registrationClass,
-		String representativeEnterprise, ServiceContext serviceContext)
-		throws PortalException, SystemException;
-
 	/**
 	* Updates the registration in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -381,8 +283,4 @@ public interface RegistrationLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Registration updateRegistration(Registration registration);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Registration updateSubmitting(long registrationId, boolean submitting)
-		throws PortalException;
 }

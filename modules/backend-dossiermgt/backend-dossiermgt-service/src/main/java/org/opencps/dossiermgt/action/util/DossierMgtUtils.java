@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -67,7 +68,7 @@ public class DossierMgtUtils {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
 		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
-		obj.put(DossierTerm.GROUP_ID, dossier.getGroupId());
+		obj.put(Field.GROUP_ID, dossier.getGroupId());
 		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
 		obj.put(DossierTerm.REFERENCE_UID, dossier.getReferenceUid());
 		obj.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());

@@ -47,7 +47,7 @@ public class WorkingUnitIndexer extends BaseIndexer<WorkingUnit> {
 			SearchContext searchContext) throws Exception {
 
 		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.WORKINGUNIT_ID, false);
-		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.GROUP_ID, false);
+		addSearchTerm(searchQuery, searchContext, Field.GROUP_ID, false);
 		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.COMPANY_ID, false);
 		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.USER_ID, false);
 		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.USER_NAME, false);
@@ -92,7 +92,7 @@ public class WorkingUnitIndexer extends BaseIndexer<WorkingUnit> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(workingUnit.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(workingUnit.getUserName()));
 
-		document.addNumberSortable(WorkingUnitTerm.GROUP_ID, workingUnit.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, workingUnit.getGroupId());
 		document.addNumberSortable(WorkingUnitTerm.WORKINGUNIT_ID, workingUnit.getWorkingUnitId());
 		document.addTextSortable(WorkingUnitTerm.NAME, workingUnit.getName());
 		document.addTextSortable(WorkingUnitTerm.ENNAME, workingUnit.getEnName());

@@ -67,7 +67,7 @@ import javax.xml.bind.annotation.XmlType;
     "birthdate",
     "telNo",
     "mobile",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "workingStatus",
     "permission",
     "jobPosTitle",

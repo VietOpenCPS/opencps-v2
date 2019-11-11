@@ -71,7 +71,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 			{ "uuid_", Types.VARCHAR },
 			{ "dossierMarkId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
@@ -88,7 +88,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dossierMarkId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
@@ -166,7 +166,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierMarkId", getDossierMarkId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -203,7 +203,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

@@ -58,7 +58,7 @@ import javax.xml.bind.annotation.XmlType;
     "address",
     "telNo",
     "faxNo",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "website",
     "siteGroup",
     "adminUser"

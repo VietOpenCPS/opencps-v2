@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "userId",
     "userName",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "telNo"
 })
 @XmlRootElement(name = "ListContacts")

@@ -60,7 +60,7 @@ public class DossierSyncWrapper implements DossierSync,
 
 		attributes.put("uuid", getUuid());
 		attributes.put("DossierSyncId", getDossierSyncId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -98,7 +98,7 @@ public class DossierSyncWrapper implements DossierSync,
 			setDossierSyncId(DossierSyncId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

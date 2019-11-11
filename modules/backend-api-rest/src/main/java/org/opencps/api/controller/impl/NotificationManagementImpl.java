@@ -1,5 +1,24 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,27 +32,10 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.NotificationManagement;
 import org.opencps.api.notification.model.NotificationSearchModel;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserNotificationEvent;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 
 public class NotificationManagementImpl implements NotificationManagement{
 
@@ -47,19 +49,7 @@ public class NotificationManagementImpl implements NotificationManagement{
 		//JSONObject record = JSONFactoryUtil.createJSONObject();
 		DateFormat dateFormatDateTime = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
-//		ThemeDisplay themeDisplay =
-//			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-//		Locale locale = themeDisplay.getLocale();
-//		TimeZone timeZone = themeDisplay.getTimeZone();
-//
-//		Integer delta = ParamUtil.getInteger(actionRequest, "delta", 0);
-//		Integer cur = ParamUtil.getInteger(actionRequest, "cur", 0);
-//		String bbb =
-//			ParamUtil.getString(actionRequest, "bbb", StringPool.BLANK);
-
-		// System.out.println(">>>>>>>>>>>>>>>>>>>bbb>>>>>>>>>>" + bbb);
 		long userId = user.getUserId();
-//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Boolean archivedParam = archived != null ? archived : true;
 		
 		try {
@@ -98,8 +88,8 @@ public class NotificationManagementImpl implements NotificationManagement{
 				
 				try {
 					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString(ConstantUtils.DATA)).getJSONObject("Dossier");
-					if (dataObj.has(DossierTerm.GROUP_ID) && dataObj.has(DossierTerm.DOSSIER_ID)) {
-						long groupId = dataObj.getLong(DossierTerm.GROUP_ID);
+					if (dataObj.has(Field.GROUP_ID) && dataObj.has(DossierTerm.DOSSIER_ID)) {
+						long groupId = dataObj.getLong(Field.GROUP_ID);
 						Group site = GroupLocalServiceUtil.fetchGroup(groupId);
 						if (site.isActive() && site.isSite()) {
 							record.put("viewRootURI", "/web" + site.getFriendlyURL());
@@ -124,24 +114,6 @@ public class NotificationManagementImpl implements NotificationManagement{
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
-
-//	private void markAsReadAll(long userId) throws IOException {
-//
-//		try {
-//			List<UserNotificationEvent> events = UserNotificationEventLocalServiceUtil
-//					.getArchivedUserNotificationEvents(userId, false, false, -1, -1);
-//
-//			for (UserNotificationEvent event : events) {
-//				updateArchived(event.getUserNotificationEventId());
-//			}
-//
-//			_log.info(">>>>>>>markAsReadAll is OK>>>>>>>>");
-//		} catch (Exception e) {
-//			_log.error(e);
-//			_log.info(">>>>>>>markAsReadAll is ERR>>>>>>>>");
-//		}
-//
-//	}
 
 	public void markAsRead(long userNotificationEventId) throws IOException {
 

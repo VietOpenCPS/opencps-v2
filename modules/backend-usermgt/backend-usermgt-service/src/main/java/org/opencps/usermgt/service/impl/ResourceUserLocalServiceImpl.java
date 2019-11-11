@@ -290,7 +290,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceUserTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -366,7 +366,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceUserTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -454,7 +454,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		object.setClassPK(objectData.getString("classPK"));
 		object.setToUserId(objectData.getLong("toUserId"));
 		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString(ConstantUtils.VALUE_EMAIL));
+		object.setEmail(objectData.getString("email"));
 		object.setReadonly(objectData.getBoolean("readonly"));
 
 		resourceUserPersistence.update(object);

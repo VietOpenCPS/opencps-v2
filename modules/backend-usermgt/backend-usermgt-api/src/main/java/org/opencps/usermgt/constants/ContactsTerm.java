@@ -19,11 +19,9 @@ public class ContactsTerm {
 
 	public static final String CREATE_DATE = "createDate";
 
-	public static final String EMAIL = ConstantUtils.VALUE_EMAIL;
+	public static final String EMAIL = "email";
 
 	public static final String FULL_NAME = "fullName";
-
-	public static final String GROUP_ID = Field.GROUP_ID;
 
 	public static final String CONTACT_TYPE = "contactType";
 

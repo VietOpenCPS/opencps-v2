@@ -42,18 +42,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.RegistrationTemplatesLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static org.opencps.dossiermgt.model.RegistrationTemplates addRegistrationTemplates(
-		long groupId, String govAgencyCode, String govAgencyName,
-		String formNo, String formName, boolean multiple, String formScript,
-		String formReport, String sampleData,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .addRegistrationTemplates(groupId, govAgencyCode,
-			govAgencyName, formNo, formName, multiple, formScript, formReport,
-			sampleData, serviceContext);
-	}
 
 	/**
 	* Adds the registration templates to the database. Also notifies the appropriate model listeners.
@@ -64,16 +52,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.RegistrationTemplates addRegistrationTemplates(
 		org.opencps.dossiermgt.model.RegistrationTemplates registrationTemplates) {
 		return getService().addRegistrationTemplates(registrationTemplates);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
-		return getService().adminProcessData(objectData);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates adminProcessDelete(
-		Long id) {
-		return getService().adminProcessDelete(id);
 	}
 
 	/**
@@ -239,13 +217,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static org.opencps.dossiermgt.model.RegistrationTemplates getRegistrationTemplatebyId(
-		long groupId, String registrationTemplateId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .getRegistrationTemplatebyId(groupId, registrationTemplateId);
-	}
-
 	/**
 	* Returns the registration templates with the primary key.
 	*
@@ -257,22 +228,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 		long registrationTemplateId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getRegistrationTemplates(registrationTemplateId);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationTemplates> getRegistrationTemplatesbyFormNo(
-		long groupId, String formNo) {
-		return getService().getRegistrationTemplatesbyFormNo(groupId, formNo);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationTemplates> getRegistrationTemplatesbyGOVCODE(
-		long groupId, String govAgencyCode) {
-		return getService()
-				   .getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
-	}
-
-	public static java.util.List<org.opencps.dossiermgt.model.RegistrationTemplates> getRegistrationTemplatesbyGroupId(
-		long groupId) {
-		return getService().getRegistrationTemplatesbyGroupId(groupId);
 	}
 
 	/**
@@ -315,57 +270,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 		return getService().getRegistrationTemplatesesCount();
 	}
 
-	public static org.opencps.dossiermgt.model.RegistrationTemplates getRegTempbyFormNoGovCode(
-		long groupId, String formNo, String govAgencyCode) {
-		return getService()
-				   .getRegTempbyFormNoGovCode(groupId, formNo, govAgencyCode);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates getRegTempbyRegId(
-		long groupId, long registrationTemplatesId) {
-		return getService().getRegTempbyRegId(groupId, registrationTemplatesId);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates removeRegistrationTemplate(
-		long groupId, String registrationTemplateId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .removeRegistrationTemplate(groupId, registrationTemplateId);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates updateFormReport(
-		long groupId, long registrationTemplatesId, String formReport,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .updateFormReport(groupId, registrationTemplatesId,
-			formReport, serviceContext);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates updateFormScript(
-		long groupId, long registrationTemplateId, String formScript,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .updateFormScript(groupId, registrationTemplateId,
-			formScript, serviceContext);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates updateRegistrationTemplates(
-		long groupId, long registrationTemplateId, String govAgencyCode,
-		String govAgencyName, String formNo, String formName, boolean multiple,
-		String formScript, String formReport, String sampleData,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .updateRegistrationTemplates(groupId,
-			registrationTemplateId, govAgencyCode, govAgencyName, formNo,
-			formName, multiple, formScript, formReport, sampleData,
-			serviceContext);
-	}
-
 	/**
 	* Updates the registration templates in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -375,16 +279,6 @@ public class RegistrationTemplatesLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.RegistrationTemplates updateRegistrationTemplates(
 		org.opencps.dossiermgt.model.RegistrationTemplates registrationTemplates) {
 		return getService().updateRegistrationTemplates(registrationTemplates);
-	}
-
-	public static org.opencps.dossiermgt.model.RegistrationTemplates updateSampledata(
-		long groupId, long registrationTemplatesId, String sampleData,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			com.liferay.portal.kernel.exception.SystemException {
-		return getService()
-				   .updateSampledata(groupId, registrationTemplatesId,
-			sampleData, serviceContext);
 	}
 
 	public static RegistrationTemplatesLocalService getService() {

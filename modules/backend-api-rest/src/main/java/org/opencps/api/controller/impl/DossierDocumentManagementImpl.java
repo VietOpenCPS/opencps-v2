@@ -223,7 +223,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				//
 				int length = dossierIdArr.length();
 				formDataJSON = JSONFactoryUtil.createJSONObject();
-				formDataJSON.put(DossierTerm.TOTAL, length);
+				formDataJSON.put(ConstantUtils.TOTAL, length);
 				//Get formScript
 				DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, typeCode);
 				String documentScript = StringPool.BLANK;
@@ -338,7 +338,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		if (dAction != null) {
 			long serviceProcessId = dAction.getServiceProcessId();
 			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
-			jsonData.put(DossierTerm.TOTAL, length);
+			jsonData.put(ConstantUtils.TOTAL, length);
 			jsonData.put(DossierTerm.ACTION_USER, dAction.getActionUser());
 			String sequenceNo = dAction.getSequenceNo();
 			if (Validator.isNotNull(sequenceNo)) {

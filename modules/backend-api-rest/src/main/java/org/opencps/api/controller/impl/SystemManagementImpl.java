@@ -147,41 +147,41 @@ public class SystemManagementImpl implements SystemManagement {
 				throw new UnauthenticationException();
 			}
 			
-			Role oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
+			Role oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			Map<Locale, String> titleMap = new HashMap<>();
-			titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
+			titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			
 			Map<Locale, String> titleDesc = new HashMap<>();
-			titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
+			titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 
 			if (oldApplicantRole == null) {
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT), serviceContext);				
-				oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
-				oldApplicantRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
-				oldApplicantRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_APPLICANT));
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT), serviceContext);				
+				oldApplicantRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
+				oldApplicantRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
+				oldApplicantRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 				RoleLocalServiceUtil.updateRole(oldApplicantRole);
 			}
-			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE));
+			Role oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
 			if (oldEmployeeRole == null) {
-				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE));
-				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE));				
+				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
+				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));				
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE), serviceContext);				
-				oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
-				oldEmployeeRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE));
-				oldEmployeeRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_EMPLOYEE));
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE), serviceContext);				
+				oldEmployeeRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldEmployeeRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
+				oldEmployeeRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_EMPLOYEE));
 				RoleLocalServiceUtil.updateRole(oldEmployeeRole);
 			}
-			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
+			Role oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 			if (oldCitizenRole == null) {
-				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
-				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
+				titleMap.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				titleDesc.put(Locale.getDefault(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 				RoleLocalServiceUtil.addRole(user.getUserId(), Role.class.getName(), CounterLocalServiceUtil.increment(),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN), serviceContext);
-				oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
-				oldCitizenRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
-				oldCitizenRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_CITIZEN));
+						ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN), titleMap, titleDesc, RoleConstants.TYPE_REGULAR, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN), serviceContext);
+				oldCitizenRole = RoleLocalServiceUtil.fetchRole(user.getCompanyId(), ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldCitizenRole.setTitle(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
+				oldCitizenRole.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_CITIZEN));
 				RoleLocalServiceUtil.updateRole(oldCitizenRole);
 			}
 			

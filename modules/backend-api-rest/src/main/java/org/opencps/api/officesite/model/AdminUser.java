@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -39,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "userId",
     "screenName",
-    ConstantUtils.VALUE_EMAIL
+    "email"
 })
 @XmlRootElement(name = "adminUser")
 public class AdminUser {

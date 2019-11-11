@@ -62,7 +62,7 @@ public class OfficeSiteWrapper implements OfficeSite, ModelWrapper<OfficeSite> {
 		attributes.put("uuid", getUuid());
 		attributes.put("officeSiteId", getOfficeSiteId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -73,7 +73,7 @@ public class OfficeSiteWrapper implements OfficeSite, ModelWrapper<OfficeSite> {
 		attributes.put("address", getAddress());
 		attributes.put("telNo", getTelNo());
 		attributes.put("faxNo", getFaxNo());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("website", getWebsite());
 		attributes.put("logoFileEntryId", getLogoFileEntryId());
 		attributes.put("siteGroupId", getSiteGroupId());
@@ -104,7 +104,7 @@ public class OfficeSiteWrapper implements OfficeSite, ModelWrapper<OfficeSite> {
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -170,7 +170,7 @@ public class OfficeSiteWrapper implements OfficeSite, ModelWrapper<OfficeSite> {
 			setFaxNo(faxNo);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

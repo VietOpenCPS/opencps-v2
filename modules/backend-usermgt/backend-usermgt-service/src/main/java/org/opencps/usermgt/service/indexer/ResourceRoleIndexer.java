@@ -74,7 +74,7 @@ public class ResourceRoleIndexer extends BaseIndexer<ResourceRole> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(resourceRole.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(resourceRole.getUserName()));
 
-		document.addNumberSortable(ResourceRoleTerm.GROUP_ID, resourceRole.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, resourceRole.getGroupId());
 		document.addNumberSortable(ResourceRoleTerm.RESOURCEROLE_ID, resourceRole.getResourceRoleId());
 		document.addTextSortable(ResourceRoleTerm.CLASS_NAME, resourceRole.getClassName());
 		document.addTextSortable(ResourceRoleTerm.CLASS_PK, resourceRole.getClassPK());

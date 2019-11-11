@@ -63,7 +63,7 @@ public class DossierMarkWrapper implements DossierMark,
 		attributes.put("uuid", getUuid());
 		attributes.put("dossierMarkId", getDossierMarkId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -97,7 +97,7 @@ public class DossierMarkWrapper implements DossierMark,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

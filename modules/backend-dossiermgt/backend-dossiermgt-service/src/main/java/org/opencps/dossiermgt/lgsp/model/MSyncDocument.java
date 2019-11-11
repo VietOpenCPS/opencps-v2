@@ -93,7 +93,7 @@ import javax.xml.bind.annotation.XmlType;
     "applicantsId",
     "applicantsType",
     "address",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "phone",
     "compendium",
     "dateReceived",

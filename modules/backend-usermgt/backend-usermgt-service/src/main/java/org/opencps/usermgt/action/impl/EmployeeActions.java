@@ -43,6 +43,7 @@ import java.util.Locale;
 
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
@@ -80,12 +81,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put(ConstantUtils.DATA, hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put(ConstantUtils.TOTAL, total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -381,12 +382,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeJobPosLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put(ConstantUtils.DATA, hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeJobPosLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put(ConstantUtils.TOTAL, total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -745,7 +746,7 @@ public class EmployeeActions implements EmployeeInterface {
 			indexer.reindex(user);
 
 			jsonObject.put("screenName", user.getScreenName());
-			jsonObject.put(ConstantUtils.VALUE_EMAIL, user.getEmailAddress());
+			jsonObject.put("email", user.getEmailAddress());
 			jsonObject.put("exist", true);
 
 			JSONObject payLoad = JSONFactoryUtil.createJSONObject();

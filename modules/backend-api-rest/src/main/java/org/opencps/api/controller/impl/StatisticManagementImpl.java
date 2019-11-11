@@ -42,6 +42,7 @@ import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -203,10 +204,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 									params, null, serviceContext);
 //							_log.info("START");
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();
-							statistic.put(ConstantUtils.VALUE_STEP_CODE, stepConfig.getStepCode());
-							statistic.put(ConstantUtils.VALUE_STEP_NAME, stepConfig.getStepName());
-							statistic.put(ConstantUtils.VALUE_DOSSIER_STATUS, stepConfig.getDossierStatus());
-							statistic.put(ConstantUtils.VALUE_DOSSIER_SUB_STATUS, stepConfig.getDossierSubStatus());
+							statistic.put(ProcessStepTerm.STEP_CODE, stepConfig.getStepCode());
+							statistic.put(ProcessStepTerm.STEP_NAME, stepConfig.getStepName());
+							statistic.put(DossierTerm.DOSSIER_STATUS, stepConfig.getDossierStatus());
+							statistic.put(DossierTerm.DOSSIER_STATUS, stepConfig.getDossierSubStatus());
 							statistic.put(ConstantUtils.VALUE_TOTAL_COUNT, count);
 							total += count;
 							statistics.put(statistic);
@@ -243,10 +244,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 //													_log.info("count: "+count);
 													if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
 														JSONObject statistic = JSONFactoryUtil.createJSONObject();
-														statistic.put(ConstantUtils.VALUE_STEP_CODE, step.getStepCode());
-														statistic.put(ConstantUtils.VALUE_STEP_NAME, step.getStepName());
-														statistic.put(ConstantUtils.VALUE_DOSSIER_STATUS, step.getDossierStatus());
-														statistic.put(ConstantUtils.VALUE_DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+														statistic.put(ProcessStepTerm.STEP_CODE, step.getStepCode());
+														statistic.put(ProcessStepTerm.STEP_NAME, step.getStepName());
+														statistic.put(DossierTerm.DOSSIER_STATUS, step.getDossierStatus());
+														statistic.put(DossierTerm.DOSSIER_STATUS, step.getDossierSubStatus());
 														statistic.put(ConstantUtils.VALUE_MENU_GROUP, menuConfig.getMenuGroup());
 														statistic.put(ConstantUtils.VALUE_TOTAL_COUNT, count);
 														statistics.put(statistic);
@@ -258,10 +259,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 											}
 											//
 											JSONObject statistic = JSONFactoryUtil.createJSONObject();
-											statistic.put(ConstantUtils.VALUE_STEP_CODE, paramSplit[1]);
-											statistic.put(ConstantUtils.VALUE_STEP_NAME, StringPool.BLANK);
-											statistic.put(ConstantUtils.VALUE_DOSSIER_STATUS, StringPool.BLANK);
-											statistic.put(ConstantUtils.VALUE_DOSSIER_SUB_STATUS, StringPool.BLANK);
+											statistic.put(ProcessStepTerm.STEP_CODE, paramSplit[1]);
+											statistic.put(ProcessStepTerm.STEP_NAME, StringPool.BLANK);
+											statistic.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
+											statistic.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 											statistic.put(ConstantUtils.VALUE_MENU_GROUP, menuConfig.getMenuGroup());
 											statistic.put(ConstantUtils.VALUE_TOTAL_COUNT, totalGroup);
 											statistics.put(statistic);
@@ -276,10 +277,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 														null, serviceContext);
 //												_log.info("count: "+count);
 												JSONObject statistic = JSONFactoryUtil.createJSONObject();
-												statistic.put(ConstantUtils.VALUE_STEP_CODE, step.getStepCode());
-												statistic.put(ConstantUtils.VALUE_STEP_NAME, step.getStepName());
-												statistic.put(ConstantUtils.VALUE_DOSSIER_STATUS, step.getDossierStatus());
-												statistic.put(ConstantUtils.VALUE_DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+												statistic.put(ProcessStepTerm.STEP_CODE, step.getStepCode());
+												statistic.put(ProcessStepTerm.STEP_NAME, step.getStepName());
+												statistic.put(DossierTerm.DOSSIER_STATUS, step.getDossierStatus());
+												statistic.put(DossierTerm.DOSSIER_STATUS, step.getDossierSubStatus());
 												statistic.put(ConstantUtils.VALUE_MENU_GROUP, menuConfig.getMenuGroup());
 												statistic.put(ConstantUtils.VALUE_TOTAL_COUNT, count);
 												total += count;

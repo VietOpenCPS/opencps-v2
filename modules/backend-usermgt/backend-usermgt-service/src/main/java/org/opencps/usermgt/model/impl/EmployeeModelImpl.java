@@ -71,7 +71,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			{ "uuid_", Types.VARCHAR },
 			{ "employeeId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
-			{ Field.GROUP_ID, Types.BIGINT },
+			{ "groupId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
@@ -83,7 +83,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			{ "birthdate", Types.TIMESTAMP },
 			{ "telNo", Types.VARCHAR },
 			{ "mobile", Types.VARCHAR },
-			{ ConstantUtils.VALUE_EMAIL, Types.VARCHAR },
+			{ "email", Types.VARCHAR },
 			{ "workingStatus", Types.INTEGER },
 			{ "mappingUserId", Types.BIGINT },
 			{ "mainJobPostId", Types.BIGINT },
@@ -101,7 +101,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("employeeId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put(Field.GROUP_ID, Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
@@ -113,7 +113,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		TABLE_COLUMNS_MAP.put("birthdate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("mobile", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put(ConstantUtils.VALUE_EMAIL, Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("email", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("workingStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("mappingUserId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("mainJobPostId", Types.BIGINT);
@@ -193,7 +193,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		attributes.put("uuid", getUuid());
 		attributes.put("employeeId", getEmployeeId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -205,7 +205,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		attributes.put("birthdate", getBirthdate());
 		attributes.put("telNo", getTelNo());
 		attributes.put("mobile", getMobile());
-		attributes.put(ConstantUtils.VALUE_EMAIL, getEmail());
+		attributes.put("email", getEmail());
 		attributes.put("workingStatus", getWorkingStatus());
 		attributes.put("mappingUserId", getMappingUserId());
 		attributes.put("mainJobPostId", getMainJobPostId());
@@ -243,7 +243,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
@@ -315,7 +315,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			setMobile(mobile);
 		}
 
-		String email = (String)attributes.get(ConstantUtils.VALUE_EMAIL);
+		String email = (String)attributes.get("email");
 
 		if (email != null) {
 			setEmail(email);

@@ -2839,7 +2839,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+		if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_STATISTIC).equals(top.toLowerCase())) {
 			if (month > 0 && year > 0) {
 				int minDayOfMonth = DossierMgtUtils.minDay(month, year);
 				//_log.debug("minDayOfMonth: "+minDayOfMonth);
@@ -3037,7 +3037,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 				
-			} else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+			} else if (!ReadFilePropertiesUtils.get(ConstantUtils.VALUE_STATISTIC).equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 
 				MultiMatchQuery queryRelease = new MultiMatchQuery(String.valueOf(0));

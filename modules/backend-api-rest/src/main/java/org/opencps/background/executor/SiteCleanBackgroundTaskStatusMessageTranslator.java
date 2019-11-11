@@ -4,6 +4,8 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusMessageTranslator;
 import com.liferay.portal.kernel.messaging.Message;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 public class SiteCleanBackgroundTaskStatusMessageTranslator implements BackgroundTaskStatusMessageTranslator {
 
 	@Override

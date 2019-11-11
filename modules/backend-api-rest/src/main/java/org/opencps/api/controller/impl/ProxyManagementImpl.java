@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,6 +29,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ProxyManagement;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -74,11 +76,11 @@ public class ProxyManagementImpl implements ProxyManagement {
 					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 							&& configObj.has(SyncServerTerm.SERVER_SECRET)
 							&& configObj.has(SyncServerTerm.SERVER_URL)
-							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+							&& configObj.has(Field.GROUP_ID)) {
 						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
 						
 						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+				        groupIdRequest = configObj.getString(Field.GROUP_ID);
 					}
 			        
 					

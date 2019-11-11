@@ -94,33 +94,6 @@ public class AutoFillFormData {
 
 				try {
 
-					Registration registration = RegistrationLocalServiceUtil
-							.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
-
-					if (Validator.isNotNull(registration)) {
-
-						JSONObject applicantJSON = JSONFactoryUtil
-								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
-
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
-
-					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
@@ -143,13 +116,12 @@ public class AutoFillFormData {
 						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_representative = applicantJSON.getString("representativeEnterprise");
 
-					}
 
-				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-					_log.error(e1);
-				}
+					} catch (PortalException e1) {
+						// TODO Auto-generated catch block
+	//					e1.printStackTrace();
+						_log.error(e1);
+					}
 
 				try {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
@@ -499,33 +471,6 @@ public class AutoFillFormData {
 
 				try {
 
-					Registration registration = RegistrationLocalServiceUtil
-							.getLastSubmittingByUser(dossier.getGroupId(), serviceContext.getUserId(), true);
-
-					if (Validator.isNotNull(registration)) {
-
-						JSONObject applicantJSON = JSONFactoryUtil
-								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
-
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
-
-					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
@@ -548,13 +493,12 @@ public class AutoFillFormData {
 						_applicantIdDate = applicantJSON.getString("applicantIdDate");
 						_representative = applicantJSON.getString("representativeEnterprise");
 
-					}
 
-				} catch (PortalException e1) {
-					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-					_log.error(e1);
-				}
+					} catch (PortalException e1) {
+						// TODO Auto-generated catch block
+	//					e1.printStackTrace();
+						_log.error(e1);
+					}
 
 				try {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),

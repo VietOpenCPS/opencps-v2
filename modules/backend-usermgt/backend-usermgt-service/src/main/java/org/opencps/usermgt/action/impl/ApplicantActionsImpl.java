@@ -31,6 +31,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
@@ -38,6 +41,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -89,11 +93,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 			hits = ApplicantLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put(ConstantUtils.DATA, hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = ApplicantLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put(ConstantUtils.TOTAL, total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -128,7 +132,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant updateProfile(ServiceContext context, long groupId, long applicantId, String profile) throws PortalException {
-		// TODO Auto-generated method stub
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId, StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
@@ -139,7 +142,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public Applicant removeProfile(ServiceContext context, long applicantId) throws PortalException {
-		// TODO Auto-generated method stub
 		return ApplicantLocalServiceUtil.removeProfile(applicantId);
 	}
 
@@ -186,9 +188,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String email, boolean exist, ServiceContext context) throws PortalException {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		//validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
-		//validateApplicantDuplicate(groupId, context.getCompanyId(), contactTelNo, applicantIdNo, contactEmail);
-
 		Applicant applicant = ApplicantLocalServiceUtil.fetchApplicant(id);
 		if (applicant != null) {
 			if (applicant.getMappingUserId() > 0 && Validator.isNotNull(applicant.getActivationCode())) {
@@ -219,7 +218,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
 					payload.put(
-						"Applicant", JSONFactoryUtil.createJSONObject(
+							ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), JSONFactoryUtil.createJSONObject(
 							JSONFactoryUtil.looseSerialize(applicant)));
 				}
 				catch (JSONException parse) {
@@ -229,8 +228,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setExpireDate(cal.getTime());
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			} else {
-				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
-				//String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 				boolean autoPassword = false;
 				boolean autoScreenName = true;
@@ -246,18 +244,20 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 
 				//
-				String secretKey1 = PwdGenerator.getPassword(2, new String[] { "0123456789" });
-				String secretKey2 = PwdGenerator.getPassword(2, new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
-				String secretKey3 = PwdGenerator.getPassword(2, new String[] { "abcdefghijklmnopqrstuvwxyz" });
-				String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
-				String secretKey5 = PwdGenerator.getPassword(4, new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-						"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+				
+				String secretKey1 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER)});
+				String secretKey2 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE)});
+				String secretKey3 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE)});
+				String secretKey4 = PwdGenerator.getPassword(1 , new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL)});
+				String secretKey5 = PwdGenerator.getPassword(4,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL_ALL) });
 				String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 
-				//String password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-
-				String firstName = ("citizen".equals(applicant.getApplicantIdType()) ? "Ông/bà"
-						: ("business".equals(applicant.getApplicantIdType()) ? "Quý công ty" : "Tổ chức"));
+				String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicant.getApplicantIdType()) ? ConfigProps.get(ConfigConstants.HEADER_USER)
+						: (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicant.getApplicantIdType()) ? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
 				String lastName = applicant.getApplicantName();
 
 				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -267,7 +267,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					roleIds = new long[] { roleDefault.getRoleId() };
 				}
 
-				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_ADMIN));
 
 				List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(adminRole.getRoleId());
 
@@ -288,7 +288,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 							password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
 							LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-							dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+							dayOfMonth, year, ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds, organizationIds, roleIds,
 							userGroupIds, sendEmail, context);
 				//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 				//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
@@ -329,25 +329,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setToEmail(applicant.getContactEmail());
 					queue.setToTelNo(applicant.getContactTelNo());
 					
-					//JSONObject object = JSONFactoryUtil.createJSONObject();
-					
-		//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
-					//String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
-					
-					//object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, applicant.getActivationCode());
-					//object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ applicant.getApplicantId());
-					//object.put(ApplicantListenerMessageKeys.USER_NAME, applicant.getApplicantName());
-					//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
-					//object.put("toName", applicant.getApplicantName());
-					//object.put("toAddress", applicant.getContactEmail());
-		//			
-		//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, applicant.getGroupId()).toString();
-		//			_log.info("payloadTest1: "+payload1);
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
 						//_log.info("START PAYLOAD: ");
 						payload.put(
-							"Applicant", JSONFactoryUtil.createJSONObject(
+								ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), JSONFactoryUtil.createJSONObject(
 								JSONFactoryUtil.looseSerialize(applicant)));
 					}
 					catch (JSONException parse) {
@@ -414,14 +400,14 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 		if (flagUser != 2) {
-			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), groupId);
+			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
 			String cityName = getDictItemName(groupId, dc, cityCode);
 			String districtName = getDictItemName(groupId, dc, districtCode);
 			String wardName = getDictItemName(groupId, dc, wardCode);
 			//
 			Date appDate = null;
 			if (Validator.isNotNull(applicantIdDate)) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
 				try {
 					appDate = sdf.parse(applicantIdDate);
 				} catch (ParseException e) {
@@ -434,89 +420,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
 						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, serviceContext);
-				if (app != null) {
-					//Send Email active account
-					Date now = new Date();
-					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					Calendar cal = Calendar.getInstance();
-					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-
-					queue.setCreateDate(now);
-					queue.setModifiedDate(now);
-					queue.setGroupId(groupId);
-					queue.setCompanyId(serviceContext.getCompanyId());
-					
-					queue.setNotificationType("APPICANT_OLD_ACTIVE");
-					queue.setClassName(Applicant.class.getName());
-					queue.setClassPK(String.valueOf(app.getApplicantId()));
-					queue.setToUsername(applicantName);
-					queue.setToUserId(app.getMappingUserId());
-					queue.setToEmail(contactEmail);
-					queue.setToTelNo(StringPool.BLANK);
-					
-					JSONObject payload = JSONFactoryUtil.createJSONObject();
-					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
-						_log.error(parse);
-					}
-					//_log.info("payloadTest: "+payload.toJSONString());
-					queue.setPayload(payload.toJSONString());
-					
-					queue.setExpireDate(cal.getTime());
-					
-					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-				}
 				//Add applicant search
 				ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
 						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 			} else if (flagUser == 1) {
 				//Add applicant and user
-				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
 						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, serviceContext);
-				if (app != null) {
-					//Send Email active account
-					Date now = new Date();
-					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					Calendar cal = Calendar.getInstance();
-					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-
-					queue.setCreateDate(now);
-					queue.setModifiedDate(now);
-					queue.setGroupId(groupId);
-					queue.setCompanyId(serviceContext.getCompanyId());
-					
-					queue.setNotificationType("APPICANT_OLD_ACTIVE");
-					queue.setClassName(Applicant.class.getName());
-					queue.setClassPK(String.valueOf(app.getApplicantId()));
-					queue.setToUsername(applicantName);
-					queue.setToUserId(app.getMappingUserId());
-					queue.setToEmail(contactEmail);
-					queue.setToTelNo(StringPool.BLANK);
-					
-					JSONObject payload = JSONFactoryUtil.createJSONObject();
-					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
-						_log.error(parse);
-					}
-					//_log.info("payloadTest: "+payload.toJSONString());
-					queue.setPayload(payload.toJSONString());
-					
-					queue.setExpireDate(cal.getTime());
-					
-					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-				}
 			}
 		}
 	}

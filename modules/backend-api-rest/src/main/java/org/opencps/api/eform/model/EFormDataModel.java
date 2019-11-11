@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
     "formScriptFileId",
     "formReportFileId",
     "eFormData",
-    ConstantUtils.VALUE_EMAIL,
+    "email",
     "secret",
     "checkinDate",
     "gateNumber",

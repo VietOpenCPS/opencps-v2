@@ -11,8 +11,6 @@ public class WorkingUnitTerm {
 
 	public static final String WORKINGUNIT_ID = "workingUnitId";
 
-	public static final String GROUP_ID = Field.GROUP_ID;
-
 	public static final String COMPANY_ID = "companyId";
 	
 	public static final String USER_ID = "userId";
@@ -41,7 +39,7 @@ public class WorkingUnitTerm {
 	
 	public static final String FAX_NO = "faxNo";
 	
-	public static final String EMAIL = ConstantUtils.VALUE_EMAIL;
+	public static final String EMAIL = "email";
 	
 	public static final String WEBSITE = "website";
 	

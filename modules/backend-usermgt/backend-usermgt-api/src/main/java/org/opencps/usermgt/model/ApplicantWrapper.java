@@ -61,7 +61,7 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 
 		attributes.put("uuid", getUuid());
 		attributes.put("applicantId", getApplicantId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
@@ -105,7 +105,7 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 			setApplicantId(applicantId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

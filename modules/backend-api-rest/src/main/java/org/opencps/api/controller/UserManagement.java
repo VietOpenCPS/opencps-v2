@@ -105,7 +105,7 @@ public interface UserManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getPreferenceByKey(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key);
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key);
 
 	@PUT
 	@Path("/{id}/preferences")
@@ -122,7 +122,7 @@ public interface UserManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response updatePreferences(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam(ConstantUtils.VALUE_KEY) String key,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("key") String key,
 			@FormParam("value") String value);
 
 	@POST

@@ -391,7 +391,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			SearchContext searchContext) throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeJobPosTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<EmployeeJobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EmployeeJobPos.class);
 
@@ -423,7 +423,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeJobPosTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -439,7 +439,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			throws ParseException, SearchException {
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
-		String groupId = (String) params.get(EmployeeJobPosTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<EmployeeJobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EmployeeJobPos.class);
 
@@ -468,7 +468,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(EmployeeJobPosTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

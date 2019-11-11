@@ -41,7 +41,9 @@ import javax.ws.rs.core.Response;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.controller.AdminConfigManagement;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -71,12 +73,10 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String CMD = "cmd";
 	private static final String GET = "get";
 	private static final String DELETE = "delete";
-	private static final String ADMIN = ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN);
 	private static final String API = "api";
 	private static final String BUNDLE_NAME = "bundle_name";
 	private static final String SERVICE_UTIL_NAME = "service_util_name";
 	private static final String MODEL_NAME = "model_name";
-	private static final String DATA = ConstantUtils.DATA;
 	private static final String ID = "id";
 	private static final String STATUS = "status";
 
@@ -110,7 +110,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String AUTO_COMPLETE = "autocomplete";
 	private static final String TYPE_INT = "int";
 	private static final String DATA_TYPE = "data_type";
-	private static final String KEY = ConstantUtils.VALUE_KEY;
+	private static final String KEY = "key";
 	private static final String CHECK_BOX = "checkbox";
 	private static final String QUERY_LIKE = "like";
 	private static final String COMPARE_LT = "lt";
@@ -134,8 +134,6 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String HEADERS = "headers";
 	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
 	private static final String ACCEPT = "Accept";
-	private static final String CONTENT_TYPE = ConstantUtils.CONTENT_TYPE;
-	private static final String APP_JSON = "application/json";
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -149,7 +147,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
 			try {
 				
-				if (message.getString(TYPE).equals(ADMIN)) {
+				if (message.getString(TYPE).equals(ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
 					
 					String code = message.getString(CODE);
 	
@@ -357,14 +355,14 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 									JSONObject.class);
 	
-							JSONObject postData = message.getJSONObject(DATA);
+							JSONObject postData = message.getJSONObject(ConstantUtils.DATA);
 							
 							postData.put(Field.GROUP_ID, groupId);
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());
 							
-							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
+							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(ConstantUtils.DATA)));
 
 							messageData.put(STATUS, HttpStatus.OK);
 	
@@ -399,24 +397,25 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						conn.setRequestProperty(LOCAL_ACCESSS, headerObject.getString(P_AUTH));
 						conn.setRequestProperty(USER_REQUEST_ID, headerObject.getString(USER_ID));
 
-				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
-				        conn.setRequestProperty(ACCEPT, APP_JSON);
-				        conn.setRequestProperty(CONTENT_TYPE, APP_JSON);
-				        
-				        conn.setDoInput(true);
+						conn.setRequestMethod(message.getString(CMD).toUpperCase());
+						conn.setRequestProperty(ACCEPT, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
+						conn.setRequestProperty(ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE),
+								ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
+
+						conn.setDoInput(true);
 						conn.setDoOutput(true);
 						conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
 						conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 						
-				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				        			        
-				        int cp;
-				        while ((cp = brf.read()) != -1) {
-				          sb.append((char) cp);
-				        }
+						BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+						int cp;
+						while ((cp = brf.read()) != -1) {
+							sb.append((char) cp);
+						}
 						JSONArray responeData = JSONFactoryUtil.createJSONArray();
 						try {
-							responeData = JSONFactoryUtil.createJSONObject(sb.toString()).getJSONArray(DATA);
+							responeData = JSONFactoryUtil.createJSONObject(sb.toString()).getJSONArray(ConstantUtils.DATA);
 						} catch (Exception e) {
 							_log.debug(e);
 							responeData = JSONFactoryUtil.createJSONArray(sb.toString());
@@ -425,12 +424,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						messageData.put(STATUS, HttpStatus.OK);
 						
 						conn.disconnect();
-				    }
-				    catch(IOException e)
-				    {
-				        _log.debug("Something went wrong while reading/writing in stream!!");
-				        _log.debug(e);
-				    }
+					} catch (IOException e) {
+						_log.debug(e);
+					}
 					
 				}
 	

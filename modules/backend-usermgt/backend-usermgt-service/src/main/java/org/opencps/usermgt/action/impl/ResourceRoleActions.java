@@ -1,13 +1,5 @@
 package org.opencps.usermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.action.ResourceRoleInterface;
-import org.opencps.usermgt.constants.ResourceRoleTerm;
-import org.opencps.usermgt.model.ResourceRole;
-import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -26,6 +18,16 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.action.ResourceRoleInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -92,21 +94,21 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 				}
 
-				result.put(ConstantUtils.DATA, list);
+				result.put(ApplicantTerm.DATA, list);
 
 				long total = list.size();
 
-				result.put(ConstantUtils.TOTAL, total);
+				result.put(ApplicantTerm.TOTAL, total);
 
 			} else {
 
 				hits = ResourceRoleLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-				result.put(ConstantUtils.DATA, hits.toList());
+				result.put(ApplicantTerm.DATA, hits.toList());
 
 				long total = ResourceRoleLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put(ConstantUtils.TOTAL, total);
+				result.put(ApplicantTerm.TOTAL, total);
 
 			}
 

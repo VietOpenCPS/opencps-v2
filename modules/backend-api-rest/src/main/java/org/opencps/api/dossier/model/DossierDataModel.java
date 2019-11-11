@@ -100,7 +100,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
 	"dossierIdCTN",
     "dossierId",
-    Field.GROUP_ID,
+    "groupId",
     "userId",
     "userName",
     "createDate",

@@ -63,7 +63,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 		attributes.put("uuid", getUuid());
 		attributes.put("deliverableLogId", getDeliverableLogId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
@@ -100,7 +100,7 @@ public class DeliverableLogWrapper implements DeliverableLog,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);

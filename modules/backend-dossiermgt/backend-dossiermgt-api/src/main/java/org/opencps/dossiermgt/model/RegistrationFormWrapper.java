@@ -63,7 +63,7 @@ public class RegistrationFormWrapper implements RegistrationForm,
 		attributes.put("uuid", getUuid());
 		attributes.put("registrationFormId", getRegistrationFormId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put(Field.GROUP_ID, getGroupId());
+		attributes.put("groupId", getGroupId());
 		attributes.put("userId", getUserId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
@@ -101,7 +101,7 @@ public class RegistrationFormWrapper implements RegistrationForm,
 			setCompanyId(companyId);
 		}
 
-		Long groupId = (Long)attributes.get(Field.GROUP_ID);
+		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
 			setGroupId(groupId);
