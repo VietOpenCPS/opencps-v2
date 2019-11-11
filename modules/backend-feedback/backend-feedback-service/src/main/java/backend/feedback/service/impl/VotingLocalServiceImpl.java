@@ -36,7 +36,9 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -44,6 +46,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.ws.rs.NotFoundException;
+
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
@@ -191,6 +196,10 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		String userId = (String) params.get("userId");
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
+		String fromVotingDate = GetterUtil.getString(params.get("fromVotingDate"));
+		String toVotingDate = GetterUtil.getString(params.get("toVotingDate"));
+		_log.info("strFromVotingDate: "+fromVotingDate);
+		_log.info("strToVotingDate: "+toVotingDate);
 
 		BooleanQuery booleanQuery = null;
 
@@ -221,13 +230,13 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(userId)) {
-			MultiMatchQuery query = new MultiMatchQuery(userId);
-
-			query.addFields(VotingTerm.USER_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
+//		if (Validator.isNotNull(userId)) {
+//			MultiMatchQuery query = new MultiMatchQuery(userId);
+//
+//			query.addFields(VotingTerm.USER_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
 
 		if (Validator.isNotNull(className)) {
 			MultiMatchQuery query = new MultiMatchQuery(className);
@@ -243,6 +252,30 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			query.addFields(VotingTerm.CLASS_PK);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		String fromVotingDateFilter = fromVotingDate + ConstantsTerm.HOUR_START;
+		String toVotingDateFilter = toVotingDate + ConstantsTerm.HOUR_END;
+
+		if (Validator.isNotNull(fromVotingDate)) {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						fromVotingDateFilter, toVotingDateFilter, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		} else {
+			if (Validator.isNotNull(toVotingDate)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						fromVotingDateFilter, toVotingDateFilter, false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Voting.class.getName());

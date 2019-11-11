@@ -17,8 +17,8 @@ import backend.feedback.model.VotingResult;
 
 public interface VotingActions {
 
-	public JSONObject getVotingList(long userId, long companyId, long groupId, String className,
-			String classPK, int start, int end, ServiceContext serviceContext);
+	public JSONObject getVotingList(long userId, long companyId, long groupId, Sort[] sorts, String className,
+			String classPK, LinkedHashMap<String, Object> params, int start, int end, ServiceContext serviceContext);
 
 	public Voting addVote(long userId, long companyId, long groupId, String className, String classPK, String subject,
 			String templateNo, String choices, boolean commentable, ServiceContext serviceContext)

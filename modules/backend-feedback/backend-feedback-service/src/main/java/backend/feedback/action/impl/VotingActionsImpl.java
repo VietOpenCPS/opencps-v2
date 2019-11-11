@@ -42,8 +42,8 @@ public class VotingActionsImpl implements VotingActions {
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 
 	@Override
-	public JSONObject getVotingList(long userId, long companyId, long groupId, String className,
-			String classPK, int start, int end, ServiceContext serviceContext) {
+	public JSONObject getVotingList(long userId, long companyId, long groupId, Sort[] sorts, String className,
+			String classPK, LinkedHashMap<String, Object> params, int start, int end, ServiceContext serviceContext) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
@@ -76,15 +76,31 @@ public class VotingActionsImpl implements VotingActions {
 				}
 			}
 
-			List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
-			result.put("data", votingList);
-			// Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start,
-			// end, searchContext);
-			// _log.info("VotingActions.getVotingList(): "+hits.getLength());
-			// result.put("data", hits.toList());
-			// long total = VotingLocalServiceUtil.countLuceneSearchEngine(params,
-			// searchContext);
-			long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
+//			List<Voting> votingList = null;
+//			if (Validator.isNotNull(strFromVotingDate) && Validator.isNotNull(strToVotingDate)) {
+//			} else {
+//				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+//			}
+//			result.put("data", votingList);
+			
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(companyId);
+
+			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
+			//_log.info("VotingActions.getVotingList(): "+hits.getLength());
+			if (hits.toList() == null || hits.toList().size() == 0) {
+				params.put("classPK", "0");
+				params.put("fromVotingDate", "");
+				params.put("toVotingDate", "");
+				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
+			}
+			result.put("data", hits.toList());
+
+			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
+
+			result.put("total", total);
+
+			//long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 			result.put("total", total);
 		} catch (Exception e) {
 			_log.error(e);

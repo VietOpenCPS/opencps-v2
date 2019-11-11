@@ -18,7 +18,11 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -51,6 +55,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -61,6 +68,7 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -89,6 +97,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * {@link org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access
 	 * the applicant local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 	public Applicant fetchByMappingID(long mappingID) {
 
@@ -902,7 +912,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
-		String password = "12345";
+		//String password = "12345";
+		String password = PwdGenerator.getPassword();
+		_log.info("contactEmail: "+contactEmail + "| password: "+ password);
 
 		if (applicantId == 0) {
 			applicantId = counterLocalService.increment(Applicant.class.getName());

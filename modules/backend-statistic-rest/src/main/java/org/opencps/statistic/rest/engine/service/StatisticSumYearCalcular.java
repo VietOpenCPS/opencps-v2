@@ -1252,31 +1252,58 @@ public class StatisticSumYearCalcular {
 		int ontimePercentage = 0;
 		int onegateCount = 0;
 
-		for (DossierStatisticData data : source) {
+		if (month == 0 && year == 0) {
+			for (DossierStatisticData data : source) {
 
-			deniedCount = deniedCount + data.getDeniedCount();
-			cancelledCount = cancelledCount + data.getCancelledCount();
-			receivedCount = receivedCount + data.getReceivedCount();
-			onlineCount = onlineCount + data.getOnlineCount();
-			releaseCount = releaseCount + data.getReleaseCount();
-			unresolvedCount = unresolvedCount + data.getUnresolvedCount();
+				deniedCount = deniedCount + data.getDeniedCount();
+				cancelledCount = cancelledCount + data.getCancelledCount();
+				receivedCount = receivedCount + data.getReceivedCount();
+				onlineCount = onlineCount + data.getOnlineCount();
+				releaseCount = releaseCount + data.getReleaseCount();
+				unresolvedCount = unresolvedCount + data.getUnresolvedCount();
 
-			betimesCount = betimesCount + data.getBetimesCount();
-			ontimeCount = ontimeCount + data.getOntimeCount();
-			overtimeCount = overtimeCount + data.getOvertimeCount();
-			overtimeOutside = overtimeOutside + data.getOvertimeOutside();
-			overtimeInside = overtimeInside + data.getOvertimeInside();
-			onegateCount = onegateCount + data.getOnegateCount();
+				betimesCount = betimesCount + data.getBetimesCount();
+				ontimeCount = ontimeCount + data.getOntimeCount();
+				overtimeCount = overtimeCount + data.getOvertimeCount();
+				overtimeOutside = overtimeOutside + data.getOvertimeOutside();
+				overtimeInside = overtimeInside + data.getOvertimeInside();
+				onegateCount = onegateCount + data.getOnegateCount();
+				//
+				processingCount = processingCount + data.getProcessingCount();
+				undueCount = undueCount + data.getUndueCount();
+				overdueCount = overdueCount+ data.getOverdueCount();
+				interoperatingCount = interoperatingCount + data.getInteroperatingCount();
+				waitingCount = waitingCount + data.getWaitingCount();
+			}
+		} else {
+			for (DossierStatisticData data : source) {
+
+				deniedCount = deniedCount + data.getDeniedCount();
+				cancelledCount = cancelledCount + data.getCancelledCount();
+				receivedCount = receivedCount + data.getReceivedCount();
+				onlineCount = onlineCount + data.getOnlineCount();
+				releaseCount = releaseCount + data.getReleaseCount();
+				unresolvedCount = unresolvedCount + data.getUnresolvedCount();
+
+				betimesCount = betimesCount + data.getBetimesCount();
+				ontimeCount = ontimeCount + data.getOntimeCount();
+				overtimeCount = overtimeCount + data.getOvertimeCount();
+				overtimeOutside = overtimeOutside + data.getOvertimeOutside();
+				overtimeInside = overtimeInside + data.getOvertimeInside();
+				onegateCount = onegateCount + data.getOnegateCount();
+			}
+			//
+			processingCount = latest.getProcessingCount();
+			undueCount = latest.getUndueCount();
+			overdueCount = latest.getOverdueCount();
+			interoperatingCount = latest.getInteroperatingCount();
+			waitingCount = latest.getWaitingCount();
 		}
-		processingCount = latest.getProcessingCount();
-		undueCount = latest.getUndueCount();
-		overdueCount = latest.getOverdueCount();
-		interoperatingCount = latest.getInteroperatingCount();
-		waitingCount = latest.getWaitingCount();
+		
 		processCount = releaseCount + processingCount + waitingCount + cancelledCount;
 		totalCount = processCount + deniedCount;
-		remainingCount = processCount - receivedCount;
-		doneCount = releaseCount - (releasingCount + unresolvedCount);
+		remainingCount = processCount >= receivedCount ? processCount - receivedCount : 0;
+		doneCount = releaseCount >= (releasingCount + unresolvedCount) ? releaseCount - (releasingCount + unresolvedCount) : 0;
 		
 		/* value get in the latest month */
 		if (releaseCount > 0) {
