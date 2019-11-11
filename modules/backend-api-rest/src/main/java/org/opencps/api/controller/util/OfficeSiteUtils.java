@@ -19,7 +19,6 @@ import org.opencps.api.officesite.model.OfficeSiteModel;
 import org.opencps.api.officesite.model.SiteGroup;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.constants.LocationTerm;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.constants.OfficeSiteTerm;
 import org.opencps.usermgt.model.OfficeSite;
 
@@ -36,7 +35,7 @@ public class OfficeSiteUtils {
 			for (Document document : listDocument) {
 				ett = new OfficeSiteModel();
 
-				ett.setOfficeSiteId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setOfficeSiteId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setCreateDate(Validator.isNotNull(document.getDate(LocationTerm.CREATE_DATE)) ? APIDateTimeUtils
 						.convertDateToString(document.getDate(LocationTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK);

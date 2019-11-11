@@ -216,7 +216,7 @@ public class DataTempManagementUtils {
 			for (Document document : listDocument) {
 				ett = new DictItemTempModel();
 
-				ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setDictItemId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setItemCode(document.get(DictItemTempTerm.ITEM_CODE));
 				ett.setItemName(document.get(DictItemTempTerm.ITEM_NAME));
 				ett.setItemDescription(document.get(DictItemTempTerm.ITEM_DESCRIPTION));

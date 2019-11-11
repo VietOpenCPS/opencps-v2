@@ -79,7 +79,7 @@ public class DataManagementUtils {
 			for (Document document : listDocument) {
 				ett = new Groups();
 
-				ett.setDictGroupId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setDictGroupId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setGroupCode(document.get(DictGroupTerm.GROUP_CODE));
 				ett.setGroupName(document.get(DictGroupTerm.GROUP_NAME));
 				ett.setGroupNameEN(document.get(DictGroupTerm.GROUP_NAME_EN));
@@ -136,7 +136,7 @@ public class DataManagementUtils {
 			for (Document document : listDocument) {
 				ett = new DictItemModel();
 
-				ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+				ett.setDictItemId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 				ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
 				ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
 				ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
@@ -532,7 +532,7 @@ public class DataManagementUtils {
 				for (Document doc : listDocument) {
 					if (Validator.isNotNull(group)
 							&& group.equals(doc.get(DictGroupTerm.GROUP_CODE))) {
-						ett.setDictGroupId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
+						ett.setDictGroupId(Long.valueOf(doc.get(Field.ENTRY_CLASS_PK)));
 						ett.setGroupCode(doc.get(DictGroupTerm.GROUP_CODE));
 						ett.setGroupName(doc.get(DictGroupTerm.GROUP_NAME));
 						ett.setGroupNameEN(doc.get(DictGroupTerm.GROUP_NAME_EN));
@@ -562,7 +562,7 @@ public class DataManagementUtils {
 				for (Document document : listDocument) {
 					ett = new DictItemModel();
 
-					ett.setDictItemId(Long.valueOf(document.get(ConstantUtils.ENTRY_CLASS_PK)));
+					ett.setDictItemId(Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 					ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
 					ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
 					ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
@@ -616,7 +616,7 @@ public class DataManagementUtils {
 					for (Document doc : listDocument) {
 						if (Validator.isNotNull(item)
 								&& item.equals(doc.get(DictItemTerm.ITEM_CODE))) {
-							ett.setDictItemId(Long.valueOf(doc.get(ConstantUtils.ENTRY_CLASS_PK)));
+							ett.setDictItemId(Long.valueOf(doc.get(Field.ENTRY_CLASS_PK)));
 							ett.setItemCode(doc.get(DictItemTerm.ITEM_CODE));
 							ett.setItemName(doc.get(DictItemTerm.ITEM_NAME));
 							ett.setItemNameEN(doc.get(DictItemTerm.ITEM_NAME_EN));

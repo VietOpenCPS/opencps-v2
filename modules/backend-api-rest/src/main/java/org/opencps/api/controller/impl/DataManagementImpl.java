@@ -109,7 +109,7 @@ public class DataManagementImpl implements DataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put("status", status);
 
 			Sort[] sorts = new Sort[] {
@@ -366,7 +366,7 @@ public class DataManagementImpl implements DataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
 
 			Sort[] sorts = new Sort[] {
@@ -737,7 +737,7 @@ public class DataManagementImpl implements DataManagement {
 				groupId = 0;
 
 			params.put(Field.GROUP_ID, groupId);
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put("itemLv", query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
@@ -1732,7 +1732,7 @@ public class DataManagementImpl implements DataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			//params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put("status", status);
 
 			Sort[] sorts = new Sort[] {
@@ -1776,7 +1776,7 @@ public class DataManagementImpl implements DataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
 
 			Sort[] sorts = new Sort[] {
@@ -1817,7 +1817,7 @@ public class DataManagementImpl implements DataManagement {
 			if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(code)) groupId = 0;
 
 			params.put(Field.GROUP_ID, groupId);
-			params.put("keywords", query.getKeywords());
+			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
 			params.put("itemLv", query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
