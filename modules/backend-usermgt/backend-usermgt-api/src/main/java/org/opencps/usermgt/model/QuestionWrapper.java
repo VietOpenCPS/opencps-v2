@@ -66,6 +66,8 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("email", getEmail());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
+		attributes.put("domainCode", getDomainCode());
+		attributes.put("domainName", getDomainName());
 		attributes.put("govAgencyCode", getGovAgencyCode());
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("questionType", getQuestionType());
@@ -129,6 +131,18 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 
 		if (publish != null) {
 			setPublish(publish);
+		}
+
+		String domainCode = (String)attributes.get("domainCode");
+
+		if (domainCode != null) {
+			setDomainCode(domainCode);
+		}
+
+		String domainName = (String)attributes.get("domainName");
+
+		if (domainName != null) {
+			setDomainName(domainName);
 		}
 
 		String govAgencyCode = (String)attributes.get("govAgencyCode");
@@ -200,6 +214,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public Date getCreateDate() {
 		return _question.getCreateDate();
+	}
+
+	/**
+	* Returns the domain code of this question.
+	*
+	* @return the domain code of this question
+	*/
+	@Override
+	public String getDomainCode() {
+		return _question.getDomainCode();
+	}
+
+	/**
+	* Returns the domain name of this question.
+	*
+	* @return the domain name of this question
+	*/
+	@Override
+	public String getDomainName() {
+		return _question.getDomainName();
 	}
 
 	/**
@@ -390,6 +424,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setCreateDate(Date createDate) {
 		_question.setCreateDate(createDate);
+	}
+
+	/**
+	* Sets the domain code of this question.
+	*
+	* @param domainCode the domain code of this question
+	*/
+	@Override
+	public void setDomainCode(String domainCode) {
+		_question.setDomainCode(domainCode);
+	}
+
+	/**
+	* Sets the domain name of this question.
+	*
+	* @param domainName the domain name of this question
+	*/
+	@Override
+	public void setDomainName(String domainName) {
+		_question.setDomainName(domainName);
 	}
 
 	/**
