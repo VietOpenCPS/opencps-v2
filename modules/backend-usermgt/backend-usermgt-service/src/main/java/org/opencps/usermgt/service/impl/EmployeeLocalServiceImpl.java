@@ -344,7 +344,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
-		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -551,7 +552,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
-		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
