@@ -37,7 +37,6 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -466,7 +465,6 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 		String content = "On DossiserFile Delete";
 		String notificationType = "";
-		String payload = DossierLogUtils.createPayload(model, null, null);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setCompanyId(model.getCompanyId());
@@ -475,7 +473,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		try {
 			DossierLogLocalServiceUtil.addDossierLog(
 				model.getGroupId(), model.getDossierId(), model.getUserName(),
-				content, notificationType, payload, serviceContext);
+				content, notificationType, StringPool.BLANK, serviceContext);
 		}
 		catch (SystemException | PortalException e) {
 			// e.printStackTrace();

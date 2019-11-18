@@ -450,7 +450,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, templateNo, partNo);
 				if (dossierPart != null) {
 					String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(),
-							dossier.getDossierId(), serviceContext);
+							dossier, serviceContext);
 					//Mapping FormData with dossier
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);

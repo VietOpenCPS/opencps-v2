@@ -45,15 +45,6 @@ public class SpecialCharacterUtils {
 	
 			keyValues = getKeyValues(formData, keyValues);
 	
-	//		if (keyValues != null) {
-	//			for (Object[] keyValue : keyValues) {
-	//				_log.info("=========DELIVERABLE_INDEX_FORM_DATA========:" + keyValue[0] + "_" + keyValue[1]);
-	//                document.addKeyword(
-	//                    keyValue[0].toString(), keyValue[1].toString());
-	//				document.addKeyword(keyValue[0].toString().toLowerCase(),
-	//						keyValue[1].toString().toLowerCase());
-	//			}
-	//		}
 		}
 		return keyValues;
 	}
@@ -65,9 +56,6 @@ public class SpecialCharacterUtils {
 			parseJSONObject(keyValues, jsonObject);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
-			_log.info("Can not parse json object from FormData: =>"
-					+ " : Cause " + e.getCause());
 		}
 
 		return keyValues;

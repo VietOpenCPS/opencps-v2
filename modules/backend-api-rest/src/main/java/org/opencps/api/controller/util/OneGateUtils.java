@@ -9,7 +9,6 @@ import java.util.Date;
 
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -166,15 +165,13 @@ public class OneGateUtils {
 			model.setStepCode(dossierAction.getStepCode());
 			model.setStepName(dossierAction.getStepName());
 
-			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
-
 			if (dossierAction.getActionOverdue() != 0) {
 				model.setStepOverdue(StringPool.TRUE);
 			} else {
 				model.setStepOverdue(StringPool.TRUE);
 			}
 
-			model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+			model.setStepDuedate(StringPool.BLANK);
 
 			ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
 					dossierAction.getGroupId(), dossierAction.getServiceProcessId());

@@ -752,7 +752,7 @@ public class DossierMgtUtils {
 		context.setUserId(dossier.getUserId());
 		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
 		jsonObj.put(ConstantUtils.VALUE_KEY, key);
-		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
+		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier, context);
 		JSONObject resultObj;
 		try {
 			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);

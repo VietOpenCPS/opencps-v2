@@ -82,7 +82,7 @@ public class CheckFileUtils {
 			headerValue += StringPool.SEMICOLON;
 		}
 
-		byte[] headerValueByteArray = headerValue.trim().substring("form_data".length() + 1).getBytes();
+		byte[] headerValueByteArray = headerValue.trim().substring(ConstantUtils.FORM_DATA_LOWER.length() + 1).getBytes();
 
 		int beginIndex = 0;
 		int length = 0;

@@ -45,9 +45,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -102,14 +100,11 @@ import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
-import org.opencps.dossiermgt.action.util.KeyPay;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -127,7 +122,6 @@ import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
-import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
@@ -431,9 +425,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					for (String documentType : documentTypes) {
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 						if (dt != null) {
-							String documentCode = DocumentTypeNumberGenerator.generateDossierDocumentNumber(groupId,
-									dossier.getCompanyId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
-									dt.getCodePattern());
+							String documentCode = DossierNumberGenerator.generateReferenceUID(groupId);
 							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
 									dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
 									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
@@ -489,9 +481,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			for (String documentType : documentTypes) {
 				DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 				if (dt != null) {
-					String documentCode = DocumentTypeNumberGenerator.generateDossierDocumentNumber(groupId,
-							dossier.getCompanyId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
-							dt.getCodePattern());
+					String documentCode = DossierNumberGenerator.generateReferenceUID(groupId);
 					DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
 							dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
 							dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
@@ -1465,22 +1455,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (oldPaymentFile != null) {
 				if (Validator.isNotNull(paymentNote))
 					oldPaymentFile.setPaymentNote(paymentNote);
-				try {
 					PaymentFile paymentFile = paymentFileLocalService.updateApplicantFeeAmount(
 							oldPaymentFile.getPaymentFileId(), proAction.getRequestPayment(), feeAmount, serviceAmount,
 							shipAmount, paymentNote, dossier.getOriginality());
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
 					JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-					epaymentProfileJsonNew.put("keypayUrl", generatorPayURL);
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJsonNew.toJSONString(),
 							context);
-				} catch (IOException e) {
-					_log.error(e);
-				}
-				catch (JSONException e) {
-					_log.debug(e);
-				}
 			} else {
 				long paymentAmount = feeAmount + serviceAmount + shipAmount - advanceAmount;
 				
@@ -1514,39 +1494,30 @@ public class CPSDossierBusinessLocalServiceImpl
 				JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
 				if (epaymentConfigJSON.has("paymentKeypayDomain")) {
-					try {
-						String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-								paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
-							epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					String pattern1 = "good_code=";
+					String pattern2 = "&";
 
-							String pattern1 = "good_code=";
-							String pattern2 = "&";
+					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
-							String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+					Pattern p = Pattern.compile(regexString);
+					Matcher m = p.matcher(StringPool.BLANK);
 
-							Pattern p = Pattern.compile(regexString);
-							Matcher m = p.matcher(generatorPayURL);
+					if (m.find()) {
+						String goodCode = m.group(1);
 
-							if (m.find()) {
-								String goodCode = m.group(1);
+						epaymentProfileJSON.put("keypayGoodCode", goodCode);
+					} else {
+						epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+					}
 
-								epaymentProfileJSON.put("keypayGoodCode", goodCode);
-							} else {
-								epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
-							}
-
-							epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-							epaymentProfileJSON.put("bank", "true");
-							epaymentProfileJSON.put("paygate", "true");
-							epaymentProfileJSON.put("serviceAmount", serviceAmount);
-							epaymentProfileJSON.put("paymentNote", paymentNote);
-							epaymentProfileJSON.put("paymentFee", paymentFee);
-							paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-									context);
-
-						} catch (IOException e) {
-							_log.error(e);
-						}
+					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+					epaymentProfileJSON.put("bank", "true");
+					epaymentProfileJSON.put("paygate", "true");
+					epaymentProfileJSON.put("serviceAmount", serviceAmount);
+					epaymentProfileJSON.put("paymentNote", paymentNote);
+					epaymentProfileJSON.put("paymentFee", paymentFee);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+							context);
 
 					} else {
 						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
@@ -1772,166 +1743,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			lsDesc.set(1, lsMsg.get(i));
 		}
 		return lsDesc;
-	}
-	
-	private long _genetatorTransactionId() {
-
-		long transactionId = 0;
-		try {
-			transactionId = counterLocalService.increment(PaymentFile.class.getName() + ".genetatorTransactionId");
-		} catch (SystemException e) {
-			_log.error(e);
-		}
-		return transactionId;
-	}
-	
-	private String generatorPayURL(long groupId, long paymentFileId, String pattern,
-			Dossier dossier) throws IOException {
-		String result = "";
-		try {
-			PaymentFile paymentFile = paymentFileLocalService.getPaymentFile(paymentFileId);
-			PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
-					dossier.getGovAgencyCode());
-
-			if (Validator.isNotNull(paymentConfig)) {
-				List<String> lsMessages = _putPaymentMessage(pattern);
-
-				long merchant_trans_id = _genetatorTransactionId();
-
-				JSONObject epaymentConfigJSON = JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig());
-
-				String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
-
-				String good_code = generatorGoodCode(10);
-				
-				String net_cost = String.valueOf(paymentFile.getPaymentAmount());
-				
-				String ship_fee = "0";
-				String tax = "0";
-
-				String bank_code = StringPool.BLANK;
-
-				String service_code = epaymentConfigJSON.getString("paymentServiceCode");
-				String version = epaymentConfigJSON.getString("paymentVersion");
-				String command = epaymentConfigJSON.getString("paymentCommand");
-				String currency_code = epaymentConfigJSON.getString("paymentCurrencyCode");
-
-				String desc_1 = StringPool.BLANK;
-				String desc_2 = StringPool.BLANK;
-				String desc_3 = StringPool.BLANK;
-				String desc_4 = StringPool.BLANK;
-				String desc_5 = StringPool.BLANK;
-
-				if (lsMessages.size() > 0) {
-					desc_1 = lsMessages.get(0);
-					desc_2 = lsMessages.get(1);
-					desc_3 = lsMessages.get(2);
-					desc_4 = lsMessages.get(3);
-					desc_5 = lsMessages.get(4);
-
-					if (desc_1.length() >= 20) {
-						desc_1 = desc_1.substring(0, 19);
-					}
-					if (desc_2.length() >= 30) {
-						desc_2 = desc_2.substring(0, 29);
-					}
-					if (desc_3.length() >= 40) {
-						desc_3 = desc_3.substring(0, 39);
-					}
-					if (desc_4.length() >= 100) {
-						desc_4 = desc_4.substring(0, 89);
-					}
-					if (desc_5.length() > 15) {
-						desc_5 = desc_5.substring(0, 15);
-
-						if (!Validator.isDigit(desc_5)) {
-							desc_5 = StringPool.BLANK;
-						}
-					}
-				}
-
-				String xml_description = StringPool.BLANK;
-				String current_locale = epaymentConfigJSON.getString("paymentCurrentLocale");
-				String country_code = epaymentConfigJSON.getString("paymentCountryCode");
-				String internal_bank = epaymentConfigJSON.getString("paymentInternalBank");
-
-				String merchant_secure_key = epaymentConfigJSON.getString("paymentMerchantSecureKey");
-
-				// dossier = _getDossier(dossierId);
-
-				// TODO : update returnURL keyPay
-
-				String return_url;
-				_log.info("SONDT GENURL paymentReturnUrl ====================== "+ JSONFactoryUtil.looseSerialize(epaymentConfigJSON));
-//				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
-				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "&dossierId=" + dossier.getDossierId() + "&goodCode=" + good_code + "&transId=" + merchant_trans_id + "&referenceUid=" + dossier.getReferenceUid();
-				_log.info("SONDT GENURL paymentReturnUrl ====================== "+ return_url);
-				// http://119.17.200.66:2681/web/bo-van-hoa/dich-vu-cong/#/thanh-toan-thanh-cong?paymentPortal=KEYPAY&dossierId=77603&goodCode=123&transId=555
-				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
-						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
-						desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,
-						merchant_secure_key);
-
-				// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
-
-				StringBuffer param = new StringBuffer();
-				param.append("merchant_code=").append(URLEncoder.encode(keypay.getMerchant_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("merchant_secure_key=").append(URLEncoder.encode(keypay.getMerchant_secure_key(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("bank_code=").append(URLEncoder.encode(keypay.getBank_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("internal_bank=").append(URLEncoder.encode(keypay.getInternal_bank(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("merchant_trans_id=").append(URLEncoder.encode(keypay.getMerchant_trans_id(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("good_code=").append(URLEncoder.encode(keypay.getGood_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8") )
-						.append(StringPool.AMPERSAND);
-				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("command=").append(URLEncoder.encode(keypay.getCommand(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("current_locale=").append(URLEncoder.encode(keypay.getCurrent_locale(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("currency_code=").append(URLEncoder.encode(keypay.getCurrency_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("service_code=").append(URLEncoder.encode(keypay.getService_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-
-				param.append("desc_1=").append(URLEncoder.encode(keypay.getDesc_1(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("desc_2=").append(URLEncoder.encode(keypay.getDesc_2(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("desc_3=").append(URLEncoder.encode(keypay.getDesc_3(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("desc_4=").append(URLEncoder.encode(keypay.getDesc_4(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("desc_5=").append(URLEncoder.encode(keypay.getDesc_5(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
-				param.append("secure_hash=").append(keypay.getSecure_hash());
-
-				result = epaymentConfigJSON.getString("paymentKeypayDomain") + StringPool.QUESTION + param.toString();
-
-			}
-
-		} catch (NoSuchPaymentFileException e) {
-			_log.debug(e);
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result;
 	}
 	
 	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier, int intpaymentMethod) {
@@ -3236,7 +3047,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					//Generate document
 					DocumentType dt = documentTypeLocalService.getByTypeCode(groupId, ac.getDocumentType());
 					if (dt != null) {
-						String documentCode = DocumentTypeNumberGenerator.generateDocumentTypeNumber(groupId, ac.getCompanyId(), dt.getDocumentTypeId());
+						String documentCode = DossierNumberGenerator.generateReferenceUID(groupId);
 						
 						DossierDocument dossierDocument = dossierDocumentLocalService.addDossierDoc(groupId, dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(), dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
 	
@@ -5904,7 +5715,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				DossierPart part = dossierPartLocalService.getByFileTemplateNo(groupId,
 						dossierFile.getFileTemplateNo());
 	
-				defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier.getDossierId(), serviceContext);
+				defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier, serviceContext);
 				dossierFile = dossierFileLocalService.getByReferenceUid(referenceUid).get(0);
 				JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
 				defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());

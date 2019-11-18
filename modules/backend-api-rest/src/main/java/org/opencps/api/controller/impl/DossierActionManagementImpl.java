@@ -1,7 +1,21 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,12 +37,10 @@ import org.opencps.api.processsequence.model.ActionModel;
 import org.opencps.api.processsequence.model.DossierActionResult21Model;
 import org.opencps.api.processsequence.model.ProcessSequenceModel;
 import org.opencps.api.processsequence.model.StepModel;
-import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -51,21 +63,6 @@ import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -127,29 +124,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 							result.setCheckInput(processStep.getCheckInput());
 							result.setStepCode(processStep.getStepCode());
 							result.setStepName(processStep.getStepName());
-							
-							Date now = new Date();
-							long dateNowTimeStamp = now.getTime();
-			
-							Date stepDuedate = DossierOverDueUtils.getStepOverDue(groupId, dossierAction.getActionOverdue(), dossierAction.getDueDate());
-
-							result.setStepDueDate(stepDuedate != null ? stepDuedate.getTime() : 0l);
-							if (stepDuedate != null) {
-
-								DueDateUtils dueDateUtils;
-								if (dateNowTimeStamp < stepDuedate.getTime()) {
-									dueDateUtils = new DueDateUtils(now, stepDuedate, 1, groupId);
-								} else {
-									dueDateUtils = new DueDateUtils(stepDuedate, now, 1, groupId);
-								}
-								if (dossier.getDurationUnit() == 0) {
-
-									result.setStepOverdue(dueDateUtils.getOverDueCalcToString());
-								} else {
-
-									result.setStepOverdue(String.valueOf(dueDateUtils.getOverDueCalcToHours()));
-								}
-							}
+							result.setStepOverdue(StringPool.BLANK);
 						}
 					}
 	

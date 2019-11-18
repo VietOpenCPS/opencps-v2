@@ -178,51 +178,33 @@ public class DossierPaymentUtils {
 
 			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
 
-				try {
-					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
-							paymentFile.getPaymentFileId(), pattern, dossierId);
+				epaymentProfileJSON.put("keypayUrl", StringPool.BLANK);
 
-					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+				// fill good_code to keypayGoodCode
+				String pattern1 = "good_code=";
+				String pattern2 = "&";
 
-					// fill good_code to keypayGoodCode
-					String pattern1 = "good_code=";
-					String pattern2 = "&";
+				String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
-					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+				Pattern p = Pattern.compile(regexString);
+				Matcher m = p.matcher(StringPool.BLANK);
 
-					Pattern p = Pattern.compile(regexString);
-					Matcher m = p.matcher(generatorPayURL);
+				if (m.find()) {
+					String goodCode = m.group(1);
 
-					if (m.find()) {
-						String goodCode = m.group(1);
-
-						epaymentProfileJSON.put("keypayGoodCode", goodCode);
-					} else {
-						epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
-					}
-
-					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-
-					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
-							serviceContext);
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-//					e.printStackTrace();
-					_log.error(e);
+					epaymentProfileJSON.put("keypayGoodCode", goodCode);
+				} else {
+					epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
 				}
+
+				epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+
+				actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+						serviceContext);
 
 			}
 //
-//			// Create paymentfile sync
-//			if (Validator.isNotNull(serverNo)) {
-////				DossierSyncLocalServiceUtil.updateDossierSync(groupId, userId, dossierId, dossier.getReferenceUid(),
-////						false, 2, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(), serverNo);
-//			}
-
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_log.error(e);
 		}
 	}
@@ -438,8 +420,9 @@ public class DossierPaymentUtils {
 			jsonObject.put(string.trim(), string.trim());
 
 		}
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		if (listSTR.size() != 0) {
-			String result = AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossierId, serviceContext);
+			String result = AutoFillFormData.sampleDataBinding(jsonObject.toString(), dossier, serviceContext);
 
 			jsonObject = JSONFactoryUtil.createJSONObject(result);
 

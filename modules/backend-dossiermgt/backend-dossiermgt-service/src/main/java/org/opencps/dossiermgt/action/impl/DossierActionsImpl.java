@@ -830,7 +830,7 @@ public class DossierActionsImpl implements DossierActions {
 													formScript = dossierPart.getFormScript();
 													eForm = dossierPart.getEForm();
 													formData = AutoFillFormData.sampleDataBinding(
-															dossierPart.getSampleData(), dossierId, serviceContext);
+															dossierPart.getSampleData(), dossier, serviceContext);
 													_log.info("--------eForm----------: " + eForm);
 
 													if (eForm) {
@@ -945,7 +945,7 @@ public class DossierActionsImpl implements DossierActions {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 															: false;
 													formData = AutoFillFormData.sampleDataBinding(
-															dossierPart.getSampleData(), dossierId, serviceContext);
+															dossierPart.getSampleData(), dossier, serviceContext);
 													formScript = dossierPart.getFormScript();
 
 													if (eForm && !dossierPart.getESign()) {
@@ -1154,7 +1154,7 @@ public class DossierActionsImpl implements DossierActions {
 								//_log.info("formConfig: " + formConfig);
 								String sampleData = Validator.isNotNull(actConfig.getSampleData()) ? actConfig.getSampleData() : "{}";
 								//_log.info("sampleData: "+sampleData);
-								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossierId,
+								String formData = AutoFillFormData.sampleDataBinding(sampleData, dossier,
 										serviceContext);
 								JSONObject formDataJson = JSONFactoryUtil.createJSONObject(formData);
 
@@ -1274,7 +1274,8 @@ public class DossierActionsImpl implements DossierActions {
 		long dossierFileId  = 0;
 		String formScript = dossierPart.getFormScript();
 		boolean eForm = dossierPart.getEForm();
-		String formData = eForm ? AutoFillFormData.sampleDataBinding(sampleData, dossierId, serviceContext) : StringPool.BLANK;
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		String formData = eForm ? AutoFillFormData.sampleDataBinding(sampleData, dossier, serviceContext) : StringPool.BLANK;
 
 		// create Dossier File
 		if (eForm) {

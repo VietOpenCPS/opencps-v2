@@ -2839,7 +2839,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossier.getDossierTemplateNo(), partNo);
 //			_log.info("Dossier part sample data: " + dossierPart.getSampleData());
-			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossier.getDossierId(), serviceContext);
+			String formData = AutoFillFormData.sampleDataBinding(dossierPart.getSampleData(), dossier, serviceContext);
 			
 			return Response.status(200).entity(formData).build();
 

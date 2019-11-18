@@ -281,12 +281,13 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 		String defaultData = StringPool.BLANK;
 
-		if (Validator.isNotNull(dossierFile)) {
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossier)) {
 			DossierPart part = DossierPartLocalServiceUtil.getByFileTemplateNo(
 				groupId, dossierFile.getFileTemplateNo());
 
 			defaultData = AutoFillFormData.sampleDataBinding(
-				part.getSampleData(), dossierId, serviceContext);
+				part.getSampleData(), dossier, serviceContext);
 			dossierFile =
 				DossierFileLocalServiceUtil.getByReferenceUid(referenceUid).get(
 					0);

@@ -27,7 +27,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
@@ -71,7 +71,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response addDeliverableType(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DeliverableTypeInputModel input) {
-		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -101,7 +100,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	public Response updateDeliverableType(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, DeliverableTypeInputModel model,
 			long deliverableTypeId) {
-		// TODO Update Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -131,7 +129,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response removeDeliverabletypes(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
-		// TODO Remove Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -177,7 +174,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 	public Response updateDeliverableTypeFormScript(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formScript) {
-		// TODO Update FormScript of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -224,7 +220,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 	public Response updateDeliverableTypeFormReport(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long deliverableTypeId, String formReport) {
-		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -320,7 +315,6 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 	@Override
 	public Response getGenerateCodeById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		// TODO Auto-generated method stub
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
@@ -329,12 +323,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 				throw new UnauthenticationException();
 			}
 
-			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableTypebyId(groupId, id);
-
-			String deliverableNumber = StringPool.BLANK;
-			if (deliverableType != null) {
-				deliverableNumber = DeliverableNumberGenerator.generateDeliverableNumber(groupId, deliverableType.getCompanyId(), deliverableType.getDeliverableTypeId());				
-			}
+			String deliverableNumber = DossierNumberGenerator.generateReferenceUID(groupId);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			result.put("deliverableCode", deliverableNumber);

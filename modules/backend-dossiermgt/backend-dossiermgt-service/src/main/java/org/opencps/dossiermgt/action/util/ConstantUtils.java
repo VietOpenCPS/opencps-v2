@@ -189,6 +189,18 @@ public class ConstantUtils {
 	public static final String METHOD_REMOVE_FROM_GROUP = "org.opencps.method.removegroup";
 	public static final String BASE_URI = "org.opencps.value.base.url";
 	public static final String BASE_JSON_URI = "org.opencps.value.base.urljson";
+	public static final String KEY_JSON_ARRAY = "JSONArray";
+	public static final String KEY_JSON_OBJECT = "JSONObject";
+	public static final String FORM_DATA_LOWER = "form_data";
+	//
+	public static final String codePattern = "\\{(n+|N+)\\}";
+	public static final String dayPattern = "\\{(d{2}|D{2})\\}";
+	public static final String monthPattern = "\\{(m{2}|M{2})\\}";
+	public static final String yearPattern = "\\{(y+|Y+)\\}";
+	public static final String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+	public static final String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	public static final String MSG_OK = "OK";
+	public static final String FORMAT_NUMBER = "%07d";
 
 	
 	public static final String CAPTCHA = "org.opencps.access.captcha";

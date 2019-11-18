@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
-import org.opencps.dossiermgt.action.util.DossierContentGenerator;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -75,7 +75,7 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 							String briefNoteStep = processStep.getBriefNote();
 	//						_log.info("briefNoteStep: " + briefNoteStep);
 							if (Validator.isNotNull(briefNoteStep)) {
-								briefNote = DossierContentGenerator.getBriefNote(groupId, dossierId, briefNoteStep);
+								briefNote = DossierNumberGenerator.generateReferenceUID(groupId);
 	//							_log.info("briefNote: " + briefNote);
 								break;
 							}

@@ -2,8 +2,6 @@ package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -18,7 +16,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,15 +28,8 @@ import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDataPublishModel;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.util.DueDateUtils;
-import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -548,16 +538,13 @@ public class DossierUtils {
 
 				model.setStepCode(dossierAction.getStepCode());
 				model.setStepName(dossierAction.getStepName());
-
-				Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
-
 				if (dossierAction.getActionOverdue() != 0) {
 					model.setStepOverdue(StringPool.TRUE);
 				} else {
 					model.setStepOverdue(StringPool.TRUE);
 				}
 
-				model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+				model.setStepDuedate(StringPool.BLANK);
 
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
 						dossierAction.getGroupId(), dossierAction.getServiceProcessId());

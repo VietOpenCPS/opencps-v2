@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
@@ -29,7 +30,6 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -362,10 +362,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
 					}
 
-					Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
-
-					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
-							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+					document.addTextSortable(DossierTerm.STEP_DUE_DATE, StringPool.BLANK);
 					
 					//Index assigned in step
 					List<String> userAssignedList = new ArrayList<>();

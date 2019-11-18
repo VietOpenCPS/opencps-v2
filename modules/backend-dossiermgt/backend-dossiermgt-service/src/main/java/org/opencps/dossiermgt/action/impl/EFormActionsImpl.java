@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.action.EFormActions;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.EFormNumberGenerator;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -82,9 +82,7 @@ public class EFormActionsImpl implements EFormActions{
 
 			if (Validator.isNull(eFormNo)) {
 				_log.info("START GENERATE EFORM");
-				eFormNo = EFormNumberGenerator.generateServiceFileNumber(groupId, serviceContext.getCompanyId(),
-						service != null ? service.getServiceCode() : StringPool.BLANK,
-						service != null ? service.getAdministrationCode() : StringPool.BLANK, eFormNoPattern);
+				eFormNo = DossierNumberGenerator.generateReferenceUID(groupId);
 			}
 			if (Validator.isNull(secret)) {
 				secret = PwdGenerator.getPinNumber();

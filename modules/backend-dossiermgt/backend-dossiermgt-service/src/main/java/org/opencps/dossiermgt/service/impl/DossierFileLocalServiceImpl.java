@@ -14,32 +14,6 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
-import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
-import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
-import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
-import org.opencps.usermgt.action.ApplicantActions;
-import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.exception.FileNameException;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
@@ -76,6 +50,30 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
+import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
+import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -230,16 +228,14 @@ public class DossierFileLocalServiceImpl
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
-					DeliverableNumberGenerator.generateDeliverableNumber(
-						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						DossierNumberGenerator.generateReferenceUID(groupId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
 			String formData = AutoFillFormData.sampleDataBinding(
-				dossierPart.getSampleData(), dossierId, serviceContext);
+				dossierPart.getSampleData(), DossierLocalServiceUtil.fetchDossier(dossierId), serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
 			formDataObj.put("LicenceNo", deliverableCode);
 			formData = formDataObj.toJSONString();
@@ -373,9 +369,7 @@ public class DossierFileLocalServiceImpl
 
 			if (Validator.isNotNull(deliverableType)) {
 				deliverableCode =
-					DeliverableNumberGenerator.generateDeliverableNumber(
-						groupId, serviceContext.getCompanyId(),
-						deliverableType.getDeliverableTypeId());
+						DossierNumberGenerator.generateReferenceUID(groupId);
 				object.setDeliverableCode(deliverableCode);
 			}
 		}
@@ -513,20 +507,13 @@ public class DossierFileLocalServiceImpl
 		String deliverableCode = StringPool.BLANK;
 
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-			DeliverableType deliverableType =
-				DeliverableTypeLocalServiceUtil.getByCode(
-					groupId, dossierPart.getDeliverableType());
-
-			deliverableCode =
-				DeliverableNumberGenerator.generateDeliverableNumber(
-					groupId, serviceContext.getCompanyId(),
-					deliverableType.getDeliverableTypeId());
+			deliverableCode = DossierNumberGenerator.generateReferenceUID(groupId);
 			object.setDeliverableCode(deliverableCode);
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
 			String formData = AutoFillFormData.sampleDataBinding(
-				dossierPart.getSampleData(), dossierId, serviceContext);
+				dossierPart.getSampleData(), DossierLocalServiceUtil.fetchDossier(dossierId), serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
 			formDataObj.put("LicenceNo", deliverableCode);
 			formData = formDataObj.toJSONString();
@@ -536,251 +523,9 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(object);
 	}
 
-	private String sampleDataBinding(
-		String sampleData, long dossierId, ServiceContext serviceContext) {
 
-		// TODO Auto-generated method stub
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		try {
-			result = JSONFactoryUtil.createJSONObject(sampleData);
 
-			String _subjectName = StringPool.BLANK;
-			String _subjectId = StringPool.BLANK;
-			String _address = StringPool.BLANK;
-			String _cityCode = StringPool.BLANK;
-			String _cityName = StringPool.BLANK;
-			String _districtCode = StringPool.BLANK;
-			String _districtName = StringPool.BLANK;
-			String _wardCode = StringPool.BLANK;
-			String _wardName = StringPool.BLANK;
-			String _contactName = StringPool.BLANK;
-			String _contactTelNo = StringPool.BLANK;
-			String _contactEmail = StringPool.BLANK;
-
-			// TODO
-			// String _dossierFileNo = StringPool.BLANK;
-			// String _dossierFileDate = StringPool.BLANK;
-
-			// get data applicant or employee
-			ApplicantActions applicantActions = new ApplicantActionsImpl();
-
-			try {
-				String applicantStr =
-					applicantActions.getApplicantByUserId(serviceContext);
-
-				JSONObject applicantJSON =
-					JSONFactoryUtil.createJSONObject(applicantStr);
-
-				_subjectName = applicantJSON.getString("applicantName");
-				_subjectId = applicantJSON.getString("applicantId");
-				_address = applicantJSON.getString("address");
-				_cityCode = applicantJSON.getString("cityCode");
-				_cityName = applicantJSON.getString("cityName");
-				_districtCode = applicantJSON.getString("districtCode");
-				_districtName = applicantJSON.getString("districtName");
-				_wardCode = applicantJSON.getString("wardCode");
-				_wardName = applicantJSON.getString("wardName");
-				_contactName = applicantJSON.getString("contactName");
-				_contactTelNo = applicantJSON.getString("contactTelNo");
-				_contactEmail = applicantJSON.getString("contactEmail");
-
-			}
-			catch (PortalException e1) {
-				// TODO Auto-generated catch block
-				// e1.printStackTrace();
-				_log.error(e1);
-			}
-			// process sampleData
-			// if (Validator.isNull(sampleData)) {
-			// sampleData = "{}";
-			// }
-
-			Map<String, Object> jsonMap = jsonToMap(result);
-
-			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-
-				String value = String.valueOf(entry.getValue());
-
-				if (value.startsWith("_") && !value.contains(":")) {
-
-					if ("_subjectName".equals(value)) {
-						jsonMap.put(entry.getKey(), _subjectName);
-					}
-					else if ("_subjectId".equals(value)) {
-						jsonMap.put(entry.getKey(), _subjectId);
-					}
-					else if ("_address".equals(value)) {
-						jsonMap.put(entry.getKey(), _address);
-					}
-					else if ("_cityCode".equals(value)) {
-						jsonMap.put(entry.getKey(), _cityCode);
-					}
-					else if ("_cityName".equals(value)) {
-						jsonMap.put(entry.getKey(), _cityName);
-					}
-					else if ("_districtCode".equals(value)) {
-						jsonMap.put(entry.getKey(), _districtCode);
-					}
-					else if ("_districtName".equals(value)) {
-						jsonMap.put(entry.getKey(), _districtName);
-					}
-					else if ("_wardCode".equals(value)) {
-						jsonMap.put(entry.getKey(), _wardCode);
-					}
-					else if ("_wardName".equals(value)) {
-						jsonMap.put(entry.getKey(), _wardName);
-					}
-					else if ("_contactName".equals(value)) {
-						jsonMap.put(entry.getKey(), _contactName);
-					}
-					else if ("_contactTelNo".equals(value)) {
-						jsonMap.put(entry.getKey(), _contactTelNo);
-					}
-					else if ("_contactEmail".equals(value)) {
-						jsonMap.put(entry.getKey(), _contactEmail);
-					}
-
-				}
-				else if (value.startsWith("_") && value.contains(":")) {
-					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
-					for (String string : valueSplit) {
-						if ("_subjectName".equals(string)) {
-							resultBinding += ", " + _subjectName;
-						}
-						else if ("_subjectId".equals(string)) {
-							resultBinding += ", " + _subjectId;
-						}
-						else if ("_address".equals(string)) {
-							resultBinding += ", " + _address;
-						}
-						else if ("_wardCode".equals(string)) {
-							resultBinding += ", " + _wardCode;
-						}
-						else if ("_wardName".equals(string)) {
-							resultBinding += ", " + _wardName;
-						}
-						else if ("_districtCode".equals(string)) {
-							resultBinding += ", " + _districtCode;
-						}
-						else if ("_districtName".equals(string)) {
-							resultBinding += ", " + _districtName;
-						}
-						else if ("_cityCode".equals(string)) {
-							resultBinding += ", " + _cityCode;
-						}
-						else if ("_cityName".equals(string)) {
-							resultBinding += ", " + _cityName;
-						}
-						else if ("_contactName".equals(string)) {
-							resultBinding += ", " + _contactName;
-						}
-						else if ("_contactTelNo".equals(string)) {
-							resultBinding += ", " + _contactTelNo;
-						}
-						else if ("_contactEmail".equals(string)) {
-							resultBinding += ", " + _contactEmail;
-						}
-					}
-
-					jsonMap.put(
-						entry.getKey(),
-						resultBinding.replaceFirst(", ", StringPool.BLANK));
-
-				}
-				else if (value.startsWith("#") && value.contains("@")) {
-					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
-					String variable = stringSplit[0];
-					String paper = stringSplit[1];
-					try {
-						DossierFile dossierFile =
-							dossierFileLocalService.getDossierFileByDID_FTNO_First(
-								dossierId, paper, false,
-								new DossierFileComparator(
-									false, "createDate", Date.class));
-
-						if (Validator.isNotNull(dossierFile) &&
-							Validator.isNotNull(dossierFile.getFormData())) {
-							JSONObject jsonOtherData =
-								JSONFactoryUtil.createJSONObject(
-									dossierFile.getFormData());
-							Map<String, Object> jsonOtherMap =
-								jsonToMap(jsonOtherData);
-							String myCHK = StringPool.BLANK;
-							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
-									for (String string : variableMuti) {
-										myCHK += ", " +
-											jsonOtherMap.get(string).toString();
-									}
-									myCHK = myCHK.replaceFirst(", ", "");
-								}
-							}
-							catch (Exception e) {
-								// TODO: handle exception
-								_log.error(e);
-							}
-
-							if (myCHK.startsWith("#")) {
-								jsonMap.put(entry.getKey(), "");
-							}
-							else {
-								jsonMap.put(entry.getKey(), myCHK.toString());
-							}
-						}
-					}
-					catch (SystemException e) {
-						// e.printStackTrace();
-						_log.error(e);
-					}
-				}
-			}
-
-			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-				if (entry.getValue().getClass().getName().contains(
-					"JSONArray")) {
-					result.put(entry.getKey(), (JSONArray) entry.getValue());
-				}
-				else if (entry.getValue().getClass().getName().contains(
-					"JSONObject")) {
-					result.put(entry.getKey(), (JSONObject) entry.getValue());
-				}
-				else {
-					result.put(entry.getKey(), entry.getValue() + "");
-				}
-			}
-
-		}
-		catch (JSONException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			_log.error(e);
-		}
-
-		return result.toJSONString();
-	}
-
-	private Map<String, Object> jsonToMap(JSONObject json) {
-
-		Map<String, Object> retMap = new HashMap<String, Object>();
-
-		if (Validator.isNotNull(json)) {
-			try {
-				retMap = toMap(json);
-			}
-			catch (JSONException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
-				_log.debug(e);
-				// _log.error(e);
-			}
-		}
-		return retMap;
-	}
-
-	public static Map<String, Object> toMap(JSONObject object)
+	private static Map<String, Object> toMap(JSONObject object)
 		throws JSONException {
 
 		Map<String, Object> map = new HashMap<String, Object>();
