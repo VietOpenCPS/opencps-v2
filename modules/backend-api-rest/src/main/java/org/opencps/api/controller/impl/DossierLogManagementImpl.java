@@ -77,9 +77,9 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 					query.isOwner(), query.getStart(), query.getEnd(), query.getSort(), query.getOrder(),
 					serviceContext);
 
-			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
+			List<Document> documents = (List<Document>) dossierLogJsonObject.get("data");
 			//
-			results.setTotal(dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
+			results.setTotal(dossierLogJsonObject.getInt("total"));
 			results.getData().addAll(DossierLogUtils.mappingToDossierLogResultsModel(documents));
 
 			return Response.status(200).entity(results).build();
@@ -106,7 +106,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
 
-			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
+			List<Document> documents = (List<Document>) dossierLogJsonObject.get("data");
 
 			JSONArray models = JSONFactoryUtil.createJSONArray();
 
@@ -146,9 +146,9 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 			}
 
-			results.put(ConstantUtils.TOTAL, dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
+			results.put("total", dossierLogJsonObject.getInt("total"));
 
-			results.put(ConstantUtils.DATA, models);
+			results.put("data", models);
 
 			return Response.status(200).entity(results.toJSONString()).build();
 
