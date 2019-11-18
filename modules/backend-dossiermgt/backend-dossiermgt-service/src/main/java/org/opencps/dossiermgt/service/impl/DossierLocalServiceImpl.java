@@ -4736,7 +4736,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (processStep != null) {
 			dossierAction.setState(DossierActionTerm.STATE_WAITING_PROCESSING);
 			dossierAction = DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_WAITING_PROCESSING);
-			JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), DossierTerm.DOSSIER_SATUS_DC_CODE, processStep.getDossierStatus(), processStep.getDossierSubStatus());
+			JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), processStep.getDossierStatus(), processStep.getDossierSubStatus());
 
 			dossier.setDossierActionId(dossierAction.getDossierActionId());
 			dossier.setDossierStatus(processStep.getDossierStatus());

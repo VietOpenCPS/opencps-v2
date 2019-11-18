@@ -251,7 +251,7 @@ public class DossierTerm {
 	public static final int ORIGINALITY_HSLT = 4;
 	public static final String GROUP_DOSSIER_ID = "groupDossierId";
 	public static final String APPLICANT_FOLLOW_ID_NO = "applicantFollowIdNo";
-	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
+	//public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	
 	public static final String GROUP_DOSSIERS = "groupDossiers";
 	public static final String META_DATA = "metaData";
@@ -264,4 +264,15 @@ public class DossierTerm {
 	
 	public static final String PAUSE_LOCK_STATE_TERM = "LOCK";
 	public static final String SYSTEM_ID = "systemId";
+	public static final String DOSSIER_FIELD = "fields";
+	public static final String DOSSIER_FIELD_NAME = "fieldName";
+	public static final String DOSSIER_VALUE = "value";
+	public static final String PRECONDITION_SUBMIT = "submit";
+	public static final String PRECONDITION_TIMER = "timer";
+	public static final String PRECONDITION_LISTENER = "listener";
+	public static final String PRECONDITION_SPECIAL = "special";
+	public static final String KEY_DOSSIER_STATUS = "dossierStatus";
+	public static final String KEY_DOSSIER_SUB_STATUS = "dossierSubStatus";
+	public static final String KEY_DOSSIER_LEVEL = "level";
+	public static final String KEY_DOSSIER_STATUS_NAME = "statusName";
 }

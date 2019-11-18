@@ -99,15 +99,11 @@ public class VNPostManagementImpl implements VNPostManagement {
 		//_log.info("sendPostalRequest groupId ============= " + groupId);
 		//_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
 
-		// String tokenUrl = "https://api.mitc.vn/token";
-		// String consumer_key = "ddabyJ69AeQyzhFvlnXNROKQs7Ia";
-		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
 		if (config == null) {
 			return null;
 		} else {
 			try {
 				MToken token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
-				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
 				
 				//_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
 				MOrder order = new MOrder(config.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),

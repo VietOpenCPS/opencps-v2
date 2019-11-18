@@ -200,7 +200,6 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 			dossierPartId = 0; // :)
 		}
 
@@ -251,7 +250,6 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 			}
 		}catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 			return false;
 		}
 

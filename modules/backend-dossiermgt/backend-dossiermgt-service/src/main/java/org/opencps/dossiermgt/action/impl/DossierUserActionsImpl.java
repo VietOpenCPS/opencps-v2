@@ -37,7 +37,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			return DossierUserLocalServiceUtil.updateDossierUser(dossierId, userId, moderator, visited);
 		} catch (NoSuchDossierUserException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 		
 		return null;
@@ -49,7 +48,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			return DossierUserLocalServiceUtil.deleteDossierUser(dossierId, userId);
 		} catch (NoSuchDossierUserException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 		
 		return null;
@@ -66,9 +64,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 					if (Validator.isNull(spr.getCondition())) {
 //						boolean moderator = spr.getModerator();
 //						
-//						if (moderator) {
-//							mod = 1;
-//						}
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
@@ -106,7 +101,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			
 		} catch (PortalException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 	}
 
@@ -173,9 +167,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 					if (Validator.isNull(spr.getCondition())) {
 //						boolean moderator = spr.getModerator();
 //						
-//						if (moderator) {
-//							mod = 1;
-//						}
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
@@ -213,7 +204,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			
 		} catch (PortalException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}		
 	}
 }

@@ -96,8 +96,6 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
-//			e.printStackTrace();
 			throw new PortalException();
 		}
 
@@ -232,14 +230,6 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 				approveDatetime, accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo,
 				serviceContext);
 
-		if (!isSync) {
-		// Add PaymentFileSync
-//		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
-		// TODO review serverNo on this
-//		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
-//				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),
-//				StringPool.BLANK);
-		}
 
 		return paymentFile;
 	}

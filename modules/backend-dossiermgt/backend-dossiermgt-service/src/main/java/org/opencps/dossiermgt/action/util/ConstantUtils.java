@@ -187,6 +187,8 @@ public class ConstantUtils {
 	public static final String DOCUMENT_TYPE = "org.opencps.value.document.type";
 	public static final String METHOD_ADD_TO_GROUP = "org.opencps.method.addgroup";
 	public static final String METHOD_REMOVE_FROM_GROUP = "org.opencps.method.removegroup";
+	public static final String BASE_URI = "org.opencps.value.base.url";
+	public static final String BASE_JSON_URI = "org.opencps.value.base.urljson";
 
 	
 	public static final String CAPTCHA = "org.opencps.access.captcha";
@@ -220,4 +222,23 @@ public class ConstantUtils {
 	public static final String PATTERN_YEAR_HALF = "org.opencps.pattern.year.half";
 	public static final String PATTERN_LUCENE = "org.opencps.pattern.lucene";
 	
+	/** VALUE ACTION CODE */
+	public static final String FIX_DOSSIER_ACTION = "org.opencps.value.action.fix";
+	/** Charater */
+	public static final String CHAR_ZERO = "org.opencps.value.character.zero";
+	public static final String CHAR_ONE = "org.opencps.value.character.one";
+	public static final String CHAR_TWO = "org.opencps.value.character.two";
+	public static final String CHAR_THREE = "org.opencps.value.character.three";
+	public static final String CHAR_FOUR = "org.opencps.value.character.four";
+	public static final String CHAR_FIVE = "org.opencps.value.character.five";
+	public static final String CHAR_SIX = "org.opencps.value.character.six";
+	public static final String CHAR_SEVEN = "org.opencps.value.character.seven";
+	public static final String CHAR_EIGHT = "org.opencps.value.character.eight";
+	public static final String CHAR_NIGHT = "org.opencps.value.character.night";
+	public static final String CHAR_A = "org.opencps.value.character.a";
+	public static final String CHAR_B = "org.opencps.value.character.b";
+	public static final String CHAR_C = "org.opencps.value.character.c";
+	public static final String CHAR_D = "org.opencps.value.character.d";
+	public static final String CHAR_E = "org.opencps.value.character.e";
+	public static final String CHAR_F = "org.opencps.value.character.f";
 }

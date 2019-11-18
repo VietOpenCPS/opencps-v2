@@ -124,7 +124,6 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 			String govAgencyName, String serviceInstruction, Integer serviceLevel, String serviceUrl,
 			boolean forCitizen, boolean forBusiness, boolean postalService, boolean registration,
 			ServiceContext context) throws NoSuchServiceConfigException {
-		// TODO Auto-generated method stub
 		ServiceConfig config = ServiceConfigLocalServiceUtil.updateServiceConfigDB(userId, groupId, serviceInfoId, govAgencyCode,
 				govAgencyName, serviceInstruction, serviceLevel, serviceUrl, forCitizen, forBusiness, postalService,
 				registration, context);

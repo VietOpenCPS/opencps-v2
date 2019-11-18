@@ -102,7 +102,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			return ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 			return null;
 		}
 	}
@@ -113,7 +112,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			return ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 			return null;
 		}
 	}
@@ -336,8 +334,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("level", i);
-				elm.put("levelName", i);
+				elm.put(ServiceInfoTerm.LEVEL, i);
+				elm.put(ServiceInfoTerm.LEVEL_NAME, i);
 				elm.put(ConstantUtils.VALUE_COUNT, levelCount);
 
 				data.put(elm);
@@ -387,7 +385,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 						DLAppLocalServiceUtil.deleteFileEntry(fileEntryId);
 					} catch (PortalException e) {
 						_log.debug(e);
-						//_log.error(e);
 						return false;
 					}
 				}
@@ -435,7 +432,6 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			}
 		}catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 			return false;
 		}
 

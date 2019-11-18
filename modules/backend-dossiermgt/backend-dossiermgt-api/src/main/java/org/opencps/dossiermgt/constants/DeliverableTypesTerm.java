@@ -15,4 +15,5 @@ public class DeliverableTypesTerm {
 	public static final String DELIVERABLE_ISSUEDATE = "issueDate";
 	public static final String DELIVERABLE_EXPIREDATE = "expireDate";
 	public static final String DELIVERABLE_REVALIDDATE = "revalidDate";
+	public static final String LIST_DELIVERABLE_TYPE = "lstDeliverableType";
 }

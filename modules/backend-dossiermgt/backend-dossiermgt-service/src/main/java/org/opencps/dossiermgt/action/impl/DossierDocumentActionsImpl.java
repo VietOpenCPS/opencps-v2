@@ -24,9 +24,6 @@ public class DossierDocumentActionsImpl implements DossierDocumentActions {
 
 		try {
 			List<DossierDocument> docList =DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.debug("docList:"+docList);
-			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierDocumentLocalServiceUtil.countDossierDocumentList(dossierId);

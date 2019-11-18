@@ -457,7 +457,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -487,7 +486,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -544,9 +542,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			}
 		}
 		catch (Exception e) {
-			// e.printStackTrace();
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -575,7 +571,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
