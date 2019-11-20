@@ -14,6 +14,8 @@ import org.apache.cxf.message.Message;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import backend.api.rest.application.utils.ConstantTerm;
+
 /**
  * @author Adam Brandizzi
  */
@@ -23,7 +25,7 @@ public class LocaleContextProvider implements ContextProvider<Locale> {
 
 	@Override
 	public Locale createContext(Message message) {
-		return _portal.getLocale((HttpServletRequest) message.getContextualProperty("HTTP.REQUEST"));
+		return _portal.getLocale((HttpServletRequest) message.getContextualProperty(ConstantTerm.HTTP_REQUEST));
 	}
 
 	@Reference

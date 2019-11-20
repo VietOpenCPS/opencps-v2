@@ -9,6 +9,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import backend.admin.config.service.util.ConstantsAdmin;
+
 /**
  * @author binhth
  */
@@ -19,7 +21,7 @@ public class Configurator {
         java.util.Dictionary<String, Object> servletContextProps =
             new Hashtable<>();
 
-        servletContextProps.put("websocket.active", Boolean.TRUE);
+        servletContextProps.put(ConstantsAdmin.JSON_WEBSOCKET_ACTIVE, Boolean.TRUE);
 
         bundleContext.registerService(
             ServletContext.class, _servletContext, servletContextProps);
