@@ -7,6 +7,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
@@ -67,10 +68,10 @@ public class WorkingUnitIndexer extends BaseIndexer<WorkingUnit> {
 		addSearchTerm(searchQuery, searchContext, WorkingUnitTerm.WEBSITE, true);
 		
 		@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(JobPosTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(JobPosTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

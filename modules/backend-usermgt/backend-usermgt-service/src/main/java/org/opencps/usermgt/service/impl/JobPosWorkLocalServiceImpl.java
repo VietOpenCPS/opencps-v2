@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.JobPosWorkTerm;
 import org.opencps.usermgt.model.JobPosWork;
 import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;
@@ -217,7 +218,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
@@ -225,7 +226,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -264,7 +265,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
@@ -272,7 +273,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

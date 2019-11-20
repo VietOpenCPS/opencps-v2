@@ -389,7 +389,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(EmployeeJobPosTerm.KEYWORDS);
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
@@ -397,7 +397,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(EmployeeJobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { EmployeeJobPos.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(EmployeeJobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -437,7 +437,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 	@SuppressWarnings("deprecation")
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(EmployeeJobPosTerm.KEYWORDS);
 		String employeeId = (String) params.get(EmployeeJobPosTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(Field.GROUP_ID);
 
@@ -445,7 +445,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(EmployeeJobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { EmployeeJobPos.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(EmployeeJobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -586,21 +586,21 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 			object = employeeJobPosPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(EmployeeJobPosTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(EmployeeJobPosTerm.USER_ID));
 
-		object.setEmployeeId(objectData.getLong("employeeId"));
-		object.setJobPostId(objectData.getLong("jobPostId"));
-		object.setWorkingUnitId(objectData.getLong("workingUnitId"));
+		object.setEmployeeId(objectData.getLong(EmployeeJobPosTerm.EMPLOYEE_ID));
+		object.setJobPostId(objectData.getLong(EmployeeJobPosTerm.JOBPOST_ID));
+		object.setWorkingUnitId(objectData.getLong(EmployeeJobPosTerm.WORKING_UNIT_ID));
 
 		try {
 
 			// role
-			Employee mEmployee = employeePersistence.fetchByPrimaryKey(objectData.getLong("employeeId"));
+			Employee mEmployee = employeePersistence.fetchByPrimaryKey(objectData.getLong(EmployeeJobPosTerm.EMPLOYEE_ID));
 
 			User newUser = UserLocalServiceUtil.fetchUser(mEmployee.getMappingUserId());
 			if (newUser != null) {
@@ -609,7 +609,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 				//
 				List<Role> roleIds = new ArrayList<Role>();
 
-				JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(objectData.getLong("jobPostId"));
+				JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(objectData.getLong(EmployeeJobPosTerm.JOBPOST_ID));
 
 				for (Role role : roles) {
 

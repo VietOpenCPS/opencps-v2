@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.JobPosWorkTerm;
 import org.opencps.usermgt.model.JobPosWork;
 import org.opencps.usermgt.service.JobPosWorkLocalServiceUtil;
@@ -46,10 +47,10 @@ public class JobPosWorkIndexer extends BaseIndexer<JobPosWork> {
 			SearchContext searchContext) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(JobPosTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(JobPosTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

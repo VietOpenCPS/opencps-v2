@@ -26,6 +26,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.model.ResourceRole;
 import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
@@ -49,10 +50,10 @@ public class ResourceRoleIndexer extends BaseIndexer<ResourceRole> {
 			SearchContext searchContext) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(JobPosTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(JobPosTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

@@ -85,7 +85,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 
 				searchContext.addFullQueryEntryClassName(User.class.getName());
 				searchContext.setEntryClassNames(new String[] { User.class.getName() });
-				searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+				searchContext.setAttribute(ResourceUserTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 				searchContext.setLike(true);
 				searchContext.setStart(QueryUtil.ALL_POS);
 				searchContext.setEnd(QueryUtil.ALL_POS);
@@ -120,8 +120,8 @@ public class ResourceUserActions implements ResourceUserInterface {
 
 					}
 					document.addTextSortable(ResourceUserTerm.TO_USERID, document.get(Field.ENTRY_CLASS_PK));
-					document.addTextSortable(ResourceUserTerm.TO_USERNAME, document.get("fullName"));
-					document.addTextSortable("selected", selected);
+					document.addTextSortable(ResourceUserTerm.TO_USERNAME, document.get(ResourceUserTerm.FULLNAME));
+					document.addTextSortable(ResourceUserTerm.SELECTED, selected);
 
 				}
 
@@ -180,7 +180,7 @@ public class ResourceUserActions implements ResourceUserInterface {
 				JSONObject user = jUser.getJSONObject(n);
 
 				resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_toUserId(groupId, className,
-						classPK, user.getLong("userId"));
+						classPK, user.getLong(ResourceUserTerm.USER_ID));
 
 				if (Validator.isNotNull(resourceUser)) {
 
@@ -189,8 +189,8 @@ public class ResourceUserActions implements ResourceUserInterface {
 				} else {
 
 					ResourceUserLocalServiceUtil.addResourceUser(userId, groupId, className, classPK,
-							user.getLong("userId"), user.getString("fullname"), user.getString("email"),
-							user.getBoolean("readonly"), serviceContext);
+							user.getLong(ResourceUserTerm.USER_ID), user.getString(ResourceUserTerm.FULLNAME), user.getString(ResourceUserTerm.EMAIL),
+							user.getBoolean(ResourceUserTerm.READONLY), serviceContext);
 
 				}
 

@@ -232,4 +232,27 @@ public class ConfigConstants {
 	public static final String PATTERN_YEAR_FULL = "org.opencps.pattern.year.all";
 	public static final String PATTERN_YEAR_HALF = "org.opencps.pattern.year.half";
 	public static final String PATTERN_LUCENE = "org.opencps.pattern.lucene";
+	
+	/** EmployeeAction */
+
+	public static final String EMP_ACTION_LOCALE = "org.opencps.employee.action.locale";
+	public static final String EMP_ACTION_LOCALE_UPP = "org.opencps.employee.action.locale.upp";
+	public static final String EMP_ACTION_PWD_GEN_1 = "org.opencps.employee.action.pwd.gen.1";
+	public static final String EMP_ACTION_PWD_GEN_2 = "org.opencps.employee.action.pwd.gen.2";
+	public static final String EMP_ACTION_PWD_GEN_3 = "org.opencps.employee.action.pwd.gen.3";
+	public static final String EMP_ACTION_PWD_GEN_4 = "org.opencps.employee.action.pwd.gen.4";
+	public static final String EMP_ACTION_PWD_GEN_5_1 = "org.opencps.employee.action.pwd.gen.5.1";
+	public static final String EMP_ACTION_PWD_GEN_5_2 = "org.opencps.employee.action.pwd.gen.5.2";
+	public static final String EMP_ACTION_PWD_GEN_5_3 = "org.opencps.employee.action.pwd.gen.5.3";
+	public static final String EMP_ACTION_PWD_GEN_5_4 = "org.opencps.employee.action.pwd.gen.5.4";
+	public static final String EMP_ACTION_LOCK_EMP_USER_STATUS = "org.opencps.employee.action.lock.emp.user.status";
+	public static final String EMP_ACTION_LOCK_EMP_USER_SEND_BY = "org.opencps.employee.action.lock.emp.user.sendby";
+	public static final String EMP_ACTION_CREATE_NEW_EMP_ROLE = "org.opencps.employee.action.create.new.emp.role";
+	public static final String EMP_ACTION_CREATE_NEW_EMP_SECRET = "org.opencps.employee.action.create.new.emp.secret";
+	public static final String EMP_ACTION_CREATE_NEW_EMP_GROUPID = "org.opencps.employee.action.create.new.emp.groupid";
+	
+	/** ApplicantListener */
+	public static final String APPLICANT_LISTENER_BASE_URL = "org.opencps.applicant.listener.base.url";
+	public static final String APPLICANT_LISTENER_ACTIVATION_LINK = "org.opencps.applicant.listener.activation.link";
+	
 }

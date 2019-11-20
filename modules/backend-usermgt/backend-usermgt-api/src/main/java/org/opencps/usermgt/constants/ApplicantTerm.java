@@ -1,7 +1,15 @@
+
 package org.opencps.usermgt.constants;
 
 public class ApplicantTerm {
-	
+
+	public static final String COMPANY_ID = "companyId";
+	public static final String USER_ID = "userId";
+	public static final String ACTIVATION_CODE = "activationCode";
+	public static final String LOCK_ = "lock_";
+	public static final String TMP_PASS = "tmpPass";
+	public static final String REPRESENTATIVE_ENTERPRISE =
+		"representativeEnterprise";
 	public static final String APPLICANT_ID = "applicantId";
 	public static final String APPLICANTNAME = "applicantName";
 	public static final String APPLICANTIDTYPE = "applicantIdType";
@@ -22,6 +30,7 @@ public class ApplicantTerm {
 	public static final String LOCK = "lock";
 	public static final String TOTAL = "total";
 	public static final String DATA = "data";
+	public static final String PAGINATION_TYPE = "paginationType";
 	public static final int PASSWORD_LENGHT = 10;
 	public static final String REPRE_ENTERPRISE = "representativeEnterprise";
 
