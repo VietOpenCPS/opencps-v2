@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Date;
 
+import org.opencps.auth.api.keys.ModelNameKeys;
+
 public class OpenCPSErrorDetails {
 
 	private Date timestamp;
@@ -45,9 +47,9 @@ public class OpenCPSErrorDetails {
 	@Override
 	public String toString() {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		result.put("timestamp", new Date().getTime());
-		result.put("message", this.message);
-		result.put("rest_api", this.rest_api);
+		result.put(ModelNameKeys.OPENCPS_ERROR_DETAIL_TIMESTAMP, new Date().getTime());
+		result.put(ModelNameKeys.OPENCPS_ERROR_DETAIL_MESSAGE, this.message);
+		result.put(ModelNameKeys.OPENCPS_ERROR_DETAIL_REST_API, this.rest_api);
 		return result.toJSONString();
 	}
 }

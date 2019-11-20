@@ -8,6 +8,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.opencps.auth.api.keys.Constants;
+
 class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 
 	private GZipServletOutputStream gzipOutputStream = null;
@@ -69,7 +71,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (this.printWriter != null) {
-			throw new IllegalStateException("PrintWriter obtained already - cannot get OutputStream");
+			throw new IllegalStateException(Constants.G_ZIP_SERVLET_GET_OUTPUT_STREAM_EX);
 		}
 		if (this.gzipOutputStream == null) {
 			this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
@@ -80,14 +82,14 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 	@Override
 	public PrintWriter getWriter() throws IOException {
 		if (this.printWriter == null && this.gzipOutputStream != null) {
-			throw new IllegalStateException("OutputStream obtained already - cannot get PrintWriter");
+			throw new IllegalStateException(Constants.G_ZIP_SERVLET_GET_WRITER_EX);
 		}
 		if (this.printWriter == null) {
 			this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
 //			this.printWriter = new PrintWriter(
 //					new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()));
 			this.printWriter = new PrintWriter(
-					new OutputStreamWriter(this.gzipOutputStream, "UTF-8"));
+					new OutputStreamWriter(this.gzipOutputStream, Constants.G_ZIP_SERVLET_GET_WRITER_CHARSET));
 		}
 		return this.printWriter;
 	}
