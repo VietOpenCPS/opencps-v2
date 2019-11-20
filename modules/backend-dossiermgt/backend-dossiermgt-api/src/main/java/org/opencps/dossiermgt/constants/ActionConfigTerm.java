@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class ActionConfigTerm {
+	public static final String ACTION_CONFIG_ID = "actionConfigId";
 	public static final String ACTION_CODE = "actionCode";
 	public static final String ACTION_NAME = "actionName";
 	public static final String EXTRA_FORM = "extraForm";
@@ -13,6 +14,10 @@ public class ActionConfigTerm {
 	public static final String ROLL_BACKABLE = "rollbackable";
 	public static final String NOTIFICATION_TYPE = "notificationType";
 	public static final String DOCUMENT_TYPE = "documentType";
+	public static final String EVENT_TYPE = "eventType";
+	public static final String INFO_TYPE = "infoType";
+	public static final String MAPPING_ACTION = "mappingAction";
+	public static final String DATE_OPTION = "dateOption";
 	
 	public static final String ACTION_CODE_1300 = "1300";
 	

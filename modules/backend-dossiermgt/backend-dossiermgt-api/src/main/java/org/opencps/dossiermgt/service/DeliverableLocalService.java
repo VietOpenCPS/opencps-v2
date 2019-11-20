@@ -27,8 +27,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -330,9 +328,6 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public List<Deliverable> getListDeliverable(int deliverableState,
 		String govAgencyCode, String deliverableType, String applicant);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BooleanClauseOccur> getOccurs();
-
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -340,60 +335,15 @@ public interface DeliverableLocalService extends BaseLocalService,
 	*/
 	public String getOSGiServiceIdentifier();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<String> getParamNames();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Object> getParams();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Class<?>> getParamTypes();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public String getPattern();
-
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BooleanQuery getQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SearchContext getSearchContext();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<String> getSubPatterns();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BooleanQuery> getSubQueries();
-
-	public void LuceneQuery(String pattern, String paramValues,
-		String paramTypes, SearchContext searchContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits searchLucene(LinkedHashMap<String, Object> params,
 		Sort[] sorts, int start, int end, SearchContext searchContext)
 		throws ParseException, SearchException;
-
-	public void setOccurs(List<BooleanClauseOccur> occurs);
-
-	public void setParamNames(List<String> paramNames);
-
-	public void setParams(List<Object> params);
-
-	public void setParamTypes(List<Class<?>> paramTypes);
-
-	public void setPattern(String pattern);
-
-	public void setQuery(BooleanQuery query);
-
-	public void setSearchContext(SearchContext searchContext);
-
-	public void setSubPatterns(List<String> subPatterns);
-
-	public void setSubQueries(List<BooleanQuery> subQueries);
 
 	/**
 	* Updates the deliverable in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

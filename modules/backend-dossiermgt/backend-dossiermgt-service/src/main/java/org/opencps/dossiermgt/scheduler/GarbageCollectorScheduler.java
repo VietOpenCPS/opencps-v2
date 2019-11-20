@@ -42,19 +42,19 @@ public class GarbageCollectorScheduler extends BaseMessageListener {
 		cal.setTime(now);
 		cal.add(Calendar.DATE, -7);
 		Date sevenDayAgo = cal.getTime();
-		
-		List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.findByST_LT_MD(new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, sevenDayAgo, 0, 10);
-		
+
+		List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil
+				.findByST_LT_MD(new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, sevenDayAgo, 0, 10);
+
 		for (PublishQueue pq : lstQueues) {
 			try {
 				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
-			}
-			catch (PortalException pe) {
+			} catch (PortalException pe) {
 				_log.debug(pe);
 			}
 		}
-		
-		_log.info("OpenCPS GARBAGE COLLECTOR HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
+
+		_log.info("OpenCPS GARBAGE COLLECTOR HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 	}
 	
 	  @Activate

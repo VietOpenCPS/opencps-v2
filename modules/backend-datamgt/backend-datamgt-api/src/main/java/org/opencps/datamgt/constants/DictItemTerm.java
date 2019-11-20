@@ -68,6 +68,14 @@ public class DictItemTerm {
 	
 	public static final String IS_GLOBAL = "isGlobal";
 	
+	public static final String _TABLE_NAME = "opencps_dictItem";
+	
+	public static final String ORDER_ASC = " ASC";
+
+	public static final String ORDER_DESC = " DESC";
+	
+	public static final String VALUE_CLASS = "class";
+
 	//sortable
 	public static final String DICT_ITEM_ID_SORTABLE = "dictItemId_sortable";
 	

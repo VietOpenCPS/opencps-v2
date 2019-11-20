@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.base.DocumentTypeLocalServiceBaseImpl;
 
@@ -205,9 +206,9 @@ public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseIm
 
 		DocumentType object = null;
 
-		if (objectData.getLong("documentTypeId") > 0) {
+		if (objectData.getLong(DossierDocumentTerm.DOCUMENT_TYPE_ID) > 0) {
 
-			object = documentTypePersistence.fetchByPrimaryKey(objectData.getLong("documentTypeId"));
+			object = documentTypePersistence.fetchByPrimaryKey(objectData.getLong(DossierDocumentTerm.DOCUMENT_TYPE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -222,14 +223,14 @@ public class DocumentTypeLocalServiceImpl extends DocumentTypeLocalServiceBaseIm
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setTypeCode(objectData.getString("typeCode"));
-		object.setTemplateClass(objectData.getInt("templateClass"));
-		object.setDocumentName(objectData.getString("documentName"));
-		object.setCodePattern(objectData.getString("codePattern"));
-		object.setDocumentScript(objectData.getString("documentScript"));
-		object.setDocSync(objectData.getInt("docSync"));
+		object.setTypeCode(objectData.getString(DossierDocumentTerm.TYPE_CODE));
+		object.setTemplateClass(objectData.getInt(DossierDocumentTerm.TEMPLATE_CLASS));
+		object.setDocumentName(objectData.getString(DossierDocumentTerm.DOCUMENT_NAME));
+		object.setCodePattern(objectData.getString(DossierDocumentTerm.CODE_PATTERN));
+		object.setDocumentScript(objectData.getString(DossierDocumentTerm.DOCUMENT_SCRIPT));
+		object.setDocSync(objectData.getInt(DossierDocumentTerm.DOC_SYNC));
 
 		documentTypePersistence.update(object);
 

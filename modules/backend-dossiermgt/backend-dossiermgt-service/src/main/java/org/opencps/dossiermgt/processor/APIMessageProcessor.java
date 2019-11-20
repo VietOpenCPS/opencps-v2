@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -22,13 +21,13 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
@@ -37,8 +36,6 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -48,7 +45,6 @@ import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
-import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -59,8 +55,6 @@ import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
@@ -77,7 +71,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		try {
 			client = OpenCPSRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 		} catch (JSONException e) {
-//			e.printStackTrace();
 			_log.error(e);
 		}
 		
@@ -173,13 +166,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setRemoved(df.getRemoved());
 									dfModel.setEForm(df.getEForm());
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 									if (dfResult == null) {
 										if (client.isWriteLog()) {
@@ -189,10 +182,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										}
 										return false;
 									}
-//									dossierSync.setAcknowlegement(OpenCPSConverter.convertFileInputModelToJSON(dfResult).toJSONString());
-//									DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
 								} catch (PortalException e) {
-//									e.printStackTrace();
 									_log.error(e);
 								}
 
@@ -217,170 +207,49 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				for (int i = 0; i < fileArrs.length(); i++) {
 					JSONObject fileObj = fileArrs.getJSONObject(i);
 					if (fileObj.has(DossierDocumentTerm.REFERENCE_UID)) {
-						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(dossier.getGroupId(), dossier.getDossierId(), fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
+						DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(
+								dossier.getGroupId(), dossier.getDossierId(),
+								fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
 						if (dossierDocument != null) {
 							int retry = 0;
-							
+
 							File file = null;
-							
+
 							while (dossierDocument.getDocumentFileId() == 0) {
 								try {
 									Thread.sleep(1000l);
-									dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(dossier.getGroupId(), dossier.getDossierId(), fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
+									dossierDocument = DossierDocumentLocalServiceUtil.getDocByReferenceUid(
+											dossier.getGroupId(), dossier.getDossierId(),
+											fileObj.getString(DossierDocumentTerm.REFERENCE_UID));
 									retry++;
-									if (retry > N_OF_RETRIES) break;
+									if (retry > N_OF_RETRIES)
+										break;
 								} catch (InterruptedException e) {
-//									e.printStackTrace();
 									_log.error(e);
 								}
-								
+
 							}
 							if (dossierDocument.getDocumentFileId() > 0) {
 								FileEntry fileEntry;
 								try {
 									fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
-									file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-											true);
+									file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
+											fileEntry.getVersion(), true);
 								} catch (PortalException e) {
-//									e.printStackTrace();
 									_log.error(e);
 								}
 
 							}
-							DossierDocumentModel model = OpenCPSConverter.convertDossierDocument(dossierDocument);
-							DossierDocumentModel ddResult = client.postDossierDocument(file, dossier.getReferenceUid(), model);
-							if (ddResult == null) {
-								return false;
-							}
-						}						
+						}
 					}
 				}
 			}
 		} catch (JSONException e) {
-//			e.printStackTrace();
 			_log.debug(e);
-			//_log.error(e);
 			return false;
 		}
 		
 		//Process action
-		try {
-			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-			ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
-			if (processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG)) {
-				_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-				pfiModel.setApplicantName(dossier.getApplicantName());
-				pfiModel.setBankInfo(StringPool.BLANK);
-				pfiModel.setEpaymentProfile(StringPool.BLANK);
-				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(GetterUtil.getLong(processAction.getPaymentFee()));
-				pfiModel.setPaymentFee(processAction.getPaymentFee());
-				if (paymentFile != null) {
-					pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-				}
-				else {
-					pfiModel.setPaymentNote(StringPool.BLANK);
-				}
-				pfiModel.setReferenceUid(StringPool.BLANK);
-				
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 1: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-			} else if (processAction != null && (processAction
-					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI)) {
-				_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				//_log.debug("SONDT SYNC INFORM REQUESTPAYMENT = 2 PAYMENT FILE ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-				//_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-				String paymentFee = null; 
-				String paymentNote = null;
-				
-				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
-				//_log.debug("SONDT SYNC INFORM Payment object: " + paymentObj);
-				if (paymentObj.has("paymentFee")) {
-					paymentFee = paymentObj.getString("paymentFee");
-				}
-				if (paymentObj.has("paymentNote")) {
-					paymentNote = paymentObj.getString("paymentNote");
-				}
-				else {
-					paymentNote = paymentFile != null ? paymentFile.getPaymentNote() : StringPool.BLANK;
-				}
-				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-				pfiModel.setApplicantName(dossier.getApplicantName());
-				pfiModel.setBankInfo(paymentFile.getBankInfo());
-				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-				pfiModel.setPaymentFee(paymentFee != null ? paymentFee : StringPool.BLANK);
-				pfiModel.setPaymentNote(paymentNote != null ? paymentNote : StringPool.BLANK);
-				pfiModel.setReferenceUid(dossier.getReferenceUid());
-				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
-				pfiModel.setServiceAmount(paymentFile.getServiceAmount());
-				pfiModel.setShipAmount(paymentFile.getShipAmount());
-				
-				//_log.debug("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-			} else if (processAction != null && (processAction
-					.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI)) {
-				_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				
-				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-				
-				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				pfiModel.setEinvoice(paymentFile.getEinvoice());
-				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
-				String paymentNote = paymentFile != null ? paymentFile.getPaymentNote() : StringPool.BLANK;
-				pfiModel.setPaymentNote(paymentNote);
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-				
-				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
-						+ APIDateTimeUtils.convertDateToString(new Date()));
-			}
-			if (processAction.getPreCondition().contains("payok")
-					|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-				//_log.debug("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-//				_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-				PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-				pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-				pfiModel.setApplicantName(dossier.getApplicantName());
-				pfiModel.setBankInfo(paymentFile.getBankInfo());
-				pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-				pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-				pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-				pfiModel.setPaymentFee(processAction.getPaymentFee());
-				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-				pfiModel.setReferenceUid(dossier.getReferenceUid());
-				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-				pfiModel.setEinvoice(paymentFile.getEinvoice());
-				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
-				
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-			}
-		}
-		catch (Exception e) {
-			_log.debug(e);
-			//_log.error(e);
-		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());
@@ -437,12 +306,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 //		model.setOnline("true");
 		DossierDetailModel result = client.postDossier(model);
 		StringBuilder messageText = new StringBuilder();
-		messageText.append("POST /dossiers\n");
+		messageText.append(ConstantUtils.POST_DOSSIER);
 		messageText.append(JSONFactoryUtil.looseSerialize(model));
-		messageText.append("\n");
+		messageText.append(System.lineSeparator());
 		StringBuilder acknowlegement = new StringBuilder(); 
 		acknowlegement.append(JSONFactoryUtil.looseSerialize(result));
-		acknowlegement.append("\n");
+		acknowlegement.append(System.lineSeparator());
 		
 		if (result == null || Validator.isNull(result.getDossierId())) {
 			if (client.isWriteLog()) {
@@ -500,14 +369,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
 										dfModel.setEForm(df.getEForm());
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 										if (dfResult == null) {
 											if (client.isWriteLog()) {
@@ -518,7 +387,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											return false;
 										}
 									} catch (PortalException e) {
-//										e.printStackTrace();
 										_log.error(e);
 									}
 	
@@ -548,13 +416,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -566,20 +434,19 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											return false;
 										}
 									} catch (PortalException e) {
-//										e.printStackTrace();
 										_log.error(e);
 									}
 	
 								}
 								else {
 									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 
 									if (dfResult == null) {
@@ -667,16 +534,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												}
 											}
 										} catch (PortalException e) {
-//											e.printStackTrace();
 											_log.debug(e);
-											//_log.error(e);
 										}
 										
 										
 									}
 								}
 							} catch (PortalException e) {
-//								e.printStackTrace();
 								_log.error(e);
 							}
 							
@@ -698,13 +562,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -716,7 +580,6 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											return false;
 										}
 									} catch (PortalException e) {
-//										e.printStackTrace();
 										_log.error(e);
 									}
 	
@@ -745,13 +608,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -763,20 +626,19 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											return false;
 										}
 									} catch (PortalException e) {
-//										e.printStackTrace();
 										_log.error(e);
 									}
 	
 								}
 								else {
 									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 
 									if (dfResult == null) {
@@ -804,132 +666,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 					}
 				}			
 			} catch (JSONException e) {
-//				e.printStackTrace();
 				_log.debug(e);
-				//_log.error(e);
 				return false;
 			}	
 		}
 		//Process action
-		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
-		//_log.debug("SONDT DOSSIER ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierAction));
-		ProcessAction processAction = ProcessActionLocalServiceUtil.fetchByF_GID_SID_AC_PRE_POST(dossierAction.getGroupId(), dossierAction.getServiceProcessId(), dossierAction.getActionCode(), dossierAction.getFromStepCode(), dossierAction.getStepCode());
-		//_log.debug("SONDT PROCESS ACTION SYNC PAYMENT REQUEST ======================== " + JSONFactoryUtil.looseSerialize(processAction));
 		//_log.debug("SONDT DOSSIERID PAYMENT REQUEST ================"+ dossier.getDossierId());
 		_log.debug("OpenCPS SYNC PAYMENTFILE FROM SYNCREQUEST : " + APIDateTimeUtils.convertDateToString(new Date()));
-		if (processAction != null && (ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG == processAction.getRequestPayment())) {
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-			_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1: "
-					+ APIDateTimeUtils.convertDateToString(new Date()));
-			
-			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-			
-			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-			pfiModel.setApplicantName(dossier.getApplicantName());
-			pfiModel.setBankInfo(StringPool.BLANK);
-			pfiModel.setEpaymentProfile(StringPool.BLANK);
-			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(GetterUtil.getLong(processAction.getPaymentFee()));
-			pfiModel.setPaymentFee(processAction.getPaymentFee());
-			if (paymentFile != null) {
-				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			}
-			else {
-				pfiModel.setPaymentNote(StringPool.BLANK);
-			}
-			pfiModel.setReferenceUid(StringPool.BLANK);
-			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-			
-			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1 : " + APIDateTimeUtils.convertDateToString(new Date()));
-		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
-			_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: "
-					+ APIDateTimeUtils.convertDateToString(new Date()));
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-			
-			//_log.debug("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
-			//_log.debug("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-			
-			//_log.debug("SONDT PAYMENTFILE SYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-			
-			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-			pfiModel.setApplicantName(dossier.getApplicantName());
-			pfiModel.setBankInfo(paymentFile.getBankInfo());
-			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
-			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
-			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
-			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
-			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-			
-			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
-		}
-		else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_XAC_NHAN_HOAN_THANH_THU_PHI)){
-			_log.debug("OpenCPS START SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: "
-					+ APIDateTimeUtils.convertDateToString(new Date()));
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-			
-			//_log.debug("SONDT DOSSIER REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossier));
-			//_log.debug("SONDT DOSSIERSYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-			
-			//_log.debug("SONDT PAYMENTFILE SYNC REQUEST ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-			
-			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-			pfiModel.setApplicantName(dossier.getApplicantName());
-			pfiModel.setBankInfo(paymentFile.getBankInfo());
-			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
-			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
-			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
-			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
-			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
-			
-			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
-		}
-		//
-		if (processAction != null && (processAction.getPreCondition().contains("payok")
-				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1"))) {
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
-			//_log.debug("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
-//			_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
-			PaymentFileInputModel pfiModel = new PaymentFileInputModel();
-			pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
-			pfiModel.setApplicantName(dossier.getApplicantName());
-			pfiModel.setBankInfo(paymentFile.getBankInfo());
-			pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
-			pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
-			pfiModel.setGovAgencyName(dossier.getGovAgencyName());
-			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
-			pfiModel.setPaymentFee(processAction.getPaymentFee());
-			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
-			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
-			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
-			pfiModel.setEinvoice(paymentFile.getEinvoice());
-			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
-			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
-		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
 		actionModel.setActionUser(dossierSync.getActionUser());

@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,9 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
@@ -41,60 +38,6 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 public class DossierPaymentUtils {
 
-	public static void main(String[] args) {
-		String pattern = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
-
-		Pattern patternName = null;
-		Matcher matcherName = null;
-
-		ScriptEngineManager manager;
-
-		ScriptEngine engine;
-
-		patternName = Pattern.compile("net=\\[(.*?)\\]");
-
-		matcherName = patternName.matcher(pattern);
-
-		if (matcherName.find()) {
-
-			manager = new ScriptEngineManager();
-
-			engine = manager.getEngineByExtension("js");
-
-			List<ScriptEngineFactory> factories = manager.getEngineFactories();
-
-			for (ScriptEngineFactory ft : factories) {
-				_log.info("EXTENTISION____" + ft.getExtensions());
-				_log.info("NAME__" + ft.getEngineName());
-				_log.info("NAMES___" + ft.getNames());
-			}
-
-//			for (ScriptEngineFactory se : new ScriptEngineManager().getEngineFactories()) {
-//				System.out.println("se = " + se.getEngineName());
-//				System.out.println("se = " + se.getEngineVersion());
-//				System.out.println("se = " + se.getLanguageName());
-//				System.out.println("se = " + se.getLanguageVersion());
-//				System.out.println("se = " + se.getNames());
-//				System.out.println("se = " + se.getExtensions());
-//			}
-
-			String netScript = matcherName.group(1);
-
-			try {
-
-				engine.eval(netScript);
-
-//				long net = GetterUtil.getInteger(engine.get("payment"));
-//				System.out.println("DossierPaymentUtils.main()" + net);
-			} catch (ScriptException e) {
-//				e.printStackTrace();
-				_log.error(e);
-			}
-
-		}
-
-	}
-
 	// call processPaymentFile create paymentFile
 	public static void processPaymentFile(ProcessAction processAction, String pattern, long groupId, long dossierId, long userId,
 			ServiceContext serviceContext, String serverNo) throws JSONException {
@@ -102,16 +45,7 @@ public class DossierPaymentUtils {
 		// get total payment amount
 		JSONObject patternObj = JSONFactoryUtil.createJSONObject(pattern);
 		
-//		int payment = getTotalPayment(pattern, dossierId, userId, serviceContext);
-
-		// get PaymentFee
-//		List<String> messages = getMessagePayment(pattern);
-
 		String paymentNote = StringPool.BLANK;
-
-//		if (messages.size() > 0) {
-//			paymentFee = messages.get(0);
-//		}
 
 		// create paymentFile
 		PaymentFileActions actions = new PaymentFileActionsImpl();
@@ -136,30 +70,11 @@ public class DossierPaymentUtils {
 			// generator epaymentProfile
 			JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
 			
-			PaymentFile paymentFile = actions.createPaymentFile(
-					userId, 
-					groupId, 
-					dossierId, 
-					null, 
-					paymentFee, 
-					advanceAmount, 
-					0, 
-					0, 
-					0, 
-					0, 
-					paymentNote, 
-					StringPool.BLANK, 
-					StringPool.BLANK, 
-					processAction.getRequestPayment(), 
-					StringPool.BLANK, 
-					serviceContext);
+			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null, paymentFee,
+					advanceAmount, 0, 0, 0, 0, paymentNote, StringPool.BLANK, StringPool.BLANK,
+					processAction.getRequestPayment(), StringPool.BLANK, serviceContext);
 
 			
-//			PaymentFile paymentFile = actions.createPaymentFile(userId, groupId, dossierId, null,
-//					dossier.getGovAgencyCode(), dossier.getGovAgencyName(), dossier.getApplicantName(),
-//					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
-//					serviceContext);
-//			
 			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
 			
 			Calendar cal = Calendar.getInstance();

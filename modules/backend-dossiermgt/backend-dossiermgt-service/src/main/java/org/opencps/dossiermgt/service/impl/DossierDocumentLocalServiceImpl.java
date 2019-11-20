@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierDocumentException;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.base.DossierDocumentLocalServiceBaseImpl;
@@ -336,9 +338,9 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 
 		DossierDocument object = null;
 
-		if (objectData.getLong("DossierDocumentId") > 0) {
+		if (objectData.getLong(DossierDocumentTerm.DOSSIER_DOCUMENT_ID) > 0) {
 
-			object = dossierDocumentPersistence.fetchByPrimaryKey(objectData.getLong("DossierDocumentId"));
+			object = dossierDocumentPersistence.fetchByPrimaryKey(objectData.getLong(DossierDocumentTerm.DOSSIER_DOCUMENT_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -353,16 +355,15 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setDossierActionId(objectData.getLong("dossierActionId"));
-		object.setDocumentType(objectData.getString("documentType"));
-		object.setDocumentName(objectData.getString("documentName"));
-		object.setDocumentCode(objectData.getString("documentCode"));
-		// object.setDocumentFileId(objectData.getString("userName")documentFileId);
-		object.setDocSync(objectData.getInt("docSync"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setReferenceUid(objectData.getString(DossierTerm.REFERENCE_UID));
+		object.setDossierActionId(objectData.getLong(DossierTerm.DOSSIER_ACTION_ID));
+		object.setDocumentType(objectData.getString(DossierDocumentTerm.DOCUMENT_TYPE));
+		object.setDocumentName(objectData.getString(DossierDocumentTerm.DOCUMENT_NAME));
+		object.setDocumentCode(objectData.getString(DossierDocumentTerm.DOCUMENT_CODE));
+		object.setDocSync(objectData.getInt(DossierDocumentTerm.DOC_SYNC));
 
 		dossierDocumentPersistence.update(object);
 

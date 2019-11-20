@@ -412,11 +412,6 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 			govAgencyCode, deliverableType, applicant);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> getOccurs() {
-		return _deliverableLocalService.getOccurs();
-	}
-
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -428,58 +423,10 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
-	public java.util.List<String> getParamNames() {
-		return _deliverableLocalService.getParamNames();
-	}
-
-	@Override
-	public java.util.List<Object> getParams() {
-		return _deliverableLocalService.getParams();
-	}
-
-	@Override
-	public java.util.List<Class<?>> getParamTypes() {
-		return _deliverableLocalService.getParamTypes();
-	}
-
-	@Override
-	public String getPattern() {
-		return _deliverableLocalService.getPattern();
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _deliverableLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BooleanQuery getQuery() {
-		return _deliverableLocalService.getQuery();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.SearchContext getSearchContext() {
-		return _deliverableLocalService.getSearchContext();
-	}
-
-	@Override
-	public java.util.List<String> getSubPatterns() {
-		return _deliverableLocalService.getSubPatterns();
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.search.BooleanQuery> getSubQueries() {
-		return _deliverableLocalService.getSubQueries();
-	}
-
-	@Override
-	public void LuceneQuery(String pattern, String paramValues,
-		String paramTypes,
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		_deliverableLocalService.LuceneQuery(pattern, paramValues, paramTypes,
-			searchContext);
 	}
 
 	@Override
@@ -491,54 +438,6 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.searchLucene(params, sorts, start, end,
 			searchContext);
-	}
-
-	@Override
-	public void setOccurs(
-		java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> occurs) {
-		_deliverableLocalService.setOccurs(occurs);
-	}
-
-	@Override
-	public void setParamNames(java.util.List<String> paramNames) {
-		_deliverableLocalService.setParamNames(paramNames);
-	}
-
-	@Override
-	public void setParams(java.util.List<Object> params) {
-		_deliverableLocalService.setParams(params);
-	}
-
-	@Override
-	public void setParamTypes(java.util.List<Class<?>> paramTypes) {
-		_deliverableLocalService.setParamTypes(paramTypes);
-	}
-
-	@Override
-	public void setPattern(String pattern) {
-		_deliverableLocalService.setPattern(pattern);
-	}
-
-	@Override
-	public void setQuery(com.liferay.portal.kernel.search.BooleanQuery query) {
-		_deliverableLocalService.setQuery(query);
-	}
-
-	@Override
-	public void setSearchContext(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		_deliverableLocalService.setSearchContext(searchContext);
-	}
-
-	@Override
-	public void setSubPatterns(java.util.List<String> subPatterns) {
-		_deliverableLocalService.setSubPatterns(subPatterns);
-	}
-
-	@Override
-	public void setSubQueries(
-		java.util.List<com.liferay.portal.kernel.search.BooleanQuery> subQueries) {
-		_deliverableLocalService.setSubQueries(subQueries);
 	}
 
 	/**

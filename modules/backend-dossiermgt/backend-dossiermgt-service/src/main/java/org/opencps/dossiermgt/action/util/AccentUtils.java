@@ -11,7 +11,12 @@ public class AccentUtils {
 
 		String temp = Normalizer.normalize(textConvert, Normalizer.Form.NFD);
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-		return pattern.matcher(temp).replaceAll(StringPool.BLANK).replaceAll("Đ", "D").replaceAll("đ", "d").toLowerCase();
+		return pattern.matcher(temp).replaceAll(StringPool.BLANK)
+				.replaceAll(ReadFilePropertiesUtils.get(ConstantUtils.MARK_UPCASE_D),
+						ReadFilePropertiesUtils.get(ConstantUtils.UPCASE_D))
+				.replaceAll(ReadFilePropertiesUtils.get(ConstantUtils.MARK_LOWERCASE_D),
+						ReadFilePropertiesUtils.get(ConstantUtils.LOWERCASE_D))
+				.toLowerCase();
 	}
 
 }

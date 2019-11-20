@@ -300,9 +300,9 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 
 		ActionConfig object = null;
 
-		if (objectData.getLong("actionConfigId") > 0) {
+		if (objectData.getLong(ActionConfigTerm.ACTION_CONFIG_ID) > 0) {
 
-			object = actionConfigPersistence.fetchByPrimaryKey(objectData.getLong("actionConfigId"));
+			object = actionConfigPersistence.fetchByPrimaryKey(objectData.getLong(ActionConfigTerm.ACTION_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -313,29 +313,29 @@ public class ActionConfigLocalServiceImpl extends ActionConfigLocalServiceBaseIm
 			object = actionConfigPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setActionCode(objectData.getString("actionCode"));
-		object.setActionName(objectData.getString("actionName"));
-		object.setExtraForm(objectData.getBoolean("extraForm"));
-		object.setFormConfig(objectData.getString("formConfig"));
-		object.setSampleData(objectData.getString("sampleData"));
-		object.setInsideProcess(objectData.getBoolean("insideProcess"));
-		object.setUserNote(objectData.getInt("userNote"));
-		object.setSyncType(objectData.getInt("syncType"));
-		object.setEventType(objectData.getInt("eventType"));
-		object.setInfoType(objectData.getInt("infoType"));
-		object.setPending(objectData.getBoolean("pending"));
-		object.setRollbackable(objectData.getBoolean("rollbackable"));
-		object.setNotificationType(objectData.getString("notificationType"));
-		object.setDocumentType(objectData.getString("documentType"));
-		object.setMappingAction(objectData.getString("mappingAction"));
-		object.setDateOption(objectData.getInt("dateOption"));
+		object.setActionCode(objectData.getString(ActionConfigTerm.ACTION_CODE));
+		object.setActionName(objectData.getString(ActionConfigTerm.ACTION_NAME));
+		object.setExtraForm(objectData.getBoolean(ActionConfigTerm.EXTRA_FORM));
+		object.setFormConfig(objectData.getString(ActionConfigTerm.FORM_CONFIG));
+		object.setSampleData(objectData.getString(ActionConfigTerm.SAMPLE_DATA));
+		object.setInsideProcess(objectData.getBoolean(ActionConfigTerm.INSIDE_PROCESS));
+		object.setUserNote(objectData.getInt(ActionConfigTerm.USER_NOTE));
+		object.setSyncType(objectData.getInt(ActionConfigTerm.SYNC_TYPE));
+		object.setEventType(objectData.getInt(ActionConfigTerm.EVENT_TYPE));
+		object.setInfoType(objectData.getInt(ActionConfigTerm.INFO_TYPE));
+		object.setPending(objectData.getBoolean(ActionConfigTerm.PENDING));
+		object.setRollbackable(objectData.getBoolean(ActionConfigTerm.ROLL_BACKABLE));
+		object.setNotificationType(objectData.getString(ActionConfigTerm.NOTIFICATION_TYPE));
+		object.setDocumentType(objectData.getString(ActionConfigTerm.DOCUMENT_TYPE));
+		object.setMappingAction(objectData.getString(ActionConfigTerm.MAPPING_ACTION));
+		object.setDateOption(objectData.getInt(ActionConfigTerm.DATE_OPTION));
 
 		actionConfigPersistence.update(object);
 

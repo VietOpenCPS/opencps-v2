@@ -62,8 +62,12 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.InvalidDossierStatusException;
 import org.opencps.dossiermgt.exception.NoSuchDossierFileException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
@@ -237,7 +241,7 @@ public class DossierFileLocalServiceImpl
 			String formData = AutoFillFormData.sampleDataBinding(
 				dossierPart.getSampleData(), DossierLocalServiceUtil.fetchDossier(dossierId), serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put("LicenceNo", deliverableCode);
+			formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 			formData = formDataObj.toJSONString();
 			object.setFormData(formData);
 		}
@@ -355,11 +359,6 @@ public class DossierFileLocalServiceImpl
 			object.setIsNew(true);
 		}
 
-		// String deliverableCode = PwdGenerator.getPassword(10);
-		//
-		// if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-		// object.setDeliverableCode(deliverableCode);
-		// }
 		String deliverableCode = StringPool.BLANK;
 
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
@@ -375,7 +374,7 @@ public class DossierFileLocalServiceImpl
 		}
 
 		JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-		formDataObj.put("LicenceNo", deliverableCode);
+		formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 		formData = formDataObj.toJSONString();
 		object.setFormData(formData);
 
@@ -515,7 +514,7 @@ public class DossierFileLocalServiceImpl
 			String formData = AutoFillFormData.sampleDataBinding(
 				dossierPart.getSampleData(), DossierLocalServiceUtil.fetchDossier(dossierId), serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put("LicenceNo", deliverableCode);
+			formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 			formData = formDataObj.toJSONString();
 			object.setFormData(formData);
 		}
@@ -719,9 +718,6 @@ public class DossierFileLocalServiceImpl
 		// Add other fields
 
 		dossierFile.setDossierId(dossierId);
-		// if (Validator.isNull(referenceUid)) {
-		// referenceUid = PortalUUIDUtil.generate();
-		// }
 
 		dossierFile.setFileEntryId(fileEntryId);
 		if (Validator.isNull(displayName)) {
@@ -831,14 +827,14 @@ public class DossierFileLocalServiceImpl
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", DossierFile.class.getName());
-		msgData.put("classPK", dossierFile.getDossierFileId());
-		msgData.put("jrxmlTemplate", jrxmlTemplate);
-		msgData.put("formData", formData);
-		msgData.put("userId", serviceContext.getUserId());
+		msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
+		msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
+		msgData.put(ConstantUtils.JRMX_TEMPLATE, jrxmlTemplate);
+		msgData.put(ConstantUtils.FORM_DATA, formData);
+		msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 		_log.debug("SEND TO CREATED FILE MODEL");
 
@@ -907,7 +903,6 @@ public class DossierFileLocalServiceImpl
 	public DossierFile deleteDossierFile(DossierFile dossierFile)
 		throws PortalException {
 
-		// TODO: validate remove delete dossier file
 		validateDeleteDossierFile(dossierFile);
 
 		dossierFile.setModifiedDate(new Date());
@@ -972,7 +967,7 @@ public class DossierFileLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -1081,7 +1076,7 @@ public class DossierFileLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -1193,8 +1188,8 @@ public class DossierFileLocalServiceImpl
 
 		if (dossier != null) {
 			if (Validator.isNotNull(dossier.getDossierStatus()) &&
-				(!"new".equalsIgnoreCase(dossier.getDossierStatus()) ||
-					!"waiting".equalsIgnoreCase(dossier.getDossierStatus()))) {
+				(!ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equalsIgnoreCase(dossier.getDossierStatus()) ||
+					!ReadFilePropertiesUtils.get(ConstantUtils.STATUS_WAITING).equalsIgnoreCase(dossier.getDossierStatus()))) {
 
 				throw new InvalidDossierStatusException();
 			}
@@ -1375,10 +1370,10 @@ public class DossierFileLocalServiceImpl
 
 		DossierFile object = null;
 
-		if (objectData.getLong("dossierFileId") > 0) {
+		if (objectData.getLong(DossierFileTerm.DOSSIER_FILE_ID) > 0) {
 
 			object = dossierFilePersistence.fetchByPrimaryKey(
-				objectData.getLong("dossierFileId"));
+				objectData.getLong(DossierFileTerm.DOSSIER_FILE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -1391,33 +1386,32 @@ public class DossierFileLocalServiceImpl
 			object = dossierFilePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
-		object.setDossierPartNo(objectData.getString("dossierPartNo"));
-		object.setDossierPartType(objectData.getInt("dossierPartType"));
-		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
-		object.setDisplayName(objectData.getString("displayName"));
-		object.setFormData(objectData.getString("formData"));
-		// object.setFileEntryId(objectData.getString("fileEntryId"));
-		object.setOriginal(objectData.getBoolean("original"));
-		object.setEForm(objectData.getBoolean("eForm"));
-		object.setIsNew(objectData.getBoolean("isNew"));
-		object.setRemoved(objectData.getBoolean("removed"));
-		object.setSignCheck(objectData.getInt("signCheck"));
-		object.setSignInfo(objectData.getString("signInfo"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setFormSchema(objectData.getString("formSchema"));
-		object.setDeliverableCode(objectData.getString("deliverableCode"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setReferenceUid(objectData.getString(DossierTerm.REFERENCE_UID));
+		object.setDossierTemplateNo(objectData.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
+		object.setDossierPartNo(objectData.getString(DossierFileTerm.DOSSIER_PART_NO));
+		object.setDossierPartType(objectData.getInt(DossierFileTerm.DOSSIER_PART_TYPE));
+		object.setFileTemplateNo(objectData.getString(DossierFileTerm.FILE_TEMPLATE_NO));
+		object.setDisplayName(objectData.getString(DossierFileTerm.DISPLAY_NAME));
+		object.setFormData(objectData.getString(DossierFileTerm.FORM_DATA));
+		object.setOriginal(objectData.getBoolean(DossierFileTerm.ORIGINAL));
+		object.setEForm(objectData.getBoolean(DossierFileTerm.E_FORM));
+		object.setIsNew(objectData.getBoolean(DossierFileTerm.IS_NEW));
+		object.setRemoved(objectData.getBoolean(DossierFileTerm.REMOVED));
+		object.setSignCheck(objectData.getInt(DossierFileTerm.SIGN_CHECK));
+		object.setSignInfo(objectData.getString(DossierFileTerm.SIGN_INFO));
+		object.setFormScript(objectData.getString(DossierFileTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DossierFileTerm.FORM_REPORT));
+		object.setFormSchema(objectData.getString(DeliverableTerm.FORM_SCHEMA));
+		object.setDeliverableCode(objectData.getString(DeliverableTerm.DELIVERABLE_CODE));
 
 		dossierFilePersistence.update(object);
 

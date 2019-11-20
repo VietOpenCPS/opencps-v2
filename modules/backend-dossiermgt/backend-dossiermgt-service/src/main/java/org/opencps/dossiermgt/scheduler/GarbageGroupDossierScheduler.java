@@ -33,8 +33,7 @@ public class GarbageGroupDossierScheduler extends BaseMessageListener {
 	protected void doReceive(Message message) throws Exception {
 		try {
 			DossierLocalServiceUtil.removeDossierByF_OG_DS(9, StringPool.BLANK);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			_log.error(e);
 		}
 	}

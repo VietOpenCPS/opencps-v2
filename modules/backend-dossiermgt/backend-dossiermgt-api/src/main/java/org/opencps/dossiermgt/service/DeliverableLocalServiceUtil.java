@@ -390,10 +390,6 @@ public class DeliverableLocalServiceUtil {
 			deliverableType, applicant);
 	}
 
-	public static java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> getOccurs() {
-		return getService().getOccurs();
-	}
-
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -403,48 +399,10 @@ public class DeliverableLocalServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
-	public static java.util.List<String> getParamNames() {
-		return getService().getParamNames();
-	}
-
-	public static java.util.List<Object> getParams() {
-		return getService().getParams();
-	}
-
-	public static java.util.List<Class<?>> getParamTypes() {
-		return getService().getParamTypes();
-	}
-
-	public static String getPattern() {
-		return getService().getPattern();
-	}
-
 	public static com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static com.liferay.portal.kernel.search.BooleanQuery getQuery() {
-		return getService().getQuery();
-	}
-
-	public static com.liferay.portal.kernel.search.SearchContext getSearchContext() {
-		return getService().getSearchContext();
-	}
-
-	public static java.util.List<String> getSubPatterns() {
-		return getService().getSubPatterns();
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.search.BooleanQuery> getSubQueries() {
-		return getService().getSubQueries();
-	}
-
-	public static void LuceneQuery(String pattern, String paramValues,
-		String paramTypes,
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		getService().LuceneQuery(pattern, paramValues, paramTypes, searchContext);
 	}
 
 	public static com.liferay.portal.kernel.search.Hits searchLucene(
@@ -455,46 +413,6 @@ public class DeliverableLocalServiceUtil {
 			com.liferay.portal.kernel.search.SearchException {
 		return getService()
 				   .searchLucene(params, sorts, start, end, searchContext);
-	}
-
-	public static void setOccurs(
-		java.util.List<com.liferay.portal.kernel.search.BooleanClauseOccur> occurs) {
-		getService().setOccurs(occurs);
-	}
-
-	public static void setParamNames(java.util.List<String> paramNames) {
-		getService().setParamNames(paramNames);
-	}
-
-	public static void setParams(java.util.List<Object> params) {
-		getService().setParams(params);
-	}
-
-	public static void setParamTypes(java.util.List<Class<?>> paramTypes) {
-		getService().setParamTypes(paramTypes);
-	}
-
-	public static void setPattern(String pattern) {
-		getService().setPattern(pattern);
-	}
-
-	public static void setQuery(
-		com.liferay.portal.kernel.search.BooleanQuery query) {
-		getService().setQuery(query);
-	}
-
-	public static void setSearchContext(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-		getService().setSearchContext(searchContext);
-	}
-
-	public static void setSubPatterns(java.util.List<String> subPatterns) {
-		getService().setSubPatterns(subPatterns);
-	}
-
-	public static void setSubQueries(
-		java.util.List<com.liferay.portal.kernel.search.BooleanQuery> subQueries) {
-		getService().setSubQueries(subQueries);
 	}
 
 	/**

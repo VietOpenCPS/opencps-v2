@@ -1,10 +1,7 @@
 package org.opencps.dossiermgt.scheduler;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -19,7 +16,6 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -30,15 +26,11 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.lgsp.model.MResult;
-import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
-import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -88,7 +80,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 					else {
 						pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
 						PublishQueueLocalServiceUtil.updatePublishQueue(pq);				
-		//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 					}
 				}
 				catch (Exception e) {
@@ -140,68 +131,6 @@ public class PublishEventScheduler extends BaseMessageListener {
 			} catch (JSONException e) {
 				_log.error(e);
 			}			
-		}
-		else if (ServerConfigTerm.LGSP_PROTOCOL.equals(sc.getProtocol())) {
-			try {
-				if (dossier != null && dossier.getOriginality() > 0) {
-					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					Mtoken token = client.getToken();
-					if (Validator.isNotNull(token.getAccessToken())) {
-						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier,
-								dossier.getDossierActionId());
-						MResult result = client.publishDossier(token.getAccessToken(),
-								OpenCPSConverter.convertDossierPublish(
-										DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
-						if (client.isWriteLog()) {
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							messageObj.put("MSyncDocument", JSONFactoryUtil.looseSerialize(OpenCPSConverter
-									.convertDossierToLGSPJSON(OpenCPSConverter.convertDossierPublish(dossierObj))));
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(result);
-							pq.setMessageText(messageText);
-							pq.setAcknowlegement(acknowlegement);
-							pq.setPublishType(1);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						}
-						if (result.getStatus() != 200) {
-							return false;
-						}
-						else {
-							ServiceContext context = new ServiceContext();
-							MResult result2 = client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));	
-							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
-							messageObj.put("token", token.getAccessToken());
-							JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
-							messageObj.put("MDocumentTraces", lgspObj.toJSONString());
-							String messageText = messageObj.toJSONString();
-							String acknowlegement = JSONFactoryUtil.looseSerialize(result2);
-							PublishQueueLocalServiceUtil.updatePublishQueue(
-									sc.getGroupId(), 0l, 2, 0l, 
-									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-									messageText, acknowlegement,
-									context);	
-							
-							if (result2.getStatus() != 200) {
-								return false;
-							}
-							else {
-								return true;
-							}
-						}
-					}
-					else {
-						return false;
-					}
-				}
-				else {
-					return true;
-				}
-			} catch (JSONException e) {
-				_log.error(e);
-			} catch (PortalException e) {
-				_log.error(e);
-			}					
 		}
 		return true;
 	}

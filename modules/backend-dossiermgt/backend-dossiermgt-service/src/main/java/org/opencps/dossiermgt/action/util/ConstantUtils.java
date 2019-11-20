@@ -30,6 +30,18 @@ public class ConstantUtils {
 	public static final String ROLE_NAME = "roleName";
 	public static final String CLASS_NAME = "className";
 	public static final String GENDER = "gender";
+	public static final String JRMX_TEMPLATE = "jrxmlTemplate";
+	public static final String FORM_DATA = "formData";
+	public static final String MSG_ENG = "msgToEngine";
+	public static final String JASPER_DESTINATION = "jasper/engine/out/destination";
+	public static final String FILE_CONSTANTS = "constants";
+	public static final String POST_DOSIER_FILE = "POST /dossierfiles";
+	public static final String POST_DOSSIER = "POST /dossiers\n";
+	public static final String KEY_ACCESS_TOKEN = "access_token";
+	public static final String KEY_SCOPE = "scope";
+	public static final String KEY_TOKEN_TYPE = "token_type";
+	public static final String KEY_EXPIRED_IN = "expires_in";
+	public static final String DOSSIERS_BASE_PATH = "/dossiers";
 	
 	public static final String ORIGINAL_TODO = "2,3";
 
@@ -147,6 +159,7 @@ public class ConstantUtils {
 	public static final String CONTENT_TYPE_PNG = "org.opencps.contenttype.png";
 	public static final String CONTENT_TYPE_PDF = "org.opencps.contenttype.pdf";
 	public static final String CONTENT_TYPE_JSON = "org.opencps.contenttype.json";
+	public static final String CONTENT_TYPE_URL_ENCODE = "org.opencps.contenttype.form.urlencode";
 	public static final String CONTENT_TYPE_IMAGE = "org.opencps.contenttype.image";
 	public static final String TYPE_DISPOSITON = "org.opencps.type.dispositon";
 	public static final String NO_CONTENT = "org.opencps.error.nocontent";
@@ -192,15 +205,28 @@ public class ConstantUtils {
 	public static final String KEY_JSON_ARRAY = "JSONArray";
 	public static final String KEY_JSON_OBJECT = "JSONObject";
 	public static final String FORM_DATA_LOWER = "form_data";
+	public static final String VALUE_PUBLISH = "publish";
+	public static final String VALUE_MARK = "marks";
+	public static final String VALUE_GOTO = "goto";
+	public static final String VALUE_ROLLBACK = "rollback";
+	public static final String UTF_8 = "UTF-8";
+	public static final String VALUE_AUTHORIZATION = "Authorization";
+	public static final String VALUE_BASIC = "Basic ";
+	public static final String VALUE_ACCEPT = "Accept";
+	public static final String CONTENT_LENGTH = "Content-Length";
 	//
-	public static final String codePattern = "\\{(n+|N+)\\}";
+	public static final String codePatternGov = "\\{(a+|A+)\\}";
+	public static final String codePatternDate = "\\{(n+|N+)\\}";
+	public static final String codePatternMonth = "\\{(p+|P+)\\}";
+	public static final String codePatternYear = "\\{(q+|Q+)\\}";
+	public static final String codePatternService = "\\{(r+|R+)\\}";
 	public static final String dayPattern = "\\{(d{2}|D{2})\\}";
 	public static final String monthPattern = "\\{(m{2}|M{2})\\}";
 	public static final String yearPattern = "\\{(y+|Y+)\\}";
 	public static final String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+	public static final String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
+	public static final String extractValuePattern = "\\[\\$(.*?)\\$\\]";
 	public static final String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
-	public static final String MSG_OK = "OK";
-	public static final String FORMAT_NUMBER = "%07d";
 
 	
 	public static final String CAPTCHA = "org.opencps.access.captcha";
@@ -218,6 +244,16 @@ public class ConstantUtils {
 	public static final String STATUS_CANCELLING = "org.opencps.status.cancelling";
 	public static final String STATUS_CORRECTING = "org.opencps.status.correcting";
 	public static final String STATUS_SUBMITTING = "org.opencps.status.submitting";
+	public static final String STATUS_INTEROPERATING = "org.opencps.status.interoperating";
+	public static final String STATUS_RECEIVING = "org.opencps.status.receiving";
+	public static final String STATUS_WAITING = "org.opencps.status.waiting";
+	public static final String STATUS_PROCESSING = "org.opencps.status.processing";
+	public static final String STATUS_PAUSING = "org.opencps.status.pausing";
+	public static final String STATUS_POSTING = "org.opencps.status.posting";
+	public static final String STATUS_RELEASING = "org.opencps.status.releasing";
+	public static final String STATUS_DENIED = "org.opencps.status.denied";
+	public static final String STATUS_UNRESOLVED = "org.opencps.status.unresolved";
+	public static final String STATUS_CANCELLED = "org.opencps.status.cancelled";
 	
 	/** ROLE TEXT */
 	public static final String ROLE_ADMIN = "org.opencps.role.admin";
@@ -253,4 +289,13 @@ public class ConstantUtils {
 	public static final String CHAR_D = "org.opencps.value.character.d";
 	public static final String CHAR_E = "org.opencps.value.character.e";
 	public static final String CHAR_F = "org.opencps.value.character.f";
+	public static final String MARK_UPCASE_D = "org.opencps.value.text.markupcase.d";
+	public static final String UPCASE_D = "org.opencps.value.text.upcase.d";
+	public static final String MARK_LOWERCASE_D = "org.opencps.value.text.marklowercase.d";
+	public static final String LOWERCASE_D = "org.opencps.value.text.lowercase.d";
+	public static final String TIME_UNDUE = "org.opencps.value.text.con";
+	public static final String TIME_OVER = "org.opencps.value.text.qua";
+	public static final String TIME_DAY = "org.opencps.value.text.day";
+	public static final String CONSTANT_ICREMENT = "org.opencps.value.patern.dossierno";
+	public static final String DEFAULT_PROXY_URL = "org.opencps.value.default.url.proxy";
 }

@@ -4,26 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
-
 public class DossierSyncUtils {
-
-	public static ArrayList<DossierSyncOrderedModel> convertToModel(JSONArray array) {
-		ArrayList<DossierSyncOrderedModel> dossierSyncModels = new ArrayList<DossierSyncOrderedModel>();
-
-		for (int i = 0; i < array.length(); i++) {
-			JSONObject jsElm = array.getJSONObject(i);
-
-			DossierSyncOrderedModel dsm = new DossierSyncOrderedModel(jsElm.getLong("dossierSyncId"),
-					jsElm.getLong("dossierId"), jsElm.getInt("method"));
-			
-			dossierSyncModels.add(dsm);
-		}
-		
-		return dossierSyncModels;
-	}
 
 	public static void orderSync(ArrayList<DossierSyncOrderedModel> origin) {
 

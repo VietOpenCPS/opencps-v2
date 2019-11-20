@@ -24,6 +24,11 @@ public class DossierActionTerm {
 	public static final String STEP_INSTRUCTION = "stepInstruction";
 	public static final String AUTO = "auto";
 	public static final String DOSSIER_DOCUMENT_ID = "dossierDocumentId";
+	public static final String JOB_POS_NAME = "jobPosName";
+	public static final String FILES = "files";
+	public static final String STATE = "state";
+	public static final String FROM_STEP_CODE = "fromStepCode";
+	public static final String FROM_STEP_NAME = "fromStepName";
 	
 	public static final int STATE_WAITING_PROCESSING = 0;
 	public static final int STATE_ALREADY_PROCESSED = 1;

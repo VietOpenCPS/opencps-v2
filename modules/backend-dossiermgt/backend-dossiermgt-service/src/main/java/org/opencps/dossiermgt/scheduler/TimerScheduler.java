@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -71,12 +72,10 @@ public class TimerScheduler extends BaseMessageListener {
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
 			isRunning = true;
-		}
-		else {
+		} else {
 			return;
 		}
 		_log.info("Invoke Timer****");
-		// get all actions that has preCondition is "timer"
 
 		// Get all dossier
 		List<Dossier> allDossierTimer;
@@ -85,13 +84,15 @@ public class TimerScheduler extends BaseMessageListener {
 		cal.setTime(now);
 		cal.add(Calendar.DATE, -2);
 		Date twoDayAgo = cal.getTime();
-		
+
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		// This is TEMPORARY code for auto = timer, it need to optimize later
-//		allDossierTimer = DossierLocalServiceUtil.getDossiers(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		allDossierTimer = DossierLocalServiceUtil.findByNOT_ST_GT_MD(new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, twoDayAgo, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		
+		allDossierTimer = DossierLocalServiceUtil.findByNOT_ST_GT_MD(
+				new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED,
+						DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED },
+				twoDayAgo, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
 		DossierActions dossierActions = new DossierActionsImpl();
 
 		User systemUser = UserLocalServiceUtil.getUserByEmailAddress(company.getCompanyId(),
@@ -103,16 +104,17 @@ public class TimerScheduler extends BaseMessageListener {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-		//Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable", Sort.STRING_TYPE, false) };
+		// Sort[] sorts = new Sort[] { SortFactoryUtil.create("_sortable",
+		// Sort.STRING_TYPE, false) };
 
 		for (Dossier dossier : allDossierTimer) {
 			params.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossier.getDossierId()));
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
-			params.put(DossierActionTerm.AUTO, "timmer");
+			params.put(DossierActionTerm.AUTO, DossierTerm.KEY_TIMMER);
 
 			ErrorMsgModel errorModel = new ErrorMsgModel();
-			
+
 			if (Validator.isNotNull(dossier.getDossierStatus())) {
 
 				long dossierActionId = dossier.getDossierActionId();
@@ -123,13 +125,13 @@ public class TimerScheduler extends BaseMessageListener {
 
 				String stepCode = dossierAction != null ? dossierAction.getStepCode() : StringPool.BLANK;
 
-				//boolean pending = dossierAction != null ? dossierAction.getPending() : false;
+				// boolean pending = dossierAction != null ? dossierAction.getPending() : false;
 
 				List<ProcessAction> lstProcessAction;
 
 				lstProcessAction = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(dossier.getGroupId(),
 						serviceProcessId, stepCode);
-				//TODO : test case auto event
+				// TODO : test case auto event
 				DossierRequestUD dRegUD = DossierRequestUDLocalServiceUtil
 						.getDossierRequestByDossierId(dossier.getDossierId());
 
@@ -137,8 +139,8 @@ public class TimerScheduler extends BaseMessageListener {
 				if (dRegUD != null && dRegUD.getStatusReg() == 3) {
 					for (ProcessAction processAction : lstProcessAction) {
 
-						if (processAction.getAutoEvent().contains("timmer")) {
-							
+						if (processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER)) {
+
 							String perConditionStr = processAction.getPreCondition();
 
 							boolean checkPreCondition = DossierMgtUtils
@@ -151,50 +153,36 @@ public class TimerScheduler extends BaseMessageListener {
 
 							// String subUsers = StringPool.BLANK;
 							if (checkPreCondition) {
-								
-								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
+
+								_log.info("$$$$$dossierId_" + dossier.getDossierId() + "autoEvent_"
+										+ processAction.getAutoEvent());
 
 								flag = true;
-								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
+								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(),
+										processAction.getActionCode());
 //								_log.info("Action config: " + actConfig);
 								String serviceCode = dossier.getServiceCode();
 								String govAgencyCode = dossier.getGovAgencyCode();
 								String dossierTempNo = dossier.getDossierTemplateNo();
 								ProcessOption option = null;
-								
+
 								if (actConfig != null) {
-									ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(dossier.getGroupId(), 
-											serviceCode, govAgencyCode);
+									ServiceConfig config = ServiceConfigLocalServiceUtil
+											.getBySICodeAndGAC(dossier.getGroupId(), serviceCode, govAgencyCode);
 									if (config != null) {
-										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(dossier.getGroupId(), 
-												dossierTempNo,
-												config.getServiceConfigId());
+										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
+												dossier.getGroupId(), dossierTempNo, config.getServiceConfigId());
 									}
-									
-									dossierActions.doAction(
-										dossier.getGroupId(), 
-										systemUser.getUserId(), 
-										dossier, 
-										option, 
-										processAction,
-										processAction.getActionCode(), 
-										userActionName, 
-										StringPool.BLANK, 
-										StringPool.BLANK, 
-										StringPool.BLANK, 
-										StringPool.BLANK,
-										actConfig.getSyncType(),
-										serviceContext, errorModel);
-								
-//								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-//										dossier.getReferenceUid(), processAction.getActionCode(),
-//										processAction.getProcessActionId(), userActionName, StringPool.BLANK,
-//										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-//										serviceContext);
+
+									dossierActions.doAction(dossier.getGroupId(), systemUser.getUserId(), dossier,
+											option, processAction, processAction.getActionCode(), userActionName,
+											StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+											actConfig.getSyncType(), serviceContext, errorModel);
+
 								}
 							}
 						}
-						
+
 						if (flag) {
 							break;
 						}
@@ -202,8 +190,8 @@ public class TimerScheduler extends BaseMessageListener {
 				} else {
 					for (ProcessAction processAction : lstProcessAction) {
 
-						if (processAction.getAutoEvent().contains("timmer")) {
-							
+						if (processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER)) {
+
 							String perConditionStr = processAction.getPreCondition();
 
 							boolean checkPreCondition = DossierMgtUtils
@@ -215,50 +203,32 @@ public class TimerScheduler extends BaseMessageListener {
 									dossier.getDossierId(), systemUser.getFullName());
 
 							// String subUsers = StringPool.BLANK;
-							if (checkPreCondition && perConditionStr.contains("payok")) {
-								
-								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
-
+							if (checkPreCondition && perConditionStr.contains(DossierTerm.PAY_OK)) {
 								flag = true;
 
-								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
+								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(),
+										processAction.getActionCode());
 //								_log.info("Action config: " + actConfig);
 								String serviceCode = dossier.getServiceCode();
 								String govAgencyCode = dossier.getGovAgencyCode();
 								String dossierTempNo = dossier.getDossierTemplateNo();
 								ProcessOption option = null;
-								
+
 								if (actConfig != null) {
-									ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(dossier.getGroupId(), 
-											serviceCode, govAgencyCode);
+									ServiceConfig config = ServiceConfigLocalServiceUtil
+											.getBySICodeAndGAC(dossier.getGroupId(), serviceCode, govAgencyCode);
 									if (config != null) {
-										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(dossier.getGroupId(), 
-												dossierTempNo,
-												config.getServiceConfigId());
+										option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
+												dossier.getGroupId(), dossierTempNo, config.getServiceConfigId());
 									}
-									dossierActions.doAction(
-											dossier.getGroupId(), 
-											systemUser.getUserId(), 
-											dossier, 
-											option, 
-											processAction,
-											processAction.getActionCode(), 
-											userActionName, 
-											StringPool.BLANK, 
-											StringPool.BLANK, 
-											StringPool.BLANK, 
-											StringPool.BLANK,
-											actConfig.getSyncType(),
-											serviceContext, errorModel);
+									dossierActions.doAction(dossier.getGroupId(), systemUser.getUserId(), dossier,
+											option, processAction, processAction.getActionCode(), userActionName,
+											StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+											actConfig.getSyncType(), serviceContext, errorModel);
 								}
-//								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-//										dossier.getReferenceUid(), processAction.getActionCode(),
-//										processAction.getProcessActionId(), userActionName, processAction.getActionName(),
-//										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-//										serviceContext);
 							}
 						}
-						
+
 						if (flag) {
 							break;
 						}
@@ -283,9 +253,7 @@ public class TimerScheduler extends BaseMessageListener {
 				userActionName = UserLocalServiceUtil.getUser(userId).getFullName();
 			} catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 				_log.info("DEFAULT_NAME");
-
 				userActionName = defaultName;
 			}
 		}

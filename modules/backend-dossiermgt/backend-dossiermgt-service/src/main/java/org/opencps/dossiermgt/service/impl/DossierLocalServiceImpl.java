@@ -1138,15 +1138,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		long dossierId = counterLocalService.increment(Dossier.class.getName());
 
-		long userId = context.getUserId();
-
 		// create referentUid
 
 		String referenceUid = PortalUUIDUtil.generate();
 
 		// create counterId
 
-		int counter = DossierNumberGenerator.counterDossier(userId, groupId);
+		int counter = 1;
 
 		Dossier dossier = dossierLocalService.createDossier(dossierId);
 		
@@ -4795,7 +4793,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		long desDossierId = counterLocalService.increment(Dossier.class.getName());
 		Dossier desDossier = dossierPersistence.create(desDossierId);
 		
-		int counter = DossierNumberGenerator.counterDossier(srcDossier.getUserId(), desDossierId);
+		int counter = 1;
 		String referenceUid = DossierNumberGenerator.generateReferenceUID(desDossier.getGroupId());
 
 		desDossier.setCounter(counter);

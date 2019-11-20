@@ -4969,37 +4969,6 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
-	public Response generateDossierNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String serviceCode, String govAgencyCode, String templateNo) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		ServiceProcess serviceProcess = null;
-		ProcessOption option;
-		try {
-			option = getProcessOption(serviceCode, govAgencyCode, templateNo, groupId);
-			_log.debug("Process option: " + option);
-			if (option != null) {
-				long serviceProcessId = option.getServiceProcessId();
-				serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
-
-				String dossierRef = DossierNumberGenerator.generateDossierNumber(groupId, serviceProcess.getDossierNoPattern(), serviceCode, govAgencyCode, templateNo, serviceProcess.getProcessNo());
-				_log.debug("Dossier no: " + dossierRef);
-				JSONObject result = JSONFactoryUtil.createJSONObject();
-				result.put(DossierTerm.DOSSIER_NO, dossierRef.trim());
-				
-				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
-			}
-			else {
-				throw new Exception("Do not have service");
-			}
-		} catch (PortalException e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-		catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
-
-	@Override
 	public Response getDelegacyUsers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, String id, ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));

@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.DeliverableLog;
 import org.opencps.dossiermgt.service.base.DeliverableLogLocalServiceBaseImpl;
 
@@ -72,10 +73,10 @@ public class DeliverableLogLocalServiceImpl
 
 		DeliverableLog object = null;
 
-		if (objectData.getLong("deliverableLogId") > 0) {
+		if (objectData.getLong(DeliverableTerm.DELIVERABLE_LOG_ID) > 0) {
 
 			object = deliverableLogPersistence.fetchByPrimaryKey(
-				objectData.getLong("deliverableLogId"));
+				objectData.getLong(DeliverableTerm.DELIVERABLE_LOG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -88,22 +89,13 @@ public class DeliverableLogLocalServiceImpl
 			object = deliverableLogPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
-
-		object.setDeliverableId(objectData.getInt("deliverableId"));
-		object.setDossierUid(objectData.getString("dossierUid"));
-		object.setAuthor(objectData.getString("author"));
-		object.setContent(objectData.getString("content"));
-		object.setDeliverableAction(objectData.getInt("deliverableAction"));
-		object.setActionDate(new Date(objectData.getLong("actionDate")));
-		object.setPayload(objectData.getString("payload"));
-		object.setFileEntryId(objectData.getLong("fileEntryId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
 		deliverableLogPersistence.update(object);
 

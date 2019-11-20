@@ -6,7 +6,6 @@ import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.DossierSync;
 
 public class MessageProcessor {
-//	private static Log _log = LogFactoryUtil.getLog(MessageProcessor.class);
 	private static volatile IMessageProcessor _processor;
 	
 	public static IMessageProcessor getProcessor(DossierSync ds) {

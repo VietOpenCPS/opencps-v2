@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
 
@@ -166,7 +168,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateFormScript(long groupId, long deliverableTypeId, String formScript,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormScript of DeliverableType
 
 		Date now = new Date();
 
@@ -180,7 +181,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateFormReport(long groupId, long deliverableTypeId, String formReport,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormReport of DeliverableType
 
 		Date now = new Date();
 
@@ -194,7 +194,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormReport of DeliverableType
 
 		Date now = new Date();
 
@@ -207,10 +206,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId) throws PortalException {
-		// TODO remove DeliverableType
-
-		// validateRemoveDeliverableType(groupId, deliverableTypeId,
-		// deliverableType_);
 
 		DeliverableType deliverableTypeObj = null;
 
@@ -306,7 +301,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -330,9 +324,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		DeliverableType object = null;
 
-		if (objectData.getLong("deliverableTypeId") > 0) {
+		if (objectData.getLong(DeliverableTypesTerm.DOSSIER_LOG_ID) > 0) {
 
-			object = deliverableTypePersistence.fetchByPrimaryKey(objectData.getLong("deliverableTypeId"));
+			object = deliverableTypePersistence.fetchByPrimaryKey(objectData.getLong(DeliverableTypesTerm.DOSSIER_LOG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -343,23 +337,23 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 			object = deliverableTypePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setTypeCode(objectData.getString("typeCode"));
-		object.setTypeName(objectData.getString("typeName"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setCodePattern(objectData.getString("codePattern"));
-		object.setCounter(objectData.getInt("counter"));
-		object.setMappingData(objectData.getString("mappingData"));
-		object.setDocSync(objectData.getInt("docSync"));
-		object.setGovAgencies(objectData.getString("govAgencies"));
+		object.setTypeCode(objectData.getString(DeliverableTypesTerm.TYPE_CODE));
+		object.setTypeName(objectData.getString(DeliverableTypesTerm.TYPE_NAME));
+		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		object.setCodePattern(objectData.getString(DeliverableTypesTerm.CODEPATTERN));
+		object.setCounter(objectData.getInt(DeliverableTypesTerm.COUNTER));
+		object.setMappingData(objectData.getString(DeliverableTypesTerm.MAPPING_DATA));
+		object.setDocSync(objectData.getInt(DeliverableTypesTerm.DOC_SYNC));
+		object.setGovAgencies(objectData.getString(DeliverableTypesTerm.GOV_AGENCIES));
 
 		deliverableTypePersistence.update(object);
 

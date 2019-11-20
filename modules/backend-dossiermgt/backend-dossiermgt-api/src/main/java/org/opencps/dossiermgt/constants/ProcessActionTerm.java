@@ -61,6 +61,8 @@ public class ProcessActionTerm {
 	public static final String PAYMENT = "payment";
 	public static final String createDossiers = "createDossiers";
 	public static final String STR_PROCESS_ACTION = "processAction";
+	public static final String ASSIGN_USERS = "assignUsers";
+	public static final String KEY_ACTIONS = "actions";
 	
 	public static final String LIST_USER = "lstUser";
 	public static final String CREATE_FILES = "createFiles";

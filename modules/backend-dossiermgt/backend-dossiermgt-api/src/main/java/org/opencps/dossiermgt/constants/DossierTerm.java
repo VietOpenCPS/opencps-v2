@@ -275,4 +275,26 @@ public class DossierTerm {
 	public static final String KEY_DOSSIER_SUB_STATUS = "dossierSubStatus";
 	public static final String KEY_DOSSIER_LEVEL = "level";
 	public static final String KEY_DOSSIER_STATUS_NAME = "statusName";
+	public static final String KEY_TIMMER = "timmer";
+	public static final String STATUS_TEXT = "statusText";
+	public static final String START_DATE = "startDate";
+	public static final String OVERDUE_TEXT = "overdueText";
+	public static final String PAY_OK = "payok";
+	public static final String PAY_NOT_OK = "paynotok";
+	public static final String ONLINE_TRUE = "online=true";
+	public static final String ONLINE_FALSE = "online=false";
+	public static final String CONTAIN_SERVICE = "service=";
+	public static final String CONTAIN_NOT_SERVICE_CODE = "notservicecode=";
+	public static final String CONTAIN_AGENCY = "agency=";
+	public static final String CONTAIN_NOT_AGENCY_CODE = "notagencycode=";
+	public static final String CONTAIN_TEMPLATE = "template=";
+	public static final String CONTAIN_ORIGINAL = "originality=";
+	public static final String CONTAIN_STEP_DONE = "stepdone=";
+	public static final String CONTAIN_STEP_NOT_DONE = "stepnotdone=";
+	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
+	public static final String CONTAIN_ROLE_DONE = "roledone=";
+	public static final String CONTAIN_ROLE_CODE = "rolecode=";
+	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
+	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
+	
 }

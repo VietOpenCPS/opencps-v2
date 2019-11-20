@@ -46,9 +46,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
@@ -150,17 +153,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
-
-//			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
-//
-//			try {
-//				indexer.reindex(dossier);
-//			} catch (SearchException e) {
-//				_log.debug(e);
-//			}
-
-		} else {
-
 		}
 
 		return dossierActionPersistence.update(object);
@@ -227,17 +219,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
-
-//			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
-//
-//			try {
-//				indexer.reindex(dossier);
-//			} catch (SearchException e) {
-//				_log.debug(e);
-//			}
-
-		} else {
-
 		}
 
 		object = dossierActionPersistence.update(object);
@@ -341,7 +322,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -399,12 +380,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		// String secetKey = GetterUtil.getString(params.get("secetKey"));
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -508,9 +488,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		DossierAction object = null;
 
-		if (objectData.getLong("dossierActionId") > 0) {
+		if (objectData.getLong(DossierActionTerm.DOSSIERACTION_ID) > 0) {
 
-			object = dossierActionPersistence.fetchByPrimaryKey(objectData.getLong("dossierActionId"));
+			object = dossierActionPersistence.fetchByPrimaryKey(objectData.getLong(DossierActionTerm.DOSSIERACTION_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -521,37 +501,34 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			object = dossierActionPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setPreviousActionId(objectData.getLong("previousActionId"));
-		object.setFromStepCode(objectData.getString("fromStepCode"));
-		object.setFromStepName(objectData.getString("fromStepName"));
-		object.setFromSequenceNo(objectData.getString("fromSequenceNo"));
-		object.setActionCode(objectData.getString("actionCode"));
-		object.setActionUser(objectData.getString("actionUser"));
-		object.setActionName(objectData.getString("actionName"));
-		object.setActionNote(objectData.getString("actionNote"));
-		object.setActionOverdue(objectData.getInt("actionOverdue"));
-		object.setSyncActionCode(objectData.getString("syncActionCode"));
-		object.setPending(objectData.getBoolean("pending"));
-		object.setRollbackable(objectData.getBoolean("rollbackable"));
-		object.setStepCode(objectData.getString("stepCode"));
-		object.setStepName(objectData.getString("stepName"));
-		object.setSequenceNo(objectData.getString("sequenceNo"));
-		object.setDueDate(new Date(objectData.getLong("dueDate")));
-		object.setNextActionId(objectData.getLong("nextActionId"));
-		object.setPayload(objectData.getString("payload"));
-		object.setStepInstruction(objectData.getString("stepInstruction"));
-		object.setState(objectData.getInt("state"));
-		object.setEventStatus(objectData.getInt("eventStatus"));
+		object.setDossierId(objectData.getLong(DossierActionTerm.DOSSIER_ID));
+		object.setServiceProcessId(objectData.getLong(DossierActionTerm.SERVICE_PROCESS_ID));
+		object.setPreviousActionId(objectData.getLong(DossierActionTerm.PREVIOUS_ACTION_ID));
+		object.setFromStepCode(objectData.getString(DossierActionTerm.FROM_STEP_CODE));
+		object.setFromStepName(objectData.getString(DossierActionTerm.FROM_STEP_NAME));
+		object.setActionCode(objectData.getString(DossierActionTerm.ACTION_CODE));
+		object.setActionUser(objectData.getString(DossierActionTerm.ACTION_USER));
+		object.setActionName(objectData.getString(DossierActionTerm.ACTION_NAME));
+		object.setActionNote(objectData.getString(DossierActionTerm.ACTION_NOTE));
+		object.setActionOverdue(objectData.getInt(DossierActionTerm.ACTION_OVER_DUE));
+		object.setSyncActionCode(objectData.getString(DossierActionTerm.SYNC_ACTION_CODE));
+		object.setPending(objectData.getBoolean(DossierActionTerm.PENDING));
+		object.setRollbackable(objectData.getBoolean(DossierActionTerm.ROLLBACK_ABLE));
+		object.setStepCode(objectData.getString(DossierActionTerm.STEP_CODE));
+		object.setStepName(objectData.getString(DossierActionTerm.STEP_NAME));
+		object.setDueDate(new Date(objectData.getLong(DossierActionTerm.DUE_DATE)));
+		object.setNextActionId(objectData.getLong(DossierActionTerm.NEXT_ACTION_ID));
+		object.setPayload(objectData.getString(DossierActionTerm.PAYLOAD));
+		object.setStepInstruction(objectData.getString(DossierActionTerm.STEP_INSTRUCTION));
+		object.setState(objectData.getInt(DossierActionTerm.STATE));
 
 		dossierActionPersistence.update(object);
 
@@ -651,16 +628,6 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			dossier.setDossierActionId(dossierActionId);
 			dossierPersistence.update(dossier);
 
-//			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
-//
-//			try {
-//				indexer.reindex(dossier);
-//			} catch (SearchException e) {
-//				_log.debug(e);
-//			}
-
-		} else {
-
 		}
 
 		object = dossierActionPersistence.update(object);
@@ -722,5 +689,4 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }

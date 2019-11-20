@@ -25,4 +25,7 @@ public class DossierFileTerm {
 	public static final String COUNTER = "counter";
 	public static final String FILE_TYPE = "fileType";
 	public static final String IS_SYNC = "isSync";
+	public static final String FILE_NAME = "fileName";
+	public static final String URL_EFROM_PATH = "eforms";
+	public static final String KEY_FILE = "file";
 }
