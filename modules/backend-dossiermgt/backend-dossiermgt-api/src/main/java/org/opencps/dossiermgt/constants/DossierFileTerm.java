@@ -28,4 +28,5 @@ public class DossierFileTerm {
 	public static final String FILE_NAME = "fileName";
 	public static final String URL_EFROM_PATH = "eforms";
 	public static final String KEY_FILE = "file";
+	public static final String FILE_ATTACH = "fileAttach";
 }

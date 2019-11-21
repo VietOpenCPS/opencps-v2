@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.graphql.api.controller.utils.WebKeys;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +45,8 @@ public class GetDynamicReports implements DataFetcher<List<DynamicReport>> {
 			groupId = Long.valueOf(request.getHeader(WebKeys.GROUPID));
 		}
 
-		if (Validator.isNotNull(request.getHeader("reportType"))) {
-			reportType = request.getHeader("reportType");
+		if (Validator.isNotNull(request.getHeader(DossierTerm.REPORT_TYPE))) {
+			reportType = request.getHeader(DossierTerm.REPORT_TYPE);
 		}
 		
 		List<DynamicReport> results = DynamicReportLocalServiceUtil.getByGroupType(groupId, reportType, start, end);

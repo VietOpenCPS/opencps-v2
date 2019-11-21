@@ -7,14 +7,10 @@ import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionList;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -25,6 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.AuthException;
@@ -62,25 +59,21 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.QueryParam;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
-import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
-import org.graphql.api.controller.utils.GraphQLUtils;
+import org.graphql.api.controller.utils.CheckFileUtils;
 import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
-import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.dossiermgt.action.DeliverableTypesActions;
-import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -89,12 +82,8 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
-import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -134,7 +123,7 @@ public class RestfulController {
 
 			User user = UserLocalServiceUtil.getUser(id);
 
-			boolean locked = bodyData.getBoolean("locked");
+			boolean locked = bodyData.getBoolean(ConstantUtils.LOCKED);
 
 			if (locked) {
 				user.setStatus(WorkflowConstants.STATUS_INACTIVE);
@@ -163,7 +152,7 @@ public class RestfulController {
 
 			JSONObject bodyData = JSONFactoryUtil.createJSONObject(body);
 
-			String password = bodyData.getString("password");
+			String password = bodyData.getString(DossierTerm.SECRET);
 
 			User user = UserLocalServiceUtil.updatePassword(id, password, password, Boolean.FALSE);
 
@@ -184,7 +173,7 @@ public class RestfulController {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		result.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
-		result.put("screenName", StringPool.BLANK);
+		result.put(ConstantUtils.VALUE_SCREEN_NAME, StringPool.BLANK);
 		result.put(ConstantUtils.DEACTIVE_ACCOUNT, 0);
 
 		try {
@@ -192,7 +181,7 @@ public class RestfulController {
 			User user = UserLocalServiceUtil.fetchUser(id);
 
 			result.put(ConstantUtils.VALUE_EMAIL, user.getEmailAddress());
-			result.put("screenName", user.getScreenName());
+			result.put(ConstantUtils.VALUE_SCREEN_NAME, user.getScreenName());
 			result.put(ConstantUtils.DEACTIVE_ACCOUNT, user.getStatus());
 
 		} catch (Exception e) {
@@ -259,7 +248,7 @@ public class RestfulController {
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
 		long checkUserId = -1;
 		String emailAddress = StringPool.BLANK;
-		
+
 		try {
 
 			Enumeration<String> headerNames = request.getHeaderNames();
@@ -281,131 +270,107 @@ public class RestfulController {
 			String userpassEncoded = strBasic.substring(6);
 			String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
 
-			String account[] = decodetoken.split(":");
+			String account[] = decodetoken.split(StringPool.COLON);
 
 			String email = account[0];
 			String password = account[1];
 			emailAddress = email;
-			
+
 			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 					CompanyConstants.AUTH_TYPE_EA);
-			if (userId > 0 && userId != 20103) {
+			if (userId > 0) {
 				checkUserId = userId;
-//				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
-//						CompanyConstants.AUTH_TYPE_EA);
-				//Remember me false
+				// Remember me false
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
 
 				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-				
+
 				User user = UserLocalServiceUtil.fetchUser(userId);
-//				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-//				
-//				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
-//				String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
-//				ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
-//				UserTrackerLocalServiceUtil.addUserTracker(
-//						user.getCompanyId(), 
-//						userId, 
-//						new Date(), 
-//						sessionId, 
-//						request.getRemoteAddr(), 
-//						request.getRemoteHost(), 
-//						userAgent, 
-//						userTrackerPath);
 				if (Validator.isNotNull(employee)) {
 
-					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
-						return "pending";
+					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING
+							&& employee.getWorkingStatus() == 0) {
+						return DossierActionTerm.PENDING;
 					} else {
-						return "/c";
+						return ConstantUtils.HOME_URL;
 					}
-				} else {
-					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-						return "pending";
-					} else {
-						return "ok";
-					}
-
 				}
 			}
 
-		} 
-		catch (AuthException ae) {
+		} catch (AuthException ae) {
 			System.out.println("AUTH EXCEPTION: " + checkUserId);
 			_log.debug(ae);
 			if (checkUserId != -1) {
 				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
-				
+
 				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String jCaptchaResponse = request.getParameter("j_captcha_response");
+					String jCaptchaResponse = request
+							.getParameter(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA_RESPONSE));
 					String captchaId = request.getSession().getId();
 					try {
 						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
 						if (!isResponseCorrect)
-							return "captcha";
+							return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
 					} catch (CaptchaServiceException e) {
 						_log.debug(e);
-						return "captcha";
+						return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
 					}
+				} else {
+					return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
 				}
-				else {
-					return "captcha";
-				}
-			}
-			else {
+			} else {
 				try {
-					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+					Company company = CompanyLocalServiceUtil
+							.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
-					
+
 					if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
 						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-						String jCaptchaResponse = request.getParameter("j_captcha_response");
+						String jCaptchaResponse = request
+								.getParameter(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA_RESPONSE));
 						String captchaId = request.getSession().getId();
-				        try {
-				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-				        			jCaptchaResponse);
-				        	if (!isResponseCorrect) 
-				        		return "captcha";
-				        } catch (CaptchaServiceException e) {
-				        	_log.debug(e);
-				        	return "captcha";
-				        }				
-					}		
+						try {
+							boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+							if (!isResponseCorrect)
+								return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
+						} catch (CaptchaServiceException e) {
+							_log.debug(e);
+							return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
+						}
+					}
 				} catch (PortalException e) {
 					_log.debug(e);
-				}				
+				}
 			}
-		}
-		catch (PortalException pe) {
+		} catch (PortalException pe) {
 			System.out.println("PORTAL EXCEPTION: " + emailAddress);
 			_log.debug(pe);
 			try {
-				Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+				Company company = CompanyLocalServiceUtil
+						.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 				User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
-				
+
 				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String jCaptchaResponse = request.getParameter("j_captcha_response");
+					String jCaptchaResponse = request
+							.getParameter(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA_RESPONSE));
 					String captchaId = request.getSession().getId();
-			        try {
-			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-			        			jCaptchaResponse);
-			        	if (!isResponseCorrect) 
-			        		return "captcha";
-			        } catch (CaptchaServiceException e) {
-			        	_log.debug(e);
-			        	return "captcha";
-			        }				
-				}		
+					try {
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						if (!isResponseCorrect)
+							return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						return ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA);
+					}
+				}
 			} catch (PortalException e) {
 				_log.debug(e);
 			}
-			
-		}		
-		catch (Exception e) {
+
+		} catch (Exception e) {
 			System.out.println("EXCEPTION");
 			_log.debug(e);
 		}
@@ -434,20 +399,35 @@ public class RestfulController {
 
 			try {
 
-//				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
-				
-//				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId()
-//						+ StringPool.FORWARD_SLASH + HtmlUtil.escape(file.getTitle()) + StringPool.FORWARD_SLASH + file.getUuid();
-				result = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+
+				result = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
+						(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 			} catch (PortalException e) {
-				// TODO Auto-generated catch block
 				_log.debug(e);
 			}
 
 		}
 
 		return result;
+	}
+
+	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "File Attachment incorrect format")
+	public class ResourceNotFoundException extends RuntimeException {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	@ResponseStatus(value = HttpStatus.OK, reason = "Success")
+	public class SucessException extends RuntimeException {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 	}
 
 	@RequestMapping(value = "/users/upload/{code}/{className}/{pk}", method = RequestMethod.POST)
@@ -464,6 +444,14 @@ public class RestfulController {
 			multipartFile = (CommonsMultipartFile) request.getFile(key);
 		}
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(multipartFile);
+
+		if (!flagCheck) {
+//			return Response.status(403)
+//					.entity("File Attachment incorrect format!").build();
+			throw new ResourceNotFoundException();
+		}
+
 		long userId = 0;
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
@@ -473,8 +461,8 @@ public class RestfulController {
 			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 		long companyId = CompanyThreadLocal.getCompanyId();
-		String desc = "FileAttach file upload";
-		String destination = "FileAttach/";
+		String desc = ReadFilePropertiesUtils.get(ConstantUtils.FILE_ATTACH_DESC);
+		String destination = ReadFilePropertiesUtils.get(ConstantUtils.FILE_ATTACH_DESTINATION);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setUserId(userId);
@@ -483,13 +471,14 @@ public class RestfulController {
 
 		try {
 			if (multipartFile != null) {
-				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId,
+						multipartFile.getInputStream(),
+						UUID.randomUUID() + StringPool.UNDERLINE + multipartFile.getOriginalFilename(),
 						multipartFile.getOriginalFilename()
-								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+								.substring(multipartFile.getOriginalFilename().lastIndexOf(StringPool.PERIOD) + 1),
 						multipartFile.getSize(), destination, desc, serviceContext);
 
-				if ("opencps_adminconfig".equals(code)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_ADMINCONFIG).equals(code)) {
 
 					ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(Long.valueOf(pk),
 							fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
@@ -503,37 +492,41 @@ public class RestfulController {
 							user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
 							StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
 
-					if ("opencps_employee".equals(code)) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_EMPLOYEE).equals(code)) {
 						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
 						employee.setPhotoFileEntryId(fileAttach.getFileEntryId());
 						EmployeeLocalServiceUtil.updateEmployee(employee);
-					} else if ("opencps_deliverabletype".equals(code)) {
+					} else if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_DELIVERABLE_TYPE).equals(code)) {
 
 						DeliverableType openCPSDeliverableType = DeliverableTypeLocalServiceUtil
 								.fetchDeliverableType(Long.valueOf(pk));
 
-						if (className.endsWith("FORM")) {
+						if (className.endsWith(ConstantUtils.FORM_UPCASE)) {
 							openCPSDeliverableType.setFormScriptFileId(fileAttach.getFileEntryId());
-						} else if (className.endsWith("JASPER")) {
+						} else if (className.endsWith(ConstantUtils.JASPER_UPCASE)) {
 							openCPSDeliverableType.setFormReportFileId(fileAttach.getFileEntryId());
 						}
 
 						DeliverableTypeLocalServiceUtil.updateDeliverableType(openCPSDeliverableType);
 
-					} else if ("opencps_applicant".equals(code)) {
+					} else if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_APPLICANT).equals(code)) {
 
 						System.out.println("RestfulController.uploadAttachment()" + Long.valueOf(pk));
 						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(Long.valueOf(pk));
 						System.out.println("RestfulController.uploadAttachment(className)" + className);
-						File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-								true);
-						if ("org.opencps.usermgt.model.ApplicantEsign".equals(className)) {
-							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG);
+						File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
+								fileEntry.getVersion(), true);
+						if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_APPLICANT_ESIGN).equals(className)) {
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH
+									+ ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail()
+									+ StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG);
 							File targetFile = new File(buildFileName);
 							employee.setFileSignId(fileAttach.getFileEntryId());
 							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						} else {
-							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail() + StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_CER);
+							String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH
+									+ ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATH_CER) + employee.getEmail()
+									+ StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_CER);
 							File targetFile = new File(buildFileName);
 							employee.setFileCertId(fileAttach.getFileEntryId());
 							Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -541,17 +534,16 @@ public class RestfulController {
 
 						EmployeeLocalServiceUtil.updateEmployee(employee);
 
-					} else if ("opencps_deliverable".equals(code)) {
+					} else if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_DELIVERABLE).equals(code)) {
 
-						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
-								.fetchDeliverable(Long.valueOf(pk));
+						Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(Long.valueOf(pk));
 
 						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 						//
 						String formData = openCPSDeliverable.getFormData();
 						if (Validator.isNotNull(formData)) {
 							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-							jsonData.put("fileAttach", true);
+							jsonData.put(DossierFileTerm.FILE_ATTACH, true);
 							openCPSDeliverable.setFormData(jsonData.toJSONString());
 						}
 
@@ -582,6 +574,14 @@ public class RestfulController {
 			multipartFile = (CommonsMultipartFile) request.getFile(key);
 		}
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(multipartFile);
+
+		if (!flagCheck) {
+//			return Response.status(403)
+//					.entity("File Attachment incorrect format!").build();
+			throw new ResourceNotFoundException();
+		}
+
 		long userId = 0;
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
@@ -591,8 +591,8 @@ public class RestfulController {
 			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
 		long companyId = CompanyThreadLocal.getCompanyId();
-		String desc = "FileAttach file upload";
-		String destination = "FileAttach/";
+		String desc = ReadFilePropertiesUtils.get(ConstantUtils.FILE_ATTACH_DESC);
+		String destination = ReadFilePropertiesUtils.get(ConstantUtils.FILE_ATTACH_DESTINATION);
 
 		ServiceContext serviceContext = new ServiceContext();
 		serviceContext.setUserId(userId);
@@ -601,26 +601,28 @@ public class RestfulController {
 
 		try {
 			if (multipartFile != null) {
-				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId,
+						multipartFile.getInputStream(),
+						UUID.randomUUID() + StringPool.UNDERLINE + multipartFile.getOriginalFilename(),
 						multipartFile.getOriginalFilename()
-								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
+								.substring(multipartFile.getOriginalFilename().lastIndexOf(StringPool.PERIOD) + 1),
 						multipartFile.getSize(), destination, desc, serviceContext);
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
-				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className, serviceInfoId+ "_"+fileTemplateNo,
-						user.getFullName(), user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK,
-						StringPool.BLANK, 0, fileEntry.getFileName(), serviceContext);
+				FileAttach fileAttach = FileAttachLocalServiceUtil.addFileAttach(userId, groupId, className,
+						serviceInfoId + StringPool.UNDERLINE + fileTemplateNo, user.getFullName(),
+						user.getEmailAddress(), fileEntry.getFileEntryId(), StringPool.BLANK, StringPool.BLANK, 0,
+						fileEntry.getFileName(), serviceContext);
 
-				if ("opencps_services_filetemplates".equals(code)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_FILE_TEMPLATE).equals(code)) {
 
 					ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
 							.fetchByF_serviceInfoId_fileTemplateNo(Long.valueOf(serviceInfoId), fileTemplateNo);
 
-					if (className.endsWith("FORM")) {
+					if (className.endsWith(ConstantUtils.FORM_UPCASE)) {
 						fileTemplate.setFormScriptFileId(fileAttach.getFileEntryId());
-					} else if (className.endsWith("JASPER")) {
+					} else if (className.endsWith(ConstantUtils.JASPER_UPCASE)) {
 						fileTemplate.setFormReportFileId(fileAttach.getFileEntryId());
 					}
 
@@ -631,46 +633,6 @@ public class RestfulController {
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-
-	}
-
-	@RequestMapping(value = "/filetemplate/{pk}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	public String getServiceFileTemplate(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("pk") long pk) {
-
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		JSONArray resultArray = JSONFactoryUtil.createJSONArray();
-
-		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(pk);
-
-		result.put(ConstantUtils.TOTAL, serviceFileTemplates.size());
-
-		JSONObject object = null;
-		for (ServiceFileTemplate serviceFileTemplate : serviceFileTemplates) {
-
-			try {
-
-				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(serviceFileTemplate));
-
-				long fileEntryId = serviceFileTemplate.getFileEntryId();
-
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-
-				object.put("extension", fileEntry.getExtension());
-				object.put("size", fileEntry.getSize());
-
-				resultArray.put(object);
-
-			} catch (Exception e) {
-				_log.debug(e);
-			}
-
-		}
-		result.put(ConstantUtils.DATA, resultArray);
-
-		return result.toJSONString();
 
 	}
 
@@ -700,20 +662,13 @@ public class RestfulController {
 
 				String newName = ett.getFileName();
 
-				if (newName.indexOf("_") > 0) {
+				if (newName.indexOf(StringPool.UNDERLINE) > 0) {
 
-					ett.setFileName(newName.substring(newName.indexOf("_") + 1));
+					ett.setFileName(newName.substring(newName.indexOf(StringPool.UNDERLINE) + 1));
 
 				}
 
 				object = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(ett));
-
-				long fileEntryId = ett.getFileEntryId();
-
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-
-				object.put("extension", fileEntry.getExtension());
-				object.put("size", fileEntry.getSize());
 
 				resultArray.put(object);
 
@@ -750,9 +705,8 @@ public class RestfulController {
 
 		}
 
-		if ("opencps_deliverable".equals(code)) {
-			Deliverable openCPSDeliverable = DeliverableLocalServiceUtil
-					.fetchDeliverable(Long.valueOf(pk));
+		if (ReadFilePropertiesUtils.get(ConstantUtils.CLASS_DELIVERABLE).equals(code)) {
+			Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(Long.valueOf(pk));
 
 			openCPSDeliverable.setFileEntryId(0);
 
@@ -761,32 +715,6 @@ public class RestfulController {
 
 		return result.toJSONString();
 
-	}
-
-	@RequestMapping(value = "/users/upload/download/{code}/{className}/{pk}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody byte[] downloadFileAttach(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("className") String className, @PathVariable("pk") String pk,
-			@PathVariable("code") String code) {
-
-		try {
-
-			FileAttach fileAttach = FileAttachLocalServiceUtil.fetchFileAttach(Long.valueOf(pk));
-
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
-
-			response.setContentType("application/force-download");
-			response.setHeader(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-					"attachment; filename=" + fileEntry.getFileName() + fileEntry.getExtension());
-
-			InputStream inputStream = fileEntry.getContentStream();
-
-			return IOUtils.toByteArray(inputStream);
-
-		} catch (Exception exception) {
-			_log.debug(exception);
-		}
-		return null;
 	}
 
 	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.DELETE)
@@ -807,34 +735,6 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
-	}
-
-	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody byte[] downloadServiceFileTemplate(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("serviceInfoId") long serviceInfoId, @PathVariable("fileTemplateNo") String fileTemplateNo) {
-
-		ServiceFileTemplate serviceFileTemplate = ServiceFileTemplateLocalServiceUtil
-				.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, fileTemplateNo);
-
-		if (Validator.isNotNull(serviceFileTemplate)) {
-			try {
-
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(serviceFileTemplate.getFileEntryId());
-
-				response.setContentType("application/force-download");
-				response.setHeader(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-						"attachment; filename=" + serviceFileTemplate.getTemplateName() + fileEntry.getExtension());
-
-				InputStream inputStream = fileEntry.getContentStream();
-
-				return IOUtils.toByteArray(inputStream);
-
-			} catch (Exception exception) {
-				_log.debug(exception);
-			}
-		}
-		return null;
 	}
 
 	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -871,129 +771,6 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/upload/", method = RequestMethod.POST)
-	public String uploadFile(MultipartHttpServletRequest request) {
-		//CommonsMultipartFile multipartFile = null; // multipart file class depends on which class you use assuming you
-													// are using
-													// org.springframework.web.multipart.commons.CommonsMultipartFile
-
-		//Iterator<String> iterator = request.getFileNames();
-
-		//while (iterator.hasNext()) {
-			//String key = (String) iterator.next();
-			// create multipartFile array if you upload multiple files
-			//multipartFile = (CommonsMultipartFile) request.getFile(key);
-		//}
-
-		//try {
-			//System.out.println("LiferayRestController.uploadFile()" + multipartFile.getInputStream());
-		//} catch (IOException e) {
-		//	_log.debug(e);
-		//}
-
-		return "sdfds";
-	}
-
-	@RequestMapping(value = "/jexcel/{bundleName}/{modelName}/{serviceName}/{idCol}/{textCol}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	public String getJExcelAutoComplate(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("bundleName") String bundleName, @PathVariable("modelName") String modelName,
-			@PathVariable("serviceName") String serviceName, @PathVariable("idCol") String idCol,
-			@PathVariable("textCol") String textCol) {
-
-		JSONArray result = JSONFactoryUtil.createJSONArray();
-
-		try {
-
-			BundleLoader bundleLoader = new BundleLoader(bundleName);
-
-			Class<?> model = bundleLoader.getClassLoader().loadClass(modelName);
-
-			Method method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery");
-
-			DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
-
-			ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
-
-			projectionList.add(ProjectionFactoryUtil.property(idCol));
-			projectionList.add(ProjectionFactoryUtil.property(textCol));
-
-			dynamicQuery.setProjection(projectionList);
-
-			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-			disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
-			if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
-				disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, Long.valueOf(request.getHeader(Field.GROUP_ID))));
-			}
-			dynamicQuery.add(disjunction);
-
-			if (Validator.isNotNull(request.getParameter("pk")) && Validator.isNotNull(request.getParameter("col"))) {
-				dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("col"))
-						.eq(Validator.isNumber(request.getParameter("pk")) ? Long.valueOf(request.getParameter("pk"))
-								: request.getParameter("pk")));
-			}
-			if (Validator.isNotNull(request.getParameter("collectionCode"))
-					&& Validator.isNotNull(request.getParameter("column"))
-					&& Validator.isNotNull(request.getParameter("type"))) {
-
-				if ("int".equals(request.getParameter("type"))) {
-					DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(
-							request.getParameter("collectionCode"), Long.valueOf(request.getHeader(Field.GROUP_ID)));
-
-					if (Validator.isNotNull(dictCollection)) {
-						dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
-								.eq(dictCollection.getDictCollectionId()));
-					}
-				} else {
-					dynamicQuery.add(PropertyFactoryUtil.forName(request.getParameter("column"))
-							.eq(request.getParameter("collectionCode")));
-				}
-			}
-
-			method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery", DynamicQuery.class,
-					int.class, int.class);
-
-			List<Object[]> list = (List<Object[]>) method.invoke(model, dynamicQuery, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			//_log.info("List object: "+JSONFactoryUtil.looseSerialize(list));
-			JSONObject object = null;
-			for (Object[] objects : list) {
-
-				object = JSONFactoryUtil.createJSONObject();
-
-				//_log.info("objects[0]: "+objects[0]);
-				object.put("id", objects[0]);
-
-				if (modelName.equals(EmployeeJobPos.class.getName())) {
-
-					long jobPostId = (long) objects[1];
-
-					JobPos jobPos = JobPosLocalServiceUtil.fetchJobPos(jobPostId);
-
-					String name = Validator.isNotNull(jobPos) ? jobPos.getTitle() : StringPool.BLANK;
-
-					object.put("name", name);
-					//_log.debug("name: "+name);
-
-				} else {
-					object.put("name", objects[1]);
-					//_log.debug("name: "+objects[1]);
-				}
-
-				result.put(object);
-
-				//_log.info("result: "+JSONFactoryUtil.looseSerialize(result));
-			}
-
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result.toJSONString();
-
-	}
-
 	@RequestMapping(value = "/users/{id}", produces = { "application/json",
 			"application/xml" }, method = RequestMethod.GET)
 	public ResponseEntity<UsersUserItem> getUserById(
@@ -1026,8 +803,7 @@ public class RestfulController {
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") Long id) {
 
 		String result = StringPool.BLANK;
-		response.setContentType("text/plain");
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding(StringPool.UTF8);
 
 		InputStream is = null;
 
@@ -1056,146 +832,12 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
-			@QueryParam("keyword") String keyword,
-			@QueryParam("formDataKey") String formDataKey) {
-
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		try {
-
-			long userId = 0;
-			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-
-				long groupId = 0;
-
-				if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
-					groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
-				}
-
-				try {
-					String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-							DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
-							DeliverableTerm.DELIVERABLE_CODE_SEARCH };
-					String queryBuilder = StringPool.BLANK;
-					String queryBuilderLike = StringPool.BLANK;
-					StringBuilder sbBuilder = new StringBuilder();
-					if (Validator.isNotNull(keyword)) {
-						//LamTV_Process search LIKE
-						String keySearch = SpecialCharacterUtils.splitSpecial(keyword);
-						sbBuilder.append(" AND (");
-						int length = subQuerieArr.length;
-						for (int i = 0; i < length; i++) {
-							sbBuilder.append(subQuerieArr[i] + ": *" + keySearch + "*");
-							if (i < length - 1) {
-								sbBuilder.append(" OR ");
-							} else {
-								sbBuilder.append(" ) ");
-							}
-						}
-					} else {
-						DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
-
-						DeliverableType deliverableType = actions.getByTypeCode(userId, groupId, type,
-								new ServiceContext());
-
-						JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
-
-						for (int i = 0; i < filterData.length(); i++) {
-
-							if (Validator
-									.isNotNull(request.getParameter(filterData.getJSONObject(i).getString("fieldName")))) {
-
-								if ("like".equals(filterData.getJSONObject(i).getString("compare"))) {
-
-									queryBuilderLike += " AND " + filterData.getJSONObject(i).getString("fieldName") + ": *"
-											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"))
-											+ "*";
-
-								} else {
-
-									queryBuilder += " AND " + filterData.getJSONObject(i).getString("fieldName") + ":"
-											+ request.getParameter(filterData.getJSONObject(i).getString("fieldName"));
-
-								}
-
-							}
-
-						}
-					}
-					
-					String queryDataFrom = GraphQLUtils.buildDeliverableSearchDataForm(formDataKey);
-
-					System.out.println("queryBuilderLike:" + queryBuilderLike);
-					System.out.println("queryBuilder:" + queryBuilder);
-					int size = 0;
-					if (Validator.isNull(end) || end == 0) {
-						start = -1;
-						//end = -1;
-						size = -1;
-					} else {
-						size = end - start;
-					}
-
-					JSONObject query = JSONFactoryUtil.createJSONObject(" { \"from\" : " + start
-							+ ", \"size\" : " + size
-							+ ", \"sort\" : [{\"issueDate_Number_sortable\" : { \"order\" : \"desc\"}}]"
-							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
-							+ "}");
-
-					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
-							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
-							+ "}");
-
-					System.out.println("query:" + query);
-					JSONObject count = ElasticQueryWrapUtil.count(countQuery.toJSONString());
-
-					System.out.println("RestfulController.getDeliverable(count)" + count.toJSONString());
-
-					result = ElasticQueryWrapUtil.query(query.toJSONString());
-
-					result.getJSONObject("hits").put(ConstantUtils.TOTAL, count.getLong("count"));
-
-				} catch (JSONException e) {
-					_log.debug(e);
-				}
-
-			}
-
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result.toJSONString();
-	}
-
 	@RequestMapping(value = "/deliverable/{id}/detail", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverableById(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("id") Long id) {
 
-		//JSONObject result = JSONFactoryUtil.createJSONObject();
-
 		try {
-			//long userId = 0;
-			//if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-
-				//long groupId = 0;
-				//if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
-				//}
-
-				//JSONObject query = JSONFactoryUtil.createJSONObject(
-				//		" { \"from\" : 0, \"size\" : 1, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.deliverable.model.OpenCPSDeliverable) AND groupId:"
-				//				+ groupId + " AND entryClassPK: " + id + " )\" }}}");
-				//result = ElasticQueryWrapUtil.query(query.toJSONString());
-
 			Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverable(id);
 			if (deliverable != null) {
 				return JSONFactoryUtil.looseSerialize(deliverable);
@@ -1208,136 +850,67 @@ public class RestfulController {
 		return StringPool.BLANK;
 	}
 
-	@RequestMapping(value = "/deliverable/file/{id}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	public String getFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long id) {
-
-		String result = StringPool.BLANK;
-
-		DLFileEntry fileEntry;
-		try {
-
-			fileEntry = DLFileEntryLocalServiceUtil.getFileEntry(id);
-
-			result = "/documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId()
-					+ StringPool.FORWARD_SLASH + fileEntry.getTitle() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
-
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result;
-	}
-
-	@RequestMapping(value = "/admin/{bundleName}/{modelName}/{serviceName}/data", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	public String getAdminToolData(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("bundleName") String bundleName, @PathVariable("modelName") String modelName,
-			@PathVariable("serviceName") String serviceName) {
-
-		// JSONArray result = JSONFactoryUtil.createJSONArray();
-		String result = JSONFactoryUtil.createJSONArray().toJSONString();
-		try {
-
-			BundleLoader bundleLoader = new BundleLoader(bundleName);
-
-			System.out.println("RestfulController.getAdminToolData(bundleLoader)" + bundleLoader.getClassLoader());
-			Class<?> model = bundleLoader.getClassLoader().loadClass(modelName);
-
-			System.out.println("RestfulController.getAdminToolData(model)" + model);
-
-			System.out.println("RestfulController.getAdminToolData(serviceName)" + serviceName);
-			Method method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery");
-			System.out.println("RestfulController.getAdminToolData(method)" + method);
-
-			DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
-
-			Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
-			disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
-			if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
-				disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, Long.valueOf(request.getHeader(Field.GROUP_ID))));
-			}
-			dynamicQuery.add(disjunction);
-
-			method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery", DynamicQuery.class,
-					int.class, int.class);
-
-			result = JSONFactoryUtil.looseSerialize(method.invoke(model, dynamicQuery, QueryUtil.ALL_POS, QueryUtil.ALL_POS)).toString();
-
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-
-		return result;
-
-	}
-	
 	@RequestMapping(value = "/site/name", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getSiteName(HttpServletRequest request, HttpServletResponse response) {
 
 		String result = StringPool.BLANK;
-		
+
 		long groupId = 0;
 
 		if (Validator.isNotNull(request.getHeader(Field.GROUP_ID))) {
 			groupId = Long.valueOf(request.getHeader(Field.GROUP_ID));
 		}
-		
+
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 
 		if (Validator.isNotNull(group)) {
-			
+
 			result = group.getGroupKey();
-			
+
 		}
-		
+
 		return result.toUpperCase();
 
 	}
-	
+
 	@RequestMapping(value = "/users/login/jcaptcha", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Resource> getJCaptcha(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-			
-		    String captchaId = request.getSession().getId();
-			File destDir = new File("jcaptcha");
+
+			String captchaId = request.getSession().getId();
+			File destDir = new File(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA));
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("jcaptcha/" + captchaId  + ".png");
+			File file = new File(ReadFilePropertiesUtils.get(ConstantUtils.CAPTCHA) + StringPool.SLASH + captchaId
+					+ StringPool.PERIOD + ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG));
 			if (!file.exists()) {
-				file.createNewFile();				
+				file.createNewFile();
 			}
-	
+
 			if (file.exists()) {
-			    BufferedImage challengeImage = instance.getImageChallengeForID(
-			    captchaId, Locale.US );
-			    try {
-					ImageIO.write( challengeImage, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file );
-				    
+				BufferedImage challengeImage = instance.getImageChallengeForID(captchaId, Locale.US);
+				try {
+					ImageIO.write(challengeImage, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file);
+
 				} catch (IOException e) {
 					_log.debug(e);
 				}
 			}
-		
-			Path path = Paths.get(file.getAbsolutePath());
-		    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
-		    return ResponseEntity.ok()
-		            .headers(new HttpHeaders())
-		            .contentLength(file.length())
-		            .contentType(MediaType.parseMediaType("application/octet-stream"))
-		            .body(resource);
-		}
-		catch (Exception e) {
+			Path path = Paths.get(file.getAbsolutePath());
+			ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+			return ResponseEntity.ok().headers(new HttpHeaders()).contentLength(file.length()).body(resource);
+		} catch (Exception e) {
 			_log.debug(e);
 			return null;
 		}
-		
-	}	
+
+	}
 
 	public static final Log _log = LogFactoryUtil.getLog(RestfulController.class);
 }

@@ -23,6 +23,11 @@ public class FileUploadUtils {
 			ServiceContext serviceContext) throws Exception {
 		FileEntry fileEntry = null;
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(inputStream, fileName);
+		if (!flagCheck) {
+			return null;
+		}
+
 		if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
 
 			serviceContext.setAddGroupPermissions(true);
@@ -57,6 +62,11 @@ public class FileUploadUtils {
 			InputStream inputStream, String fileName, String fileType, long fileSize, String destination, String desc,
 			ServiceContext serviceContext) throws Exception {
 		FileEntry fileEntry = null;
+
+		boolean flagCheck = CheckFileUtils.checkFileUpload(inputStream, fileName);
+		if (!flagCheck) {
+			return null;
+		}
 
 		if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
 

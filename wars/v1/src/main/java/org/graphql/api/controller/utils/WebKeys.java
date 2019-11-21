@@ -3,7 +3,7 @@ package org.graphql.api.controller.utils;
 public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 
 	public static final String FK = "fk";
-	public static final String GROUPID = Field.GROUP_ID;
+	public static final String GROUPID = "groupId";
 	public static final String START = "start";
 	public static final String END = "end";
 	public static final String BODY = "body";
@@ -16,5 +16,8 @@ public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 	public final static String AUTHORIZATION = "Authorization";
 	
 	public final static String REPORTCODE = "reportCode";
+	public static final String DYNAMIC_REPORT_ID= "dynamicReportId";
+	public static final String USER_CONFIG = "userConfig";
+	public static final String COLLECTION_CODE = "collectionCode";
 	
 }

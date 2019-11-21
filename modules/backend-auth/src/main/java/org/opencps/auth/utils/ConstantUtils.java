@@ -1,137 +1,9 @@
-package org.opencps.dossiermgt.action.util;
+package org.opencps.auth.utils;
 
 public class ConstantUtils {
 
 	/** CONSTANT UTILS */
-	public static final String SEARCH_KEYWORD = "keywords";
-	public static final String TREE_INDEX = "treeIndex_sortable";
-	public static final String TOTAL = "total";
-	public static final String DATA = "data";
-	public static final String CONTENT_TYPE = "Content-Type";
-	public static final String DEACTIVE_ACCOUNT = "deactiveAccountFlag";
-	public static final String VALUE_EMAIL = "email";
-	public static final String VALUE_SCREEN_NAME = "screenName";
-	public static final String HOME_URL = "/c";
-	public static final String VALUE_EXITS = "exist";
-	public static final String VALUE_ROLE = "role";
-	public static final String VALUE_PERCENTAGE = "percentage";
-	public static final String VALUE_EXE_LOG = "executionLog";
-	public static final String VALUE_WRITE = "write";
-	public static final String VALUE_TOTAL_COUNT = "totalCount";
-	public static final String VALUE_MENU_GROUP = "menuGroup";
-	public static final String VALUE_KEY = "key";
-	public static final String VALUE_TITLE = "title";
-	public static final String VALUE_COUNT = "count";
-	public static final String VALUE_LOW_USER_ID = "user_id";
-	public static final String FILE_ENTRY_ID = "fileEntryId";
-	public static final String VERSION = "version";
-	public static final String SITE_NAME = "siteName";
-	public static final String SITE_GROUP_ID = "siteGroupId";
-	public static final String CURRENT_SITE = "currentSite";
-	public static final String ROLE_NAME = "roleName";
-	public static final String CLASS_NAME = "className";
-	public static final String GENDER = "gender";
-	public static final String JRMX_TEMPLATE = "jrxmlTemplate";
-	public static final String FORM_DATA = "formData";
-	public static final String MSG_ENG = "msgToEngine";
-	public static final String JASPER_DESTINATION = "jasper/engine/out/destination";
-	public static final String FILE_CONSTANTS = "constants";
-	public static final String POST_DOSIER_FILE = "POST /dossierfiles";
-	public static final String POST_DOSSIER = "POST /dossiers\n";
-	public static final String KEY_ACCESS_TOKEN = "access_token";
-	public static final String KEY_SCOPE = "scope";
-	public static final String KEY_TOKEN_TYPE = "token_type";
-	public static final String KEY_EXPIRED_IN = "expires_in";
-	public static final String DOSSIERS_BASE_PATH = "/dossiers";
-	public static final String LOCK_ALL = "LOCK ALL";
-	public static final String ITEM_LEVEL = "itemLv";
-	public static final String VALUE_URL = "url";
-	public static final String LOCKED = "locked";
-	public static final String VALUE_CODE = "code";
-	public static final String FORM_UPCASE = "FORM";
-	public static final String JASPER_UPCASE = "JASPER";
-	
-	public static final String ORIGINAL_TODO = "2,3";
-
-	//Destination import file
-	public static final String DEST_DIRECTORY = "imported";
-	public static final String SOURCE_DICTS = "/dicts";
-	public static final String SOURCE_FILES = "/files";
-	public static final String SOURCE_REPORTS = "/reports";
-	public static final String SOURCE_FORMS = "/forms";
-	public static final String SOURCE_FILE_REPORTS = "/fileReports";
-	public static final String SOURCE_FILE_FORMS = "/fileForms";
-	public static final String SOURCE_SERVICES = "/services";
-	public static final String SOURCE_TEMPLATES = "/templates";
-	public static final String SOURCE_PROCESSES = "/processes";
-	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
-	//
-	public static final String PREFIX_ACTIONCONFIG = "ACTION_";
-	//Declare file xml
-	public static final String XML_ACTION_CONFIG = "ActionConfig.xml";
-	public static final String XML_STEP_CONFIG = "StepConfig.xml";
-	public static final String XML_MENU_CONFIG = "MenuConfig.xml";
-	public static final String XML_DOCUMENT_TYPE = "DocumentType.xml";
-	public static final String XML_DELIVERABLE_TYPE = "DeliverableType.xml";
-	public static final String XML_PAYMENT_CONFIG = "PaymentConfig.xml";
-	public static final String XML_SERVER_CONFIG = "ServerConfig.xml";
-	public static final String XML_NOTIFICATION_TEMPLATE = "NotificationTemplate.xml";
-	public static final String XML_USERS = "Users.xml";
-	public static final String XML_DYNAMIC_REPORT = "DynamicReport.xml";
-	public static final String XML_HOLIDAY = "Holiday.xml";
-	public static final String XML_APPLICANT = "Applicant.xml";
-	public static final String XML_WORKING_TIME = "WorkingTime.xml";
 	// Element XML of ActionConfig
-	public static final String ACTIONCONFIG_LIST = "ActionConfigList";
-	public static final String ACTIONCONFIG = "ActionConfig";
-	public static final String ACTION_CODE = "actionCode";
-	public static final String ACTION_NAME = "actionName";
-	public static final String EXTRA_FORM = "extraForm";
-	public static final String SAMPLE_DATA = "sampleData";
-	public static final String INSIDE_PROCESS = "insideProcess";
-	public static final String SYNC_TYPE = "syncType";
-	public static final String PENDDING = "pending";
-	public static final String ROLL_BACKABLE = "rollbackable";
-	public static final String NOTIFICATION_TYPE = "notificationType";
-	public static final String DOCUMENT_TYPEAAA = "documentType";
-	//
-	public static final String OVER_DUE = "overdue";
-	public static final String DELAY = "deplay";
-	public static final String COMMNG = "coming";
-	public static final String _NORMAL_DATE_TIME = "dd-MM-yyyy HH:mm:ss";
-	public static final String NUMBER_SORTABLE = "_Number_sortable";
-	public static final String STRING_SORTABLE = "_String_sortable";
-
-	//Constant export
-	public static final String EXPORT_DICT_COLLECTION = "dictCollection";
-	public static final String EXPORT_SERVICE_INFO = "serviceInfo";
-	public static final String EXPORT_APPLICANT = "applicant";
-	public static final String EXPORT_CITIZEN = "citizen";
-	public static final String EXPORT_BUSINESS = "business";
-	public static final String EXPORT_ACTION_CONFIG = "actionConfig";
-	public static final String EXPORT_STEP_CONFIG = "stepConfig";
-	public static final String EXPORT_MENU_CONFIG = "menuConfig";
-	public static final String DEST_DIRECTORY_EXPORT = "exported";
-	public static final String CERT_ID = "certId";
-	public static final String PATTERN = "pattern";
-	public static final String YEAR = "year";
-	public static final String INIT_NUBER = "initNumber";
-	//
-	public static final String HTML_NEW_LINE = "<br/>";
-	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
-	public static final int DEFAULT_FONT_SIZE = 16;
-	//
-	public static final String BAR_CODE = "barcode";
-	public static final String MONO_SPACED = "Monospaced";
-	public static final String HTTP_REQUEST = "HTTP.REQUEST";
-	public static final String KEY = "key";
-	public static final String VALUE = "value";
-	//public static final String ADMIN_STRATOR = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN);
-	//public static final String SORT_ABLE = "_sortable";
-	public static final String MAIL_AD = "email";
-	public static final String TOKEN = "Token";
-	public static final String BEARER = "Bearer ";
-	
 	public static final String CAPTCHA_RESPONSE = "org.opencps.value.jcaptcha.response";
 	public static final String FILE_ATTACH_DESC = "org.opencps.value.fileattach.desc";
 	public static final String FILE_ATTACH_DESTINATION = "org.opencps.value.fileattach.destination";
@@ -142,8 +14,6 @@ public class ConstantUtils {
 	public static final String CLASS_APPLICANT_ESIGN = "org.opencps.value.class.applicantesign";
 	public static final String CLASS_DELIVERABLE = "org.opencps.value.class.deliverable";
 	public static final String CLASS_FILE_TEMPLATE = "org.opencps.value.class.filetemplates";
-	
-	
 	
 	/** TOKEN VNPOST */
 	public static final String TOKEN_URL = "org.opencps.token.url";

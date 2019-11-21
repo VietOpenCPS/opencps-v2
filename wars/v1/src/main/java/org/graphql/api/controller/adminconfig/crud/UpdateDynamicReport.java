@@ -57,10 +57,10 @@ public class UpdateDynamicReport implements DataFetcher<DynamicReport> {
 			inputObject.put(WebKeys.USERID, request.getAttribute(WebKeys.USER_ID));
 			inputObject.put(WebKeys.COMPANYID, request.getAttribute(WebKeys.COMPANY_ID));
 			
-			long dynamicReportId = inputObject.getLong("dynamicReportId");
+			long dynamicReportId = inputObject.getLong(WebKeys.DYNAMIC_REPORT_ID);
 			
 			DynamicReport dynamicReport = DynamicReportLocalServiceUtil.fetchDynamicReport(dynamicReportId);
-			dynamicReport.setUserConfig(inputObject.getString("userConfig"));
+			dynamicReport.setUserConfig(inputObject.getString(WebKeys.USER_CONFIG));
 
 			System.out.println("UpdateDynamicReport.get()" + dynamicReport);
 			
