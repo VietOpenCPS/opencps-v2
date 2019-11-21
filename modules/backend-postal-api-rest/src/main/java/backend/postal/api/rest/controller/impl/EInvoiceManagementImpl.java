@@ -44,6 +44,8 @@ import org.opencps.api.einvoice.model.HoadonT;
 import org.opencps.api.einvoice.model.LstHoadonCtT;
 import org.opencps.api.invoice.model.InvoiceInputModel;
 import org.opencps.api.invoice.model.InvoiceServerConfigModel;
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.w3c.dom.Node;
@@ -54,6 +56,9 @@ import backend.postal.api.rest.controller.EInvoiceManagement;
 public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 	private static final Log _log = LogFactoryUtil.getLog(EInvoiceManagementImpl.class);
+
+	private static final String SOAPACTION_KEY = "SOAPACTION";
+	private static final String PROXY_CONNECTION_KEY = "Proxy-Connection";
 
 	public InvoiceServerConfigModel fromJSONObject(JSONObject configObj) {
 		//_log.info("configObj =============== " + JSONFactoryUtil.looseSerialize(configObj));
@@ -182,9 +187,9 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 			soapheader.detachNode();
 
 			MimeHeaders mimeHeader = message.getMimeHeaders();
-			mimeHeader.setHeader("SOAPACTION", VnPostTerm.MIME_HEADER_SOAPACTION);
+			mimeHeader.setHeader(SOAPACTION_KEY, VnPostTerm.MIME_HEADER_SOAPACTION);
 			mimeHeader.setHeader(HttpHeaders.CONTENT_TYPE, VnPostTerm.MIME_HEADER_CONTENT_TYPE);
-			mimeHeader.setHeader("Proxy-Connection", VnPostTerm.MIME_HEADER_PROXY_CONNECTION);
+			mimeHeader.setHeader(PROXY_CONNECTION_KEY, VnPostTerm.MIME_HEADER_PROXY_CONNECTION);
 
 			JAXBContext context = JAXBContext.newInstance(fsNHGTGT.getClass());
 
@@ -223,7 +228,7 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				//_log.info("Response SOAP Message:");
 				// ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				
-				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName("Fs_NH_GTGTResult");
+				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName(ConfigProps.get(ConfigConstants.EINVOICE_NODELIST_TAG_NAME));
 				
 		        // check if the node exists and get the value
 		        

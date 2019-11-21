@@ -7,6 +7,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import java.util.List;
 import java.util.Properties;
 
+import org.opencps.api.controller.util.SInvoiceTerm;
+
 /**
  * @author trungnt
  *
@@ -33,59 +35,59 @@ public class RequestBodyBuilderImpl extends RequestBodyBuilder {
 		JSONObject data = JSONFactoryUtil.createJSONObject();
 
 		if (getGeneralInvoiceInfo() != null) {
-			data.put("generalInvoiceInfo", getGeneralInvoiceInfo());
+			data.put(SInvoiceTerm.GENERAL_INVOICE_INFO, getGeneralInvoiceInfo());
 		}
 
 		if (getBuyerInfo() != null) {
-			data.put("buyerInfo", getBuyerInfo());
+			data.put(SInvoiceTerm.BUYER_INFO, getBuyerInfo());
 		}
 
 		if (getSellerInfo() != null) {
-			data.put("sellerInfo", getSellerInfo());
+			data.put(SInvoiceTerm.SELLER_INFO, getSellerInfo());
 		}
 
 		if (getExtAttribute() != null) {
-			data.put("extAttribute", getExtAttribute());
+			data.put(SInvoiceTerm.EXT_ATTRIBUTE, getExtAttribute());
 		}
 
 		if (getPayments() != null) {
-			data.put("payments", getPayments());
+			data.put(SInvoiceTerm.PAYMENTS, getPayments());
 		}
 
 		if (getDeliveryInfo() != null) {
-			data.put("deliveryInfo", getDeliveryInfo());
+			data.put(SInvoiceTerm.DELIVERY_INFO, getDeliveryInfo());
 		}
 
 		if (getItemInfo() != null) {
-			data.put("itemInfo", getItemInfo());
+			data.put(SInvoiceTerm.ITEM_INFO, getItemInfo());
 		}
 
 		if (getDiscountItemInfo() != null) {
-			data.put("discountItemInfo", getDiscountItemInfo());
+			data.put(SInvoiceTerm.DISCOUNT_ITEM_INFO, getDiscountItemInfo());
 		}
 
 		if (getSummarizeInfo() != null) {
-			data.put("summarizeInfo", getSummarizeInfo());
+			data.put(SInvoiceTerm.SUMMARIZE_INFO, getSummarizeInfo());
 		}
 
 		if (getTaxBreakdowns() != null) {
-			data.put("taxBreakdowns", getTaxBreakdowns());
+			data.put(SInvoiceTerm.TAX_BREAKDOWNS, getTaxBreakdowns());
 		}
 
 		if (getMetadata() != null) {
-			data.put("metadata", getMetadata());
+			data.put(SInvoiceTerm.METADATA, getMetadata());
 		}
 
 		if (getCustomFields() != null) {
-			data.put("customFields", getCustomFields());
+			data.put(SInvoiceTerm.CUSTOM_FIELDS, getCustomFields());
 		}
 
 		if (getMeterReading() != null) {
-			data.put("meterReading", getMeterReading());
+			data.put(SInvoiceTerm.METER_READING, getMeterReading());
 		}
 
 		if (getInvoiceFile() != null) {
-			data.put("invoiceFile", getInvoiceFile());
+			data.put(SInvoiceTerm.INVOICE_FILE, getInvoiceFile());
 		}
 
 		this.setData(data);

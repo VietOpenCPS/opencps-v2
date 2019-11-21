@@ -21,6 +21,11 @@ public class VotingTerm {
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";
 	public static final String GOV_AGENCY_NAME = "govAgencyName";
 	
+	public static final String CREATE_DATE_SORTABLE = "createDate_sortable";
+	public static final String TREE_INDEX_SORTABLE = "treeIndex_sortable";
+
+	public static final String MONTH = "month";
+	public static final String YEAR = "year";
 	public static final String FROM_VOTING_DATE = "fromVotingDate";
 	public static final String TO_VOTING_DATE = "toVotingDate";
 	public static final String KEYWORDS = "keywords";
