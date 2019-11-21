@@ -2,6 +2,7 @@ package backend.feedback.constants;
 
 public class CommentTerm {
 	public static final String COMMENT_ID = "commentId";
+	public static final String USER_ID = "userId";
 	public static final String COMPANY_ID = "companyId";
 	
 	public static final String EMAIL = "email";
@@ -15,4 +16,11 @@ public class CommentTerm {
 	public static final String USER_HAS_UPVOTED = "userHasUpvoted";
 	public static final String PINGS = "pings";
 	public static final String CREATE_DATE = "createDate";
+	public static final String UPVOTED_USERS = "upvotedUsers";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 }

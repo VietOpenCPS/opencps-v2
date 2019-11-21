@@ -180,24 +180,24 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		_log.info("groupId: " + groupId);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
-		String fromVotingDate = GetterUtil.getString(params.get("fromVotingDate"));
-		String toVotingDate = GetterUtil.getString(params.get("toVotingDate"));
+		String fromVotingDate = GetterUtil.getString(params.get(VotingTerm.FROM_VOTING_DATE));
+		String toVotingDate = GetterUtil.getString(params.get(VotingTerm.TO_VOTING_DATE));
 		_log.info("strFromVotingDate: "+fromVotingDate);
 		_log.info("strToVotingDate: "+toVotingDate);
 
@@ -292,15 +292,15 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
 
@@ -393,7 +393,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		if (objectData.getLong("votingId") > 0) {
 
-			object = votingPersistence.fetchByPrimaryKey(objectData.getLong("votingId"));
+			object = votingPersistence.fetchByPrimaryKey(objectData.getLong(VotingTerm.VOTING_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -404,19 +404,19 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			object = votingPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(VotingTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(VotingTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setSubject(objectData.getString("subject"));
-		object.setChoices(objectData.getString("choices"));
-		object.setTemplateNo(objectData.getString("templateNo"));
-		object.setCommentable(objectData.getBoolean("commentable"));
+		object.setClassName(objectData.getString(VotingTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(VotingTerm.CLASS_PK));
+		object.setSubject(objectData.getString(VotingTerm.SUBJECT));
+		object.setChoices(objectData.getString(VotingTerm.CHOICES));
+		object.setTemplateNo(objectData.getString(VotingTerm.TEMPLATE_NO));
+		object.setCommentable(objectData.getBoolean(VotingTerm.COMMENTABLE));
 
 		votingPersistence.update(object);
 
