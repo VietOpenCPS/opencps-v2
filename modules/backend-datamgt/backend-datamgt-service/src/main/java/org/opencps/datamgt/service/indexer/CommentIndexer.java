@@ -82,7 +82,7 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 				"params");
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(CommentTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

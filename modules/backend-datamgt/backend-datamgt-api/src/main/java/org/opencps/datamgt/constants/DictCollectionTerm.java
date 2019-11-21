@@ -72,6 +72,12 @@ public class DictCollectionTerm {
 	public static final int STATUS_ACTIVE = 1;
 	public static final int STATUS_INACTIVE = 0;
 	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+	
 	public DictCollectionTerm() {
 
 		// TODO Auto-generated constructor stub

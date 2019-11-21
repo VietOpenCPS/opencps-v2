@@ -55,6 +55,7 @@ import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.DictCollectionTerm;
 import org.opencps.datamgt.constants.DictGroupTerm;
 import org.opencps.datamgt.constants.DictItemGroupTerm;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemGroupException;
 import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.model.impl.DictItemGroupImpl;
@@ -327,7 +328,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
@@ -342,7 +343,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroup.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -447,7 +448,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictItemGroupTerm.USER_ID);
 		String dictItemId = (String) params.get(DictItemGroupTerm.DICT_ITEM_ID);
@@ -459,7 +460,7 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(DictItemGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemGroup.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -591,9 +592,9 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 
 		DictItemGroup object = null;
 
-		if (objectData.getLong("dictItemGroupId") > 0) {
+		if (objectData.getLong(DictItemGroupTerm.DICT_ITEM_GROUP_ID) > 0) {
 
-			object = dictItemGroupPersistence.fetchByPrimaryKey(objectData.getLong("dictItemGroupId"));
+			object = dictItemGroupPersistence.fetchByPrimaryKey(objectData.getLong(DictItemGroupTerm.DICT_ITEM_GROUP_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -604,16 +605,16 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 			object = dictItemGroupPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(DictItemGroupTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(DictItemGroupTerm.USER_ID));
 
-		object.setDictGroupId(objectData.getLong("dictGroupId"));
-		object.setDictItemId(objectData.getLong("dictItemId"));
-		object.setDictGroupName(objectData.getString("dictGroupName"));
+		object.setDictGroupId(objectData.getLong(DictItemGroupTerm.DICT_GROUP_ID));
+		object.setDictItemId(objectData.getLong(DictItemGroupTerm.DICT_ITEM_ID));
+		object.setDictGroupName(objectData.getString(DictItemGroupTerm.DICT_GROUP_NAME));
 
 		dictItemGroupPersistence.update(object);
 

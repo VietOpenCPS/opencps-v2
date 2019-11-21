@@ -227,19 +227,19 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(WorkTime.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkTime.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(WorkTimeTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(WorkTimeTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(WorkTimeTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(WorkTimeTerm.USER_ID);
 
 		BooleanQuery booleanQuery = null;
 
@@ -279,16 +279,16 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(WorkTime.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkTime.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(WorkTimeTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(WorkTimeTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(WorkTimeTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(WorkTimeTerm.USER_ID);
 
 		BooleanQuery booleanQuery = null;
 
@@ -346,9 +346,9 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		WorkTime object = null;
 
-		if (objectData.getLong("workTimeId") > 0) {
+		if (objectData.getLong(WorkTimeTerm.WORKTIME_ID) > 0) {
 
-			object = workTimePersistence.fetchByPrimaryKey(objectData.getLong("workTimeId"));
+			object = workTimePersistence.fetchByPrimaryKey(objectData.getLong(WorkTimeTerm.WORKTIME_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -359,15 +359,15 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 			object = workTimePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(WorkTimeTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(WorkTimeTerm.USER_ID));
 
-		object.setDay(objectData.getInt("day"));
-		object.setHours(objectData.getString("hours"));
+		object.setDay(objectData.getInt(WorkTimeTerm.DAY));
+		object.setHours(objectData.getString(WorkTimeTerm.HOURS));
 		
 		workTimePersistence.update(object);
 

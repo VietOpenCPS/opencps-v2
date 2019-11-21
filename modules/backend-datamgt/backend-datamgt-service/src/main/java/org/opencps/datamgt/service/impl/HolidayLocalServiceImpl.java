@@ -227,20 +227,20 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Holiday.class.getName());
 		searchContext.setEntryClassNames(new String[] { Holiday.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(HolidayTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(HolidayTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(HolidayTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
-		String year = (String) params.get("year");
+		String userId = (String) params.get(HolidayTerm.USER_ID);
+		String year = (String) params.get(HolidayTerm.YEAR);
 
 		BooleanQuery booleanQuery = null;
 
@@ -282,7 +282,7 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 		if (Validator.isNotNull(year)) {
 			MultiMatchQuery query = new MultiMatchQuery(year);
 
-			query.addFields("year");
+			query.addFields(HolidayTerm.YEAR);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -301,16 +301,16 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Holiday.class.getName());
 		searchContext.setEntryClassNames(new String[] { Holiday.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(HolidayTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(HolidayTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(HolidayTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(HolidayTerm.USER_ID);
 
 		BooleanQuery booleanQuery = null;
 
@@ -387,9 +387,9 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 
 		Holiday object = null;
 
-		if (objectData.getLong("holidayId") > 0) {
+		if (objectData.getLong(HolidayTerm.HOLIDAY_ID) > 0) {
 
-			object = holidayPersistence.fetchByPrimaryKey(objectData.getLong("holidayId"));
+			object = holidayPersistence.fetchByPrimaryKey(objectData.getLong(HolidayTerm.HOLIDAY_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -400,15 +400,15 @@ public class HolidayLocalServiceImpl extends HolidayLocalServiceBaseImpl {
 			object = holidayPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(HolidayTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(HolidayTerm.USER_ID));
 
-		object.setHolidayDate(new Date(objectData.getLong("holidayDate")));
-		object.setDescription(objectData.getString("description"));
+		object.setHolidayDate(new Date(objectData.getLong(HolidayTerm.HOLIDAY_DATE)));
+		object.setDescription(objectData.getString(HolidayTerm.DESCRIPTION));
 
 		holidayPersistence.update(object);
 

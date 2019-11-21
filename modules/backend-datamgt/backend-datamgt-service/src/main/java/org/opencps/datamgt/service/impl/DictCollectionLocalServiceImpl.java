@@ -371,7 +371,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictCollectionTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
@@ -381,7 +381,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollection.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictCollectionTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -483,7 +483,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictCollectionTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTerm.COLLECTION_CODE);
@@ -493,7 +493,7 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		searchContext.addFullQueryEntryClassName(DictCollection.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollection.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictCollectionTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -718,9 +718,9 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		DictCollection object = null;
 
-		if (objectData.getLong("dictCollectionId") > 0) {
+		if (objectData.getLong(DictCollectionTerm.DICT_COLLECTION_ID) > 0) {
 
-			object = dictCollectionPersistence.fetchByPrimaryKey(objectData.getLong("dictCollectionId"));
+			object = dictCollectionPersistence.fetchByPrimaryKey(objectData.getLong(DictCollectionTerm.DICT_COLLECTION_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -731,19 +731,19 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 			object = dictCollectionPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(DictCollectionTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(DictCollectionTerm.USER_ID));
 		
-		object.setCollectionCode(objectData.getString("collectionCode"));
-		object.setCollectionName(objectData.getString("collectionName"));
-		object.setCollectionNameEN(objectData.getString("collectionNameEN"));
-		object.setDescription(objectData.getString("description"));
-		object.setDataForm(objectData.getString("dataForm"));
-		object.setStatus(objectData.getInt("status"));
+		object.setCollectionCode(objectData.getString(DictCollectionTerm.COLLECTION_CODE));
+		object.setCollectionName(objectData.getString(DictCollectionTerm.COLLECTION_NAME));
+		object.setCollectionNameEN(objectData.getString(DictCollectionTerm.COLLECTION_NAME_EN));
+		object.setDescription(objectData.getString(DictCollectionTerm.DESCRIPTION));
+		object.setDataForm(objectData.getString(DictCollectionTerm.DATAFORM));
+		object.setStatus(objectData.getInt(DictCollectionTerm.STATUS));
 
 		dictCollectionPersistence.update(object);
 

@@ -16,9 +16,11 @@ package org.opencps.datamgt.constants;
 
 import java.util.Date;
 
-public class HolidayTerm {
+public class VotingResultTerm {
 
-	public static final String HOLIDAY_ID = "holidayId";
+	public static final String VOTING_RESULT_ID = "votingResultId";
+	
+	public static final String VOTING_ID = "votingId";
 
 	public static final String COMPANY_ID = "companyId";
 
@@ -30,30 +32,13 @@ public class HolidayTerm {
 
 	public static final String MODIFIED_DATE = "modifiedDate";
 
-	public static final String HOLIDAY_DATE = "holidayDate";
+	public static final String FULL_NAME = "fullname";
 
-	public static final String DESCRIPTION = "description";
+	public static final String EMAIL = "email";
 
-	// sortable
-	public static final String HOLIDAY_ID_SORTABLE = "holidayId_sortable";
+	public static final String COMMENT = "comment";
 
-	public static final String COMPANY_ID_SORTABLE = "companyId_sortable";
-
-	public static final String GROUP_ID_SORTABLE = "groupId_sortable";
-
-	public static final String USER_ID_SORTABLE = "userId_sortable";
-
-	public static final String USER_NAME_SORTABLE = "userName_sortable";
-
-	public static final String CREATE_DATE_SORTABLE = "createDate_sortable";
-
-	public static final String MODIFIED_DATE_SORTABLE = "modifiedDate_sortable";
-
-	public static final String HOLIDAY_DATE_SORTABLE = "holidayDate_sortable";
-
-	public static final String DESCRIPTION_SORTABLE = "description_sortable";
-	
-	public static final String YEAR = "year";
+	public static final String SELECTED = "selected";
 
 	public static final String KEYWORDS = "keywords";
 	public static final String PARAMS = "params";
@@ -61,7 +46,7 @@ public class HolidayTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
-	private long holidayId;
+	private long workTimeId;
 	private long companyId;
 	private long groupId;
 
@@ -70,21 +55,21 @@ public class HolidayTerm {
 	private Date createDate;
 	private Date modifiedDate;
 
-	private Date holidayDate;
-	private String description;
+	private int day;
+	private String hours;
 	
-	public HolidayTerm() {
+	public VotingResultTerm() {
 
 		// TODO Auto-generated constructor stub
 
 	}
 
-	public long getHolidayId() {
-		return holidayId;
+	public long getWorkTimeId() {
+		return workTimeId;
 	}
 
-	public void setHolidayId(long holidayId) {
-		this.holidayId = holidayId;
+	public void setWorkTimeId(long workTimeId) {
+		this.workTimeId = workTimeId;
 	}
 
 	public long getCompanyId() {
@@ -135,20 +120,20 @@ public class HolidayTerm {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public Date getHolidayDate() {
-		return holidayDate;
+	public int getDay() {
+		return day;
 	}
 
-	public void setHolidayDate(Date holidayDate) {
-		this.holidayDate = holidayDate;
+	public void setDay(int day) {
+		this.day = day;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getHours() {
+		return hours;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setHours(String hours) {
+		this.hours = hours;
 	}
 
 }

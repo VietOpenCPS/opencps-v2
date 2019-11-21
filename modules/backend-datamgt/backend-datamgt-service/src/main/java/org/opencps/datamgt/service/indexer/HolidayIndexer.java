@@ -71,7 +71,7 @@ public class HolidayIndexer extends BaseIndexer<Holiday> {
 		
 		String dateTime = String.valueOf(cal.get(Calendar.YEAR));
 		
-		document.addTextSortable("year", dateTime);
+		document.addTextSortable(HolidayTerm.YEAR, dateTime);
 		
 		document.setSortableTextFields(
 				new String[] { HolidayTerm.CREATE_DATE});

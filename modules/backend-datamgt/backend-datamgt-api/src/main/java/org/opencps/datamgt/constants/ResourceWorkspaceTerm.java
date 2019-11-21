@@ -41,6 +41,12 @@ public class ResourceWorkspaceTerm {
 	public static final String CLASS_PK_SORTABLE = "classPK_sortable";
 	
 	public static final String WORKSPACE_ID_SORTABLE = "workspaceId_Number_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public ResourceWorkspaceTerm() {
 		// TODO Auto-generated constructor stub
