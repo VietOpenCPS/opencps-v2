@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
+import org.opencps.communication.constants.PreferenceTerm;
 import org.opencps.communication.exception.NoSuchPreferencesException;
 import org.opencps.communication.model.Preferences;
 import org.opencps.communication.service.base.PreferencesLocalServiceBaseImpl;
@@ -156,9 +157,9 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 
 		Preferences object = null;
 
-		if (objectData.getLong("preferencesId") > 0) {
+		if (objectData.getLong(PreferenceTerm.PREFERENCES_ID) > 0) {
 
-			object = preferencesPersistence.fetchByPrimaryKey(objectData.getLong("preferencesId"));
+			object = preferencesPersistence.fetchByPrimaryKey(objectData.getLong(PreferenceTerm.PREFERENCES_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -169,14 +170,14 @@ public class PreferencesLocalServiceImpl extends PreferencesLocalServiceBaseImpl
 			object = preferencesPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(PreferenceTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(PreferenceTerm.USER_ID));
 
-		object.setPreferences(objectData.getString("preferences"));
+		object.setPreferences(objectData.getString(PreferenceTerm.PREFERENCES));
 
 		preferencesPersistence.update(object);
 

@@ -82,6 +82,10 @@ public class NotificationTemplateTerm {
 	
 	public static final String GROUPING = "grouping";
 
+	public static final String SEND_NOTIFICATION = "sendNotification";
+
+	public static final String NOTIFY_MESSAGE = "notifyMessage";
+
 	public static final String NOTIFICATIONTEMPLATE_ID_SORTABLE = "notificationTemplateId_sortable";
 
 	public static final String COMPANY_ID_SORTABLE = "companyId_sortable";
@@ -105,6 +109,12 @@ public class NotificationTemplateTerm {
 	public static final String NOTIFICATION_TEXT_MESSAGE_SORTABLE = "textMessage_sortable";
 
 	public static final String NOTIFICATION_SEND_SMS_SORTABLE = "sendSMS_sortable";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	public NotificationTemplateTerm() {
 

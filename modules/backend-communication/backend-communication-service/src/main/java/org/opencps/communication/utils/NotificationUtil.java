@@ -183,7 +183,7 @@ public class NotificationUtil {
 				String token = StringPool.BLANK;
 				if (Validator.isNotNull(security)) {
 					token = Base64.encode(
-						(queue.getToEmail() + ":" + security).getBytes());
+						(queue.getToEmail() + StringPool.COLON + security).getBytes());
 				}
 
 				dataModel.setToken(token);
@@ -318,7 +318,7 @@ public class NotificationUtil {
 
 					Map<Long, String> mappingZaloUid = new HashMap<>();
 					String zOId =
-						resultApi.getJSONObject(SendSMSTerm.DATA).getString("user_id");
+						resultApi.getJSONObject(SendSMSTerm.DATA).getString(ZALO_USER_ID);
 
 					mappingZaloUid.put(
 						toUserId > 0 ? toUserId : new Long(0), zOId);
@@ -341,7 +341,7 @@ public class NotificationUtil {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			JSONObject data = JSONFactoryUtil.createJSONObject();
 
-			data.put("user_id", toTelNo);
+			data.put(ZALO_USER_ID, toTelNo);
 
 			String endPoint =
 				ConfigProps.get(ConfigConstants.ZALO_ENDPOID_GET_USER_INFO) +
@@ -355,7 +355,7 @@ public class NotificationUtil {
 				ConfigProps.get(ConfigConstants.ZALO_PATH_BASE), endPoint,
 				StringPool.BLANK, StringPool.BLANK, properties);
 
-			String uid = resPostDossier.getString("message");
+			String uid = resPostDossier.getString(RESTFulConfiguration.MESSAGE);
 
 			if (Validator.isNotNull(uid)) {
 
@@ -472,6 +472,7 @@ public class NotificationUtil {
 	}
 
 	private static final String ZALO_UID = "zaloUid";
+	private static final String ZALO_USER_ID = "user_id";
 	private static final String ZALO_TOKEN = "zaloToken";
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationUtil.class);
