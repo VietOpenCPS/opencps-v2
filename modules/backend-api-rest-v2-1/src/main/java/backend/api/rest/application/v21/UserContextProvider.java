@@ -8,6 +8,8 @@ import org.apache.cxf.message.Message;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import backend.api.rest.application.utils.ConstantTerm;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -23,7 +25,7 @@ public class UserContextProvider implements ContextProvider<User> {
         try {
             return _portal.getUser(
                 (HttpServletRequest)message.getContextualProperty(
-                    "HTTP.REQUEST"));
+                    ConstantTerm.HTTP_REQUEST));
         }
         catch (PortalException pe) {
             if (_log.isWarnEnabled()) {

@@ -88,7 +88,8 @@ public class RestAuthFilter implements Filter {
 	private static final String HEADER_ORIGIN = "Origin";
 	private static final String LOCAL_ACCESSS = "localaccess";
 	private static final String USER_REQUEST_ID = "userid";
-
+	private static final String PERMISSION_DENIED = "permission denied";
+	
 	public static String getDomainName(String url){
 	    if (url == null) return null;
 	    url = url.trim();
@@ -266,7 +267,7 @@ public class RestAuthFilter implements Filter {
 		
 		PrintWriter out = response.getWriter();
 		
-		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), "permission denied", StringPool.BLANK);
+		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), PERMISSION_DENIED, StringPool.BLANK);
 		
 		out.println(error.toString());
 		out.flush();

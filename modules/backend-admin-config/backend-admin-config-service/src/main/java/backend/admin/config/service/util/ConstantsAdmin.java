@@ -8,4 +8,6 @@ public class ConstantsAdmin {
 	public static final String STARTING = "STARTING";
 	public static final String STOPPING = "STOPPING";
 	public static final String ACTIVE = "ACTIVE";
+	
+	public static final String JSON_WEBSOCKET_ACTIVE = "websocket.active";
 }
