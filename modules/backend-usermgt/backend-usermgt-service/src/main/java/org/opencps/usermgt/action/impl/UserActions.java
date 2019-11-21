@@ -45,13 +45,19 @@ import java.util.List;
 import java.util.Locale;
 
 import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
+import org.opencps.usermgt.constants.OfficeSiteTerm;
 import org.opencps.usermgt.constants.UserMGTConstants;
+import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -73,7 +79,7 @@ import backend.utils.FileUploadUtils;
 
 public class UserActions implements UserInterface {
 
-	public static final Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale(ConfigProps.get(ConfigConstants.EMP_ACTION_LOCALE), ConfigProps.get(ConfigConstants.EMP_ACTION_LOCALE_UPP));
 	private static Log _log = LogFactoryUtil.getLog(UserActions.class);
 
 	@Override
@@ -120,8 +126,6 @@ public class UserActions implements UserInterface {
 		return file;
 	}
 
-	public static final String CURRENT_SITE = "currentSite";
-	public static final String ROLE_NAME = "roleName";
 	@Override
 	public String getType(long id, ServiceContext serviceContext) {
 
@@ -179,7 +183,7 @@ public class UserActions implements UserInterface {
 
 				}
 				document.addTextSortable(
-					"currentSite", String.valueOf(isCurrent));
+					OfficeSiteTerm.CURRENT_SITE, String.valueOf(isCurrent));
 
 				list.add(document);
 
@@ -216,7 +220,7 @@ public class UserActions implements UserInterface {
 			Document document = new DocumentImpl();
 
 			document.addNumberSortable(Field.ENTRY_CLASS_PK, role.getRoleId());
-			document.addTextSortable("roleName", role.getName());
+			document.addTextSortable(CommonTerm.ROLE_NAME, role.getName());
 
 			list.add(document);
 		}
@@ -252,18 +256,18 @@ public class UserActions implements UserInterface {
 
 		}
 
-		document.addTextSortable("className", Employee.class.getName());
+		document.addTextSortable(UserTerm.CLASS_NAME, Employee.class.getName());
 		document.addTextSortable(
-			"classPK", String.valueOf(employee.getEmployeeId()));
+			UserTerm.CLASS_PK, String.valueOf(employee.getEmployeeId()));
 
-		document.addTextSortable("screenName", screenName);
-		document.addTextSortable("email", email);
-		document.addTextSortable("fullName", employee.getFullName());
+		document.addTextSortable(UserTerm.SCREEN_NAME, screenName);
+		document.addTextSortable(UserTerm.EMAIL, email);
+		document.addTextSortable(UserTerm.FULL_NAME, employee.getFullName());
 
-		document.addTextSortable("contactEmail", employee.getEmail());
-		document.addTextSortable("contactTelNo", employee.getTelNo());
-		document.addNumberSortable("gender", employee.getGender());
-		document.addDateSortable("birthdate", employee.getBirthdate());
+		document.addTextSortable(UserTerm.CONTACT_EMAIL, employee.getEmail());
+		document.addTextSortable(UserTerm.CONTACT_TELNO, employee.getTelNo());
+		document.addNumberSortable(UserTerm.GENDER, employee.getGender());
+		document.addDateSortable(UserTerm.BIRTHDATE, employee.getBirthdate());
 
 		return document;
 
@@ -447,15 +451,15 @@ public class UserActions implements UserInterface {
 			EmployeeLocalServiceUtil.fetchByFB_MUID(mappingUserId);
 		Applicant applicant = null;
 		if (employee != null) {
-			document.addTextSortable("userId", String.valueOf(mappingUserId));
+			document.addTextSortable(UserTerm.USER_ID, String.valueOf(mappingUserId));
 			document.addTextSortable(
-				"userName", Validator.isNotNull(employee)
+				UserTerm.USER_NAME, Validator.isNotNull(employee)
 					? employee.getFullName() : userName);
 			document.addTextSortable(
-				"contactEmail", Validator.isNotNull(employee)
+				UserTerm.CONTACT_EMAIL, Validator.isNotNull(employee)
 					? employee.getEmail() : StringPool.BLANK);
 			document.addTextSortable(
-				"contactTelNo", Validator.isNotNull(employee)
+				UserTerm.CONTACT_TELNO, Validator.isNotNull(employee)
 					? employee.getTelNo() : StringPool.BLANK);
 		}
 		else {
@@ -463,15 +467,15 @@ public class UserActions implements UserInterface {
 				ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 			if (applicant != null) {
 				document.addTextSortable(
-					"userId", String.valueOf(mappingUserId));
+					UserTerm.USER_ID, String.valueOf(mappingUserId));
 				document.addTextSortable(
-					"userName", Validator.isNotNull(applicant)
+					UserTerm.USER_NAME, Validator.isNotNull(applicant)
 						? applicant.getContactName() : userName);
 				document.addTextSortable(
-					"contactEmail", Validator.isNotNull(applicant)
+					UserTerm.CONTACT_EMAIL, Validator.isNotNull(applicant)
 						? applicant.getContactEmail() : StringPool.BLANK);
 				document.addTextSortable(
-					"contactTelNo", Validator.isNotNull(applicant)
+					UserTerm.CONTACT_TELNO, Validator.isNotNull(applicant)
 						? applicant.getContactTelNo() : StringPool.BLANK);
 			}
 		}
@@ -523,19 +527,19 @@ public class UserActions implements UserInterface {
 			// _log.info("START PAYLOAD: ");
 			JSONObject subPayload = JSONFactoryUtil.createJSONObject();
 			if (employee != null) {
-				subPayload.put("userName", employee.getFullName());
-				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put("email", employee.getEmail());
-				subPayload.put("telNo", employee.getTelNo());
+				subPayload.put(UserTerm.USER_NAME, employee.getFullName());
+				subPayload.put(UserTerm.USER_ID, employee.getMappingUserId());
+				subPayload.put(UserTerm.EMAIL, employee.getEmail());
+				subPayload.put(UserTerm.TELNO, employee.getTelNo());
 			}
 			else if (applicant != null) {
-				subPayload.put("userName", applicant.getApplicantName());
-				subPayload.put("userId", applicant.getUserId());
-				subPayload.put("email", applicant.getContactEmail());
-				subPayload.put("telNo", applicant.getContactTelNo());
+				subPayload.put(UserTerm.USER_NAME, applicant.getApplicantName());
+				subPayload.put(UserTerm.USER_ID, applicant.getUserId());
+				subPayload.put(UserTerm.EMAIL, applicant.getContactEmail());
+				subPayload.put(UserTerm.TELNO, applicant.getContactTelNo());
 			}
-			subPayload.put("secretKey", secretKey);
-			payload.put("User", subPayload);
+			subPayload.put(UserTerm.SECRET_KEY, secretKey);
+			payload.put(UserTerm.USER, subPayload);
 
 			// _log.info("payloadTest: "+payload.toJSONString());
 			queue.setPayload(payload.toJSONString());
@@ -573,20 +577,20 @@ public class UserActions implements UserInterface {
 
 		// changePassWord
 		String secretKey1 = PwdGenerator.getPassword(2, new String[] {
-			"0123456789"
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_1)
 		});
 		String secretKey2 = PwdGenerator.getPassword(2, new String[] {
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_2)
 		});
 		String secretKey3 = PwdGenerator.getPassword(2, new String[] {
-			"abcdefghijklmnopqrstuvwxyz"
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_3)
 		});
 		String secretKey4 = PwdGenerator.getPassword(1, new String[] {
-			"@$"
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_4)
 		});
 		String secretKey5 = PwdGenerator.getPassword(4, new String[] {
-			"0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*"
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_2),
+			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_4)
 		});
 		String secretKey =
 			secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
@@ -611,15 +615,15 @@ public class UserActions implements UserInterface {
 			Applicant applicant = null;
 			if (employee != null) {
 				document.addTextSortable(
-					"userId", String.valueOf(mappingUserId));
+					UserTerm.USER_ID, String.valueOf(mappingUserId));
 				document.addTextSortable(
-					"userName", Validator.isNotNull(employee)
+					UserTerm.USER_NAME, Validator.isNotNull(employee)
 						? employee.getFullName() : userName);
 				document.addTextSortable(
-					"contactEmail", Validator.isNotNull(employee)
+					UserTerm.CONTACT_EMAIL, Validator.isNotNull(employee)
 						? employee.getEmail() : StringPool.BLANK);
 				document.addTextSortable(
-					"contactTelNo", Validator.isNotNull(employee)
+					UserTerm.CONTACT_TELNO, Validator.isNotNull(employee)
 						? employee.getTelNo() : StringPool.BLANK);
 			}
 			else {
@@ -627,15 +631,15 @@ public class UserActions implements UserInterface {
 					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 				if (applicant != null) {
 					document.addTextSortable(
-						"userId", String.valueOf(mappingUserId));
+						UserTerm.USER_ID, String.valueOf(mappingUserId));
 					document.addTextSortable(
-						"userName", Validator.isNotNull(applicant)
+						UserTerm.USER_NAME, Validator.isNotNull(applicant)
 							? applicant.getContactName() : userName);
 					document.addTextSortable(
-						"contactEmail", Validator.isNotNull(applicant)
+						UserTerm.CONTACT_EMAIL, Validator.isNotNull(applicant)
 							? applicant.getContactEmail() : StringPool.BLANK);
 					document.addTextSortable(
-						"contactTelNo", Validator.isNotNull(applicant)
+						UserTerm.CONTACT_TELNO, Validator.isNotNull(applicant)
 							? applicant.getContactTelNo() : StringPool.BLANK);
 				}
 			}
@@ -677,19 +681,19 @@ public class UserActions implements UserInterface {
 			// _log.info("START PAYLOAD: ");
 			JSONObject subPayload = JSONFactoryUtil.createJSONObject();
 			if (employee != null) {
-				subPayload.put("userName", employee.getFullName());
-				subPayload.put("userId", employee.getMappingUserId());
-				subPayload.put("email", employee.getEmail());
-				subPayload.put("telNo", employee.getTelNo());
+				subPayload.put(UserTerm.USER_NAME, employee.getFullName());
+				subPayload.put(UserTerm.USER_ID, employee.getMappingUserId());
+				subPayload.put(UserTerm.EMAIL, employee.getEmail());
+				subPayload.put(UserTerm.TELNO, employee.getTelNo());
 			}
 			else if (applicant != null) {
-				subPayload.put("userName", applicant.getApplicantName());
-				subPayload.put("userId", applicant.getUserId());
-				subPayload.put("email", applicant.getContactEmail());
-				subPayload.put("telNo", applicant.getContactTelNo());
+				subPayload.put(UserTerm.USER_NAME, applicant.getApplicantName());
+				subPayload.put(UserTerm.USER_ID, applicant.getUserId());
+				subPayload.put(UserTerm.EMAIL, applicant.getContactEmail());
+				subPayload.put(UserTerm.TELNO, applicant.getContactTelNo());
 			}
-			subPayload.put("secretKey", secretKey);
-			payload.put("User", subPayload);
+			subPayload.put(UserTerm.SECRET_KEY, secretKey);
+			payload.put(UserTerm.USER, subPayload);
 
 			// _log.info("payloadTest: "+payload.toJSONString());
 			queue.setPayload(payload.toJSONString());
@@ -767,9 +771,9 @@ public class UserActions implements UserInterface {
 			        cal.add(Calendar.MINUTE, 10);
 					
 			        if (notiTemplate != null) {
-						if ("minutely".equals(notiTemplate.getInterval())) {
+						if (UserTerm.TIME_MINUTELY.equals(notiTemplate.getInterval())) {
 							cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
-						} else if ("hourly".equals(notiTemplate.getInterval())) {
+						} else if (UserTerm.TIME_HOURLY.equals(notiTemplate.getInterval())) {
 							cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());
 						} else {
 							cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
@@ -983,8 +987,7 @@ public class UserActions implements UserInterface {
 				DLFileEntryLocalServiceUtil.getDLFileEntry(
 					employee.getFileSignId());
 
-			filePath = portalURL + "/c/document_library/get_file?uuid=" +
-				dlfileEntry.getUuid() + "&groupId=" + dlfileEntry.getGroupId();
+			filePath = portalURL + UserTerm.buildEmpFileSign(dlfileEntry.getUuid(), dlfileEntry.getGroupId());
 
 		}
 
@@ -1020,20 +1023,20 @@ public class UserActions implements UserInterface {
 		if (Validator.isNotNull(user)) {
 			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
-			result.put("className", User.class.getName());
-			result.put("classPK", user.getUserId());
-			result.put("userId", user.getUserId());
-			result.put("userName", user.getFullName());
-			result.put("mappingUserId", user.getUserId());
-			result.put("screenName", user.getScreenName());
+			result.put(UserTerm.CLASS_NAME, User.class.getName());
+			result.put(UserTerm.CLASS_PK, user.getUserId());
+			result.put(UserTerm.USER_ID, user.getUserId());
+			result.put(UserTerm.USER_NAME, user.getFullName());
+			result.put(UserTerm.MAPPING_USER_ID, user.getUserId());
+			result.put(UserTerm.SCREEN_NAME, user.getScreenName());
 
-			result.put("employeeGender", 0);
-			result.put("employeeWorkingStatus", 0);
-			result.put("employeeMainJobPostId", 0);
-			result.put("employeePhotoFileEntryId", 0);
-			result.put("employeeFileCerId", 0);
-			result.put("employeeFileSignId", 0);
-			result.put("applicantLock", 0);
+			result.put(UserTerm.EMPLOYEE_GENDER, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.EMPLOYEE_WORKING_STATUS, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.EMPLOYEE_MAIN_JOBPOS_ID, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.EMPLOYEE_PHOTO_FILE_ENTRY_ID, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.EMPLOYEE_FILE_CER_ID, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.EMPLOYEE_FILE_SIGN_ID, UserTerm.getUserByIdDefault());
+			result.put(UserTerm.APPLICANT_LOCK, UserTerm.getUserByIdDefault());
 
 			String avatar = StringPool.BLANK;
 
@@ -1041,46 +1044,44 @@ public class UserActions implements UserInterface {
 			String tokenId =
 				WebServerServletTokenUtil.getToken(user.getPortraitId());
 			try {
-				avatar = "/image/user_" +
-					((user != null) && user.isFemale() ? "female" : "male") +
-					"_portrait?img_id=" + portraitId + "&t=" + tokenId;
+				avatar = UserTerm.buildEmpAvatar(user, portraitId, tokenId);
 			}
 			catch (PortalException e) {
 				_log.error(e);
 			}
 
-			result.put("avatar", avatar);
+			result.put(UserTerm.AVATAR, avatar);
 
 			if (Validator.isNotNull(employee)) {
 
-				result.put("className", Employee.class.getName());
-				result.put("classPK", employee.getEmployeeId());
+				result.put(UserTerm.CLASS_NAME, Employee.class.getName());
+				result.put(UserTerm.CLASS_PK, employee.getEmployeeId());
 
-				result.put("employeeFullName", employee.getFullName());
-				result.put("employeeNo", employee.getEmployeeNo());
-				result.put("employeeGender", employee.getGender());
+				result.put(UserTerm.EMPLOYEE_FULLNAME, employee.getFullName());
+				result.put(UserTerm.EMPLOYEE_NO, employee.getEmployeeNo());
+				result.put(UserTerm.EMPLOYEE_GENDER, employee.getGender());
 				if (Validator.isNotNull(employee.getBirthdate())) {
 					result.put(
-						"employeeBirthDate", employee.getBirthdate().getTime());
+						UserTerm.EMPLOYEE_BIRTHDATE, employee.getBirthdate().getTime());
 				}
-				result.put("employeeTelNo", employee.getTelNo());
-				result.put("employeeMobile", employee.getMobile());
-				result.put("employeeEmail", employee.getEmail());
+				result.put(UserTerm.EMPLOYEE_TELNO, employee.getTelNo());
+				result.put(UserTerm.EMPLOYEE_MOBILE, employee.getMobile());
+				result.put(UserTerm.EMPLOYEE_EMAIL, employee.getEmail());
 				result.put(
-					"employeeWorkingStatus", employee.getWorkingStatus());
+					UserTerm.EMPLOYEE_WORKING_STATUS, employee.getWorkingStatus());
 				result.put(
-					"employeePhotoFileEntryId", employee.getPhotoFileEntryId());
-				result.put("employeeFileCerId", employee.getFileCertId());
-				result.put("employeeFileSignId", employee.getFileSignId());
+					UserTerm.EMPLOYEE_PHOTO_FILE_ENTRY_ID, employee.getPhotoFileEntryId());
+				result.put(UserTerm.EMPLOYEE_FILE_CER_ID, employee.getFileCertId());
+				result.put(UserTerm.EMPLOYEE_FILE_SIGN_ID, employee.getFileSignId());
 
-				result.put("userId", employee.getMappingUserId());
-				result.put("userName", employee.getFullName());
-				result.put("mappingUserId", employee.getMappingUserId());
+				result.put(UserTerm.USER_ID, employee.getMappingUserId());
+				result.put(UserTerm.USER_NAME, employee.getFullName());
+				result.put(UserTerm.MAPPING_USER_ID, employee.getMappingUserId());
 
 				result.put(
-					"employeeMainJobPostId", employee.getMainJobPostId());
-				result.put("employeeMainJobPostName", StringPool.BLANK);
-				result.put("title", employee.getTitle());
+					UserTerm.EMPLOYEE_MAIN_JOBPOS_ID, employee.getMainJobPostId());
+				result.put(UserTerm.EMPLOYEE_MAIN_JOBPOS_NAME, StringPool.BLANK);
+				result.put(UserTerm.TITLE, employee.getTitle());
 
 				EmployeeJobPos employeeJobPos =
 					EmployeeJobPosLocalServiceUtil.fetchEmployeeJobPos(
@@ -1093,7 +1094,7 @@ public class UserActions implements UserInterface {
 						Role role = RoleLocalServiceUtil.fetchRole(
 								jobPos.getMappingRoleId());
 						result.put(
-							"employeeMainJobPostName", role.getTitleCurrentValue());
+							UserTerm.EMPLOYEE_MAIN_JOBPOS_NAME, role.getTitleCurrentValue());
 					}
 				}
 
@@ -1105,38 +1106,38 @@ public class UserActions implements UserInterface {
 
 				if (Validator.isNotNull(applicant)) {
 
-					result.put("className", Applicant.class.getName());
-					result.put("classPK", applicant.getApplicantId());
+					result.put(UserTerm.CLASS_NAME, Applicant.class.getName());
+					result.put(UserTerm.CLASS_PK, applicant.getApplicantId());
 
-					result.put("applicantName", applicant.getApplicantName());
-					result.put("applicantType", applicant.getApplicantIdType());
-					result.put("applicantIdNo", applicant.getApplicantIdNo());
+					result.put(UserTerm.APPLICANT_NAME, applicant.getApplicantName());
+					result.put(UserTerm.APPLICANT_TYPE, applicant.getApplicantIdType());
+					result.put(UserTerm.APPLICANT_ID_NO, applicant.getApplicantIdNo());
 					result.put(
-						"applicantIdDate", applicant.getApplicantIdDate());
-					result.put("applicantAddress", applicant.getAddress());
-					result.put("applicantCityCode", applicant.getCityCode());
-					result.put("applicantCityName", applicant.getCityName());
+						UserTerm.APPLICANT_ID_DATE, applicant.getApplicantIdDate());
+					result.put(UserTerm.APPLICANT_ADDRESS, applicant.getAddress());
+					result.put(UserTerm.APPLICANT_CITY_CODE, applicant.getCityCode());
+					result.put(UserTerm.APPLICANT_CITY_NAME, applicant.getCityName());
 					result.put(
-						"applicantDistrictCode", applicant.getDistrictCode());
+						UserTerm.APPLICANT_DISTRICT_CODE, applicant.getDistrictCode());
 					result.put(
-						"applicantDistrictName", applicant.getDistrictName());
-					result.put("applicantWardCode", applicant.getWardCode());
-					result.put("applicantWardName", applicant.getWardName());
+						UserTerm.APPLICANT_DISTRICT_NAME, applicant.getDistrictName());
+					result.put(UserTerm.APPLICANT_WARD_CODE, applicant.getWardCode());
+					result.put(UserTerm.APPLICANT_WARD_NAME, applicant.getWardName());
 					result.put(
-						"applicantContactName", applicant.getContactName());
+						UserTerm.APPLICANT_CONTACT_NAME, applicant.getContactName());
 					result.put(
-						"applicantContactTelNo", applicant.getContactTelNo());
+						UserTerm.APPLICANT_CONTACT_TELNO, applicant.getContactTelNo());
 					result.put(
-						"applicantContactEmail", applicant.getContactEmail());
+						UserTerm.APPLICANT_CONTACT_EMAIL, applicant.getContactEmail());
 					result.put(
-						"applicantActivationCode",
+						UserTerm.APPLICANT_ACTIVATION_CODE,
 						applicant.getActivationCode());
-					result.put("applicantLock", applicant.getLock_());
-					result.put("applicantTmpPass", applicant.getTmpPass());
+					result.put(UserTerm.APPLICANT_LOCK, applicant.getLock_());
+					result.put(UserTerm.APPLICANT_TMP_PASS, applicant.getTmpPass());
 
-					result.put("userId", applicant.getMappingUserId());
-					result.put("userName", applicant.getApplicantName());
-					result.put("mappingUserId", applicant.getMappingUserId());
+					result.put(UserTerm.USER_ID, applicant.getMappingUserId());
+					result.put(UserTerm.USER_NAME, applicant.getApplicantName());
+					result.put(UserTerm.MAPPING_USER_ID, applicant.getMappingUserId());
 
 				}
 

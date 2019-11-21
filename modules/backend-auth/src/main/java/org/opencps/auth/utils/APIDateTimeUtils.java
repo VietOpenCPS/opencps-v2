@@ -29,20 +29,24 @@ public class APIDateTimeUtils {
 	public static final String _NORMAL_DATE_TIME = "dd-MM-yyyy HH:mm:ss";
 
 	public static final String _LUCENE_PATTERN = "yyyyMMddHHmmss";
+	
+	public static final String _ZERO_STR = "0";
+	
+	public static final String _SYS_TIME_ZONE = "Asia/Ho_Chi_Minh";
 
 	public static String convertNormalDateToLuceneDate(String normal) {
 		if (Validator.isNull(normal)) {
 			return StringPool.BLANK;
 		}
-		String[] splitD = normal.split("/");
+		String[] splitD = normal.split(StringPool.FORWARD_SLASH);
 		if (splitD.length != 3 ||
 				splitD[1].length() > 2 ||
 				splitD[0].length() > 2) {
 			return StringPool.BLANK;
 		}
 		String year = splitD[2];
-		String month = (splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1];
-		String day = (splitD[0].length() == 1) ? "0" + splitD[0] : splitD[0];
+		String month = (splitD[1].length() == 1) ? _ZERO_STR + splitD[1] : splitD[1];
+		String day = (splitD[0].length() == 1) ? _ZERO_STR + splitD[0] : splitD[0];
 		
 		return year + month + day;
 	}
@@ -59,7 +63,7 @@ public class APIDateTimeUtils {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(_SYS_TIME_ZONE));
 
 		Calendar calendar = Calendar.getInstance();
 

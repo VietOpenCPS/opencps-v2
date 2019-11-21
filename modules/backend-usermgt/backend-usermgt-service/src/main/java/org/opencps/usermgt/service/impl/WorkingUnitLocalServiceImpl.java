@@ -449,7 +449,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (Validator.isNotNull(govAgencyCodeTree)) {
 			MultiMatchQuery query = new MultiMatchQuery(govAgencyCodeTree);
 
-			query.addFields("govAgencyCodeTree");
+			query.addFields(WorkingUnitTerm.GOV_AGENCY_CODE_TREE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -462,17 +462,17 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(WorkingUnitTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String parentWorkingUnitId = (String) params.get(WorkingUnitTerm.PARENT_WORKING_UNIT_ID);
 		String workingUnitId = (String) params.get(WorkingUnitTerm.WORKINGUNIT_ID);
-		String govAgencyCodeTree = (String) params.get("govAgencyCodeTree");
+		String govAgencyCodeTree = (String) params.get(WorkingUnitTerm.GOV_AGENCY_CODE_TREE);
 
 		Indexer<WorkingUnit> indexer = IndexerRegistryUtil.nullSafeGetIndexer(WorkingUnit.class);
 
 		searchContext.addFullQueryEntryClassName(WorkingUnit.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkingUnit.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(WorkingUnitTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -526,7 +526,7 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 		if (Validator.isNotNull(govAgencyCodeTree)) {
 			MultiMatchQuery query = new MultiMatchQuery(govAgencyCodeTree);
 
-			query.addFields("govAgencyCodeTree");
+			query.addFields(WorkingUnitTerm.GOV_AGENCY_CODE_TREE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -542,11 +542,11 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		if (parentWorkingUnitId == 0) {
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
 
-				ext += "0";
+				ext += WorkingUnitTerm.getSibLingPre();
 
 			}
 
@@ -558,10 +558,10 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			try {
 				parentItem = workingUnitPersistence.findByPrimaryKey(parentWorkingUnitId);
 
-				String ext = "";
+				String ext = StringPool.BLANK;
 
 				for (int i = 0; i < 4 - sibling.length(); i++) {
-					ext += "0";
+					ext += WorkingUnitTerm.getSibLingPre();
 				}
 
 				return parentItem.getTreeIndex() + StringPool.PERIOD + ext
@@ -602,9 +602,9 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 
 		WorkingUnit object = null;
 
-		if (objectData.getLong("workingUnitId") > 0) {
+		if (objectData.getLong(WorkingUnitTerm.WORKINGUNIT_ID) > 0) {
 
-			object = workingUnitPersistence.fetchByPrimaryKey(objectData.getLong("workingUnitId"));
+			object = workingUnitPersistence.fetchByPrimaryKey(objectData.getLong(WorkingUnitTerm.WORKINGUNIT_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -615,32 +615,32 @@ public class WorkingUnitLocalServiceImpl extends WorkingUnitLocalServiceBaseImpl
 			object = workingUnitPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(WorkingUnitTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(WorkingUnitTerm.USER_ID));
 
-		object.setName(objectData.getString("name"));
-		object.setEnName(objectData.getString("enName"));
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setParentWorkingUnitId(objectData.getLong("parentWorkingUnitId"));
-		object.setAddress(objectData.getString("address"));
-		object.setTelNo(objectData.getString("telNo"));
-		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString("email"));
-		object.setWebsite(objectData.getString("website"));
+		object.setName(objectData.getString(WorkingUnitTerm.NAME));
+		object.setEnName(objectData.getString(WorkingUnitTerm.ENNAME));
+		object.setGovAgencyCode(objectData.getString(WorkingUnitTerm.GOV_AGENCY_CODE));
+		object.setParentWorkingUnitId(objectData.getLong(WorkingUnitTerm.PARENT_WORKING_UNIT_ID));
+		object.setAddress(objectData.getString(WorkingUnitTerm.ADDRESS));
+		object.setTelNo(objectData.getString(WorkingUnitTerm.TEL_NO));
+		object.setFaxNo(objectData.getString(WorkingUnitTerm.FAX_NO));
+		object.setEmail(objectData.getString(WorkingUnitTerm.EMAIL));
+		object.setWebsite(objectData.getString(WorkingUnitTerm.WEBSITE));
 //		object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
-		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));
+		object.setCeremonyDate(new Date(objectData.getLong(WorkingUnitTerm.CEREMONYDATE)));
 		
-		String sibling = getSibling(objectData.getLong(Field.GROUP_ID), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
+		String sibling = getSibling(objectData.getLong(Field.GROUP_ID), objectData.getLong(WorkingUnitTerm.PARENT_WORKING_UNIT_ID), objectData.getString(WorkingUnitTerm.SIBLING));
 		
 		object.setSibling(sibling);
 		
 		String treeIndex;
 		try {
-			treeIndex = getTreeIndex(objectData.getLong("workingUnitId"), objectData.getLong("parentWorkingUnitId"), objectData.getString("sibling"));
+			treeIndex = getTreeIndex(objectData.getLong(WorkingUnitTerm.WORKINGUNIT_ID), objectData.getLong(WorkingUnitTerm.PARENT_WORKING_UNIT_ID), objectData.getString(WorkingUnitTerm.SIBLING));
 			object.setTreeIndex(treeIndex);
 			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 		} catch (NotFoundException e) {

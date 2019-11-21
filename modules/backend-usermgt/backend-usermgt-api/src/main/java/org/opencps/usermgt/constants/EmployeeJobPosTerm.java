@@ -55,6 +55,9 @@ public class EmployeeJobPosTerm {
 	public static final String JOBPOST_ID_SORTABLE = "jobPostId_sortable";
 	
 	public static final String WORKING_UNIT_ID_SORTABLE = "workingUnitId_sortable";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PAGINATION_TYPE = "paginationType";
 
 	private long employeeJobPosId;
 

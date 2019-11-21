@@ -27,6 +27,8 @@ public class OfficeSiteTerm {
 	public static final String ADMIN_USER_SCREEN_NAME = "adminUser_screenName";
 	public static final String ADMIN_USER_EMAIL = "adminUser_email";
 	
+	public static final String CEREMONY_DATE = "ceremonyDate";
+	
 	// sortable
 	public static final String OFFICE_SITE_ID_SORTABLE = "officeSiteId_sortable";
 
@@ -49,6 +51,11 @@ public class OfficeSiteTerm {
 	public static final String SITE_GROUP_ID_SORTABLE = "siteGroupId_sortable";
 	public static final String ADMIN_USER_ID_SORTABLE = "adminUserId_sortable";
 	public static final String PREFERENCES_SORTABLE = "preferences_sortable";
+	
+	public static final String CURRENT_SITE = "currentSite";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PAGINATION_TYPE = "paginationType";
 	
 	private long officeSiteId;
 

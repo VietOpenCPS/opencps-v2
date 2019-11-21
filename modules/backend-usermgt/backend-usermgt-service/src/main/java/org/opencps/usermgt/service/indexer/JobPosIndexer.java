@@ -46,10 +46,10 @@ public class JobPosIndexer extends BaseIndexer<JobPos> {
 			SearchContext searchContext) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(JobPosTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(JobPosTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

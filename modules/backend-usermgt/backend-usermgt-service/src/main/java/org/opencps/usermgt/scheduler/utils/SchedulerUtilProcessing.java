@@ -6,6 +6,7 @@ import org.opencps.communication.exception.NoSuchNotificationQueueException;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONException;
@@ -48,10 +49,10 @@ public class SchedulerUtilProcessing {
 
 						JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-						payLoad.put("toName", payLoadData.get("toName") );
-						payLoad.put("toAddress", payLoadData.get("toAddress"));
-						payLoad.put("subject", payLoadData.get("subject"));
-						payLoad.put("body", payLoadData.get("body") );
+						payLoad.put(ApplicantListenerMessageKeys.TO_NAME, payLoadData.get(ApplicantListenerMessageKeys.TO_NAME) );
+						payLoad.put(ApplicantListenerMessageKeys.TO_ADDRESS, payLoadData.get(ApplicantListenerMessageKeys.TO_ADDRESS));
+						payLoad.put(ApplicantListenerMessageKeys.SUBJECT, payLoadData.get(ApplicantListenerMessageKeys.SUBJECT));
+						payLoad.put(ApplicantListenerMessageKeys.BODY, payLoadData.get(ApplicantListenerMessageKeys.BODY) );
 						
 //								StringUtil.replace(notificationtemplate.getEmailBody(),
 //										new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$PASSWORD$]", "[$PASSWORD_CODE$]", "[$USERSTATUS$]" },

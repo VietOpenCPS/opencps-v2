@@ -231,14 +231,14 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 			SearchContext searchContext) throws ParseException, SearchException {
 		// TODO
 		MultiMatchQuery query = null;
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(OfficeSiteTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(OfficeSiteTerm.USER_ID);
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
 		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
 		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(OfficeSiteTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -276,14 +276,14 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 			throws ParseException, SearchException {
 		// TODO
 		MultiMatchQuery query = null;
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(OfficeSiteTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(OfficeSiteTerm.USER_ID);
 		Indexer<OfficeSite> indexer = IndexerRegistryUtil.nullSafeGetIndexer(OfficeSite.class);
 
 		searchContext.addFullQueryEntryClassName(OfficeSite.class.getName());
 		searchContext.setEntryClassNames(new String[] { OfficeSite.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(OfficeSiteTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -342,9 +342,9 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 
 		OfficeSite object = null;
 
-		if (objectData.getLong("officeSiteId") > 0) {
+		if (objectData.getLong(OfficeSiteTerm.OFFICE_SITE_ID) > 0) {
 
-			object = officeSitePersistence.fetchByPrimaryKey(objectData.getLong("officeSiteId"));
+			object = officeSitePersistence.fetchByPrimaryKey(objectData.getLong(OfficeSiteTerm.OFFICE_SITE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -355,26 +355,26 @@ public class OfficeSiteLocalServiceImpl extends OfficeSiteLocalServiceBaseImpl {
 			object = officeSitePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(OfficeSiteTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(OfficeSiteTerm.USER_ID));
 
-		object.setName(objectData.getString("name"));
-		object.setEnName(objectData.getString("enName"));
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setAddress(objectData.getString("address"));
-		object.setTelNo(objectData.getString("telNo"));
-		object.setFaxNo(objectData.getString("faxNo"));
-		object.setEmail(objectData.getString("email"));
-		object.setWebsite(objectData.getString("website"));
+		object.setName(objectData.getString(OfficeSiteTerm.NAME));
+		object.setEnName(objectData.getString(OfficeSiteTerm.EN_NAME));
+		object.setGovAgencyCode(objectData.getString(OfficeSiteTerm.GOV_AGENCY_CODE));
+		object.setAddress(objectData.getString(OfficeSiteTerm.ADDRESS));
+		object.setTelNo(objectData.getString(OfficeSiteTerm.TEL_NO));
+		object.setFaxNo(objectData.getString(OfficeSiteTerm.FAX_NO));
+		object.setEmail(objectData.getString(OfficeSiteTerm.EMAIL));
+		object.setWebsite(objectData.getString(OfficeSiteTerm.WEBSITE));
 		// object.setLogoFileEntryId(objectData.getString("actionCode")logoFileEntryId);
-		object.setSiteGroupId(objectData.getLong("siteGroupId"));
-		object.setAdminUserId(objectData.getLong("adminUserId"));
-		object.setPreferences(objectData.getString("preferences"));
-		object.setCeremonyDate(new Date(objectData.getLong("ceremonyDate")));
+		object.setSiteGroupId(objectData.getLong(OfficeSiteTerm.SITE_GROUP_ID));
+		object.setAdminUserId(objectData.getLong(OfficeSiteTerm.ADMIN_USER_ID));
+		object.setPreferences(objectData.getString(OfficeSiteTerm.PREFERENCES));
+		object.setCeremonyDate(new Date(objectData.getLong(OfficeSiteTerm.CEREMONY_DATE)));
 
 		officeSitePersistence.update(object);
 
