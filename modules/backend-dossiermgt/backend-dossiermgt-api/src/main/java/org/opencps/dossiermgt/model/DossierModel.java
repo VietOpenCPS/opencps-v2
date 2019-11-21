@@ -1531,6 +1531,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setMetaData(String metaData);
 
+	/**
+	 * Returns the system ID of this dossier.
+	 *
+	 * @return the system ID of this dossier
+	 */
+	public int getSystemId();
+
+	/**
+	 * Sets the system ID of this dossier.
+	 *
+	 * @param systemId the system ID of this dossier
+	 */
+	public void setSystemId(int systemId);
+
 	@Override
 	public boolean isNew();
 

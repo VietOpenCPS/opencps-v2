@@ -18,7 +18,11 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -51,6 +55,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -61,6 +68,7 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -89,6 +97,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	 * {@link org.opencps.usermgt.service.ApplicantLocalServiceUtil} to access
 	 * the applicant local service.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 	public Applicant fetchByMappingID(long mappingID) {
 
@@ -894,6 +904,166 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Applicant importApplicationDB(long groupId, long userId, long applicantId, String applicantIdNo,
+			String applicantName, String applicantIdType, Date applicantIdDate, String contactEmail,
+			String contactTelNo, String address, String cityCode, String cityName, String districtCode,
+			String districtName, String wardCode, String wardName, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Applicant applicant = null;
+		//String password = "12345";
+		String password = PwdGenerator.getPassword();
+		_log.info("contactEmail: "+contactEmail + "| password: "+ password);
+
+		if (applicantId == 0) {
+			applicantId = counterLocalService.increment(Applicant.class.getName());
+			applicant = applicantPersistence.create(applicantId);
+
+			Role roleDefault = RoleLocalServiceUtil.getRole(
+				auditUser.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+
+			String activationCode = StringPool.BLANK;
+
+			boolean autoPassword = false;
+			boolean autoScreenName = true;
+			boolean sendEmail = false;
+
+			long[] groupIds = new long[] {
+				groupId
+			};
+			long[] organizationIds = null;
+			long[] roleIds = null;
+			long[] userGroupIds = null;
+
+			String screenName = null;
+			if (Validator.isNull(password)) {
+				password =
+					PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			}
+
+			String firstName = ("citizen".equals(applicantIdType)
+				? "Ông/bà" : ("business".equals(applicantIdType)
+					? "Quý công ty" : "Tổ chức"));
+			String lastName = applicantName;
+
+			UserMgtUtils.SplitName spn =
+				UserMgtUtils.splitName(firstName, lastName);
+
+			// add default role
+			if (Validator.isNotNull(roleDefault)) {
+				roleIds = new long[] {
+					roleDefault.getRoleId()
+				};
+			}
+
+			Role adminRole = RoleLocalServiceUtil.getRole(
+				auditUser.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+			List<User> adminUsers =
+				userLocalService.getRoleUsers(adminRole.getRoleId());
+			long creatorUserId = 0;
+			if (adminUsers.size() != 0) {
+				creatorUserId = adminUsers.get(0).getUserId();
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
+
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
+			// spn.getFirstName() + "," + spn.getMidName());
+			User mappingUser = userLocalService.addUserWithWorkflow(
+				creatorUserId, auditUser.getCompanyId(), autoPassword, password,
+				password, autoScreenName, screenName, contactEmail, 0l,
+				StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(),
+				spn.getMidName(), spn.getLastName(), 0, 0, true, month,
+				dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds,
+				organizationIds, roleIds, userGroupIds, sendEmail, context);
+			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
+			// mappingUser.getFullName());
+			// mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
+			userLocalService.updateStatus(
+				mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED,
+				context);
+			//
+
+			long mappingUserId = mappingUser.getUserId();
+
+			// Add audit field
+			applicant.setCreateDate(now);
+			applicant.setModifiedDate(now);
+			applicant.setCompanyId(context.getCompanyId());
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+			applicant.setGroupId(groupId);
+
+			applicant.setApplicantName(applicantName);
+			applicant.setApplicantIdType(applicantIdType);
+			applicant.setApplicantIdNo(applicantIdNo);
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+			applicant.setContactTelNo(contactTelNo);
+			applicant.setCityCode(cityCode);
+			applicant.setCityName(cityName);
+			applicant.setDistrictCode(districtCode);
+			applicant.setDistrictName(districtName);
+			applicant.setWardCode(wardCode);
+			applicant.setWardName(wardName);
+			applicant.setContactEmail(contactEmail);
+			applicant.setMappingUserId(mappingUserId);
+			applicant.setActivationCode(activationCode);
+			applicant.setTmpPass(password);
+
+		}
+		else {
+			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+			applicant.setModifiedDate(now);
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+
+			if (Validator.isNotNull(applicantName))
+				applicant.setApplicantName(applicantName);
+
+			if (Validator.isNotNull(applicantIdType))
+				applicant.setApplicantIdType(applicantIdType);
+
+			if (Validator.isNotNull(applicantIdNo))
+				applicant.setApplicantIdNo(applicantIdNo);
+
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+
+			if (Validator.isNotNull(contactTelNo))
+				applicant.setContactTelNo(contactTelNo);
+
+			if (Validator.isNotNull(contactEmail))
+				applicant.setContactEmail(contactEmail);
+			
+			if (Validator.isNotNull(cityCode))
+				applicant.setCityCode(cityCode);
+
+			if (Validator.isNotNull(cityName))
+			applicant.setCityName(cityName);
+
+			if (Validator.isNotNull(districtCode))
+			applicant.setDistrictCode(districtCode);
+
+			if (Validator.isNotNull(districtName))
+			applicant.setDistrictName(districtName);
+
+			if (Validator.isNotNull(wardCode))
+			applicant.setWardCode(wardCode);
+
+			if (Validator.isNotNull(wardName))
+			applicant.setWardName(wardName);
+		}
+
+		return applicantPersistence.update(applicant);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Applicant updateApplicationDB(
 		long groupId, long userId, long applicantId, String applicantIdNo,
 		String applicantName, String applicantIdType, Date applicantIdDate,
@@ -1039,6 +1209,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	public List<Applicant> findByAppIds(String applicantIdNo) {
 
 		return applicantPersistence.findByF_APLC_IDS(applicantIdNo);
+	}
+
+	public List<Applicant> findByContactEmailList(String contactEmail) {
+
+		return applicantPersistence.findByF_EMAIL(contactEmail);
 	}
 
 	// private Log _log =

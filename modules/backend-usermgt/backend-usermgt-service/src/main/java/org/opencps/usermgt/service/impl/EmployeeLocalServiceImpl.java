@@ -936,4 +936,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		return employeePersistence.findByF_groupId(groupId);
 	}
 
+	public List<Employee> findByWorkstatus(long mappingUserId, int workingStatus) {
+		return employeePersistence.findByF_EMP_WORK(mappingUserId, workingStatus);
+	}
+
 }

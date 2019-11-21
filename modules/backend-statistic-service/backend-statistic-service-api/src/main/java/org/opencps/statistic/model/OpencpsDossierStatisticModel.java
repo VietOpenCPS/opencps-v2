@@ -698,6 +698,21 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setInsideCount(int insideCount);
 
+	/**
+	 * Returns the system of this opencps dossier statistic.
+	 *
+	 * @return the system of this opencps dossier statistic
+	 */
+	@AutoEscape
+	public String getSystem();
+
+	/**
+	 * Sets the system of this opencps dossier statistic.
+	 *
+	 * @param system the system of this opencps dossier statistic
+	 */
+	public void setSystem(String system);
+
 	@Override
 	public boolean isNew();
 

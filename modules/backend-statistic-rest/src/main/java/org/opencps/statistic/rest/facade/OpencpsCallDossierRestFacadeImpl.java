@@ -95,7 +95,10 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			//Process tranfer params using search dossier
 			buildUrlQueryParams(urlQueryParams, payload);
 		}
+		//Add common params
+		urlQueryParams.add("systemId", "0,1,2");
 		urlQueryParams.add("top", "statistic");
+
 		if (payload.getStart() != 0) {
 			urlQueryParams.add("start", String.valueOf(payload.getStart()));			
 		}

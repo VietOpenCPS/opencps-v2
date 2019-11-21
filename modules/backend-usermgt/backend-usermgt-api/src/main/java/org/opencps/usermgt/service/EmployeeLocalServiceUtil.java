@@ -262,6 +262,11 @@ public class EmployeeLocalServiceUtil {
 		return getService().findByG_EMPID(groupId, employeeIds);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Employee> findByWorkstatus(
+		long mappingUserId, int workingStatus) {
+		return getService().findByWorkstatus(mappingUserId, workingStatus);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

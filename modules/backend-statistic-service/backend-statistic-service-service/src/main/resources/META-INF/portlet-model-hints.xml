@@ -44,6 +44,7 @@
 		<field name="waitingCount" type="int" />
 		<field name="outsideCount" type="int" />
 		<field name="insideCount" type="int" />
+		<field name="system" type="String" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsPersonStatistic">
 		<field name="uuid" type="String" />

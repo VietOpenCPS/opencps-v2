@@ -174,7 +174,9 @@ create table opencps_question (
 	publish INTEGER,
 	govAgencyCode VARCHAR(75) null,
 	govAgencyName VARCHAR(75) null,
-	questionType VARCHAR(75) null
+	questionType VARCHAR(75) null,
+	subDomainCode VARCHAR(75) null,
+	subDomainName VARCHAR(75) null
 );
 
 create table opencps_resourcerole (

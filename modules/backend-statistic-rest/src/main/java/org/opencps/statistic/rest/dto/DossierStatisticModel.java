@@ -21,6 +21,109 @@ public class DossierStatisticModel implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	@FormParam(value="month")
+	protected int month;
+	@FormParam(value="year")
+	protected int year;
+	@FormParam(value="totalCount")
+	protected int totalCount;
+	@FormParam(value="deniedCount")
+	protected int deniedCount;
+	@FormParam(value="cancelledCount")
+	protected int cancelledCount;
+	@FormParam(value="processCount")
+	protected int processCount;
+	@FormParam(value="remainingCount")
+	protected int remainingCount;
+	@FormParam(value="receivedCount")
+	protected int receivedCount;
+	@FormParam(value="onlineCount")
+	protected int onlineCount;
+	@FormParam(value="onegateCount")
+	protected int onegateCount;
+	@FormParam(value="releaseCount")
+	protected int releaseCount;
+	@FormParam(value="betimesCount")
+	protected int betimesCount;
+	@FormParam(value="ontimeCount")
+	protected int ontimeCount;
+	@FormParam(value="overtimeCount")
+	protected int overtimeCount;
+	@FormParam(value="doneCount")
+	protected int doneCount;
+	@FormParam(value="releasingCount")
+	protected int releasingCount;
+	@FormParam(value="unresolvedCount")
+	protected int unresolvedCount;
+	@FormParam(value="processingCount")
+	protected int processingCount;
+	@FormParam(value="undueCount")
+	protected int undueCount;
+	@FormParam(value="overdueCount")
+	protected int overdueCount;
+	@FormParam(value="pausingCount")
+	protected int pausingCount;
+	@FormParam(value="ontimePercentage")
+	protected int ontimePercentage;
+	@FormParam(value="govAgencyCode")
+	protected String govAgencyCode;
+	@FormParam(value="groupAgencyCode")
+	protected String groupAgencyCode;
+	@FormParam(value="govAgencyName")
+	protected String govAgencyName;
+	@FormParam(value="domainCode")
+	protected String domainCode;
+	@FormParam(value="domainName")
+	protected String domainName;
+	@FormParam(value="reporting")
+	protected Boolean reporting;
+	@FormParam(value="overtimeInside")
+	protected int overtimeInside;
+	@FormParam(value="overtimeOutside")
+	protected int overtimeOutside;
+	@FormParam(value="interoperatingCount")
+	protected int interoperatingCount;
+	@FormParam(value="waitingCount")
+	protected int waitingCount;
+	@FormParam(value="outsideCount")
+	protected int outsideCount;
+	@FormParam(value="insideCount")
+	protected int insideCount;
+	protected long groupId;
+	@FormParam(value="system")
+	protected String system;
+
+	public long getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+	
+	private String username;
+	private String password;
+	private String endpoint;
+	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getEndpoint() {
+		return endpoint;
+	}
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}		
+
 	public int getMonth() {
 		return month;
 	}
@@ -225,103 +328,11 @@ public class DossierStatisticModel implements Serializable {
 	public void setInsideCount(int insideCount) {
 		this.insideCount = insideCount;
 	}
-	@FormParam(value="month")
-	protected int month;
-	@FormParam(value="year")
-	protected int year;
-	@FormParam(value="totalCount")
-	protected int totalCount;
-	@FormParam(value="deniedCount")
-	protected int deniedCount;
-	@FormParam(value="cancelledCount")
-	protected int cancelledCount;
-	@FormParam(value="processCount")
-	protected int processCount;
-	@FormParam(value="remainingCount")
-	protected int remainingCount;
-	@FormParam(value="receivedCount")
-	protected int receivedCount;
-	@FormParam(value="onlineCount")
-	protected int onlineCount;
-	@FormParam(value="onegateCount")
-	protected int onegateCount;
-	@FormParam(value="releaseCount")
-	protected int releaseCount;
-	@FormParam(value="betimesCount")
-	protected int betimesCount;
-	@FormParam(value="ontimeCount")
-	protected int ontimeCount;
-	@FormParam(value="overtimeCount")
-	protected int overtimeCount;
-	@FormParam(value="doneCount")
-	protected int doneCount;
-	@FormParam(value="releasingCount")
-	protected int releasingCount;
-	@FormParam(value="unresolvedCount")
-	protected int unresolvedCount;
-	@FormParam(value="processingCount")
-	protected int processingCount;
-	@FormParam(value="undueCount")
-	protected int undueCount;
-	@FormParam(value="overdueCount")
-	protected int overdueCount;
-	@FormParam(value="pausingCount")
-	protected int pausingCount;
-	@FormParam(value="ontimePercentage")
-	protected int ontimePercentage;
-	@FormParam(value="govAgencyCode")
-	protected String govAgencyCode;
-	@FormParam(value="groupAgencyCode")
-	protected String groupAgencyCode;
-	@FormParam(value="govAgencyName")
-	protected String govAgencyName;
-	@FormParam(value="domainCode")
-	protected String domainCode;
-	@FormParam(value="domainName")
-	protected String domainName;
-	@FormParam(value="reporting")
-	protected Boolean reporting;
-	@FormParam(value="overtimeInside")
-	protected int overtimeInside;
-	@FormParam(value="overtimeOutside")
-	protected int overtimeOutside;
-	@FormParam(value="interoperatingCount")
-	protected int interoperatingCount;
-	@FormParam(value="waitingCount")
-	protected int waitingCount;
-	@FormParam(value="outsideCount")
-	protected int outsideCount;
-	@FormParam(value="insideCount")
-	protected int insideCount;
-	protected long groupId;
-	public long getGroupId() {
-		return groupId;
+	public String getSystem() {
+		return system;
 	}
-	public void setGroupId(long groupId) {
-		this.groupId = groupId;
+	public void setSystem(String system) {
+		this.system = system;
 	}
-	
-	private String username;
-	private String password;
-	private String endpoint;
-	
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getEndpoint() {
-		return endpoint;
-	}
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}		
 
 }

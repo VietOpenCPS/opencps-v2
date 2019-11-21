@@ -17,6 +17,7 @@ public class DossierMultipleInputModel {
 	private String dossierMarkArr;
 	private String dossierFileArr;
 	private String payment;
+	private int systemId;
 
 	public String getServiceCode() {
 		return serviceCode;
@@ -65,6 +66,12 @@ public class DossierMultipleInputModel {
 	}
 	public void setPayment(String payment) {
 		this.payment = payment;
+	}
+	public int getSystemId() {
+		return systemId;
+	}
+	public void setSystemId(int systemId) {
+		this.systemId = systemId;
 	}
 
 }

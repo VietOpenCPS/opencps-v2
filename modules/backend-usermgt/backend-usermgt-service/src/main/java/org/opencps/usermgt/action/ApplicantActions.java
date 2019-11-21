@@ -58,4 +58,8 @@ public interface ApplicantActions {
 	public JSONObject createApplicantAccount(long userId, long companyId, long groupId, long id, String screenName,
 			String email, boolean exist, ServiceContext serviceContext) throws PortalException;
 
+	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String appliantName,
+			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
+			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException;
+
 }

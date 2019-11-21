@@ -65,7 +65,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(85);
+		StringBundler sb = new StringBundler(87);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -151,6 +151,8 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		sb.append(outsideCount);
 		sb.append(", insideCount=");
 		sb.append(insideCount);
+		sb.append(", system=");
+		sb.append(system);
 		sb.append("}");
 
 		return sb.toString();
@@ -259,6 +261,13 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		opencpsDossierStatisticImpl.setOutsideCount(outsideCount);
 		opencpsDossierStatisticImpl.setInsideCount(insideCount);
 
+		if (system == null) {
+			opencpsDossierStatisticImpl.setSystem("");
+		}
+		else {
+			opencpsDossierStatisticImpl.setSystem(system);
+		}
+
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
 		return opencpsDossierStatisticImpl;
@@ -341,6 +350,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		outsideCount = objectInput.readInt();
 
 		insideCount = objectInput.readInt();
+		system = objectInput.readUTF();
 	}
 
 	@Override
@@ -463,6 +473,13 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		objectOutput.writeInt(outsideCount);
 
 		objectOutput.writeInt(insideCount);
+
+		if (system == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(system);
+		}
 	}
 
 	public String uuid;
@@ -507,4 +524,5 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public int waitingCount;
 	public int outsideCount;
 	public int insideCount;
+	public String system;
 }

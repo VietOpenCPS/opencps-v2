@@ -1,5 +1,17 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -16,22 +28,12 @@ import org.opencps.api.dossierlog.model.DossierLogSearchModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierLogActions;
 import org.opencps.dossiermgt.action.impl.DossierLogActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DossierLogManagementImpl implements DossierLogManagement {
 
@@ -40,15 +42,10 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String notificationType, String author,
 			String payload, String content) {
 
-//		BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
-			// if (!auth.isAuth(serviceContext)) {
-			// throw new UnauthenticationException();
-			// }
 			DossierLogActions action = new DossierLogActionsImpl();
 
 			DossierLog dossierLog = action.addDossierLog(groupId, id, author, content, notificationType, payload,
@@ -68,15 +65,9 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 	public Response getDossierLogs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierLogSearchModel query) {
 
-//		BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
-
-			// if (!auth.isAuth(serviceContext)) {
-			// throw new UnauthenticationException();
-			// }
 
 			DossierLogResultsModel results = new DossierLogResultsModel();
 
@@ -103,17 +94,8 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 	public Response getDossierLogById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierLogSearchModel query, long dossierId, String password) {
 
-		// BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-
-			// if (!auth.isAuth(serviceContext)) {
-			// throw new UnauthenticationException();
-			// }
-
-			// DossierLogSearchIdResultsModel results = new
-			// DossierLogSearchIdResultsModel();
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 
@@ -132,22 +114,20 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 				JSONObject model = JSONFactoryUtil.createJSONObject();
 
-				long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
-				// int notificationType =
-				// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
+				long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 
-				model.put("dossierLogId", dossierLogId);
+				model.put(DossierLogTerm.DOSSIER_LOG_ID, dossierLogId);
 
-				model.put("author", document.get(DossierLogTerm.AUTHOR) != null ? document.get(DossierLogTerm.AUTHOR).toUpperCase() : StringPool.BLANK);
+				model.put(DossierLogTerm.AUTHOR, document.get(DossierLogTerm.AUTHOR) != null ? document.get(DossierLogTerm.AUTHOR).toUpperCase() : StringPool.BLANK);
 
-				model.put("content", document.get(DossierLogTerm.CONTENT));
+				model.put(DossierLogTerm.CONTENT, document.get(DossierLogTerm.CONTENT));
 
 				String strDate = document.get(DossierLogTerm.CREATE_DATE);
 
 				Date date = null;
 
 				if (Validator.isNotNull(strDate)) {
-					date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+					date = APIDateTimeUtils.convertStringToDate(strDate, ReadFilePropertiesUtils.get(ConstantUtils.PATTERN_LUCENE));
 				}
 
 //				model.put("createDate", date != null
@@ -169,8 +149,6 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			results.put("total", dossierLogJsonObject.getInt("total"));
 
 			results.put("data", models);
-
-			// results.getData().addAll(DossierLogUtils.mappingToDossierLogSearchByIdResultsModel(documents));
 
 			return Response.status(200).entity(results.toJSONString()).build();
 

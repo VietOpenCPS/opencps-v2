@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,12 +64,14 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
+import org.graphql.api.controller.utils.CheckFileUtils;
 import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
+import org.graphql.api.controller.utils.GraphQLUtils;
 import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
@@ -78,6 +82,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -88,7 +93,6 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
-import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -437,6 +441,10 @@ public class RestfulController {
 
 //				DLFileEntry file = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
+				boolean flagCheckFile = CheckFileUtils.checkFileEntryUpload(fileEntry);
+				if (!flagCheckFile) {
+					throw new ResourceNotFoundException();
+				}
 				
 //				result = "/documents/" + file.getGroupId() + StringPool.FORWARD_SLASH + file.getFolderId()
 //						+ StringPool.FORWARD_SLASH + HtmlUtil.escape(file.getTitle()) + StringPool.FORWARD_SLASH + file.getUuid();
@@ -449,6 +457,24 @@ public class RestfulController {
 		}
 
 		return result;
+	}
+
+	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "File Attachment incorrect format")
+	public class ResourceNotFoundException extends RuntimeException {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	@ResponseStatus(value = HttpStatus.OK, reason = "Success")
+	public class SucessException extends RuntimeException {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 	}
 
 	@RequestMapping(value = "/users/upload/{code}/{className}/{pk}", method = RequestMethod.POST)
@@ -465,7 +491,16 @@ public class RestfulController {
 			multipartFile = (CommonsMultipartFile) request.getFile(key);
 		}
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(multipartFile);
+		
+		if (!flagCheck) {
+//			return Response.status(403)
+//					.entity("File Attachment incorrect format!").build();
+			throw new ResourceNotFoundException();
+		}
+
 		long userId = 0;
+
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 		}
@@ -483,9 +518,10 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 
 		try {
+			String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 			if (multipartFile != null) {
 				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+						UUID.randomUUID() + "_" + fileName,
 						multipartFile.getOriginalFilename()
 								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
 						multipartFile.getSize(), destination, desc, serviceContext);
@@ -493,7 +529,7 @@ public class RestfulController {
 				if ("opencps_adminconfig".equals(code)) {
 
 					ServiceFileTemplateLocalServiceUtil.addServiceFileTemplate(Long.valueOf(pk),
-							fileEntry.getFileEntryId() + StringPool.BLANK, multipartFile.getOriginalFilename(),
+							fileEntry.getFileEntryId() + StringPool.BLANK, fileName,
 							fileEntry.getFileEntryId(), serviceContext);
 
 				} else {
@@ -565,7 +601,9 @@ public class RestfulController {
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-
+		
+//		return Response.status(200)
+//				.entity("Success!").build();
 	}
 
 	@RequestMapping(value = "/users/upload/{code}/{className}/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.POST)
@@ -583,6 +621,13 @@ public class RestfulController {
 			multipartFile = (CommonsMultipartFile) request.getFile(key);
 		}
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(multipartFile);
+		
+		if (!flagCheck) {
+//			return Response.status(403)
+//					.entity("File Attachment incorrect format!").build();
+			throw new ResourceNotFoundException();
+		}
 		long userId = 0;
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
@@ -601,9 +646,10 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 
 		try {
+			String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 			if (multipartFile != null) {
 				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
-						UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(),
+						UUID.randomUUID() + "_" + fileName,
 						multipartFile.getOriginalFilename()
 								.substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1),
 						multipartFile.getSize(), destination, desc, serviceContext);
@@ -633,6 +679,8 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
+//		return Response.status(200)
+//				.entity("Success!").build();
 	}
 
 	@RequestMapping(value = "/filetemplate/{pk}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
@@ -997,15 +1045,20 @@ public class RestfulController {
 
 	@RequestMapping(value = "/users/{id}", produces = { "application/json",
 			"application/xml" }, method = RequestMethod.GET)
-	public ResponseEntity<UsersUserItem> getUserById(
+	public ResponseEntity<UsersUserItem> getUserById(HttpServletRequest request, 
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") String id) {
 
 		if (Validator.isNull(id)) {
-
 			throw new OpenCPSNotFoundException(User.class.getName());
 
 		} else {
 
+			long userIdPath = Long.valueOf(id);
+			System.out.println("1054 UserId: "+request.getAttribute(WebKeys.USER_ID));
+			Long userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+			if (userId != null && userId > 0 && userId != userIdPath) {
+				userId = userIdPath;
+			}
 			UserActions actions = new UserActions();
 
 			String userData = actions.getUserById(Long.valueOf(id));
@@ -1061,7 +1114,8 @@ public class RestfulController {
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
-			@QueryParam("keyword") String keyword) {
+			@QueryParam("keyword") String keyword,
+			@QueryParam("formDataKey") String formDataKey) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -1127,6 +1181,8 @@ public class RestfulController {
 
 						}
 					}
+					
+					String queryDataFrom = GraphQLUtils.buildDeliverableSearchDataForm(formDataKey);
 
 					System.out.println("queryBuilderLike:" + queryBuilderLike);
 					System.out.println("queryBuilder:" + queryBuilder);
@@ -1143,12 +1199,12 @@ public class RestfulController {
 							+ ", \"size\" : " + size
 							+ ", \"sort\" : [{\"issueDate_Number_sortable\" : { \"order\" : \"desc\"}}]"
 							+ ", \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
 							+ "}");
 
 					JSONObject countQuery = JSONFactoryUtil.createJSONObject(" { "
 							+ "\"query\": { \"query_string\": { \"query\" : \"(entryClassName:(entryClassName:org.opencps.dossiermgt.model.Deliverable) AND groupId:"
-							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + " )\" }}"
+							+ groupId + " AND deliverableType: " + type + queryBuilder + queryBuilderLike + sbBuilder.toString() + queryDataFrom + " )\" }}"
 							+ "}");
 
 					System.out.println("query:" + query);
@@ -1217,6 +1273,10 @@ public class RestfulController {
 
 			fileEntry = DLFileEntryLocalServiceUtil.getFileEntry(id);
 
+			boolean flagCheckFile = CheckFileUtils.checkDLFileEntryUpload(fileEntry);
+			if (!flagCheckFile) {
+				throw new ResourceNotFoundException();
+			}
 			result = "/documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId()
 					+ StringPool.FORWARD_SLASH + fileEntry.getTitle() + StringPool.FORWARD_SLASH + fileEntry.getUuid();
 

@@ -2482,6 +2482,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2512,7 +2513,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
+				documentDate, strSystemId, booleanCommon);
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2596,6 +2598,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null ? GetterUtil.getInteger(params.get(DossierTerm.DELEGATE_TYPE)) : null;
 		String documentNo = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_NO));
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
+		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2623,7 +2626,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				follow, originality, assigned, statusStep, subStatusStep, permission, domain, domainName, applicantName,
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
-				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo, documentDate, booleanCommon);
+				originDossierId, time, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
+				documentDate, strSystemId, booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2726,8 +2730,27 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
 			String toStatisticDate, Integer originDossierId, String time, String register, int day, Long groupDossierId,
-			String assignedUserId, Integer delegateType, String documentNo, String documentDate, BooleanQuery booleanQuery) throws ParseException {
+			String assignedUserId, Integer delegateType, String documentNo, String documentDate, String strSystemId,
+			BooleanQuery booleanQuery) throws ParseException {
 
+		//System Id
+		if (Validator.isNotNull(strSystemId)) {
+			String[] systemIdArr = StringUtil.split(strSystemId);
+
+			if (systemIdArr != null && systemIdArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < systemIdArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(systemIdArr[i]);
+					query.addField(DossierTerm.SYSTEM_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(strSystemId);
+				query.addFields(DossierTerm.SYSTEM_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
 
 		if (Validator.isNotNull(status)) {
 			String[] lstStatus = StringUtil.split(status);
@@ -4920,15 +4943,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		} else {
 
-			long id = CounterLocalServiceUtil.increment(ServiceProcess.class.getName());
+			long id = CounterLocalServiceUtil.increment(Dossier.class.getName());
 
 			object = dossierPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
 			object.setCreateDate(new Date());
 
 		}
+
+		object.setGroupId(objectData.getLong("groupId"));
+		object.setCompanyId(objectData.getLong("companyId"));
 
 		object.setUserId(objectData.getLong("userId"));
 		object.setUserName(objectData.getString("userName"));
@@ -4944,7 +4968,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
 		object.setApplicantIdType(objectData.getString("applicantIdType"));
 		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
-		object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		if (Validator.isNotNull(objectData.getLong("applicantIdDate"))) {
+			
+			object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
+		} else {
+
+			object.setApplicantIdDate(object.getApplicantIdDate());
+		}
 		object.setAddress(objectData.getString("address"));
 		object.setApplicantName(objectData.getString("applicantName"));
 		object.setPostalAddress(objectData.getString("postalAddress"));
@@ -5052,15 +5082,61 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setBriefNote(objectData.getString("briefNote"));
 		object.setDossierNo(objectData.getString("dossierNo"));
 		object.setSubmitting(objectData.getBoolean("submitting"));
-		object.setProcessDate(new Date(objectData.getLong("processDate")));
-		object.setSubmitDate(new Date(objectData.getLong("submitDate")));
-		object.setReceiveDate(new Date(objectData.getLong("receiveDate")));
-		object.setDueDate(new Date(objectData.getLong("dueDate")));
-		object.setExtendDate(new Date(objectData.getLong("extendDate")));
-		object.setReleaseDate(new Date(objectData.getLong("releaseDate")));
-		object.setFinishDate(new Date(objectData.getLong("finishDate")));
-		object.setCancellingDate(new Date(objectData.getLong("cancellingDate")));
-		object.setCorrecttingDate(new Date(objectData.getLong("correcttingDate")));
+		if (Validator.isNotNull(objectData.getLong("processDate"))) {
+			
+			object.setProcessDate(new Date(objectData.getLong("processDate")));
+		} else {
+			object.setProcessDate(object.getProcessDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("submitDate"))) {
+			
+			object.setSubmitDate(new Date(objectData.getLong("submitDate")));
+		} else {
+			
+			object.setSubmitDate(object.getSubmitDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("receiveDate"))) {
+			
+			object.setReceiveDate(new Date(objectData.getLong("receiveDate")));
+		} else {
+			object.setReceiveDate(object.getReceiveDate());
+		}
+		if (Validator.isNotNull(objectData.getLong("dueDate"))) {
+			
+			object.setDueDate(new Date(objectData.getLong("dueDate")));
+		} else {
+			object.setDueDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("extendDate"))) {
+			
+			object.setExtendDate(new Date(objectData.getLong("extendDate")));
+		} else {
+			object.setExtendDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("releaseDate"))) {
+			
+			object.setReleaseDate(new Date(objectData.getLong("releaseDate")));
+		} else {
+			object.setReleaseDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("finishDate"))) {
+			
+			object.setFinishDate(new Date(objectData.getLong("finishDate")));
+		} else {
+			object.setFinishDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("cancellingDate"))) {
+			
+			object.setCancellingDate(new Date(objectData.getLong("cancellingDate")));
+		} else {
+			object.setCancellingDate(null);
+		}
+		if (Validator.isNotNull(objectData.getLong("correcttingDate"))) {
+			
+			object.setCorrecttingDate(new Date(objectData.getLong("correcttingDate")));
+		} else {
+			object.setCorrecttingDate(null);
+		}
 		// object.setFolderId(objectData.getString("userName")folderId);
 		object.setDossierActionId(objectData.getLong("dossierActionId"));
 		object.setViaPostal(objectData.getInt("viaPostal"));
@@ -5070,7 +5146,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setOnline(objectData.getBoolean("online"));
 		object.setOriginal(objectData.getBoolean("original"));
 		object.setServerNo(objectData.getString("serverNo"));
-		object.setEndorsementDate(new Date(objectData.getLong("endorsementDate")));
+		if (Validator.isNotNull(objectData.getLong("endorsementDate"))) {
+			
+			object.setApplicantIdDate(new Date(objectData.getLong("endorsementDate")));
+		}
 		object.setLockState(objectData.getString("lockState"));
 		object.setOriginality(objectData.getInt("originality"));
 		object.setOriginDossierId(objectData.getLong("originDossierId"));
@@ -5326,7 +5405,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
-			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate, ServiceContext serviceContext) {
+			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
+			String documentNo, Date documentDate, int systemId, ServiceContext serviceContext) {
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
 
@@ -5460,7 +5540,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (documentDate != null && Validator.isNotNull(documentDate)) {
 			dossier.setDocumentDate(documentDate);
 		}
-		return dossierPersistence.update(dossier);		
+
+		if (systemId > 0) {
+			dossier.setSystemId(systemId);
+		}
+
+		return dossierPersistence.update(dossier);
 	}
 	
 	public List<Dossier> getByGroupAndOriginDossierNo(long groupId, String originDossierNo) {

@@ -37,12 +37,10 @@ import java.util.Date;
  * @generated
  */
 @ProviderType
-public class DeliverableLogCacheModel
-	implements CacheModel<DeliverableLog>, Externalizable {
-
+public class DeliverableLogCacheModel implements CacheModel<DeliverableLog>,
+	Externalizable {
 	@Override
 	public boolean equals(Object obj) {
-
 		if (this == obj) {
 			return true;
 		}
@@ -51,8 +49,7 @@ public class DeliverableLogCacheModel
 			return false;
 		}
 
-		DeliverableLogCacheModel deliverableLogCacheModel =
-			(DeliverableLogCacheModel) obj;
+		DeliverableLogCacheModel deliverableLogCacheModel = (DeliverableLogCacheModel)obj;
 
 		if (deliverableLogId == deliverableLogCacheModel.deliverableLogId) {
 			return true;
@@ -63,13 +60,11 @@ public class DeliverableLogCacheModel
 
 	@Override
 	public int hashCode() {
-
 		return HashUtil.hash(0, deliverableLogId);
 	}
 
 	@Override
 	public String toString() {
-
 		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
@@ -111,7 +106,6 @@ public class DeliverableLogCacheModel
 
 	@Override
 	public DeliverableLog toEntityModel() {
-
 		DeliverableLogImpl deliverableLogImpl = new DeliverableLogImpl();
 
 		if (uuid == null) {
@@ -194,9 +188,7 @@ public class DeliverableLogCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput)
-		throws IOException {
-
+	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 
 		deliverableLogId = objectInput.readLong();
@@ -225,7 +217,6 @@ public class DeliverableLogCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
-
 		if (uuid == null) {
 			objectOutput.writeUTF("");
 		}

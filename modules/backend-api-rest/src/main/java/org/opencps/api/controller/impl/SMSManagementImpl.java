@@ -11,6 +11,7 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -90,6 +92,11 @@ public class SMSManagementImpl implements SMSManagement {
 		_log.info("===============" + input.getPassword());
 		_log.info("===============" + input.getServiceNumber());
 		_log.info("===============" + input.getUser());
+		
+		JSONObject formDataKey = JSONFactoryUtil.createJSONObject();
+		formDataKey.put("bac", 1);
+		formDataKey.put("baB", "shkdshd");
+		buildDeliverableSearchDataForm(formDataKey.toJSONString());
 
 		return Response.status(200).entity(_buiderResponseSMS(input)).build();
 	}
@@ -609,6 +616,37 @@ public class SMSManagementImpl implements SMSManagement {
 		PaymentFileLocalServiceUtil.updatePaymentFile(oldPaymentFile);
 
 		return resultObj.toString();
+	}
+	
+	public static String buildDeliverableSearchDataForm (String formDataKey) {
+
+		String result = StringPool.BLANK;
+		try {
+
+			if (Validator.isNull(formDataKey)) {
+
+				return result;
+			}
+
+			JSONObject formDataKeyObject = JSONFactoryUtil.createJSONObject(formDataKey);
+
+			for (Iterator<String> iii = formDataKeyObject.keys(); iii.hasNext();) {
+				
+				String key = iii.next();
+				result += " AND " + key + "_data: *" + formDataKeyObject.get(key) + "*";
+			}
+		}
+		catch (Exception e) {
+			_log.info(e);
+		}
+		System.out.println("========result==========" + result);
+		
+		String sdd = "KQ01-BGTVT-285799@1, KQ01-BGTVT-285800@2, KQ01-BGTVT-285800@3,KQ01-BGTVT-285799@3";
+		String d = 
+						StringUtil.split(sdd, "BGTVT-285800" + "@")[1].substring(0, 1);
+		System.out.println(d);
+		
+		return result;
 	}
 
 	static Log _log = LogFactoryUtil.getLog(SMSManagementImpl.class.getName());

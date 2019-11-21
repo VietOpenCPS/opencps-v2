@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -90,6 +90,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(govAgencyName);
 		sb.append(", questionType=");
 		sb.append(questionType);
+		sb.append(", subDomainCode=");
+		sb.append(subDomainCode);
+		sb.append(", subDomainName=");
+		sb.append(subDomainName);
 		sb.append("}");
 
 		return sb.toString();
@@ -161,6 +165,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 			questionImpl.setQuestionType(questionType);
 		}
 
+		if (subDomainCode == null) {
+			questionImpl.setSubDomainCode("");
+		}
+		else {
+			questionImpl.setSubDomainCode(subDomainCode);
+		}
+
+		if (subDomainName == null) {
+			questionImpl.setSubDomainName("");
+		}
+		else {
+			questionImpl.setSubDomainName(subDomainName);
+		}
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -183,6 +201,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		govAgencyCode = objectInput.readUTF();
 		govAgencyName = objectInput.readUTF();
 		questionType = objectInput.readUTF();
+		subDomainCode = objectInput.readUTF();
+		subDomainName = objectInput.readUTF();
 	}
 
 	@Override
@@ -239,6 +259,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		else {
 			objectOutput.writeUTF(questionType);
 		}
+
+		if (subDomainCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(subDomainCode);
+		}
+
+		if (subDomainName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(subDomainName);
+		}
 	}
 
 	public long questionId;
@@ -253,4 +287,6 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String govAgencyCode;
 	public String govAgencyName;
 	public String questionType;
+	public String subDomainCode;
+	public String subDomainName;
 }

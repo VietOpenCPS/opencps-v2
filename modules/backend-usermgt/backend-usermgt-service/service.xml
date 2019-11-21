@@ -177,6 +177,11 @@
 			<finder-column name="groupId"></finder-column>
             <finder-column name="employeeId" comparator="=" arrayable-operator="OR"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_EMP_WORK">
+			<finder-column name="mappingUserId" comparator="&gt;"></finder-column>
+			<finder-column name="workingStatus" comparator="="></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"
@@ -582,6 +587,10 @@
 			<finder-column name="applicantIdNo"/>
 		</finder>
 		
+		<finder return-type="Collection" name="F_EMAIL">
+			<finder-column name="contactEmail"/>
+		</finder>
+		
 		<reference entity="User" package-path="com.liferay.portal" />
 		<reference entity="Role" package-path="com.liferay.portal" />
 	</entity>
@@ -654,6 +663,8 @@
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="questionType" type="String" />
+		<column name="subDomainCode" type="String" />
+		<column name="subDomainName" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
@@ -673,6 +684,12 @@
             <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
             <finder-column name="questionType"></finder-column>
             <finder-column name="govAgencyCode"></finder-column>
+        </finder>
+		<finder name="G_PL_QT_SDC" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+            <finder-column name="questionType"></finder-column>
+            <finder-column name="subDomainCode"></finder-column>
         </finder>
 	</entity>
 	

@@ -476,6 +476,8 @@ public class DossierUtils {
 				model.setLock("Yêu cầu bổ sung trong hạn 3 ngày");
 			}
 			
+			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
+			
 			ouputs.add(model);
 		}
 
@@ -954,6 +956,8 @@ public class DossierUtils {
 			model.setDocumentDate(APIDateTimeUtils.convertDateToString(input.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
 		}
 		model.setServerNo(input.getServerNo());
+		model.setSystemId(input.getSystemId());
+
 		return model;
 	}
 
@@ -1352,6 +1356,8 @@ public class DossierUtils {
 		model.setDelegateType(input.getDelegateType());
 		model.setDocumentNo(input.getDocumentNo());
 		model.setDocumentDate(input.getDocumentDate());
+		//
+		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
 		
 		return model;
 	}
@@ -1369,6 +1375,7 @@ public class DossierUtils {
 		model.setDossierFileArr(input.getDossierFileArr());
 		model.setDossierMarkArr(input.getDossierMarkArr());
 		model.setPayment(input.getPayment());
+		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
 
 		return model;
 	}

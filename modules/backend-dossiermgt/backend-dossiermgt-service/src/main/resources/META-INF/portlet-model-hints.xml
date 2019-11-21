@@ -354,6 +354,7 @@
 		<field name="metaData" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="systemId" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

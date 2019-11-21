@@ -129,6 +129,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setOriginDossierNo(model.getOriginDossierNo());
 		soapModel.setGroupDossierId(model.getGroupDossierId());
 		soapModel.setMetaData(model.getMetaData());
+		soapModel.setSystemId(model.getSystemId());
 
 		return soapModel;
 	}
@@ -965,6 +966,14 @@ public class DossierSoap implements Serializable {
 		_metaData = metaData;
 	}
 
+	public int getSystemId() {
+		return _systemId;
+	}
+
+	public void setSystemId(int systemId) {
+		_systemId = systemId;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1061,4 +1070,5 @@ public class DossierSoap implements Serializable {
 	private String _originDossierNo;
 	private long _groupDossierId;
 	private String _metaData;
+	private int _systemId;
 }

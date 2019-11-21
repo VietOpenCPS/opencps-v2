@@ -7,6 +7,8 @@ import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -36,6 +38,9 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,6 +48,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -55,6 +61,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import io.swagger.annotations.ApiParam;
 
 public class DeliverablesManagementImpl implements DeliverablesManagement {
 
@@ -839,6 +846,72 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			result.put("total", size);
+
+			return Response.status(200).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	public Response getDeliverableUrl(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "deliverableCode of Deliverable", required = true) @FormParam("deliverableCode") String deliverableCode,
+		@ApiParam(value = "id of DossierFile", required = true) @FormParam("dossierFileId") Long dossierFileId) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		result.put("url", StringPool.BLANK);
+		try {
+
+			_log.info(
+				"================GET===========================" +
+					deliverableCode + " " + deliverableCode + " " +
+					header.getHeaderString("groupId"));
+
+			if (Validator.isNull(deliverableCode)) {
+				return Response.status(204).entity(
+					JSONFactoryUtil.looseSerialize(result)).build();
+			}
+
+			BackendAuth auth = new BackendAuthImpl();
+			backend.auth.api.BackendAuth auth2 =
+				new backend.auth.api.BackendAuthImpl();
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			if (!auth2.isAdmin(serviceContext, "admin")) {
+				// return Response.status(
+				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
+				// "User not permission process!").build();
+			}
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			Deliverable deliverable =
+				DeliverableLocalServiceUtil.getByF_GID_DCODE(
+					groupId, deliverableCode);
+
+			if (Validator.isNotNull(deliverable) &&
+				deliverable.getFileEntryId() > 0) {
+
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+					deliverable.getFileEntryId());
+
+				result.put("fileName", fileEntry.getFileName());
+				result.put("fileType", fileEntry.getMimeType());
+				result.put(
+					"url",
+					DLUtil.getPreviewURL(
+						fileEntry, fileEntry.getFileVersion(),
+						serviceContext.getThemeDisplay(), StringPool.BLANK));
+
+			}
 
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();

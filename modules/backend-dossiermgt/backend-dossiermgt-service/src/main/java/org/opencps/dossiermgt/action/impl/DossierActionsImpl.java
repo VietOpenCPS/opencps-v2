@@ -3894,15 +3894,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
-			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType, String documentNo, Date documentDate,
-			ServiceContext serviceContext) {
+			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
+			String documentNo, Date documentDate, int systemId, ServiceContext serviceContext) {
 		try {
-			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType, applicantIdNo,
-					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
+					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+					wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-					delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate, serviceContext);
+					delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
+					systemId, serviceContext);
 
 		} catch (Exception e) {
 			_log.debug(e);

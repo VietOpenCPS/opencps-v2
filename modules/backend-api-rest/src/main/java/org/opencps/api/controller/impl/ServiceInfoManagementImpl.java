@@ -14,7 +14,10 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -62,14 +65,19 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -846,6 +854,53 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response resolveConflictServiceInfo(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long userId = user.getUserId();
+		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+		Indexer<ServiceInfo> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class);
+
+		LinkedHashMap<String, Object> params =
+			new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+		// get JSON data deliverable
+		JSONObject jsonData = actions.getServiceInfos(user.getUserId(), serviceContext.getCompanyId(), groupId, params,
+				null, -1, -1, serviceContext);
+
+		long total = jsonData.getLong("total");
+		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+
+		if (total > 0) {
+			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			for (Document document : lstDocuments) {
+				long serviceInfoId = GetterUtil.getLong(
+					document.get(Field.ENTRY_CLASS_PK));
+				long companyId =
+					GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				String uid = document.get(Field.UID);
+				ServiceInfo oldServiceInfo =
+					ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
+				if (oldServiceInfo == null) {
+					try {
+						indexer.delete(companyId, uid);
+					}
+					catch (SearchException e) {
+						_log.error(e);
+					}
+				}
+			}
+		}
+
+		return Response.status(200).entity("{}").build();
 	}
 
 }

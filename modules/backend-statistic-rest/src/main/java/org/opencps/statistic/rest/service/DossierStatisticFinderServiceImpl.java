@@ -12,24 +12,40 @@ import org.slf4j.LoggerFactory;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 
 
 public class DossierStatisticFinderServiceImpl implements DossierStatisticFinderService {
 	
 	private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticFinderServiceImpl.class);
 
+//	@Override
+//	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
+//			throws PortalException, SystemException {
+//		
+////		LOG.info("***DossierStatisticFinderServiceImpl");
+//		
+//		//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+//		
+//		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
+//				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
+//						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
+//						dossierStatisticRequest.getGovAgencyCode(), "",
+//						dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
+//
+//		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
+//	}
+
 	@Override
-	public DossierStatisticResponse finderDossierStatistic(DossierStatisticRequest dossierStatisticRequest)
+	public DossierStatisticResponse finderDossierStatisticSystem(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException, SystemException {
-		
-//		LOG.info("***DossierStatisticFinderServiceImpl");
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 		
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
-				.searchDossierStatistic(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
+				.searchDossierStatisticSystem(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), "",
+						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getSystem(), "",
 						dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
 
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
@@ -41,10 +57,15 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(
 				dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 				dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-				dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getGroupAgencyCode(),
-				dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
+				dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getSystem(),
+				dossierStatisticRequest.getGroupAgencyCode(), dossierStatisticRequest.getStart(),
+				dossierStatisticRequest.getEnd());
 
-		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
+		if (dossierStatistics != null && dossierStatistics.size() > 0) {
+			return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);
+		}
+
+		return null;
 	}
 
 }

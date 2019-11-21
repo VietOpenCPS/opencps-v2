@@ -155,6 +155,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("originDossierNo", getOriginDossierNo());
 		attributes.put("groupDossierId", getGroupDossierId());
 		attributes.put("metaData", getMetaData());
+		attributes.put("systemId", getSystemId());
 
 		return attributes;
 	}
@@ -739,6 +740,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (metaData != null) {
 			setMetaData(metaData);
+		}
+
+		Integer systemId = (Integer)attributes.get("systemId");
+
+		if (systemId != null) {
+			setSystemId(systemId);
 		}
 	}
 
@@ -1670,6 +1677,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public boolean getSubmitting() {
 		return _dossier.getSubmitting();
+	}
+
+	/**
+	* Returns the system ID of this dossier.
+	*
+	* @return the system ID of this dossier
+	*/
+	@Override
+	public int getSystemId() {
+		return _dossier.getSystemId();
 	}
 
 	/**
@@ -2746,6 +2763,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setSubmitting(boolean submitting) {
 		_dossier.setSubmitting(submitting);
+	}
+
+	/**
+	* Sets the system ID of this dossier.
+	*
+	* @param systemId the system ID of this dossier
+	*/
+	@Override
+	public void setSystemId(int systemId) {
+		_dossier.setSystemId(systemId);
 	}
 
 	/**

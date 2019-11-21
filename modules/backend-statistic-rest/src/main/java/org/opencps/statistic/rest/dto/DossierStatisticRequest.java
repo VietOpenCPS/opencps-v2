@@ -73,6 +73,14 @@ public class DossierStatisticRequest extends CommonRequest {
 		this.calculate = calculate;
 	}
 
+	public String getSystem() {
+		return system;
+	}
+
+	public void setSystem(String system) {
+		this.system = system;
+	}
+
 	private String domain;
 	private String govAgencyCode;
 	private String groupAgencyCode;
@@ -82,4 +90,5 @@ public class DossierStatisticRequest extends CommonRequest {
 	private String fromStatisticDate;
 	private String toStatisticDate;
 	private boolean calculate;
+	private String system;
 }

@@ -1,6 +1,24 @@
 package org.opencps.statistic.rest.dto;
 
 public class GetDossierData {
+
+	private String dossierStatus;
+	private String dossierSubStatus;
+	private String receiveDate;
+	private boolean online;
+	private String dueDate;
+	private String extendDate;
+	private String releaseDate;
+	private String finishDate;
+	private String serviceCode;
+	private String govAgencyCode;
+	private String govAgencyName;
+	private long groupId;
+	private String domainCode;
+	private String domainName;
+	private String lockState;
+	private String system;
+
 	public String getDossierStatus() {
 		return dossierStatus;
 	}
@@ -122,20 +140,12 @@ public class GetDossierData {
 		this.finishDate = finishDate;
 	}
 
-	private String dossierStatus;
-	private String dossierSubStatus;
-	private String receiveDate;
-	private boolean online;
-	private String dueDate;
-	private String extendDate;
-	private String releaseDate;
-	private String finishDate;
-	private String serviceCode;
-	private String govAgencyCode;
-	private String govAgencyName;
-	private long groupId;
-	private String domainCode;
-	private String domainName;
-	private String lockState;
+	public String getSystem() {
+		return system;
+	}
+
+	public void setSystem(String system) {
+		this.system = system;
+	}
 
 }

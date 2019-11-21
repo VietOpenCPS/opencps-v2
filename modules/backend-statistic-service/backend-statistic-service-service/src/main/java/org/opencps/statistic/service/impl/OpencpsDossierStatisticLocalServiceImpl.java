@@ -16,6 +16,7 @@ package org.opencps.statistic.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -58,6 +59,10 @@ import org.opencps.statistic.service.base.OpencpsDossierStatisticLocalServiceBas
 public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStatisticLocalServiceBaseImpl {
 	public OpencpsDossierStatistic checkExsit(long groupId, int month, int year, String govAgency, String domain) {
 		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency);
+	}
+
+	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system) {
+		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system);
 	}
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
@@ -185,12 +190,34 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				groupAgenvyCode, start, end);
 	}
 
-	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int month, int year, String domain,
-			String govAgencyCode, String groupAgenvyCode, int start, int end)
+	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId, int month, int year, String domain,
+			String govAgencyCode, String system, String groupAgenvyCode, int start, int end)
+			throws PortalException, SystemException {
+		if (month == 0 && year == -1) {
+			//_log.info("START month all and year all: ");
+			return opencpsDossierStatisticFinder.searchYearDossierStatistic(groupId, month, domain, govAgencyCode, system,
+					groupAgenvyCode, start, end);
+		} else {
+			return opencpsDossierStatisticFinder.searchDossierStatistic(groupId, year, domain, govAgencyCode, system,
+					groupAgenvyCode, start, end);
+		}
+		
+	}
+
+//	public List<OpencpsDossierStatistic> searchDossierStatistic(long groupId, int month, int year, String domain,
+//			String govAgencyCode, String groupAgenvyCode, int start, int end)
+//			throws PortalException, SystemException {
+//
+//		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroup(groupId, month, year, domain,
+//				govAgencyCode, groupAgenvyCode, start, end);
+//	}
+
+	public List<OpencpsDossierStatistic> searchDossierStatisticSystem(long groupId, int month, int year, String domain,
+			String govAgencyCode, String system, String groupAgenvyCode, int start, int end)
 			throws PortalException, SystemException {
 
-		return opencpsDossierStatisticFinder.searchByDomainGovAgencyGroup(groupId, month, year, domain,
-				govAgencyCode, groupAgenvyCode, start, end);
+		return opencpsDossierStatisticFinder.searchByDomainAgencySystem(groupId, month, year, domain,
+				govAgencyCode, system, groupAgenvyCode, start, end);
 	}
 	
 	public void removeDossierStatisticByD_M_Y(long groupId, String domainCode, int month, int year) throws NoSuchOpencpsDossierStatisticException {
@@ -227,16 +254,16 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	}
 
 	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId, long groupId, long userId,
-			String userName, int month, int year, int totalCount, int deniedCount, int cancelledCount, int processCount,
+			String userName, int month, int year, String system, int totalCount, int deniedCount, int cancelledCount, int processCount,
 			int remainingCount, int receivedCount, int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
 			int overtimeCount, int doneCount, int releasingCount, int unresolvedCount, int processingCount,
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount) throws PortalException, SystemException {
-		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsit(
-				groupId, month, year, govAgencyCode,
-				domainCode);
+		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
+				month, year, govAgencyCode, domainCode, system);
+
 		Date now = new Date();
 		long dossierStatisticId = 0l;
 		_log.debug(dossierStatisticId);
@@ -251,6 +278,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setUserName(userName);
 			dossierStatistic.setMonth(month);
 			dossierStatistic.setYear(year);
+			dossierStatistic.setSystem(system);
 			dossierStatistic.setTotalCount(totalCount);
 			dossierStatistic.setDeniedCount(deniedCount);
 			dossierStatistic.setCancelledCount(cancelledCount);
@@ -287,6 +315,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				dossierStatistic.setModifiedDate(now);
 				dossierStatistic.setMonth(month);
 				dossierStatistic.setYear(year);
+				dossierStatistic.setSystem(system);
 				dossierStatistic.setTotalCount(totalCount);
 				dossierStatistic.setDeniedCount(deniedCount);
 				dossierStatistic.setCancelledCount(cancelledCount);
@@ -344,21 +373,24 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			if (Validator.isNull(payload.getGovAgencyCode())) {
 				payload.setGovAgencyCode((String) null);
 			}
+			
+			if (payload.getSystem() == null) {
+				payload.setSystem((String) null);
+			}
 
 			byte pausingCount = 0;
 
-			createOrUpdateStatistic(payload.getCompanyId(),
-						payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getTotalCount(),
-						payload.getDeniedCount(), payload.getCancelledCount(), payload.getProcessCount(),
-						payload.getRemainingCount(), payload.getReceivedCount(), payload.getOnlineCount(),
-						payload.getReleaseCount(), payload.getBetimesCount(), payload.getOntimeCount(),
-						payload.getOvertimeCount(), payload.getDoneCount(), payload.getReleasingCount(),
-						payload.getUnresolvedCount(), payload.getProcessingCount(), payload.getUndueCount(),
-						payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
-						payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
-						payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
-						payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-						payload.getInsideCount());
+			createOrUpdateStatistic(payload.getCompanyId(), payload.getGroupId(), -1L, "ADM", payload.getMonth(),
+					payload.getYear(), payload.getSystem(), payload.getTotalCount(), payload.getDeniedCount(),
+					payload.getCancelledCount(), payload.getProcessCount(), payload.getRemainingCount(),
+					payload.getReceivedCount(), payload.getOnlineCount(), payload.getReleaseCount(),
+					payload.getBetimesCount(), payload.getOntimeCount(), payload.getOvertimeCount(),
+					payload.getDoneCount(), payload.getReleasingCount(), payload.getUnresolvedCount(),
+					payload.getProcessingCount(), payload.getUndueCount(), payload.getOverdueCount(), pausingCount,
+					payload.getOntimePercentage(), payload.getOvertimeInside(), payload.getOvertimeOutside(),
+					payload.getInteroperatingCount(), payload.getWaitingCount(), payload.getGovAgencyCode(),
+					payload.getGovAgencyName(), payload.getDomainCode(), payload.getDomainName(), payload.isReporting(),
+					payload.getOnegateCount(), payload.getOutsideCount(), payload.getInsideCount());
 		}
 	}
 

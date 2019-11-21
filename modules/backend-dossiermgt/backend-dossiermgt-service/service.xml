@@ -560,6 +560,7 @@
 		<column name="originDossierNo" type="String" />
 		<column name="groupDossierId" type="long" />
 		<column name="metaData" type="String" />
+		<column name="systemId" type="int" />
 		
 		<!-- Order -->
 		
