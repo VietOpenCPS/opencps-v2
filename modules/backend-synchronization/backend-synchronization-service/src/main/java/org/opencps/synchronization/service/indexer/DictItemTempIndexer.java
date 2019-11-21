@@ -30,6 +30,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.synchronization.service.util.ConfigConstants;
+import backend.synchronization.service.util.ConfigProps;
+
 @Component(
     immediate = true,
     service = BaseIndexer.class
@@ -104,7 +107,7 @@ public class DictItemTempIndexer extends BaseIndexer<DictItemTemp> {
 			}
 			
 		}  else {
-			parentCode = "0";
+			parentCode = ConfigProps.get(ConfigConstants.PARENT_ITEM_CODE_DEFAULT);
 		}
 		
 		document.addTextSortable(DictItemTempTerm.PARENT_ITEM_CODE, parentCode);

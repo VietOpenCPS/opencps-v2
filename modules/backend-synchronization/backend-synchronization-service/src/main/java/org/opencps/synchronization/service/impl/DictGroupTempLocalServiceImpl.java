@@ -340,7 +340,7 @@ public class DictGroupTempLocalServiceImpl
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
@@ -349,7 +349,7 @@ public class DictGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -429,7 +429,7 @@ public class DictGroupTempLocalServiceImpl
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
@@ -438,7 +438,7 @@ public class DictGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

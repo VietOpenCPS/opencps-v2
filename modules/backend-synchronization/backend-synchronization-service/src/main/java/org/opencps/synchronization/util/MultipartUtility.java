@@ -3,6 +3,7 @@ package org.opencps.synchronization.util;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 
 import java.io.BufferedReader;
@@ -33,6 +34,10 @@ public class MultipartUtility {
 	private String charset;
 	private OutputStream outputStream;
 	private PrintWriter writer;
+	private static String MEDIA_TYPE_JSON = "application/json";
+	private static String AUTH_TYPE = "Basic ";
+	private static String APP_USER_AGENT = "OpenCPS-Agent";
+	
 	private static Log _log = LogFactoryUtil.getLog(MultipartUtility.class);
 
 	/**
@@ -54,15 +59,15 @@ public class MultipartUtility {
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
-		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
+		httpConn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty(HttpHeaders.USER_AGENT, APP_USER_AGENT);
 
-		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+		httpConn.setRequestProperty(HttpHeaders.AUTHORIZATION, AUTH_TYPE + authStringEnc);
 
 		httpConn.setRequestMethod(HttpMethods.POST);
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
-		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setRequestProperty(HttpHeaders.ACCEPT, MEDIA_TYPE_JSON);
 		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();
@@ -81,15 +86,15 @@ public class MultipartUtility {
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
-		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
+		httpConn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty(HttpHeaders.USER_AGENT, "OpenCPS-Agent");
 
-		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+		httpConn.setRequestProperty(HttpHeaders.AUTHORIZATION, AUTH_TYPE + authStringEnc);
 
 		httpConn.setRequestMethod(method);
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
-		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setRequestProperty(HttpHeaders.ACCEPT, MEDIA_TYPE_JSON);
 		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();

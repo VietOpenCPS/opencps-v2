@@ -94,4 +94,7 @@ public class ConfigConstants {
 	public static final String PATTERN_YEAR_FULL = "org.opencps.pattern.year.all";
 	public static final String PATTERN_YEAR_HALF = "org.opencps.pattern.year.half";
 	public static final String PATTERN_LUCENE = "org.opencps.pattern.lucene";
+	
+	/** DICTITEM */
+	public static final String PARENT_ITEM_CODE_DEFAULT = "org.opencps.dictitem.parent.code.default";
 }

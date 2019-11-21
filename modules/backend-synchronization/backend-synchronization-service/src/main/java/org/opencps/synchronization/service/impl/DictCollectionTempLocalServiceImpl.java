@@ -26,6 +26,7 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
+import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
 import org.opencps.synchronization.exception.NoSuchDictCollectionTempException;
 import org.opencps.synchronization.model.DictCollectionTemp;
@@ -369,7 +370,7 @@ public class DictCollectionTempLocalServiceImpl
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
@@ -378,7 +379,7 @@ public class DictCollectionTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictCollectionTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollectionTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -459,7 +460,7 @@ public class DictCollectionTempLocalServiceImpl
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
@@ -468,7 +469,7 @@ public class DictCollectionTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictCollectionTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollectionTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

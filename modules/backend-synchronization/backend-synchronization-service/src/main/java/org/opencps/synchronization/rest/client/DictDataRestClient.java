@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.StringPool;
 
 public class DictDataRestClient {
 	private String username;
@@ -45,6 +46,8 @@ public class DictDataRestClient {
 	}
 
 	private static final String DICT_COLLLECTIONS_BASE_PATH = "/dictcollections";
+	private static final String DICT_ITEMS_BASE_PATH = "/dictitems/";
+	private static final String DICT_GROUPS_BASE_PATH = "/dictgroups/";
 	
 	public static DictDataRestClient fromJSONObject(JSONObject configObj) {
 		if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
@@ -86,16 +89,16 @@ public class DictDataRestClient {
 			CloseableHttpClient httpClient = HttpClientBuilder.create()
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
-			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()));
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + StringPool.SLASH + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()));
  			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
- 			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
+ 			getRequest.addHeader(HttpHeaders.ACCEPT, SyncServerTerm.MEDIA_TYPE_JSON);
  			getRequest.addHeader(groupHeader);
  			
 			HttpResponse getqueryresponse = httpClient.execute(getRequest);
  			 			
 			if (getqueryresponse.getStatusLine().getStatusCode() == SyncServerTerm.STATUS_OK) {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader((getqueryresponse.getEntity().getContent())))) {
-					String output = "";
+					String output = StringPool.BLANK;
 					StringBuilder jsonStr = new StringBuilder();
 					
 					while ((output = br.readLine()) != null) {
@@ -132,17 +135,17 @@ public class DictDataRestClient {
 			CloseableHttpClient httpClient = HttpClientBuilder.create()
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
-			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + "/dictitems/" + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + StringPool.SLASH + URLEncoder.encode(code, StandardCharsets.UTF_8.toString()) + DICT_ITEMS_BASE_PATH + URLEncoder.encode(itemCode, StandardCharsets.UTF_8.toString()));
  			
 			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
- 			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
+ 			getRequest.addHeader(HttpHeaders.ACCEPT, SyncServerTerm.MEDIA_TYPE_JSON);
  			getRequest.addHeader(groupHeader);
  			
 			HttpResponse getqueryresponse = httpClient.execute(getRequest);
 						
 			if (getqueryresponse.getStatusLine().getStatusCode() == SyncServerTerm.STATUS_OK) {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader((getqueryresponse.getEntity().getContent())))) {
-					String output = "";
+					String output = StringPool.BLANK;
 					StringBuilder jsonStr = new StringBuilder();
 					
 					while ((output = br.readLine()) != null) {
@@ -179,16 +182,16 @@ public class DictDataRestClient {
 			CloseableHttpClient httpClient = HttpClientBuilder.create()
 			  .setDefaultCredentialsProvider(provider)
 			  .build();
-			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + "/" + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()) + "/dictgroups/" + URLEncoder.encode(groupCode, StandardCharsets.UTF_8.toString()));
+			HttpGet getRequest = new HttpGet(baseUrl + DICT_COLLLECTIONS_BASE_PATH + StringPool.SLASH + URLEncoder.encode(collectionCode, StandardCharsets.UTF_8.toString()) + DICT_GROUPS_BASE_PATH + URLEncoder.encode(groupCode, StandardCharsets.UTF_8.toString()));
  			Header groupHeader = new BasicHeader(Field.GROUP_ID, String.valueOf(groupId));
- 			getRequest.addHeader(HttpHeaders.ACCEPT, "application/json");
+ 			getRequest.addHeader(HttpHeaders.ACCEPT, SyncServerTerm.MEDIA_TYPE_JSON);
  			getRequest.addHeader(groupHeader);
  			
 			HttpResponse getqueryresponse = httpClient.execute(getRequest);
  			 			
 			if (getqueryresponse.getStatusLine().getStatusCode() == SyncServerTerm.STATUS_OK) {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader((getqueryresponse.getEntity().getContent())))) {
-					String output = "";
+					String output = StringPool.BLANK;
 					StringBuilder jsonStr = new StringBuilder();
 					
 					while ((output = br.readLine()) != null) {
