@@ -25,6 +25,8 @@ public class EmployeeTerm {
 	
 	public static final String EMPLOYEE_NO = "employeeNo";
 	
+	public static final String EMPLOYEE_NAME = "employeeName";
+	
 	public static final String GENDER = "gender";
 	
 	public static final String BIRTH_DATE = "birthDate";

@@ -41,17 +41,6 @@ import io.swagger.annotations.ApiResponses;
 @Path("/faq")
 @Api(value = "/faq", tags = "faq")
 public interface FaqManagement {
-	@POST
-	@Path("/proxy")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@ApiOperation(value = "Proxy a question", response = QuestionDetailModel.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response proxyQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext, @FormParam("url") String url, @FormParam("method") String method, @FormParam("data") String data);
 	
 	@POST
 	@Path("/questions")

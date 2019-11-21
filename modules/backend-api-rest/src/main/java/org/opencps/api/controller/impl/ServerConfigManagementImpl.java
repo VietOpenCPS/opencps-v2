@@ -37,6 +37,9 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -128,7 +131,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			ServerConfig config = null;
 			if (serverId == 0) {
 				config = ServerConfigLocalServiceUtil.getByCode(groupId,  id);
-				if (config != null && "MULTIMEDIA".equalsIgnoreCase(config.getProtocol())) {
+				if (config != null && ReadFilePropertiesUtils.get(ConstantUtils.MULTIMEDIA).equalsIgnoreCase(config.getProtocol())) {
 					checkAuth = false;
 				}
 			}
@@ -333,7 +336,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			JSONArray sLists = JSONFactoryUtil.createJSONArray();
 			for (ServerConfig sc : configs) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject();
-				obj.put("serverNo", sc.getServerNo());
+				obj.put(DossierTerm.SERVER_NO, sc.getServerNo());
 				if (Validator.isNotNull(sc.getConfigs())) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 

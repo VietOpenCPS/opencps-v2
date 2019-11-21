@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.NoSuchDossierPartException;
@@ -321,7 +322,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -360,23 +361,12 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		// String templateNo =
-		// GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
 		String eSign = GetterUtil.getString(params.get(DossierPartTerm.ESIGN));
 		long templateId = GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
 
-		/*
-		 * if (Validator.isNotNull(templateNo)) { MultiMatchQuery query = new
-		 * MultiMatchQuery(templateNo);
-		 * 
-		 * query.addFields(DossierPartTerm.TEMPLATE_NO);
-		 * 
-		 * booleanQuery.add(query, BooleanClauseOccur.MUST); }
-		 * 
-		 */
 		if (Validator.isNotNull(templateId)) {
 			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
 
@@ -432,7 +422,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -468,8 +458,6 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		}
 
 		// Extra fields
-		// String templateNo =
-		// GetterUtil.getString(params.get(DossierPartTerm.TEMPLATE_NO));
 		String partType = GetterUtil.getString(params.get(DossierPartTerm.PART_TYPE));
 		String multiple = GetterUtil.getString(params.get(DossierPartTerm.MULTIPLE));
 		String required = GetterUtil.getString(params.get(DossierPartTerm.REQUIRED));
@@ -477,15 +465,6 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		long templateId = GetterUtil.getLong(params.get(DossierPartTerm.TEMPLATE_ID));
 
-		/*
-		 * if (Validator.isNotNull(templateNo)) { MultiMatchQuery query = new
-		 * MultiMatchQuery(templateNo);
-		 * 
-		 * query.addFields(DossierPartTerm.TEMPLATE_NO);
-		 * 
-		 * booleanQuery.add(query, BooleanClauseOccur.MUST); }
-		 * 
-		 */
 		if (Validator.isNotNull(templateId)) {
 			MultiMatchQuery query = new MultiMatchQuery(Long.toString(templateId));
 
@@ -648,9 +627,9 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 
 		DossierPart object = null;
 
-		if (objectData.getLong("dossierPartId") > 0) {
+		if (objectData.getLong(DossierPartTerm.DOSSIERPART_ID) > 0) {
 
-			object = dossierPartPersistence.fetchByPrimaryKey(objectData.getLong("dossierPartId"));
+			object = dossierPartPersistence.fetchByPrimaryKey(objectData.getLong(DossierPartTerm.DOSSIERPART_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -661,30 +640,30 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 			object = dossierPartPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setTemplateNo(objectData.getString("templateNo"));
-		object.setPartNo(objectData.getString("partNo"));
-		object.setPartName(objectData.getString("partName"));
-		object.setPartTip(objectData.getString("partTip"));
-		object.setPartType(objectData.getInt("partType"));
-		object.setMultiple(objectData.getBoolean("multiple"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setSampleData(objectData.getString("sampleData"));
-		object.setRequired(objectData.getBoolean("required"));
-		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
-		object.setESign(objectData.getBoolean("ESign"));
-		object.setDeliverableType(objectData.getString("deliverableType"));
-		object.setDeliverableAction(objectData.getInt("deliverableAction"));
-		object.setEForm(objectData.getBoolean("EForm"));
-		object.setFileMark(objectData.getInt("fileMark"));
+		object.setTemplateNo(objectData.getString(DossierPartTerm.TEMPLATE_NO));
+		object.setPartNo(objectData.getString(DossierPartTerm.PART_NO));
+		object.setPartName(objectData.getString(DossierPartTerm.PART_NAME));
+		object.setPartTip(objectData.getString(DossierPartTerm.PART_TIP));
+		object.setPartType(objectData.getInt(DossierPartTerm.PART_TYPE));
+		object.setMultiple(objectData.getBoolean(DossierPartTerm.MULTIPLE));
+		object.setFormScript(objectData.getString(DossierPartTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DossierPartTerm.FORM_REPORT));
+		object.setSampleData(objectData.getString(DossierPartTerm.SAMPLE_DATA));
+		object.setRequired(objectData.getBoolean(DossierPartTerm.REQUIRED));
+		object.setFileTemplateNo(objectData.getString(DossierPartTerm.FILE_TEMPLATE_NO));
+		object.setESign(objectData.getBoolean(DossierPartTerm.ESIGN));
+		object.setDeliverableType(objectData.getString(DossierPartTerm.DELIVERABLE_TYPE));
+		object.setDeliverableAction(objectData.getInt(DossierPartTerm.DELIVERABLE_ACTION));
+		object.setEForm(objectData.getBoolean(DossierPartTerm.EFORM));
+		object.setFileMark(objectData.getInt(DossierPartTerm.FILE_MARK));
 
 		dossierPartPersistence.update(object);
 

@@ -187,55 +187,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 
 			document.addNumberSortable(DossierTerm.EXTEND_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0);
-			// }
-			// Index calculator statistic
-			long extendateTime = Validator.isNotNull(object.getExtendDate()) ? object.getExtendDate().getTime() : 0;
-			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
-			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
-			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
-			
-			if (extendateTime > dueDateTime) {
-				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
-			} else {
-				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 0);
-			}
-			//
-			if (dueDateTime > 0) {
-				if (releaseTime > 0) {
-					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
-					if (1 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
-					}
-					else if (2 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
-					}
-					else if (3 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
-					}
-				} else {
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 0);
-				}
-				if (finishTime > 0) {
-					
-					//document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, valueCompareFinish);
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getFinishDate(), object.getDueDate()));
-				} else {
-					document.addNumberSortable(DossierTerm.VALUE_COMPARE_FINISH, 0);
-				}
-			}
-
-			double durationCount = object.getDurationCount();
-			double durationUnit = object.getDurationUnit();
-			
-			if (durationCount > 0) {
-				double durationComing = durationCount / 5;
-				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
-						object.getGroupId());
-				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
-			} else {
-				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
-			}
-			
 
 			// add number fields
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
@@ -270,8 +221,6 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.YEAR_DOSSIER, yearDossier);
 			document.addNumberSortable(DossierTerm.MONTH_DOSSIER, monthDossier);
 			document.addNumberSortable(DossierTerm.DAY_DOSSIER, dayDossier);
-//			_log.info("yearDossier: "+yearDossier);
-//			_log.info("monthDossier: "+monthDossier);
 
 			int yearFinish = 0;
 			int monthFinish = 0;

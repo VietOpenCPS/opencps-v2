@@ -38,7 +38,6 @@ import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.EmployeeUtils;
-import org.opencps.api.controller.util.NGSPRestClient;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -52,8 +51,6 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -68,9 +65,6 @@ import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
-import vn.gov.ngsp.DKDN.GTVT.IDoanhNghiep;
-import vn.gov.ngsp.DKDN.GTVT.IToken;
-import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
 
@@ -604,116 +598,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 	}
 
-	private MToken getToken(NGSPRestClient client) throws Exception {
-		String tokenUrl = ReadFilePropertiesUtils.get(ConstantUtils.TOKEN_URL);
-		String consumer_key = ReadFilePropertiesUtils.get(ConstantUtils.CONSUMER_KEY);
-		String secret_key = ReadFilePropertiesUtils.get(ConstantUtils.SCRECT_KEY);
-		if (client != null) {
-			tokenUrl = client.getBaseUrl();
-			consumer_key = client.getConsumerKey();
-			secret_key = client.getConsumerSecret();
-		}
-		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
-		
-		return token;
-	}
-	   
-	@Override
-	public Response ngspGetApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String applicantIdNo) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		String apiUrl = ReadFilePropertiesUtils.get(ConstantUtils.API_URL);
-		String access_token = ReadFilePropertiesUtils.get(ConstantUtils.ACCESS_TOKEN);
-		
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
-				ReadFilePropertiesUtils.get(ConstantUtils.NGSP_PROTOCOL));
-		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
-		try {
-			if (sc != null) {
-				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
-				access_token = token.getAccessToken();				
-			}
-			else {
-				MToken token = getToken(null);
-				access_token = token.getAccessToken();				
-			}
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-		
-		String msdn = applicantIdNo;
-
-		try {
-			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, msdn);
-			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
-			
-			return Response.status(200).entity(result.toJSONString()).build();			
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
-
-	@Override
-	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
-			String contactName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		String apiUrl = ReadFilePropertiesUtils.get(ConstantUtils.API_URL);
-		String access_token = ReadFilePropertiesUtils.get(ConstantUtils.ACCESS_TOKEN);
-		
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
-				ReadFilePropertiesUtils.get(ConstantUtils.NGSP_PROTOCOL));
-		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
-		try {
-			if (sc != null) {
-				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
-				access_token = token.getAccessToken();				
-			}
-			else {
-				MToken token = getToken(null);
-				access_token = token.getAccessToken();				
-			}
-		} catch (Exception e) {
-			_log.debug(e);
-		}
-		
-		try {
-			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, applicantIdNo);
-			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
-			JSONObject data = result.getJSONObject("Data");
-			JSONObject returnObj = JSONFactoryUtil.createJSONObject();
-			
-			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
-				returnObj.put("error", true);
-				returnObj.put("message", ReadFilePropertiesUtils.get(ConstantUtils.ERROR_MSG_BUSSINESS));
-				return Response.status(200).entity(returnObj.toJSONString()).build();
-			}
-			else {
-				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
-				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
-					if (Validator.isNotNull(applicantName) && !applicantName.equals(mainInfoObj.getString("NAME"))) {
-						returnObj.put("warning", true);
-						returnObj.put("message", ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NAME_BUSSINESS));
-					}
-				}
-				JSONObject representativesObj = data.getJSONObject("Representatives");
-				if (representativesObj != null) {
-					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
-						returnObj.put("warning", true);
-						returnObj.put("message",
-								(Validator.isNotNull(returnObj.getString("message"))
-										? returnObj.getString("message") + StringPool.COMMA
-										: StringPool.BLANK)
-										+ ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NAME_BUSSINESS));
-					}					
-				}
-				return Response.status(200).entity(returnObj.toJSONString()).build();
-			}
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
-
 	@Override
 	public Response getJCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
@@ -866,8 +750,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			if (Validator.isNotNull(jsonObject.getString("duplicate"))
-					&& jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())) {
+			if (Validator.isNotNull(jsonObject.getString(ReadFilePropertiesUtils.get(ConstantUtils.DUPLICATE)))
+					&& jsonObject.getString(ReadFilePropertiesUtils.get(ConstantUtils.DUPLICATE)).equals(Boolean.TRUE.toString())) {
 
 				return Response.status(409).entity(employeeAccountModel).build();
 

@@ -44,7 +44,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
 
@@ -88,17 +90,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 			String notificationType, String payload, ServiceContext serviceContext)
 			throws PortalException, SystemException {
 
-		// long userId = serviceContext.getUserId();
-
-		// validateAddDossierFile(groupId, dossierId, referenceUid,
-		// dossierTemplateNo, dossierPartNo, fileTemplateNo);
-
-		// DossierPart dossierPart = dossierPartPersistence.findByTP_NO_PART(
-		// groupId, dossierTemplateNo, dossierPartNo);
-
 		Date now = new Date();
-
-		// User userAction = userLocalService.getUser(userId);
 
 		long dossierFileId = counterLocalService.increment(DossierLog.class.getName());
 
@@ -108,8 +100,6 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		object.setCompanyId(serviceContext.getCompanyId());
 		object.setGroupId(groupId);
 		object.setModifiedDate(now);
-		// object.setUserId(userAction.getUserId());
-		// object.setUserName(userAction.getFullName());
 		object.setAuthor(author);
 
 		// Add other fields
@@ -180,8 +170,8 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
-		String keywords = "";
-		if (notiType != "null") {
+		String keywords = StringPool.BLANK;
+		if (notiType != StringPool.NULL) {
 			keywords = notiType;
 		} else {
 			keywords = dosssierId;
@@ -190,7 +180,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -212,7 +202,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 			for (String string : keyword) {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
-				if (notiType != "null") {
+				if (notiType != StringPool.NULL) {
 					query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
 				} else {
 					query.addFields(DossierLogTerm.DOSSIER_ID);
@@ -268,8 +258,8 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
-		String keywords = "";
-		if (notiType != "null") {
+		String keywords = StringPool.BLANK;
+		if (notiType != StringPool.NULL) {
 			keywords = notiType;
 		} else {
 			keywords = dosssierId;
@@ -279,7 +269,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -298,7 +288,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 			for (String string : keyword) {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
-				if (notiType != "null") {
+				if (notiType != StringPool.NULL) {
 					query.addFields(DossierLogTerm.NOTIFICATION_TYPE);
 				} else {
 					query.addFields(DossierLogTerm.DOSSIER_ID);
@@ -371,9 +361,9 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 
 		DossierLog object = null;
 
-		if (objectData.getLong("dossierLogId") > 0) {
+		if (objectData.getLong(DossierLogTerm.DOSSIER_LOG_ID) > 0) {
 
-			object = dossierLogPersistence.fetchByPrimaryKey(objectData.getLong("dossierLogId"));
+			object = dossierLogPersistence.fetchByPrimaryKey(objectData.getLong(DossierLogTerm.DOSSIER_LOG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -384,19 +374,19 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 			object = dossierLogPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setAuthor(objectData.getString("author"));
-		object.setContent(objectData.getString("content"));
-		object.setNotificationType(objectData.getString("notificationType"));
-		object.setPayload(objectData.getString("payload"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setAuthor(objectData.getString(DossierLogTerm.AUTHOR));
+		object.setContent(objectData.getString(DossierLogTerm.CONTENT));
+		object.setNotificationType(objectData.getString(DossierLogTerm.NOTIFICATION_TYPE));
+		object.setPayload(objectData.getString(DossierLogTerm.PAYLOAD));
 
 		dossierLogPersistence.update(object);
 

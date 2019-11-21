@@ -420,12 +420,12 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			long dossierId = GetterUtil.getLong(id);
 			String referenceUid = null;
 			if (dossierId == 0) {
-				referenceUid = id + "";
+				referenceUid = id + StringPool.BLANK;
 			}
 
 			JSONObject jsonData = (JSONObject) actions.getContacts(groupId, dossierId, referenceUid);
 
-			listContacts = DossierActionUtils.mappingToDoListContacts((List<Dossier>) jsonData.get("ListContacts"));
+			listContacts = DossierActionUtils.mappingToDoListContacts((List<Dossier>) jsonData.get(DossierActionTerm.LIST_CONTACT));
 
 			return Response.status(200).entity(listContacts).build();
 

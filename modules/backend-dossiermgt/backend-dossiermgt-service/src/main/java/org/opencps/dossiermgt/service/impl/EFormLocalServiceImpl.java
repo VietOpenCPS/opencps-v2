@@ -35,12 +35,12 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.base.EFormLocalServiceBaseImpl;
@@ -82,7 +82,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -130,24 +130,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (Validator.isNotNull(state)) {
-//			String[] stateArr = StringUtil.split(state);
-//
-//			if (stateArr != null && stateArr.length > 0) {
-//				BooleanQuery subQuery = new BooleanQueryImpl();
-//				for (int i = 0; i < stateArr.length; i++) {
-//					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
-//					query.addField(EFormTerm.STATE);
-//					subQuery.add(query, BooleanClauseOccur.SHOULD);
-//				}
-//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-//			} else {
-//				MultiMatchQuery query = new MultiMatchQuery(state);
-//				query.addFields(EFormTerm.STATE);
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//			}
-//		}
-
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -159,13 +141,12 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String serviceCode = GetterUtil.getString(params.get(EFormTerm.SERVICE_CODE));
-		//String state = String.valueOf((params.get(EFormTerm.STATE)));
 
 		Indexer<EForm> indexer = IndexerRegistryUtil.nullSafeGetIndexer(EForm.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -210,24 +191,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (Validator.isNotNull(state)) {
-//			String[] stateArr = StringUtil.split(state);
-//
-//			if (stateArr != null && stateArr.length > 0) {
-//				BooleanQuery subQuery = new BooleanQueryImpl();
-//				for (int i = 0; i < stateArr.length; i++) {
-//					MultiMatchQuery query = new MultiMatchQuery(stateArr[i]);
-//					query.addField(EFormTerm.STATE);
-//					subQuery.add(query, BooleanClauseOccur.SHOULD);
-//				}
-//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-//			} else {
-//				MultiMatchQuery query = new MultiMatchQuery(state);
-//				query.addFields(EFormTerm.STATE);
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//			}
-//		}
-
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
@@ -267,12 +230,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 				eform.setEmail(email);
 			if (Validator.isNotNull(secret))
 				eform.setSecret(secret);
-//			if (Validator.isNotNull(checkinDate))
-//				eform.setCheckinDate(checkinDate);
-//			if (Validator.isNotNull(gateNumber))
-//				eform.setGateNumber(gateNumber);
-//			if (Validator.isNotNull(state))
-//				eform.setState(state);
 			//
 			return eFormPersistence.update(eform);
 		} else {
@@ -294,9 +251,6 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 			eform.setEFormData(eFormData);
 			eform.setEmail(email);
 			eform.setSecret(secret);
-//			eform.setCheckinDate(checkinDate);
-//			eform.setGateNumber(gateNumber);
-//			eform.setState(state);
 
 			return eFormPersistence.update(eform);
 		}

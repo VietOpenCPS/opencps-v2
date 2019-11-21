@@ -25,4 +25,6 @@ public class DeliverableTerm {
 	public static final String REGULAR = "regular";
 	public static final String DELIVERABLE_LOG_ID= "deliverableLogId";
 	public static final String FORM_SCHEMA= "formSchema";
+	public static final String REPORT_TYPE= "reportType";
+	public static final String LIST_DELIVERABLE_TYPE = "lstDeliverableType";
 }

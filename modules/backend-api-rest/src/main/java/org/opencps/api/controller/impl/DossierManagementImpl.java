@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -171,6 +172,7 @@ import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -430,33 +432,6 @@ public class DossierManagementImpl implements DossierManagement {
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
-			if (Validator.isNotNull(top)) {
-				switch (top) {
-				case "receive":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
-							Sort.LONG_TYPE, false) };
-					break;
-				case "overdue":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
-							Sort.LONG_TYPE, false) };
-					break;
-				case "release":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
-							Sort.LONG_TYPE, false) };
-					break;
-				case "cancelling":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
-							Sort.LONG_TYPE, false) };
-					break;
-				case "corecting":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
-							Sort.LONG_TYPE, false) };
-					break;
-				default:
-					break;
-				}
-			}
-
 			DossierResultsModel results = new DossierResultsModel();
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -550,53 +525,6 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
  			}
-
-			Integer assigned = query.getAssigned();
-			StringBuilder strAssignedUserId = null;
-			if (assigned != null && Validator.isNotNull(step)) {
-				String[] stepArr = step.split(StringPool.COMMA);
-				strAssignedUserId = new StringBuilder();
-				if (stepArr != null && stepArr.length > 0) {
-					for (int i = 0; i < stepArr.length; i++) {
-						if (i == 0) {
-							StringBuilder sbParams = new StringBuilder();
-							if (stepArr[i].contains("x")) {
-								for (int j = 0; j < 9; j++) {
-									if (j == 0) {
-										sbParams.append(userId + StringPool.UNDERLINE + stepArr[i].replace("x", String.valueOf(j)) + StringPool.UNDERLINE + assigned);
-									} else {
-										sbParams.append(StringPool.COMMA);
-										sbParams.append(userId + StringPool.UNDERLINE + stepArr[i].replace("x", String.valueOf(j)) + StringPool.UNDERLINE + assigned);
-									}
-								}
-							} else {
-								sbParams.append(userId + StringPool.UNDERLINE + stepArr[i] + StringPool.UNDERLINE + assigned);
-							}
-							//
-							strAssignedUserId.append(sbParams.toString());
-						} else {
-							strAssignedUserId.append(StringPool.COMMA);
-							//
-							StringBuilder sbParams = new StringBuilder();
-							if (stepArr[i].contains("x")) {
-								for (int j = 0; j < 9; j++) {
-									if (j == 0) {
-										sbParams.append(userId + StringPool.UNDERLINE + stepArr[i].replace("x", String.valueOf(j)) + StringPool.UNDERLINE + assigned);
-									} else {
-										sbParams.append(StringPool.COMMA);
-										sbParams.append(userId + StringPool.UNDERLINE + stepArr[i].replace("x", String.valueOf(j)) + StringPool.UNDERLINE + assigned);
-									}
-								}
-							} else {
-								sbParams.append(userId + StringPool.UNDERLINE + stepArr[i] + StringPool.UNDERLINE + assigned);
-							}
-							//
-							strAssignedUserId.append(sbParams.toString());
-						}
-					}
-				}
-				params.put(DossierTerm.ASSIGNED_USER_ID, strAssignedUserId.toString());
-			}
 
 			String agency = query.getAgency();
 			String serviceCode = query.getService();
@@ -734,7 +662,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (isAdmin) {
 			}
 			else {
-				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+				String permission = user.getUserId() + StringPool.UNDERLINE + ConstantUtils.VALUE_WRITE;
 				params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			}
 
@@ -745,40 +673,13 @@ public class DossierManagementImpl implements DossierManagement {
 			
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
-			if (Validator.isNotNull(top)) {
-				switch (top) {
-				case "receive":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
-							Sort.LONG_TYPE, false) };
-					break;
-				case "overdue":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
-							Sort.LONG_TYPE, false) };
-					break;
-				case "release":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
-							Sort.LONG_TYPE, false) };
-					break;
-				case "cancelling":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
-							Sort.LONG_TYPE, false) };
-					break;
-				case "corecting":
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
-							Sort.LONG_TYPE, false) };
-					break;
-				default:
-					break;
-				}
-
-			}
 
 			JSONObject jsonData = actions.getDossierProcessList(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -821,7 +722,7 @@ public class DossierManagementImpl implements DossierManagement {
 			User user, ServiceContext serviceContext, String id, String secretKey) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		String secretCode = GetterUtil.getString(header.getHeaderString("secretCode"));
+		String secretCode = GetterUtil.getString(header.getHeaderString(DossierTerm.SECET_KEY));
 //		_log.info("secretCode: "+secretCode);
 		//_log.info("secretKey: "+secretKey);
 		DossierPermission dossierPermission = new DossierPermission();
@@ -851,7 +752,7 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
 					_log.debug(e);
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 							.build();
 				}
 
@@ -866,7 +767,7 @@ public class DossierManagementImpl implements DossierManagement {
 					return Response.status(200).entity(result).build();
 				} catch (Exception e) {
 					_log.debug(e);
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretCode not sucess")
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION))
 							.build();
 				}
 			}
@@ -944,14 +845,14 @@ public class DossierManagementImpl implements DossierManagement {
 			String postalCityName = StringPool.BLANK;
 			
 			if (Validator.isNotNull(input.getCityCode()))
-				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+				cityName = getDictItemName(groupId, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getCityCode());
 			if (Validator.isNotNull(input.getDistrictCode()))
-				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+				districtName = getDictItemName(groupId, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getDistrictCode());
 			if (Validator.isNotNull(input.getWardCode()))
-				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+				wardName = getDictItemName(groupId, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getWardCode());
 
 			if (Validator.isNotNull(input.getPostalCityCode())) {
-				postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+				postalCityName = getDictItemName(groupId, ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION), input.getPostalCityCode());
 			}
 			Integer delegateType = (input.getDelegateType() != null ? input.getDelegateType() : 0);
 			String documentNo = input.getDocumentNo();
@@ -1017,7 +918,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				return Response.status(200).entity(result).build();
 			} else {
-				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier is delete").build();
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER)).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1177,18 +1078,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			_log.debug("LamTV-input: "+JSONFactoryUtil.looseSerialize(input));
-			_log.debug("LamTV-Call in groupId: "+groupId + "|dossierId: "+id +" |userId: "+userId);
-
 			if (dossier != null) {
-				_log.debug("Dossier: " + dossier + ", action code: " + input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(), new Date(dueDate), serviceContext);
 				}
 				String actionCode = input.getActionCode();
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
-					_log.debug("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
@@ -1224,7 +1120,6 @@ public class DossierManagementImpl implements DossierManagement {
 									ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
-										_log.debug("DO ACTION: " + proAction.getActionCode());
 										dossierResult = actions.doAction(groupId, userId, dossier, oldOption, proAction,
 												actionCode, actionUser, input.getActionNote(),
 												input.getPayload(), input.getAssignUsers(), input.getPayment(),
@@ -1234,149 +1129,12 @@ public class DossierManagementImpl implements DossierManagement {
 									}									
 								}
 							}
-//							if (dossierResult != null) {
-//								String actionCodeResult = dossierResult.getActionCode();
-//								_log.info("actionCodeResult: "+actionCodeResult);
-//								if (Validator.isNotNull(actionCodeResult)) {
-//									ActionConfig actConfigResult = ActionConfigLocalServiceUtil.getByCode(groupId, actionCodeResult);
-//									int dateOption = actConfigResult.getDateOption();
-//									_log.info("dateOption: "+dateOption);
-//									_log.info("dossierResult.getDossierActionId(): "+dossierResult.getDossierActionId());
-//									if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
-//										DossierAction dActEnd = DossierActionLocalServiceUtil
-//												.fetchDossierAction(dossierResult.getDossierActionId());
-//										if (dActEnd != null) {
-//											_log.info("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
-//											DossierAction dActStart = DossierActionLocalServiceUtil
-//													.fetchDossierAction(dActEnd.getPreviousActionId());
-//											if (dActStart != null) {
-//												long createEnd = dActEnd.getCreateDate().getTime();
-//												long createStart = dActStart.getCreateDate().getTime();
-//												_log.info("createStart: "+createStart);
-//												_log.info("createEnd: "+createEnd);
-//												if (createEnd > createStart) {
-//													long extendDateTimeStamp = ExtendDueDateUtils.getTimeWaitingByHoliday(createStart, createEnd, groupId);
-//													_log.info("extendDateTimeStamp: "+extendDateTimeStamp);
-//													if (extendDateTimeStamp > 0) {
-//														dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-//														long hoursCount = (long) (extendDateTimeStamp / (1000 * 60 * 60));
-//														_log.info("hoursCount: "+hoursCount);
-//														//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
-//														List<Holiday> holidayList = HolidayLocalServiceUtil
-//																.getHolidayByGroupIdAndType(groupId, 0);
-//														List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
-//																.getHolidayByGroupIdAndType(groupId, 1);
-//
-//														Date dueDateExtend = HolidayUtils.getEndDate(groupId,
-//																dossier.getDueDate(), hoursCount, holidayList,
-//																extendWorkDayList);
-//														_log.info("dueDateExtend: "+dueDateExtend);
-//														if (dueDateExtend != null) {
-//															dossier.setDueDate(dueDateExtend);
-//															//dossier.setCorrecttingDate(null);
-//															DossierLocalServiceUtil.updateDossier(dossier);
-//														}
-//													}
-//												}
-//											}
-//										}
-//									} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
-//										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-//										if (dossier.getDueDate() != null) {
-//											//dossier.setCorrecttingDate(dossier.getDueDate());
-//											//dossier.setDueDate(null);
-//											dossier.setLockState(DossierTerm.PAUSE_STATE);
-//											DossierLocalServiceUtil.updateDossier(dossier);
-//										}
-//									} 
-//									else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-//										dossier = DossierLocalServiceUtil.fetchDossier(dossierResult.getDossierId());
-//										if (dossier.getDueDate() != null) {
-//											ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil
-//													.fetchServiceProcess(dossierResult.getServiceProcessId());
-//											if (serviceProcess != null) {
-//												Date newDueDate = HolidayUtils.getDueDate(new Date(),
-//														serviceProcess.getDurationCount(),
-//														serviceProcess.getDurationUnit(), groupId);
-//												if (newDueDate != null) {
-//													dossier.setDueDate(newDueDate);
-//													DossierLocalServiceUtil.updateDossier(dossier);
-//												}
-//											}
-//
-//										}
-//									}
-//								}
-//							}
 						} else {
 							dossierResult = actions.doAction(groupId, userId, dossier, option, null, actionCode,
 									actionUser, input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(), actConfig.getSyncType(),
 									serviceContext, errorModel);
 						}
-						//Process send email or sms
-//						if (dossierResult != null) {
-//							String notificationType = actConfig.getNotificationType();
-							//
-//							if (Validator.isNotNull(notificationType)) {
-//								long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-//								
-//								NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-								//Process add notification queue
-//								Date now = new Date();
-//	
-//								Calendar cal = Calendar.getInstance();
-//								cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-//								
-//								queue.setCreateDate(now);
-//								queue.setModifiedDate(now);
-//								queue.setGroupId(groupId);
-//								queue.setCompanyId(company.getCompanyId());
-//								
-//								queue.setNotificationType(notificationType);
-//								queue.setClassName(Dossier.class.getName());
-//								queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
-//								queue.setToUsername(dossier.getUserName());
-//								queue.setToUserId(dossier.getUserId());
-								//queue.setToEmail(dossier.getContactEmail());
-								//queue.setToTelNo(dossier.getContactTelNo());
-//								if (notificationType.contains("APLC")) {
-//									if (dossier.getOriginality() == 3) {
-//										queue.setToEmail(dossier.getDelegateEmail());
-//										queue.setToTelNo(dossier.getDelegateTelNo());
-//									} else {
-//										queue.setToEmail(dossier.getContactEmail());
-//										queue.setToTelNo(dossier.getContactTelNo());
-//									}
-//								} else if (notificationType.contains("EPLC")) {
-//									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,
-//											dossier.getUserId());
-//									if (employee != null) {
-//										queue.setToEmail(employee.getEmail());
-//										queue.setToTelNo(employee.getTelNo());
-//									}
-//								} else {
-//									queue.setToEmail(dossier.getContactEmail());
-//									queue.setToTelNo(dossier.getContactTelNo());
-//								}
-//								
-//								JSONObject payload = JSONFactoryUtil.createJSONObject();
-//								try {
-	//								_log.info("START PAYLOAD: ");
-//									payload.put(
-//										"Dossier", JSONFactoryUtil.createJSONObject(
-//											JSONFactoryUtil.looseSerialize(dossier)));
-//								}
-//								catch (JSONException parse) {
-//									_log.error(parse);
-//								}
-	//							_log.info("payloadTest: "+payload.toJSONString());
-//								queue.setPayload(payload.toJSONString());
-//								queue.setExpireDate(cal.getTime());
-//	
-//								NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-//							}
-//						}
 					} else {
 						ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode, dossierTempNo,
 								groupId);
@@ -1397,16 +1155,6 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 			
-//			DossierAction dossierAction = actions.doAction(groupId, dossier, option, proAction,
-//					actionCode, input.getActionUser(),
-//					input.getActionNote(), input.getPayload(), input.getAssignUsers(), serviceContext);
-			
-			
-//			DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
-//					dossier.getReferenceUid(), input.getActionCode(), 0l, input.getActionUser(),
-//					input.getActionNote(), input.getAssignUserId(), 0l, subUsers, serviceContext);
-
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc = DossierDocumentLocalServiceUtil.getByActiocId(groupId, dossierActionId);
@@ -1416,33 +1164,12 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				
 				DossierActionDetailModel dAction = DossierUtils.mappingDossierAction(dossierResult, dossierDocumentId);
-//				String strDossierResult = JSONFactoryUtil.looseSerializeDeep(dossierResult);
-//				JSONObject jsonData = null;
-//				if (Validator.isNotNull(strDossierResult)) {
-//					jsonData = JSONFactoryUtil.createJSONObject(strDossierResult);
-//					jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID, dossierDocumentId);
 //				}
 				return Response.status(200).entity(dAction).build();
 			}
 			else {
-				return Response.status(405).entity("{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
+				return Response.status(500).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER)).build();
 			}
-//				ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
-//						dossier.getDossierTemplateNo(), groupId);
-
-//				ProcessAction action = getProcessAction(dossier,
-//						input.getActionCode(), option.getServiceProcessId());
-
-//				 dossierPermission.hasPermitDoAction(groupId,
-//				 user.getUserId(), dossier, option.getServiceProcessId(),
-//				 action);
-
-//				DossierAction dossierAction = actions.doAction(groupId, dossier.getDossierId(),
-//						dossier.getReferenceUid(), input.getActionCode(), action.getProcessActionId(),
-//						input.getActionUser(), input.getActionNote(), input.getAssignUserId(), user.getUserId(),
-//						subUsers, serviceContext);
-
-
 		} catch (Exception e) {
 			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
@@ -1493,27 +1220,13 @@ public class DossierManagementImpl implements DossierManagement {
 	protected String getServiceName(String serviceCode, String templateNo, long groupId) throws PortalException {
 
 		try {
-//			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
-//			if (service != null) {
-//				List<ServiceConfig> configList = ServiceConfigLocalServiceUtil.getByServiceInfo(groupId,
-//						service.getServiceInfoId());
-//				if (configList != null && configList.size() > 0) {
-//					for (ServiceConfig config : configList) {
-//						ProcessOption option = ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId,
-//								templateNo, config.getServiceConfigId());
-//						if (option != null) {
-//							return option.getOptionName();
-//						}
-//					}
-//				}
-//			}
 			ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 			if (service != null) {
 				return service.getServiceName();
 			}
 		} catch (Exception e) {
 			_log.debug(e);
-			throw new NotFoundException("NotFoundExceptionWithServiceCode");
+			throw new NotFoundException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_MSG_BUSSINESS));
 		}
 
 		return StringPool.BLANK;
@@ -1526,18 +1239,10 @@ public class DossierManagementImpl implements DossierManagement {
 			return template.getTemplateName();
 		} catch (Exception e) {
 			_log.error(e);
-			throw new NotFoundException("NotFoundExceptionWithTemplateCode");
+			throw new NotFoundException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_MSG_BUSSINESS));
 		}
 
 	}
-
-	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
-	public static final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
-	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
-	public static final String REGISTER_BOOK = "REGISTER_BOOK";
-	
-//	public static final int LENGHT_DOSSIER_PASSWORD = 4;
-//	public static final String DEFAULT_PATTERN_PASSWORD = "0123";
 
 	@Override
 	public Response getContactsDossier(HttpHeaders header, ServiceContext serviceContext, Long dossierId,
@@ -1590,7 +1295,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		String dossierno = GetterUtil.getString(header.getHeaderString("dossierno"));
+		String dossierno = GetterUtil.getString(header.getHeaderString(DossierTerm.DOSSIER_NO));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1614,7 +1319,7 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierLocalServiceUtil.updateDossier(dossier);
 			}
 
-			return Response.status(200).entity("OK").build();
+			return Response.status(200).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_SUCCESS)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1644,11 +1349,10 @@ public class DossierManagementImpl implements DossierManagement {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			_log.info("certificateNumber: " + certificateNumber);
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(DossierTerm.DOSSIER_ID + "CTN", certificateNumber);
+			params.put(DossierTerm.DOSSIER_ID_CTN, certificateNumber);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("modifiedDate" + "_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { };
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					-1, -1, serviceContext);
@@ -1656,7 +1360,7 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			Document data = ((List<Document>) jsonData.get(ConstantUtils.DATA)).get(0);
-			results.put("dossierId", data.get(DossierTerm.DOSSIER_ID));
+			results.put(DossierTerm.DOSSIER_ID, data.get(DossierTerm.DOSSIER_ID));
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -2008,7 +1712,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 
-			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+			if (!query.getSecetKey().contentEquals(ReadFilePropertiesUtils.get(ConstantUtils.SCRECT_V2))) {
 
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
@@ -2045,10 +1749,10 @@ public class DossierManagementImpl implements DossierManagement {
 
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
-			params.put("pendding", pendding);
+			params.put(DossierActionTerm.PENDING, pendding);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			// _log.info("START 1");
@@ -2143,7 +1847,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 
-			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+			if (!query.getSecetKey().contentEquals(ReadFilePropertiesUtils.get(ConstantUtils.SCRECT_V2))) {
 
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
@@ -2175,7 +1879,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			// Test API new
-			String dossierArr = query.getDossierArr();
 			String status = query.getStatus();
 			// Get info input params
 			// String submitting = query.getSubmitting();
@@ -2187,72 +1890,9 @@ public class DossierManagementImpl implements DossierManagement {
 			// params.put("pendding", pendding);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DossierTerm.STATUS, status);
-			params.put("dossierArr", dossierArr);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
-
-			// if (Boolean.parseBoolean(pendding)) {
-			// long groupIdCXL = 55301;
-			// JSONObject jsonDataPending = null;
-			//
-			// List<DossierAction> dActionList =
-			// DossierActionLocalServiceUtil.getDossiersPending(groupIdCXL,
-			// pendding);
-			//
-			// if (dActionList != null && dActionList.size() > 0) {
-			// LinkedHashMap<String, Object> paramPending = new
-			// LinkedHashMap<String, Object>();
-			// _log.info("dActionList: "+dActionList.size());
-			// int length = dActionList.size();
-			// StringBuilder sb = new StringBuilder();
-			// for (int i = 0; i < length; i ++) {
-			// DossierAction dAct = dActionList.get(i);
-			// long dActId = dAct.getDossierActionId();
-			// if (i == 0) {
-			// sb.append(dActId);
-			// } else {
-			// sb.append(StringPool.COMMA);
-			// sb.append(dActId);
-			//
-			// }
-			// }
-			// _log.info("DOSSIER_ACTION_ID_PENDING: "+sb.toString());
-			//
-			// paramPending.put(Field.GROUP_ID, String.valueOf(groupIdCXL));
-			// paramPending.put(DossierTerm.OWNER, String.valueOf(false));
-			// paramPending.put(DossierTerm.APPLICANT_ID_NO,
-			// query.getApplicantIdNo());
-			// paramPending.put(DossierTerm.DOSSIER_ACTION_ID_PENDING,
-			// sb.toString());
-			//
-			// jsonDataPending = actions.getDossiers(user.getUserId(),
-			// company.getCompanyId(), groupIdCXL, paramPending, sorts,
-			// -1, -1, serviceContext);
-			// _log.info("jsonDataPending: "+jsonDataPending);
-			// }
-			// if (jsonDataPending != null) {
-			// List<Document> docs = (List<Document>)
-			// jsonDataPending.get(ConstantUtils.DATA);
-			// if (docs != null && docs.size() > 0) {
-			// StringBuilder sb1 = new StringBuilder();
-			// int length = docs.size();
-			// for (int i = 0; i < length; i ++) {
-			// Document doc = docs.get(i);
-			// String referenceUid = doc.get(DossierTerm.REFERENCE_UID);
-			// if (i == 0) {
-			// sb1.append(referenceUid);
-			// } else {
-			// sb1.append(StringPool.COMMA);
-			// sb1.append(referenceUid);
-			// }
-			// }
-			// _log.info("REFERENCE_UID: "+sb1.toString());
-			// params.put(DossierTerm.REFERENCE_UID, sb1.toString());
-			// }
-			// }
-			//
-			// }
 
 			JSONObject jsonData = actions.getDossiers(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					-1, -1, serviceContext);
@@ -2338,8 +1978,7 @@ public class DossierManagementImpl implements DossierManagement {
 							for (int i = 0; i < userArr.length(); i++) {
 								JSONObject jsonUser = userArr.getJSONObject(i);
 								if (jsonUser != null) {
-									userId = jsonUser.getLong("userId");
-									assigned = jsonUser.getInt("assigned");
+									userId = jsonUser.getLong(Field.USER_ID);
 									if (assigned > 0) {
 										moderator = 1;
 									}
@@ -2476,9 +2115,6 @@ public class DossierManagementImpl implements DossierManagement {
 			if (dossier == null) {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
-			if (dossier == null) {
-				throw new Exception("Không tìm thấy hồ sơ");
-			}
 			//
 			List<DossierAction> dActionList = DossierActionLocalServiceUtil.findByG_DID(groupId, dossierId);
 			ServiceProcess serviceProcess = null;
@@ -2492,222 +2128,13 @@ public class DossierManagementImpl implements DossierManagement {
 						dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
 			}
 			
-			if (serviceProcess == null) {
-				throw new Exception("Không tìm thấy hồ sơ");
-			}
-			
-			JSONObject result = getDossierProcessSequencesJSON(groupId, dossier, serviceProcess);
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(200).entity(serviceProcess).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
 
 	}
 
-	private JSONObject getDossierProcessSequencesJSON(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
-
-		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
-		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
-		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put(ConstantUtils.TOTAL, lstSequences.size());
-		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
-		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
-		List<DossierLog> lstLogs = new ArrayList<>();
-		
-		try {
-			lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		} catch (PortalException e) {
-			_log.debug(e);
-		}
-		Map<Long, JSONArray> mapFiles = new HashMap<>();
-		
-		for (DossierLog log : lstLogs) {
-			JSONObject payload;
-			try {
-				payload = JSONFactoryUtil.createJSONObject(log.getPayload());
-				if (payload.has("dossierActionId")) {
-					mapFiles.put(payload.getLong("dossierActionId"), payload.getJSONArray("files"));
-				}
-			} catch (JSONException e) {
-				_log.debug(e);
-			}
-		}
-		
-		List<DossierAction> dossierActionListCheck = DossierActionLocalServiceUtil.findByG_DID(groupId, dossier.getDossierId());
-		if (dossierActionListCheck != null && dossierActionListCheck.size() == 1 && "400".equals(dossierActionListCheck.get(0).getStepCode())) {
-		} else {
-		for (ProcessSequence ps : lstSequences) {		
-			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-			sequenceObj.put("sequenceNo", ps.getSequenceNo());
-			sequenceObj.put("sequenceName", ps.getSequenceName());
-			sequenceObj.put("sequenceRole", ps.getSequenceRole());
-			sequenceObj.put("durationCount", ps.getDurationCount());
-			
-			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
-			}
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-				
-			DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
-			if (lastAction != null) {
-				sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
-			}			
-			
-			if (lstDossierActions.size() > 0) {
-				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
-				if (lastDASequence.getActionOverdue() != 0) {
-					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
-					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
-				}
-			}
-			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
-			List<Long> lstUsers = new ArrayList<>();
-			
-			if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				for (DossierActionUser dau : lstDus) {
-					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-					if (u != null) {
-						if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-							JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-							lstUsers.add(dau.getUserId());
-							assignUserObj.put("userId", dau.getUserId());
-							//TODO: Not update user
-							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
-							if (emp != null) {
-								assignUserObj.put("userName", emp.getFullName());
-							} else {
-								assignUserObj.put("userName", u.getFullName());
-							}
-							
-							assignUserArr.put(assignUserObj);
-						}
-					}
-				}
-			}
-			for (DossierAction da : lstDossierActions) {
-				if (!lstUsers.contains(da.getUserId())) {
-					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
-					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
-					//TODO: Not update user
-					Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
-					if (emp != null) {
-						assignUserObj.put("userName", emp.getFullName());
-					} else {
-						assignUserObj.put("userName", da.getUserName());
-					}
-					
-					assignUserArr.put(assignUserObj);					
-				}
-			}
-
-			sequenceObj.put("assignUsers", assignUserArr);
-			
-			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
-			for (DossierAction da : lstDossierActions) {
-				JSONObject actionObj = JSONFactoryUtil.createJSONObject();
-				
-				actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
-				actionObj.put("fromStepCode", da.getFromStepCode());
-				actionObj.put("fromStepName", da.getFromStepName());
-				actionObj.put("sequenceNo", da.getSequenceNo());
-				actionObj.put("dossierId", da.getDossierId());
-				actionObj.put("serviceProcessId", da.getServiceProcessId());
-				actionObj.put("previousActionId", da.getPreviousActionId());
-				actionObj.put("actionCode", da.getActionCode());
-				actionObj.put("actionName", da.getActionName());
-				actionObj.put("actionNote", da.getActionNote());
-				actionObj.put("actionUser", da.getActionUser());
-				actionObj.put("actionOverdue", da.getActionOverdue());
-				actionObj.put("payload", da.getPayload());
-				actionObj.put("pending", da.getPending());
-				actionObj.put("rollbackable", da.getRollbackable());
-				actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
-				actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
-				actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
-				actionObj.put("nextActionId", da.getNextActionId());
-				actionObj.put("state", da.getState());
-				actionObj.put("stepCode", da.getStepCode());
-				actionObj.put("stepName", da.getStepName());
-				actionObj.put("userId", da.getUserId());				
-				if (mapFiles.containsKey(da.getPreviousActionId())) {
-					actionObj.put("files", mapFiles.get(da.getPreviousActionId()));
-				}
-				_log.info("Action obj: " + actionObj.toJSONString());
-				actionsArr.put(actionObj);
-			}			
-			
-			sequenceObj.put("actions", actionsArr);
-			
-			sequenceArr.put(sequenceObj);
-			
-		}
-		}
-
-		result.put(ConstantUtils.DATA, sequenceArr);
-		return result;
-	}
-	
-//	private DossierSequenceResultModel getDossierProcessSequences(long groupId, Dossier dossier, ServiceProcess serviceProcess) {
-//		DossierSequenceResultModel result = new DossierSequenceResultModel();
-//		List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
-//		result.setProcessNo(serviceProcess.getProcessNo());
-//		result.setDurationUnit(serviceProcess.getDurationUnit());
-//		result.setDurationCount(serviceProcess.getDurationCount());
-//		result.setTotal(lstSequences.size());
-//		
-//		List<DossierSequenceModel> lstDsms = new ArrayList<>();
-//		for (ProcessSequence ps : lstSequences) {
-//			DossierSequenceModel dsm = new DossierSequenceModel();
-//			dsm.setSequenceNo(ps.getSequenceNo());
-//			dsm.setSequenceName(ps.getSequenceName());
-//			dsm.setSequenceRole(ps.getSequenceRole());
-//			dsm.setDurationCount(ps.getDurationCount());
-//			
-//			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_FSN(dossier.getDossierId(), dsm.getSequenceNo());
-//			List<ActionModel> lstActionModels = new ArrayList<>();
-//			
-//			for (DossierAction da : lstDossierActions) {
-//				ActionModel am = new ActionModel();
-//				am.setUserId(da.getUserId());
-//				am.setFromStepCode(da.getFromStepCode());
-//				am.setFromStepName(da.getFromStepName());
-//				am.setSequenceNo(da.getSequenceNo());
-//				am.setDossierId(da.getDossierId());
-//				am.setServiceProcessId(da.getServiceProcessId());
-//				am.setPreviousActionId(da.getPreviousActionId());
-//				am.setActionCode(da.getActionCode());
-//				am.setActionName(da.getActionName());
-//				am.setActionNote(da.getActionNote());
-//				am.setActionUser(da.getActionUser());
-//				am.setActionOverdue(da.getActionOverdue());
-//				am.setPayload(da.getPayload());
-//				am.setPending(da.getPending());
-//				am.setRoolbackable(da.getRollbackable());
-//				am.setCreateDate(DateTimeUtils.convertDateToString(da.getCreateDate(), DateTimeUtils._TIMESTAMP));
-//				am.setModifiedDate(DateTimeUtils.convertDateToString(da.getModifiedDate(), DateTimeUtils._TIMESTAMP));
-//				am.setDueDate(DateTimeUtils.convertDateToString(da.getDueDate(), DateTimeUtils._TIMESTAMP));
-//				am.setNextActionId(da.getNextActionId());
-//				am.setState(da.getState());
-//				am.setStepCode(da.getStepCode());
-//				am.setStepName(da.getStepName());
-//				am.setUserId(da.getUserId());
-//				
-//				lstActionModels.add(am);
-//			}
-//			
-//			dsm.getActions().addAll(lstActionModels);
-//			
-//			lstDsms.add(dsm);
-//		}
-//					
-//		result.getData().addAll(lstDsms);		
-//		return result;
-//	}
 	
 	@Override
 	public Response addDossierFileByEForm(HttpServletRequest request, HttpHeaders header, Company company,
@@ -2752,7 +2179,7 @@ public class DossierManagementImpl implements DossierManagement {
 				if (dossierFile == null) {
 					dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
 							dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dataHandler.getName(), 0,
-							dataHandler.getInputStream(), StringPool.BLANK, "true", serviceContext);
+							dataHandler.getInputStream(), StringPool.BLANK, String.valueOf(true), serviceContext);
 				} else {
 					try {
 						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(user.getUserId(), groupId,
@@ -2776,7 +2203,7 @@ public class DossierManagementImpl implements DossierManagement {
 					_log.info("dossierFile NULL");
 					dossierFile = action.addDossierFileEForm(groupId, dossier.getDossierId(), referenceUid,
 							dossier.getDossierTemplateNo(), partNo, dossierPart.getFileTemplateNo(), dossierPart.getPartName(), dossierPart.getPartName(), 0,
-							null, StringPool.BLANK, "true", serviceContext);
+							null, StringPool.BLANK, String.valueOf(true), serviceContext);
 				}
 			}
 			
@@ -2869,20 +2296,7 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-//        String authorizationHeader = header.getHeaderString(HttpHeaders.AUTHORIZATION);
-//        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-//            throw new NotAuthorizedException("Authorization header must be provided");
-//        }
-//
-//        String token = authorizationHeader.substring("Bearer".length()).trim();
-//        KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
         try {
-
-            // Validate the token
-//            Key key = keyGenerator.generateKey();
-//            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
- 
-		
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 	
@@ -3001,116 +2415,6 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
-	@Override
-	public Response getDossierBarcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
-		try {
-			long dossierId = GetterUtil.getLong(id);
-			
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			
-			if (dossier == null) {
-				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
-			}
-			Code128 barcode = new Code128();
-			barcode.setFontName("Monospaced");
-			barcode.setFontSize(16);
-			barcode.setModuleWidth(2);
-			barcode.setBarHeight(50);
-			barcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
-			barcode.setContent(dossier.getDossierNo());
-
-			int width = barcode.getWidth();
-			int height = barcode.getHeight();
-
-			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-			Graphics2D g2d = image.createGraphics();
-			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
-			renderer.render(barcode);
-			File destDir = new File("barcode");
-			if (!destDir.exists()) {
-				destDir.mkdir();
-			}
-			File file = new File("barcode/" + dossier.getDossierId() + ".png");
-			if (!file.exists()) {
-				file.createNewFile();				
-			}
-
-			if (file.exists()) {
-				ImageIO.write(image, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file);
-	//			String fileType = Files.probeContentType(file.toPath());
-				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "image/png");
-
-				return responseBuilder.build();
-			} else {
-				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-			}
-
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
-
-	@Override
-	public Response getDossierQRcode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
-		try {
-			long dossierId = GetterUtil.getLong(id);
-			
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-			
-			if (dossier == null) {
-				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
-			}
-			QrCode qrcode = new QrCode();
-			qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
-			qrcode.setDataType(Symbol.DataType.HIBC);
-			qrcode.setPreferredVersion(40);
-			qrcode.setContent(dossier.getDossierNo());
-
-			int width = qrcode.getWidth();
-			int height = qrcode.getHeight();
-
-			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-			Graphics2D g2d = image.createGraphics();
-			Java2DRenderer renderer = new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
-			renderer.render(qrcode);
-			File destDir = new File("barcode");
-			if (!destDir.exists()) {
-				destDir.mkdir();
-			}
-			File file = new File("barcode/" + dossier.getDossierId() + ".png");
-			if (!file.exists()) {
-				file.createNewFile();				
-			}
-
-			if (file.exists()) {
-				ImageIO.write(image, ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG), file);
-	//			String fileType = Files.probeContentType(file.toPath());
-				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, "image/png");
-
-				return responseBuilder.build();
-			} else {
-				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-			}
-
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossierSyncsByDossier(HttpServletRequest request, HttpHeaders header, Company company,
@@ -3211,8 +2515,6 @@ public class DossierManagementImpl implements DossierManagement {
 								strStatusStep.append(statusStep);
 								if (Validator.isNotNull(subStatusStep)) {
 									strSubStatusStep.append(subStatusStep);
-								} else {
-									strSubStatusStep.append("empty");
 								}
 							} else {
 								strStatusStep.append(StringPool.COMMA);
@@ -3220,8 +2522,6 @@ public class DossierManagementImpl implements DossierManagement {
 								strSubStatusStep.append(StringPool.COMMA);
 								if (Validator.isNotNull(subStatusStep)) {
 									strSubStatusStep.append(subStatusStep);
-								} else {
-									strSubStatusStep.append("empty");
 								}
 							}
 						}
@@ -3249,10 +2549,10 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
@@ -3270,87 +2570,6 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-	}
-
-	private String sequenceOf(List<ProcessStep> lstSteps, String stepCode) {
-		for (ProcessStep ps : lstSteps) {
-			if (ps.getStepCode().equals(stepCode)) {
-				return ps.getSequenceNo();
-			}
-		}
-		
-		return "";
-	}
-	
-	@Override
-	public Response getMermaidGraphDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		BackendAuth auth = new BackendAuthImpl();
-
-		try {
-
-			Dossier dossier = DossierUtils.getDossier(id, groupId);
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			if (dossier != null && dossier.getDossierActionId() != 0) {
-				DossierAction lastAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-				ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.getServiceProcess(lastAction.getServiceProcessId());
-				if (serviceProcess != null) {
-					StringBuilder result = new StringBuilder();
-					result.append("graph TD\n");
-					List<ProcessSequence> lstSequences = ProcessSequenceLocalServiceUtil.getByServiceProcess(groupId, serviceProcess.getServiceProcessId());
-					List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
-					
-					for (ProcessSequence ps : lstSequences) {
-						result.append(ps.getSequenceNo());
-						result.append("(\"[");
-						result.append(ps.getSequenceRole());
-						result.append("] ");
-						result.append(ps.getSequenceName());
-						result.append("\")\n");
-						for (ProcessSequence psOther : lstSequences) {
-							List<String> arcs = new ArrayList<>();
-							
-							if (!psOther.getSequenceNo().equals(ps.getSequenceNo())) {
-								List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
-								for (ProcessAction pa : lstActions) {
-									if (sequenceOf(lstSteps, pa.getPreStepCode()).equals(ps.getSequenceNo())
-											&& sequenceOf(lstSteps, pa.getPostStepCode()).equals(psOther.getSequenceNo())
-											&& !arcs.contains(pa.getActionName())) {
-										result.append(ps.getSequenceNo());
-										result.append("-->|\"");
-										result.append(pa.getActionName());
-										result.append("\"|");
-										result.append(psOther.getSequenceNo());
-										result.append("\n");
-										if (lastAction.getStepCode().equals(pa.getPreStepCode())) {
-											result.append("style " + ps.getSequenceNo() + " fill:#f9f,stroke:#333,stroke-width:4px");
-											result.append("\n");
-										}
-										arcs.add(pa.getActionName());
-									}
-								}								
-							}
-						}
-					}
-					
-					return Response.status(200).entity(result.toString()).build();				
-				}
-				else {
-					return Response.status(200).entity(StringPool.BLANK).build();
-				}				
-			}
-			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
-			}
-		} catch (Exception e) {
-			_log.error(e);
-			return BusinessExceptionImpl.processException(e);
-		}		
 	}
 
 	@Override
@@ -3379,25 +2598,17 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				for (User u : lstUsers) {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
-					userObj.put("userId", u.getUserId());
+					userObj.put(Field.USER_ID, u.getUserId());
 					//userObj.put("userName", u.getFullName());
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
 					if (employee != null) {
-						userObj.put("userName", employee.getFullName());
+						userObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						userObj.put("userName", u.getFullName());
+						userObj.put(Field.USER_NAME, u.getFullName());
 					}
 					DossierActionUserPK pk = new DossierActionUserPK();
 					pk.setDossierActionId(dossier.getDossierActionId());
 					pk.setUserId(u.getUserId());
-					DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
-					if (dau != null) {
-						userObj.put("assigned", dau.getAssigned());
-					}
-					else {
-						userObj.put("assigned", 0);
-					}
-					
 					userArr.put(userObj);
 				}
 				
@@ -3478,16 +2689,16 @@ public class DossierManagementImpl implements DossierManagement {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
-		message.put("msgToEngine", msgData);
-		message.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
 		
 		MessageBusUtil.sendMessage(DossierTerm.PUBLISH_DOSSIER_DESTINATION, message);	
 		
 		Message lgspMessage = new Message();
 		JSONObject lgspMsgData = msgData;
 
-		lgspMessage.put("msgToEngine", lgspMsgData);
-		lgspMessage.put("dossier", DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
+		lgspMessage.put(ConstantUtils.MSG_ENG, lgspMsgData);
+		lgspMessage.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId()));
 		
 		MessageBusUtil.sendMessage(DossierTerm.LGSP_DOSSIER_DESTINATION, lgspMessage);	
 	}
@@ -3577,7 +2788,7 @@ public class DossierManagementImpl implements DossierManagement {
 								
 							}
 							
-							payloadObject.put("dossierFiles", dossierFilesArr);
+							payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
 							
 							if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
 								List<DossierFile> lsDossierFile = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
@@ -3596,7 +2807,7 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 
 								}
-								payloadObject.put("dossierFiles", dossierFilesArr);				
+								payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);				
 							}
 							
 							List<DossierDocument> lstDossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -3607,8 +2818,8 @@ public class DossierManagementImpl implements DossierManagement {
 								dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
 								dossierDocumentArr.put(dossierDocumentObj);
 							}
-							payloadObject.put("dossierFiles", dossierFilesArr);				
-							payloadObject.put("dossierDocuments", dossierDocumentArr);
+							payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);				
+							payloadObject.put(DossierTerm.CONSTANT_DOSSIER_DOC, dossierDocumentArr);
 							
 							//Put dossier note
 							payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
@@ -3762,7 +2973,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				return Response.status(200).entity(result).build();
 			} else {
-				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to restore").build();
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_CONFIG)).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -3937,7 +3148,7 @@ public class DossierManagementImpl implements DossierManagement {
 						
 						_log.info("Dossier step: " + step);
 						if (step != null) {
-							JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), "DOSSIER_STATUS", step.getDossierStatus(), step.getDossierSubStatus());
+							JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), step.getDossierStatus(), step.getDossierSubStatus());
 
 							dossier.setDossierStatus(step.getDossierStatus());
 							dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(step.getDossierStatus()) : StringPool.BLANK);
@@ -3951,7 +3162,7 @@ public class DossierManagementImpl implements DossierManagement {
 				
 				return Response.status(200).entity(StringPool.BLANK).build();
 			} else {
-				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to check step").build();
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_CONFIG)).build();
 			}		
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -4014,7 +3225,7 @@ public class DossierManagementImpl implements DossierManagement {
 						long serviceProcessId = lastda.getServiceProcessId();
 						ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 						if (step != null) {
-							JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), "DOSSIER_STATUS", step.getDossierStatus(), step.getDossierSubStatus());
+							JSONObject jsonDataStatusText = getStatusText(dossier.getGroupId(), ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), step.getDossierStatus(), step.getDossierSubStatus());
 
 							dossier.setDossierStatus(step.getDossierStatus());
 							dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(step.getDossierStatus()) : StringPool.BLANK);
@@ -4046,12 +3257,12 @@ public class DossierManagementImpl implements DossierManagement {
 								}
 							}
 
-							DossierLocalServiceUtil.updateDossier(dossier);							
+							DossierLocalServiceUtil.updateDossier(dossier);
 							
 							DossierAction dossierAction = DossierActionLocalServiceUtil.updateDossierAction(groupId, 0, dossier.getDossierId(),
 									serviceProcessId, dossier.getDossierActionId(), 
 									lastda.getStepCode(), lastda.getStepName(), lastda.getSequenceNo(),
-									"9999", user.getFullName(), "Chuyển dịch đặc biệt", StringPool.BLANK, 0,
+									DossierTerm.ACTION_CODE_GOTO, user.getFullName(), StringPool.BLANK, StringPool.BLANK, 0,
 									stepCode, step.getStepName(), 
 									step.getSequenceNo(),
 									null, 0l, StringPool.BLANK, step.getStepInstruction(), 
@@ -4060,10 +3271,12 @@ public class DossierManagementImpl implements DossierManagement {
 							
 							lastda.setNextActionId(dossierAction.getDossierActionId());
 							DossierActionLocalServiceUtil.updateDossierAction(lastda);
-							DossierActionLocalServiceUtil.updateState(lastda.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);					
+							DossierActionLocalServiceUtil.updateState(lastda.getDossierActionId(),
+									DossierActionTerm.STATE_ALREADY_PROCESSED);
 							
 							if (stateProcessed) {
-								DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);													
+								DossierActionLocalServiceUtil.updateState(dossierAction.getDossierActionId(),
+										DossierActionTerm.STATE_ALREADY_PROCESSED);
 							}
 							DossierDetailModel model = new DossierDetailModel();
 							model.setDossierId((int)dossier.getDossierId());
@@ -4078,13 +3291,14 @@ public class DossierManagementImpl implements DossierManagement {
 							return Response.status(HttpServletResponse.SC_OK).entity(model).build();
 						}
 						else {
-							return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Not found step!").build();							
+							return Response.status(HttpServletResponse.SC_BAD_REQUEST)
+									.entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 						}
 					}
 				}
-				return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Dossier is not in process!").build();
+				return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 			} else {
-				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity("No find dossier to check step").build();
+				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 			}		
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -4400,7 +3614,7 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 				return Response.status(200).entity(result).build();
 			} else {
-				return Response.status(500).entity("Không update được dueDate của hồ sơ").build();
+				return Response.status(500).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 			}
 
 		} catch (Exception e) {
@@ -4482,7 +3696,7 @@ public class DossierManagementImpl implements DossierManagement {
 						.nullSafeGetIndexer(Dossier.class);
 				indexer.reindex(dossier);
 				
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize("Phân Quyền thành công!!!")).build();
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(ReadFilePropertiesUtils.get(ConstantUtils.MSG_SUCCESS))).build();
 			}
 			else {
 				return Response.status(200).entity(StringPool.BLANK).build();
@@ -4682,10 +3896,10 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, referenceUid);
 			if (dossier != null) {
-				jsonData.put("dossierId", dossier.getDossierId());
+				jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 				// Get info group
 				Group group = GroupLocalServiceUtil.getGroup(groupId);
-				jsonData.put("url", PortalUtil.getPathFriendlyURLPublic() + group.getFriendlyURL());
+				jsonData.put(ConstantUtils.VALUE_URL, PortalUtil.getPathFriendlyURLPublic() + group.getFriendlyURL());
 			}
 			
 		} catch (Exception e) {
@@ -4700,7 +3914,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		results.put("value", false);
+		results.put(ConstantUtils.VALUE, false);
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -4756,7 +3970,7 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 						_log.info("SB: "+sb.toString());
 						if (sb != null && sb.toString().contains(actionCode)) {
-							results.put("value", true);
+							results.put(ConstantUtils.VALUE, true);
 						}
 					}
 				}
@@ -4827,7 +4041,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		} catch (Exception e) {
 			_log.info(e);
-			return Response.status(500).entity("{error}").build();
+			return Response.status(500).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 		}
 	}
 
@@ -4857,7 +4071,7 @@ public class DossierManagementImpl implements DossierManagement {
 					for (Dossier dossierImport : dossierList) {
 						if (applicantName.equalsIgnoreCase(dossierImport.getApplicantName())
 								&& delegateName.equalsIgnoreCase(dossierImport.getDelegateName())) {
-							return Response.status(HttpStatus.SC_CONFLICT).entity("{CONFLICT}").build();
+							return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER)).build();
 						}
 					}
 				}
@@ -4957,15 +4171,13 @@ public class DossierManagementImpl implements DossierManagement {
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity("No Content").build();
+		return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR)).build();
 	}
 
 	@Override
 	public Response getOptionDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		return Response.status(HttpStatus.SC_OK)
-				.header("Allow", "")
-                .build();
+		return Response.status(HttpStatus.SC_OK).build();
 	}
 
 	@Override
@@ -5079,25 +4291,25 @@ public class DossierManagementImpl implements DossierManagement {
 											assigned = GetterUtil.getInteger(attr.get(ProcessStepRoleTerm.ASSIGNED));
 										}
 									}
-									userObj.put("userId", userId);
+									userObj.put(Field.USER_ID, userId);
 									Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 									if (emp != null) {
-										userObj.put("fullName", emp.getFullName() != null ? emp.getFullName().toUpperCase()
+										userObj.put(EmployeeTerm.FULL_NAME, emp.getFullName() != null ? emp.getFullName().toUpperCase()
 												: StringPool.BLANK);
 									} else {
-										userObj.put("fullName",
+										userObj.put(EmployeeTerm.FULL_NAME,
 												u.getFullName() != null ? u.getFullName().toUpperCase() : StringPool.BLANK);
 									}
 									
-									userObj.put("moderator", moderator);
-									userObj.put("assigned", assigned);
+									userObj.put(ProcessActionTerm.MODERATOR, moderator);
+									userObj.put(ProcessActionTerm.ASSIGNED, assigned);
 									
 									outputUserArr.put(userObj);							
 								}
 							}
 						}
 						
-						result.put("toUsers", outputUserArr);
+						result.put(ProcessActionTerm.TO_USERS, outputUserArr);
 					}
 				}
 			}
@@ -5147,10 +4359,10 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 			
-			return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		}
 		else {
-			return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		}
 	}
 

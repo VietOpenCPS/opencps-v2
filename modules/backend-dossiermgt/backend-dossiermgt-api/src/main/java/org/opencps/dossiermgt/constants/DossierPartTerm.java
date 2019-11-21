@@ -6,6 +6,7 @@ public class DossierPartTerm {
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String TEMPLATE_NO = "templateNo";
+	public static final String TEMPLATE_NAME = "templateName";
 	public static final String PART_NO = "partNo";
 	public static final String PART_NAME = "partName";
 	public static final String PART_TIP = "partTip";

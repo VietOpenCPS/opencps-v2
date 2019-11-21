@@ -30,6 +30,7 @@ import org.opencps.communication.action.NotificationTemplateInterface;
 import org.opencps.communication.action.impl.NotificationTemplateActions;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -56,9 +57,9 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("notificationType_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getNotificationTemplates(user.getUserId(), company.getCompanyId(), groupId,
@@ -96,9 +97,9 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			error.setCode(404);
-			error.setDescription("not found!");
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 			return Response.status(404).entity(error).build();
 
@@ -160,9 +161,9 @@ public class NotificationTemplateImpl implements NotificationTemplateManagement 
 
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 				return Response.status(404).entity(error).build();
 

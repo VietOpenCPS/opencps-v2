@@ -29,6 +29,7 @@ public class DossierActionTerm {
 	public static final String STATE = "state";
 	public static final String FROM_STEP_CODE = "fromStepCode";
 	public static final String FROM_STEP_NAME = "fromStepName";
+	public static final String LIST_CONTACT = "ListContacts";
 	
 	public static final int STATE_WAITING_PROCESSING = 0;
 	public static final int STATE_ALREADY_PROCESSED = 1;

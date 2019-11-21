@@ -90,7 +90,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 			params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 			params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
 			params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
@@ -113,7 +113,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			_log.info("EmployeeManagementImpl.getEmployees()"+params);
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -144,9 +144,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			error.setCode(404);
-			error.setDescription("not found!");
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 			return Response.status(404).entity(error).build();
 
@@ -262,7 +262,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 //				error.setMessage("file not found!");
 //				error.setCode(404);
 //				error.setDescription("file not found!");
-				return Response.status(404).entity("").build();
+				return Response.status(404).entity(StringPool.BLANK).build();
 			}
 
 		} catch (Exception e) {
@@ -285,7 +285,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			inputStream = dataHandler.getInputStream();
 
 			File file = actions.uploadEmployeePhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "OfficeSite/", "OfficeSite file upload", serviceContext);
+					fileName, fileType, fileSize, StringPool.BLANK, StringPool.BLANK, serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
@@ -331,7 +331,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			params.put("keywords", query.getKeywords());
 			params.put(EmployeeJobPosTerm.EMPLOYEE_ID, String.valueOf(id));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployeeJobpos(user.getUserId(), company.getCompanyId(), groupId, params,
@@ -435,16 +435,8 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			if (Validator.isNotNull(jsonObject.getString("duplicate"))
-					&& jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())) {
+			return Response.status(200).entity(employeeAccountModel).build();
 
-				return Response.status(409).entity(employeeAccountModel).build();
-
-			} else {
-
-				return Response.status(200).entity(employeeAccountModel).build();
-
-			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -530,10 +522,9 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 				params.put(Field.GROUP_ID, String.valueOf(groupId));
-				params.put("keywords", query.getKeywords());
-				params.put("userIdList", strUserIdList.toString());
+				params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 
-				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						Boolean.valueOf(query.getOrder())) };
 
 				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -604,13 +595,13 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 					params.put(Field.GROUP_ID, String.valueOf(groupIdEmp));
-					params.put("keywords", query.getKeywords());
+					params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 					params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 					params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
 					params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
 					params.put(EmployeeTerm.FULL_NAME, query.getEmployeeName());
 
-					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 							Boolean.valueOf(query.getOrder())) };
 
 					JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,

@@ -71,7 +71,6 @@ import org.opencps.api.controller.impl.EmployeeManagementImpl;
 import org.opencps.api.controller.impl.FaqManagementImpl;
 import org.opencps.api.controller.impl.FileAttachManagementImpl;
 import org.opencps.api.controller.impl.HolidayManagementImpl;
-import org.opencps.api.controller.impl.JasperUtilsManagermentImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
 import org.opencps.api.controller.impl.MenuConfigManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
@@ -79,19 +78,15 @@ import org.opencps.api.controller.impl.NotificationManagementImpl;
 import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
 import org.opencps.api.controller.impl.NotificationTemplateImpl;
 import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
-import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.OneGateControllerImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
 import org.opencps.api.controller.impl.PaymentFileManagementImpl;
-import org.opencps.api.controller.impl.ProcessPluginManagementImpl;
-import org.opencps.api.controller.impl.ProxyManagementImpl;
 import org.opencps.api.controller.impl.SMSManagementImpl;
 import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
 import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
 import org.opencps.api.controller.impl.StatisticManagementImpl;
-import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
@@ -158,7 +153,6 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new NotificationTemplateImpl());
 		singletons.add(new NotificationTypeManagementImpl());
 		singletons.add(new NotificationQueueManagementImpl());
-		singletons.add(new OfficeSiteManagementImpl());
 		singletons.add(new WorkingUnitManagementImpl());
 		singletons.add(new JobposManagementImpl());
 		singletons.add(new UserManagementImpl());
@@ -170,15 +164,12 @@ public class BackendAPIRestApplication extends Application {
 		//
 		singletons.add(new DeliverablesManagementImpl());
 		singletons.add(new CommentManagementImpl());
-		singletons.add(new ProcessPluginManagementImpl());
 		singletons.add(new UserInfoLogManagementImpl());
 		//
 		singletons.add(new CertNumberManagementImpl());
 		singletons.add(new OneGateControllerImpl());
 		singletons.add(new DossierDocumentManagementImpl());
 		singletons.add(new DossierSyncManagementImpl());
-
-		singletons.add(new SystemManagementImpl());
 
 		singletons.add(new DossierActionUserManagementImpl());
 		singletons.add(new MenuRoleManagementImpl());
@@ -188,9 +179,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new FaqManagementImpl());
 		singletons.add(new EFormManagementImpl());
 		singletons.add(new AdminConfigManagementImpl());
-		singletons.add(new ProxyManagementImpl());
 		singletons.add(new MenuConfigManagementImpl());
-		singletons.add(new JasperUtilsManagermentImpl());
 
 		singletons.add(this);
 

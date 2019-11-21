@@ -31,6 +31,7 @@ import org.opencps.datamgt.action.HolidayInterface;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -59,12 +60,9 @@ public class HolidayManagementImpl implements HolidayManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-			if (Validator.isNotNull(query.getYear())) {
-				params.put("year", query.getYear());				
-			}
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getHolidays(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -99,9 +97,9 @@ public class HolidayManagementImpl implements HolidayManagement {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			error.setCode(404);
-			error.setDescription("not found!");
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 			return Response.status(404).entity(error).build();
 
@@ -173,9 +171,9 @@ public class HolidayManagementImpl implements HolidayManagement {
 				
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 				return Response.status(404).entity(error).build();
 				

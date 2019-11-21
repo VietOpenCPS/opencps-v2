@@ -245,7 +245,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 				responseBuilder.header(
 					ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
 				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
@@ -653,8 +653,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			if (dossierFile != null) {
-				results.put("dossierId", dossierFile.getDossierId());
-				results.put("referenceUid", dossierFile.getReferenceUid());
+				results.put(DossierTerm.DOSSIER_ID, dossierFile.getDossierId());
+				results.put(DossierTerm.REFERENCE_UID, dossierFile.getReferenceUid());
 			}
 
 			_log.debug("********END *********");
@@ -828,7 +828,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth2.isAdmin(serviceContext, ReadFilePropertiesUtils.get(ConstantUtils.USER_ADMIN))) {
 				return Response.status(
 					HttpURLConnection.HTTP_UNAUTHORIZED).entity(
-						"User not permission process!").build();
+						ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();
 			}
 
 			String result = StringPool.BLANK;

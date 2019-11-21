@@ -42,12 +42,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.DossierURLException;
-import org.opencps.dossiermgt.exception.DuplicateStepNoException;
-import org.opencps.dossiermgt.exception.HasChildrenException;
-import org.opencps.dossiermgt.exception.RequiredStepNoException;
-import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ProcessStepRole;
 import org.opencps.dossiermgt.service.base.ProcessStepLocalServiceBaseImpl;
@@ -101,9 +98,6 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		User userAction = userLocalService.getUser(context.getUserId());
 
 		ProcessStep object = null;
-
-		validateAdd(groupId, processStepId, stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
-				customProcessUrl);
 
 		if (processStepId == 0) {
 
@@ -174,7 +168,6 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 	@Indexable(type = IndexableType.DELETE)
 	public ProcessStep removeProcessStep(long processStepId) throws PortalException {
-		validateRemove(processStepId);
 
 		List<ProcessStepRole> processStepRoles = processStepRolePersistence.findByP_S_ID(processStepId);
 
@@ -201,7 +194,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -264,7 +257,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -319,66 +312,13 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 		return processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
 	}
 
-	private void validateAdd(long groupId, long processStepId, String stepCode, long serviceProcessId,
-			String sequenceNo, String dossierStatus, String dossierSubStatus, String customProcessUrl)
-			throws PortalException {
-
-		if (Validator.isNull(stepCode)) {
-			throw new RequiredStepNoException("RequiredStepCodeException");
-		}
-
-		ProcessStep processStep = processStepPersistence.fetchBySC_GID(stepCode, groupId, serviceProcessId);
-
-		if (processStepId == 0) {
-			if (Validator.isNotNull(processStep)) {
-				throw new DuplicateStepNoException("DuplicateStepNoException");
-			}
-
-		} else {
-			if (Validator.isNotNull(processStep) && processStep.getPrimaryKey() != processStepId) {
-				throw new DuplicateStepNoException("DuplicateStepNoException");
-			}
-		}
-
-		if (Validator.isNotNull(customProcessUrl) && !Validator.isUrl(customProcessUrl)) {
-			throw new DossierURLException("InvalidCustomProcessURL");
-		}
-
-		// TODO add validate for DossierStatus and DossierSubStatus
-	}
-
 	@Deprecated
 	private void validateUpdate(long groupId, long processStepId, String stepCode, long serviceProcessId,
 			String sequenceNo, String dossierStatus, String dossierSubStatus, String customProcessUrl)
 			throws PortalException {
 
-		ProcessStep processStep = processStepPersistence.findByPrimaryKey(processStepId);
-
-		if (!processStep.getStepCode().toLowerCase().contentEquals(stepCode.toLowerCase())) {
-			validateAdd(groupId, processStepId, stepCode, serviceProcessId, sequenceNo, dossierStatus, dossierSubStatus,
-					customProcessUrl);
-		}
-
 		if (Validator.isNotNull(customProcessUrl) && !Validator.isUrl(customProcessUrl)) {
 			throw new DossierURLException("InvalidCustomProcessURL");
-		}
-	}
-
-	private void validateRemove(long processStepId) throws PortalException {
-
-		ProcessStep processStep = processStepPersistence.findByPrimaryKey(processStepId);
-
-		// List<ProcessStepRole> processStepRoles =
-		// processStepRolePersistence.findByP_S_ID(processStepId);
-
-		List<ProcessAction> preActions = processActionPersistence.findByPRE_CODE(processStep.getStepCode(),
-				processStep.getGroupId());
-
-		List<ProcessAction> postActions = processActionPersistence.findByPOST_CODE(processStep.getStepCode(),
-				processStep.getGroupId());
-
-		if (preActions.size() != 0 || postActions.size() != 0) {
-			throw new HasChildrenException("HasChildrenException");
 		}
 	}
 
@@ -455,9 +395,9 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 		ProcessStep object = null;
 
-		if (objectData.getLong("processStepId") > 0) {
+		if (objectData.getLong(ProcessStepTerm.PROCESSSTEP_ID) > 0) {
 
-			object = processStepPersistence.fetchByPrimaryKey(objectData.getLong("processStepId"));
+			object = processStepPersistence.fetchByPrimaryKey(objectData.getLong(ProcessStepTerm.PROCESSSTEP_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -468,30 +408,30 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 			object = processStepPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setStepCode(objectData.getString("stepCode"));
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setStepName(objectData.getString("stepName"));
-		object.setSequenceNo(objectData.getString("sequenceNo"));
-		object.setDossierStatus(objectData.getString("dossierStatus"));
-		object.setDossierSubStatus(objectData.getString("dossierSubStatus"));
-		object.setDurationCount(objectData.getLong("durationCount"));
-		object.setCustomProcessUrl(objectData.getString("customProcessUrl"));
-		object.setStepInstruction(objectData.getString("stepInstruction"));
-		object.setBriefNote(objectData.getString("briefNote"));
-		object.setEditable(objectData.getBoolean("editable"));
-		object.setRestrictDossier(objectData.getString("restrictDossier"));
-		object.setLockState(objectData.getString("lockState"));
-		object.setGroupName(objectData.getString("groupName"));
-		object.setRoleAsStep(objectData.getString("roleAsStep"));
-		object.setCheckInput(objectData.getInt("checkInput"));
+		object.setStepCode(objectData.getString(ProcessStepTerm.STEP_CODE));
+		object.setServiceProcessId(objectData.getLong(ProcessStepTerm.SERVICE_PROCESS_ID));
+		object.setStepName(objectData.getString(ProcessStepTerm.STEP_NAME));
+		object.setSequenceNo(objectData.getString(ProcessStepTerm.SEQUENCE_NO));
+		object.setDossierStatus(objectData.getString(ProcessStepTerm.DOSSIER_STATUS));
+		object.setDossierSubStatus(objectData.getString(ProcessStepTerm.DOSSIER_SUB_STATUS));
+		object.setDurationCount(objectData.getLong(ProcessStepTerm.DURATION_COUNT));
+		object.setCustomProcessUrl(objectData.getString(ProcessStepTerm.CUSTOM_PROCESS_URL));
+		object.setStepInstruction(objectData.getString(ProcessStepTerm.STEP_INSTRUCTION));
+		object.setBriefNote(objectData.getString(ProcessStepTerm.BRIEF_NOTE));
+		object.setEditable(objectData.getBoolean(ProcessStepTerm.EDITABLE));
+		object.setRestrictDossier(objectData.getString(ProcessStepTerm.RESTRICT_DOSSIER));
+		object.setLockState(objectData.getString(ProcessStepTerm.LOCK_STATE));
+		object.setGroupName(objectData.getString(ProcessStepTerm.GROUP_NAME));
+		object.setRoleAsStep(objectData.getString(ProcessStepTerm.ROLE_AS_STEP));
+		object.setCheckInput(objectData.getInt(ProcessStepTerm.CHECK_INPUT));
 
 		processStepPersistence.update(object);
 

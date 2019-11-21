@@ -42,6 +42,9 @@ public class ConstantUtils {
 	public static final String KEY_TOKEN_TYPE = "token_type";
 	public static final String KEY_EXPIRED_IN = "expires_in";
 	public static final String DOSSIERS_BASE_PATH = "/dossiers";
+	public static final String LOCK_ALL = "LOCK ALL";
+	public static final String ITEM_LEVEL = "itemLv";
+	public static final String VALUE_URL = "url";
 	
 	public static final String ORIGINAL_TODO = "2,3";
 
@@ -90,6 +93,9 @@ public class ConstantUtils {
 	public static final String OVER_DUE = "overdue";
 	public static final String DELAY = "deplay";
 	public static final String COMMNG = "coming";
+	public static final String _NORMAL_DATE_TIME = "dd-MM-yyyy HH:mm:ss";
+	public static final String NUMBER_SORTABLE = "_Number_sortable";
+	public static final String STRING_SORTABLE = "_String_sortable";
 
 	//Constant export
 	public static final String EXPORT_DICT_COLLECTION = "dictCollection";
@@ -101,6 +107,10 @@ public class ConstantUtils {
 	public static final String EXPORT_STEP_CONFIG = "stepConfig";
 	public static final String EXPORT_MENU_CONFIG = "menuConfig";
 	public static final String DEST_DIRECTORY_EXPORT = "exported";
+	public static final String CERT_ID = "certId";
+	public static final String PATTERN = "pattern";
+	public static final String YEAR = "year";
+	public static final String INIT_NUBER = "initNumber";
 	//
 	public static final String HTML_NEW_LINE = "<br/>";
 	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
@@ -109,13 +119,13 @@ public class ConstantUtils {
 	public static final String BAR_CODE = "barcode";
 	public static final String MONO_SPACED = "Monospaced";
 	public static final String HTTP_REQUEST = "HTTP.REQUEST";
-	public static final String KEY = ConstantUtils.VALUE_KEY;
+	public static final String KEY = "key";
 	public static final String VALUE = "value";
 	//public static final String ADMIN_STRATOR = ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN);
 	//public static final String SORT_ABLE = "_sortable";
-	public static final String MAIL_AD = ConstantUtils.VALUE_EMAIL;
+	public static final String MAIL_AD = "email";
 	public static final String TOKEN = "Token";
-	
+	public static final String BEARER = "Bearer ";
 	/** TOKEN VNPOST */
 	public static final String TOKEN_URL = "org.opencps.token.url";
 	public static final String CONSUMER_KEY = "org.opencps.consumer.key";
@@ -159,6 +169,7 @@ public class ConstantUtils {
 	public static final String CONTENT_TYPE_PNG = "org.opencps.contenttype.png";
 	public static final String CONTENT_TYPE_PDF = "org.opencps.contenttype.pdf";
 	public static final String CONTENT_TYPE_JSON = "org.opencps.contenttype.json";
+	public static final String CONTENT_TYPE_MSWORD = "org.opencps.contenttype.msword";
 	public static final String CONTENT_TYPE_URL_ENCODE = "org.opencps.contenttype.form.urlencode";
 	public static final String CONTENT_TYPE_IMAGE = "org.opencps.contenttype.image";
 	public static final String TYPE_DISPOSITON = "org.opencps.type.dispositon";
@@ -214,6 +225,9 @@ public class ConstantUtils {
 	public static final String VALUE_BASIC = "Basic ";
 	public static final String VALUE_ACCEPT = "Accept";
 	public static final String CONTENT_LENGTH = "Content-Length";
+	public static final String SCRECT_V2 = "org.opencps.screct.v2";
+	public static final String MULTIMEDIA = "org.opencps.value.multimedia";
+	public static final String DUPLICATE = "org.opencps.value.duplicate";
 	//
 	public static final String codePatternGov = "\\{(a+|A+)\\}";
 	public static final String codePatternDate = "\\{(n+|N+)\\}";

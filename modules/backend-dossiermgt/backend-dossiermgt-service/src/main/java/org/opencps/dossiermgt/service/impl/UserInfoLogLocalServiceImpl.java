@@ -16,12 +16,14 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.model.UserInfoLog;
 import org.opencps.dossiermgt.service.base.UserInfoLogLocalServiceBaseImpl;
 
@@ -93,23 +95,13 @@ public class UserInfoLogLocalServiceImpl extends UserInfoLogLocalServiceBaseImpl
 
 	public UserInfoLog adminProcessData(JSONObject objectData) {
 
-		UserInfoLog object = null;
+		long id = CounterLocalServiceUtil.increment(UserInfoLog.class.getName());
 
-		if (objectData.getLong("UserInfoLogId") > 0) {
+		UserInfoLog object = userInfoLogPersistence.create(id);
 
-			object = userInfoLogPersistence.fetchByPrimaryKey(objectData.getLong("userLogId"));
+		object.setCreateDate(new Date());
 
-		} else {
-
-			long id = CounterLocalServiceUtil.increment(UserInfoLog.class.getName());
-
-			object = userInfoLogPersistence.create(id);
-
-			object.setCreateDate(new Date());
-		}
-
-		object.setUserId(objectData.getLong("userId"));
-		object.setPayload(objectData.getString("payload"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
 		userInfoLogPersistence.update(object);
 

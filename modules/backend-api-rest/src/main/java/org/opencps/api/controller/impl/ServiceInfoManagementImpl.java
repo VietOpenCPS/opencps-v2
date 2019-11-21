@@ -122,13 +122,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			_log.info("sorts: "+query.getSort());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ConstantUtils.NUMBER_SORTABLE, Sort.INT_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 			} else if (Validator.isNotNull(query.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + ConstantUtils.STRING_SORTABLE, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
@@ -556,10 +556,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//Sort agency
 			Sort[] sorts = null;
 			if (Validator.isNull(search.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + ConstantUtils.NUMBER_SORTABLE, Sort.INT_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			}
 			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
@@ -594,10 +594,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//Sort agency
 			Sort[] sorts = null;
 			if (Validator.isNull(search.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + ConstantUtils.NUMBER_SORTABLE, Sort.INT_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			}
 			if (Validator.isNotNull(agency)) {
@@ -642,7 +642,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 
 				is = dlFileEntry.getContentStream();
-				result = IOUtils.toString(is, "UTF-8");
+				result = IOUtils.toString(is, StringPool.UTF8);
 			}
 
 		} catch (Exception e) {
@@ -676,7 +676,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormReportFileId());
 
 					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+					result = IOUtils.toString(is, StringPool.UTF8);
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -707,7 +707,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormScriptFileId());
 
 					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+					result = IOUtils.toString(is, StringPool.UTF8);
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -736,17 +736,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			// LamTV_Process search LIKE
-			String owner = StringPool.BLANK;
-			if (Validator.isNotNull(search.getTop()) && "recently".equalsIgnoreCase(search.getTop())) {
-				owner = "true";
-			}
 
-			params.put(DossierTerm.OWNER, owner);
+			params.put(DossierTerm.OWNER, String.valueOf(Validator.isNotNull(search.getTop()) ? true : false));
 			params.put(DossierTerm.USER_ID, userId);
 			_log.info("USER_ID: "+userId);
 
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(DossierTerm.SUBMIT_DATE + "_Number_sortable", Sort.LONG_TYPE, true) };
+					SortFactoryUtil.create(DossierTerm.SUBMIT_DATE + ConstantUtils.NUMBER_SORTABLE, Sort.LONG_TYPE, true) };
 
 			ServiceInfoRecentResultModel results = new ServiceInfoRecentResultModel();
 

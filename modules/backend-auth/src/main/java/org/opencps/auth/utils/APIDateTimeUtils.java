@@ -29,7 +29,7 @@ public class APIDateTimeUtils {
 	public static final String _NORMAL_DATE_TIME = "dd-MM-yyyy HH:mm:ss";
 
 	public static final String _LUCENE_PATTERN = "yyyyMMddHHmmss";
-
+	
 	public static String convertNormalDateToLuceneDate(String normal) {
 		if (Validator.isNull(normal)) {
 			return StringPool.BLANK;

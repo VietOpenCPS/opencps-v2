@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.base.DossierRequestUDLocalServiceBaseImpl;
 
@@ -159,33 +161,21 @@ public class DossierRequestUDLocalServiceImpl extends DossierRequestUDLocalServi
 
 		DossierRequestUD object = null;
 
-		if (objectData.getLong("DossierRequestUDId") > 0) {
+		long id = CounterLocalServiceUtil.increment(DossierRequestUD.class.getName());
 
-			object = dossierRequestUDPersistence.fetchByPrimaryKey(objectData.getLong("DossierRequestUDId"));
+		object = dossierRequestUDPersistence.create(id);
 
-			object.setModifiedDate(new Date());
+		object.setGroupId(objectData.getLong(Field.GROUP_ID));
+		object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
+		object.setCreateDate(new Date());
 
-		} else {
 
-			long id = CounterLocalServiceUtil.increment(DossierRequestUD.class.getName());
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-			object = dossierRequestUDPersistence.create(id);
-
-			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
-			object.setCreateDate(new Date());
-
-		}
-
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
-
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setRequestType(objectData.getString("requestType"));
-		object.setComment(objectData.getString("comment"));
-		object.setIsNew(objectData.getInt("isNew"));
-		object.setStatusReg(objectData.getInt("statusReg"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setReferenceUid(objectData.getString(DossierTerm.REFERENCE_UID));
+		object.setIsNew(objectData.getInt(DossierFileTerm.IS_NEW));
 
 		dossierRequestUDPersistence.update(object);
 

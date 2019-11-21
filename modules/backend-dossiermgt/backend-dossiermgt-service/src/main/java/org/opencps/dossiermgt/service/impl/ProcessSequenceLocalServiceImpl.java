@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.service.base.ProcessSequenceLocalServiceBaseImpl;
 
@@ -178,9 +180,9 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 
 		ProcessSequence object = null;
 
-		if (objectData.getLong("processSequenceId") > 0) {
+		if (objectData.getLong(ProcessOptionTerm.PROCESS_SEQUENCE_ID) > 0) {
 
-			object = processSequencePersistence.fetchByPrimaryKey(objectData.getLong("processSequenceId"));
+			object = processSequencePersistence.fetchByPrimaryKey(objectData.getLong(ProcessOptionTerm.PROCESS_SEQUENCE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -191,19 +193,19 @@ public class ProcessSequenceLocalServiceImpl extends ProcessSequenceLocalService
 			object = processSequencePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setSequenceNo(objectData.getString("sequenceNo"));
-		object.setSequenceName(objectData.getString("sequenceName"));
-		object.setSequenceRole(objectData.getString("sequenceRole"));
-		object.setDurationCount(objectData.getLong("durationCount"));
+		object.setServiceProcessId(objectData.getLong(ProcessOptionTerm.SERVICE_PROCESS_ID));
+		object.setSequenceNo(objectData.getString(ProcessOptionTerm.SEQUENCE_NO));
+		object.setSequenceName(objectData.getString(ProcessOptionTerm.SEQUENCE_NAME));
+		object.setSequenceRole(objectData.getString(ProcessOptionTerm.SEQUENCE_ROLE));
+		object.setDurationCount(objectData.getLong(DossierTerm.DURATION_COUNT));
 
 		processSequencePersistence.update(object);
 

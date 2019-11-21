@@ -60,11 +60,13 @@ import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -77,6 +79,7 @@ import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -121,7 +124,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
@@ -312,7 +315,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ProcessOptionTerm.SERVICE_CONFIG_ID, configId);
 			params.put(ProcessOptionTerm.APPLICATION_TYPE, applicantType);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getProcessOptions(userId, serviceContext.getCompanyId(), groupId, params,
@@ -451,7 +454,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
+				.fetchByF_dictCollectionCode(ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY), groupId);
 
 		List<DictItem> govItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
@@ -468,7 +471,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			}
 		}
 
-		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ReadFilePropertiesUtils.get(ConstantUtils.SERVICE_DOMAIN),
 				groupId);
 		List<DictItem> domainItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
@@ -513,8 +516,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				
 				if (countGov != 0) {
 	
-					govElm.put("govAgencyCode", govItem.getItemCode());
-					govElm.put("govAgencyName", govItem.getItemName());
+					govElm.put(DossierTerm.GOV_AGENCY_CODE, govItem.getItemCode());
+					govElm.put(DossierTerm.GOV_AGENCY_NAME, govItem.getItemName());
 	
 					JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
 	
@@ -546,25 +549,25 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						
 						if (countGovDomain != 0) {
 
-							domElm.put("domainCode", domainItem.getItemCode());
-							domElm.put("domainName", domainItem.getItemName());
+							domElm.put(DossierTerm.DOMAIN_CODE, domainItem.getItemCode());
+							domElm.put(DossierTerm.DOMAIN_NAME, domainItem.getItemName());
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
 							for (ServiceConfig sc : lstGovDomains) {
 								int level = sc.getServiceLevel();
 								if (level > 2) {
 									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
 
-									srvElm.put("serviceInfoId", sc.getServiceInfoId());
-									srvElm.put("serviceConfigId", sc.getServiceConfigId());
-									srvElm.put("serviceInfoName", (mapServiceInfos.containsKey(sc.getServiceInfoId()) ? mapServiceInfos.get(sc.getServiceInfoId()).getServiceName() : StringPool.BLANK));
-									srvElm.put("level", sc.getServiceLevel());
+									srvElm.put(ServiceInfoTerm.SERVICE_INFO_ID, sc.getServiceInfoId());
+									srvElm.put(ServiceConfigTerm.SERVICECONFIG_ID, sc.getServiceConfigId());
+									srvElm.put(ServiceInfoTerm.SERVICE_NAME, (mapServiceInfos.containsKey(sc.getServiceInfoId()) ? mapServiceInfos.get(sc.getServiceInfoId()).getServiceName() : StringPool.BLANK));
+									srvElm.put(ServiceInfoTerm.LEVEL, sc.getServiceLevel());
 
 									arrService.put(srvElm);									
 								}								
 							}
 
 							if (arrService.length() > 0) {
-								domElm.put("serviceConfigs", arrService);								
+								domElm.put(ServiceConfigTerm.SERVICE_CONFIGS, arrService);								
 								arrDomain.put(domElm);
 							}
 		
@@ -574,7 +577,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 					}
 	
 					if (arrDomain.length() > 0) {
-						govElm.put("domains", arrDomain);						
+						govElm.put(ServiceConfigTerm.DOMAINS, arrDomain);						
 						arrGovAgency.put(govElm);						
 					}
 	
@@ -583,7 +586,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 
-			results.put("govAgencies", arrGovAgency);
+			results.put(ServiceConfigTerm.GOV_AGENCYS, arrGovAgency);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -601,13 +604,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		//DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-		//		.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
-
-		//List<DictItem> govItems = DictItemLocalServiceUtil
-		//		.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
-
-		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ReadFilePropertiesUtils.get(ConstantUtils.SERVICE_DOMAIN),
 				groupId);
 
 		List<DictItem> domainItems = DictItemLocalServiceUtil
@@ -635,8 +632,6 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			for (DictItem domainItem : domainItems) {
 
-//				_log.info("domainItem: "+domainItem.getDictItemId());
-//				_log.info("DOMAIN_CODE: "+domainItem.getItemCode());
 				LinkedHashMap<String, Object> paramsDomain = new LinkedHashMap<String, Object>();
 
 				paramsDomain.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -649,12 +644,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				if (countDomain != 0) {
 
-//					_log.info("domainId: "+domainItem.getPrimaryKey());
-//					_log.info("domainName: "+domainItem.getItemName());
-					domain.put("domainId", domainItem.getPrimaryKey());
-					domain.put("domainName", domainItem.getItemName());
+					domain.put(DossierTerm.DOMAIN_ID, domainItem.getPrimaryKey());
+					domain.put(DossierTerm.DOMAIN_NAME, domainItem.getItemName());
 				
-					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
 							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 					
 					//Get list service config by Domain code
@@ -668,17 +661,11 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 						String govAgencyCode = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_CODE));
 						String govAgencyName = GetterUtil.getString(doc.get(ServiceConfigTerm.GOVAGENCY_NAME));
-//						_log.info("govAgencyCode: "+govAgencyCode);
-//						_log.info("govAgencyName: "+govAgencyName);
 						
-//						if(keys.contains(domainItem.getItemCode() + StringPool.DASH + govAgencyCode)){
-//							continue;
-//						}
 						if(keys.contains(doc.get(ServiceConfigTerm.SERVICE_CODE) + StringPool.DASH + govAgencyCode)){
 							continue;
 						}
 						
-//						keys.add(domainItem.getItemCode() + StringPool.DASH + govAgencyCode);
 						keys.add(doc.get(ServiceConfigTerm.SERVICE_CODE) + StringPool.DASH + govAgencyCode);
 						
 						JSONObject govAgency = JSONFactoryUtil.createJSONObject();
@@ -698,25 +685,25 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						for (Document serDoc : serviceConfigByInfo) {
 							JSONObject configElm = JSONFactoryUtil.createJSONObject();
 							
-							configElm.put("serviceCode", doc.get(ServiceConfigTerm.SERVICE_CODE));
-							configElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-							configElm.put("level", serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
-							configElm.put("serviceConfigId", serDoc.get(Field.ENTRY_CLASS_PK));
+							configElm.put(ServiceInfoTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
+							configElm.put(ServiceInfoTerm.SERVICE_NAME, doc.get(ServiceConfigTerm.SERVICE_NAME));
+							configElm.put(ServiceInfoTerm.LEVEL, serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
+							configElm.put(ServiceConfigTerm.SERVICECONFIG_ID, serDoc.get(Field.ENTRY_CLASS_PK));
 							serviceConfigGroupByGov.put(configElm);
 						}
 						
-						govAgency.put("govAgencyCode", govAgencyCode);
-						govAgency.put("govAgencyName", govAgencyName);
-						govAgency.put("serviceConfigs", serviceConfigGroupByGov);
+						govAgency.put(DossierTerm.GOV_AGENCY_CODE, govAgencyCode);
+						govAgency.put(DossierTerm.GOV_AGENCY_NAME, govAgencyName);
+						govAgency.put(ServiceConfigTerm.SERVICE_CONFIGS, serviceConfigGroupByGov);
 						govAgencys.put(govAgency);
 					}
-					domain.put("govAgencys", govAgencys);
+					domain.put(ServiceConfigTerm.GOV_AGENCYS, govAgencys);
 					
 					domains.put(domain);
 				}
 				
 			}
-			results.put("domains", domains);
+			results.put(ServiceConfigTerm.DOMAINS, domains);
 			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -725,104 +712,6 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		}
 
 	}
-
-//	private List<JSONObject> generateGovAgencys(ServiceContext serviceContext) {
-//
-//		List<JSONObject> govAgencys = new ArrayList<>();
-//
-//		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-//				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", serviceContext.getScopeGroupId());
-//
-//		List<DictItem> govItems = DictItemLocalServiceUtil
-//				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
-//
-//		for (DictItem govItem : govItems) {
-//			JSONObject govJsonObj = JSONFactoryUtil.createJSONObject();
-//
-//			govJsonObj.put("govAgencyCode", govItem.getItemCode());
-//			govJsonObj.put("govAgencyName", govItem.getItemName());
-//
-//			govJsonObj.put("domains", generateDomains(serviceContext));
-//
-//			govAgencys.add(govJsonObj);
-//		}
-//
-//		return govAgencys;
-//	}
-
-//	private List<JSONObject> generateDomains(ServiceContext serviceContext) {
-//
-//		List<JSONObject> domains = new ArrayList<>();
-//
-//		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
-//				serviceContext.getScopeGroupId());
-//
-//		List<DictItem> domainItems = DictItemLocalServiceUtil
-//				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
-//
-//		for (DictItem domainItem : domainItems) {
-//			JSONObject domainJsonObj = JSONFactoryUtil.createJSONObject();
-//
-//			domainJsonObj.put("domainCode", domainItem.getItemCode());
-//			domainJsonObj.put("domainName", domainItem.getItemName());
-//
-//			domainJsonObj.put("serviceInfos", generateServiceInfos(serviceContext, domainItem.getItemCode()));
-//
-//			domains.add(domainJsonObj);
-//		}
-//
-//		return domains;
-//	}
-
-//	@SuppressWarnings("unchecked")
-//	private List<JSONObject> generateServiceInfos(ServiceContext serviceContext, String domainCode) {
-//
-//		List<JSONObject> serviceInfos = new ArrayList<>();
-//
-//		ServiceInfoActions serviceInfoActions = new ServiceInfoActionsImpl();
-//
-//		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-//		params.put(Field.GROUP_ID, String.valueOf(serviceContext.getScopeGroupId()));
-//		params.put(ServiceInfoTerm.DOMAIN_CODE, domainCode);
-//
-//		JSONObject serviceInfoJson = serviceInfoActions.getServiceInfos(serviceContext.getUserId(),
-//				serviceContext.getCompanyId(), serviceContext.getScopeGroupId(), params, null, QueryUtil.ALL_POS,
-//				QueryUtil.ALL_POS, serviceContext);
-//
-//		List<ServiceInfoModel> serviceInfoList = ServiceInfoUtils
-//				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get(ConstantUtils.DATA), serviceContext);
-//
-//		if (Validator.isNotNull(serviceInfoList)) {
-//			for (ServiceInfoModel serviceInfo : serviceInfoList) {
-//				JSONObject serviceInfoJsonObj = JSONFactoryUtil.createJSONObject();
-//
-//				serviceInfoJsonObj.put("serviceCode", serviceInfo.getServiceCode());
-//				serviceInfoJsonObj.put("serviceName", serviceInfo.getServiceName());
-//
-//				serviceInfoJsonObj.put("serviceConfigs", generateServiceConfigs(serviceInfo.getServiceConfigs()));
-//
-//				serviceInfos.add(serviceInfoJsonObj);
-//			}
-//		}
-//
-//		return serviceInfos;
-//	}
-
-//	private List<JSONObject> generateServiceConfigs(List<ServiceInfoServiceConfig> serviceConfigList) {
-//
-//		List<JSONObject> serviceConfigs = new ArrayList<>();
-//
-//		for (ServiceInfoServiceConfig cf : serviceConfigList) {
-//			JSONObject cfJson = JSONFactoryUtil.createJSONObject();
-//
-//			cfJson.put("level", cf.getServiceLevel());
-//			cfJson.put("govAgencyCode", cf.getGovAgencyCode());
-//			cfJson.put("govAgencyName", cf.getGovAgencyName());
-//			// cfJson.put("serviceConfigId", cf.) // need serviceConfigId
-//		}
-//
-//		return serviceConfigs;
-//	}
 
 	@Override
 	public Response getGuide(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
@@ -853,7 +742,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			jsonGuide.put(ApplicantTerm.ADDRESS, search.getApplicantAddress());
 			jsonGuide.put(ApplicantTerm.CONTACTEMAIL, search.getApplicantEmail());
 			jsonGuide.put(ApplicantTerm.CONTACTTELNO, search.getApplicantTelNo());
-			jsonGuide.put("employeeName", search.getEmployeeName());
+			jsonGuide.put(EmployeeTerm.EMPLOYEE_NAME, search.getEmployeeName());
 			jsonGuide.put(DossierTemplateTerm.TEMPLATE_NO, search.getTemplateNo());
 			jsonGuide.put(DossierTerm.APPLICANT_NOTE, search.getApplicantNote());
 			if (serviceConfig != null) {
@@ -862,65 +751,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				jsonGuide.put(ServiceConfigTerm.GOVAGENCY_NAME, serviceConfig.getGovAgencyName());
 			}
 
-//			List<ProcessOption> optionList = ProcessOptionLocalServiceUtil.getByServiceProcessId(serviceConfigId);
-//			JSONArray optionArr = JSONFactoryUtil.createJSONArray();
-//			if (optionList != null && optionList.size() > 0) {
-//				JSONObject jsonOption = null;
-//				JSONArray partArr = null;
-//				for (ProcessOption option : optionList) {
-//					if (option != null) {
-//						jsonOption = JSONFactoryUtil.createJSONObject();
-//						jsonOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, option.getInstructionNote());
-//						// Get serviceProcess by optionId
-//						ServiceProcess process = ServiceProcessLocalServiceUtil
-//								.fetchServiceProcess(option.getServiceProcessId());
-//						if (process != null) {
-//							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, process.getDurationCount());
-//							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, process.getDurationUnit());
-//						} else {
-//							jsonOption.put(ServiceProcessTerm.DURATION_COUNT, StringPool.BLANK);
-//							jsonOption.put(ServiceProcessTerm.DURATION_UNIT, StringPool.BLANK);
-//						}
-//						// Get dossierTemplate by dossierTemplateId
-//						DossierTemplate template = DossierTemplateLocalServiceUtil
-//								.fetchDossierTemplate(option.getDossierTemplateId());
-//						partArr = JSONFactoryUtil.createJSONArray();
-//						if (template != null) {
-//							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, template.getTemplateName());
-//							// Get list part by templateNo
-//							List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId,
-//									template.getTemplateNo());
-//							if (partList != null && partList.size() > 0) {
-//								JSONObject jsonPart = null;
-//								for (DossierPart part : partList) {
-//									if (part != null && part.getPartType() != DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT) {
-//										jsonPart = JSONFactoryUtil.createJSONObject();
-//										jsonPart.put(DossierPartTerm.PART_NO, part.getPartNo());
-//										jsonPart.put(DossierPartTerm.PART_NAME, part.getPartName());
-//										jsonPart.put(DossierPartTerm.PART_TIP, part.getPartTip());
-//										jsonPart.put(DossierPartTerm.PART_TYPE, part.getPartType());
-//										jsonPart.put(DossierPartTerm.MULTIPLE, part.getMultiple());
-//
-//										partArr.put(jsonPart);
-//									}
-//								}
-//							}
-//							// Add key template in jsonOption
-//							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
-//						} else {
-//							jsonOption.put(DossierTemplateTerm.TEMPLATE_NAME, StringPool.BLANK);
-//							// Add key template in jsonOption
-//							jsonOption.put(ProcessOptionTerm.TEMPLATE, partArr);
-//						}
-//						// add array process option
-//						optionArr.put(jsonOption);
-//					}
-//				}
-//			}
 			// Get dossierTemplate by dossierTemplateNo
 			String type = search.getType();
-			jsonGuide.put("type", type);
-			if (Validator.isNotNull(type) && "completed".equalsIgnoreCase(type)) {
+			jsonGuide.put(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_TYPE), type);
+			if (Validator.isNotNull(type)) {
 				DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
 				JSONArray partArr = JSONFactoryUtil.createJSONArray();
 				if (template != null) {
@@ -975,17 +809,16 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			if (docType != null) {
 				documentScript = docType.getDocumentScript();
 			}
-			_log.info("documentScript: "+documentScript);
 
 			Message message = new Message();
-			message.put("formReport", documentScript);
-			message.put("formData", jsonGuide.toJSONString());
+			message.put(DeliverableTerm.FORM_REPORT, documentScript);
+			message.put(DeliverableTerm.FORM_DATA, jsonGuide.toJSONString());
 			if (Validator.isNotNull(reportType)) {
-				message.put("reportType", reportType);
+				message.put(DeliverableTerm.REPORT_TYPE, reportType);
 			}
 			try {
 				String previewResponse = (String) MessageBusUtil
-						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+						.sendSynchronousMessage(ConstantUtils.JASPER_DESTINATION, message, 10000);
 
 				if (Validator.isNotNull(previewResponse)) {
 				}
@@ -994,24 +827,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
-				if ("word".equals(reportType)) {
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/msword");
-				}
-				else {
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");					
-				}
+				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON), ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));					
 
 				return responseBuilder.build();
 
 			} catch (MessageBusException e) {
 				_log.error(e);
-				throw new Exception("Preview rendering not avariable");
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 
 		}
+		return null;
 	}
 
 	@Override

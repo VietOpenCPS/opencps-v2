@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.exception.InvalidPostStepCodeException;
 import org.opencps.dossiermgt.exception.InvalidPreStepCodeException;
@@ -100,10 +101,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		User userAction = userLocalService.getUser(context.getUserId());
 
 		ProcessAction object = null;
-
-		validateAdd(groupId, serviceProcessId, preStepCode, postStepCode, autoEvent, preCondition, actionCode,
-				actionName, allowAssignUser, assignUserId, requestPayment, paymentFee, createDossierFiles,
-				returnDossierFiles, makeBriefNote, syncActionCode, rollbackable);
 
 		if (processActionId == 0) {
 
@@ -193,10 +190,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		ProcessAction object = null;
 
-		validateAdd(groupId, serviceProcessId, preStepCode, postStepCode, autoEvent, preCondition, actionCode,
-				actionName, allowAssignUser, assignUserId, requestPayment, paymentFee, createDossierFiles,
-				returnDossierFiles, makeBriefNote, syncActionCode, rollbackable);
-
 		if (processActionId == 0) {
 
 			processActionId = counterLocalService.increment(ProcessAction.class.getName());
@@ -277,10 +270,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		User userAction = userLocalService.getUser(context.getUserId());
 
 		ProcessAction object = null;
-
-		validateAdd(groupId, serviceProcessId, preStepCode, postStepCode, autoEvent, preCondition, actionCode,
-				actionName, allowAssignUser, assignUserId, requestPayment, paymentFee, createDossierFiles,
-				returnDossierFiles, makeBriefNote, syncActionCode, rollbackable);
 
 		if (processActionId == 0) {
 
@@ -367,7 +356,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -449,7 +438,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -521,37 +510,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 	public static final String CLASS_NAME = ProcessAction.class.getName();
 
 	private void validateRemove(long processActionId) throws PortalException {
-		// TODO add more logic for remove processAction in here
-	}
-
-	private void validateAdd(long groupId, long serviceProcessId, String preStepCode, String postStepCode,
-			String autoEvent, String preCondition, String actionCode, String actionName, int allowAssignUser,
-			long assignUserId, Integer requestPayment, String paymentFee, String createDossierFiles,
-			String returnDossierFiles, String makeBriefNote, String syncActionCode, boolean rollbackable)
-			throws PortalException {
-
-		ProcessStep perStep = processStepPersistence.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
-		ProcessStep postStep = processStepPersistence.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
-
-		if (Validator.isNotNull(preStepCode) && Validator.isNull(perStep)) {
-			throw new InvalidPreStepCodeException("InvalidPreStepCodeException");
-		}
-
-		if (Validator.isNotNull(postStepCode) && Validator.isNull(postStep)) {
-			throw new InvalidPostStepCodeException("InvalidPostStepCodeException");
-		}
-
-		if (Validator.isNull(requestPayment) && requestPayment > 0 && Validator.isNull(paymentFee)) {
-			throw new RequiredPaymentFeeException("RequiredPaymentFeeException");
-		}
-
-		/*
-		 * if (allowAssignUser && Validator.isNull(assignUserId)) { throw new
-		 * RequiredAssignUserIdException("RequiredAssignUserIdException"); }
-		 */
-		// TODO add more validate for actionCode, actionName, createDossierFiles
-		// returnDossierFiles, makeBriefNote in here
-
 	}
 
 	public List<ProcessAction> getByActionCode(long groupId, String actionCode) throws PortalException {
@@ -629,7 +587,6 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		object.setActionName(actionName);
 		object.setAllowAssignUser(allowAssignUser);
 		object.setAssignUserId(assignUserId);
-		// object.setAssignUserName(assignUserName);
 		object.setRequestPayment(requestPayment);
 		object.setPaymentFee(paymentFee);
 		object.setCreateDossierFiles(createDossierFiles);

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -71,6 +70,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.synchronization.action.DictCollectionTempInterface;
 import org.opencps.synchronization.action.PushDictGroupInterface;
 import org.opencps.synchronization.action.PushDictItemInterface;
@@ -110,7 +110,7 @@ public class DataManagementImpl implements DataManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
-			params.put("status", status);
+			params.put(DossierTerm.STATUS, status);
 
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN),
@@ -738,7 +738,7 @@ public class DataManagementImpl implements DataManagement {
 
 			params.put(Field.GROUP_ID, groupId);
 			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
-			params.put("itemLv", query.getLevel());
+			params.put(ConstantUtils.ITEM_LEVEL, query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
 
@@ -801,23 +801,14 @@ public class DataManagementImpl implements DataManagement {
 					serviceContext);
 			DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
 			if (temp == null) {
-			dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code,
-					parentItemCode, itemCode, itemName, itemNameEN,
-					itemDescription, sibling, input.getLevel(), metaData,
-					DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);				
+				dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code, parentItemCode, itemCode,
+						itemName, itemNameEN, itemDescription, sibling, input.getLevel(), metaData,
+						DataMGTTempConstants.DATA_STATUS_ACTIVE, serviceContext);
 			}
 			else {
-				dictItemDataTempUtil.updateDictItemTempByItemCode(
-						user.getUserId(), groupId, 
-						serviceContext,
-						code,
-						itemCode, 
-						itemCode,
-						itemName, itemNameEN,
-						itemDescription, sibling,
-						parentItemCode,
-						DataMGTTempConstants.DATA_STATUS_ACTIVE);								
+				dictItemDataTempUtil.updateDictItemTempByItemCode(user.getUserId(), groupId, serviceContext, code,
+						itemCode, itemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode,
+						DataMGTTempConstants.DATA_STATUS_ACTIVE);
 			}
 
 			try {
@@ -1040,7 +1031,7 @@ public class DataManagementImpl implements DataManagement {
 										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
 												sc.getServerNo(),
 												code, itemCode,
-												item.getItemName(), item.getItemNameEN(), item.getItemDescription(), "",
+												item.getItemName(), item.getItemNameEN(), item.getItemDescription(), StringPool.BLANK,
 												item.getSibling(), SyncServerTerm.METHOD_DELETE, StringPool.BLANK, serviceContext);
 									}
 								}
@@ -1733,7 +1724,7 @@ public class DataManagementImpl implements DataManagement {
 
 			//params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
-			params.put("status", status);
+			params.put(DossierTerm.STATUS, status);
 
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE, false) };
@@ -1818,7 +1809,7 @@ public class DataManagementImpl implements DataManagement {
 
 			params.put(Field.GROUP_ID, groupId);
 			params.put(ConstantUtils.SEARCH_KEYWORD, query.getKeywords());
-			params.put("itemLv", query.getLevel());
+			params.put(ConstantUtils.ITEM_LEVEL, query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
 

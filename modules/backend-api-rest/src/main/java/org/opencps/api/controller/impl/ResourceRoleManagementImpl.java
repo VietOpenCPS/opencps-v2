@@ -28,6 +28,7 @@ import org.opencps.api.resourcerole.model.ResourceRoleModel;
 import org.opencps.api.resourcerole.model.ResourceRoleResults;
 import org.opencps.api.resourceuser.model.ResourceUserInputModel;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.ResourceRoleInterface;
 import org.opencps.usermgt.action.impl.ResourceRoleActions;
 import org.opencps.usermgt.constants.ResourceRoleTerm;
@@ -61,11 +62,11 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 			params.put(ResourceRoleTerm.CLASS_NAME, String.valueOf(className));
 			params.put(ResourceRoleTerm.CLASS_PK, String.valueOf(classPK));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getResourceRoles(className, classPK, user.getUserId(), company.getCompanyId(),
@@ -124,9 +125,9 @@ public class ResourceRoleManagementImpl implements ResourceRoleManagement {
 
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 				return Response.status(404).entity(error).build();
 
