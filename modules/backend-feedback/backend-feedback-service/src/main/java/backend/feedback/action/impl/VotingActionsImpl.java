@@ -43,7 +43,7 @@ import backend.feedback.service.util.ConfigProps;
 
 public class VotingActionsImpl implements VotingActions {
 
-	public static final Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale(ConfigProps.get(ConfigConstants.SYS_LOCALE), ConfigProps.get(ConfigConstants.SYS_LOCALE_UPP));
 
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 
@@ -95,7 +95,7 @@ public class VotingActionsImpl implements VotingActions {
 			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			//_log.info("VotingActions.getVotingList(): "+hits.getLength());
 			if (hits.toList() == null || hits.toList().size() == 0) {
-				params.put(Field.CLASS_PK, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
+				params.put(VotingTerm.CLASS_PK, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
 				params.put(VotingTerm.FROM_VOTING_DATE, StringPool.BLANK);
 				params.put(VotingTerm.TO_VOTING_DATE, StringPool.BLANK);
 				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);

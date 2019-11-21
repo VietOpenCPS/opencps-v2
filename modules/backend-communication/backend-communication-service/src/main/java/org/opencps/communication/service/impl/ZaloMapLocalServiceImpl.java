@@ -152,33 +152,33 @@ public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 
 		ZaloMap object = null;
 
-		if (objectData.getLong("zaloMapId") > 0) {
-
-			object = zaloMapPersistence.fetchByPrimaryKey(objectData.getLong("zaloMapId"));
-
-			object.setModifiedDate(new Date());
-
-		} else {
-
-			long id = CounterLocalServiceUtil.increment(ZaloMap.class.getName());
-
-			object = zaloMapPersistence.create(id);
-
-			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
-			object.setCreateDate(new Date());
-
-		}
-
-		object.setUserId(objectData.getLong("userId"));
-
-		object.setIsFollowed(objectData.getInt("isFollowed"));
-		object.setZaloOAId(objectData.getString("zaloOAId"));
-		object.setPayload(objectData.getString("payload"));
-		object.setTelNo(objectData.getString("telNo"));
-		object.setUId(objectData.getString("uId"));
-
-		zaloMapPersistence.update(object);
+//		if (objectData.getLong("zaloMapId") > 0) {
+//
+//			object = zaloMapPersistence.fetchByPrimaryKey(objectData.getLong("zaloMapId"));
+//
+//			object.setModifiedDate(new Date());
+//
+//		} else {
+//
+//			long id = CounterLocalServiceUtil.increment(ZaloMap.class.getName());
+//
+//			object = zaloMapPersistence.create(id);
+//
+//			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+//			object.setCompanyId(objectData.getLong("companyId"));
+//			object.setCreateDate(new Date());
+//
+//		}
+//
+//		object.setUserId(objectData.getLong("userId"));
+//
+//		object.setIsFollowed(objectData.getInt("isFollowed"));
+//		object.setZaloOAId(objectData.getString("zaloOAId"));
+//		object.setPayload(objectData.getString("payload"));
+//		object.setTelNo(objectData.getString("telNo"));
+//		object.setUId(objectData.getString("uId"));
+//
+//		zaloMapPersistence.update(object);
 
 		return object;
 	}

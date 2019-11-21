@@ -25,6 +25,8 @@ import org.opencps.api.evaluation.model.EvaluationInputModel;
 import org.opencps.api.evaluation.model.EvaluationModels;
 import org.opencps.api.evaluation.model.EvaluationResultDetailModel;
 import org.opencps.api.evaluation.model.EvaluationResultsModel;
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
@@ -128,25 +130,25 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 		ErrorMsg error = new ErrorMsg();
 
 		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
+			error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHEN_EX));
 			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
+			error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHEN_EX));
 
 			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		} else {
 			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
+				error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHOR_EX));
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
+				error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHOR_EX));
 
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
 				_log.error(e);
 
-				error.setMessage("No Content.");
+				error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_NO_CONTENT_EX));
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
+				error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_NO_CONTENT_EX));
 
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 

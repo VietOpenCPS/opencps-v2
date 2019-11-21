@@ -91,6 +91,14 @@ public class CommentTerm {
 	
 	public static final String CREATED_BY_CURRENT_USER_SORTABLE = "createdByCurrentUser_sortable";
 
+	public static final String UPVOTED_USERS = "upvotedUsers";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+
 	private long commentId;
 	private long companyId;
 	private long groupId;

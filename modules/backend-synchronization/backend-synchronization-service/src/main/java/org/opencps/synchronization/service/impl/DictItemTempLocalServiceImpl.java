@@ -251,7 +251,7 @@ public class DictItemTempLocalServiceImpl
 
 		DictItemTemp dictItem = dictItemTempPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId,
 				parentItemId, level, null);
-		if ((Validator.isNotNull(dictItem) && "0".equals(sibling)) || "0".equals(sibling)) {
+		if ((Validator.isNotNull(dictItem) && String.valueOf(0).equals(sibling)) || String.valueOf(0).equals(sibling)) {
 			try {
 				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
 			} catch (Exception e) {
@@ -272,11 +272,11 @@ public class DictItemTempLocalServiceImpl
 
 		if (dictParentItemId == 0) {
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
 
-				ext += "0";
+				ext += String.valueOf(0);
 
 			}
 
@@ -293,10 +293,10 @@ public class DictItemTempLocalServiceImpl
 			// sibling
 			// }
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
-				ext += "0";
+				ext += String.valueOf(0);
 			}
 
 			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
@@ -481,7 +481,7 @@ public class DictItemTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictItemTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictItemTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -491,7 +491,7 @@ public class DictItemTempLocalServiceImpl
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTempTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTempTerm.DICT_COLLECTION_ID);
@@ -506,10 +506,10 @@ public class DictItemTempLocalServiceImpl
 		*/
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictItemTempTerm.KEYWORDS);
 		String groupId = String.valueOf((params.get(Field.GROUP_ID)));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String userId = (String) params.get(DictItemTempTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTempTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;
@@ -616,14 +616,14 @@ public class DictItemTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictItemTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItemTemp.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictItemTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTempTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTempTerm.DICT_COLLECTION_ID);
@@ -631,14 +631,14 @@ public class DictItemTempLocalServiceImpl
 		String parentItemCode = (String) params.get(DictItemTempTerm.PARENT_ITEM_CODE);
 
 		if (Validator.isNull(parentItemCode)) {
-			parentItemCode = "0";
+			parentItemCode =String.valueOf(0);
 		}
 
 		String dictItemCode = (String) params.get(DictItemTempTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictItemTempTerm.KEYWORDS);
 		String groupId = String.valueOf(params.get(Field.GROUP_ID));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String userId = (String) params.get(DictItemTempTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTempTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTempTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;

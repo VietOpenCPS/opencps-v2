@@ -353,7 +353,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
@@ -362,7 +362,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroup.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -442,7 +442,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictGroupTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTerm.DICT_COLLECTION_CODE);
@@ -451,7 +451,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictGroup.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroup.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictGroupTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -599,9 +599,9 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		DictGroup object = null;
 
-		if (objectData.getLong("dictGroupId") > 0) {
+		if (objectData.getLong(DictGroupTerm.DICT_GROUPID) > 0) {
 
-			object = dictGroupPersistence.fetchByPrimaryKey(objectData.getLong("dictGroupId"));
+			object = dictGroupPersistence.fetchByPrimaryKey(objectData.getLong(DictGroupTerm.DICT_GROUPID));
 
 			object.setModifiedDate(new Date());
 
@@ -612,18 +612,18 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			object = dictGroupPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(DictGroupTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(DictGroupTerm.USER_ID));
 
-		object.setDictCollectionId(objectData.getLong("dictCollectionId"));
-		object.setGroupCode(objectData.getString("groupCode"));
-		object.setGroupName(objectData.getString("groupName"));
-		object.setGroupNameEN(objectData.getString("groupNameEN"));
-		object.setGroupDescription(objectData.getString("groupDescription"));
+		object.setDictCollectionId(objectData.getLong(DictGroupTerm.DICT_COLLECTIONID));
+		object.setGroupCode(objectData.getString(DictGroupTerm.GROUP_CODE));
+		object.setGroupName(objectData.getString(DictGroupTerm.GROUP_NAME));
+		object.setGroupNameEN(objectData.getString(DictGroupTerm.GROUP_NAME_EN));
+		object.setGroupDescription(objectData.getString(DictGroupTerm.GROUP_DESCRIPTION));
 
 		dictGroupPersistence.update(object);
 

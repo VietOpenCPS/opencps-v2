@@ -256,19 +256,19 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(NotificationTemplateTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(NotificationTemplateTerm.PARAMS, params);
 
 		// // LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(NotificationTemplateTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(NotificationTemplateTerm.USER_ID);
 		String sendEMail = (String) params.get(NotificationTemplateTerm.SEND_EMAIL);
 		BooleanQuery booleanQuery = null;
 
@@ -326,16 +326,16 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		searchContext.addFullQueryEntryClassName(Notificationtemplate.class.getName());
 		searchContext.setEntryClassNames(new String[] { Notificationtemplate.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(NotificationTemplateTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(NotificationTemplateTerm.PARAMS, params);
 
 		// // LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(NotificationTemplateTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(NotificationTemplateTerm.USER_ID);
 		String sendEMail = (String) params.get(NotificationTemplateTerm.SEND_EMAIL);
 
 		BooleanQuery booleanQuery = null;
@@ -495,9 +495,9 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 
 		Notificationtemplate object = null;
 
-		if (objectData.getLong("notificationTemplateId") > 0) {
+		if (objectData.getLong(NotificationTemplateTerm.NOTIFICATIONTEMPLATE_ID) > 0) {
 
-			object = notificationtemplatePersistence.fetchByPrimaryKey(objectData.getLong("notificationTemplateId"));
+			object = notificationtemplatePersistence.fetchByPrimaryKey(objectData.getLong(NotificationTemplateTerm.NOTIFICATIONTEMPLATE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -508,26 +508,26 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 			object = notificationtemplatePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(NotificationTemplateTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(NotificationTemplateTerm.USER_ID));
 
-		object.setNotificationType(objectData.getString("notificationType"));
-		object.setEmailSubject(objectData.getString("emailSubject"));
-		object.setEmailBody(objectData.getString("emailBody"));
-		object.setTextMessage(objectData.getString("textMessage"));
-		object.setSendSMS(objectData.getBoolean("sendSMS"));
-		object.setSendEmail(objectData.getBoolean("sendEmail"));
-		object.setExpireDuration(objectData.getInt("expireDuration"));
-		object.setUserUrlPattern(objectData.getString("userUrlPattern"));
-		object.setGuestUrlPattern(objectData.getString("guestUrlPattern"));
-		object.setInterval(objectData.getString("interval"));
-		object.setGrouping(objectData.getBoolean("grouping"));
-		object.setSendNotification(objectData.getBoolean("sendNotification"));
-		object.setNotifyMessage(objectData.getString("notifyMessage"));
+		object.setNotificationType(objectData.getString(NotificationTemplateTerm.NOTIFICATTION_TYPE));
+		object.setEmailSubject(objectData.getString(NotificationTemplateTerm.NOTIFICATION_EMAIL_SUBJECT));
+		object.setEmailBody(objectData.getString(NotificationTemplateTerm.NOTIFICATION_EMAIL_BODY));
+		object.setTextMessage(objectData.getString(NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE));
+		object.setSendSMS(objectData.getBoolean(NotificationTemplateTerm.NOTIFICATION_SEND_SMS));
+		object.setSendEmail(objectData.getBoolean(NotificationTemplateTerm.SEND_EMAIL));
+		object.setExpireDuration(objectData.getInt(NotificationTemplateTerm.EXPIRE_DURATION));
+		object.setUserUrlPattern(objectData.getString(NotificationTemplateTerm.USER_URL_PARTTERN));
+		object.setGuestUrlPattern(objectData.getString(NotificationTemplateTerm.GUEST_URL_PARTTERN));
+		object.setInterval(objectData.getString(NotificationTemplateTerm.INTERVAL));
+		object.setGrouping(objectData.getBoolean(NotificationTemplateTerm.GROUPING));
+		object.setSendNotification(objectData.getBoolean(NotificationTemplateTerm.SEND_NOTIFICATION));
+		object.setNotifyMessage(objectData.getString(NotificationTemplateTerm.NOTIFY_MESSAGE));
 
 		notificationtemplatePersistence.update(object);
 

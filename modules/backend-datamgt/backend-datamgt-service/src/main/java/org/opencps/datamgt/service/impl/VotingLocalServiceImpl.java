@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
+import org.opencps.datamgt.constants.VotingTerm;
 import org.opencps.datamgt.model.Voting;
 import org.opencps.datamgt.service.base.VotingLocalServiceBaseImpl;
 
@@ -76,9 +77,9 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		Voting object = null;
 
-		if (objectData.getLong("votingId") > 0) {
+		if (objectData.getLong(VotingTerm.VOTING_ID) > 0) {
 
-			object = votingPersistence.fetchByPrimaryKey(objectData.getLong("votingId"));
+			object = votingPersistence.fetchByPrimaryKey(objectData.getLong(VotingTerm.VOTING_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -89,19 +90,19 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			object = votingPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(VotingTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(VotingTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setSubject(objectData.getString("subject"));
-		object.setChoices(objectData.getString("choices"));
-		object.setTemplateNo(objectData.getString("templateNo"));
-		object.setCommentable(objectData.getBoolean("commentable"));
+		object.setClassName(objectData.getString(VotingTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(VotingTerm.CLASS_PK));
+		object.setSubject(objectData.getString(VotingTerm.SUBJECT));
+		object.setChoices(objectData.getString(VotingTerm.CHOICES));
+		object.setTemplateNo(objectData.getString(VotingTerm.TEMPLATE_NO));
+		object.setCommentable(objectData.getBoolean(VotingTerm.COMMENTABLE));
 
 		votingPersistence.update(object);
 

@@ -1,6 +1,14 @@
 
 package backend.feedback.service.indexer;
 
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.usermgt.constants.CommonTerm;
+
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -16,13 +24,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.usermgt.constants.CommonTerm;
+import com.liferay.portal.kernel.util.Validator;
 
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.model.Comment;
@@ -39,12 +41,16 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 	}
 
 	@Override
-	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
-			SearchContext searchContext) throws Exception {
+	public void postProcessSearchQuery(
+		BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+		SearchContext searchContext)
+		throws Exception {
 
-		addSearchTerm(searchQuery, searchContext, CommentTerm.COMMENT_ID, false);
+		addSearchTerm(
+			searchQuery, searchContext, CommentTerm.COMMENT_ID, false);
 		addSearchTerm(searchQuery, searchContext, Field.GROUP_ID, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.COMPANY_ID, false);
+		addSearchTerm(
+			searchQuery, searchContext, CommentTerm.COMPANY_ID, false);
 		addSearchTerm(searchQuery, searchContext, Field.USER_ID, false);
 		addSearchTerm(searchQuery, searchContext, Field.USER_NAME, false);
 		addSearchTerm(searchQuery, searchContext, Field.CREATE_DATE, false);
@@ -56,65 +62,100 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		addSearchTerm(searchQuery, searchContext, CommentTerm.EMAIL, true);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.PARENT, false);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.CONTENT, true);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.FILE_ENTRY_ID, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.UPVOTE_COUNT, false);
-		addSearchTerm(searchQuery, searchContext, CommentTerm.USER_HAS_UPVOTED, true);
+		addSearchTerm(
+			searchQuery, searchContext, CommentTerm.FILE_ENTRY_ID, false);
+		addSearchTerm(
+			searchQuery, searchContext, CommentTerm.UPVOTE_COUNT, false);
+		addSearchTerm(
+			searchQuery, searchContext, CommentTerm.USER_HAS_UPVOTED, true);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.PINGS, false);
 
+		LinkedHashMap<String, Object> params =
+			(LinkedHashMap<String, Object>) searchContext.getAttribute(
+				CommentTerm.PARAMS);
+
+		if (params != null) {
+			String expandoAttributes =
+				(String) params.get(CommentTerm.EXPANDO_ATTRIBUTES);
+
+			if (Validator.isNotNull(expandoAttributes)) {
+				addSearchExpando(searchQuery, searchContext, expandoAttributes);
+			}
+		}
 	}
 
 	@Override
-	protected void doDelete(Comment comment) throws Exception {
+	protected void doDelete(Comment comment)
+		throws Exception {
 
 		deleteDocument(comment.getCompanyId(), comment.getCommentId());
 	}
 
 	@Override
-	protected Document doGetDocument(Comment comment) throws Exception {
+	protected Document doGetDocument(Comment comment)
+		throws Exception {
 
 		Document document = getBaseModelDocument(CLASS_NAME, comment);
 
-		document.addNumberSortable(CommentTerm.COMMENT_ID, comment.getCommentId());
-		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(comment.getCompanyId()));
-		document.addDateSortable(Field.MODIFIED_DATE, comment.getModifiedDate());
-		document.addKeywordSortable(Field.USER_ID, String.valueOf(comment.getUserId()));
-		document.addKeywordSortable(Field.USER_NAME, String.valueOf(comment.getUserName()));
+		document.addNumberSortable(
+			CommentTerm.COMMENT_ID, comment.getCommentId());
+		document.addKeywordSortable(
+			Field.COMPANY_ID, String.valueOf(comment.getCompanyId()));
+		document.addDateSortable(
+			Field.MODIFIED_DATE, comment.getModifiedDate());
+		document.addKeywordSortable(
+			Field.USER_ID, String.valueOf(comment.getUserId()));
+		document.addKeywordSortable(
+			Field.USER_NAME, String.valueOf(comment.getUserName()));
 		document.addNumberSortable(Field.GROUP_ID, comment.getGroupId());
 
-		document.addTextSortable(CommentTerm.CLASS_NAME, comment.getClassName());
+		document.addTextSortable(
+			CommentTerm.CLASS_NAME, comment.getClassName());
 		document.addTextSortable(CommentTerm.PINGS, comment.getPings());
 		document.addTextSortable(CommentTerm.CLASS_PK, comment.getClassPK());
-//		document.addTextSortable(CommentTerm.FULL_NAME, comment.getFullName());
+		// document.addTextSortable(CommentTerm.FULL_NAME,
+		// comment.getFullName());
 		document.addTextSortable(CommentTerm.EMAIL, comment.getEmail());
 		document.addNumberSortable(CommentTerm.PARENT, comment.getParent());
 		document.addTextSortable(CommentTerm.CONTENT, comment.getContent());
-		document.addNumberSortable(CommentTerm.FILE_ENTRY_ID, comment.getFileEntryId());
-		document.addNumberSortable(CommentTerm.UPVOTE_COUNT, comment.getUpvoteCount());
-//		document.addTextSortable(CommentTerm.USER_HAS_UPVOTED, comment.getUpvotedUsers());
+		document.addNumberSortable(
+			CommentTerm.FILE_ENTRY_ID, comment.getFileEntryId());
+		document.addNumberSortable(
+			CommentTerm.UPVOTE_COUNT, comment.getUpvoteCount());
+		// document.addTextSortable(CommentTerm.USER_HAS_UPVOTED,
+		// comment.getUpvotedUsers());
 
-		document.setSortableTextFields(new String[] { CommentTerm.CREATE_DATE });
+		document.setSortableTextFields(new String[] {
+			CommentTerm.CREATE_DATE
+		});
 
 		return document;
 	}
 
 	@Override
 	protected String doGetSortField(String orderByCol) {
+
 		if (CommonTerm.EMAIL_DASH_ADDRESS.equals(orderByCol)) {
 			return CommonTerm.EMAIL_ADDRESS;
-		} else if (CommonTerm.FIRST_DASH_NAME.equals(orderByCol)) {
+		}
+		else if (CommonTerm.FIRST_DASH_NAME.equals(orderByCol)) {
 			return CommonTerm.FIRST_NAME;
-		} else if (CommonTerm.JOB_DASH_TITLE.equals(orderByCol)) {
+		}
+		else if (CommonTerm.JOB_DASH_TITLE.equals(orderByCol)) {
 			return CommonTerm.JOB_TITLE;
-		} else if (CommonTerm.LAST_DASH_NAME.equals(orderByCol)) {
+		}
+		else if (CommonTerm.LAST_DASH_NAME.equals(orderByCol)) {
 			return CommonTerm.LAST_NAME;
-		} else {
+		}
+		else {
 			return orderByCol;
 		}
 	}
 
 	@Override
-	protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
-			PortletResponse portletResponse) {
+	protected Summary doGetSummary(
+		Document document, Locale locale, String snippet,
+		PortletRequest portletRequest, PortletResponse portletResponse) {
 
 		Summary summary = createSummary(document);
 
@@ -124,16 +165,19 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 	}
 
 	@Override
-	protected void doReindex(Comment comment) throws Exception {
+	protected void doReindex(Comment comment)
+		throws Exception {
 
 		Document document = getDocument(comment);
 
-		IndexWriterHelperUtil.updateDocument(getSearchEngineId(), comment.getCompanyId(), document,
-				isCommitImmediately());
+		IndexWriterHelperUtil.updateDocument(
+			getSearchEngineId(), comment.getCompanyId(), document,
+			isCommitImmediately());
 	}
 
 	@Override
-	protected void doReindex(String className, long classPK) throws Exception {
+	protected void doReindex(String className, long classPK)
+		throws Exception {
 
 		Comment comment = CommentLocalServiceUtil.fetchComment(classPK);
 
@@ -141,37 +185,43 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 	}
 
 	@Override
-	protected void doReindex(String[] ids) throws Exception {
+	protected void doReindex(String[] ids)
+		throws Exception {
 
 		long companyId = GetterUtil.getLong(ids[0]);
 
 		reindexMComment(companyId);
 	}
 
-	protected void reindexMComment(long companyId) throws PortalException {
+	protected void reindexMComment(long companyId)
+		throws PortalException {
 
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = CommentLocalServiceUtil
-				.getIndexableActionableDynamicQuery();
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			CommentLocalServiceUtil.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);
-		indexableActionableDynamicQuery
-				.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<Comment>() {
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<Comment>() {
 
-					@Override
-					public void performAction(Comment comment) {
+				@Override
+				public void performAction(Comment comment) {
 
-						try {
-							Document document = getDocument(comment);
+					try {
+						Document document = getDocument(comment);
 
-							indexableActionableDynamicQuery.addDocuments(document);
-						} catch (PortalException pe) {
-							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index Comment " + comment.getCommentId(), pe);
-							}
+						indexableActionableDynamicQuery.addDocuments(document);
+					}
+					catch (PortalException pe) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to index Comment " +
+									comment.getCommentId(),
+								pe);
 						}
 					}
+				}
 
-				});
+			});
 		indexableActionableDynamicQuery.setSearchEngineId(getSearchEngineId());
 
 		indexableActionableDynamicQuery.performActions();

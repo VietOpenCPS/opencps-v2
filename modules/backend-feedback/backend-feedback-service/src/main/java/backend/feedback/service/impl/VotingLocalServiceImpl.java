@@ -174,17 +174,20 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
+
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		_log.info("groupId: " + groupId);
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
 		String fromVotingDate = GetterUtil.getString(params.get(VotingTerm.FROM_VOTING_DATE));
@@ -275,14 +278,15 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get(Field.USER_ID);
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
 
@@ -386,15 +390,15 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 			object = votingPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
+			object.setCompanyId(objectData.getLong(VotingTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserId(objectData.getLong(VotingTerm.USER_ID));
 
-		object.setClassName(objectData.getString(ConstantUtils.CLASS_NAME));
-		object.setClassPK(objectData.getString(Field.CLASS_PK));
+		object.setClassName(objectData.getString(VotingTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(VotingTerm.CLASS_PK));
 		object.setSubject(objectData.getString(VotingTerm.SUBJECT));
 		object.setChoices(objectData.getString(VotingTerm.CHOICES));
 		object.setTemplateNo(objectData.getString(VotingTerm.TEMPLATE_NO));

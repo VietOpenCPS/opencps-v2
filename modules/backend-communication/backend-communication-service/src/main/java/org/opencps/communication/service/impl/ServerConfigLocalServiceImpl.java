@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.communication.constants.ServerConfigTerm;
 import org.opencps.communication.exception.ServerNoDuplicateException;
 import org.opencps.communication.exception.ServerNoException;
 import org.opencps.communication.model.ServerConfig;
@@ -142,11 +143,11 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 	private void validateAdd(long groupId, long serverConfigId, String serverNo, String serverName, String protocol,
 			String configs, Date lastSync) throws PortalException {
 		if (Validator.isNull(serverName)) {
-			throw new ServerNoException("ServerNameIsNull");
+			throw new ServerNoException(ServerConfigTerm.SERVER_NAME_IS_NULL_EX_MES);
 		}
 
 		if (Validator.isNull(serverNo)) {
-			throw new ServerNoException("ServerNoIsNull");
+			throw new ServerNoException(ServerConfigTerm.SERVER_NAME_IS_NULL_EX_MES);
 		}
 
 		if (serverConfigId == 0) {
@@ -154,7 +155,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			ServerConfig serverConfigNo = serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
 
 			if (Validator.isNotNull(serverConfigNo)) {
-				throw new ServerNoDuplicateException("ServerNoDuplicateException");
+				throw new ServerNoDuplicateException(ServerConfigTerm.SERVER_NO_DUPLICATE_EX_MES);
 			}
 			// ServerConfig serverConfigName =
 			// serverConfigPersistence.fetchByCF_NM(serverName);
@@ -167,7 +168,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			ServerConfig oldSC = serverConfigPersistence.fetchByPrimaryKey(serverConfigId);
 
 			if (Validator.isNull(oldSC)) {
-				throw new NotFoundException("ServerConfigNotFoundException");
+				throw new NotFoundException(ServerConfigTerm.SERVER_CONFIG_NOT_FOUND_EX_MES);
 			} else {
 
 				ServerConfig scByNo = serverConfigPersistence.fetchByG_CF_CD(groupId, serverNo);
@@ -242,9 +243,9 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 		ServerConfig object = null;
 
-		if (objectData.getLong("serverConfigId") > 0) {
+		if (objectData.getLong(ServerConfigTerm.SERVER_CONFIG_ID) > 0) {
 
-			object = serverConfigPersistence.fetchByPrimaryKey(objectData.getLong("serverConfigId"));
+			object = serverConfigPersistence.fetchByPrimaryKey(objectData.getLong(ServerConfigTerm.SERVER_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -255,19 +256,19 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			object = serverConfigPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(ServerConfigTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(ServerConfigTerm.USER_ID));
 
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setServerNo(objectData.getString("serverNo"));
-		object.setServerName(objectData.getString("serverName"));
-		object.setProtocol(objectData.getString("protocol"));
-		object.setConfigs(objectData.getString("configs"));
-		object.setLastSync(new Date(objectData.getLong("lastSync")));
+		object.setGovAgencyCode(objectData.getString(ServerConfigTerm.GOV_AGENCY_CODE));
+		object.setServerNo(objectData.getString(ServerConfigTerm.SERVER_NO));
+		object.setServerName(objectData.getString(ServerConfigTerm.SERVER_NAME));
+		object.setProtocol(objectData.getString(ServerConfigTerm.PROTOCOL));
+		object.setConfigs(objectData.getString(ServerConfigTerm.CONFIGS));
+		object.setLastSync(new Date(objectData.getLong(ServerConfigTerm.LAST_SYNC)));
 
 		serverConfigPersistence.update(object);
 

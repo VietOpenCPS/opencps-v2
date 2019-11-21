@@ -118,6 +118,12 @@ public class DictItemTerm {
 	public static final String LEVEL_SORTABLE = "level_sortable";
 	
 	public static final String META_DATA_SORTABLE = "metaData_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public DictItemTerm() {
 

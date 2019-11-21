@@ -176,7 +176,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		cloneFileAttach.setFullName(fileAttach.getFullName());
 		cloneFileAttach.setEmail(fileAttach.getEmail());
 		cloneFileAttach.setFileEntryId(fileEntryId);
-		cloneFileAttach.setSource("link");
+		cloneFileAttach.setSource(FileAttachTerm.LINK_CLONE);
 		cloneFileAttach.setSourceUrl(fileAttach.getSourceUrl());
 		cloneFileAttach.setDocFileId(docFileId);
 		cloneFileAttach.setFileName(fileAttach.getFileName());
@@ -347,19 +347,19 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(FileAttachTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(FileAttachTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(FileAttachTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(FileAttachTerm.USER_ID);
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
 		String docFileId = (String) params.get(FileAttachTerm.DOCFILE_ID);
@@ -436,16 +436,16 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(FileAttachTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(FileAttachTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(FileAttachTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(FileAttachTerm.USER_ID);
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
 		String docFileId = (String) params.get(FileAttachTerm.DOCFILE_ID);
@@ -533,9 +533,9 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		FileAttach object = null;
 
-		if (objectData.getLong("fileAttachId") > 0) {
+		if (objectData.getLong(FileAttachTerm.FILEATTACH_ID) > 0) {
 
-			object = fileAttachPersistence.fetchByPrimaryKey(objectData.getLong("fileAttachId"));
+			object = fileAttachPersistence.fetchByPrimaryKey(objectData.getLong(FileAttachTerm.FILEATTACH_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -546,22 +546,22 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 			object = fileAttachPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(FileAttachTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(FileAttachTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setFullName(objectData.getString("fullName"));
-		object.setEmail(objectData.getString("email"));
+		object.setClassName(objectData.getString(FileAttachTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(FileAttachTerm.CLASS_PK));
+		object.setFullName(objectData.getString(FileAttachTerm.FULLNAME));
+		object.setEmail(objectData.getString(FileAttachTerm.EMAIL));
 		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);
-		object.setSource(objectData.getString("source"));
-		object.setSourceUrl(objectData.getString("sourceUrl"));
-		object.setDocFileId(objectData.getLong("docFileId"));
-		object.setFileName(objectData.getString("fileName"));
+		object.setSource(objectData.getString(FileAttachTerm.SOURCE));
+		object.setSourceUrl(objectData.getString(FileAttachTerm.SOURCE_URL));
+		object.setDocFileId(objectData.getLong(FileAttachTerm.DOCFILE_ID));
+		object.setFileName(objectData.getString(FileAttachTerm.FILE_NAME));
 
 		fileAttachPersistence.update(object);
 

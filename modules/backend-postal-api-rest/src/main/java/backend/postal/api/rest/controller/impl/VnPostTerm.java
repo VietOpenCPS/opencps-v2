@@ -49,4 +49,7 @@ public class VnPostTerm {
 	public static final String SERVER_SENDERADDRESS = "senderAddress";
 	public static final String SERVER_SENDEREMAIL = "senderEmail";
 	public static final String SERVER_SENDERTEL = "senderTel";
+	
+	public static final String STATUS_CODE = "statusCode";
+	public static final String STATUS_MESSAGE = "statusMessage";
 }

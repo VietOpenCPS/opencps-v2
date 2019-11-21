@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
+import org.opencps.datamgt.constants.VotingResultTerm;
 import org.opencps.datamgt.model.VotingResult;
 import org.opencps.datamgt.service.base.VotingResultLocalServiceBaseImpl;
 
@@ -76,9 +77,9 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		VotingResult object = null;
 
-		if (objectData.getLong("votingResultId") > 0) {
+		if (objectData.getLong(VotingResultTerm.VOTING_RESULT_ID) > 0) {
 
-			object = votingResultPersistence.fetchByPrimaryKey(objectData.getLong("votingResultId"));
+			object = votingResultPersistence.fetchByPrimaryKey(objectData.getLong(VotingResultTerm.VOTING_RESULT_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -89,18 +90,18 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 			object = votingResultPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(VotingResultTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(VotingResultTerm.USER_ID));
 
-		object.setVotingId(objectData.getLong("votingId"));
-		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString("email"));
-		object.setComment(objectData.getString("comment"));
-		object.setSelected(objectData.getString("selected"));
+		object.setVotingId(objectData.getLong(VotingResultTerm.VOTING_ID));
+		object.setFullname(objectData.getString(VotingResultTerm.FULL_NAME));
+		object.setEmail(objectData.getString(VotingResultTerm.EMAIL));
+		object.setComment(objectData.getString(VotingResultTerm.COMMENT));
+		object.setSelected(objectData.getString(VotingResultTerm.SELECTED));
 
 		votingResultPersistence.update(object);
 

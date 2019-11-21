@@ -33,4 +33,5 @@ public class SyncServerTerm {
 	public static final int QUEUE_STATUS_NEW = 0;
 	public static final int QUEUE_STATUS_PROCESSING = 1;
 	public static final int QUEUE_STATUS_FAILED = 2;
+	public static final String MEDIA_TYPE_JSON = "application/json";
 }

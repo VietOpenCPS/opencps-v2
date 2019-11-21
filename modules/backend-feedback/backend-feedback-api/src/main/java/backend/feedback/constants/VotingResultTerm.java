@@ -3,6 +3,7 @@ package backend.feedback.constants;
 public class VotingResultTerm {
 	public static final String VOTING_RESULT_ID = "votingResultId";
 	public static final String USER_ID = "userId";
+	public static final String COMPANY_ID = "companyId";
 	
 	public static final String VOTING_ID = "votingId";
 	public static final String EMAIL = "email";
@@ -14,4 +15,10 @@ public class VotingResultTerm {
 	public static final String MONTH_VOTING = "month";
 	public static final String FROM_VOTING_DATE = "fromVotingDate";
 	public static final String TO_VOTING_DATE = "toVotingDate";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 }

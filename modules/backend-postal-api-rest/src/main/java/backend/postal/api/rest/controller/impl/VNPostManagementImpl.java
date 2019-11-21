@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.api.vnpost.model.VNPostCancelOrderModel;
 import org.opencps.api.vnpost.model.VNPostGetOrderModel;
 import org.opencps.api.vnpost.model.VNPostInputModel;
@@ -146,8 +148,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 					// String strRhDoc = rHdoc.getOrderNumber();
 					// _log.info("orderNumber ====== " + rHdoc.getOrderNumber());
 					if (rHdoc.getOrderNumber().equals(orderNumber)) {
-						obj.put("statusCode", rHdoc.getStatusCode());
-						obj.put("statusMessage", rHdoc.getStatusMessage());
+						obj.put(VnPostTerm.STATUS_CODE, rHdoc.getStatusCode());
+						obj.put(VnPostTerm.STATUS_MESSAGE, rHdoc.getStatusMessage());
 						// _log.info("obj length ====== " + obj.length());
 					}
 					int j = i++;
@@ -196,7 +198,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 			//_log.info("OrderTrackingReturn VNPOST====== " + jsondata.toJSONString());
 
 			if (jsondata.length() == 0) {
-				return Response.status(204).entity("loi!!").build();
+				return Response.status(204).entity(ConfigProps.get(ConfigConstants.EVALUATION_NO_CONTENT_EX)).build();
 			}
 			return Response.status(200).entity(jsondata.toJSONString()).build();
 		} catch (Exception e) {

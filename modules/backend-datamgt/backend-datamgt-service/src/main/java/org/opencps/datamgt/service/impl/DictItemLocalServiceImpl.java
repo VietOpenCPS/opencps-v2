@@ -495,7 +495,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictItemTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -505,7 +505,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
@@ -520,10 +520,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		*/
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictItemTerm.KEYWORDS);
 		String groupId = String.valueOf((params.get(Field.GROUP_ID)));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String userId = (String) params.get(DictItemTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;
@@ -631,14 +631,14 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(DictItemTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
@@ -650,10 +650,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 //		}
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(DictItemTerm.KEYWORDS);
 		String groupId = String.valueOf(params.get(Field.GROUP_ID));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String userId = (String) params.get(DictItemTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;
@@ -887,9 +887,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem object = null;
 
-		if (objectData.getLong("dictItemId") > 0) {
+		if (objectData.getLong(DictItemTerm.DICT_ITEM_ID) > 0) {
 
-			object = dictItemPersistence.fetchByPrimaryKey(objectData.getLong("dictItemId"));
+			object = dictItemPersistence.fetchByPrimaryKey(objectData.getLong(DictItemTerm.DICT_ITEM_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -900,26 +900,26 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			object = dictItemPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(DictItemTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(DictItemTerm.USER_ID));
 
-		object.setDictCollectionId(objectData.getLong("dictCollectionId"));
-		object.setItemCode(objectData.getString("itemCode"));
-		object.setItemName(objectData.getString("itemName"));
-		object.setItemNameEN(objectData.getString("itemNameEN"));
-		object.setItemDescription(objectData.getString("itemDescription"));
-		object.setParentItemId(objectData.getLong("parentItemId"));
-		object.setSibling(objectData.getString("sibling"));
-		object.setMetaData(objectData.getString("metaData"));
+		object.setDictCollectionId(objectData.getLong(DictItemTerm.DICT_COLLECTION_ID));
+		object.setItemCode(objectData.getString(DictItemTerm.ITEM_CODE));
+		object.setItemName(objectData.getString(DictItemTerm.ITEM_NAME));
+		object.setItemNameEN(objectData.getString(DictItemTerm.ITEM_NAME_EN));
+		object.setItemDescription(objectData.getString(DictItemTerm.ITEM_DESCRIPTION));
+		object.setParentItemId(objectData.getLong(DictItemTerm.PARENT_ITEM_ID));
+		object.setSibling(objectData.getString(DictItemTerm.SIBLING));
+		object.setMetaData(objectData.getString(DictItemTerm.META_DATA));
 
 		String treeIndex;
 		try {
 			
-			treeIndex = getTreeIndex(objectData.getLong("dictItemId"), objectData.getLong("parentItemId"), objectData.getString("sibling"));
+			treeIndex = getTreeIndex(objectData.getLong(DictItemTerm.DICT_ITEM_ID), objectData.getLong(DictItemTerm.PARENT_ITEM_ID), objectData.getString(DictItemTerm.SIBLING));
 			object.setTreeIndex(treeIndex);
 			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 			
