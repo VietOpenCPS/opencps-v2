@@ -211,13 +211,16 @@ public class VotingUtils {
 		return results;
 	}
 
-	public static List<VotingDataModel> mappingVotingDocList(List<Document> votingList, ServiceContext serviceContext) {
+	public static List<VotingDataModel> mappingVotingDocList(List<Document> votingList, String fromVotingDate, String toVotingDate, ServiceContext serviceContext) {
 
 		List<VotingDataModel> results = new ArrayList<>();
 
 		if (votingList == null) return results;
 
 		VotingDataModel ett = null;
+		Date fromDate = APIDateTimeUtils.convertVNStrToDateTime(fromVotingDate, "00:00:00");
+		Date toDate = APIDateTimeUtils.convertVNStrToDateTime(toVotingDate, "23:59:59");
+		
 		for (Document doc : votingList) {
 			ett = new VotingDataModel();
 
@@ -272,8 +275,10 @@ public class VotingUtils {
 
 			for (String string : listChoices) {
 
-				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected(ett.getVotingId(),
-						String.valueOf(i + 1));
+//				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected(ett.getVotingId(),
+//						String.valueOf(i + 1));
+				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(ett.getVotingId(),
+						String.valueOf(i + 1), fromDate, toDate);
 
 				i++;
 

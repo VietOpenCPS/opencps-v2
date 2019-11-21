@@ -119,11 +119,12 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long SELECTED_COLUMN_BITMASK = 4L;
-	public static final long USERID_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long VOTINGID_COLUMN_BITMASK = 32L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 4L;
+	public static final long SELECTED_COLUMN_BITMASK = 8L;
+	public static final long USERID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long VOTINGID_COLUMN_BITMASK = 64L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.feedback.service.util.ServiceProps.get(
 				"lock.expiration.time.backend.feedback.model.VotingResult"));
 
@@ -420,7 +421,17 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 	public void setModifiedDate(Date modifiedDate) {
 		_setModifiedDate = true;
 
+		_columnBitmask |= MODIFIEDDATE_COLUMN_BITMASK;
+
+		if (_originalModifiedDate == null) {
+			_originalModifiedDate = _modifiedDate;
+		}
+
 		_modifiedDate = modifiedDate;
+	}
+
+	public Date getOriginalModifiedDate() {
+		return _originalModifiedDate;
 	}
 
 	@Override
@@ -639,6 +650,8 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 
 		votingResultModelImpl._setOriginalUserId = false;
 
+		votingResultModelImpl._originalModifiedDate = votingResultModelImpl._modifiedDate;
+
 		votingResultModelImpl._setModifiedDate = false;
 
 		votingResultModelImpl._originalVotingId = votingResultModelImpl._votingId;
@@ -853,6 +866,7 @@ public class VotingResultModelImpl extends BaseModelImpl<VotingResult>
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private Date _originalModifiedDate;
 	private boolean _setModifiedDate;
 	private long _votingId;
 	private long _originalVotingId;

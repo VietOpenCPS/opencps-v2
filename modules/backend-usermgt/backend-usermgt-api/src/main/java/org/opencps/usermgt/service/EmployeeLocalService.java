@@ -215,6 +215,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchByFB_MUID(long mappingUserId);
 

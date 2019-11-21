@@ -22,6 +22,8 @@ import backend.feedback.model.VotingResult;
 
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 
+import java.util.Date;
+
 /**
  * The persistence interface for the voting result service.
  *
@@ -564,6 +566,328 @@ public interface VotingResultPersistence extends BasePersistence<VotingResult> {
 	* @return the number of matching voting results
 	*/
 	public int countByF_votingId_selected(long votingId, String selected);
+
+	/**
+	* Returns all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @return the matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_gt_date(
+		long votingId, String selected, Date modifiedDate);
+
+	/**
+	* Returns a range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @return the range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_gt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end);
+
+	/**
+	* Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_gt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_gt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting result
+	* @throws NoSuchVotingResultException if a matching voting result could not be found
+	*/
+	public VotingResult findByF_votingId_selected_gt_date_First(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting result, or <code>null</code> if a matching voting result could not be found
+	*/
+	public VotingResult fetchByF_votingId_selected_gt_date_First(
+		long votingId, String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting result
+	* @throws NoSuchVotingResultException if a matching voting result could not be found
+	*/
+	public VotingResult findByF_votingId_selected_gt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting result, or <code>null</code> if a matching voting result could not be found
+	*/
+	public VotingResult fetchByF_votingId_selected_gt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns the voting results before and after the current voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingResultId the primary key of the current voting result
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next voting result
+	* @throws NoSuchVotingResultException if a voting result with the primary key could not be found
+	*/
+	public VotingResult[] findByF_votingId_selected_gt_date_PrevAndNext(
+		long votingResultId, long votingId, String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Removes all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63; from the database.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	*/
+	public void removeByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate);
+
+	/**
+	* Returns the number of voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @return the number of matching voting results
+	*/
+	public int countByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate);
+
+	/**
+	* Returns all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @return the matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_lt_date(
+		long votingId, String selected, Date modifiedDate);
+
+	/**
+	* Returns a range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @return the range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_lt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end);
+
+	/**
+	* Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_lt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param start the lower bound of the range of voting results
+	* @param end the upper bound of the range of voting results (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching voting results
+	*/
+	public java.util.List<VotingResult> findByF_votingId_selected_lt_date(
+		long votingId, String selected, Date modifiedDate, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting result
+	* @throws NoSuchVotingResultException if a matching voting result could not be found
+	*/
+	public VotingResult findByF_votingId_selected_lt_date_First(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting result, or <code>null</code> if a matching voting result could not be found
+	*/
+	public VotingResult fetchByF_votingId_selected_lt_date_First(
+		long votingId, String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting result
+	* @throws NoSuchVotingResultException if a matching voting result could not be found
+	*/
+	public VotingResult findByF_votingId_selected_lt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting result, or <code>null</code> if a matching voting result could not be found
+	*/
+	public VotingResult fetchByF_votingId_selected_lt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator);
+
+	/**
+	* Returns the voting results before and after the current voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingResultId the primary key of the current voting result
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next voting result
+	* @throws NoSuchVotingResultException if a voting result with the primary key could not be found
+	*/
+	public VotingResult[] findByF_votingId_selected_lt_date_PrevAndNext(
+		long votingResultId, long votingId, String selected, Date modifiedDate,
+		com.liferay.portal.kernel.util.OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException;
+
+	/**
+	* Removes all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63; from the database.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	*/
+	public void removeByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate);
+
+	/**
+	* Returns the number of voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	*
+	* @param votingId the voting ID
+	* @param selected the selected
+	* @param modifiedDate the modified date
+	* @return the number of matching voting results
+	*/
+	public int countByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate);
 
 	/**
 	* Caches the voting result in the entity cache if it is enabled.

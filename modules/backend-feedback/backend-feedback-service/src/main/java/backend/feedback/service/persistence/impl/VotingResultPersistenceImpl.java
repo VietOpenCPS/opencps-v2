@@ -52,6 +52,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.sql.Timestamp;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -2300,6 +2302,1344 @@ public class VotingResultPersistenceImpl extends BasePersistenceImpl<VotingResul
 	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_SELECTED_1 = "votingResult.selected IS NULL";
 	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_SELECTED_2 = "votingResult.selected = ?";
 	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_SELECTED_3 = "(votingResult.selected IS NULL OR votingResult.selected = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_VOTINGID_SELECTED_GT_DATE =
+		new FinderPath(VotingResultModelImpl.ENTITY_CACHE_ENABLED,
+			VotingResultModelImpl.FINDER_CACHE_ENABLED, VotingResultImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_votingId_selected_gt_date",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_VOTINGID_SELECTED_GT_DATE =
+		new FinderPath(VotingResultModelImpl.ENTITY_CACHE_ENABLED,
+			VotingResultModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByF_votingId_selected_gt_date",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName()
+			});
+
+	/**
+	 * Returns all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @return the matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate) {
+		return findByF_votingId_selected_gt_date(votingId, selected,
+			modifiedDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @return the range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end) {
+		return findByF_votingId_selected_gt_date(votingId, selected,
+			modifiedDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end,
+		OrderByComparator<VotingResult> orderByComparator) {
+		return findByF_votingId_selected_gt_date(votingId, selected,
+			modifiedDate, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end,
+		OrderByComparator<VotingResult> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_VOTINGID_SELECTED_GT_DATE;
+		finderArgs = new Object[] {
+				votingId, selected, _getTime(modifiedDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<VotingResult> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<VotingResult>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (VotingResult votingResult : list) {
+					if ((votingId != votingResult.getVotingId()) ||
+							!Objects.equals(selected, votingResult.getSelected()) ||
+							(modifiedDate.getTime() > votingResult.getModifiedDate()
+																	  .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_VOTINGRESULT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_VOTINGID_2);
+
+			boolean bindSelected = false;
+
+			if (selected == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_1);
+			}
+			else if (selected.equals("")) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_3);
+			}
+			else {
+				bindSelected = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(VotingResultModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(votingId);
+
+				if (bindSelected) {
+					qPos.add(selected);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<VotingResult>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<VotingResult>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting result
+	 * @throws NoSuchVotingResultException if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult findByF_votingId_selected_gt_date_First(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = fetchByF_votingId_selected_gt_date_First(votingId,
+				selected, modifiedDate, orderByComparator);
+
+		if (votingResult != null) {
+			return votingResult;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("votingId=");
+		msg.append(votingId);
+
+		msg.append(", selected=");
+		msg.append(selected);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchVotingResultException(msg.toString());
+	}
+
+	/**
+	 * Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting result, or <code>null</code> if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult fetchByF_votingId_selected_gt_date_First(
+		long votingId, String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator) {
+		List<VotingResult> list = findByF_votingId_selected_gt_date(votingId,
+				selected, modifiedDate, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting result
+	 * @throws NoSuchVotingResultException if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult findByF_votingId_selected_gt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = fetchByF_votingId_selected_gt_date_Last(votingId,
+				selected, modifiedDate, orderByComparator);
+
+		if (votingResult != null) {
+			return votingResult;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("votingId=");
+		msg.append(votingId);
+
+		msg.append(", selected=");
+		msg.append(selected);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchVotingResultException(msg.toString());
+	}
+
+	/**
+	 * Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting result, or <code>null</code> if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult fetchByF_votingId_selected_gt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator) {
+		int count = countByF_votingId_selected_gt_date(votingId, selected,
+				modifiedDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<VotingResult> list = findByF_votingId_selected_gt_date(votingId,
+				selected, modifiedDate, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the voting results before and after the current voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingResultId the primary key of the current voting result
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next voting result
+	 * @throws NoSuchVotingResultException if a voting result with the primary key could not be found
+	 */
+	@Override
+	public VotingResult[] findByF_votingId_selected_gt_date_PrevAndNext(
+		long votingResultId, long votingId, String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = findByPrimaryKey(votingResultId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			VotingResult[] array = new VotingResultImpl[3];
+
+			array[0] = getByF_votingId_selected_gt_date_PrevAndNext(session,
+					votingResult, votingId, selected, modifiedDate,
+					orderByComparator, true);
+
+			array[1] = votingResult;
+
+			array[2] = getByF_votingId_selected_gt_date_PrevAndNext(session,
+					votingResult, votingId, selected, modifiedDate,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected VotingResult getByF_votingId_selected_gt_date_PrevAndNext(
+		Session session, VotingResult votingResult, long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_VOTINGRESULT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_VOTINGID_2);
+
+		boolean bindSelected = false;
+
+		if (selected == null) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_1);
+		}
+		else if (selected.equals("")) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_3);
+		}
+		else {
+			bindSelected = true;
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_2);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(VotingResultModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(votingId);
+
+		if (bindSelected) {
+			qPos.add(selected);
+		}
+
+		if (bindModifiedDate) {
+			qPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(votingResult);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<VotingResult> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63; from the database.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 */
+	@Override
+	public void removeByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate) {
+		for (VotingResult votingResult : findByF_votingId_selected_gt_date(
+				votingId, selected, modifiedDate, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(votingResult);
+		}
+	}
+
+	/**
+	 * Returns the number of voting results where votingId = &#63; and selected = &#63; and modifiedDate &ge; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @return the number of matching voting results
+	 */
+	@Override
+	public int countByF_votingId_selected_gt_date(long votingId,
+		String selected, Date modifiedDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_VOTINGID_SELECTED_GT_DATE;
+
+		Object[] finderArgs = new Object[] {
+				votingId, selected, _getTime(modifiedDate)
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_VOTINGRESULT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_VOTINGID_2);
+
+			boolean bindSelected = false;
+
+			if (selected == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_1);
+			}
+			else if (selected.equals("")) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_3);
+			}
+			else {
+				bindSelected = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(votingId);
+
+				if (bindSelected) {
+					qPos.add(selected);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_VOTINGID_2 =
+		"votingResult.votingId = ? AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_1 =
+		"votingResult.selected IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_2 =
+		"votingResult.selected = ? AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_SELECTED_3 =
+		"(votingResult.selected IS NULL OR votingResult.selected = '') AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_1 =
+		"votingResult.modifiedDate IS NULL";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_GT_DATE_MODIFIEDDATE_2 =
+		"votingResult.modifiedDate >= ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_VOTINGID_SELECTED_LT_DATE =
+		new FinderPath(VotingResultModelImpl.ENTITY_CACHE_ENABLED,
+			VotingResultModelImpl.FINDER_CACHE_ENABLED, VotingResultImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_votingId_selected_lt_date",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_VOTINGID_SELECTED_LT_DATE =
+		new FinderPath(VotingResultModelImpl.ENTITY_CACHE_ENABLED,
+			VotingResultModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByF_votingId_selected_lt_date",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Date.class.getName()
+			});
+
+	/**
+	 * Returns all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @return the matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate) {
+		return findByF_votingId_selected_lt_date(votingId, selected,
+			modifiedDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @return the range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end) {
+		return findByF_votingId_selected_lt_date(votingId, selected,
+			modifiedDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end,
+		OrderByComparator<VotingResult> orderByComparator) {
+		return findByF_votingId_selected_lt_date(votingId, selected,
+			modifiedDate, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingResultModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param start the lower bound of the range of voting results
+	 * @param end the upper bound of the range of voting results (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching voting results
+	 */
+	@Override
+	public List<VotingResult> findByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate, int start, int end,
+		OrderByComparator<VotingResult> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_VOTINGID_SELECTED_LT_DATE;
+		finderArgs = new Object[] {
+				votingId, selected, _getTime(modifiedDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<VotingResult> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<VotingResult>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (VotingResult votingResult : list) {
+					if ((votingId != votingResult.getVotingId()) ||
+							!Objects.equals(selected, votingResult.getSelected()) ||
+							(modifiedDate.getTime() < votingResult.getModifiedDate()
+																	  .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_VOTINGRESULT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_VOTINGID_2);
+
+			boolean bindSelected = false;
+
+			if (selected == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_1);
+			}
+			else if (selected.equals("")) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_3);
+			}
+			else {
+				bindSelected = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(VotingResultModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(votingId);
+
+				if (bindSelected) {
+					qPos.add(selected);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<VotingResult>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<VotingResult>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting result
+	 * @throws NoSuchVotingResultException if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult findByF_votingId_selected_lt_date_First(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = fetchByF_votingId_selected_lt_date_First(votingId,
+				selected, modifiedDate, orderByComparator);
+
+		if (votingResult != null) {
+			return votingResult;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("votingId=");
+		msg.append(votingId);
+
+		msg.append(", selected=");
+		msg.append(selected);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchVotingResultException(msg.toString());
+	}
+
+	/**
+	 * Returns the first voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching voting result, or <code>null</code> if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult fetchByF_votingId_selected_lt_date_First(
+		long votingId, String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator) {
+		List<VotingResult> list = findByF_votingId_selected_lt_date(votingId,
+				selected, modifiedDate, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting result
+	 * @throws NoSuchVotingResultException if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult findByF_votingId_selected_lt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = fetchByF_votingId_selected_lt_date_Last(votingId,
+				selected, modifiedDate, orderByComparator);
+
+		if (votingResult != null) {
+			return votingResult;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("votingId=");
+		msg.append(votingId);
+
+		msg.append(", selected=");
+		msg.append(selected);
+
+		msg.append(", modifiedDate=");
+		msg.append(modifiedDate);
+
+		msg.append("}");
+
+		throw new NoSuchVotingResultException(msg.toString());
+	}
+
+	/**
+	 * Returns the last voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching voting result, or <code>null</code> if a matching voting result could not be found
+	 */
+	@Override
+	public VotingResult fetchByF_votingId_selected_lt_date_Last(long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator) {
+		int count = countByF_votingId_selected_lt_date(votingId, selected,
+				modifiedDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<VotingResult> list = findByF_votingId_selected_lt_date(votingId,
+				selected, modifiedDate, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the voting results before and after the current voting result in the ordered set where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingResultId the primary key of the current voting result
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next voting result
+	 * @throws NoSuchVotingResultException if a voting result with the primary key could not be found
+	 */
+	@Override
+	public VotingResult[] findByF_votingId_selected_lt_date_PrevAndNext(
+		long votingResultId, long votingId, String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator)
+		throws NoSuchVotingResultException {
+		VotingResult votingResult = findByPrimaryKey(votingResultId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			VotingResult[] array = new VotingResultImpl[3];
+
+			array[0] = getByF_votingId_selected_lt_date_PrevAndNext(session,
+					votingResult, votingId, selected, modifiedDate,
+					orderByComparator, true);
+
+			array[1] = votingResult;
+
+			array[2] = getByF_votingId_selected_lt_date_PrevAndNext(session,
+					votingResult, votingId, selected, modifiedDate,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected VotingResult getByF_votingId_selected_lt_date_PrevAndNext(
+		Session session, VotingResult votingResult, long votingId,
+		String selected, Date modifiedDate,
+		OrderByComparator<VotingResult> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_VOTINGRESULT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_VOTINGID_2);
+
+		boolean bindSelected = false;
+
+		if (selected == null) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_1);
+		}
+		else if (selected.equals("")) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_3);
+		}
+		else {
+			bindSelected = true;
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_2);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(VotingResultModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(votingId);
+
+		if (bindSelected) {
+			qPos.add(selected);
+		}
+
+		if (bindModifiedDate) {
+			qPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(votingResult);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<VotingResult> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63; from the database.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 */
+	@Override
+	public void removeByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate) {
+		for (VotingResult votingResult : findByF_votingId_selected_lt_date(
+				votingId, selected, modifiedDate, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(votingResult);
+		}
+	}
+
+	/**
+	 * Returns the number of voting results where votingId = &#63; and selected = &#63; and modifiedDate &le; &#63;.
+	 *
+	 * @param votingId the voting ID
+	 * @param selected the selected
+	 * @param modifiedDate the modified date
+	 * @return the number of matching voting results
+	 */
+	@Override
+	public int countByF_votingId_selected_lt_date(long votingId,
+		String selected, Date modifiedDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_VOTINGID_SELECTED_LT_DATE;
+
+		Object[] finderArgs = new Object[] {
+				votingId, selected, _getTime(modifiedDate)
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_VOTINGRESULT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_VOTINGID_2);
+
+			boolean bindSelected = false;
+
+			if (selected == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_1);
+			}
+			else if (selected.equals("")) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_3);
+			}
+			else {
+				bindSelected = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_2);
+			}
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				query.append(_FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(votingId);
+
+				if (bindSelected) {
+					qPos.add(selected);
+				}
+
+				if (bindModifiedDate) {
+					qPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_VOTINGID_2 =
+		"votingResult.votingId = ? AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_1 =
+		"votingResult.selected IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_2 =
+		"votingResult.selected = ? AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_SELECTED_3 =
+		"(votingResult.selected IS NULL OR votingResult.selected = '') AND ";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_1 =
+		"votingResult.modifiedDate IS NULL";
+	private static final String _FINDER_COLUMN_F_VOTINGID_SELECTED_LT_DATE_MODIFIEDDATE_2 =
+		"votingResult.modifiedDate <= ?";
 
 	public VotingResultPersistenceImpl() {
 		setModelClass(VotingResult.class);
@@ -3181,6 +4521,15 @@ public class VotingResultPersistenceImpl extends BasePersistenceImpl<VotingResul
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_VOTINGRESULT = "SELECT votingResult FROM VotingResult votingResult";
 	private static final String _SQL_SELECT_VOTINGRESULT_WHERE_PKS_IN = "SELECT votingResult FROM VotingResult votingResult WHERE votingResultId IN (";
 	private static final String _SQL_SELECT_VOTINGRESULT_WHERE = "SELECT votingResult FROM VotingResult votingResult WHERE ";

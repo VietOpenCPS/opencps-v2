@@ -147,6 +147,20 @@
 			<finder-column name="selected"></finder-column>
 
 		</finder>
+		<finder return-type="Collection" name="F_votingId_selected_gt_date">
+
+			<finder-column name="votingId"></finder-column>
+			<finder-column name="selected"></finder-column>
+            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+
+		</finder>
+		<finder return-type="Collection" name="F_votingId_selected_lt_date">
+
+			<finder-column name="votingId"></finder-column>
+			<finder-column name="selected"></finder-column>
+            <finder-column name="modifiedDate" comparator="&lt;="></finder-column>
+
+		</finder>
 	</entity>
 
 </service-builder>

@@ -73,6 +73,13 @@ public class VotingResultLocalServiceWrapper implements VotingResultLocalService
 	}
 
 	@Override
+	public int countByF_votingId_selected_filter_date(long votingId,
+		String selected, java.util.Date fromDate, java.util.Date toDate) {
+		return _votingResultLocalService.countByF_votingId_selected_filter_date(votingId,
+			selected, fromDate, toDate);
+	}
+
+	@Override
 	public long countLuceneSearchEngine(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)

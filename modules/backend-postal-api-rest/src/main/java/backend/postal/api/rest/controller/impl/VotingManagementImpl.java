@@ -87,8 +87,8 @@ public class VotingManagementImpl implements VotingManagement {
 			String fromVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromVotingDate());
 			String toVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToVotingDate());
 			//
-			params.put("fromVotingDate", fromVotingDate);
-			params.put("toVotingDate", toVotingDate);
+//			params.put("fromVotingDate", fromVotingDate);
+//			params.put("toVotingDate", toVotingDate);
 
 			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, className, classPK,
 						params, query.getStart(), query.getEnd(), serviceContext);
@@ -96,7 +96,7 @@ public class VotingManagementImpl implements VotingManagement {
 			if (jsonData != null) {
 				result.setTotal(jsonData.getLong("total"));
 				result.getData()
-						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get("data"), serviceContext));
+						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get("data"), query.getFromVotingDate(), query.getToVotingDate(), serviceContext));
 			} else {
 				result.setTotal(0l);
 			}
