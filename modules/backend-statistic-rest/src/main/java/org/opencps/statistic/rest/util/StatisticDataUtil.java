@@ -29,6 +29,7 @@ import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
@@ -67,15 +68,15 @@ public class StatisticDataUtil {
 				groupId = 0;
 
 			params.put(Field.GROUP_ID, groupId);
-			params.put("keywords", StringPool.BLANK);
-			params.put("itemLv", StringPool.BLANK);
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			params.put(ConstantUtils.ITEM_LEVEL, StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.SERVICE_DOMAIN_CODE);
 
 			Sort[] sorts = null;
 			
 			sorts = new Sort[] {
-				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + DossierTerm.NUMBER_SORT_ABLE, Sort.INT_TYPE, false) };
 			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
@@ -111,16 +112,16 @@ public class StatisticDataUtil {
 	
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(DossierTerm.MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(DossierTerm.YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			} else {
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
@@ -137,7 +138,7 @@ public class StatisticDataUtil {
 	
 			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_EMPLOYEE));
 						
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.TREE_INDEX_SORT_ABLE, Sort.STRING_TYPE, false) };
 	
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
@@ -196,16 +197,16 @@ public class StatisticDataUtil {
 	
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(DossierTerm.MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(DossierTerm.YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			} 
 			else {
@@ -218,7 +219,7 @@ public class StatisticDataUtil {
 			}
 			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 						
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.TREE_INDEX_SORT_ABLE, Sort.STRING_TYPE, false) };
 	
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
@@ -274,15 +275,15 @@ public class StatisticDataUtil {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, groupId);
-			params.put("keywords", StringPool.BLANK);
-			params.put("itemLv", StringPool.BLANK);
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			params.put(ConstantUtils.ITEM_LEVEL, StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.GOV_AGENCY_CODE);
 
 			Sort[] sorts = null;
 			
 			sorts = new Sort[] {
-				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + ReadFilePropertiesUtils.get(ConstantUtils.NUMBER_SORT_PATTERN), Sort.INT_TYPE, false) };
 			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,

@@ -1,14 +1,6 @@
 
 package backend.feedback.service.indexer;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.usermgt.constants.CommonTerm;
-
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -24,7 +16,13 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.opencps.usermgt.constants.CommonTerm;
 
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.model.Comment;
@@ -62,18 +60,7 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		addSearchTerm(searchQuery, searchContext, CommentTerm.UPVOTE_COUNT, false);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.USER_HAS_UPVOTED, true);
 		addSearchTerm(searchQuery, searchContext, CommentTerm.PINGS, false);
-		// addSearchTerm(searchQuery, searchContext,
-		// CommentTerm.CREATED_BY_CURRENT_USER, false);
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
-
-		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
-
-			if (Validator.isNotNull(expandoAttributes)) {
-				addSearchExpando(searchQuery, searchContext, expandoAttributes);
-			}
-		}
 	}
 
 	@Override

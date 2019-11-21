@@ -19,4 +19,6 @@ public class VotingTerm {
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";
 	public static final String GOV_AGENCY_NAME = "govAgencyName";
+	public static final String FROM_VOTING_DATE = "fromVotingDate";
+	public static final String TO_VOTING_DATE = "toVotingDate";
 }

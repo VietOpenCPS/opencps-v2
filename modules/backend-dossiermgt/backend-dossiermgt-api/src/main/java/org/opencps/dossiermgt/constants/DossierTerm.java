@@ -308,4 +308,7 @@ public class DossierTerm {
 	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
 	
+	public static final String NUMBER_SORT_ABLE = "Number_sortable";
+	public static final String TREE_INDEX_SORT_ABLE = "treeIndex_sortable";
+	
 }

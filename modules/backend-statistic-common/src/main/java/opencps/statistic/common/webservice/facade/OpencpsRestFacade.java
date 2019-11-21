@@ -1,5 +1,7 @@
 package opencps.statistic.common.webservice.facade;
 
+import com.liferay.petra.string.StringPool;
+
 import java.net.Proxy;
 import java.net.URI;
 import java.util.ArrayList;
@@ -84,19 +86,13 @@ public abstract class OpencpsRestFacade<T, R> {
 		RestTemplate restTemplate = new RestTemplate(requestFactory);
 
 		// log the request content as json formatted
-		OpencpsUtils.logAsFormattedJson(LOGGER, requestContent);
 
 		try {
-			OpencpsUtils.logAsFormattedJson(LOGGER, restTemplate.exchange(url, requestMethod,
-					new HttpEntity<>(requestContent, buildJsonHeader(requestHeaders)), responseClass));
-
 			return restTemplate.exchange(url, requestMethod,
 					new HttpEntity<>(requestContent, buildJsonHeader(requestHeaders)), responseClass);
 		} catch (ResourceAccessException e) {
-			LOGGER.error("REST call resource error: {} ", e.getMessage());
 			throw new UpstreamServiceTimedOutException(e);
 		} catch (Exception e) { // catch everything we don't know about here :)
-			LOGGER.error("REST call exception error: {}", e.getMessage());
 			if (!exceptionsWhitelist.contains(e.getClass())) {
 				throw new UpstreamServiceFailedException(e);
 			}
@@ -182,17 +178,17 @@ public abstract class OpencpsRestFacade<T, R> {
 	 */
 	protected HttpHeaders setHttpHeadersAuthorization(HttpHeaders httpHeaders, String authorizationField) {
 
-		httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + authorizationField);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, authorizationField);
 
 		return httpHeaders;
 	}
 	
 	protected HttpHeaders setHttpHeadersAuthorization(HttpHeaders httpHeaders, String userName, String password) {
-		String authString = userName + ":" + password;
+		String authString = userName + StringPool.COLON + password;
 		
 		String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-		httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + authStringEnc);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, authStringEnc);
 
 		return httpHeaders;
 	}

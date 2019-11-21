@@ -67,6 +67,8 @@ public class EmployeeTerm {
 	public static final String RECRUIT_DATE = "recruitDate";
 
 	public static final String LEAVE_DATE = "leaveDate";
+	
+	public static final String VALUE_EMPLOYEE = "employee";
 
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
