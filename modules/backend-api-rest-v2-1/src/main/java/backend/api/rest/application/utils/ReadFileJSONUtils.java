@@ -35,7 +35,7 @@ public class ReadFileJSONUtils {
 		
 		
 		ClassLoader classLoader = getClass().getClassLoader();
-		result = IOUtils.toString(classLoader.getResourceAsStream("Statistic.json"));
+		result = IOUtils.toString(classLoader.getResourceAsStream(ReadFilePropertiesUtils.get(ConstantTerm.STATISTIC_JSON)));
 		_log.info("====END readFileJSON==== | result: "+result);
 		return result;
 	}

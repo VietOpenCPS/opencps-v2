@@ -57,9 +57,10 @@ public final class OpencpsUtils {
 	public static final String ISO_COUNTRY_ID_US = "US";
 
 	private static final Logger LOG = LoggerFactory.getLogger(OpencpsUtils.class);
-
+	private static final String UNSUPPORTED_OPERATION_MESSAGE = "OpencpsUtils cannot be instantiated";
+	
 	private OpencpsUtils() {
-		throw new UnsupportedOperationException("OpencpsUtils cannot be instantiated");
+		throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
 	}
 
 

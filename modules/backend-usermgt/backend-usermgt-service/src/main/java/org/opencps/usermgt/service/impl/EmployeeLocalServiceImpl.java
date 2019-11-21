@@ -331,19 +331,19 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(EmployeeTerm.KEYWORDS);
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
-		String isAccount = (String) params.get("isAccount");
+		String isAccount = (String) params.get(EmployeeTerm.IS_ACCOUNT);
 		String workingUnitId = (String) params.get(EmployeeTerm.WORKING_UNIT_ID);
 		String jobPostId = (String) params.get(EmployeeTerm.JOB_POS_ID);
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
-		String strUserIdList = (String) params.get("userIdList");
+		String strUserIdList = (String) params.get(EmployeeTerm.USER_ID_LIST);
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
 		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 
@@ -351,7 +351,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
 		searchContext.setEntryClassNames(new String[] { Employee.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(EmployeeTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -538,19 +538,19 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@SuppressWarnings("deprecation")
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
+		String keywords = (String) params.get(EmployeeTerm.KEYWORDS);
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
-		String isAccount = (String) params.get("isAccount");
+		String isAccount = (String) params.get(EmployeeTerm.IS_ACCOUNT);
 		String workingUnitId = (String) params.get(EmployeeTerm.WORKING_UNIT_ID);
 		String jobPostId = (String) params.get(EmployeeTerm.JOB_POS_ID);
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
-		String strUserIdList = (String) params.get("userIdList");
+		String strUserIdList = (String) params.get(EmployeeTerm.USER_ID_LIST);
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
 		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 
@@ -558,7 +558,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
 		searchContext.setEntryClassNames(new String[] { Employee.class.getName() });
-		searchContext.setAttribute("paginationType", ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setAttribute(EmployeeTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -823,7 +823,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (objectData.getLong("employeeId") > 0) {
 
-			object = employeePersistence.fetchByPrimaryKey(objectData.getLong("employeeId"));
+			object = employeePersistence.fetchByPrimaryKey(objectData.getLong(EmployeeTerm.EMPLOYEE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -834,16 +834,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			object = employeePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(EmployeeTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		long mappingUserId = objectData.getLong("mappingUserId");
+		long mappingUserId = objectData.getLong(EmployeeTerm.MAPPING_USER_ID);
 		//_log.info("mappingUserId: "+mappingUserId);
 		//User user = null;
 		if (mappingUserId > 0) {
-			object.setMappingUserId(objectData.getLong("mappingUserId"));
+			object.setMappingUserId(objectData.getLong(EmployeeTerm.MAPPING_USER_ID));
 			//Get info User
 			//user = UserLocalServiceUtil.fetchUser(mappingUserId);
 			//_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
@@ -852,23 +852,23 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			//User
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setEmployeeNo(objectData.getString("employeeNo"));
-		object.setFullName(objectData.getString("fullName"));
-		object.setTitle(objectData.getString("title"));
-		object.setGender(objectData.getInt("gender"));
-		object.setTelNo(objectData.getString("telNo"));
-		object.setMobile(objectData.getString("mobile"));
-		object.setEmail(objectData.getString("email"));
-		object.setWorkingStatus(objectData.getInt("workingStatus"));
-		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
+		object.setUserId(objectData.getLong(EmployeeTerm.USER_ID));
+		object.setEmployeeNo(objectData.getString(EmployeeTerm.EMPLOYEE_NO));
+		object.setFullName(objectData.getString(EmployeeTerm.FULL_NAME));
+		object.setTitle(objectData.getString(EmployeeTerm.TITLE));
+		object.setGender(objectData.getInt(EmployeeTerm.GENDER));
+		object.setTelNo(objectData.getString(EmployeeTerm.TELNO));
+		object.setMobile(objectData.getString(EmployeeTerm.MOBILE));
+		object.setEmail(objectData.getString(EmployeeTerm.EMAIL));
+		object.setWorkingStatus(objectData.getInt(EmployeeTerm.WORKING_STATUS));
+		object.setMainJobPostId(objectData.getLong(EmployeeTerm.MAIN_JOBPOST_ID));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
-		if(objectData.getLong("birthdate") > 0)
-			object.setBirthdate(new Date(objectData.getLong("birthdate")));
-		if(objectData.getLong("recruitDate") > 0)
-		object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
-		if(objectData.getLong("leaveDate") > 0)
-		object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
+		if(objectData.getLong(EmployeeTerm.BIRTH_DATE) > 0)
+			object.setBirthdate(new Date(objectData.getLong(EmployeeTerm.BIRTH_DATE)));
+		if(objectData.getLong(EmployeeTerm.RECRUIT_DATE) > 0)
+		object.setRecruitDate(new Date(objectData.getLong(EmployeeTerm.RECRUIT_DATE)));
+		if(objectData.getLong(EmployeeTerm.LEAVE_DATE) > 0)
+		object.setLeaveDate(new Date(objectData.getLong(EmployeeTerm.LEAVE_DATE)));
 		// object.setFileCertId(fileCertId);
 		// object.setFileSignId(fileSignId);
 		// object.setFileCertPath(fileCertPath);

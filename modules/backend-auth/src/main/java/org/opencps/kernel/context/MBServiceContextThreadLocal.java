@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.util.AutoResetThreadLocal;
  */
 public class MBServiceContextThreadLocal {
 
+	public static final String _SERVICE_CONTEXT = "._serviceContext";
+	
 	public static ServiceContext getServiceContext() {
 
 		return _serviceContext.get();
@@ -24,5 +26,5 @@ public class MBServiceContextThreadLocal {
 	@SuppressWarnings("deprecation")
 	private static final ThreadLocal<ServiceContext> _serviceContext =
 		new AutoResetThreadLocal<>(
-			PortalSessionThreadLocal.class + "._serviceContext");
+			PortalSessionThreadLocal.class + _SERVICE_CONTEXT);
 }

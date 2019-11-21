@@ -1,6 +1,8 @@
 
 package org.opencps.kernel.template.freemarker;
 
+import org.opencps.auth.api.keys.Constants;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -56,7 +58,7 @@ public class TemplateConfiguration {
 	private void init() {
 		try {
 			Configuration configuration = new Configuration(Configuration.getVersion());
-			configuration.setDefaultEncoding("UTF-8");
+			configuration.setDefaultEncoding(Constants.TEMPLATE_CONFIG_CHARSET);
 			configuration.setObjectWrapper(new DefaultObjectWrapper(configuration.getIncompatibleImprovements()));
 
 			this.setConfiguration(configuration);

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
@@ -209,7 +210,7 @@ public class JobposActions implements JobposInterface {
 			for (int n = 0; n < jPermissions.length(); n++) {
 				JSONObject action = jPermissions.getJSONObject(n);
 
-				actionIds.add(action.getString("actionId"));
+				actionIds.add(action.getString(JobPosTerm.JOBPOS_ACTION_ID));
 
 			}
 

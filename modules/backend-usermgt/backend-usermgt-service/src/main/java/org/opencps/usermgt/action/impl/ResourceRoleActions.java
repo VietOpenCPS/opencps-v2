@@ -88,7 +88,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 					document.addTextSortable(ResourceRoleTerm.ROLE_ID, String.valueOf(role.getRoleId()));
 					document.addTextSortable(ResourceRoleTerm.ROLE_NAME, role.getName());
-					document.addTextSortable("selected", selected);
+					document.addTextSortable(ResourceRoleTerm.SELECTED, selected);
 
 					list.add(document);
 
@@ -149,7 +149,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				JSONObject role = jRoles.getJSONObject(n);
 				
 				resourceRole = ResourceRoleLocalServiceUtil.fetchByF_className_classPK_roleId(groupId, className,
-						classPK, role.getLong("roleId"));
+						classPK, role.getLong(ResourceRoleTerm.ROLE_ID));
 
 				if (Validator.isNotNull(resourceRole)) {
 
@@ -158,7 +158,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				} else {
 
 					ResourceRoleLocalServiceUtil.addResourceRole(userId, groupId, className, classPK,
-							role.getLong("roleId"), serviceContext);
+							role.getLong(ResourceRoleTerm.ROLE_ID), serviceContext);
 
 				}
 

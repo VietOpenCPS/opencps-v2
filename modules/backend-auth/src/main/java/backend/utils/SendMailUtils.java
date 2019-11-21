@@ -25,6 +25,9 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.auth.api.keys.Constants;
+import backend.auth.api.keys.ModelNameKeys;
+
 /**
  * 
  * @author binhth
@@ -37,17 +40,17 @@ public class SendMailUtils {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
-			String fromName = "Mail System";
+			String fromName = Constants.SEND_MAIL_UTIL_FROM_NAME;
 			
-			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
+			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong(ModelNameKeys.SEND_MAIL_UTIL_KEY_COMPANY_ID), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
-			String toName = payLoad.getString("toName");
+			String toName = payLoad.getString(ModelNameKeys.SEND_MAIL_UTIL_KEY_TO_NAME);
 
-			String toAddress = payLoad.getString("toAddress");
+			String toAddress = payLoad.getString(ModelNameKeys.SEND_MAIL_UTIL_KEY_TO_ADDRESS);
 
-			String subject = payLoad.getString("subject");
+			String subject = payLoad.getString(ModelNameKeys.SEND_MAIL_UTIL_KEY_SUBJECT);
 
-			String body = payLoad.getString("body");
+			String body = payLoad.getString(ModelNameKeys.SEND_MAIL_UTIL_KEY_BODY);
 
 			SubscriptionSender subscriptionSender = new SubscriptionSender();
 
@@ -57,15 +60,15 @@ public class SendMailUtils {
 
 			subscriptionSender.setFrom(fromAddress, fromName);
 
-			subscriptionSender.setHtmlFormat(true);
+			subscriptionSender.setHtmlFormat(Constants.SEND_MAIL_UTIL_HTML_FORMAT);
 
 			subscriptionSender.setServiceContext(serviceContext);
 
 			subscriptionSender.setSubject(subject);
 			
-			subscriptionSender.setUserId(payLoad.getLong("userId"));
+			subscriptionSender.setUserId(payLoad.getLong(ModelNameKeys.SEND_MAIL_UTIL_KEY_USER_ID));
 			
-			subscriptionSender.setMailId("user", payLoad.getLong("userId"));
+			subscriptionSender.setMailId(ModelNameKeys.SEND_MAIL_UTIL_KEY_USER, payLoad.getLong(ModelNameKeys.SEND_MAIL_UTIL_KEY_USER_ID));
 
 			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 
