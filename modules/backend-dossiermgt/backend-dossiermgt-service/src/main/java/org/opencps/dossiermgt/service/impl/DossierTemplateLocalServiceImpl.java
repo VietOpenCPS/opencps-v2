@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
@@ -96,7 +97,6 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(context.getUserId());
-		validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
 
 		if (dossierTemplateId == 0) {
 
@@ -183,7 +183,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -237,7 +237,7 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -276,48 +276,6 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
-	}
-
-	private void validateUpdate(long groupId, long dossierTemplateId, String templateName, String templateNo,
-			String description) throws PortalException {
-
-		if (Validator.isNull(templateName)) {
-			throw new RequiredTemplateNameException("RequiredTemplateNameException");
-		}
-
-		if (Validator.isNull(templateNo)) {
-			throw new RequiredFileTemplateNoException("RequiredFileTemplateNoException");
-		}
-
-		DossierTemplate dossierTemplate = null;
-
-		if (dossierTemplateId != 0) {
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
-
-			if (Validator.isNotNull(dossierTemplate) && dossierTemplate.getPrimaryKey() != dossierTemplateId) {
-				throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
-			}
-
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
-
-			if (Validator.isNotNull(dossierTemplate) && dossierTemplate.getPrimaryKey() != dossierTemplateId) {
-				throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
-			}
-
-		} else {
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_NAME(groupId, templateName);
-
-			if (Validator.isNotNull(dossierTemplate)) {
-				throw new DuplicateTemplateNameException("DuplicateTemplateNameException");
-			}
-
-			dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
-
-			if (Validator.isNotNull(dossierTemplate)) {
-				throw new DuplicateTemplateNoException("DuplicateTemplateNoException");
-			}
-		}
-
 	}
 
 	// LamTV_ Process output DossierTemplate to DB
@@ -374,8 +332,6 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			throw new HasChildrenException("DossierTemplateHasChildrenException");
 		}
 
-		// TODO add more logic in here
-
 	}
 
 	// super_admin Generators
@@ -387,10 +343,6 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		if (Validator.isNull(object)) {
 			return null;
 		} else {
-			int countDossier = dossierLocalService.countByG_NOTS_O_DTN(object.getGroupId(), new String[] { DossierTerm.DOSSIER_STATUS_DONE, DossierTerm.DOSSIER_STATUS_CANCELLED, DossierTerm.DOSSIER_STATUS_DENIED, DossierTerm.DOSSIER_STATUS_UNRESOLVED }, 1, object.getTemplateNo());
-			if (countDossier > 0) {
-				throw new DataConflictException("Have dossiers use this dossier template");
-			}
 			dossierTemplatePersistence.remove(object);
 		}
 
@@ -402,9 +354,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 
 		DossierTemplate object = null;
 
-		if (objectData.getLong("dossierTemplateId") > 0) {
+		if (objectData.getLong(DossierTemplateTerm.DOSSIER_TEMPLATE_ID) > 0) {
 
-			object = dossierTemplatePersistence.fetchByPrimaryKey(objectData.getLong("dossierTemplateId"));
+			object = dossierTemplatePersistence.fetchByPrimaryKey(objectData.getLong(DossierTemplateTerm.DOSSIER_TEMPLATE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -415,18 +367,18 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 			object = dossierTemplatePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setTemplateName(objectData.getString("templateName"));
-		object.setDescription(objectData.getString("description"));
-		object.setTemplateNo(objectData.getString("templateNo"));
-		object.setNewFormScript(objectData.getString("newFormScript"));
+		object.setTemplateName(objectData.getString(DossierTemplateTerm.TEMPLATE_NAME));
+		object.setDescription(objectData.getString(DossierTemplateTerm.DESCRIPTION));
+		object.setTemplateNo(objectData.getString(DossierTemplateTerm.TEMPLATE_NO));
+		object.setNewFormScript(objectData.getString(DossierTemplateTerm.NEWFORM_SCRIPT));
 		
 		dossierTemplatePersistence.update(object);
 
@@ -434,8 +386,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	}
 
 	public List<DossierTemplate> findByG(long groupId) {
-		return dossierTemplatePersistence.findByG(groupId);			
+		return dossierTemplatePersistence.findByG(groupId);
 	}
+
 	public static final String CLASS_NAME = DossierTemplate.class.getName();
 
 }

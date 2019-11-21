@@ -20,7 +20,9 @@ import java.util.List;
 
 import javax.ws.rs.NotFoundException;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -131,12 +133,8 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.DELETE)
 	public Voting deleteVote(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
 
-		// try {
 		return votingPersistence.remove(votingId);
 
-		// } catch (NoSuchVotingException e) {
-		// throw new NoSuchVotingException();
-		// }
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -147,10 +145,6 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
-
-		// if (Validator.isNull(voting)) {
-		// throw new NotFoundException();
-		// }
 
 		Date now = new Date();
 
@@ -229,14 +223,6 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
-//		if (Validator.isNotNull(userId)) {
-//			MultiMatchQuery query = new MultiMatchQuery(userId);
-//
-//			query.addFields(VotingTerm.USER_ID);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
 
 		if (Validator.isNotNull(className)) {
 			MultiMatchQuery query = new MultiMatchQuery(className);
@@ -391,7 +377,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		Voting object = null;
 
-		if (objectData.getLong("votingId") > 0) {
+		if (objectData.getLong(VotingTerm.VOTING_ID) > 0) {
 
 			object = votingPersistence.fetchByPrimaryKey(objectData.getLong(VotingTerm.VOTING_ID));
 

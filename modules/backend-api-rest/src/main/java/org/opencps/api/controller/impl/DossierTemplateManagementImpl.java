@@ -436,7 +436,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 			String content = actions.getFormScript(groupId, dossierTempId, partNo);
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("value", content);
+			result.put(ReadFilePropertiesUtils.get(ConstantUtils.VALUE), content);
 
 			return Response.status(200).entity(content).build();
 

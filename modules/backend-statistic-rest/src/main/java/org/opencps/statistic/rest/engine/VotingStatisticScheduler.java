@@ -61,7 +61,6 @@ import com.liferay.portal.kernel.util.PropsUtil;
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
-	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	protected Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	
 	public static final int GROUP_TYPE_SITE = 1;
@@ -76,7 +75,6 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-//			System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 			
 			OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 			

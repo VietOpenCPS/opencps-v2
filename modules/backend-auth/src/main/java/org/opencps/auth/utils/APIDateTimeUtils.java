@@ -33,7 +33,7 @@ public class APIDateTimeUtils {
 	public static final String _ZERO_STR = "0";
 	
 	public static final String _SYS_TIME_ZONE = "Asia/Ho_Chi_Minh";
-
+	
 	public static String convertNormalDateToLuceneDate(String normal) {
 		if (Validator.isNull(normal)) {
 			return StringPool.BLANK;

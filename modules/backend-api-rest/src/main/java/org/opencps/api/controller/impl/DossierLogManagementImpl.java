@@ -116,11 +116,11 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 				long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 
-				model.put("dossierLogId", dossierLogId);
+				model.put(DossierLogTerm.DOSSIER_LOG_ID, dossierLogId);
 
-				model.put("author", document.get(DossierLogTerm.AUTHOR) != null ? document.get(DossierLogTerm.AUTHOR).toUpperCase() : StringPool.BLANK);
+				model.put(DossierLogTerm.AUTHOR, document.get(DossierLogTerm.AUTHOR) != null ? document.get(DossierLogTerm.AUTHOR).toUpperCase() : StringPool.BLANK);
 
-				model.put("content", document.get(DossierLogTerm.CONTENT));
+				model.put(DossierLogTerm.CONTENT, document.get(DossierLogTerm.CONTENT));
 
 				String strDate = document.get(DossierLogTerm.CREATE_DATE);
 
@@ -133,14 +133,14 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 //				model.put("createDate", date != null
 //						? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP) : strDate);
 
-				model.put("createDate", date != null
+				model.put(Field.CREATE_DATE, date != null
 				? date.getTime() : 0l);
 
-				model.put("notificationType", document.get(DossierLogTerm.NOTIFICATION_TYPE));
+				model.put(DossierLogTerm.NOTIFICATION_TYPE, document.get(DossierLogTerm.NOTIFICATION_TYPE));
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject(document.get(DossierLogTerm.PAYLOAD));
 
-				model.put("payload", payload);
+				model.put(DossierLogTerm.PAYLOAD, payload);
 
 				models.put(model);
 

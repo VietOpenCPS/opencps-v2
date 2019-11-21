@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -28,6 +27,7 @@ import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
@@ -56,7 +56,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			JSONObject deliverableTypeJsonObject = action.getDeliverableTypes(groupId, start, end);
 
 			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject
-					.get("lstDeliverableType");
+					.get(DeliverableTerm.LIST_DELIVERABLE_TYPE);
 
 			results.setTotal(deliverableTypeJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(lstDeliverableType));
@@ -326,7 +326,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			String deliverableNumber = DossierNumberGenerator.generateReferenceUID(groupId);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("deliverableCode", deliverableNumber);
+			result.put(DeliverableTerm.DELIVERABLE_CODE, deliverableNumber);
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 

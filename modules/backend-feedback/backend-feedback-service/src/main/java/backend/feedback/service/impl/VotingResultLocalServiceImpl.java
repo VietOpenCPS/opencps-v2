@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import javax.ws.rs.NotFoundException;
 
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
@@ -129,11 +130,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 	public VotingResult deleteVoteResult(long votingResultId, ServiceContext serviceContext)
 			throws NoSuchVotingResultException {
 
-		// try {
 		return votingResultPersistence.remove(votingResultId);
-		// } catch (NoSuchVotingResultException e) {
-		// throw new NotFoundException();
-		// }
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -192,7 +189,6 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		searchContext.setSorts(sorts);
 
 		searchContext.setAttribute(VotingResultTerm.PARAMS, params);
-
 		// LAY CAC THAM SO TRONG PARAMS.
 		String keywords = (String) params.get(VotingResultTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);

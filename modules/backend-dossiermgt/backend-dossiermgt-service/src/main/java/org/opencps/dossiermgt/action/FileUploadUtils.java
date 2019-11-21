@@ -1,12 +1,5 @@
 package org.opencps.dossiermgt.action;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.opencps.auth.utils.DLFolderUtil;
-
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -23,6 +16,19 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.ws.rs.core.Response;
+
+import org.opencps.auth.utils.DLFolderUtil;
+import org.opencps.dossiermgt.action.util.CheckFileUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+
 public class FileUploadUtils {
 
 	public static final String FOLDER_NAME_DOSSIER_FILE = "DOSSIER_FILE";
@@ -33,6 +39,11 @@ public class FileUploadUtils {
 			ServiceContext serviceContext) throws Exception {
 		FileEntry fileEntry = null;
 
+		boolean flagCheck = CheckFileUtils.checkFileUpload(inputStream, fileName);
+		if (!flagCheck) {
+			return null;
+		}
+	
 		if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
 
 			serviceContext.setAddGroupPermissions(true);
@@ -150,6 +161,11 @@ public class FileUploadUtils {
 			String fileType, long fileSize, String destination, ServiceContext serviceContext) 
 		throws Exception {
 		
+		boolean flagCheck = CheckFileUtils.checkFileUpload(inputStream, sourceFileName);
+		if (!flagCheck) {
+			return null;
+		}
+
 		FileEntry fileEntry = null;
 
 		if (inputStream != null && Validator.isNotNull(sourceFileName)) {
@@ -219,7 +235,12 @@ public class FileUploadUtils {
 			File file, String sourceFileName,
 			String fileType, String destination, ServiceContext serviceContext) 
 		throws Exception {
-		
+
+		boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+		if (!flagCheck) {
+			return null;
+		}
+
 		FileEntry fileEntry = null;
 
 		if (file != null && Validator.isNotNull(sourceFileName)) {
@@ -277,7 +298,7 @@ public class FileUploadUtils {
 	private static String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
-		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + "." + ext) :  String.valueOf(System.currentTimeMillis());
+		return Validator.isNotNull(ext) ? (System.currentTimeMillis() + StringPool.PERIOD + ext) :  String.valueOf(System.currentTimeMillis());
 	}
 
 	// Upload Payment File

@@ -21,5 +21,9 @@ public class ServiceConfigTerm {
 	public static final String ACTION_USER = "actionUser";
 	public static final String DOMAIN_INDEX = "domainIndex";
 	public static final String DOSSIER_PART_OPTION = "dossierPartOption";
+	public static final String AGENCY_NAME = "agencyName";
+	public static final String SERVICE_CONFIGS = "serviceConfigs";
+	public static final String GOV_AGENCYS = "govAgencys";
+	public static final String DOMAINS = "domains";
 
 }

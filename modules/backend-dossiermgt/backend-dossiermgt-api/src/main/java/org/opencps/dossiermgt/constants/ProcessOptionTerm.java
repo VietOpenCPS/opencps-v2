@@ -15,5 +15,19 @@ public class ProcessOptionTerm {
 	public static final String APPLICATION_TYPE = "aplicationType";
 	public static final String SERVICE_CONFIG_ID = "serviceConfigId";
 	public static final String OPTION_NAME = "optionName";
+	public static final String OPTIONS = "options";
 	public static final String TEMPLATE = "template";
+	public static final String OPTION_ORDER = "optionOrder";
+	public static final String PROCESS_PLUGIN_ID = "processPluginId";
+	public static final String PLUGIN_NAME = "pluginName";
+	public static final String PLUGIN_TYPE = "pluginType";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String PLUGIN_FORM = "pluginForm";
+	public static final String SAMPLE_DATA = "sampleData";
+	public static final String AUTO_RUN = "autoRun";
+	
+	public static final String PROCESS_SEQUENCE_ID = "processSequenceId";
+	public static final String SEQUENCE_ROLE = "sequenceRole";
+	public static final String SEQUENCE_NAME = "sequenceName";
+	
 }

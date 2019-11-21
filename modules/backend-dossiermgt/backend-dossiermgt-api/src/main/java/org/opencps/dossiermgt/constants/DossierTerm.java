@@ -1,6 +1,9 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierTerm {
+	public static final String CONSTANT_DOSSIER = "dossier";
+	public static final String CONSTANT_DOSSIER_FILES = "dossierFiles";
+	public static final String CONSTANT_DOSSIER_DOC = "dossierDocuments";
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
@@ -171,12 +174,18 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
+	public static final String REGISTER_BOOK_NAME = "registerBookName";
+	public static final String DOSSIER_REGISTER = "dossierRegister";
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
+	public static final String NEXT_SEQUENCE_NO = "nextSequenceNo";
+	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
+	public static final String PROCESS_SEQUENCE_ARR = "processSequenceArr";
 
+	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
@@ -208,6 +217,7 @@ public class DossierTerm {
 	public static final String DOSSIER_NAME = "dossierName";
 	public static final String DOSSIER_NAME_SEARCH = "dossierNameSearch";
 	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
+	public static final String ORIGINAL = "original";
 	//
 	public static final String FROM_FINISH_DATE = "fromFinishDate";
 	public static final String TO_FINISH_DATE = "toFinishDate";
@@ -218,6 +228,7 @@ public class DossierTerm {
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 	public static final String ORIGIN = "origin";
 	//
+	public static final String ACTION_CODE_GOTO = "9999";
 	public static final int CONSTANT_INDEX_ORIGINALITY = 99;
 	public static final String DATE_OPTION = "dateOption";
 	//Constant dateOption
@@ -296,5 +307,8 @@ public class DossierTerm {
 	public static final String CONTAIN_ROLE_CODE = "rolecode=";
 	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
+	
+	public static final String NUMBER_SORT_ABLE = "Number_sortable";
+	public static final String TREE_INDEX_SORT_ABLE = "treeIndex_sortable";
 	
 }

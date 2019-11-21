@@ -27,6 +27,7 @@ import org.opencps.api.resourceuser.model.ResourceUserInputModel;
 import org.opencps.api.resourceuser.model.ResourceUserModel;
 import org.opencps.api.resourceuser.model.ResourceUserResults;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.ResourceUserInterface;
 import org.opencps.usermgt.action.impl.ResourceUserActions;
 import org.opencps.usermgt.constants.ResourceUserTerm;
@@ -59,11 +60,11 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 			params.put(ResourceUserTerm.CLASS_NAME, String.valueOf(className));
 			params.put(ResourceUserTerm.CLASS_PK, String.valueOf(classPK));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getResourceUsers(className, classPK, user.getUserId(), company.getCompanyId(),
@@ -123,9 +124,9 @@ public class ResourceUserManagementImpl implements ResourceUserManagement {
 
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 				return Response.status(404).entity(error).build();
 

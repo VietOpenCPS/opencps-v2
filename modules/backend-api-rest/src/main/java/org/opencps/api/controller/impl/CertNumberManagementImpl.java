@@ -34,6 +34,7 @@ import org.opencps.api.controller.CertNumberManagement;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
@@ -79,10 +80,10 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 					String[] splitPattern = StringUtil.split(cnt.getName(), StringPool.AT);
 
-					elm.put("certId", cnt.getName());
-					elm.put("pattern", splitPattern[1]);
+					elm.put(ConstantUtils.CERT_ID, cnt.getName());
+					elm.put(ConstantUtils.PATTERN, splitPattern[1]);
 					elm.put(Field.GROUP_ID, splitPattern[2]);
-					elm.put("initNumber", cnt.getCurrentId());
+					elm.put(ConstantUtils.INIT_NUBER, cnt.getCurrentId());
 
 					jsArr.put(elm);
 				}
@@ -120,10 +121,10 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-			elm.put("certId", counter.getName());
-			elm.put("pattern", splitPattern[1]);
-			elm.put("year", splitPattern[2]);
-			elm.put("initNumber", counter.getCurrentId());
+			elm.put(ConstantUtils.CERT_ID, counter.getName());
+			elm.put(ConstantUtils.PATTERN, splitPattern[1]);
+			elm.put(ConstantUtils.YEAR, splitPattern[2]);
+			elm.put(ConstantUtils.INIT_NUBER, counter.getCurrentId());
 
 			return Response.status(200).entity(elm.toString()).build();
 
@@ -175,7 +176,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 						CounterLocalServiceUtil.updateCounter(counterInit);
 					}
-					jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+					jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 				}
 			} else {
 				if (initNumber == 0) {
@@ -198,7 +199,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 								CounterLocalServiceUtil.updateCounter(counterInit);
 							}
 						}
-						jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+						jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 					}
 				}
 			}
@@ -206,7 +207,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -238,11 +239,11 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			
 			CounterLocalServiceUtil.updateCounter(counter);
 
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -332,7 +333,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 				}
 
 
-				certNumber = String.format("%05d", _counterNumber) + StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
+				certNumber = StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
 				
 			} else {
 				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_CONFIG));
@@ -365,11 +366,11 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			}
 			CounterLocalServiceUtil.deleteCounter(certId);
 
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}
@@ -405,13 +406,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 						CounterLocalServiceUtil.deleteCounter(certName);
 					}
 				}
-				jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
+				jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE));
 			}
 
 			return Response.status(200).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
+			jsObj.put(DossierTerm.STATUS, ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 
 			return Response.status(500).entity(jsObj.toString()).build();
 		}

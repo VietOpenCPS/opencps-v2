@@ -21,6 +21,10 @@ import java.util.Map;
 
 import javax.ws.rs.NotFoundException;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -129,28 +133,11 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 			calendar.setTime(now);
 
-			// destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-			// destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-			// destination += calendar.get(Calendar.DAY_OF_MONTH);
-
-			// DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId,
-			// false, 0, destination,
-			// "Comment attactment", false, serviceContext);
 
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-
-			// FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId,
-			// dlFolder.getFolderId(), fileName,
-			// fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment
-			// attachment",
-			// StringPool.BLANK, inputStream, fileSize, serviceContext);
-
-			// DLFolderUtil.setFilePermissions(fileEntry);
-
-			// comment.setFileEntryId(fileEntry.getFileEntryId());
 
 		}
 
@@ -240,8 +227,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		}
 
 		comment.setUpvotedUsers(userHasUpvoted);
-		// comment.setClassName(className);
-		// comment.setClassPK(classPK);
 		comment.setUpvoteCount(counter);
 		comment.setExpandoBridgeAttributes(serviceContext);
 
@@ -271,8 +256,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		// Other fields
 
-		// comment.setClassName(className);
-		// comment.setClassPK(classPK);
 		comment.setFullname(fullname);
 		comment.setEmail(email);
 		comment.setParent(parent);
@@ -283,11 +266,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		return commentPersistence.update(comment);
 
 	}
-
-	// public List<Comment> findByF_groupId(long groupId, int start, int end) {
-	//
-	// return commentPersistence.findByF_groupId(groupId, start, end);
-	// }
 
 	public Hits luceneSearchEngine(Map<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -379,7 +357,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		// LAY CAC THAM SO TRONG PARAMS.
 
 		String classPK = GetterUtil.getString(params.get(CommentTerm.CLASS_PK));
-
 		String keywords = GetterUtil.getString(params.get(CommentTerm.KEYWORDS));
 
 		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
@@ -467,7 +444,6 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		}
 
 		object.setUserId(objectData.getLong(CommentTerm.USER_ID));
-
 		object.setClassName(objectData.getString(CommentTerm.CLASS_NAME));
 		object.setClassPK(objectData.getString(CommentTerm.CLASS_PK));
 		object.setFullname(objectData.getString(CommentTerm.FULL_NAME));

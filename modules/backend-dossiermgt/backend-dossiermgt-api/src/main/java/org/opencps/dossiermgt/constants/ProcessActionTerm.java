@@ -76,6 +76,10 @@ public class ProcessActionTerm {
 	public static final String SHIP_AMOUNT = "shipAmount";
 	public static final String RECEIVING = "receiving";
 	public static final String REQUIRED = "required";
+	public static final String PAYMENT_PORTAL = "paymentPortal";
+	public static final String MODERATOR = "moderator";
+	public static final String ASSIGNED = "assigned";
+	public static final String TO_USERS = "toUsers";
 	
 	
 }

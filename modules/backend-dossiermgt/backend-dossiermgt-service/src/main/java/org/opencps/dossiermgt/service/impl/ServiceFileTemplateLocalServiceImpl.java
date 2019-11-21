@@ -114,13 +114,6 @@ public class ServiceFileTemplateLocalServiceImpl extends ServiceFileTemplateLoca
 			String mimeType = MimeTypesUtil.getContentType(sourceFileName);
 			int size = FileUtil.getBytes(inputStream).length;
 
-			// FileEntry fileEntry =
-			//
-			// dlAppLocalService.addFileEntry(userId, groupId, folderId,
-			// sourceFileName, mimeType,
-			// sourceFileName, sourceFileName, sourceFileName,
-			// inputStream, size, serviceContext);
-
 			try {
 				FileEntry fileEntry = dlAppLocalService.addFileEntry(userId, groupId, folderId, sourceFileName,
 						mimeType, sourceFileName, sourceFileName, sourceFileName, inputStream, size, serviceContext);

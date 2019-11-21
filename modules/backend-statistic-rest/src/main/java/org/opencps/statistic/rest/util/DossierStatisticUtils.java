@@ -29,13 +29,6 @@ public class DossierStatisticUtils {
 			}
 			boolean checkGovAgency = (Validator.isNull(govAgencyCode)) ? (Validator.isNull(statistic.getGovAgencyCode()) ? true : false) : (govAgencyCode.contentEquals(statistic.getGovAgencyCode()));
 			boolean checkDomain = (Validator.isNull(domainCode)) ? (Validator.isNull(statistic.getDomainCode()) ? true : false) : (domainCode.contentEquals(statistic.getDomainCode()));
-//			if (statistic.getGroupId() == 52737 && domainCode != null && domainCode.equals("SCT_ATTP") && month == 4) {
-//				System.out.println("Check exists 2: " + month + "," + year + "," + domainCode + "," + govAgencyCode + "," + checkDate + "," + checkDomain + "," + checkGovAgency);
-//			}
-//
-//			if (statistic.getGroupId() == 52737 && statistic.getDomainCode() != null && statistic.getDomainCode().equals("SCT_ATTP") && statistic.getMonth() == 4) {
-//				System.out.println("Check exists 2: " + month + "," + year + "," + domainCode + "," + govAgencyCode + "," + checkDate + "," + checkDomain + "," + checkGovAgency);
-//			}
 
 			if (checkDate && checkGovAgency && checkDomain) {
 				return statistic;

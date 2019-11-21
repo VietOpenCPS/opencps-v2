@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -9,9 +8,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusException;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -22,7 +18,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -44,15 +39,13 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -94,7 +87,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			_log.debug(e);
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("Content not found!");
 			error.setCode(404);
 			error.setDescription(e.getMessage());
 
@@ -188,7 +180,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+						ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
 				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
@@ -238,7 +230,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 			responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + "\"");
+					ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + fileEntry.getFileName() + StringPool.QUOTE);
 			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
@@ -268,15 +260,14 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 			
 			// Change payment Status = 5
-			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "Keypay", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, StringPool.BLANK, JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("dossierNo", dossier.getDossierNo());
-			result.put("serviceName", dossier.getServiceName());
-			result.put("govAgencyName", dossier.getGovAgencyName());
-			result.put("paymentFee", paymentFile.getPaymentFee());
-			result.put("paymentAmount", paymentFile.getFeeAmount());
-			result.put("paymentPortal", "KEYPAY");
+			result.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			result.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+			result.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			result.put(ProcessActionTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
+			result.put(ProcessActionTerm.REQUEST_PAYMENT, paymentFile.getFeeAmount());
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
@@ -357,98 +348,4 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		}	
 	}
 
-	@Override
-	public Response previewInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String referenceUid) {
-		BackendAuth auth = new BackendAuthImpl();
-		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			Dossier dossier = getDossier(id, groupId);
-
-			if (dossier != null) {
-				PaymentFileActions action = new PaymentFileActionsImpl();
-				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
-				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
-				
-				String formData = JSONFactoryUtil.looseSerialize(paymentFile);
-				String formReport = paymentConfig.getInvoiceForm();
-
-				ObjectMapper mapper = new ObjectMapper();
-		        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
-
-		        map.put("applicantName", dossier.getApplicantName());
-		        
-		        StringBuilder address = new StringBuilder();
-				address.append(dossier.getAddress());address.append(", ");
-				address.append(dossier.getWardName());address.append(", ");
-				address.append(dossier.getDistrictName());address.append(", ");
-				address.append(dossier.getCityName());
-		        
-		        map.put("address", address.toString());
-		        
-		        String num = StringPool.BLANK;
-		        map.put("numToWord", num);
-		        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
-		        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
-		        map.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
-		        
-		        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
-		        if(Validator.isNotNull(workingUnit)) {
-		        	map.put("govAddress", workingUnit.getAddress());
-		        }else {
-		        	map.put("govAddress", "");
-		        }
-		        
-		        formData = mapper.writeValueAsString(map);
-		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
-				
-				Message message = new Message();
-
-				message.put("formReport", formReport);
-
-				message.put("formData", formData);
-
-				message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
-				message.setResponseDestinationName("jasper/engine/preview/callback");
-
-				try {
-					String previewResponse = (String) MessageBusUtil
-							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
-
-					if (Validator.isNotNull(previewResponse)) {
-						// jsonObject =
-						// JSONFactoryUtil.createJSONObject(previewResponse);
-					}
-
-					// String fileDes = jsonObject.getString("fileDes");
-
-					File file = new File(previewResponse);
-
-					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/pdf");
-
-					return responseBuilder.build();
-
-				} catch (MessageBusException e) {
-					_log.error(e);
-					throw new Exception("Preview rendering not available");
-				}
-			} else {
-				throw new Exception("Cant get dossier with id_" + id);
-			}
-
-		} catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}		
-	}
 }

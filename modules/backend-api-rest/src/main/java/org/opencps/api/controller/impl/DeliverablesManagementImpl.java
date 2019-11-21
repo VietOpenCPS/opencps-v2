@@ -1,11 +1,32 @@
 
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Context;
@@ -31,6 +52,7 @@ import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
@@ -39,28 +61,6 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.util.DLUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import io.swagger.annotations.ApiParam;
@@ -135,12 +135,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
-				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
-				formJson.put(
-					"deliverableCode",
-					doc.get(DeliverableTerm.DELIVERABLE_CODE));
-				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
 			results.put(ConstantUtils.DATA, formDataArr);
@@ -501,13 +495,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				endSearch = Integer.parseInt(end);
 			}
 
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
-
-			String pattern = String.valueOf(keyJson.get("query"));
-			String paramValues = String.valueOf(keyJson.get("values"));
-			String paramTypes = String.valueOf(keyJson.get("type"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
@@ -516,9 +504,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
 			params.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DeliverableTerm.DELIVERABLE_STATE, deliverableState);
-			params.put("pattern", pattern);
-			params.put("paramValues", paramValues);
-			params.put("paramTypes", paramTypes);
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 			// DeliverableResultModel results = new DeliverableResultModel();
@@ -541,11 +526,6 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				String formData = doc.get(DeliverableTerm.FORM_DATA);
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
-				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
-				formJson.put(
-					"deliverableCode",
-					doc.get(DeliverableTerm.DELIVERABLE_CODE));
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
@@ -692,7 +672,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("success", true);
+			results.put(ReadFilePropertiesUtils.get(ConstantUtils.MSG_SUCCESS), true);
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -744,10 +724,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
 					deliverable.getFileEntryId());
 
-				result.put("fileName", fileEntry.getFileName());
-				result.put("fileType", fileEntry.getMimeType());
+				result.put(DossierFileTerm.FILE_NAME, fileEntry.getFileName());
+				result.put(DossierFileTerm.FILE_TYPE, fileEntry.getMimeType());
 				result.put(
-					"url",
+					ConstantUtils.VALUE_URL,
 					DLUtil.getPreviewURL(
 						fileEntry, fileEntry.getFileVersion(),
 						serviceContext.getThemeDisplay(), StringPool.BLANK));

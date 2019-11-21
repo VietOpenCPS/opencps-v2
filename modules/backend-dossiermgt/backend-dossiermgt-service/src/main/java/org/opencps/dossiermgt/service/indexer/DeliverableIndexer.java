@@ -175,11 +175,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 			if (keyValues != null) {
 				for (Object[] keyValue : keyValues) {
-					// _log.info("=========DELIVERABLE_INDEX_FORM_DATA========:"
-					// + keyValue[0] + "_" + keyValue[1]);
-					// document.addKeyword(
-					// keyValue[0].toString() + "_data",
-					// keyValue[1].toString());
 					document.addKeyword(
 						keyValue[0].toString().toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA,
 						keyValue[1].toString().toLowerCase());
@@ -327,9 +322,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					if (Validator.isNotNull(valueObject.toString())) {
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(
 							valueObject.toString());
-						// keyValue[1] =
-						// valueObject.toString().replaceAll(Pattern.quote("/"),
-						// "_").replaceAll(Pattern.quote("-"), "_");
 					}
 					else {
 						keyValue[1] = valueObject.toString();

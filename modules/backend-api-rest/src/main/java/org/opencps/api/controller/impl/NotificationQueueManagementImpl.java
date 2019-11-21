@@ -23,6 +23,7 @@ import org.opencps.communication.action.NotificationQueueInterface;
 import org.opencps.communication.action.impl.NotificationQueueActions;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -72,9 +73,9 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			error.setCode(404);
-			error.setDescription("not found!");
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 			return Response.status(404).entity(error).build();
 

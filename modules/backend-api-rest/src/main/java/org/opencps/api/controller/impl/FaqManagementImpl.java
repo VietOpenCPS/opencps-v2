@@ -47,6 +47,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Question;
@@ -71,18 +72,18 @@ public class FaqManagementImpl implements FaqManagement {
 	        			jCaptchaResponse);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
 	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
+        		error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+    			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
@@ -104,14 +105,10 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setSubDomainName(question.getSubDomainName());
 				
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-						.header("Access-Control-Allow-Methods", "POST")
 						.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 			}
 		}
 		catch (Exception e) {
@@ -177,10 +174,6 @@ public class FaqManagementImpl implements FaqManagement {
 			}
 
 			return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-					.header("Access-Control-Allow-Methods", "GET")
 					.build();
 		}
 		catch (Exception e) {
@@ -205,14 +198,10 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(answer.getQuestionId());
 				result.setUserName(answer.getUserName());
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-						.header("Access-Control-Allow-Methods", "POST")
 						.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 			}
 		}
 		catch (Exception e) {
@@ -263,10 +252,6 @@ public class FaqManagementImpl implements FaqManagement {
 			result.getData().addAll(lstModels);
 			
 			return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-					.header("Access-Control-Allow-Methods", "GET")
 					.build();			
 		}
 		catch (Exception e) {
@@ -298,14 +283,10 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setSubDomainName(input.getSubDomainName());
 				
 				return Response.status(200).entity(result)
-						.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-						.header("Access-Control-Allow-Credentials", "true")
-						.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-						.header("Access-Control-Allow-Methods", "PUT")
 						.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 			}
 		}
 		catch (Exception e) {
@@ -321,15 +302,11 @@ public class FaqManagementImpl implements FaqManagement {
 		try {
 			QuestionLocalServiceUtil.deleteQuestion(questionId);
 
-			return Response.status(200).entity("Delete question is success!")
-					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-					.header("Access-Control-Allow-Methods", "DELETE")
+			return Response.status(200).entity(ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE))
 					.build();
 		} catch (PortalException e) {
 			_log.debug(e);
-			return Response.status(500).entity("Delete question is false!").build();
+			return Response.status(500).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();
 		}
 	}
 
@@ -350,14 +327,10 @@ public class FaqManagementImpl implements FaqManagement {
 				result.setQuestionId(answer.getQuestionId());
 				result.setUserName(answer.getUserName());
 				return Response.status(200).entity(result)
-					.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-					.header("Access-Control-Allow-Credentials", "true")
-					.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-					.header("Access-Control-Allow-Methods", "PUT")	
 					.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_CAPTCHA_INCORRECT));
 			}
 		}
 		catch (Exception e) {
@@ -372,15 +345,11 @@ public class FaqManagementImpl implements FaqManagement {
 		try {
 			AnswerLocalServiceUtil.deleteAnswer(answerId);
 
-			return Response.status(200).entity("Delete Answer is success!")
-				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "DELETE")		
+			return Response.status(200).entity(ReadFilePropertiesUtils.get(ConstantUtils.STATUS_DONE))
 				.build();
 		} catch (PortalException e) {
 			_log.debug(e);
-			return Response.status(500).entity("Delete Answer is false!").build();
+			return Response.status(500).entity(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION)).build();
 		}
 	}
 
@@ -388,138 +357,29 @@ public class FaqManagementImpl implements FaqManagement {
 	public Response optionQuestions(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, Integer start, Integer end, Integer publish, String govAgencyCode, String keyword,
 			String questionType, String answer, String subDomainCode, ServiceContext serviceContext) {
-		return Response.status(200).entity("")
-				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "GET,POST")
+		return Response.status(200).entity(StringPool.BLANK)
 				.build();
 	}
 
 	@Override
 	public Response detailQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
-		return Response.status(200).entity("")
-				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "GET,PUT,DELETE")
+		return Response.status(200).entity(StringPool.BLANK)
 				.build();
 	}
 
 	@Override
 	public Response optionAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, long questionId, Integer start, Integer end, Integer publish, ServiceContext serviceContext) {
-		return Response.status(200).entity("")
-				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "GET,POST")
+		return Response.status(200).entity(StringPool.BLANK)
 				.build();
 	}
 
 	@Override
 	public Response optionsDetailAnswers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long questionId, long answerId) {
-		return Response.status(200).entity("")
-				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, groupid, token")
-				.header("Access-Control-Allow-Methods", "GET,PUT,DELETE")
+		return Response.status(200).entity(StringPool.BLANK)
 				.build();
 	}
 
-	@Override
-	public Response proxyQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String url, String method, String data) {
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		try {
-			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, "SERVER_DVC");
-			if (sc != null) {
-				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-				String serverUrl = StringPool.BLANK;
-		        String authStrEnc = StringPool.BLANK;
-				
-	
-			    String apiUrl = StringPool.BLANK;
-			    
-			    StringBuilder sb = new StringBuilder();
-			    try
-			    {
-			        URL urlVal = null;
-			        String groupIdRequest = StringPool.BLANK;
-			        StringBuilder postData = new StringBuilder();
-					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
-					Iterator<?> keys = dataObj.keys();
-					while(keys.hasNext() ) {
-					    String key = (String)keys.next();
-					    if (!"".equals(postData.toString())) {
-					    	postData.append("&");
-					    }
-					    postData.append(key);
-					    postData.append("=");
-					    postData.append(dataObj.get(key));
-					}
-			        
-					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
-							&& configObj.has(SyncServerTerm.SERVER_SECRET)
-							&& configObj.has(SyncServerTerm.SERVER_URL)
-							&& configObj.has(Field.GROUP_ID)) {
-						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
-						
-						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-				        groupIdRequest = configObj.getString(Field.GROUP_ID);
-					}
-			        
-					apiUrl = serverUrl + url;
-			        if ("GET".equals(method)) {
-						urlVal = new URL(apiUrl + "?" + postData.toString());
-			        }
-			        else {
-			        	urlVal = new URL(apiUrl);
-			        }
-
-					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
-			        conn.setRequestMethod(method);
-			        conn.setRequestProperty("Accept", "application/json");
-			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
-			        
-			        if ("POST".equals(method) || "PUT".equals(method)) {
-				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "application/x-www-form-urlencoded");
-						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
-
-						conn.setUseCaches(false);
-						conn.setDoInput(true);
-						conn.setDoOutput(true);
-						
-						OutputStream os = conn.getOutputStream();
-						os.write( postData.toString().getBytes() );    
-						os.close();			        	
-			        }
-
-					
-			        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			        			        
-			        int cp;
-			        while ((cp = brf.read()) != -1) {
-			          sb.append((char) cp);
-			        }
-
-					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
-			    }
-			    catch(IOException e)
-			    {
-			        _log.debug("Something went wrong while reading/writing in stream!!");
-			    }
-			    return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
-			}
-			else {
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
-			}		
-		}
-		catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
 }

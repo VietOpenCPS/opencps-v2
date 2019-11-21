@@ -42,6 +42,7 @@ import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -73,11 +74,11 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 			params.put(FileAttachTerm.CLASS_NAME, className);
 			params.put(FileAttachTerm.CLASS_PK, classPK);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getFileAttachs(user.getUserId(), company.getCompanyId(), groupId, params,
@@ -117,9 +118,9 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			} else {
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("file not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("file not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				return Response.status(404).entity(error).build();
 			}
 
@@ -186,7 +187,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			FileAttach fileAttach = actions.upload(user.getUserId(), company.getCompanyId(), groupId, className,
-					classPK, inputStream, fileName, fileType, fileSize, "FileAttach/", "FileAttach file upload",
+					classPK, inputStream, fileName, fileType, fileSize, StringPool.BLANK, StringPool.BLANK,
 					serviceContext);
 
 			fileAttachModel = FileAttachUtils.mapperFileAttachModel(fileAttach);
@@ -225,7 +226,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			inputStream = dataHandler.getInputStream();
 
 			FileAttach fileAttach = actions.update(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "FileAttach/", "FileAttach file upload", serviceContext);
+					fileName, fileType, fileSize, StringPool.BLANK, StringPool.BLANK, serviceContext);
 
 			fileAttachModel = FileAttachUtils.mapperFileAttachModel(fileAttach);
 
@@ -257,8 +258,8 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			JSONObject jsonData = actions.getFileAttachVersions(fileAttachId, serviceContext);
 
 			long total = jsonData.getLong(ConstantUtils.TOTAL);
-			String fileName = jsonData.getString("fileName");
-			JSONArray versions = jsonData.getJSONArray("versions");
+			String fileName = jsonData.getString(DossierFileTerm.FILE_NAME);
+			JSONArray versions = jsonData.getJSONArray(Field.VERSION);
 
 			result.setTotal(total);
 
@@ -296,9 +297,9 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 			} else {
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("file not found!");
+				error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				error.setCode(404);
-				error.setDescription("file not found!");
+				error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 				return Response.status(404).entity(error).build();
 			}
 		} catch (Exception e) {

@@ -14,6 +14,7 @@ public class CommentTerm {
 	public static final String FILE_ENTRY_ID = "fileEntryId";
 	public static final String UPVOTE_COUNT = "upvoteCount";
 	public static final String USER_HAS_UPVOTED = "userHasUpvoted";
+	public static final String UP_VOTED_USERS = "upvotedUsers";
 	public static final String PINGS = "pings";
 	public static final String CREATE_DATE = "createDate";
 	public static final String UPVOTED_USERS = "upvotedUsers";

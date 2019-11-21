@@ -30,6 +30,7 @@ import org.opencps.api.jobpos.model.JobposPermissionModel;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.jobpos.model.JobposResults;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.model.JobPos;
@@ -63,9 +64,9 @@ public class JobposManagementImpl implements JobposManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.KEYWORD_SEARCH, query.getKeywords());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getJobpos(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -97,9 +98,9 @@ public class JobposManagementImpl implements JobposManagement {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
+			error.setMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			error.setCode(404);
-			error.setDescription("not found!");
+			error.setDescription(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 
 			return Response.status(404).entity(error).build();
 

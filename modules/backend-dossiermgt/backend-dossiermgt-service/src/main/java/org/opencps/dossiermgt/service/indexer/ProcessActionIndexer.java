@@ -66,9 +66,11 @@ public class ProcessActionIndexer extends BaseIndexer<ProcessAction> {
 
 		// add text fields
 		document.addTextSortable(ProcessActionTerm.PRESTEP_CODE, object.getPreStepCode());
-		document.addTextSortable(ProcessActionTerm.PRESTEP_NAME, getStepName(object.getGroupId(), object.getPreStepCode(), object.getServiceProcessId()));
+		document.addTextSortable(ProcessActionTerm.PRESTEP_NAME,
+				getStepName(object.getGroupId(), object.getPreStepCode(), object.getServiceProcessId()));
 		document.addTextSortable(ProcessActionTerm.POSTSTEP_CODE, object.getPostStepCode());
-		document.addTextSortable(ProcessActionTerm.POSTSTEP_NAME, getStepName(object.getGroupId(), object.getPostStepCode(), object.getServiceProcessId()));
+		document.addTextSortable(ProcessActionTerm.POSTSTEP_NAME,
+				getStepName(object.getGroupId(), object.getPostStepCode(), object.getServiceProcessId()));
 		document.addTextSortable(ProcessActionTerm.AUTO_EVENT, object.getAutoEvent());
 		document.addTextSortable(ProcessActionTerm.PRE_CONDITION, object.getPreCondition());
 		document.addTextSortable(ProcessActionTerm.ACTION_CODE, object.getActionCode());

@@ -14,6 +14,7 @@
 
 package org.opencps.statistic.service.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -380,7 +381,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 			byte pausingCount = 0;
 
-			createOrUpdateStatistic(payload.getCompanyId(), payload.getGroupId(), -1L, "ADM", payload.getMonth(),
+			createOrUpdateStatistic(payload.getCompanyId(), payload.getGroupId(), -1L, StringPool.BLANK, payload.getMonth(),
 					payload.getYear(), payload.getSystem(), payload.getTotalCount(), payload.getDeniedCount(),
 					payload.getCancelledCount(), payload.getProcessCount(), payload.getRemainingCount(),
 					payload.getReceivedCount(), payload.getOnlineCount(), payload.getReleaseCount(),

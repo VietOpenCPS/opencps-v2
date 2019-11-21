@@ -33,4 +33,5 @@ public class VotingTerm {
 	public static final String ITEM_LV = "itemLv";
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+
 }

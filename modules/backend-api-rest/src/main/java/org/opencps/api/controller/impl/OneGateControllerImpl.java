@@ -46,11 +46,14 @@ import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -58,7 +61,6 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -128,7 +130,7 @@ public class OneGateControllerImpl implements OneGateController {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
-					elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
+					elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
 	
 					//Hot fix
 					ServiceInfo serviceInfo = null;
@@ -141,10 +143,10 @@ public class OneGateControllerImpl implements OneGateController {
 		//						_log.debug(e1);
 		//						break;
 		//					}
-							elmData.put("serviceCode", serviceInfo.getServiceCode());
-							elmData.put("serviceName", serviceInfo.getServiceName());
-							elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
-							elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
+							elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
+							elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
+							elmData.put(DossierTerm.GOV_AGENCY_CODE, serviceConfig.getGovAgencyCode());
+							elmData.put(DossierTerm.GOV_AGENCY_NAME, serviceConfig.getGovAgencyName());
 			
 	//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
 	//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -165,10 +167,11 @@ public class OneGateControllerImpl implements OneGateController {
 										for (int i = 0; i < roleIds.length; i++) {
 											if (roleIds[i] == spr.getRoleId()) {
 												hasPermission = true;
-												break;										
+												break;
 											}
 										}
-										if (hasPermission) break;
+										if (hasPermission)
+											break;
 									}
 								}
 								if (isAdmin) {
@@ -177,32 +180,34 @@ public class OneGateControllerImpl implements OneGateController {
 								if (hasPermission) {
 									JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 									
-									elmOption.put("processOptionId", processOption.getProcessOptionId());
-									elmOption.put("optionName", processOption.getOptionName());
-									elmOption.put("instructionNote", processOption.getInstructionNote());
+									elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID, processOption.getProcessOptionId());
+									elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
+									elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, processOption.getInstructionNote());
 									
 									try {
-										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil
+												.getDossierTemplate(processOption.getDossierTemplateId());
 										if (dossierTemplate != null) {
-											elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-											elmOption.put("templateName", dossierTemplate.getTemplateName());						
+											elmOption.put(DossierPartTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
+											elmOption.put(DossierPartTerm.TEMPLATE_NAME,
+													dossierTemplate.getTemplateName());
 										}
 									}
 									catch (NoSuchDossierTemplateException e) {
 										_log.error(e);
 									}
-									options.put(elmOption);							
+									options.put(elmOption);
 								}
 								
 								if (options.length() > 0) {
-									elmData.put("options", options);							
+									elmData.put(ProcessOptionTerm.OPTIONS, options);
 								}
 			
 							}
 							
-							if (elmData.has("options")) {
+							if (elmData.has(ProcessOptionTerm.OPTIONS)) {
 								total++;
-								data.put(elmData);						
+								data.put(elmData);
 							}
 						}
 					}
@@ -380,70 +385,15 @@ public class OneGateControllerImpl implements OneGateController {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			ServiceProcess serviceProcess = actions.getServiceProcessByCode(groupId, serviceCode, govAgencyCode,
 					dossierTemplateNo);
-			if (serviceProcess != null) {
-				results.put("paymentFeeRequest", serviceProcess.getPaymentFee());
-				ProcessAction process = ProcessActionLocalServiceUtil
-						.getByServiceProcess(serviceProcess.getServiceProcessId(), String.valueOf(10000));
-				if (process != null) {
-					results.put("paymentFeeTotal", process.getPaymentFee());
-				} else {
-					results.put("paymentFeeTotal", 0);
-				}
-			} else {
-				results.put("paymentFeeRequest", 0);
-				results.put("paymentFeeTotal", 0);
-			}
-//			if (dActionId > 0) {
-//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
-//				ProcessAction process = ProcessActionLocalServiceUtil.getByServiceProcess(dAction.getServiceProcessId(), dAction.getActionCode());
-//				results.put("paymentFeeTotal", process.getPaymentFee());
-//			} else 
-//			if (serviceProcess != null) {
-//				ProcessAction process = ProcessActionLocalServiceUtil
-//						.getByServiceProcess(serviceProcess.getServiceProcessId(), String.valueOf(10000));
-//				if (process != null) {
-//					results.put("paymentFeeTotal", process.getPaymentFee());
-//				} else {
-//					results.put("paymentFeeTotal", 0);
-//				}
-//			} else {
-//				results.put("paymentFeeTotal", 0);
-//			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(serviceProcess)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
-//	@Override
-//	public Response getToken(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-//			User user) {
-//		
-//		try {
-//			
-//			String token = (String) request.getSession().getAttribute(CSRF_TOKEN_FOR_SESSION_NAME);
-//			
-//			_log.info("CHECK::TOKEN:::::" + token);
-//			
-//			if (Validator.isNull(token)) {
-//				token = PortalUUIDUtil.generate();
-//				
-//				_log.info("GENERATE_TOKEN:::::" + token);
-//
-//				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
-//			}
-//			return Response.status(200).entity(token).build();
-//		} catch (Exception e) {
-//			_log.info(e);
-//			return _processException(e);
-//		}
-//
-//	}
 
 }

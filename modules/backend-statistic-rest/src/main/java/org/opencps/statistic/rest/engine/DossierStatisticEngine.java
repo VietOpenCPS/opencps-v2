@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -47,6 +48,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
@@ -81,7 +83,6 @@ import org.osgi.service.component.annotations.Reference;
 public class DossierStatisticEngine extends BaseMessageListener {
 	private volatile boolean isRunningDossier = false;
 	
-	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
 	
 	public static final int GROUP_TYPE_SITE = 1;
@@ -121,10 +122,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group site : sites) {
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
-				
-	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
-	
-	//			GetDossierResponse dossierResponse = new GetDossierResponse();
 				
 				ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 				sdPayload.setGroupId(site.getGroupId());
@@ -181,7 +178,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
-						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + site.getName(Locale.getDefault()) + StringPool.SPACE + (System.currentTimeMillis() - startTime) + " ms");;
 						List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 						if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
@@ -448,39 +445,39 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		else {
 			DossierActions actions = new DossierActionsImpl();
 			Sort[] sorts = null;
-			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean("true")) };
+			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+					true) };
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(DossierTerm.MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(DossierTerm.YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			}
 			else {
 				if (Validator.isNotNull(payload.getGovAgencyCode())) {
-					params.put("agency", payload.getGovAgencyCode());
+					params.put(DossierTerm.AGENCY, payload.getGovAgencyCode());
 				}
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
-					params.put("fromStatisticDate", payload.getFromStatisticDate());
+					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());
 				}
 				if (Validator.isNotNull(payload.getToStatisticDate())) {
-					params.put("toStatisticDate", payload.getToStatisticDate());
+					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
 				}				
 			}
 			//Add common params
 			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
-			params.put("systemId", strSystemId);
-			params.put("top", DossierStatisticConstants.TOP_STATISTIC);
+			params.put(DossierTerm.SYSTEM_ID, strSystemId);
+			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			long companyId = company.getCompanyId(); 

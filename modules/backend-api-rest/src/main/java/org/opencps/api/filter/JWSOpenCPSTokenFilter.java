@@ -1,5 +1,8 @@
 package org.opencps.api.filter;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.io.IOException;
 import java.security.Key;
 
@@ -13,8 +16,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 
 import io.jsonwebtoken.Jwts;
 
@@ -30,11 +33,11 @@ public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
 
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         // Check if the HTTP Authorization header is present and formatted correctly
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
+        if (authorizationHeader == null || !authorizationHeader.startsWith(ConstantUtils.BEARER)) {
+            throw new NotAuthorizedException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
         }
 
-        String token = authorizationHeader.substring("Bearer".length()).trim();
+        String token = authorizationHeader.substring(ConstantUtils.BEARER.trim().length()).trim();
 
         try {
 
@@ -44,7 +47,6 @@ public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
  
         } catch (Exception e) {
         	_log.debug(e);
-			//_log.error(e);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }

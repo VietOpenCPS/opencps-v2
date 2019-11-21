@@ -40,30 +40,6 @@ public interface NotificationManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam NotificationSearchModel query, @QueryParam("archived") Boolean archived);
 
-	@POST
-	@Path("/{eventId}/mark")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response markAsRead(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("eventId") long eventId);
-	
-//	@GET
-//	@Path("/{type}")
-//	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	public Response read(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-//			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-//			@DefaultValue("0") @PathParam("type") String type);
-//
-//	@PUT
-//	@Path("/{type}")
-//	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	public Response update(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-//			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-//			@DefaultValue("0") @PathParam("type") String type, @BeanParam NotificationtemplateInputModel input);
-//
 	@DELETE
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -72,11 +48,5 @@ public interface NotificationManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@PathParam("id") String id);
 //
-//	@POST
-//	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	public Response create(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-//			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-//			@BeanParam NotificationtemplateInputModel input);
 
 }

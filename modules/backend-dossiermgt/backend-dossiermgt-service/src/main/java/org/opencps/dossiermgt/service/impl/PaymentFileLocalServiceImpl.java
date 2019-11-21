@@ -51,11 +51,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -109,7 +110,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -242,7 +243,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -475,13 +476,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setPaymentStatus(5);
-			// if (Validator.isNotNull(paymentMethod) && "N\u1ED9p
-			// online".equals(paymentMethod)) {
-			// paymentFile.setPaymentStatus(5);
-			// } else {
-			// paymentFile.setPaymentStatus(5);
-			// }
-			// paymentFile.setIsNew(true);
 		}
 
 		// update dossier
@@ -493,9 +487,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);
-			// dossierPersistence.update(dossier);
 
-			// indexer.reindex(dossier);
 		} catch (SearchException e) {
 			_log.error(e);
 		}
@@ -516,9 +508,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		long userId = serviceContext.getUserId();
 
-		// User auditUser =
-		// userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
-
 		PaymentFile paymentFile = paymentFilePersistence.fetchByD_RUID(dossierId, referenceUid);
 
 		if (paymentFile != null) {
@@ -533,7 +522,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 						fileEntryId = fileEntry.getFileEntryId();
 					}
 				} catch (Exception e) {
-					// throw new SystemException(e);
 					_log.error(e);
 				}
 			}
@@ -545,13 +533,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setPaymentMethod(paymentMethod);
 			paymentFile.setConfirmPayload(confirmPayload);
 			paymentFile.setConfirmFileEntryId(fileEntryId);
-			// TODO review payment status
 			paymentFile.setPaymentStatus(3);
-			// paymentFile.setIsNew(true);
 		}
-
-		// Indexer<Dossier> indexer =
-		// IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -561,9 +544,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			dossierLocalService.updateDossier(dossier);
 
-			// indexer.reindex(dossier);
 		} catch (SearchException e) {
-			// e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -607,8 +588,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceNo(invoiceNo);
 			paymentFile.setPaymentStatus(2);
 
-			// paymentFile.setIsNew(true);
-
 		}
 
 		return paymentFilePersistence.update(paymentFile);
@@ -632,10 +611,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 							sourceFileName, null, fileSize, serviceContext);
 
 					if (fileEntry != null) {
-						// fileEntryId = fileEntry.getFileEntryId();
 					}
 				} catch (Exception e) {
-					// e.printStackTrace();
 					_log.error(e);
 					throw new SystemException(e);
 				}
@@ -646,7 +623,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 			paymentFile.setModifiedDate(now);
 			// Parse String to Date
-			SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+			SimpleDateFormat format = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 			Date dateApproved = format.parse(approveDatetime);
 			paymentFile.setApproveDatetime(dateApproved);
 			paymentFile.setAccountUserName(accountUserName);
@@ -654,8 +631,6 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			paymentFile.setInvoiceIssueNo(invoiceIssueNo);
 			paymentFile.setInvoiceNo(invoiceNo);
-			// paymentFile.setInvoiceFileEntryId(fileEntryId);
-			// paymentFile.setIsNew(true);
 
 		}
 
@@ -702,9 +677,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 				if (Validator.isNull(epaymentProFile)) {
 					epaymentProFile = JSONFactoryUtil.createJSONObject();
 				}
-				epaymentProFile.put("serviceAmount", serviceAmount);
-				epaymentProFile.put("feeAmount", feeAmount);
-				epaymentProFile.put("paymentNote", paymentNote);
+				epaymentProFile.put(PaymentFileTerm.SERVICE_AMOUNT, serviceAmount);
+				epaymentProFile.put(PaymentFileTerm.FEE_AMOUNT, feeAmount);
+				epaymentProFile.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
 				//
 				paymentFile.setEpaymentProfile(epaymentProFile.toJSONString());
 			} catch (JSONException e) {
@@ -754,9 +729,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		PaymentFile object = null;
 
-		if (objectData.getLong("paymentFileId") > 0) {
+		if (objectData.getLong(PaymentFileTerm.PAYMENT_FILE_ID) > 0) {
 
-			object = paymentFilePersistence.fetchByPrimaryKey(objectData.getLong("paymentFileId"));
+			object = paymentFilePersistence.fetchByPrimaryKey(objectData.getLong(PaymentFileTerm.PAYMENT_FILE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -767,39 +742,38 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			object = paymentFilePersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setPaymentFee(objectData.getString("paymentFee"));
-		object.setAdvanceAmount(objectData.getLong("advanceAmount"));
-		object.setFeeAmount(objectData.getLong("feeAmount"));
-		object.setServiceAmount(objectData.getLong("serviceAmount"));
-		object.setShipAmount(objectData.getLong("shipAmount"));
-		object.setPaymentAmount(objectData.getLong("paymentAmount"));
-		object.setPaymentNote(objectData.getString("paymentNote"));
-		object.setEpaymentProfile(objectData.getString("epaymentProfile"));
-		object.setBankInfo(objectData.getString("bankInfo"));
-		object.setPaymentStatus(objectData.getInt("paymentStatus"));
-		object.setPaymentMethod(objectData.getString("paymentMethod"));
-		object.setConfirmDatetime(new Date(objectData.getLong("confirmDatetime")));
-		object.setConfirmPayload(objectData.getString("confirmPayload"));
-		// object.setConfirmFileEntryId(objectData.getString("userName")confirmFileEntryId);
-		object.setConfirmNote(objectData.getString("confirmNote"));
-		object.setApproveDatetime(new Date(objectData.getLong("approveDatetime")));
-		object.setAccountUserName(objectData.getString("accountUserName"));
-		object.setGovAgencyTaxNo(objectData.getString("govAgencyTaxNo"));
-		object.setInvoiceTemplateNo(objectData.getString("invoiceTemplateNo"));
-		object.setInvoiceIssueNo(objectData.getString("invoiceIssueNo"));
-		object.setInvoiceNo(objectData.getString("invoiceNo"));
-		object.setInvoicePayload(objectData.getString("invoicePayload"));
-		object.setEinvoice(objectData.getString("einvoice"));
+		object.setDossierId(objectData.getLong(PaymentFileTerm.DOSSIER_ID));
+		object.setReferenceUid(objectData.getString(PaymentFileTerm.REFERENCE_UID));
+		object.setPaymentFee(objectData.getString(PaymentFileTerm.PAYMENT_FEE));
+		object.setAdvanceAmount(objectData.getLong(PaymentFileTerm.ADVANCE_AMOUNT));
+		object.setFeeAmount(objectData.getLong(PaymentFileTerm.FEE_AMOUNT));
+		object.setServiceAmount(objectData.getLong(PaymentFileTerm.SERVICE_AMOUNT));
+		object.setShipAmount(objectData.getLong(PaymentFileTerm.SHIP_AMOUNT));
+		object.setPaymentAmount(objectData.getLong(PaymentFileTerm.PAYMENT_AMOUNT));
+		object.setPaymentNote(objectData.getString(PaymentFileTerm.PAYMENT_NOTE));
+		object.setEpaymentProfile(objectData.getString(PaymentFileTerm.EPAYMENT_PROFILE));
+		object.setBankInfo(objectData.getString(PaymentFileTerm.BANK_INFO));
+		object.setPaymentStatus(objectData.getInt(PaymentFileTerm.PAYMENT_STATUS));
+		object.setPaymentMethod(objectData.getString(PaymentFileTerm.PAYMENT_METHOD));
+		object.setConfirmDatetime(new Date(objectData.getLong(PaymentFileTerm.CONFIRM_DATETIME)));
+		object.setConfirmPayload(objectData.getString(PaymentFileTerm.CONFIRM_PAYLOAD));
+		object.setConfirmNote(objectData.getString(PaymentFileTerm.CONFIRM_NOTE));
+		object.setApproveDatetime(new Date(objectData.getLong(PaymentFileTerm.APPROVE_DATETIME)));
+		object.setAccountUserName(objectData.getString(PaymentFileTerm.ACCOUNT_USER_NAME));
+		object.setGovAgencyTaxNo(objectData.getString(PaymentFileTerm.GOV_AGENCY_TAX_NO));
+		object.setInvoiceTemplateNo(objectData.getString(PaymentFileTerm.INVOICE_TEMPLATE_NO));
+		object.setInvoiceIssueNo(objectData.getString(PaymentFileTerm.INVOICE_ISSUE_NO));
+		object.setInvoiceNo(objectData.getString(PaymentFileTerm.INVOICE_NO));
+		object.setInvoicePayload(objectData.getString(PaymentFileTerm.INVOICE_PAYLOAD));
+		object.setEinvoice(objectData.getString(PaymentFileTerm.EINVOICE));
 
 		paymentFilePersistence.update(object);
 

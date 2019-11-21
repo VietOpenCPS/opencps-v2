@@ -53,6 +53,7 @@ import java.util.List;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
@@ -141,8 +142,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		JSONObject objName = JSONFactoryUtil.createJSONObject();
 
-		validate(groupId, serviceConfigId, serviceInfoId, govAgencyCode, serviceLevel, serviceUrl, objName);
-
 		ServiceConfig serviceConfig = null;
 
 		Date now = new Date();
@@ -163,7 +162,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setUserName(auditUser.getFullName());
 
 			serviceConfig.setGovAgencyCode(govAgencyCode);
-			serviceConfig.setGovAgencyName(objName.getString("agencyName"));
+			serviceConfig.setGovAgencyName(objName.getString(ServiceConfigTerm.AGENCY_NAME));
 			serviceConfig.setServiceInstruction(serviceInstruction);
 			serviceConfig.setServiceLevel(serviceLevel);
 			serviceConfig.setServiceUrl(serviceUrl);
@@ -183,7 +182,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 			if (Validator.isNotNull(govAgencyCode)) {
 				serviceConfig.setGovAgencyCode(govAgencyCode);
-				serviceConfig.setGovAgencyName(objName.getString("agencyName"));
+				serviceConfig.setGovAgencyName(objName.getString(ServiceConfigTerm.AGENCY_NAME));
 			}
 
 			if (Validator.isNotNull(serviceInstruction))
@@ -212,49 +211,6 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfig;
 	}
 
-	private void validate(long groupId, long serviceConfigId, long serviceInfoId, String govAgencyCode,
-			int serviceLevel, String serviceUrl, JSONObject objName) throws PortalException {
-
-		DictItem agc = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY, govAgencyCode,
-				groupId);
-
-		if (Validator.isNull(agc)) {
-			throw new RequiredAgencyCodeException("RequiredAgencyCodeException");
-		} else {
-			objName.put("agencyName", agc.getItemName());
-		}
-
-		if (serviceLevel <= 1 || serviceLevel > 4) {
-			throw new ServiceLevelException();
-		}
-
-		if (Validator.isNotNull(serviceUrl) && !Validator.isUrl(serviceUrl)) {
-			throw new ServiceURLOnlineException("ServiceURLOnlineException");
-		}
-
-		try {
-			serviceInfoPersistence.fetchByPrimaryKey(serviceInfoId);
-
-		} catch (Exception e) {
-			_log.error(e);
-			throw new RequiredServiceCodeException("RequiredServiceCodeException");
-		}
-
-		ServiceConfig config = serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
-
-		if (serviceConfigId == 0) {
-
-			if (Validator.isNotNull(config)) {
-				throw new HasExsistException("ServiceConfigHasExsist");
-			}
-		} else {
-
-			if (Validator.isNotNull(config) && config.getPrimaryKey() != serviceConfigId) {
-				throw new HasExsistException("ServiceConfigHasExsist");
-			}
-		}
-
-	}
 
 	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
@@ -266,7 +222,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -377,7 +333,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -566,9 +522,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		ServiceConfig object = null;
 
-		if (objectData.getLong("serviceConfigId") > 0) {
+		if (objectData.getLong(ServiceConfigTerm.SERVICECONFIG_ID) > 0) {
 
-			object = serviceConfigPersistence.fetchByPrimaryKey(objectData.getLong("serviceConfigId"));
+			object = serviceConfigPersistence.fetchByPrimaryKey(objectData.getLong(ServiceConfigTerm.SERVICECONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -579,25 +535,24 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			object = serviceConfigPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
-		object.setServiceInstruction(objectData.getString("serviceInstruction"));
-		object.setServiceLevel(objectData.getInt("serviceLevel"));
-		object.setServiceUrl(objectData.getString("serviceUrl"));
-		object.setForBusiness(objectData.getBoolean("forBusiness"));
-		object.setForCitizen(objectData.getBoolean("forCitizen"));
-		object.setPostService(objectData.getBoolean("postService"));
-		object.setRegistration(objectData.getBoolean("registration"));
-		object.setServiceInfoId(objectData.getLong("serviceInfoId"));
-		object.setServiceLevel(objectData.getInt("serviceLevel"));
+		object.setGovAgencyCode(objectData.getString(ServiceConfigTerm.GOVAGENCY_CODE));
+		object.setGovAgencyName(objectData.getString(ServiceConfigTerm.GOVAGENCY_NAME));
+		object.setServiceInstruction(objectData.getString(ServiceConfigTerm.SERVICE_INSTRUCTION));
+		object.setServiceLevel(objectData.getInt(ServiceConfigTerm.SERVICE_LEVEL));
+		object.setServiceUrl(objectData.getString(ServiceConfigTerm.SERVICE_URL));
+		object.setForBusiness(objectData.getBoolean(ServiceConfigTerm.FOR_BUSINESS));
+		object.setForCitizen(objectData.getBoolean(ServiceConfigTerm.FOR_CITIZEN));
+		object.setPostService(objectData.getBoolean(ServiceConfigTerm.POSTAL_SERVICE));
+		object.setRegistration(objectData.getBoolean(ServiceConfigTerm.REGISTRATION));
+		object.setServiceInfoId(objectData.getLong(ServiceConfigTerm.SERVICEINFO_ID));
 
 		serviceConfigPersistence.update(object);
 

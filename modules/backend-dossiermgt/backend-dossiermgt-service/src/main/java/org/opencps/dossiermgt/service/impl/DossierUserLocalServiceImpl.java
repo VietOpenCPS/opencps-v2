@@ -59,7 +59,6 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 		return dossierUserPersistence.update(object);
 	}
 	
-//	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser updateDossierUser(long dossierId, long userId, int moderator, boolean visited) throws NoSuchDossierUserException {
 		DossierUserPK pk = new DossierUserPK();
 		pk.setUserId(userId);
@@ -73,7 +72,6 @@ public class DossierUserLocalServiceImpl extends DossierUserLocalServiceBaseImpl
 		return dossierUserPersistence.update(object);
 	}
 	
-//	@Indexable(type = IndexableType.REINDEX)
 	public DossierUser deleteDossierUser(long dossierId, long userId) throws NoSuchDossierUserException {
 		DossierUserPK pk = new DossierUserPK();
 		pk.setUserId(userId);

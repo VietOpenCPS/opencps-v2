@@ -35,16 +35,16 @@ import org.opencps.api.controller.DossierDocumentManagement;
 import org.opencps.api.controller.util.DossierDocumentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
-import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -106,17 +106,17 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					}
 					//
 					//_log.info("jsonData: "+jsonData);
-					jsonData.put("url", serviceContext.getPortalURL());
+					jsonData.put(ConstantUtils.VALUE_URL, serviceContext.getPortalURL());
 					Message message = new Message();
-					message.put("formReport", documentScript);
-					message.put("formData", jsonData.toJSONString());
+					message.put(DeliverableTerm.FORM_REPORT, documentScript);
+					message.put(DeliverableTerm.FORM_DATA, jsonData.toJSONString());
 
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
-								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+								.sendSynchronousMessage(ConstantUtils.JASPER_DESTINATION, message, 10000);
 
 						if (Validator.isNotNull(previewResponse)) {
 						}
@@ -259,12 +259,12 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				formDataJSON.put(DossierTerm.MAPPING_DOSSIER, formDataArr);
 
 				Message message = new Message();
-				message.put("formReport", documentScript);
-				message.put("formData", formDataJSON.toJSONString());
+				message.put(DeliverableTerm.FORM_REPORT, documentScript);
+				message.put(DeliverableTerm.FORM_DATA, formDataJSON.toJSONString());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
-							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+							.sendSynchronousMessage(ConstantUtils.JASPER_DESTINATION, message, 10000);
 
 					if (Validator.isNotNull(previewResponse)) {
 					}
@@ -391,7 +391,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			//Process array sequence
 			JSONArray jsonSequenceArr = getProcessSequencesJSON(sequenceArr, sequenceList);
 			if (jsonSequenceArr != null) {
-				jsonData.put("processSequenceArr", jsonSequenceArr);
+				jsonData.put(DossierTerm.PROCESS_SEQUENCE_ARR, jsonSequenceArr);
 			}
 		}
 
@@ -407,20 +407,20 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
 				for (ProcessSequence proSeq : sequenceList) {
 					if (sequenceNo.equals(proSeq.getSequenceNo())) {
-						sequenceObj.put("sequenceNo", proSeq.getSequenceNo());
-						sequenceObj.put("sequenceName", proSeq.getSequenceName());
-						sequenceObj.put("sequenceRole", proSeq.getSequenceRole());
-						sequenceObj.put("durationCount", proSeq.getDurationCount());
-						sequenceObj.put("createDate", proSeq.getCreateDate());
+						sequenceObj.put(ServiceProcessTerm.SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(ServiceProcessTerm.SEQUENCE_NAME, proSeq.getSequenceName());
+						sequenceObj.put(ServiceProcessTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put(ServiceProcessTerm.DURATION_COUNT, proSeq.getDurationCount());
+						sequenceObj.put(Field.CREATE_DATE, proSeq.getCreateDate());
 					}
 				}
 				String nextSequenceNo = sequenceArr[i + 1];
 				for (ProcessSequence proSeq : sequenceList) {
 					if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
-						sequenceObj.put("nextSequenceNo", proSeq.getSequenceNo());
-						sequenceObj.put("nextSequenceName", proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
 						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
-						sequenceObj.put("nextCreateDate", proSeq.getCreateDate());
+						sequenceObj.put(Field.CREATE_DATE, proSeq.getCreateDate());
 					}
 				}
 				jsonSequenceArr.put(sequenceObj);
@@ -458,15 +458,15 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					String formReport = dossierPart.getFormReport();
 					
 					Message message = new Message();
-					message.put("formReport", formReport);
-					message.put("formData", jsonData.toJSONString());
+					message.put(DeliverableTerm.FORM_REPORT, formReport);
+					message.put(DeliverableTerm.FORM_DATA, jsonData.toJSONString());
 
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
 						Date dateStart1 = new Date();
 						String previewResponse = (String) MessageBusUtil
-								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+								.sendSynchronousMessage(ConstantUtils.JASPER_DESTINATION, message, 10000);
 
 						if (Validator.isNotNull(previewResponse)) {
 						}
@@ -476,7 +476,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
-								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + "\"");
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + file.getName() + StringPool.QUOTE);
 						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_PDF));
 
 						Date dateEnd1 = new Date();

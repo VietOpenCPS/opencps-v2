@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -163,15 +164,6 @@ public class VotingActionsImpl implements VotingActions {
 		return ett;
 	}
 
-//	@Deprecated
-//	@Override
-//	public Voting getVoting(long votingId, ServiceContext serviceContext) {
-//
-//		Voting ett = VotingLocalServiceUtil.fetchVoting(votingId);
-//
-//		return ett;
-//	}
-
 	@Override
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
 			throws NotFoundException, NoSuchVotingException {
@@ -214,36 +206,6 @@ public class VotingActionsImpl implements VotingActions {
 		VotingResultLocalServiceUtil.deleteVoteResult(votingResultId, serviceContext);
 	}
 
-//	@Override
-//	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String comment,
-//			String selected, ServiceContext serviceContext)
-//			throws PortalException, SystemException {
-//
-//		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
-//
-//		if (Validator.isNull(voting)) {
-//			throw new NotFoundException();
-//		}
-//		User user = UserLocalServiceUtil.fetchUser(userId);
-//
-//		VotingResult votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId, votingId);
-//
-//		if (user != null) {
-//			if (Validator.isNotNull(votingResult)) {
-//
-//				votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId, votingResult.getVotingResultId(),
-//						votingId, user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
-//
-//			} else {
-//				// User user = UserLocalServiceUtil.
-//				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, votingId,
-//						user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
-//			}
-//		}
-//
-//		return votingResult;
-//	}
-
 	@Override
 	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String email,
 			String comment, String selected, ServiceContext serviceContext) throws PortalException, SystemException {
@@ -251,15 +213,11 @@ public class VotingActionsImpl implements VotingActions {
 		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
 		VotingResult votingResult = null;
 
-//		MBPermissionCheckerFactoryUtil.checkReadPermisson(
-//			voting.getClassName(), voting.getClassPK(), serviceContext);
-
 		if (voting != null) {
 			User user = UserLocalServiceUtil.fetchUser(userId);
 			if (user != null && !user.isDefaultUser()) {
 				// Check employee
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				// TODO check customer
 				if (employee != null) {
 					votingResult =
 						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
@@ -294,15 +252,6 @@ public class VotingActionsImpl implements VotingActions {
 				}
 			}
 			else {
-//				ResourceUser resourceUser =
-//					ResourceUserBusinessFactoryUtil.getResourceUserByEmail(
-//						groupId, voting.getClassName(), voting.getClassPK(), email);
-//				ResourceUser resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_email(groupId,
-//						voting.getClassName(), voting.getClassPK(), email);
-//				if (resourceUser == null) {
-//					throw new UnauthenticationException();
-//				}
-
 				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), StringPool.BLANK,
 						email, comment, selected, serviceContext);
 			}

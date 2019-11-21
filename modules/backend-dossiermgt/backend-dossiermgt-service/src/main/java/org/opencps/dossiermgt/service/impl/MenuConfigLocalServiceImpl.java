@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
-import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
+import org.opencps.dossiermgt.constants.MenuConfigTerm;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.base.MenuConfigLocalServiceBaseImpl;
 
@@ -59,8 +59,6 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public MenuConfig addMenuConfig(long userId, long groupId, String menuGroup, String menuName, Integer order,
 			Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon) throws PortalException {
-
-		validate(menuGroup, 0);
 
 		User user = userLocalService.getUser(userId);
 
@@ -96,8 +94,6 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	public MenuConfig updateMenuConfig(long menuConfigId, long userId, long groupId, String menuGroup, String menuName,
 			Integer order, Integer menuType, String queryParams, String tableConfig, String buttonConfig, String icon)
 			throws PortalException {
-
-		validate(menuGroup, menuConfigId);
 
 		User user = userLocalService.getUser(userId);
 
@@ -151,24 +147,6 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 	public MenuConfig getByCode(String menuGroup) {
 
 		return menuConfigPersistence.fetchByF_BY_menuGroup(menuGroup);
-
-	}
-
-	private void validate(String menuGroup, long menuConfigId) throws PortalException {
-
-		MenuConfig menuConfig = menuConfigPersistence.fetchByF_BY_menuGroup(menuGroup);
-
-		if (Validator.isNull(menuGroup)) {
-			throw new DuplicateActionCodeException("DuplicateStepCodeException");
-		}
-
-		if (Validator.isNotNull(menuConfig) && menuConfigId == 0) {
-			throw new DuplicateActionCodeException("DuplicateStepCodeException");
-		}
-
-		if (Validator.isNotNull(menuConfig) && menuConfig.getMenuConfigId() != menuConfigId) {
-			throw new DuplicateActionCodeException("DuplicateStepCodeException");
-		}
 
 	}
 
@@ -249,9 +227,9 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 
 		MenuConfig object = null;
 
-		if (objectData.getLong("menuConfigId") > 0) {
+		if (objectData.getLong(MenuConfigTerm.MENU_CONFIG_ID) > 0) {
 
-			object = menuConfigPersistence.fetchByPrimaryKey(objectData.getLong("menuConfigId"));
+			object = menuConfigPersistence.fetchByPrimaryKey(objectData.getLong(MenuConfigTerm.MENU_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -262,22 +240,22 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 			object = menuConfigPersistence.create(id);
 
 			object.setGroupId(objectData.getLong(Field.GROUP_ID));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setMenuGroup(objectData.getString("menuGroup"));
-		object.setMenuName(objectData.getString("menuName"));
-		object.setOrder(objectData.getInt("order"));
-		object.setMenuType(objectData.getInt("menuType"));
-		object.setQueryParams(objectData.getString("queryParams"));
-		object.setTableConfig(objectData.getString("tableConfig"));
-		object.setButtonConfig(objectData.getString("buttonConfig"));
-		object.setIcon(objectData.getString("icon"));
-		object.setViewScript(objectData.getString("viewScript"));
+		object.setMenuGroup(objectData.getString(MenuConfigTerm.MENU_GROUP));
+		object.setMenuName(objectData.getString(MenuConfigTerm.MENU_NAME));
+		object.setOrder(objectData.getInt(MenuConfigTerm.ORDER));
+		object.setMenuType(objectData.getInt(MenuConfigTerm.MENU_TYPE));
+		object.setQueryParams(objectData.getString(MenuConfigTerm.QUERY_PARAMS));
+		object.setTableConfig(objectData.getString(MenuConfigTerm.TABLE_CONFIG));
+		object.setButtonConfig(objectData.getString(MenuConfigTerm.BUTTON_CONFIG));
+		object.setIcon(objectData.getString(MenuConfigTerm.ICON));
+		object.setViewScript(objectData.getString(MenuConfigTerm.VIEW_SCRIPT));
 
 		menuConfigPersistence.update(object);
 
