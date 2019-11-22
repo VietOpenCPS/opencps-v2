@@ -150,6 +150,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	public static final long MAPPINGUSERID_COLUMN_BITMASK = 32L;
 	public static final long USERID_COLUMN_BITMASK = 64L;
 	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long WORKINGSTATUS_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Employee"));
 
@@ -687,7 +688,19 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 	@Override
 	public void setWorkingStatus(int workingStatus) {
+		_columnBitmask |= WORKINGSTATUS_COLUMN_BITMASK;
+
+		if (!_setOriginalWorkingStatus) {
+			_setOriginalWorkingStatus = true;
+
+			_originalWorkingStatus = _workingStatus;
+		}
+
 		_workingStatus = workingStatus;
+	}
+
+	public int getOriginalWorkingStatus() {
+		return _originalWorkingStatus;
 	}
 
 	@Override
@@ -964,6 +977,10 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		employeeModelImpl._originalEmployeeNo = employeeModelImpl._employeeNo;
 
 		employeeModelImpl._originalEmail = employeeModelImpl._email;
+
+		employeeModelImpl._originalWorkingStatus = employeeModelImpl._workingStatus;
+
+		employeeModelImpl._setOriginalWorkingStatus = false;
 
 		employeeModelImpl._originalMappingUserId = employeeModelImpl._mappingUserId;
 
@@ -1338,6 +1355,8 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	private String _email;
 	private String _originalEmail;
 	private int _workingStatus;
+	private int _originalWorkingStatus;
+	private boolean _setOriginalWorkingStatus;
 	private long _mappingUserId;
 	private long _originalMappingUserId;
 	private boolean _setOriginalMappingUserId;

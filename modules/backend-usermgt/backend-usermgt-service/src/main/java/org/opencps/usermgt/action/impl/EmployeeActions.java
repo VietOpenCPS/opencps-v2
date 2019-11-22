@@ -889,6 +889,11 @@ public class EmployeeActions implements EmployeeInterface {
 									userId, groupId, employee.getEmployeeId(), jobPosId, 0, serviceContext);
 						}
 					}
+					if (i == 0) {
+						JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
+						employee.setMainJobPostId(job.getJobPosId());
+						EmployeeLocalServiceUtil.updateEmployee(employee);
+					}
 				}
 			}
 		} else {

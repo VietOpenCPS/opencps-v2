@@ -20,7 +20,7 @@ create index IX_FFD92AB0 on opencps_employee (groupId, employeeId);
 create index IX_FFDB99D6 on opencps_employee (groupId, employeeNo[$COLUMN_LENGTH:75$]);
 create index IX_11A42D71 on opencps_employee (groupId, mappingUserId);
 create index IX_24724BCD on opencps_employee (groupId, userId);
-create index IX_48E4AB8D on opencps_employee (mappingUserId);
+create index IX_4BDCCB46 on opencps_employee (mappingUserId, workingStatus);
 create index IX_7941D62B on opencps_employee (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_370FEB6D on opencps_employee (uuid_[$COLUMN_LENGTH:75$], groupId);
 

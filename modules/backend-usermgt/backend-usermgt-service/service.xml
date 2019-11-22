@@ -177,6 +177,11 @@
 			<finder-column name="groupId"></finder-column>
             <finder-column name="employeeId" comparator="=" arrayable-operator="OR"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="F_EMP_WORK">
+			<finder-column name="mappingUserId" comparator="&gt;"></finder-column>
+			<finder-column name="workingStatus" comparator="="></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"
@@ -655,6 +660,8 @@
 		<column name="email" type="String" />
 		<column name="content" type="String" />
 		<column name="publish" type="int" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="questionType" type="String" />

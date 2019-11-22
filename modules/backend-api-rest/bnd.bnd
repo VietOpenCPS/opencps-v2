@@ -33,4 +33,5 @@ Export-Package: \
 	com.fasterxml.jackson.databind,\
 	javax.validation.constraints,\
 	vn.gov.ngsp.DKDN.GTVT.*,\
-	com.google.gson.*
+	com.google.gson.*,\
+	org.mariadb.jdbc.*

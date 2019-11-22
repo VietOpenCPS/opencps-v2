@@ -172,6 +172,8 @@ create table opencps_question (
 	email VARCHAR(255) null,
 	content TEXT null,
 	publish INTEGER,
+	domainCode VARCHAR(75) null,
+	domainName VARCHAR(75) null,
 	govAgencyCode VARCHAR(75) null,
 	govAgencyName VARCHAR(75) null,
 	questionType VARCHAR(75) null,

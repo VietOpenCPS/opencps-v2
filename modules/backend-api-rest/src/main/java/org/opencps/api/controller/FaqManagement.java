@@ -1,3 +1,4 @@
+
 package org.opencps.api.controller;
 
 import com.liferay.portal.kernel.model.Company;
@@ -41,188 +42,308 @@ import io.swagger.annotations.ApiResponses;
 @Path("/faq")
 @Api(value = "/faq", tags = "faq")
 public interface FaqManagement {
+
 	@POST
 	@Path("/proxy")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Proxy a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response proxyQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext, @FormParam("url") String url, @FormParam("method") String method, @FormParam("data") String data);
-	
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response proxyQuestion(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @FormParam("url") String url,
+		@FormParam("method") String method, @FormParam("data") String data);
+
 	@POST
 	@Path("/questions")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response addQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@BeanParam QuestionInputModel input, @FormParam("j_captcha_response") String jCaptchaResponse);
-	
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response addQuestion(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@BeanParam QuestionInputModel input,
+		@FormParam("j_captcha_response") String jCaptchaResponse);
+
 	@GET
 	@Path("/questions")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Get all questions", response = QuestionResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response getQuestions(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
-			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword, @QueryParam("questionType") String questionType,
-			@QueryParam("answered") String answer, @QueryParam("subDomainCode") String subDomainCode,
-			@Context ServiceContext serviceContext);
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response getQuestions(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@QueryParam("start") Integer start, @QueryParam("end") Integer end,
+		@QueryParam("publish") Integer publish,
+		@QueryParam("domainCode") String domainCode,
+		@QueryParam("govAgencyCode") String govAgencyCode,
+		@QueryParam("keyword") String keyword,
+		@QueryParam("questionType") String questionType,
+		@QueryParam("answered") String answer,
+		@QueryParam("subDomainCode") String subDomainCode,
+		@Context ServiceContext serviceContext);
 
 	@PUT
 	@Path("/questions/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response updateQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id,
-			@BeanParam QuestionInputModel input);
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response updateQuestion(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") String id,
+		@BeanParam QuestionInputModel input);
 
 	@DELETE
 	@Path("/questions/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response deleteQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id);
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response deleteQuestion(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") String id);
 
 	@OPTIONS
 	@Path("/questions/{id}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response detailQuestion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") String id);
-	
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response detailQuestion(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") String id);
+
 	@POST
 	@Path("/questions/{id}/answers")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a answer", response = AnswerDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a answer was created", response = AnswerDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response addAnswer(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("id") long questionId,
-			@BeanParam AnswerInputModel input);	
-	
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a answer was created", response = AnswerDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response addAnswer(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@PathParam("id") long questionId, @BeanParam AnswerInputModel input);
+
 	@OPTIONS
 	@Path("/questions/{id}/answers")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Get all answers", response = AnswerResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response optionAnswers(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@PathParam("id") long questionId,
-			@QueryParam("start") Integer start,
-			@QueryParam("end") Integer end,
-			@QueryParam("publish") Integer publish,
-			@Context ServiceContext serviceContext);
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response optionAnswers(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@PathParam("id") long questionId, @QueryParam("start") Integer start,
+		@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
+		@Context ServiceContext serviceContext);
 
 	@GET
 	@Path("/questions/{id}/answers")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Get all answers", response = AnswerResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response getAnswers(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@PathParam("id") long questionId,
-			@QueryParam("start") Integer start,
-			@QueryParam("end") Integer end,
-			@QueryParam("publish") Integer publish,
-			@Context ServiceContext serviceContext);
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response getAnswers(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@PathParam("id") long questionId, @QueryParam("start") Integer start,
+		@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
+		@Context ServiceContext serviceContext);
 
 	@PUT
 	@Path("/questions/{questionId}/answers/{answerId}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response updateAnswers(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("questionId") long questionId, @PathParam("answerId") long answerId,
-			@BeanParam AnswerInputModel input);
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response updateAnswers(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@PathParam("questionId") long questionId,
+		@PathParam("answerId") long answerId,
+		@BeanParam AnswerInputModel input);
 
 	@DELETE
 	@Path("/questions/{questionId}/answers/{answerId}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response deleteAnswers(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("questionId") long questionId, @PathParam("answerId") long answerId);
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response deleteAnswers(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@PathParam("questionId") long questionId,
+		@PathParam("answerId") long answerId);
 
 	@OPTIONS
 	@Path("/questions/{questionId}/answers/{answerId}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Add a question", response = QuestionDetailModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response optionsDetailAnswers(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
-			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@PathParam("questionId") long questionId, @PathParam("answerId") long answerId);
-	
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response optionsDetailAnswers(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@PathParam("questionId") long questionId,
+		@PathParam("answerId") long answerId);
+
 	@OPTIONS
 	@Path("/questions")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@ApiOperation(value = "Get all questions", response = QuestionResultsModel.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-	public Response optionQuestions(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end, @QueryParam("publish") Integer publish,
-			@QueryParam("govAgencyCode") String govAgencyCode, @QueryParam("keyword") String keyword, @QueryParam("questionType") String questionType,
-			@QueryParam("answered") String answer, @QueryParam("subDomainCode") String subDomainCode,
-			@Context ServiceContext serviceContext);	
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response optionQuestions(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@QueryParam("start") Integer start, @QueryParam("end") Integer end,
+		@QueryParam("publish") Integer publish,
+		@QueryParam("govAgencyCode") String govAgencyCode,
+		@QueryParam("keyword") String keyword,
+		@QueryParam("questionType") String questionType,
+		@QueryParam("answered") String answer,
+		@QueryParam("subDomainCode") String subDomainCode,
+		@Context ServiceContext serviceContext);
 }
