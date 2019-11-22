@@ -391,6 +391,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
 			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException {
 		
+		System.out.println("applicantIdNo: "+applicantIdNo);
+		System.out.println("applicantName: "+applicantName);
+		System.out.println("applicantIdType: "+applicantIdType);
+		System.out.println("applicantIdDate: "+applicantIdDate);
+		System.out.println("contactEmail: "+contactEmail);
+		System.out.println("contactTelNo: "+contactTelNo);
+		System.out.println("address: "+address);
 		// Check exits applicantIdNo
 		int flagUser = 0;
 		if (Validator.isNotNull(applicantIdNo)) {
@@ -428,6 +435,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 			}
 			
+			System.out.println("flagUser: "+flagUser);
 			//Process update applicant and user
 			if (flagUser == 0) {
 				//Add applicant and user

@@ -6799,6 +6799,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
+		System.out.println("START IMPORT APPLICANT");
 		try {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
