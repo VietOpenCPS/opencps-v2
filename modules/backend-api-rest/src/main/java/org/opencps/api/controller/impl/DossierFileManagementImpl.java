@@ -920,7 +920,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
-						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+						.entity("File attach error format!").build();
 			}
 
 			fileInputStream = dataHandle.getInputStream();
