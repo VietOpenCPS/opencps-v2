@@ -625,7 +625,7 @@ public class DefaultSignatureManagementImpl
 								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 								String deliState = String.valueOf(
 									deliverable.getDeliverableState());
-								if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								if (formData.has("expertState")){
 									
 									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 									DeliverableLocalServiceUtil.updateDeliverable(
@@ -792,7 +792,7 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+							if (formData.has("expertState")){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 								DeliverableLocalServiceUtil.updateDeliverable(
@@ -877,7 +877,7 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+							if (formData.has("expertState")){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 								DeliverableLocalServiceUtil.updateDeliverable(
@@ -1026,7 +1026,7 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+							if (formData.has("expertState")){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 								DeliverableLocalServiceUtil.updateDeliverable(
@@ -1116,7 +1116,7 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+							if (formData.has("expertState")){
 								
 								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 								DeliverableLocalServiceUtil.updateDeliverable(
@@ -1266,7 +1266,7 @@ public class DefaultSignatureManagementImpl
 								deliverable.getDeliverableState());
 							if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
 								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
-								if (formData.has("expertState") && !deliState.equals(formData.getString("expertState")) ){
+								if (formData.has("expertState")){
 									
 									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
 									DeliverableLocalServiceUtil.updateDeliverable(
