@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,7 @@ public class OpenCPSAPIParsing {
 						if (menuConfig.getGroupId() == groupId && menuConfig.getMenuType() > 0) {
 							MenuConfigItem menuConfigItem = mappingMenuConfigItem(menuConfig);
 							MenuConfigStepsItem menuConfigStepsItem;
-							List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<>();
+							List<MenuConfigStepsItem> menuConfigStepsItems = new ArrayList<MenuConfigStepsItem>();
 							
 							for (StepConfig stepConfig : lstSteps) {
 								if (menuConfig.getMenuGroup().trim().equals(stepConfig.getMenuGroup().trim())) {
@@ -251,7 +252,14 @@ public class OpenCPSAPIParsing {
 		menuConfigItem.setButtonConfig(menuConfig.getButtonConfig());
 		menuConfigItem.setTableConfig(menuConfig.getTableConfig());
 		menuConfigItem.setIcon(menuConfig.getIcon());
-		
+
+		String viewText = menuConfig.getViewScript();
+		boolean hasViewText = false;
+		if (Validator.isNotNull(viewText)) {
+			hasViewText = true;
+		}
+		menuConfigItem.setHasViewText(hasViewText);
+
 		return menuConfigItem;
 	}
 	
