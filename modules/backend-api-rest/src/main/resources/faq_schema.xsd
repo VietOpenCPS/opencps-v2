@@ -11,6 +11,8 @@
 				<xsd:element name="content" type="xsd:string" />
 				<xsd:element name="publish" type="xsd:int" />
 				<xsd:element name="questionType" type="xsd:string" />
+				<xsd:element name="domainCode" type="xsd:string" />
+				<xsd:element name="domainName" type="xsd:string" />
 				<xsd:element name="govAgencyCode" type="xsd:string" />
 				<xsd:element name="govAgencyName" type="xsd:string" />
 				<xsd:element name="subDomainCode" type="xsd:string" />
@@ -28,6 +30,8 @@
 			<xsd:element name="content" type="xsd:string" />
 			<xsd:element name="publish" type="xsd:int" />
 			<xsd:element name="questionType" type="xsd:string" />
+			<xsd:element name="domainCode" type="xsd:string" />
+			<xsd:element name="domainName" type="xsd:string" />
 			<xsd:element name="govAgencyCode" type="xsd:string" />
 			<xsd:element name="govAgencyName" type="xsd:string" />
 			<xsd:element name="answered" type="xsd:boolean"></xsd:element>
@@ -44,6 +48,8 @@
 				<xsd:element name="content" type="xsd:string" />
 				<xsd:element name="publish" type="xsd:int" />
 				<xsd:element name="questionType" type="xsd:string" />
+				<xsd:element name="domainCode" type="xsd:string" />
+				<xsd:element name="domainName" type="xsd:string" />
 				<xsd:element name="govAgencyCode" type="xsd:string" />
 				<xsd:element name="govAgencyName" type="xsd:string" />
 				<xsd:element name="subDomainCode" type="xsd:string" />

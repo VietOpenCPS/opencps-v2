@@ -48,6 +48,8 @@ import javax.xml.bind.annotation.XmlType;
     "content",
     "publish",
     "questionType",
+    "domainCode",
+    "domainName",
     "govAgencyCode",
     "govAgencyName",
     "subDomainCode",
@@ -67,6 +69,10 @@ public class QuestionInputModel {
     protected String content;
     @FormParam("publish")
     protected int publish;
+    @FormParam("domainCode")
+    protected String domainCode;
+    @FormParam("domainName")
+    protected String domainName;
     @FormParam("govAgencyCode")
     protected String govAgencyCode;
     @FormParam("govAgencyName")
@@ -191,6 +197,41 @@ public class QuestionInputModel {
         this.questionType = value;
     }
 
+    /**
+     * Gets the value of the domainCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDomainCode() {
+        return domainCode;
+    }
+
+    /**
+     * Sets the value of the domainCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDomainCode(String value) {
+        this.domainCode = value;
+    }
+
+    /**
+     * Gets the value of the domainName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDomainName() {
+        return domainName;
+    }
     /**
      * Gets the value of the govAgencyCode property.
      * 

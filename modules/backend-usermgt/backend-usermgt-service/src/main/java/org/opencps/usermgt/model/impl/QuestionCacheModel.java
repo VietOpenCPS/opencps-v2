@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -84,6 +84,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(content);
 		sb.append(", publish=");
 		sb.append(publish);
+		sb.append(", domainCode=");
+		sb.append(domainCode);
+		sb.append(", domainName=");
+		sb.append(domainName);
 		sb.append(", govAgencyCode=");
 		sb.append(govAgencyCode);
 		sb.append(", govAgencyName=");
@@ -144,6 +148,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 		questionImpl.setPublish(publish);
 
+		if (domainCode == null) {
+			questionImpl.setDomainCode("");
+		}
+		else {
+			questionImpl.setDomainCode(domainCode);
+		}
+
+		if (domainName == null) {
+			questionImpl.setDomainName("");
+		}
+		else {
+			questionImpl.setDomainName(domainName);
+		}
+
 		if (govAgencyCode == null) {
 			questionImpl.setGovAgencyCode("");
 		}
@@ -198,6 +216,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		content = objectInput.readUTF();
 
 		publish = objectInput.readInt();
+		domainCode = objectInput.readUTF();
+		domainName = objectInput.readUTF();
 		govAgencyCode = objectInput.readUTF();
 		govAgencyName = objectInput.readUTF();
 		questionType = objectInput.readUTF();
@@ -238,6 +258,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		}
 
 		objectOutput.writeInt(publish);
+
+		if (domainCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(domainCode);
+		}
+
+		if (domainName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(domainName);
+		}
 
 		if (govAgencyCode == null) {
 			objectOutput.writeUTF("");
@@ -284,6 +318,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String email;
 	public String content;
 	public int publish;
+	public String domainCode;
+	public String domainName;
 	public String govAgencyCode;
 	public String govAgencyName;
 	public String questionType;

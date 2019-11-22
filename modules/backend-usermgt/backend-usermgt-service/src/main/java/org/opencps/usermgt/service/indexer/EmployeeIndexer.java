@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -115,25 +116,36 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 			
 		}
 
+		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
+		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);
+		
 		JobPos jobPos = Validator.isNotNull(employeeJobPos)
 				? JobPosLocalServiceUtil.fetchJobPos(employeeJobPos.getJobPostId())
 				: null;
 		String jobPosTitle = jobPos != null ? jobPos.getTitle():StringPool.BLANK;
 		String jobPosCode = jobPos != null ? jobPos.getJobPosCode():StringPool.BLANK;
-		
-		document.addTextSortable(EmployeeTerm.WORKING_UNIT_NAME, workingUnitName);
-		document.addNumberSortable(EmployeeTerm.WORKING_UNIT_ID, workingUnitId);
-		
-		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
 
+		document.addTextSortable(EmployeeTerm.JOB_POS_TITLE, jobPosTitle);
 		document.addTextSortable(EmployeeTerm.JOB_POS_CODE, jobPosCode);
-		if (Validator.isNotNull(jobPosCode)) {
-			String jobPosCodeSearch = splitSpecial(jobPosCode);
-			document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
+		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, employee.getMainJobPostId());
+
+//		jobpos search: have to search any jobpos in roles
+//		if (Validator.isNotNull(jobPosCode)) {
+//			String jobPosCodeSearch = splitSpecial(jobPosCode);
+//			document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
+//		}
+
+		// TODO: index all jobpos
+		List<EmployeeJobPos> empJobPosList =
+						EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employee.getEmployeeId());
+		String jobPosCodeSearch = StringPool.BLANK;
+		for (EmployeeJobPos empJobPos : empJobPosList) {
+			JobPos j = JobPosLocalServiceUtil.fetchJobPos(empJobPos.getJobPostId());
+			jobPosCodeSearch += splitSpecial(j.getJobPosCode()) + StringPool.SPACE;
 		}
 
-		document.addNumberSortable(EmployeeTerm.JOB_POS_ID, employee.getMainJobPostId());
-		
+		document.addTextSortable(EmployeeTerm.JOB_POS_CODE_SEARCH, jobPosCodeSearch);
+
 		Calendar cal = Calendar.getInstance();
 
 		if (Validator.isNotNull(employee.getBirthdate())) {

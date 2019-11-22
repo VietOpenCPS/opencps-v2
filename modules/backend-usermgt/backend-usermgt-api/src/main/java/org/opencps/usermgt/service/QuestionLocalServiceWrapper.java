@@ -52,10 +52,11 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 
 	@Override
 	public int countByQuerySearch(long groupId, String keyword,
-		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer, String subDomainCode) {
+		String domainCode, String govAgencyCode, Integer publish,
+		String questionType, Boolean answer, String subDomainCode) {
 		return _questionLocalService.countByQuerySearch(groupId, keyword,
-			govAgencyCode, publish, questionType, answer, subDomainCode);
+			domainCode, govAgencyCode, publish, questionType, answer,
+			subDomainCode);
 	}
 
 	/**
@@ -201,12 +202,12 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 
 	@Override
 	public java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
-		long groupId, String keyword, String govAgencyCode, Integer publish,
-		String questionType, Boolean answer, String subDomainCode, int start,
-		int limit) {
+		long groupId, String keyword, String domainCode, String govAgencyCode,
+		Integer publish, String questionType, Boolean answer,
+		String subDomainCode, int start, int limit) {
 		return _questionLocalService.findByQuerySearch(groupId, keyword,
-			govAgencyCode, publish, questionType, answer, subDomainCode, start,
-			limit);
+			domainCode, govAgencyCode, publish, questionType, answer,
+			subDomainCode, start, limit);
 	}
 
 	@Override
@@ -279,12 +280,13 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 	@Override
 	public org.opencps.usermgt.model.Question updateQuestion(long companyId,
 		long groupId, long questionId, String fullname, String email,
-		String content, int publish, String govAgencyCode,
-		String govAgencyName, String questionType, String subDomainCode,
-		String subDomainName) {
+		String content, int publish, String domainCode, String domainName,
+		String govAgencyCode, String govAgencyName, String questionType,
+		String subDomainCode, String subDomainName) {
 		return _questionLocalService.updateQuestion(companyId, groupId,
-			questionId, fullname, email, content, publish, govAgencyCode,
-			govAgencyName, questionType, subDomainCode, subDomainName);
+			questionId, fullname, email, content, publish, domainCode,
+			domainName, govAgencyCode, govAgencyName, questionType,
+			subDomainCode, subDomainName);
 	}
 
 	/**

@@ -242,6 +242,8 @@
 			<hint name="max-length">32767</hint>
 		</field>
 		<field name="publish" type="int" />
+		<field name="domainCode" type="String" />
+		<field name="domainName" type="String" />
 		<field name="govAgencyCode" type="String" />
 		<field name="govAgencyName" type="String" />
 		<field name="questionType" type="String" />
