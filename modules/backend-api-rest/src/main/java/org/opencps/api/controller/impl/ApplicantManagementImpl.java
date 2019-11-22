@@ -149,7 +149,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	}
 	
-	private static String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
+	private static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 
 	Log _log = LogFactoryUtil.getLog(ApplicantManagementImpl.class);
 

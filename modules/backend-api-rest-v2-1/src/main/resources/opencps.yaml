@@ -283,6 +283,35 @@ paths:
           description: Tham số truyền vào không hợp lệ
         404:
           description: MenuConfig không tồn tại trong hệ thống
+  /menuconfigs/{id}/script:
+    get:
+      tags:
+      - MenuConfig
+      summary: Lấy chi tiết các định nghĩa cấu hình menu theo id
+      operationId: getScriptByConfigId
+      description: Lấy chi tiết script các định nghĩa cấu hình menu
+      consumes:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      - application/x-www-form-urlencoded
+      parameters:
+      - name: id
+        in: path
+        description: id của MenuConfig
+        required: true
+        type: string
+      responses:
+        200:
+          description: Lấy menu thành công
+          schema:
+            type: "string"
+            example: script value
+        400:
+          description: Tham số truyền vào không hợp lệ
   /menuconfigs/todo:
     get:
       tags:
@@ -1014,6 +1043,9 @@ definitions:
       icon:
         type: string
         example: 'icon'
+      hasViewText:
+        type: boolean
+        example: 'hasViewText'
       steps:
         type: array
         items:

@@ -60,6 +60,12 @@ public class MenuConfigApiServiceImpl implements MenuConfigApi {
         
         return null;
     }
+
+	@Override
+	public String getScriptByConfigId(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 }
 

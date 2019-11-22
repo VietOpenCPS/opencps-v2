@@ -120,7 +120,8 @@ import javax.xml.bind.annotation.XmlType;
     "delegateType",
     "documentNo",
     "documentDate",
-    "systemId"
+    "systemId",
+    "viapostal"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -250,6 +251,16 @@ public class DossierSearchModel {
     protected String documentNo;
     @QueryParam(value = "systemId")
     protected String systemId;
+    @QueryParam(value = "viapostal")
+    protected Integer viapostal;
+
+	public Integer getViapostal() {
+		return viapostal;
+	}
+
+	public void setViapostal(Integer viapostal) {
+		this.viapostal = viapostal;
+	}
 
 	public String getSystemId() {
 		return systemId;

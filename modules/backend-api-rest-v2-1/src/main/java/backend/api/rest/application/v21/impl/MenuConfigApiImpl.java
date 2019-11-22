@@ -166,4 +166,23 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 		return body;
 	}
 
+	@Override
+	public String getScriptByConfigId(String id) {
+
+		long menuConfigId = GetterUtil.getLong(id);
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		MenuConfig menu = null;
+		if (menuConfigId > 0) {
+			menu = MenuConfigLocalServiceUtil.fetchMenuConfig(menuConfigId);
+		} else {
+			menu = MenuConfigLocalServiceUtil.getByG_MENU(groupId, id);
+		}
+		
+		if (menu != null) {
+			return menu.getViewScript();
+		}
+		
+		return "";
+	}
+
 }
