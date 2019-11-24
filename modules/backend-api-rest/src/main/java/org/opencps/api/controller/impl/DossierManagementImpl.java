@@ -6895,8 +6895,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
+				"jdbc:mariadb://10.21.201.63:3306/dvc_opencps", "dvc_user",
+				"dvc_user@2019!@#$");
 			// here sonoo is database name, root is username and password
 			String query = "select * from thanhnv_dossier_mapped_done";
 			if (groupId > 0) {
@@ -6986,8 +6986,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
+				"jdbc:mariadb://10.21.201.63:3306/dvc_opencps", "dvc_user",
+				"dvc_user@2019!@#$");
 			// here sonoo is database name, root is username and password
 			stmt = con.createStatement();
 			String query = "select * from thanhnv_dossierPart_mapped_done2";
