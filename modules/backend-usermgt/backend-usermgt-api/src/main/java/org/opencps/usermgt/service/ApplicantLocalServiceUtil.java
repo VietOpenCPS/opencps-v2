@@ -370,6 +370,22 @@ public class ApplicantLocalServiceUtil {
 	}
 
 	public static org.opencps.usermgt.model.Applicant importApplicationDB(
+		long groupId, long userId, long applicantId, long mappingUserId,
+		String applicantIdNo, String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .importApplicationDB(groupId, userId, applicantId,
+			mappingUserId, applicantIdNo, applicantName, applicantIdType,
+			applicantIdDate, contactEmail, contactTelNo, address, cityCode,
+			cityName, districtCode, districtName, wardCode, wardName, context);
+	}
+
+	public static org.opencps.usermgt.model.Applicant importApplicationDB(
 		long groupId, long userId, long applicantId, String applicantIdNo,
 		String applicantName, String applicantIdType,
 		java.util.Date applicantIdDate, String contactEmail,

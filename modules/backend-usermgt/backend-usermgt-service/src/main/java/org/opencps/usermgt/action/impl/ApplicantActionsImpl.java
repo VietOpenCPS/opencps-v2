@@ -391,13 +391,6 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
 			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException {
 		
-		System.out.println("applicantIdNo: "+applicantIdNo);
-		System.out.println("applicantName: "+applicantName);
-		System.out.println("applicantIdType: "+applicantIdType);
-		System.out.println("applicantIdDate: "+applicantIdDate);
-		System.out.println("contactEmail: "+contactEmail);
-		System.out.println("contactTelNo: "+contactTelNo);
-		System.out.println("address: "+address);
 		// Check exits applicantIdNo
 		int flagUser = 0;
 		if (Validator.isNotNull(applicantIdNo)) {
@@ -417,6 +410,16 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
 					if (flagUser == 2) break;
 				}
+			}
+		}
+
+		// Check exits contactEmail
+		long mappingUserId = 0;
+		if (flagUser != 2 && flagUser != 1 && Validator.isNotNull(contactEmail)) {
+			User appUser = UserLocalServiceUtil.fetchUserByEmailAddress(serviceContext.getCompanyId(), contactEmail);
+			if (appUser != null) {
+				flagUser = 3;
+				mappingUserId = appUser.getUserId();
 			}
 		}
 
@@ -525,6 +528,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
+			} else if (flagUser == 3) {
+				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
+						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, serviceContext);
+				//
+				//Add applicant search
+				ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
+						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 			}
 		}
 	}

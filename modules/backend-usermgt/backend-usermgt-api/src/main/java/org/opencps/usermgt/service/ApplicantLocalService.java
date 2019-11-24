@@ -322,6 +322,15 @@ public interface ApplicantLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Applicant importApplicationDB(long groupId, long userId,
+		long applicantId, long mappingUserId, String applicantIdNo,
+		String applicantName, String applicantIdType, Date applicantIdDate,
+		String contactEmail, String contactTelNo, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		ServiceContext context) throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant importApplicationDB(long groupId, long userId,
 		long applicantId, String applicantIdNo, String applicantName,
 		String applicantIdType, Date applicantIdDate, String contactEmail,
 		String contactTelNo, String address, String cityCode, String cityName,
