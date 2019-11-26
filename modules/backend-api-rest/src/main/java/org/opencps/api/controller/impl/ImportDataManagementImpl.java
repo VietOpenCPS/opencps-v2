@@ -1,3 +1,4 @@
+
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
@@ -89,19 +90,24 @@ import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
-public class ImportDataManagementImpl implements ImportDataManagement{
+public class ImportDataManagementImpl implements ImportDataManagement {
 
-	private static final Log _log = LogFactoryUtil.getLog(ImportDataManagementImpl.class);
+	private static final Log _log =
+		LogFactoryUtil.getLog(ImportDataManagementImpl.class);
+
 	@Override
-	public Response addDossierFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String referenceUid,
-			String dossierTemplateNo, String dossierPartNo, String dossierPartType, String fileTemplateNo,
-			String displayName, String fileType, String isSync) {
+	public Response addDossierFileByDossierId(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		Attachment file, String id, String referenceUid,
+		String dossierTemplateNo, String dossierPartNo, String dossierPartType,
+		String fileTemplateNo, String displayName, String fileType,
+		String isSync) {
 
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		_log.info("START CREATE DOSSIER FILE: "+groupId);
+		_log.info("START CREATE DOSSIER FILE: " + groupId);
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -109,7 +115,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 			}
 
 			long dossierId = GetterUtil.getLong(id);
-			_log.info("dossierId: "+dossierId);
+			_log.info("dossierId: " + dossierId);
 			Dossier dossier = null;
 
 			if (dossierId != 0) {
@@ -117,93 +123,112 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				if (Validator.isNull(dossier)) {
 					dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 				}
-			} else {
+			}
+			else {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 
-			DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
+			DataHandler dataHandler =
+				(file != null) ? file.getDataHandler() : null;
 			DossierFileActions action = new DossierFileActionsImpl();
 
+			// List<DossierPart> lstParts =
+			// DossierPartLocalServiceUtil.getByTemplateNo(groupId,
+			// dossier.getDossierTemplateNo());
+			// for (DossierPart dp : lstParts) {
+			// if (dp.getPartNo().equals(dossierPartNo)) {
+			// fileTemplateNo = dp.getFileTemplateNo();
+			// dossierTemplateNo = dossier.getDossierTemplateNo();
+			// }
+			// }
 
-			//List<DossierPart> lstParts = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossier.getDossierTemplateNo());
-//			for (DossierPart dp : lstParts) {
-//				if (dp.getPartNo().equals(dossierPartNo)) {
-//					fileTemplateNo = dp.getFileTemplateNo();
-//					dossierTemplateNo = dossier.getDossierTemplateNo();
-//				}
-//			}
-			
 			DossierFile oldDossierFile = null;
-			if (Validator.isNotNull(dossierPartNo) && Validator.isNotNull(dossierPartType) && Validator.isNotNull(displayName)) {
-				oldDossierFile = DossierFileLocalServiceUtil.getByG_DID_PART_NAME(groupId, dossierId, dossierPartNo,
+			if (Validator.isNotNull(dossierPartNo) &&
+				Validator.isNotNull(dossierPartType) &&
+				Validator.isNotNull(displayName)) {
+				oldDossierFile =
+					DossierFileLocalServiceUtil.getByG_DID_PART_NAME(
+						groupId, dossierId, dossierPartNo,
 						GetterUtil.getInteger(dossierPartType), displayName);
 			}
-				if (oldDossierFile != null) {
-					_log.info("__Start update file at:" + new Date());
-					DossierFile dossierFile =  null;
-					
-					if (dataHandler != null && dataHandler.getInputStream() != null) {
-						dossierFile = action.updateDossierFile(groupId, 
-								dossier.getDossierId(), 
-								oldDossierFile.getReferenceUid(), 
-								displayName, 
-								dataHandler.getInputStream(), serviceContext);
-					} else {
-						dossierFile = action.updateDossierFile(groupId, 
-								dossier.getDossierId(), 
-								oldDossierFile.getReferenceUid(), 
-								displayName, 
-								null, serviceContext);
-					}
-					_log.info("__End update file at:" + new Date());
-					
-					dossierFile.setRemoved(false);
-					_log.info("__Start update dossier file at:" + new Date());
-					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-					_log.info("__End update dossier file at:" + new Date());
+			if (oldDossierFile != null) {
+				_log.info("__Start update file at:" + new Date());
+				DossierFile dossierFile = null;
 
-					DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
-					
-					_log.info("__End bind to dossierFile" + new Date());
-
-					return Response.status(200).entity(result).build();
+				if (dataHandler != null &&
+					dataHandler.getInputStream() != null) {
+					dossierFile = action.updateDossierFile(
+						groupId, dossier.getDossierId(),
+						oldDossierFile.getReferenceUid(), displayName,
+						dataHandler.getInputStream(), serviceContext);
 				}
 				else {
-					_log.info("__Start add file at:" + new Date());
-					DossierFile dossierFile =  null;
-					
-					if (dataHandler != null && dataHandler.getInputStream() != null) {
-						dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-								dossierPartNo, fileTemplateNo, displayName, dataHandler.getName(), 0,
-								dataHandler.getInputStream(), fileType, isSync, serviceContext);
-					} else {
-						dossierFile = action.addDossierFile(groupId, dossier.getDossierId(), referenceUid, dossierTemplateNo,
-								dossierPartNo, fileTemplateNo, displayName, displayName, 0, null, fileType, isSync,
-								serviceContext);
-					}
-					
-					_log.info("__End add file at:" + new Date());
-					dossierFile.setRemoved(false);
-					_log.info("__Start update dossier file at:" + new Date());
-		
-					DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
-		
-					_log.info("__End update dossier file at:" + new Date());
-		
-					DossierFileModel result = DossierFileUtils.mappingToDossierFileModel(dossierFile);
-					
-					_log.info("__End bind to dossierFile" + new Date());
-		
-					return Response.status(200).entity(result).build();
+					dossierFile = action.updateDossierFile(
+						groupId, dossier.getDossierId(),
+						oldDossierFile.getReferenceUid(), displayName, null,
+						serviceContext);
 				}
-		} catch (Exception e) {
+				_log.info("__End update file at:" + new Date());
+
+				dossierFile.setRemoved(false);
+				_log.info("__Start update dossier file at:" + new Date());
+				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+				_log.info("__End update dossier file at:" + new Date());
+
+				DossierFileModel result =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+				_log.info("__End bind to dossierFile" + new Date());
+
+				return Response.status(200).entity(result).build();
+			}
+			else {
+				_log.info("__Start add file at:" + new Date());
+				DossierFile dossierFile = null;
+
+				if (dataHandler != null &&
+					dataHandler.getInputStream() != null) {
+					dossierFile = action.addDossierFile(
+						groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo,
+						displayName, dataHandler.getName(), 0,
+						dataHandler.getInputStream(), fileType, isSync,
+						serviceContext);
+				}
+				else {
+					dossierFile = action.addDossierFile(
+						groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo,
+						displayName, displayName, 0, null, fileType, isSync,
+						serviceContext);
+				}
+
+				_log.info("__End add file at:" + new Date());
+				dossierFile.setRemoved(false);
+				_log.info("__Start update dossier file at:" + new Date());
+
+				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+
+				_log.info("__End update dossier file at:" + new Date());
+
+				DossierFileModel result =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+				_log.info("__End bind to dossierFile" + new Date());
+
+				return Response.status(200).entity(result).build();
+			}
+		}
+		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@Override
-	public Response addDossierImportData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DossierPublishImportModel input) {
+	public Response addDossierImportData(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		DossierPublishImportModel input) {
 
 		_log.info("START PUPISH");
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -216,7 +241,7 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				throw new UnauthenticationException();
 			}
 
-			//Get input
+			// Get input
 			String referenceUid = input.getReferenceUid();
 			long createDateLong = GetterUtil.getLong(input.getCreateDate());
 			long modifiedDateLong = GetterUtil.getLong(input.getModifiedDate());
@@ -228,78 +253,102 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 			String applicantName = input.getApplicantName();
 			String applicantIdType = input.getApplicantIdType();
 			String applicantIdNo = input.getApplicantIdNo();
-			long applicantIdDateLong = GetterUtil.getLong(input.getApplicantIdDate());
+			long applicantIdDateLong =
+				GetterUtil.getLong(input.getApplicantIdDate());
 			String address = input.getAddress();
 			String contactName = input.getContactName();
 			String contactTelNo = input.getContactTelNo();
 			String contactEmail = input.getContactEmail();
 			String dossierNo = input.getDossierNo();
-			_log.info("dossierNo: "+dossierNo);
-			//long extendDateLong = GetterUtil.getLong(input.getExtendDate());
-			//long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			_log.info("dossierNo: " + dossierNo);
+			// long extendDateLong = GetterUtil.getLong(input.getExtendDate());
+			// long processDateLong =
+			// GetterUtil.getLong(input.getProcessDate());
 			String dossierStatus = input.getDossierStatus();
 			String dossierStatusText = input.getDossierStatusText();
-			//String online = input.getOnline();
+			// String online = input.getOnline();
 			String online = "false";
-			//int originality = GetterUtil.getInteger(input.getOriginality());
+			// int originality = GetterUtil.getInteger(input.getOriginality());
 			int originality = 3;
 			int sampleCount = GetterUtil.getInteger(input.getSampleCount());
-			double durationCount = GetterUtil.getDouble(input.getDurationCount());
+			double durationCount =
+				GetterUtil.getDouble(input.getDurationCount());
 			int durationUnit = GetterUtil.getInteger(input.getDurationUnit());
 			String dossierTemplateNo = input.getDossierTemplateNo();
 			String dossierTemplateName = input.getDossierTemplateName();
 
 			Dossier oldDossier = null;
 			if (Validator.isNotNull(input.getReferenceUid())) {
-				oldDossier = DossierUtils.getDossier(input.getReferenceUid(), groupId);
-			} else {
-				oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+				oldDossier =
+					DossierUtils.getDossier(input.getReferenceUid(), groupId);
+			}
+			else {
+				oldDossier =
+					DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
 				//
-				referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+				referenceUid =
+					DossierNumberGenerator.generateReferenceUID(groupId);
 			}
 
 			if (Validator.isNotNull(dossierTemplateNo)) {
 				if ("TT12_15_2012_TT_BVHTTDL_HS12".equals(dossierTemplateNo)) {
-					DossierPart part = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo, "TP99");
-					_log.info("part: "+part);
+					DossierPart part =
+						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+							groupId, dossierTemplateNo, "TP99");
+					_log.info("part: " + part);
 					if (part == null) {
-						DossierPartLocalServiceUtil.updateDossierPartDB(user.getUserId(), groupId, dossierTemplateNo,
-								"TP99", "Thành phần khác", "Thành phần khác", 1, false, null, null, true, false, "TP99",
-								null, 0, false, null, 0, serviceContext);
+						DossierPartLocalServiceUtil.updateDossierPartDB(
+							user.getUserId(), groupId, dossierTemplateNo,
+							"TP99", "Thành phần khác", "Thành phần khác", 1,
+							false, null, null, true, false, "TP99", null, 0,
+							false, null, 0, serviceContext);
 					}
 				}
 				if ("TT130_BVHTTDL".equals(dossierTemplateNo)) {
-					DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, dossierTemplateNo);
+					DossierTemplate template =
+						DossierTemplateLocalServiceUtil.getByTemplateNo(
+							groupId, dossierTemplateNo);
 					if (template == null) {
-						DossierTemplateLocalServiceUtil.updateDossierTemplateDB(user.getUserId(), groupId,
-								"TT130_BVHTTDL",
-								"Cấp phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh thuộc thẩm quyền của Bộ Văn hóa, Thể thao và Du lịch",
-								"", StringPool.BLANK, serviceContext);
+						DossierTemplateLocalServiceUtil.updateDossierTemplateDB(
+							user.getUserId(), groupId, "TT130_BVHTTDL",
+							"Cấp phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh thuộc thẩm quyền của Bộ Văn hóa, Thể thao và Du lịch",
+							"", StringPool.BLANK, serviceContext);
 					}
-					
-					DossierPart part1 = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo, "TP1");
+
+					DossierPart part1 =
+						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+							groupId, dossierTemplateNo, "TP1");
 					if (part1 == null) {
-						DossierPartLocalServiceUtil.updateDossierPartDB(user.getUserId(), groupId, dossierTemplateNo,
-								"TP1", "Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm",
-								"Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm", 1, false, null, null, true, false,
-								"TP99", null, 0, false, null, 0, serviceContext);
+						DossierPartLocalServiceUtil.updateDossierPartDB(
+							user.getUserId(), groupId, dossierTemplateNo, "TP1",
+							"Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm",
+							"Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm",
+							1, false, null, null, true, false, "TP99", null, 0,
+							false, null, 0, serviceContext);
 					}
 					//
-					DossierPart part2 = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo, "TP2");
+					DossierPart part2 =
+						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+							groupId, dossierTemplateNo, "TP2");
 					if (part2 == null) {
-						DossierPartLocalServiceUtil.updateDossierPartDB(user.getUserId(), groupId, dossierTemplateNo,
-								"TP2",
-								"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
-								"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
-								1, false, null, null, true, false, "TP2", null, 0, false, null, 0, serviceContext);
+						DossierPartLocalServiceUtil.updateDossierPartDB(
+							user.getUserId(), groupId, dossierTemplateNo, "TP2",
+							"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
+							"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
+							1, false, null, null, true, false, "TP2", null, 0,
+							false, null, 0, serviceContext);
 					}
 					//
-					DossierPart part3 = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo, "TP3");
+					DossierPart part3 =
+						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+							groupId, dossierTemplateNo, "TP3");
 					if (part3 == null) {
-						DossierPartLocalServiceUtil.updateDossierPartDB(user.getUserId(), groupId, dossierTemplateNo,
-								"TP3", "Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)",
-								"Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)", 1, false, null, null, true, false,
-								"TP3", null, 0, false, null, 0, serviceContext);
+						DossierPartLocalServiceUtil.updateDossierPartDB(
+							user.getUserId(), groupId, dossierTemplateNo, "TP3",
+							"Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)",
+							"Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)",
+							1, false, null, null, true, false, "TP3", null, 0,
+							false, null, 0, serviceContext);
 					}
 				}
 			}
@@ -347,104 +396,136 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 			}
 
 			if (oldDossier == null || oldDossier.getOriginality() == 0) {
-				Dossier dossier = actions.publishImportDossier(groupId, 0l, referenceUid, counter, serviceCode,
-						serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo,
-						applicantIdDateLong != 0 ? new Date(applicantIdDateLong) : null, address, contactName,
-						contactTelNo, contactEmail, dossierNo, dossierStatus, dossierStatusText,
-						Boolean.valueOf(online), originality, sampleCount, durationCount, durationUnit,
-						createDateLong != 0 ? new Date(createDateLong) : null,
-						modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
-						submitDateLong != 0 ? new Date(submitDateLong) : null, receiveDate, dueDate, releaseDate,
-						finishDate, dossierTemplateNo, dossierTemplateName, serviceContext);
+				Dossier dossier = actions.publishImportDossier(
+					groupId, 0l, referenceUid, counter, serviceCode,
+					serviceName, govAgencyCode, govAgencyName, applicantName,
+					applicantIdType, applicantIdNo,
+					applicantIdDateLong != 0
+						? new Date(applicantIdDateLong) : null,
+					address, contactName, contactTelNo, contactEmail, dossierNo,
+					dossierStatus, dossierStatusText, Boolean.valueOf(online),
+					originality, sampleCount, durationCount, durationUnit,
+					createDateLong != 0 ? new Date(createDateLong) : null,
+					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+					submitDateLong != 0 ? new Date(submitDateLong) : null,
+					receiveDate, dueDate, releaseDate, finishDate,
+					dossierTemplateNo, dossierTemplateName, serviceContext);
 
 				if (Validator.isNotNull(dossierTemplateNo)) {
-					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplateNo);
-//					_log.info("partList: "+partList);
+					List<DossierPart> partList =
+						DossierPartLocalServiceUtil.getByTemplateNo(
+							groupId, dossierTemplateNo);
+					// _log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
-						_log.info("partList.size(): "+partList.size());
-						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
+						_log.info("partList.size(): " + partList.size());
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks =
+							new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
 						int count = 0;
-						List<DossierMark> lstMarks = DossierMarkLocalServiceUtil.getDossierMarks(groupId, dossier.getDossierId());
+						List<DossierMark> lstMarks =
+							DossierMarkLocalServiceUtil.getDossierMarks(
+								groupId, dossier.getDossierId());
 						Map<String, DossierMark> mapMarks = new HashMap<>();
 						for (DossierMark dm : lstMarks) {
 							mapMarks.put(dm.getDossierPartNo(), dm);
 						}
 						for (DossierPart dossierPart : partList) {
-							//int fileMark = dossierPart.getFileMark();
+							// int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
-							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model =
+								new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
 							model.setDossierId(dossier.getDossierId());
 							model.setDossierPartNo(dossierPartNo);
 							model.setFileCheck(0);
 							model.setFileMark(0);
 							model.setFileComment(StringPool.BLANK);
 							marks[count++] = model;
-//							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
-//									fileMark, 0, StringPool.BLANK, serviceContext);
+							// DossierMarkLocalServiceUtil.addDossierMark(groupId,
+							// dossier.getDossierId(), dossierPartNo,
+							// fileMark, 0, StringPool.BLANK, serviceContext);
 						}
-						
-						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+
+						DossierMarkLocalServiceUtil.addBatchDossierMark(
+							groupId, marks, mapMarks, serviceContext);
 					}
 				}
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossier)).build();
+				return Response.status(200).entity(
+					JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 			}
 			else {
-				oldDossier = actions.publishImportDossier(groupId, oldDossier.getDossierId(), referenceUid, counter,
-						serviceCode, serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType,
-						applicantIdNo, applicantIdDateLong != 0 ? new Date(applicantIdDateLong) : null, address,
-						contactName, contactTelNo, contactEmail, dossierNo, dossierStatus, dossierStatusText,
-						Boolean.valueOf(online), originality, sampleCount, durationCount, durationUnit,
-						createDateLong != 0 ? new Date(createDateLong) : null,
-						modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
-						submitDateLong != 0 ? new Date(submitDateLong) : null, receiveDate, dueDate, releaseDate,
-						finishDate, dossierTemplateNo, dossierTemplateName, serviceContext);
+				oldDossier = actions.publishImportDossier(
+					groupId, oldDossier.getDossierId(), referenceUid, counter,
+					serviceCode, serviceName, govAgencyCode, govAgencyName,
+					applicantName, applicantIdType, applicantIdNo,
+					applicantIdDateLong != 0
+						? new Date(applicantIdDateLong) : null,
+					address, contactName, contactTelNo, contactEmail, dossierNo,
+					dossierStatus, dossierStatusText, Boolean.valueOf(online),
+					originality, sampleCount, durationCount, durationUnit,
+					createDateLong != 0 ? new Date(createDateLong) : null,
+					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+					submitDateLong != 0 ? new Date(submitDateLong) : null,
+					receiveDate, dueDate, releaseDate, finishDate,
+					dossierTemplateNo, dossierTemplateName, serviceContext);
 				if (Validator.isNotNull(dossierTemplateNo)) {
-					List<DossierPart> partList = DossierPartLocalServiceUtil.getByTemplateNo(groupId, dossierTemplateNo);
-//					_log.info("partList: "+partList);
+					List<DossierPart> partList =
+						DossierPartLocalServiceUtil.getByTemplateNo(
+							groupId, dossierTemplateNo);
+					// _log.info("partList: "+partList);
 					if (partList != null && partList.size() > 0) {
-						_log.info("partList.size(): "+partList.size());
-						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
+						_log.info("partList.size(): " + partList.size());
+						org.opencps.dossiermgt.input.model.DossierMarkBatchModel[] marks =
+							new org.opencps.dossiermgt.input.model.DossierMarkBatchModel[partList.size()];
 						int count = 0;
-						List<DossierMark> lstMarks = DossierMarkLocalServiceUtil.getDossierMarks(groupId, oldDossier.getDossierId());
+						List<DossierMark> lstMarks =
+							DossierMarkLocalServiceUtil.getDossierMarks(
+								groupId, oldDossier.getDossierId());
 						Map<String, DossierMark> mapMarks = new HashMap<>();
 						for (DossierMark dm : lstMarks) {
 							mapMarks.put(dm.getDossierPartNo(), dm);
 						}
 						for (DossierPart dossierPart : partList) {
-							//int fileMark = dossierPart.getFileMark();
+							// int fileMark = dossierPart.getFileMark();
 							String dossierPartNo = dossierPart.getPartNo();
-							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
+							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model =
+								new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
 							model.setDossierId(oldDossier.getDossierId());
 							model.setDossierPartNo(dossierPartNo);
 							model.setFileCheck(0);
 							model.setFileMark(0);
 							model.setFileComment(StringPool.BLANK);
 							marks[count++] = model;
-//							DossierMarkLocalServiceUtil.addDossierMark(groupId, dossier.getDossierId(), dossierPartNo,
-//									fileMark, 0, StringPool.BLANK, serviceContext);
+							// DossierMarkLocalServiceUtil.addDossierMark(groupId,
+							// dossier.getDossierId(), dossierPartNo,
+							// fileMark, 0, StringPool.BLANK, serviceContext);
 						}
-						
-						DossierMarkLocalServiceUtil.addBatchDossierMark(groupId, marks, mapMarks, serviceContext);
+
+						DossierMarkLocalServiceUtil.addBatchDossierMark(
+							groupId, marks, mapMarks, serviceContext);
 					}
 				}
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(oldDossier)).build();
+				return Response.status(200).entity(
+					JSONFactoryUtil.looseSerializeDeep(oldDossier)).build();
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
 	@SuppressWarnings("resource")
 	@Override
-	public Response uploadFileDossiers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Attachment file) {
+	public Response uploadFileDossiers(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		Attachment file) {
+
 		_log.info("uploadFileDossiers");
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		//long userId = user.getUserId();
+		// long userId = user.getUserId();
 		InputStream fileInputStream = null;
 		FileInputStream excelInputStream = null;
 		Workbook workbook = null;
@@ -456,12 +537,14 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				throw new UnauthenticationException();
 			}
 
-			//DossierFileActions action = new DossierFileActionsImpl();
-			//action.uploadFileEntry(dataHandle.getName(), dataHandle.getInputStream(), serviceContext);
+			// DossierFileActions action = new DossierFileActionsImpl();
+			// action.uploadFileEntry(dataHandle.getName(),
+			// dataHandle.getInputStream(), serviceContext);
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			//
-			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(company.getCompanyId(), true);
+			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(
+				company.getCompanyId(), true);
 			String strGroupId = StringPool.BLANK;
 			if (groupList != null && groupList.size() > 0) {
 				List<String> groupIdList = new ArrayList<>();
@@ -474,45 +557,53 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 					strGroupId = String.join(StringPool.COMMA, groupIdList);
 				}
 			}
-			//Check group
+			// Check group
 			if (!strGroupId.contains(String.valueOf(groupId))) {
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("GroupId not exits!").build();
+				return Response.status(
+					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+						"GroupId not exits!").build();
 			}
-			
-			//Process FILE
+
+			// Process FILE
 			fileInputStream = dataHandle.getInputStream();
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
-			_log.info("extFile: "+extFile);
-			if (Validator.isNotNull(extFile) && ("xlsx".equalsIgnoreCase(extFile) || "xls".equalsIgnoreCase(extFile))) {
-				String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
-//				//delete folder if exits
+			_log.info("extFile: " + extFile);
+			if (Validator.isNotNull(extFile) &&
+				("xlsx".equalsIgnoreCase(extFile) ||
+					"xls".equalsIgnoreCase(extFile))) {
+				String pathFile =
+					ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
+				// //delete folder if exits
 				File fileOld = new File(pathFile);
-				_log.info("fileOld: "+fileOld.getAbsolutePath());
+				_log.info("fileOld: " + fileOld.getAbsolutePath());
 				if (fileOld.exists()) {
 					boolean flag = fileOld.delete() ? true : false;
-					_log.info("LamTV_Delete DONE: "+flag);
+					_log.info("LamTV_Delete DONE: " + flag);
 				}
-				_log.info("LamTV_pathFolder: "+pathFile);
+				_log.info("LamTV_pathFolder: " + pathFile);
 				File excelFile = new File(pathFile);
 				FileOutputStream out = new FileOutputStream(excelFile);
 				IOUtils.copy(fileInputStream, out);
 				excelInputStream = new FileInputStream(excelFile);
-//					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
-				_log.info("excelFile: "+excelFile);
-				_log.info("LamTV_fileList: "+excelFile.getPath());
-				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				// FileUtils.copyInputStreamToFile(fileInputStream, fileList);
+				_log.info("excelFile: " + excelFile);
+				_log.info("LamTV_fileList: " + excelFile.getPath());
+				String subFileName =
+					ImportZipFileUtils.getSubFileName(fileName);
 				if (Validator.isNotNull(subFileName)) {
-					//String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
+					// String xmlString =
+					// ReadXMLFileUtils.convertFiletoString(fileList);
 					workbook = new XSSFWorkbook(excelInputStream);
-					//Dossier
+					// Dossier
 					Sheet datatypeSheetOne = workbook.getSheetAt(0);
 					//
-					//Map<Long, List<NameValuePair>> mapData = new HashMap<Long, List<NameValuePair>>();
-					
+					// Map<Long, List<NameValuePair>> mapData = new
+					// HashMap<Long, List<NameValuePair>>();
+
 					int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
-					System.out.println("nOfRows: "+nOfRows);
-					
+					System.out.println("nOfRows: " + nOfRows);
+
 					if (nOfRows > 1) {
 						int count = 0;
 						JSONArray dataArr = JSONFactoryUtil.createJSONArray();
@@ -520,41 +611,49 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 							Row currentRow = datatypeSheetOne.getRow(i);
 							if (currentRow != null) {
 
-								JSONObject dossierData = ImportDataUtils.convertRowToDossier(currentRow);
+								JSONObject dossierData =
+									ImportDataUtils.convertRowToDossier(
+										currentRow);
 								if (dossierData != null) {
-									count ++;
+									count++;
 									dataArr.put(dossierData);
 								}
-								_log.info("mapData: " +i +" : " + dossierData);
+								_log.info(
+									"mapData: " + i + " : " + dossierData);
 							}
 						}
 						if (count > 0) {
 							result.put("total", count);
 							result.put("data", dataArr);
-							
+
 						}
 					}
 				}
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+			return Response.status(200).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
-		} finally {
+		}
+		finally {
 			if (excelInputStream != null) {
 				try {
 					excelInputStream.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					_log.debug(e);
 				}
 			}
 			if (workbook != null) {
 				try {
 					workbook.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					_log.debug(e);
 				}
 			}
@@ -563,8 +662,11 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 
 	@SuppressWarnings("resource")
 	@Override
-	public Response uploadFileQuestion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Attachment file, String collectionCode) {
+	public Response uploadFileQuestion(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
+		Attachment file, String collectionCode) {
+
 		_log.info("uploadFileDossiers" + collectionCode);
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -580,12 +682,14 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 				throw new UnauthenticationException();
 			}
 
-			//DossierFileActions action = new DossierFileActionsImpl();
-			//action.uploadFileEntry(dataHandle.getName(), dataHandle.getInputStream(), serviceContext);
+			// DossierFileActions action = new DossierFileActionsImpl();
+			// action.uploadFileEntry(dataHandle.getName(),
+			// dataHandle.getInputStream(), serviceContext);
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			//
-			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(company.getCompanyId(), true);
+			List<Group> groupList = GroupLocalServiceUtil.getActiveGroups(
+				company.getCompanyId(), true);
 			String strGroupId = StringPool.BLANK;
 			if (groupList != null && groupList.size() > 0) {
 				List<String> groupIdList = new ArrayList<>();
@@ -598,119 +702,165 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 					strGroupId = String.join(StringPool.COMMA, groupIdList);
 				}
 			}
-			//Check group
+			// Check group
 			if (!strGroupId.contains(String.valueOf(groupId))) {
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("GroupId not exits!").build();
+				return Response.status(
+					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+						"GroupId not exits!").build();
 			}
-			
-			//Process FILE
+
+			// Process FILE
 			fileInputStream = dataHandle.getInputStream();
 			String fileName = dataHandle.getName();
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
-			_log.info("extFile: "+extFile);
-			if (Validator.isNotNull(extFile) && ("xlsx".equalsIgnoreCase(extFile) || "xls".equalsIgnoreCase(extFile))) {
-				String pathFile = ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
-//				//delete folder if exits
+			_log.info("extFile: " + extFile);
+			if (Validator.isNotNull(extFile) &&
+				("xlsx".equalsIgnoreCase(extFile) ||
+					"xls".equalsIgnoreCase(extFile))) {
+				String pathFile =
+					ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
+				// //delete folder if exits
 				File fileOld = new File(pathFile);
-				_log.info("fileOld: "+fileOld.getAbsolutePath());
+				_log.info("fileOld: " + fileOld.getAbsolutePath());
 				if (fileOld.exists()) {
 					boolean flag = fileOld.delete() ? true : false;
-					_log.info("LamTV_Delete DONE: "+flag);
+					_log.info("LamTV_Delete DONE: " + flag);
 				}
-				_log.info("LamTV_pathFolder: "+pathFile);
+				_log.info("LamTV_pathFolder: " + pathFile);
 				File excelFile = new File(pathFile);
 				FileOutputStream out = new FileOutputStream(excelFile);
 				IOUtils.copy(fileInputStream, out);
-				FileInputStream excelInputStream = new FileInputStream(excelFile);
-//					FileUtils.copyInputStreamToFile(fileInputStream, fileList);
-				_log.info("excelFile: "+excelFile);
-				_log.info("LamTV_fileList: "+excelFile.getPath());
-				String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+				FileInputStream excelInputStream =
+					new FileInputStream(excelFile);
+				// FileUtils.copyInputStreamToFile(fileInputStream, fileList);
+				_log.info("excelFile: " + excelFile);
+				_log.info("LamTV_fileList: " + excelFile.getPath());
+				String subFileName =
+					ImportZipFileUtils.getSubFileName(fileName);
 				if (Validator.isNotNull(subFileName)) {
-					//String xmlString = ReadXMLFileUtils.convertFiletoString(fileList);
+					// String xmlString =
+					// ReadXMLFileUtils.convertFiletoString(fileList);
 					workbook = new XSSFWorkbook(excelInputStream);
-					//Dossier
+					// Dossier
 					Sheet datatypeSheetOne = workbook.getSheetAt(0);
 					//
-					//Map<Long, List<NameValuePair>> mapData = new HashMap<Long, List<NameValuePair>>();
-					
+					// Map<Long, List<NameValuePair>> mapData = new
+					// HashMap<Long, List<NameValuePair>>();
+
 					int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
-					System.out.println("nOfRows: "+nOfRows);
-					
+					System.out.println("nOfRows: " + nOfRows);
+
 					if (nOfRows > 1) {
-						//int count = 0;
-						//JSONArray dataArr = JSONFactoryUtil.createJSONArray();
+						// int count = 0;
+						// JSONArray dataArr =
+						// JSONFactoryUtil.createJSONArray();
 						for (int i = 1; i < nOfRows; i++) {
 							Row currentRow = datatypeSheetOne.getRow(i);
 							if (currentRow != null) {
 
-								JSONObject questionData = ImportDataUtils.convertRowToQuestion(currentRow);
+								JSONObject questionData =
+									ImportDataUtils.convertRowToQuestion(
+										currentRow);
 								if (questionData != null) {
-									//count ++;
-									String content = questionData.getString("question");
-									String govAgencyCode = questionData.getString("govAgencyCode");
-									if (Validator.isNotNull(content) && Validator.isNotNull(govAgencyCode)) {
-										Question question = QuestionLocalServiceUtil.updateQuestion(
-												serviceContext.getCompanyId(), groupId, 0l, "Hệ thống", "test@liferay.com",
-												questionData.getString("question"), 1, questionData.getString("govAgencyCode"), 
-												questionData.getString("govAgencyName"), StringPool.BLANK,
-												questionData.getString("subDomainCode"), questionData.getString("subDomainName"));
+									// count ++;
+									String content =
+										questionData.getString("question");
+									String govAgencyCode =
+										questionData.getString("govAgencyCode");
+									if (Validator.isNotNull(content) &&
+										Validator.isNotNull(govAgencyCode)) {
+										Question question =
+											QuestionLocalServiceUtil.updateQuestion(
+												serviceContext.getCompanyId(),
+												groupId, 0l, "Hệ thống",
+												"test@liferay.com",
+												questionData.getString(
+													"question"),
+												1,
+												questionData.getString(
+													"domainCode"),
+												questionData.getString(
+													"domainName"),
+												questionData.getString(
+													"govAgencyCode"),
+												questionData.getString(
+													"govAgencyName"),
+												StringPool.BLANK,
+												questionData.getString(
+													"subDomainCode"),
+												questionData.getString(
+													"subDomainName"));
 										if (question != null) {
-											AnswerLocalServiceUtil.updateAnswer(userId, groupId, 0l,
-													question.getQuestionId(), questionData.getString("answer"), 1);
+											AnswerLocalServiceUtil.updateAnswer(
+												userId, groupId, 0l,
+												question.getQuestionId(),
+												questionData.getString(
+													"answer"),
+												1);
 										}
 									}
 								}
-								//_log.info("mapData: " +i +" : " + dossierData);
+								// _log.info("mapData: " +i +" : " +
+								// dossierData);
 							}
 						}
-//						if (count > 0) {
+						// if (count > 0) {
 						result.put("total", nOfRows);
-//							result.put("data", dataArr);
-//							
-//						}
+						// result.put("data", dataArr);
+						//
+						// }
 					}
 				}
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+			return Response.status(200).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
-		} finally {
+		}
+		finally {
 			if (workbook != null) {
 				try {
 					workbook.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					_log.debug(e);
 				}
 			}
 		}
 	}
-	
-	public Response uploadFileQuestion2(HttpServletRequest request, HttpHeaders header,
-		Company company, Locale locale, User user,
-		ServiceContext serviceContext,
+
+	public Response uploadFileQuestion2(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file, String collectionCode) {
-		
+
 		try {
-			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+			DictcollectionInterface dictItemDataUtil =
+				new DictCollectionActions();
 			PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
 			DictItemModel dictItemModel = new DictItemModel();
-			DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
+			DictCollectionTempInterface dictItemDataTempUtil =
+				new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 			long groupId =
-							GetterUtil.getLong(header.getHeaderString("groupId"));
-			
+				GetterUtil.getLong(header.getHeaderString("groupId"));
+
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(collectionCode, groupId);
+			DictCollection dictCollection =
+				dictItemDataUtil.getDictCollectionDetail(
+					collectionCode, groupId);
 
 			if (Validator.isNull(dictCollection)) {
-				
-				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(collectionCode + 
-					" is not exits in group " + groupId).build();
+
+				return Response.status(
+					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+						collectionCode + " is not exits in group " +
+							groupId).build();
 			}
 			DataHandler dataHandle = file.getDataHandler();
 			JSONArray dataDictItem =
@@ -728,76 +878,96 @@ public class ImportDataManagementImpl implements ImportDataManagement{
 					input.setItemName(dictItem.getString("itemName"));
 					input.setItemNameEN(dictItem.getString("itemNameEN"));
 					input.setItemDescription(dictItem.getString("description"));
-					input.setParentItemCode(dictItem.getString("parentItemCode"));
+					input.setParentItemCode(
+						dictItem.getString("parentItemCode"));
 					input.setSibling(dictItem.getString("sibling"));
 					input.setMetaData(dictItem.getString("metaData"));
 					input.setLevel(dictItem.getInt("level"));
 					String itemCode = HtmlUtil.escape(input.getItemCode());
 					String itemName = HtmlUtil.escape(input.getItemName());
 					String itemNameEN = HtmlUtil.escape(input.getItemNameEN());
-					String itemDescription = HtmlUtil.escape(input.getItemDescription());
-					String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
+					String itemDescription =
+						HtmlUtil.escape(input.getItemDescription());
+					String parentItemCode =
+						HtmlUtil.escape(input.getParentItemCode());
 					String sibling = input.getSibling();
 					String metaData = HtmlUtil.escape(input.getMetaData());
 
-					DictItem dictItemObj = dictItemDataUtil.addDictItems(user.getUserId(), groupId, collectionCode,
-							parentItemCode, itemCode, itemName, itemNameEN,
-							itemDescription, sibling, input.getLevel(), metaData,
-							serviceContext);
-					DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(collectionCode, itemCode, groupId, serviceContext);
+					DictItem dictItemObj = dictItemDataUtil.addDictItems(
+						user.getUserId(), groupId, collectionCode,
+						parentItemCode, itemCode, itemName, itemNameEN,
+						itemDescription, sibling, input.getLevel(), metaData,
+						serviceContext);
+					DictItemTemp temp =
+						dictItemDataTempUtil.getDictItemTempByItemCode(
+							collectionCode, itemCode, groupId, serviceContext);
 					if (temp == null) {
-					dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, collectionCode,
+						dictItemDataTempUtil.addDictItemsTemp(
+							user.getUserId(), groupId, collectionCode,
 							parentItemCode, itemCode, itemName, itemNameEN,
-							itemDescription, sibling, input.getLevel(), metaData,
-							DataMGTTempConstants.DATA_STATUS_ACTIVE,
-								serviceContext);				
+							itemDescription, sibling, input.getLevel(),
+							metaData, DataMGTTempConstants.DATA_STATUS_ACTIVE,
+							serviceContext);
 					}
 					else {
 						dictItemDataTempUtil.updateDictItemTempByItemCode(
-								user.getUserId(), groupId, 
-								serviceContext,
-								collectionCode,
-								itemCode, 
-								itemCode,
-								itemName, itemNameEN,
-								itemDescription, sibling,
-								parentItemCode,
-								DataMGTTempConstants.DATA_STATUS_ACTIVE);								
+							user.getUserId(), groupId, serviceContext,
+							collectionCode, itemCode, itemCode, itemName,
+							itemNameEN, itemDescription, sibling,
+							parentItemCode,
+							DataMGTTempConstants.DATA_STATUS_ACTIVE);
 					}
 
 					try {
-						List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-								QueryUtil.ALL_POS);
-						//DictItem item = dictItemDataUtil.getDictItemByItemCode(code, input.getItemCode(), groupId,
-						//		serviceContext);
+						List<ServerConfig> lstServers =
+							ServerConfigLocalServiceUtil.getServerConfigs(
+								QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+						// DictItem item =
+						// dictItemDataUtil.getDictItemByItemCode(code,
+						// input.getItemCode(), groupId,
+						// serviceContext);
 
 						for (ServerConfig sc : lstServers) {
 							String configs = sc.getConfigs();
 							if (Validator.isNotNull(configs)) {
 								try {
-									JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-									if (configObj.has(SyncServerTerm.SERVER_TYPE)
-											&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-													.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-											&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-											&& configObj.has(SyncServerTerm.SERVER_SECRET)
-											&& configObj.has(SyncServerTerm.SERVER_URL)
-											&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
+									JSONObject configObj =
+										JSONFactoryUtil.createJSONObject(
+											configs);
+									if (configObj.has(
+										SyncServerTerm.SERVER_TYPE) &&
+										configObj.getString(
+											SyncServerTerm.SERVER_TYPE).equals(
+												SyncServerTerm.SYNC_SERVER_TYPE) &&
+										configObj.has(
+											SyncServerTerm.SERVER_USERNAME) &&
+										configObj.has(
+											SyncServerTerm.SERVER_SECRET) &&
+										configObj.has(
+											SyncServerTerm.SERVER_URL) &&
+										(configObj.has(SyncServerTerm.PUSH) &&
+											configObj.getBoolean(
+												SyncServerTerm.PUSH))) {
 										if (groupId == sc.getGroupId()) {
-											pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-													sc.getServerNo(),
-													collectionCode,
-													itemCode, itemName, itemNameEN,
-													itemDescription, parentItemCode, sibling,
-													SyncServerTerm.METHOD_CREATE, "", serviceContext);
+											pushDictItemUtil.addPushDictItem(
+												user.getUserId(), groupId,
+												sc.getServerNo(),
+												collectionCode, itemCode,
+												itemName, itemNameEN,
+												itemDescription, parentItemCode,
+												sibling,
+												SyncServerTerm.METHOD_CREATE,
+												"", serviceContext);
 										}
 									}
-								} catch (Exception e) {
+								}
+								catch (Exception e) {
 									_log.error(e);
 								}
 							}
 						}
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						_log.error(e);
 					}
 					importNum++;

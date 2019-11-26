@@ -1,18 +1,17 @@
 package org.opencps.usermgt.service.persistence.impl;
 
-import com.liferay.portal.kernel.dao.orm.Query;
+import java.util.List;
+
+import org.opencps.usermgt.model.Question;
+import org.opencps.usermgt.model.impl.QuestionImpl;
+import org.opencps.usermgt.service.persistence.QuestionFinder;
+
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.List;
-
-import org.opencps.usermgt.model.Question;
-import org.opencps.usermgt.model.impl.QuestionImpl;
-import org.opencps.usermgt.service.persistence.QuestionFinder;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -23,7 +22,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	Log _log = LogFactoryUtil.getLog(QuestionFinderImpl.class);
 
 	@SuppressWarnings("unchecked")
-	public List<Question> findQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, 
+	public List<Question> findQuestionSearch(long groupId, String keyword, String domainCode, String govAgencyCode, Integer publish, String questionType, 
 			Boolean answer, String subDomainCode,
 			int start,
 			int limit) {
@@ -33,47 +32,26 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("SELECT q.* FROM opencps_question AS q left join opencps_answer as a on q.questionId=a.questionId ");
+		sb.append("WHERE 1 = 1 ");
+		
 		if (Validator.isNotNull(keyword)) {
-			sb.append("WHERE q.content like '%"+keyword+"%' ");
-			if (Validator.isNotNull(govAgencyCode)) {
-				sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
-			}
-			if (Validator.isNotNull(publish)) {
-				sb.append("AND q.publish = " + publish + " ");
-			}
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if(Validator.isNotNull(govAgencyCode)){
-			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
-			if (Validator.isNotNull(publish)) {
-				sb.append("AND q.publish = " + publish + " ");
-			}
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if (Validator.isNotNull(publish)) {
-			sb.append("WHERE q.publish = " + publish + " ");
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
+			sb.append("AND q.content like '%"+keyword+"%' ");
+			
 		}
-		else if (Validator.isNotNull(questionType)) {
-			sb.append("WHERE q.questionType = '" + questionType + "' ");
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if (Validator.isNotNull(subDomainCode)) {
-			sb.append("WHERE q.subDomainCode = '" + subDomainCode + "' ");
+		if (Validator.isNotNull(domainCode)) {
+			sb.append("AND q.domainCode = '"+ domainCode +"' ");
+		}
+		if (Validator.isNotNull(govAgencyCode)) {
+			sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
+		}
+		if (Validator.isNotNull(publish)) {
+			sb.append("AND q.publish = " + publish + " ");
+		}
+		if (Validator.isNotNull(questionType)) {
+			sb.append("AND q.questionType = '" + questionType + "' ");
+		}
+		if (Validator.isNotNull(subDomainCode)) {
+			sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
 		}
 		
 		if (answer != null) {
@@ -117,54 +95,33 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	public int countQuestionSearch(long groupId, String keyword, String govAgencyCode, Integer publish, String questionType, Boolean answer, String subDomainCode) {
+	public int countQuestionSearch(long groupId, String keyword, String domainCode, String govAgencyCode, Integer publish, String questionType, Boolean answer, String subDomainCode) {
 
 		Session session = null;
 		int countQuestion = 0;
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("SELECT q.* FROM opencps_question AS q left join opencps_answer as a on q.questionId=a.questionId ");
+		sb.append("WHERE 1 = 1 ");
+		
 		if (Validator.isNotNull(keyword)) {
-			sb.append("WHERE q.content like '%"+keyword+"%' ");
-			if (Validator.isNotNull(govAgencyCode)) {
-				sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
-			}
-			if (Validator.isNotNull(publish)) {
-				sb.append("AND q.publish = " + publish + " ");
-			}
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if(Validator.isNotNull(govAgencyCode)){
-			sb.append("WHERE q.govAgencyCode = '"+ govAgencyCode +"' ");
-			if (Validator.isNotNull(publish)) {
-				sb.append("AND q.publish = " + publish + " ");
-			}
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if (Validator.isNotNull(publish)) {
-			sb.append("WHERE q.publish = " + publish + " ");
-			if (Validator.isNotNull(questionType)) {
-				sb.append("AND q.questionType = '" + questionType + "' ");
-			}
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
+			sb.append("AND q.content like '%"+keyword+"%' ");
+			
 		}
-		else if (Validator.isNotNull(questionType)) {
-			sb.append("WHERE q.questionType = '" + questionType + "' ");
-			if (Validator.isNotNull(subDomainCode)) {
-				sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
-			}
-		} else if (Validator.isNotNull(subDomainCode)) {
-			sb.append("WHERE q.subDomainCode = '" + subDomainCode + "' ");
+		if (Validator.isNotNull(domainCode)) {
+			sb.append("AND q.domainCode = '"+ domainCode +"' ");
+		}
+		if (Validator.isNotNull(govAgencyCode)) {
+			sb.append("AND q.govAgencyCode = '"+ govAgencyCode +"' ");
+		}
+		if (Validator.isNotNull(publish)) {
+			sb.append("AND q.publish = " + publish + " ");
+		}
+		if (Validator.isNotNull(questionType)) {
+			sb.append("AND q.questionType = '" + questionType + "' ");
+		}
+		if (Validator.isNotNull(subDomainCode)) {
+			sb.append("AND q.subDomainCode = '" + subDomainCode + "' ");
 		}
 		
 		if (answer != null) {

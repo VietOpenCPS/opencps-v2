@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -504,6 +505,7 @@ public class RestfulController {
 		if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 			userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 		}
+
 		long groupId = 0;
 		if (Validator.isNotNull(request.getHeader("groupId"))) {
 			groupId = Long.valueOf(request.getHeader("groupId"));
@@ -516,7 +518,7 @@ public class RestfulController {
 		serviceContext.setUserId(userId);
 		serviceContext.setCompanyId(companyId);
 		serviceContext.setScopeGroupId(groupId);
-
+		
 		try {
 			String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 			if (multipartFile != null) {
@@ -1054,10 +1056,9 @@ public class RestfulController {
 		} else {
 
 			long userIdPath = Long.valueOf(id);
-			System.out.println("1054 UserId: "+request.getAttribute(WebKeys.USER_ID));
-			Long userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-			if (userId != null && userId > 0 && userId != userIdPath) {
-				userId = userIdPath;
+			long userId = GetterUtil.getLong(request.getAttribute(WebKeys.USER_ID).toString());
+			if (userId == 0 || (userId > 0 && userId != userIdPath)) {
+				throw new OpenCPSNotFoundException(User.class.getName());
 			}
 			UserActions actions = new UserActions();
 

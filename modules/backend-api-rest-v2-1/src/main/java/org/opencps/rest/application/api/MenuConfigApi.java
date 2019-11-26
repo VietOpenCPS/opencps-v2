@@ -69,6 +69,13 @@ public interface MenuConfigApi  {
     @ApiOperation(value = "Lấy danh sách các định nghĩa thao tác todo", tags={ "MenuConfig",  })
     public MenuConfigItemResult getMenuConfigsTodo(@QueryParam("q") String q);
 
+    @GET
+    @Path("/menuconfigs/{id}/script")
+    @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
+    @Produces({ "application/json", "application/xml", "application/x-www-form-urlencoded" })
+    @ApiOperation(value = "Lấy chi tiết các định nghĩa cấu hình menu theo id", tags={ "MenuConfig",  })
+    public String getScriptByConfigId(@PathParam("id") String id);
+
     @PUT
     @Path("/menuconfigs/{id}")
     @Consumes({ "application/json", "application/xml", "application/x-www-form-urlencoded" })

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
 
@@ -359,6 +360,8 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		object.setMappingData(objectData.getString("mappingData"));
 		object.setDocSync(objectData.getInt("docSync"));
 		object.setGovAgencies(objectData.getString("govAgencies"));
+		object.setTableConfig(objectData.getString("tableConfig"));
+		object.setDataConfig(objectData.getString("dataConfig"));
 
 		deliverableTypePersistence.update(object);
 
@@ -396,5 +399,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		public static final String TABLECONFIG = "tableConfig";
 		public static final String DOCSYNC = "docSync";
 		public static final String GOVAGENCIES = "govAgencies";
+		public static final String TABLE_CONFIG = "tableConfig";
+		public static final String DATA_CONFIG = "dataConfig";
 	}
 }

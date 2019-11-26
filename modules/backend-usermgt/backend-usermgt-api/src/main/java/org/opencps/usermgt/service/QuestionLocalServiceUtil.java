@@ -59,11 +59,11 @@ public class QuestionLocalServiceUtil {
 	}
 
 	public static int countByQuerySearch(long groupId, String keyword,
-		String govAgencyCode, Integer publish, String questionType,
-		Boolean answer, String subDomainCode) {
+		String domainCode, String govAgencyCode, Integer publish,
+		String questionType, Boolean answer, String subDomainCode) {
 		return getService()
-				   .countByQuerySearch(groupId, keyword, govAgencyCode,
-			publish, questionType, answer, subDomainCode);
+				   .countByQuerySearch(groupId, keyword, domainCode,
+			govAgencyCode, publish, questionType, answer, subDomainCode);
 	}
 
 	/**
@@ -199,12 +199,13 @@ public class QuestionLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.usermgt.model.Question> findByQuerySearch(
-		long groupId, String keyword, String govAgencyCode, Integer publish,
-		String questionType, Boolean answer, String subDomainCode, int start,
-		int limit) {
+		long groupId, String keyword, String domainCode, String govAgencyCode,
+		Integer publish, String questionType, Boolean answer,
+		String subDomainCode, int start, int limit) {
 		return getService()
-				   .findByQuerySearch(groupId, keyword, govAgencyCode, publish,
-			questionType, answer, subDomainCode, start, limit);
+				   .findByQuerySearch(groupId, keyword, domainCode,
+			govAgencyCode, publish, questionType, answer, subDomainCode, start,
+			limit);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -270,13 +271,13 @@ public class QuestionLocalServiceUtil {
 
 	public static org.opencps.usermgt.model.Question updateQuestion(
 		long companyId, long groupId, long questionId, String fullname,
-		String email, String content, int publish, String govAgencyCode,
-		String govAgencyName, String questionType, String subDomainCode,
-		String subDomainName) {
+		String email, String content, int publish, String domainCode,
+		String domainName, String govAgencyCode, String govAgencyName,
+		String questionType, String subDomainCode, String subDomainName) {
 		return getService()
 				   .updateQuestion(companyId, groupId, questionId, fullname,
-			email, content, publish, govAgencyCode, govAgencyName,
-			questionType, subDomainCode, subDomainName);
+			email, content, publish, domainCode, domainName, govAgencyCode,
+			govAgencyName, questionType, subDomainCode, subDomainName);
 	}
 
 	/**

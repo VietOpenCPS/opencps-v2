@@ -413,6 +413,16 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			}
 		}
 
+		// Check exits contactEmail
+		long mappingUserId = 0;
+		if (flagUser != 2 && flagUser != 1 && Validator.isNotNull(contactEmail)) {
+			User appUser = UserLocalServiceUtil.fetchUserByEmailAddress(serviceContext.getCompanyId(), contactEmail);
+			if (appUser != null) {
+				flagUser = 3;
+				mappingUserId = appUser.getUserId();
+			}
+		}
+
 		if (flagUser != 2) {
 			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("ADMINISTRATIVE_REGION", groupId);
 			String cityName = getDictItemName(groupId, dc, cityCode);
@@ -428,6 +438,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 			}
 			
+			System.out.println("flagUser: "+flagUser);
 			//Process update applicant and user
 			if (flagUser == 0) {
 				//Add applicant and user
@@ -517,6 +528,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
+			} else if (flagUser == 3) {
+				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
+						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, serviceContext);
+				//
+				//Add applicant search
+				ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
+						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 			}
 		}
 	}

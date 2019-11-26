@@ -14,6 +14,17 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.constants.EmployeeTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
+import org.opencps.usermgt.exception.NoSuchEmployeeException;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
@@ -42,6 +53,7 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -64,18 +76,13 @@ import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
 
 /**
- * The implementation of the employee local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
+ * The implementation of the employee local service. <p> All custom service
+ * methods should be put in this class. Whenever methods are added, rerun
+ * ServiceBuilder to copy their definitions into the
  * {@link org.mobilink.backend.usermgt.service.EmployeeLocalService} interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security
+ * <p> This is a local service. Methods of this service will not have security
  * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
- * </p>
+ * be accessed from within the same VM. </p>
  *
  * @author Binhth
  * @see EmployeeLocalServiceBaseImpl
@@ -83,45 +90,54 @@ import backend.auth.api.exception.UnauthorizationException;
  */
 @ProviderType
 public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
+
 	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link
-	 * org.mobilink.backend.usermgt.service.EmployeeLocalServiceUtil} to access the
-	 * employee local service.
+	 * NOTE FOR DEVELOPERS: Never reference this class directly. Always use
+	 * {@link org.mobilink.backend.usermgt.service.EmployeeLocalServiceUtil} to
+	 * access the employee local service.
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Employee addEmployee(long userId, long groupId, String fullName, String employeeNo, int gender,
-			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			String title, boolean isCreateUser, Date recruitDate, Date leaveDate, ServiceContext serviceContext)
-			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException,
-			UnauthorizationException, NoSuchUserException, PortalException {
+	public Employee addEmployee(
+		long userId, long groupId, String fullName, String employeeNo,
+		int gender, Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, String title,
+		boolean isCreateUser, Date recruitDate, Date leaveDate,
+		ServiceContext serviceContext)
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
+		UnauthenticationException, UnauthorizationException,
+		NoSuchUserException, PortalException {
 		// authen
-//		BackendAuthImpl authImpl = new BackendAuthImpl();
-//
-//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-//
-//		if (!isAuth) {
-//			throw new UnauthenticationException();
-//		}
 
-//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-//				ActionKeys.UPDATE_EMPLOYEE);
-//
-//		if (!hasPermission) {
-//			throw new UnauthorizationException();
-//		}
+		// BackendAuthImpl authImpl = new BackendAuthImpl();
+		//
+		// boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK,
+		// StringPool.BLANK);
+		//
+		// if (!isAuth) {
+		// throw new UnauthenticationException();
+		// }
 
-		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
+		// boolean hasPermission = authImpl.hasResource(serviceContext,
+		// ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+		// ActionKeys.UPDATE_EMPLOYEE);
+		//
+		// if (!hasPermission) {
+		// throw new UnauthorizationException();
+		// }
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && Validator.isNotNull(employeeNo)) {
+		List<Employee> employeeCheck =
+			employeePersistence.findByF_employeeNo(groupId, employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			Validator.isNotNull(employeeNo)) {
 			throw new DuplicateEmployeeNoException();
 		}
 
 		employeeCheck = employeePersistence.findByF_email(groupId, email);
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 && Validator.isNotNull(email)) {
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			Validator.isNotNull(email)) {
 			throw new DuplicateEmployeeEmailException();
 		}
 
@@ -129,7 +145,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		long employeeId = counterLocalService.increment(Employee.class.getName());
+		long employeeId =
+			counterLocalService.increment(Employee.class.getName());
 
 		Employee employee = employeePersistence.create(employeeId);
 
@@ -168,29 +185,34 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public Employee deleteEmployee(long employeeId, ServiceContext serviceContext)
-			throws UnauthenticationException, UnauthorizationException, NotFoundException {
+	public Employee deleteEmployee(
+		long employeeId, ServiceContext serviceContext)
+		throws UnauthenticationException, UnauthorizationException,
+		NotFoundException {
 
 		// authen
-//		BackendAuthImpl authImpl = new BackendAuthImpl();
+		// BackendAuthImpl authImpl = new BackendAuthImpl();
 
-//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-//
-//		if (!isAuth) {
-//			throw new UnauthenticationException();
-//		}
+		// boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK,
+		// StringPool.BLANK);
+		//
+		// if (!isAuth) {
+		// throw new UnauthenticationException();
+		// }
 
-//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-//				ActionKeys.UPDATE_EMPLOYEE);
-//
-//		if (!hasPermission) {
-//			throw new UnauthorizationException();
-//		}
+		// boolean hasPermission = authImpl.hasResource(serviceContext,
+		// ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+		// ActionKeys.UPDATE_EMPLOYEE);
+		//
+		// if (!hasPermission) {
+		// throw new UnauthorizationException();
+		// }
 
 		Employee employee = null;
 		try {
 			employee = employeePersistence.remove(employeeId);
-		} catch (NoSuchEmployeeException e) {
+		}
+		catch (NoSuchEmployeeException e) {
 			// throw new NotFoundException();
 			_log.error(e);
 		}
@@ -199,32 +221,38 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(EmployeeLocalServiceImpl.class);
+	private static Log _log =
+		LogFactoryUtil.getLog(EmployeeLocalServiceImpl.class);
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public Employee updateEmployee(long userId, long employeeId, String fullName, String employeeNo, int gender,
-			Date birthDate, String telNo, String mobile, String email, int workingStatus, long mainJobPostId,
-			long photoFileEntryId, long mappingUserId, String title, Date recruitDate, Date leaveDate,
-			ServiceContext serviceContext)
-			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException, UnauthenticationException,
-			UnauthorizationException, NoSuchUserException, NotFoundException, PortalException {
+	public Employee updateEmployee(
+		long userId, long employeeId, String fullName, String employeeNo,
+		int gender, Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, long photoFileEntryId,
+		long mappingUserId, String title, Date recruitDate, Date leaveDate,
+		ServiceContext serviceContext)
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
+		UnauthenticationException, UnauthorizationException,
+		NoSuchUserException, NotFoundException, PortalException {
 
 		// authen
-//		BackendAuthImpl authImpl = new BackendAuthImpl();
-//
-//		boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK, StringPool.BLANK);
-//
-//		if (!isAuth) {
-//			throw new UnauthenticationException();
-//		}
+		// BackendAuthImpl authImpl = new BackendAuthImpl();
+		//
+		// boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK,
+		// StringPool.BLANK);
+		//
+		// if (!isAuth) {
+		// throw new UnauthenticationException();
+		// }
 
-//		boolean hasPermission = authImpl.hasResource(serviceContext, ModelNameKeys.WORKINGUNIT_MGT_CENTER,
-//				ActionKeys.UPDATE_EMPLOYEE);
-//
-//		if (!hasPermission) {
-//			throw new UnauthorizationException();
-//		}
+		// boolean hasPermission = authImpl.hasResource(serviceContext,
+		// ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+		// ActionKeys.UPDATE_EMPLOYEE);
+		//
+		// if (!hasPermission) {
+		// throw new UnauthorizationException();
+		// }
 
 		Date now = new Date();
 
@@ -232,25 +260,28 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		Employee employee = employeePersistence.fetchByPrimaryKey(employeeId);
 
-//		if (!hasPermission && userId != employee.getMappingUserId()) {
-//			throw new UnauthorizationException();
-//		}
-		
-		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(employee.getGroupId(), employeeNo);
+		// if (!hasPermission && userId != employee.getMappingUserId()) {
+		// throw new UnauthorizationException();
+		// }
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
-				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
+		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(
+			employee.getGroupId(), employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			employeeCheck.get(0).getEmployeeId() != employeeId) {
 			throw new DuplicateEmployeeNoException();
 		}
 
-		//_log.info("employeeId:" + employeeId);
-		employeeCheck = employeePersistence.findByF_email(employee.getGroupId(), email);
-		//_log.info(
-		//		"employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " + employeeCheck.get(0).getEmployeeId());
-		//_log.info("employeeCheck:" + employeeCheck.get(0));
+		// _log.info("employeeId:" + employeeId);
+		employeeCheck =
+			employeePersistence.findByF_email(employee.getGroupId(), email);
+		// _log.info(
+		// "employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " +
+		// employeeCheck.get(0).getEmployeeId());
+		// _log.info("employeeCheck:" + employeeCheck.get(0));
 
-		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0
-				&& employeeCheck.get(0).getEmployeeId() != employeeId) {
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			employeeCheck.get(0).getEmployeeId() != employeeId) {
 			throw new DuplicateEmployeeEmailException();
 		}
 
@@ -306,7 +337,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	@ThreadLocalCachable
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
-		return employeePersistence.fetchByF_mappingUserId(groupId, mappingUserId);
+
+		return employeePersistence.fetchByF_mappingUserId(
+			groupId, mappingUserId);
 	}
 
 	int ttl = 86400;
@@ -339,9 +372,10 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	public void isExits(long groupId, String employeeNo, String email)
-			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
 
-		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(groupId, employeeNo);
+		List<Employee> employeeCheck =
+			employeePersistence.findByF_employeeNo(groupId, employeeNo);
 
 		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0) {
 			throw new DuplicateEmployeeNoException();
@@ -356,28 +390,38 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	@SuppressWarnings("deprecation")
-	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
-			SearchContext searchContext) throws ParseException, SearchException {
+	public Hits luceneSearchEngine(
+		LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+		SearchContext searchContext)
+		throws ParseException, SearchException {
+
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
-		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
+		String mainJobPostId =
+			(String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
 		String isAccount = (String) params.get("isAccount");
-		String workingUnitId = (String) params.get(EmployeeTerm.WORKING_UNIT_ID);
+		String workingUnitId =
+			(String) params.get(EmployeeTerm.WORKING_UNIT_ID);
 		String jobPostId = (String) params.get(EmployeeTerm.JOB_POS_ID);
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
-		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCodeSearch =
+			(String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
 
-		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
+		Indexer<Employee> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
-		searchContext.setEntryClassNames(new String[] { Employee.class.getName() });
+		searchContext.setEntryClassNames(new String[] {
+			Employee.class.getName()
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setStart(start);
@@ -389,7 +433,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -418,15 +463,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-					EmployeeTerm.TELNO };
+			String[] subQuerieArr = new String[] {
+				EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME,
+				EmployeeTerm.EMAIL, EmployeeTerm.TELNO
+			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+						fieldSearch,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
@@ -527,7 +575,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 					}
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
+			}
+			else {
 				MultiMatchQuery query = new MultiMatchQuery(strUserIdList);
 
 				query.addFields(EmployeeTerm.MAPPING_USER_ID);
@@ -541,50 +590,72 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			String[] keywordArr = employeeName.split(StringPool.SPACE);
 			BooleanQuery query = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-				WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
-						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+					EmployeeTerm.FULL_NAME,
+					StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(jobposCodeSearch)) {
-			MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
 
-			query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String[] jobposArr = StringUtil.split(jobposCodeSearch);
+			if (jobposArr != null && jobposArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < jobposArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(jobposArr[i]);
+					query.addField(EmployeeTerm.JOB_POS_CODE_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
+				query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
+		booleanQuery.addRequiredTerm(
+			Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 
 	}
 
 	@SuppressWarnings("deprecation")
-	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
-			throws ParseException, SearchException {
+	public long countLuceneSearchEngine(
+		LinkedHashMap<String, Object> params, SearchContext searchContext)
+		throws ParseException, SearchException {
+
 		String keywords = (String) params.get("keywords");
 		String employeeId = (String) params.get(EmployeeTerm.EMPLOYEE_ID);
 		String groupId = (String) params.get(EmployeeTerm.GROUP_ID);
-		String mainJobPostId = (String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
+		String mainJobPostId =
+			(String) params.get(EmployeeTerm.MAIN_JOBPOST_ID);
 		// String[] advFilterOptions = (String[])
 		// params.get("advFilterOptions");
 		String isAccount = (String) params.get("isAccount");
-		String workingUnitId = (String) params.get(EmployeeTerm.WORKING_UNIT_ID);
+		String workingUnitId =
+			(String) params.get(EmployeeTerm.WORKING_UNIT_ID);
 		String jobPostId = (String) params.get(EmployeeTerm.JOB_POS_ID);
 		String status = (String) params.get(EmployeeTerm.WORKING_STATUS);
 		String active = (String) params.get(EmployeeTerm.ACTIVE);
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get("userIdList");
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
-		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String jobposCodeSearch =
+			(String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
 
-		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
+		Indexer<Employee> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
 		searchContext.addFullQueryEntryClassName(Employee.class.getName());
-		searchContext.setEntryClassNames(new String[] { Employee.class.getName() });
+		searchContext.setEntryClassNames(new String[] {
+			Employee.class.getName()
+		});
 		searchContext.setAttribute("paginationType", "regular");
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
@@ -593,7 +664,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
+		}
+		else {
 			booleanQuery = indexer.getFullQuery(searchContext);
 		}
 
@@ -622,15 +694,18 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME, EmployeeTerm.EMAIL,
-					EmployeeTerm.TELNO };
+			String[] subQuerieArr = new String[] {
+				EmployeeTerm.EMPLOYEE_NO, EmployeeTerm.FULL_NAME,
+				EmployeeTerm.EMAIL, EmployeeTerm.TELNO
+			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
 				BooleanQuery query = new BooleanQueryImpl();
 				for (String key : keywordArr) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch,
-							StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+						fieldSearch,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 					query.add(wildQuery, BooleanClauseOccur.MUST);
 				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
@@ -731,7 +806,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 					}
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
+			}
+			else {
 				MultiMatchQuery query = new MultiMatchQuery(strUserIdList);
 
 				query.addFields(EmployeeTerm.MAPPING_USER_ID);
@@ -745,8 +821,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			String[] keywordArr = employeeName.split(StringPool.SPACE);
 			BooleanQuery query = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-				WildcardQuery wildQuery = new WildcardQueryImpl(EmployeeTerm.FULL_NAME,
-						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+					EmployeeTerm.FULL_NAME,
+					StringPool.STAR + key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
@@ -760,21 +837,26 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
+		booleanQuery.addRequiredTerm(
+			Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Employee updatePayload(long userId, long groupId, long fileCertId, long fileSignId, String fileCertPath,
-			String fileSignPath, ServiceContext serviceContext) throws PortalException {
+	public Employee updatePayload(
+		long userId, long groupId, long fileCertId, long fileSignId,
+		String fileCertPath, String fileSignPath, ServiceContext serviceContext)
+		throws PortalException {
 
-		Employee employee = employeePersistence.fetchByF_mappingUserId(groupId, userId);
+		Employee employee =
+			employeePersistence.fetchByF_mappingUserId(groupId, userId);
 
 		if (Validator.isNotNull(employee)) {
 
-			User user = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+			User user =
+				userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
 
 			String userName = StringPool.BLANK;
 
@@ -812,10 +894,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	public List<Employee> getLstEmployee(long groupId, long userId) {
+
 		return employeePersistence.findByG_UID(groupId, userId);
 	}
 
 	public Employee getEmployeeByEmpNo(long groupId, String employeeNo) {
+
 		return employeePersistence.fetchByF_GID_EMPNO(groupId, employeeNo);
 	}
 
@@ -827,14 +911,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (Validator.isNull(object)) {
 			return null;
-		} else {
+		}
+		else {
 			employeePersistence.remove(object);
 			// delete user
 			long userId = object.getMappingUserId();
 			if (userId > 0) {
 				try {
 					userPersistence.remove(userId);
-				} catch (NoSuchUserException e) {
+				}
+				catch (NoSuchUserException e) {
 					_log.error(e);
 				}
 			}
@@ -850,13 +936,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		if (objectData.getLong("employeeId") > 0) {
 
-			object = employeePersistence.fetchByPrimaryKey(objectData.getLong("employeeId"));
+			object = employeePersistence.fetchByPrimaryKey(
+				objectData.getLong("employeeId"));
 
 			object.setModifiedDate(new Date());
 
-		} else {
+		}
+		else {
 
-			long id = CounterLocalServiceUtil.increment(Employee.class.getName());
+			long id =
+				CounterLocalServiceUtil.increment(Employee.class.getName());
 
 			object = employeePersistence.create(id);
 
@@ -867,16 +956,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		}
 
 		long mappingUserId = objectData.getLong("mappingUserId");
-		//_log.info("mappingUserId: "+mappingUserId);
-		//User user = null;
+		// _log.info("mappingUserId: "+mappingUserId);
+		// User user = null;
 		if (mappingUserId > 0) {
 			object.setMappingUserId(objectData.getLong("mappingUserId"));
-			//Get info User
-			//user = UserLocalServiceUtil.fetchUser(mappingUserId);
-			//_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
-			//user = UserLocalServiceUtil.fetchUser(20139);
-			//_log.info("userHe Thong: "+JSONFactoryUtil.looseSerialize(user));
-			//User
+			// Get info User
+			// user = UserLocalServiceUtil.fetchUser(mappingUserId);
+			// _log.info("user: "+JSONFactoryUtil.looseSerialize(user));
+			// user = UserLocalServiceUtil.fetchUser(20139);
+			// _log.info("userHe Thong: "+JSONFactoryUtil.looseSerialize(user));
+			// User
 		}
 
 		object.setUserId(objectData.getLong("userId"));
@@ -890,54 +979,61 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
-		if(objectData.getLong("birthdate") > 0)
+		if (objectData.getLong("birthdate") > 0)
 			object.setBirthdate(new Date(objectData.getLong("birthdate")));
-		if(objectData.getLong("recruitDate") > 0)
-		object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
-		if(objectData.getLong("leaveDate") > 0)
-		object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
+		if (objectData.getLong("recruitDate") > 0)
+			object.setRecruitDate(new Date(objectData.getLong("recruitDate")));
+		if (objectData.getLong("leaveDate") > 0)
+			object.setLeaveDate(new Date(objectData.getLong("leaveDate")));
 		// object.setFileCertId(fileCertId);
 		// object.setFileSignId(fileSignId);
 		// object.setFileCertPath(fileCertPath);
 		// object.setFileSignPath(fileSignPath);
-//		if (user != null) {
-//			_log.info("EMAIL: "+user.getEmailAddress());
-//			String fullName = objectData.getString("fullName");
-//			_log.info("fullName: "+fullName);
-//			if (Validator.isNotNull(fullName)) {
-//				int indexFisrt = fullName.indexOf(" ");
-//				_log.info("indexFisrt: "+indexFisrt);
-//				if (indexFisrt > 0) {
-//					_log.info("fullName.substring(0, indexFisrt - 1): "+fullName.substring(0, indexFisrt));
-//					user.setModifiedDate(new Date());
-//					user.setFirstName(fullName.substring(0, indexFisrt));
-//					user.setMiddleName(StringPool.BLANK);
-//					user.setLastName(fullName.substring(indexFisrt + 1));
-//					//Update user
-//					UserLocalServiceUtil.updateUser(user);
-//				}
-//			}
-//		}
-		//_log.info("user: "+JSONFactoryUtil.looseSerialize(user));
+		// if (user != null) {
+		// _log.info("EMAIL: "+user.getEmailAddress());
+		// String fullName = objectData.getString("fullName");
+		// _log.info("fullName: "+fullName);
+		// if (Validator.isNotNull(fullName)) {
+		// int indexFisrt = fullName.indexOf(" ");
+		// _log.info("indexFisrt: "+indexFisrt);
+		// if (indexFisrt > 0) {
+		// _log.info("fullName.substring(0, indexFisrt - 1):
+		// "+fullName.substring(0, indexFisrt));
+		// user.setModifiedDate(new Date());
+		// user.setFirstName(fullName.substring(0, indexFisrt));
+		// user.setMiddleName(StringPool.BLANK);
+		// user.setLastName(fullName.substring(indexFisrt + 1));
+		// //Update user
+		// UserLocalServiceUtil.updateUser(user);
+		// }
+		// }
+		// }
+		// _log.info("user: "+JSONFactoryUtil.looseSerialize(user));
 
 		return employeePersistence.update(object);
 
 	}
 
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds) {
+
 		return employeePersistence.findByG_EMPID(groupId, employeeIds);
 	}
-	
+
 	public long countByG_EMPID(long groupId, long[] employeeIds) {
+
 		return employeePersistence.countByG_EMPID(groupId, employeeIds);
-	}	
-	
+	}
+
 	public List<Employee> findByG(long groupId) {
+
 		return employeePersistence.findByF_groupId(groupId);
 	}
 
-	public List<Employee> findByWorkstatus(long mappingUserId, int workingStatus) {
-		return employeePersistence.findByF_EMP_WORK(mappingUserId, workingStatus);
+	public List<Employee> findByWorkstatus(
+		long mappingUserId, int workingStatus) {
+
+		return employeePersistence.findByF_EMP_WORK(
+			mappingUserId, workingStatus);
 	}
 
 }

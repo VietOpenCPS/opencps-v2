@@ -416,6 +416,11 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
 
+			//ViaPostal
+			Integer viaPostal = query.getViapostal();
+			if (viaPostal != null) {
+				params.put(DossierTerm.VIA_POSTAL, viaPostal);
+			}
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -862,6 +867,12 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
+			}
+
+			//ViaPostal
+			Integer viaPostal = query.getViapostal();
+			if (viaPostal != null) {
+				params.put(DossierTerm.VIA_POSTAL, viaPostal);
 			}
 
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
@@ -6788,6 +6799,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
+		System.out.println("START IMPORT APPLICANT");
 		try {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();

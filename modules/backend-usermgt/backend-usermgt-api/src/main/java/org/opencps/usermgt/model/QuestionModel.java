@@ -195,6 +195,36 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	public void setPublish(int publish);
 
 	/**
+	 * Returns the domain code of this question.
+	 *
+	 * @return the domain code of this question
+	 */
+	@AutoEscape
+	public String getDomainCode();
+
+	/**
+	 * Sets the domain code of this question.
+	 *
+	 * @param domainCode the domain code of this question
+	 */
+	public void setDomainCode(String domainCode);
+
+	/**
+	 * Returns the domain name of this question.
+	 *
+	 * @return the domain name of this question
+	 */
+	@AutoEscape
+	public String getDomainName();
+
+	/**
+	 * Sets the domain name of this question.
+	 *
+	 * @param domainName the domain name of this question
+	 */
+	public void setDomainName(String domainName);
+
+	/**
 	 * Returns the gov agency code of this question.
 	 *
 	 * @return the gov agency code of this question

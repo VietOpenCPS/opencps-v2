@@ -660,6 +660,8 @@
 		<column name="email" type="String" />
 		<column name="content" type="String" />
 		<column name="publish" type="int" />
+		<column name="domainCode" type="String" />
+		<column name="domainName" type="String" />
 		<column name="govAgencyCode" type="String" />
 		<column name="govAgencyName" type="String" />
 		<column name="questionType" type="String" />

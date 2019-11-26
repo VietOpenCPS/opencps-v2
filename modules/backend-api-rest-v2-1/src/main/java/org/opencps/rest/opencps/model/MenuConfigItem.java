@@ -37,6 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
   private String buttonConfig = null;
   @ApiModelProperty(example = "icon", value = "")
   private String icon = null;
+  @ApiModelProperty(example = "false", value = "")
+  private Boolean hasViewText = null;
   @ApiModelProperty(example = "null", value = "")
   private List<MenuConfigStepsItem> steps = new ArrayList<MenuConfigStepsItem>();
 
@@ -211,6 +213,23 @@ import javax.xml.bind.annotation.XmlRootElement;
   }
 
  /**
+   * Get hasViewText
+   * @return hasViewText
+  **/
+  public Boolean getHasViewText() {
+    return hasViewText;
+  }
+
+  public void setHasViewText(Boolean hasViewText) {
+    this.hasViewText = hasViewText;
+  }
+
+  public MenuConfigItem hasViewText(Boolean hasViewText) {
+    this.hasViewText = hasViewText;
+    return this;
+  }
+
+ /**
    * Get steps
    * @return steps
   **/
@@ -248,6 +267,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     sb.append("    tableConfig: ").append(toIndentedString(tableConfig)).append("\n");
     sb.append("    buttonConfig: ").append(toIndentedString(buttonConfig)).append("\n");
     sb.append("    icon: ").append(toIndentedString(icon)).append("\n");
+    sb.append("    hasViewText: ").append(toIndentedString(hasViewText)).append("\n");
     sb.append("    steps: ").append(toIndentedString(steps)).append("\n");
     sb.append("}");
     return sb.toString();
