@@ -246,6 +246,12 @@ public class JobPosLocalServiceWrapper implements JobPosLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.JobPos> findByF_jobPosIds(
+		long groupId, long[] jobPosIds) {
+		return _jobPosLocalService.findByF_jobPosIds(groupId, jobPosIds);
+	}
+
+	@Override
 	public java.util.List<org.opencps.usermgt.model.JobPos> findByF_mappingRoleIds(
 		long groupId, long[] mappingRoleIds) {
 		return _jobPosLocalService.findByF_mappingRoleIds(groupId,

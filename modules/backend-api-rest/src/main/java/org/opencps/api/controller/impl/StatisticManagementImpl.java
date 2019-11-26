@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +66,9 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -855,9 +858,26 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 		}
 		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
-		Map<Long, String> mapEmps = new HashedMap<Long, String>();
+		
+		Map<Long, Employee> mapEmps = new HashedMap<Long, Employee>();
+		List<Long> lstJobPosIds = new ArrayList<Long>();
 		for (Employee e : lstEmps) {
-			mapEmps.put(e.getMappingUserId(), e.getFullName());
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		Long[] jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		long[] jobPosFinds = new long[jobPosIds.length];
+		int tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		List<JobPos> lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		Map<Long, JobPos> mapJobs = new HashedMap<Long, JobPos>();
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
 		}
 		JSONArray result = JSONFactoryUtil.createJSONArray();
 		for (Object objectData  : lstStatistics){
@@ -866,10 +886,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
 					JSONObject obj = JSONFactoryUtil.createJSONObject();
-					obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)));
+					obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
 					obj.put("overdue", actionOverdueDataJsonArray.getLong(1));
 					obj.put("userId", actionOverdueDataJsonArray.getLong(0));
 					obj.put("undue", 0);
+					obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
 					result.put(obj);					
 				}
 			} catch (JSONException e) {
@@ -890,7 +911,21 @@ public class StatisticManagementImpl implements StatisticManagement {
 		}
 		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
 		for (Employee e : lstEmps) {
-			mapEmps.put(e.getMappingUserId(), e.getFullName());
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		jobPosFinds = new long[jobPosIds.length];
+		tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
 		}
 
 		for (Object objectData  : lstStatistics){
@@ -909,10 +944,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 				if (!foundStatistic) {
 					if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
 						JSONObject obj = JSONFactoryUtil.createJSONObject();
-						obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)));
+						obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
 						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
 						obj.put("userId", actionOverdueDataJsonArray.getLong(0));
 						obj.put("overdue", 0);
+						obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
 						
 						result.put(obj);										
 					}
