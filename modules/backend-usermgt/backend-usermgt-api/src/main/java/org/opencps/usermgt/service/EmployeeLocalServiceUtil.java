@@ -262,6 +262,11 @@ public class EmployeeLocalServiceUtil {
 		return getService().findByG_EMPID(groupId, employeeIds);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Employee> findByG_MUSERID(
+		long groupId, long[] userIds) {
+		return getService().findByG_MUSERID(groupId, userIds);
+	}
+
 	public static java.util.List<org.opencps.usermgt.model.Employee> findByWorkstatus(
 		long mappingUserId, int workingStatus) {
 		return getService().findByWorkstatus(mappingUserId, workingStatus);

@@ -723,12 +723,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return object;
 	}
 
-	public List<PersonDossierStatistic> findActionOverdue(Date fromDate, Date toDate, long groupId, int begin, int end) {
-		return dossierActionFinder.findActionOverdue(fromDate, toDate, groupId, begin, end);
+	public List findActionOverdue(Date fromDate, Date toDate, long groupId) {
+		return dossierActionFinder.findActionOverdue(fromDate, toDate, groupId);
 	}
 	
-	public List<PersonDossierStatistic> findActionUndue(Date fromDate, Date toDate, long groupId, int begin, int end) {
-		return dossierActionFinder.findActionUndue(fromDate, toDate, groupId, begin, end);
+	public List findActionUndue(Date fromDate, Date toDate, long groupId) {
+		return dossierActionFinder.findActionUndue(fromDate, toDate, groupId);
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);

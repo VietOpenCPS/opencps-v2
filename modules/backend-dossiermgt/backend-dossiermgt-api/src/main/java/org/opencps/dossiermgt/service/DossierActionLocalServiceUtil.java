@@ -211,18 +211,14 @@ public class DossierActionLocalServiceUtil {
 		return getService().fetchDossierActionByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.input.model.PersonDossierStatistic> findActionOverdue(
-		java.util.Date fromDate, java.util.Date toDate, long groupId,
-		int begin, int end) {
-		return getService()
-				   .findActionOverdue(fromDate, toDate, groupId, begin, end);
+	public static java.util.List findActionOverdue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return getService().findActionOverdue(fromDate, toDate, groupId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.input.model.PersonDossierStatistic> findActionUndue(
-		java.util.Date fromDate, java.util.Date toDate, long groupId,
-		int begin, int end) {
-		return getService()
-				   .findActionUndue(fromDate, toDate, groupId, begin, end);
+	public static java.util.List findActionUndue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return getService().findActionUndue(fromDate, toDate, groupId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findByG_DID(

@@ -182,6 +182,11 @@
 			<finder-column name="mappingUserId" comparator="&gt;"></finder-column>
 			<finder-column name="workingStatus" comparator="="></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="G_MUSERID">
+			<finder-column name="groupId"></finder-column>
+            <finder-column name="mappingUserId" comparator="=" arrayable-operator="OR"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"

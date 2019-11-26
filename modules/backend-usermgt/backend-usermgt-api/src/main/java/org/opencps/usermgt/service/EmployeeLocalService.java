@@ -236,6 +236,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds);
 
+	public List<Employee> findByG_MUSERID(long groupId, long[] userIds);
+
 	public List<Employee> findByWorkstatus(long mappingUserId, int workingStatus);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

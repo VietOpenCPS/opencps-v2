@@ -65,6 +65,5 @@ public interface StatisticManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getDossierPerson(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("from") String from, @FormParam("to") String to,
-			@FormParam("start") Integer start, @FormParam("end") Integer end);
+			@Context ServiceContext serviceContext, @FormParam("from") String from, @FormParam("to") String to);
 }

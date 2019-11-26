@@ -1036,4 +1036,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			mappingUserId, workingStatus);
 	}
 
+	public List<Employee> findByG_MUSERID(long groupId, long[] userIds) {
+
+		return employeePersistence.findByG_MUSERID(groupId, userIds);
+	}
 }

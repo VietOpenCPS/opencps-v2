@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -789,7 +790,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	@Override
 	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String from, String to, Integer start, Integer end) {
+			User user, ServiceContext serviceContext, String from, String to) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String query = "{\r\n" + 
 				"  \"size\": 0,\r\n" + 
@@ -837,56 +838,88 @@ public class StatisticManagementImpl implements StatisticManagement {
 				"	  }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
-				"}'";
-		if (end == null || end == 0) {
-			end = QueryUtil.ALL_POS;
-		}
-		if (start == null) {
-			start = 0;
-		}
+				"}'";		
 		Date fromDate = APIDateTimeUtils.convertVNStrToDate(from);
 		Date toDate = APIDateTimeUtils.convertVNStrToDate(to);
-		List<PersonDossierStatistic> lstStatistics = DossierActionLocalServiceUtil.findActionOverdue(fromDate, toDate, groupId, start, end);
+		List lstStatistics = DossierActionLocalServiceUtil.findActionOverdue(fromDate, toDate, groupId);
 		long[] userIdArr = new long[lstStatistics.size()];
 		int count = 0;
-		for (PersonDossierStatistic ps : lstStatistics) {
-			userIdArr[count++] = ps.getUserId();
+		String serilizeString=null;
+		JSONArray actionOverdueDataJsonArray = null;
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e1) {
+			}
 		}
-		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_EMPID(groupId, userIdArr);
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
 		Map<Long, String> mapEmps = new HashedMap<Long, String>();
 		for (Employee e : lstEmps) {
 			mapEmps.put(e.getMappingUserId(), e.getFullName());
 		}
 		JSONArray result = JSONFactoryUtil.createJSONArray();
-		for (PersonDossierStatistic ps : lstStatistics) {
-			JSONObject obj = JSONFactoryUtil.createJSONObject();
-			obj.put("fullName", mapEmps.get(ps.getUserId()));
-			obj.put("overdue", ps.getSoluonghoso());
-			obj.put("userId", ps.getUserId());
-			obj.put("undue", ps.getSoluonghoso());
-			result.put(obj);
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject();
+					obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)));
+					obj.put("overdue", actionOverdueDataJsonArray.getLong(1));
+					obj.put("userId", actionOverdueDataJsonArray.getLong(0));
+					obj.put("undue", 0);
+					result.put(obj);					
+				}
+			} catch (JSONException e) {
+			}
 		}
 		
-		lstStatistics = DossierActionLocalServiceUtil.findActionUndue(fromDate, toDate, groupId, start, end);
-		for (PersonDossierStatistic ps : lstStatistics) {
-			boolean foundStatistic = false;
-			for (int i = 0; i < result.length(); i++) {
-				JSONObject obj = result.getJSONObject(i);
-				if (obj.has("userId") && obj.getLong("userId") == ps.getUserId()) {
-					foundStatistic = true;
-					obj.put("undue", ps.getSoluonghoso());
-					break;
+		lstStatistics = DossierActionLocalServiceUtil.findActionUndue(fromDate, toDate, groupId);
+		count = 0;
+		userIdArr = new long[lstStatistics.size()];
+		
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e) {
+			}
+		}
+		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e.getFullName());
+		}
+
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				boolean foundStatistic = false;
+				for (int i = 0; i < result.length(); i++) {
+					JSONObject obj = result.getJSONObject(i);
+					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
+						foundStatistic = true;
+						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
+						break;
+					}
 				}
+				if (!foundStatistic) {
+					if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
+						JSONObject obj = JSONFactoryUtil.createJSONObject();
+						obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)));
+						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
+						obj.put("userId", actionOverdueDataJsonArray.getLong(0));
+						obj.put("overdue", 0);
+						
+						result.put(obj);										
+					}
+				}
+			} catch (JSONException e1) {
 			}
-			if (!foundStatistic) {
-				JSONObject obj = JSONFactoryUtil.createJSONObject();
-				obj.put("fullName", mapEmps.get(ps.getUserId()));
-				obj.put("undue", ps.getSoluonghoso());
-				obj.put("userId", ps.getUserId());
-				obj.put("overdue", 0);
-				
-				result.put(obj);				
-			}
+
 		}
 		
 		return Response.ok().entity(result.toJSONString()).build();
