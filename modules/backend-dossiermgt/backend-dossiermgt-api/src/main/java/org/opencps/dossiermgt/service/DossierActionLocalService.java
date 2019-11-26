@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.DossierAction;
 
 import java.io.Serializable;
@@ -197,6 +198,12 @@ public interface DossierActionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierAction fetchDossierActionByUuidAndGroupId(String uuid,
 		long groupId);
+
+	public List<PersonDossierStatistic> findActionOverdue(Date fromDate,
+		Date toDate, long groupId, int begin, int end);
+
+	public List<PersonDossierStatistic> findActionUndue(Date fromDate,
+		Date toDate, long groupId, int begin, int end);
 
 	public List<DossierAction> findByG_DID(long groupId, long dossierId);
 

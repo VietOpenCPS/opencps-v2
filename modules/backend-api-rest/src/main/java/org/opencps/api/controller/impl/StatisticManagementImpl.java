@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,12 +24,14 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -43,6 +46,7 @@ import org.opencps.api.statistic.model.StatisticDossierSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -52,11 +56,15 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -777,6 +785,111 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 		}
 
+	}
+
+	@Override
+	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String from, String to, Integer start, Integer end) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String query = "{\r\n" + 
+				"  \"size\": 0,\r\n" + 
+				"  \"query\": {\r\n" + 
+				"    \"bool\": {\r\n" + 
+				"      \"filter\": [\r\n" + 
+				"        {\r\n" + 
+				"          \"term\": {\r\n" + 
+				"            \"entryClassName\": \"org.opencps.dossiermgt.model.DossierAction\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"		{\r\n" + 
+				"			\"range\" : {\r\n" + 
+				"				\"modified\" : { \r\n" + 
+				"					\"gte\" : \"20190709000000\",\r\n" + 
+				"					\"lte\": \"20190609235959\"\r\n" + 
+				"				}\r\n" + 
+				"			}			\r\n" + 
+				"		}\r\n" + 
+				"      ],\r\n" + 
+				"	  \"must_not\" : {\r\n" + 
+				"        \"term\" : {\r\n" + 
+				"          \"actionOverdue\" : 0\r\n" + 
+				"        }\r\n" + 
+				"      },\r\n" + 
+				"	  \"must\": {\r\n" + 
+				"		\"term\": {\r\n" + 
+				"			\"groupId\": 51801\r\n" + 
+				"		}\r\n" + 
+				"	  }	  \r\n" + 
+				"    }\r\n" + 
+				"  },\r\n" + 
+				"  \"aggs\": {\r\n" + 
+				"    \"group_by_user_id\": {\r\n" + 
+				"      \"terms\": {\r\n" + 
+				"		\"size\":10000,\r\n" + 
+				"        \"field\": \"userId\"\r\n" + 
+				"      },\r\n" + 
+				"	  \"aggs\": {\r\n" + 
+				"		\"count\":{\r\n" + 
+				"			\"cardinality\": {\r\n" + 
+				"				\"field\": \"dossierId_Number_sortable\"\r\n" + 
+				"			}\r\n" + 
+				"		}			\r\n" + 
+				"	  }\r\n" + 
+				"    }\r\n" + 
+				"  }\r\n" + 
+				"}'";
+		if (end == null || end == 0) {
+			end = QueryUtil.ALL_POS;
+		}
+		if (start == null) {
+			start = 0;
+		}
+		Date fromDate = APIDateTimeUtils.convertVNStrToDate(from);
+		Date toDate = APIDateTimeUtils.convertVNStrToDate(to);
+		List<PersonDossierStatistic> lstStatistics = DossierActionLocalServiceUtil.findActionOverdue(fromDate, toDate, groupId, start, end);
+		long[] userIdArr = new long[lstStatistics.size()];
+		int count = 0;
+		for (PersonDossierStatistic ps : lstStatistics) {
+			userIdArr[count++] = ps.getUserId();
+		}
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_EMPID(groupId, userIdArr);
+		Map<Long, String> mapEmps = new HashedMap<Long, String>();
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e.getFullName());
+		}
+		JSONArray result = JSONFactoryUtil.createJSONArray();
+		for (PersonDossierStatistic ps : lstStatistics) {
+			JSONObject obj = JSONFactoryUtil.createJSONObject();
+			obj.put("fullName", mapEmps.get(ps.getUserId()));
+			obj.put("overdue", ps.getSoluonghoso());
+			obj.put("userId", ps.getUserId());
+			obj.put("undue", ps.getSoluonghoso());
+			result.put(obj);
+		}
+		
+		lstStatistics = DossierActionLocalServiceUtil.findActionUndue(fromDate, toDate, groupId, start, end);
+		for (PersonDossierStatistic ps : lstStatistics) {
+			boolean foundStatistic = false;
+			for (int i = 0; i < result.length(); i++) {
+				JSONObject obj = result.getJSONObject(i);
+				if (obj.has("userId") && obj.getLong("userId") == ps.getUserId()) {
+					foundStatistic = true;
+					obj.put("undue", ps.getSoluonghoso());
+					break;
+				}
+			}
+			if (!foundStatistic) {
+				JSONObject obj = JSONFactoryUtil.createJSONObject();
+				obj.put("fullName", mapEmps.get(ps.getUserId()));
+				obj.put("undue", ps.getSoluonghoso());
+				obj.put("userId", ps.getUserId());
+				obj.put("overdue", 0);
+				
+				result.put(obj);				
+			}
+		}
+		
+		return Response.ok().entity(result.toJSONString()).build();
 	}
 
 //	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {

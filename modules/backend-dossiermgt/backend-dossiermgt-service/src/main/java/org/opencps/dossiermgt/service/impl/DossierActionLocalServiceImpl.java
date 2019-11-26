@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
@@ -720,6 +721,14 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		}
 
 		return object;
+	}
+
+	public List<PersonDossierStatistic> findActionOverdue(Date fromDate, Date toDate, long groupId, int begin, int end) {
+		return dossierActionFinder.findActionOverdue(fromDate, toDate, groupId, begin, end);
+	}
+	
+	public List<PersonDossierStatistic> findActionUndue(Date fromDate, Date toDate, long groupId, int begin, int end) {
+		return dossierActionFinder.findActionUndue(fromDate, toDate, groupId, begin, end);
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);

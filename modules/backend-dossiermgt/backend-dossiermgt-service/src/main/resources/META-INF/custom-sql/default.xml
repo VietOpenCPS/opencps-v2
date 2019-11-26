@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom-sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.DossierActionFinder.findActionOverdue">
+        <![CDATA[
+            select userId, dueDate, count(*) as soluonghoso from opencps_dossieraction 
+				where modifiedDate >= ? and modifiedDate <= ? and groupId=?
+				and actionOverdue > 0 or (dueDate IS NOT NULL and dueDate > CURDATE())
+			group by userId
+        ]]>
+    </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.DossierActionFinder.findActionUndue">
+        <![CDATA[
+            select userId, dueDate, count(*) as soluonghoso from opencps_dossieraction 
+				where modifiedDate >= ? and modifiedDate <= ? and groupId=?
+				and actionOverdue = 0 or (dueDate IS NOT NULL and dueDate <= CURDATE())
+			group by userId
+        ]]>
+    </sql>
+</custom-sql>

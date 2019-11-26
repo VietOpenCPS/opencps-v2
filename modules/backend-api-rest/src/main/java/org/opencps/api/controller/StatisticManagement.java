@@ -59,4 +59,12 @@ public interface StatisticManagement {
 	public Response exportDossierStatistic(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @FormParam("data") String data);
+
+	@GET
+	@Path("/dossiers/person")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getDossierPerson(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("from") String from, @FormParam("to") String to,
+			@FormParam("start") Integer start, @FormParam("end") Integer end);
 }
