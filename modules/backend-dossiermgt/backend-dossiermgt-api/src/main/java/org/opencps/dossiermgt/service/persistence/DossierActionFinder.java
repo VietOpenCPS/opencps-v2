@@ -27,4 +27,6 @@ public interface DossierActionFinder {
 
 	public java.util.List findActionUndue(java.util.Date fromDate,
 		java.util.Date toDate, long groupId);
+
+	public java.util.List findActionOverdueFuture(long groupId);
 }

@@ -16,4 +16,14 @@
 			group by userId
         ]]>
     </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.DossierActionFinder.findActionOverdueFuture">
+        <![CDATA[
+            select dau.userId, count(*) as soluonghoso from opencps_dossieraction as da1 
+				inner join opencps_dossieractionuser as dau on dau.stepCode = da1.stepCode and dau.dossierActionId = da1.dossierActionId
+				and modifiedDate= (select MAX(modifiedDate) from opencps_dossieraction as da2 where da1.dossierId = da2.dossierId)
+				and da1.groupId=?
+				and da1.dueDate > CURDATE()
+			group by dau.userId;
+        ]]>
+    </sql>
 </custom-sql>

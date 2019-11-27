@@ -82,7 +82,36 @@ public class DossierActionFinderImpl extends DossierActionFinderBaseImpl impleme
 		return null;
 	}
 	
+	public List findActionOverdueFuture(long groupId) {
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = _customSQL.get(getClass(), FIND_ACTION_OVERDUE_FUTURE);
+			SQLQuery q = session.createSQLQuery(sql);
+			q.setCacheable(false);
+			q.addScalar("userId", Type.INTEGER);
+			q.addScalar("soluonghoso", Type.INTEGER);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+			qPos.add(groupId);
+
+			return q.list();
+		} catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				se.printStackTrace();
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return null;
+	}
+	
 	Log _log = LogFactoryUtil.getLog(DossierActionFinderImpl.class);
 	public static final String FIND_ACTION_OVERDUE = DossierActionFinder.class.getName() + ".findActionOverdue";
+	public static final String FIND_ACTION_OVERDUE_FUTURE = DossierActionFinder.class.getName() + ".findActionOverdueFuture";
 	public static final String FIND_ACTION_UNDUE = DossierActionFinder.class.getName() + ".findActionUndue";
 }

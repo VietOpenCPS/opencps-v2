@@ -896,7 +896,56 @@ public class StatisticManagementImpl implements StatisticManagement {
 			} catch (JSONException e) {
 			}
 		}
+
+		//Find overdue not processing
+		lstStatistics = DossierActionLocalServiceUtil.findActionOverdueFuture(groupId);
+		count = 0;
+		userIdArr = new long[lstStatistics.size()];
 		
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e) {
+			}
+		}
+		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		jobPosFinds = new long[jobPosIds.length];
+		tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
+		}
+
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				for (int i = 0; i < result.length(); i++) {
+					JSONObject obj = result.getJSONObject(i);
+					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
+						long overdue = obj.getLong("overdue");
+						overdue += actionOverdueDataJsonArray.getLong(1);
+						obj.put("overdue", overdue);
+					}
+				}
+			} catch (JSONException e1) {
+			}
+		}		
+		
+		//Find undue
 		lstStatistics = DossierActionLocalServiceUtil.findActionUndue(fromDate, toDate, groupId);
 		count = 0;
 		userIdArr = new long[lstStatistics.size()];

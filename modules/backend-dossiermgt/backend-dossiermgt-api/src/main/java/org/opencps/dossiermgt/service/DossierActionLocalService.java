@@ -200,6 +200,8 @@ public interface DossierActionLocalService extends BaseLocalService,
 
 	public List findActionOverdue(Date fromDate, Date toDate, long groupId);
 
+	public List findActionOverdueFuture(long groupId);
+
 	public List findActionUndue(Date fromDate, Date toDate, long groupId);
 
 	public List<DossierAction> findByG_DID(long groupId, long dossierId);

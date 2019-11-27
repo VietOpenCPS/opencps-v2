@@ -731,5 +731,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		return dossierActionFinder.findActionUndue(fromDate, toDate, groupId);
 	}
 
+	public List findActionOverdueFuture(long groupId) {
+		return dossierActionFinder.findActionOverdueFuture(groupId);
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierActionLocalServiceImpl.class);
 }
