@@ -31,6 +31,7 @@ public class ConstantUtils {
 	public static final String XML_SERVER_CONFIG = "ServerConfig.xml";
 	public static final String XML_NOTIFICATION_TEMPLATE = "NotificationTemplate.xml";
 	public static final String XML_USERS = "Users.xml";
+	public static final String XML_USERS_QA_DONGTHAP = "Users_qa_dongthap.xml";
 	public static final String XML_DYNAMIC_REPORT = "DynamicReport.xml";
 	public static final String XML_HOLIDAY = "Holiday.xml";
 	public static final String XML_APPLICANT = "Applicant.xml";
