@@ -153,18 +153,19 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				return builder.entity(result).cacheControl(cc).build();
-//			}
-//			else {
-				return Response.status(200).entity(result).build();
-//			}
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			cc.setPrivate(true);	
+	
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.ok(result);
+				builder.tag(etag);
+			}
+		    
+		    builder.cacheControl(cc);
+		    return builder.build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -470,7 +471,7 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 	@Override
 	public Response getFormScript(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id, String partNo) {
+			User user, ServiceContext serviceContext, String id, String partNo, Request requestCC) {
 
 		DossierTemplateActions actions = new DossierTemplateActionsImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -494,7 +495,21 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 //			result.setValue(content);
 
-			return Response.status(200).entity(content).build();
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id + "_" + partNo).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			cc.setPrivate(true);	
+	
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.ok(content);
+				builder.tag(etag);
+			}
+		    
+		    builder.cacheControl(cc);
+		    return builder.build();
+		    
+//			return Response.status(200).entity(content).build();
 //			return Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {

@@ -56,6 +56,20 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
+import org.opencps.usermgt.constants.EmployeeTerm;
+import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
+import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
+import org.opencps.usermgt.exception.NoSuchEmployeeException;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
+
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -328,9 +342,33 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			groupId, mappingUserId);
 	}
 
+	int ttl = 86400;
+	CacheActions cache = new CacheActionsImpl();
+	
+	@ThreadLocalCachable
 	public Employee fetchByFB_MUID(long mappingUserId) {
-
-		return employeePersistence.fetchByFB_MUID(mappingUserId);
+		Serializable userSerialize = null;
+		try {
+			userSerialize = cache.getFromCache("EmployeeMapping", mappingUserId + "");
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		if (userSerialize != null) {
+			return (Employee)userSerialize;
+		}
+		else {
+			Employee tempE = employeePersistence.fetchByFB_MUID(mappingUserId);
+			if (tempE != null) {
+				try {
+					cache.addToCache("EmployeeMapping",
+						mappingUserId + "", (Serializable)tempE, ttl);
+				}
+				catch (PortalException e) {
+					_log.debug(e);
+				}
+			}
+			return tempE;
+		}
 	}
 
 	public void isExits(long groupId, String employeeNo, String email)
@@ -998,4 +1036,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			mappingUserId, workingStatus);
 	}
 
+	public List<Employee> findByG_MUSERID(long groupId, long[] userIds) {
+
+		return employeePersistence.findByG_MUSERID(groupId, userIds);
+	}
 }

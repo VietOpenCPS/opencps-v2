@@ -198,7 +198,7 @@ public interface DossierTemplateManagement {
 
 	public Response getFormScript(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") String id, @PathParam("partno") String partno);
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @PathParam("partno") String partno, @Context Request requestCC);
 
 	@GET
 	@Path("/{id}/parts/{partno}/formreport")

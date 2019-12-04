@@ -23,6 +23,7 @@ public class APIDateTimeUtils {
 	public static final String _NORMAL_PARTTERN = "dd/MM/yyyy HH:mm:ss";
 
 	public static final String _NORMAL_DATE = "dd/MM/yyyy";
+	public static final String _NORMAL_DATE_TIME = "dd/MM/yyyy HH:mm:ss";
 	
 	public static final String _NSW_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
@@ -43,6 +44,40 @@ public class APIDateTimeUtils {
 		String day = (splitD[0].length() == 1) ? "0" + splitD[0] : splitD[0];
 		
 		return year + month + day;
+	}
+
+	public static Date convertVNStrToDate(String normal) {
+		if (Validator.isNull(normal)) {
+			return null;
+		}
+		String[] splitD = normal.split("/");
+		if (splitD.length != 3 ||
+				splitD[1].length() > 2 ||
+				splitD[0].length() > 2) {
+			return null;
+		}
+		String year = splitD[2];
+		String month = (splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1];
+		String day = (splitD[0].length() == 1) ? "0" + splitD[0] : splitD[0];
+		
+		return convertStringToDate(day + "/" + month + "/" + year, _NORMAL_DATE);
+	}
+
+	public static Date convertVNStrToDateTime(String normal, String time) {
+		if (Validator.isNull(normal)) {
+			return null;
+		}
+		String[] splitD = normal.split("/");
+		if (splitD.length != 3 ||
+				splitD[1].length() > 2 ||
+				splitD[0].length() > 2) {
+			return null;
+		}
+		String year = splitD[2];
+		String month = (splitD[1].length() == 1) ? "0" + splitD[1] : splitD[1];
+		String day = (splitD[0].length() == 1) ? "0" + splitD[0] : splitD[0];
+		
+		return convertStringToDate(day + "/" + month + "/" + year + " " + time, _NORMAL_DATE_TIME);
 	}
 	
 	public static String convertDateToString(Date date) {

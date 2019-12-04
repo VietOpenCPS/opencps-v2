@@ -87,7 +87,7 @@ public class VotingActionsImpl implements VotingActions {
 			searchContext.setCompanyId(companyId);
 
 			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			//_log.info("VotingActions.getVotingList(): "+hits.getLength());
+			_log.info("VotingActions.getVotingList(): "+hits.getLength());
 			if (hits.toList() == null || hits.toList().size() == 0) {
 				params.put("classPK", "0");
 				params.put("fromVotingDate", "");

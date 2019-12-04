@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+
+import java.io.Serializable;
 
 /**
  * Provides the local service interface for Cache. Methods of this
@@ -43,6 +46,15 @@ public interface CacheLocalService extends BaseLocalService {
 	 *
 	 * Never modify or reference this interface directly. Always use {@link CacheLocalServiceUtil} to access the cache local service. Add custom service methods to {@link org.opencps.cache.service.impl.CacheLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public void addToCache(String cacheName, Serializable key,
+		Serializable value, int ttl);
+
+	public void clearCache(String cacheName) throws PortalException;
+
+	public void closeCachePool();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Serializable getFromCache(String cacheName, Serializable key);
 
 	/**
 	* Returns the OSGi service identifier.
@@ -50,4 +62,9 @@ public interface CacheLocalService extends BaseLocalService {
 	* @return the OSGi service identifier
 	*/
 	public String getOSGiServiceIdentifier();
+
+	public void ping() throws PortalException;
+
+	public void removeFromCache(String cacheName, Serializable key)
+		throws PortalException;
 }

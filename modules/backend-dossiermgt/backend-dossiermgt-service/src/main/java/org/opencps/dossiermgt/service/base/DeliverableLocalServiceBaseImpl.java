@@ -60,6 +60,7 @@ import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableTypePersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableTypeRolePersistence;
 import org.opencps.dossiermgt.service.persistence.DocumentTypePersistence;
+import org.opencps.dossiermgt.service.persistence.DossierActionFinder;
 import org.opencps.dossiermgt.service.persistence.DossierActionPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPersistence;
@@ -873,6 +874,24 @@ public abstract class DeliverableLocalServiceBaseImpl
 	public void setDossierActionPersistence(
 		DossierActionPersistence dossierActionPersistence) {
 		this.dossierActionPersistence = dossierActionPersistence;
+	}
+
+	/**
+	 * Returns the dossier action finder.
+	 *
+	 * @return the dossier action finder
+	 */
+	public DossierActionFinder getDossierActionFinder() {
+		return dossierActionFinder;
+	}
+
+	/**
+	 * Sets the dossier action finder.
+	 *
+	 * @param dossierActionFinder the dossier action finder
+	 */
+	public void setDossierActionFinder(DossierActionFinder dossierActionFinder) {
+		this.dossierActionFinder = dossierActionFinder;
 	}
 
 	/**
@@ -2484,6 +2503,8 @@ public abstract class DeliverableLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierActionLocalService dossierActionLocalService;
 	@BeanReference(type = DossierActionPersistence.class)
 	protected DossierActionPersistence dossierActionPersistence;
+	@BeanReference(type = DossierActionFinder.class)
+	protected DossierActionFinder dossierActionFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierActionSyncLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierActionSyncLocalService dossierActionSyncLocalService;
 	@BeanReference(type = DossierActionSyncPersistence.class)

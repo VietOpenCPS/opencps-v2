@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.ws.rs.NotFoundException;
 
@@ -175,6 +176,17 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		return votingResultPersistence.countByF_votingId_selected(votingId, selected);
 	}
 
+	public int countByF_votingId_selected_filter_date(long votingId, String selected, Date fromDate, Date toDate) {
+		List<VotingResult> lstResults = votingResultPersistence.findByF_votingId_selected_gt_date(votingId, selected, fromDate);
+		int count = 0;
+		for (VotingResult vr : lstResults) {
+			if (vr.getModifiedDate().before(toDate)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 		// TODO Auto-generated method stub

@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -96,6 +97,9 @@ public interface VotingResultLocalService extends BaseLocalService,
 	public VotingResult adminProcessDelete(Long id);
 
 	public int countByF_votingId_selected(long votingId, String selected);
+
+	public int countByF_votingId_selected_filter_date(long votingId,
+		String selected, Date fromDate, Date toDate);
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;

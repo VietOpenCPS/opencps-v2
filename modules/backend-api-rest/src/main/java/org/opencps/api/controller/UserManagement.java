@@ -15,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -226,5 +227,5 @@ public interface UserManagement {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserLoginInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);	
+			@Context ServiceContext serviceContext, @Context Request requestCC);	
 }
