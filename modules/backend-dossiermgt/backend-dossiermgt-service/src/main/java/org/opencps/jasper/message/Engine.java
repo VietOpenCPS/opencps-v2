@@ -225,6 +225,7 @@ public class Engine implements MessageListener {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
 				
     			ServiceContext serviceContext = new ServiceContext();
+    			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
     			serviceContext.setUserId(dossierDocument.getUserId());
     
     			long fileEntryId = 0;
