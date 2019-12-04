@@ -299,6 +299,16 @@ public class ReadXMLFileUtils {
 					strError = ConstantUtils.XML_USERS;
 				}
 				break;
+			case ConstantUtils.XML_USERS_QA_DONGTHAP:
+				UserManagement userQAList = convertXMLToUser(xmlString);
+				flag = ProcessUpdateDBUtils.processUpdateUserQA(userQAList, groupId, userId, serviceContext);
+				if (flag) {
+					sbParentFile.append(fileName);
+					sbParentFile.append(ConstantUtils.HTML_NEW_LINE); 
+				} else {
+					strError = ConstantUtils.XML_ACTION_CONFIG;
+				}
+				break;
 			case ConstantUtils.XML_DYNAMIC_REPORT:
 				DynamicReportList reportList = convertXMLToDynamicReport(xmlString);
 				flag = ProcessUpdateDBUtils.processUpdateDynamicReport(reportList, folderPath, groupId, userId, serviceContext);
