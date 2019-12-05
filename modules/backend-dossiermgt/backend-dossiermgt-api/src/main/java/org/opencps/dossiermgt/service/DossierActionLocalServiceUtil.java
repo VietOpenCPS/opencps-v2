@@ -211,6 +211,20 @@ public class DossierActionLocalServiceUtil {
 		return getService().fetchDossierActionByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List findActionOverdue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return getService().findActionOverdue(fromDate, toDate, groupId);
+	}
+
+	public static java.util.List findActionOverdueFuture(long groupId) {
+		return getService().findActionOverdueFuture(groupId);
+	}
+
+	public static java.util.List findActionUndue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return getService().findActionUndue(fromDate, toDate, groupId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findByG_DID(
 		long groupId, long dossierId) {
 		return getService().findByG_DID(groupId, dossierId);

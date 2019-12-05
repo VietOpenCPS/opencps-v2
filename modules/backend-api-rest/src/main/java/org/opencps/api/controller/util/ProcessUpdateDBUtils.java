@@ -577,6 +577,107 @@ public class ProcessUpdateDBUtils {
 
 	}
 
+	/* QA DONG THAP */
+	//LamTV_Update UserManagement to DB
+	public static boolean processUpdateUserQA(UserManagement userManagement, long groupId, long userId,
+			ServiceContext serviceContext) {
+		boolean flagUser = true;
+		try {
+//			//Delete all table NotificationTemplate
+//			boolean flagUser = actions.deleteAllNotificationTemplate(groupId, userId, serviceContext);
+//			//Update table NotificationTemplate
+			if (userManagement != null) {
+				org.opencps.api.v21.model.UserManagement.Roles roles = userManagement.getRoles();
+				if (roles != null) {
+					flagUser = processUpdateJobPosQA(userId, groupId, roles, serviceContext);
+					if (!flagUser) {
+						return flagUser;
+					}
+				}
+				org.opencps.api.v21.model.UserManagement.Users users = userManagement.getUsers();
+				if (users != null) {
+					_log.info("Process Employee");
+					flagUser = processUpdateEmployeeQA(userId, groupId, users, serviceContext);
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return flagUser;
+	}
+
+	private static boolean processUpdateEmployeeQA(long userId, long groupId,
+			org.opencps.api.v21.model.UserManagement.Users users, ServiceContext serviceContext) {
+		try {
+			List<Employee> employeeList = users.getEmployee();
+			if (employeeList != null && employeeList.size() > 0) {
+				_log.info("employeeList size: "+employeeList.size());
+				EmployeeInterface actionEmployee = new EmployeeActions();
+				String employeeNo;
+				String fullname;
+				String title;
+				Integer gender = 0;
+				String birthdate;
+				String telNo;
+				String email;
+				Integer workingStatus = 1;
+				String jobTitle;
+				String roles;
+				for (Employee employee : employeeList) {
+					employeeNo = employee.getEmployeeNo();
+					fullname = employee.getFullname();
+					title = employee.getTitle();
+					gender = employee.getGender();
+					birthdate = employee.getBirthdate();
+					telNo = employee.getTelNo();
+					email = employee.getEmail();
+					workingStatus = employee.getWorkingStatus();
+					jobTitle = employee.getJobTitle();
+					roles = employee.getRoles();
+					if (Validator.isNotNull(employeeNo)) {
+						_log.info("employeeNo: "+employeeNo);
+						// Check record exits DB
+						actionEmployee.updateEmployeeDB_QA(userId, groupId, employeeNo, fullname, title, gender, birthdate,
+								telNo, email, workingStatus, jobTitle, roles, serviceContext);
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
+	}
+
+	private static boolean processUpdateJobPosQA(long userId, long groupId,
+			org.opencps.api.v21.model.UserManagement.Roles roles, ServiceContext serviceContext) {
+
+		try {
+			List<JobPos> jobPosList = roles.getJobPos();
+			if (jobPosList != null && jobPosList.size() > 0) {
+				JobposInterface actionJob = new JobposActions();
+				String jobCode;
+				String title;
+				String description;
+				for (JobPos jobPos : jobPosList) {
+					jobCode = jobPos.getCode();
+					title = jobPos.getTitle();
+					description = jobPos.getDescription();
+					if (Validator.isNotNull(jobCode)) {
+						// Check record exits DB
+						actionJob.updateJobPosDB(userId, groupId, jobCode, title, description, serviceContext);
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+		return true;
+
+	}
+
 	//LamTV_Update DynamicReport to DB
 	public static boolean processUpdateDynamicReport(DynamicReportList reportList, String folderPath, long groupId,
 			long userId, ServiceContext serviceContext) {

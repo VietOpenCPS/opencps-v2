@@ -1780,6 +1780,277 @@ public class EmployeeUtil {
 	}
 
 	/**
+	* Returns all the employees where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @return the matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long mappingUserId) {
+		return getPersistence().findByG_MUSERID(groupId, mappingUserId);
+	}
+
+	/**
+	* Returns a range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @return the range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long mappingUserId, int start, int end) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long mappingUserId, int start, int end,
+		OrderByComparator<Employee> orderByComparator) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long mappingUserId, int start, int end,
+		OrderByComparator<Employee> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserId, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public static Employee findByG_MUSERID_First(long groupId,
+		long mappingUserId, OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence()
+				   .findByG_MUSERID_First(groupId, mappingUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public static Employee fetchByG_MUSERID_First(long groupId,
+		long mappingUserId, OrderByComparator<Employee> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_MUSERID_First(groupId, mappingUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public static Employee findByG_MUSERID_Last(long groupId,
+		long mappingUserId, OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence()
+				   .findByG_MUSERID_Last(groupId, mappingUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public static Employee fetchByG_MUSERID_Last(long groupId,
+		long mappingUserId, OrderByComparator<Employee> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_MUSERID_Last(groupId, mappingUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the employees before and after the current employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param employeeId the primary key of the current employee
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next employee
+	* @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	*/
+	public static Employee[] findByG_MUSERID_PrevAndNext(long employeeId,
+		long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence()
+				   .findByG_MUSERID_PrevAndNext(employeeId, groupId,
+			mappingUserId, orderByComparator);
+	}
+
+	/**
+	* Returns all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserIds the mapping user IDs
+	* @return the matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long[] mappingUserIds) {
+		return getPersistence().findByG_MUSERID(groupId, mappingUserIds);
+	}
+
+	/**
+	* Returns a range of all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserIds the mapping user IDs
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @return the range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long[] mappingUserIds, int start, int end) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserIds, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserIds the mapping user IDs
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long[] mappingUserIds, int start, int end,
+		OrderByComparator<Employee> orderByComparator) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserIds, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByG_MUSERID(long groupId,
+		long[] mappingUserIds, int start, int end,
+		OrderByComparator<Employee> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_MUSERID(groupId, mappingUserIds, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the employees where groupId = &#63; and mappingUserId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	*/
+	public static void removeByG_MUSERID(long groupId, long mappingUserId) {
+		getPersistence().removeByG_MUSERID(groupId, mappingUserId);
+	}
+
+	/**
+	* Returns the number of employees where groupId = &#63; and mappingUserId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserId the mapping user ID
+	* @return the number of matching employees
+	*/
+	public static int countByG_MUSERID(long groupId, long mappingUserId) {
+		return getPersistence().countByG_MUSERID(groupId, mappingUserId);
+	}
+
+	/**
+	* Returns the number of employees where groupId = &#63; and mappingUserId = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingUserIds the mapping user IDs
+	* @return the number of matching employees
+	*/
+	public static int countByG_MUSERID(long groupId, long[] mappingUserIds) {
+		return getPersistence().countByG_MUSERID(groupId, mappingUserIds);
+	}
+
+	/**
 	* Caches the employee in the entity cache if it is enabled.
 	*
 	* @param employee the employee

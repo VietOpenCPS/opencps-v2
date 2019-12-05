@@ -32,6 +32,7 @@ create unique index IX_E16B2B01 on opencps_employee_jobpos (uuid_[$COLUMN_LENGTH
 create index IX_B6CA9215 on opencps_employee_jobpos (workingUnitId);
 
 create index IX_A68549C2 on opencps_jobpos (groupId, jobPosCode[$COLUMN_LENGTH:255$]);
+create index IX_3D2FB230 on opencps_jobpos (groupId, jobPosId);
 create index IX_D307AE5 on opencps_jobpos (groupId, mappingRoleId);
 create index IX_F3E0B05E on opencps_jobpos (groupId, title[$COLUMN_LENGTH:500$]);
 create index IX_20408734 on opencps_jobpos (uuid_[$COLUMN_LENGTH:75$], companyId);

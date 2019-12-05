@@ -215,6 +215,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId);
 
+	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Employee fetchByFB_MUID(long mappingUserId);
 
@@ -234,6 +235,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 	public List<Employee> findByG(long groupId);
 
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds);
+
+	public List<Employee> findByG_MUSERID(long groupId, long[] userIds);
 
 	public List<Employee> findByWorkstatus(long mappingUserId, int workingStatus);
 

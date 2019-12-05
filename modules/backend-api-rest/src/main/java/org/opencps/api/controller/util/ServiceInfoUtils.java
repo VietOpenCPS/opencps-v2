@@ -11,8 +11,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplates;
@@ -34,7 +36,7 @@ import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 public class ServiceInfoUtils {
 
 	@SuppressWarnings("unchecked")
-	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents,
+	public static List<ServiceInfoModel> mappingToServiceInfoResultModel(List<Document> documents, long groupId,
 			ServiceContext serviceContext) {
 		List<ServiceInfoModel> data = new ArrayList<ServiceInfoModel>();
 

@@ -256,7 +256,9 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		String fromVotingDateFilter = fromVotingDate + ConstantsTerm.HOUR_START;
 		String toVotingDateFilter = toVotingDate + ConstantsTerm.HOUR_END;
-
+		_log.info("FROM VOTING DATE FILTER: " + fromVotingDateFilter);
+		_log.info("TO VOTING DATE FILTER: " + toVotingDateFilter);
+		
 		if (Validator.isNotNull(fromVotingDate)) {
 			if (Validator.isNotNull(toVotingDate)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,

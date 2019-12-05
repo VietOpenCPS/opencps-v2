@@ -1,7 +1,9 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -19,16 +21,19 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -43,6 +48,7 @@ import org.opencps.api.statistic.model.StatisticDossierSearchModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -52,11 +58,17 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -777,6 +789,225 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 		}
 
+	}
+
+	@Override
+	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String from, String to) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		String query = "{\r\n" + 
+				"  \"size\": 0,\r\n" + 
+				"  \"query\": {\r\n" + 
+				"    \"bool\": {\r\n" + 
+				"      \"filter\": [\r\n" + 
+				"        {\r\n" + 
+				"          \"term\": {\r\n" + 
+				"            \"entryClassName\": \"org.opencps.dossiermgt.model.DossierAction\"\r\n" + 
+				"          }\r\n" + 
+				"        },\r\n" + 
+				"		{\r\n" + 
+				"			\"range\" : {\r\n" + 
+				"				\"modified\" : { \r\n" + 
+				"					\"gte\" : \"20190709000000\",\r\n" + 
+				"					\"lte\": \"20190609235959\"\r\n" + 
+				"				}\r\n" + 
+				"			}			\r\n" + 
+				"		}\r\n" + 
+				"      ],\r\n" + 
+				"	  \"must_not\" : {\r\n" + 
+				"        \"term\" : {\r\n" + 
+				"          \"actionOverdue\" : 0\r\n" + 
+				"        }\r\n" + 
+				"      },\r\n" + 
+				"	  \"must\": {\r\n" + 
+				"		\"term\": {\r\n" + 
+				"			\"groupId\": 51801\r\n" + 
+				"		}\r\n" + 
+				"	  }	  \r\n" + 
+				"    }\r\n" + 
+				"  },\r\n" + 
+				"  \"aggs\": {\r\n" + 
+				"    \"group_by_user_id\": {\r\n" + 
+				"      \"terms\": {\r\n" + 
+				"		\"size\":10000,\r\n" + 
+				"        \"field\": \"userId\"\r\n" + 
+				"      },\r\n" + 
+				"	  \"aggs\": {\r\n" + 
+				"		\"count\":{\r\n" + 
+				"			\"cardinality\": {\r\n" + 
+				"				\"field\": \"dossierId_Number_sortable\"\r\n" + 
+				"			}\r\n" + 
+				"		}			\r\n" + 
+				"	  }\r\n" + 
+				"    }\r\n" + 
+				"  }\r\n" + 
+				"}'";		
+		Date fromDate = APIDateTimeUtils.convertVNStrToDate(from);
+		Date toDate = APIDateTimeUtils.convertVNStrToDate(to);
+		List lstStatistics = DossierActionLocalServiceUtil.findActionOverdue(fromDate, toDate, groupId);
+		long[] userIdArr = new long[lstStatistics.size()];
+		int count = 0;
+		String serilizeString=null;
+		JSONArray actionOverdueDataJsonArray = null;
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e1) {
+			}
+		}
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
+		
+		Map<Long, Employee> mapEmps = new HashedMap<Long, Employee>();
+		List<Long> lstJobPosIds = new ArrayList<Long>();
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		Long[] jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		long[] jobPosFinds = new long[jobPosIds.length];
+		int tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		List<JobPos> lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		Map<Long, JobPos> mapJobs = new HashedMap<Long, JobPos>();
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
+		}
+		JSONArray result = JSONFactoryUtil.createJSONArray();
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject();
+					obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
+					obj.put("overdue", actionOverdueDataJsonArray.getLong(1));
+					obj.put("userId", actionOverdueDataJsonArray.getLong(0));
+					obj.put("undue", 0);
+					obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
+					result.put(obj);					
+				}
+			} catch (JSONException e) {
+			}
+		}
+
+		//Find overdue not processing
+		lstStatistics = DossierActionLocalServiceUtil.findActionOverdueFuture(groupId);
+		count = 0;
+		userIdArr = new long[lstStatistics.size()];
+		
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e) {
+			}
+		}
+		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		jobPosFinds = new long[jobPosIds.length];
+		tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
+		}
+
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				for (int i = 0; i < result.length(); i++) {
+					JSONObject obj = result.getJSONObject(i);
+					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
+						long overdue = obj.getLong("overdue");
+						overdue += actionOverdueDataJsonArray.getLong(1);
+						obj.put("overdue", overdue);
+					}
+				}
+			} catch (JSONException e1) {
+			}
+		}		
+		
+		//Find undue
+		lstStatistics = DossierActionLocalServiceUtil.findActionUndue(fromDate, toDate, groupId);
+		count = 0;
+		userIdArr = new long[lstStatistics.size()];
+		
+		for (Object objectData  : lstStatistics) {
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
+			} catch (JSONException e) {
+			}
+		}
+		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+			if (!lstJobPosIds.contains(e.getMainJobPostId())) {
+				lstJobPosIds.add(e.getMainJobPostId());
+			}
+		}
+		jobPosIds = new Long[lstJobPosIds.size()];
+		lstJobPosIds.toArray(jobPosIds);
+		jobPosFinds = new long[jobPosIds.length];
+		tempCount = 0;
+		for (Long jobPosId : jobPosIds) {
+			jobPosFinds[tempCount++] = jobPosId;
+		}
+		lstJobPos = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosFinds);
+		for (JobPos jp : lstJobPos) {
+			mapJobs.put(jp.getJobPosId(), jp);
+		}
+
+		for (Object objectData  : lstStatistics){
+			serilizeString = JSONFactoryUtil.serialize(objectData);
+			try {
+				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
+				boolean foundStatistic = false;
+				for (int i = 0; i < result.length(); i++) {
+					JSONObject obj = result.getJSONObject(i);
+					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
+						foundStatistic = true;
+						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
+						break;
+					}
+				}
+				if (!foundStatistic) {
+					if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
+						JSONObject obj = JSONFactoryUtil.createJSONObject();
+						obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
+						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
+						obj.put("userId", actionOverdueDataJsonArray.getLong(0));
+						obj.put("overdue", 0);
+						obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
+						
+						result.put(obj);										
+					}
+				}
+			} catch (JSONException e1) {
+			}
+
+		}
+		
+		return Response.ok().entity(result.toJSONString()).build();
 	}
 
 //	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {

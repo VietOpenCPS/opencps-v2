@@ -578,4 +578,8 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	public List<JobPos> findByG(long groupId) {
 		return jobPosPersistence.findByG(groupId);
 	}
+	
+	public List<JobPos> findByF_jobPosIds(long groupId, long[] jobPosIds) {
+		return jobPosPersistence.findByF_jobPosIds(groupId, jobPosIds);
+	}	
 }

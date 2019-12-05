@@ -237,6 +237,11 @@ public class JobPosLocalServiceUtil {
 		return getService().fetchJobPosByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.JobPos> findByF_jobPosIds(
+		long groupId, long[] jobPosIds) {
+		return getService().findByF_jobPosIds(groupId, jobPosIds);
+	}
+
 	public static java.util.List<org.opencps.usermgt.model.JobPos> findByF_mappingRoleIds(
 		long groupId, long[] mappingRoleIds) {
 		return getService().findByF_mappingRoleIds(groupId, mappingRoleIds);

@@ -220,6 +220,25 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List findActionOverdue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return _dossierActionLocalService.findActionOverdue(fromDate, toDate,
+			groupId);
+	}
+
+	@Override
+	public java.util.List findActionOverdueFuture(long groupId) {
+		return _dossierActionLocalService.findActionOverdueFuture(groupId);
+	}
+
+	@Override
+	public java.util.List findActionUndue(java.util.Date fromDate,
+		java.util.Date toDate, long groupId) {
+		return _dossierActionLocalService.findActionUndue(fromDate, toDate,
+			groupId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierAction> findByG_DID(
 		long groupId, long dossierId) {
 		return _dossierActionLocalService.findByG_DID(groupId, dossierId);

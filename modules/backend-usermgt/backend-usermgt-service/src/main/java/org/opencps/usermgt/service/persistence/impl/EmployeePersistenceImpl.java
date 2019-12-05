@@ -5594,6 +5594,837 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 	private static final String _FINDER_COLUMN_F_EMP_WORK_MAPPINGUSERID_2 = "employee.mappingUserId > ? AND ";
 	private static final String _FINDER_COLUMN_F_EMP_WORK_WORKINGSTATUS_2 = "employee.workingStatus = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_MUSERID =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_MUSERID",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_MUSERID",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			EmployeeModelImpl.GROUPID_COLUMN_BITMASK |
+			EmployeeModelImpl.MAPPINGUSERID_COLUMN_BITMASK |
+			EmployeeModelImpl.EMPLOYEENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_MUSERID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_MUSERID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_MUSERID =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_MUSERID",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns all the employees where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @return the matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long mappingUserId) {
+		return findByG_MUSERID(groupId, mappingUserId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long mappingUserId,
+		int start, int end) {
+		return findByG_MUSERID(groupId, mappingUserId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long mappingUserId,
+		int start, int end, OrderByComparator<Employee> orderByComparator) {
+		return findByG_MUSERID(groupId, mappingUserId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long mappingUserId,
+		int start, int end, OrderByComparator<Employee> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID;
+			finderArgs = new Object[] { groupId, mappingUserId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_MUSERID;
+			finderArgs = new Object[] {
+					groupId, mappingUserId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Employee> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Employee>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((groupId != employee.getGroupId()) ||
+							(mappingUserId != employee.getMappingUserId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(mappingUserId);
+
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByG_MUSERID_First(long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByG_MUSERID_First(groupId, mappingUserId,
+				orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByG_MUSERID_First(long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator) {
+		List<Employee> list = findByG_MUSERID(groupId, mappingUserId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByG_MUSERID_Last(long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByG_MUSERID_Last(groupId, mappingUserId,
+				orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByG_MUSERID_Last(long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator) {
+		int count = countByG_MUSERID(groupId, mappingUserId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Employee> list = findByG_MUSERID(groupId, mappingUserId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the employees before and after the current employee in the ordered set where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param employeeId the primary key of the current employee
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next employee
+	 * @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	 */
+	@Override
+	public Employee[] findByG_MUSERID_PrevAndNext(long employeeId,
+		long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = findByPrimaryKey(employeeId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Employee[] array = new EmployeeImpl[3];
+
+			array[0] = getByG_MUSERID_PrevAndNext(session, employee, groupId,
+					mappingUserId, orderByComparator, true);
+
+			array[1] = employee;
+
+			array[2] = getByG_MUSERID_PrevAndNext(session, employee, groupId,
+					mappingUserId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Employee getByG_MUSERID_PrevAndNext(Session session,
+		Employee employee, long groupId, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+		query.append(_FINDER_COLUMN_G_MUSERID_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(mappingUserId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(employee);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Employee> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserIds the mapping user IDs
+	 * @return the matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long[] mappingUserIds) {
+		return findByG_MUSERID(groupId, mappingUserIds, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserIds the mapping user IDs
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long[] mappingUserIds,
+		int start, int end) {
+		return findByG_MUSERID(groupId, mappingUserIds, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserIds the mapping user IDs
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long[] mappingUserIds,
+		int start, int end, OrderByComparator<Employee> orderByComparator) {
+		return findByG_MUSERID(groupId, mappingUserIds, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the employees where groupId = &#63; and mappingUserId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByG_MUSERID(long groupId, long[] mappingUserIds,
+		int start, int end, OrderByComparator<Employee> orderByComparator,
+		boolean retrieveFromCache) {
+		if (mappingUserIds == null) {
+			mappingUserIds = new long[0];
+		}
+		else if (mappingUserIds.length > 1) {
+			mappingUserIds = ArrayUtil.unique(mappingUserIds);
+
+			Arrays.sort(mappingUserIds);
+		}
+
+		if (mappingUserIds.length == 1) {
+			return findByG_MUSERID(groupId, mappingUserIds[0], start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { groupId, StringUtil.merge(mappingUserIds) };
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(mappingUserIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Employee> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Employee>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_MUSERID,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((groupId != employee.getGroupId()) ||
+							!ArrayUtil.contains(mappingUserIds,
+								employee.getMappingUserId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_GROUPID_2);
+
+			if (mappingUserIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_7);
+
+				query.append(StringUtil.merge(mappingUserIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_MUSERID,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_MUSERID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the employees where groupId = &#63; and mappingUserId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 */
+	@Override
+	public void removeByG_MUSERID(long groupId, long mappingUserId) {
+		for (Employee employee : findByG_MUSERID(groupId, mappingUserId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(employee);
+		}
+	}
+
+	/**
+	 * Returns the number of employees where groupId = &#63; and mappingUserId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserId the mapping user ID
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByG_MUSERID(long groupId, long mappingUserId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_MUSERID;
+
+		Object[] finderArgs = new Object[] { groupId, mappingUserId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(mappingUserId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of employees where groupId = &#63; and mappingUserId = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingUserIds the mapping user IDs
+	 * @return the number of matching employees
+	 */
+	@Override
+	public int countByG_MUSERID(long groupId, long[] mappingUserIds) {
+		if (mappingUserIds == null) {
+			mappingUserIds = new long[0];
+		}
+		else if (mappingUserIds.length > 1) {
+			mappingUserIds = ArrayUtil.unique(mappingUserIds);
+
+			Arrays.sort(mappingUserIds);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(mappingUserIds)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_MUSERID,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_EMPLOYEE_WHERE);
+
+			query.append(_FINDER_COLUMN_G_MUSERID_GROUPID_2);
+
+			if (mappingUserIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_7);
+
+				query.append(StringUtil.merge(mappingUserIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_MUSERID,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_MUSERID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_MUSERID_GROUPID_2 = "employee.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_2 = "employee.mappingUserId = ?";
+	private static final String _FINDER_COLUMN_G_MUSERID_MAPPINGUSERID_7 = "employee.mappingUserId IN (";
 
 	public EmployeePersistenceImpl() {
 		setModelClass(Employee.class);
@@ -6067,6 +6898,15 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID,
 				args);
 
+			args = new Object[] {
+					employeeModelImpl.getGroupId(),
+					employeeModelImpl.getMappingUserId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_MUSERID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -6207,6 +7047,27 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_EMPID, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_EMPID,
+					args);
+			}
+
+			if ((employeeModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						employeeModelImpl.getOriginalGroupId(),
+						employeeModelImpl.getOriginalMappingUserId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_MUSERID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID,
+					args);
+
+				args = new Object[] {
+						employeeModelImpl.getGroupId(),
+						employeeModelImpl.getMappingUserId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_MUSERID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_MUSERID,
 					args);
 			}
 		}

@@ -120,10 +120,11 @@ public class JobPosModelImpl extends BaseModelImpl<JobPos>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
 	public static final long JOBPOSCODE_COLUMN_BITMASK = 4L;
-	public static final long MAPPINGROLEID_COLUMN_BITMASK = 8L;
-	public static final long TITLE_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
+	public static final long JOBPOSID_COLUMN_BITMASK = 8L;
+	public static final long MAPPINGROLEID_COLUMN_BITMASK = 16L;
+	public static final long TITLE_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.JobPos"));
 
@@ -295,7 +296,19 @@ public class JobPosModelImpl extends BaseModelImpl<JobPos>
 
 	@Override
 	public void setJobPosId(long jobPosId) {
+		_columnBitmask |= JOBPOSID_COLUMN_BITMASK;
+
+		if (!_setOriginalJobPosId) {
+			_setOriginalJobPosId = true;
+
+			_originalJobPosId = _jobPosId;
+		}
+
 		_jobPosId = jobPosId;
+	}
+
+	public long getOriginalJobPosId() {
+		return _originalJobPosId;
 	}
 
 	@Override
@@ -620,6 +633,10 @@ public class JobPosModelImpl extends BaseModelImpl<JobPos>
 
 		jobPosModelImpl._originalUuid = jobPosModelImpl._uuid;
 
+		jobPosModelImpl._originalJobPosId = jobPosModelImpl._jobPosId;
+
+		jobPosModelImpl._setOriginalJobPosId = false;
+
 		jobPosModelImpl._originalCompanyId = jobPosModelImpl._companyId;
 
 		jobPosModelImpl._setOriginalCompanyId = false;
@@ -826,6 +843,8 @@ public class JobPosModelImpl extends BaseModelImpl<JobPos>
 	private String _uuid;
 	private String _originalUuid;
 	private long _jobPosId;
+	private long _originalJobPosId;
+	private boolean _setOriginalJobPosId;
 	private long _companyId;
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;

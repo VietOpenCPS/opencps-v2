@@ -46,13 +46,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
@@ -114,10 +118,26 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return config;
 	}
 
+	int ttl = OpenCPSConfigUtil.getCacheTTL();
+	
 	public List<ServiceConfig> getByGroupId(long groupId) throws PortalException, SystemException {
-
-		return serviceConfigPersistence.findByG_(groupId);
-
+		Serializable lstServiceConfigs = null;
+		try {
+			lstServiceConfigs = cache.getFromCache("ServiceConfig", groupId + "");
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		if (lstServiceConfigs != null) {
+			return (List<ServiceConfig>)lstServiceConfigs;
+		}
+		else {
+			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByG_(groupId);
+			if (tempServiceConfigs != null) {
+				cache.addToCache("ServiceConfig",
+						groupId + "", (Serializable)tempServiceConfigs, ttl);
+			}
+			return tempServiceConfigs;
+		}
 	}
 
 	@ThreadLocalCachable
@@ -509,10 +529,32 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		return serviceConfigPersistence.update(serviceConfig);
 	}
-
+	
+	CacheActions cache = new CacheActionsImpl();
+	
 	// LamTV_Process get list ServiceConfig by ServiceInfo
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId) {
-		return serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
+		Serializable lstServiceConfigs = null;
+		try {
+			lstServiceConfigs = cache.getFromCache("ServiceConfig", groupId + "_" + serviceInfoId);
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		if (lstServiceConfigs != null) {
+			return (List<ServiceConfig>)lstServiceConfigs;
+		}
+		else {
+			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
+			if (tempServiceConfigs != null) {
+				try {
+					cache.addToCache("ServiceConfig",
+							groupId + "_" + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
+				} catch (PortalException e) {
+					_log.debug(e);
+				}
+			}			
+			return tempServiceConfigs;
+		}
 	}
 
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode) {

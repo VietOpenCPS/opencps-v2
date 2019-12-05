@@ -13,4 +13,4 @@ create unique index IX_D095FA66 on opencps_voting (uuid_[$COLUMN_LENGTH:75$], gr
 create index IX_EF6503DD on opencps_votingresult (userId, votingId);
 create index IX_E8A97B01 on opencps_votingresult (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_B0A6CDC3 on opencps_votingresult (uuid_[$COLUMN_LENGTH:75$], groupId);
-create index IX_24D88C32 on opencps_votingresult (votingId, selected[$COLUMN_LENGTH:75$]);
+create index IX_CBA20288 on opencps_votingresult (votingId, selected[$COLUMN_LENGTH:75$], modifiedDate, modifiedDate);

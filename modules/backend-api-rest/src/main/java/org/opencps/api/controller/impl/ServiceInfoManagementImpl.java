@@ -34,8 +34,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -66,6 +69,7 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -121,7 +125,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 
 			Sort[] sorts = null;
-			_log.info("sorts: "+query.getSort());
+//			_log.info("sorts: "+query.getSort());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
@@ -135,12 +139,14 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
-					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
+				groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			//_log.info("jsonData.hit: "+jsonData.get("data"));
+				
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
-					.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), serviceContext));
+				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
+			
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //		    
@@ -156,7 +162,18 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //				return Response.status(200).entity(results).build();				
 //			}
 
-			return Response.status(200).entity(results).build();
+			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.ok(results);
+				builder.tag(etag);
+			}
+			
+		    builder.cacheControl(cc);
+		    
+		    return builder.build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -241,21 +258,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(results).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(results).build();
-//			}
 		
-			return Response.status(200).entity(results).build();
+			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
+		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			cc.setPrivate(true);	
+	
+		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+				builder = Response.ok(results);
+				builder.tag(etag);
+			}
+		    
+		    builder.cacheControl(cc);
+		    return builder.build();
+		    
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

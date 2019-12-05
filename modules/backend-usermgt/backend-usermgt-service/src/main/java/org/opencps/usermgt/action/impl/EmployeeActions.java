@@ -831,7 +831,209 @@ public class EmployeeActions implements EmployeeInterface {
 
 		//Check exits account and create new account
 		if (isNew) {
+			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+		}
+		//_log.info("Employee UPUP: "+employee);
+		//_log.info("roles: "+roles);
+		//Import employee JobPos
+		if (Validator.isNotNull(roles)) {
+			String[] roleArr = StringUtil.split(roles);
+			if (roleArr != null && roleArr.length > 0) {
+				long employeeId = employee.getEmployeeId();
+				if (isNew) {
+					processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
+				} else {
+					List<EmployeeJobPos> empJobPosList =
+							EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+
+					if (Validator.isNull(empJobPosList) || empJobPosList.isEmpty()) {
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
+					} else {
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, empJobPosList, serviceContext);
+					}
+
+				}
+			}
+		}
+
+	}
+
+	//Create account
+	private Employee createNewEmployeeAccount_QA(long userId, long groupId, Employee employee, String screenName,
+			String email, ServiceContext serviceContext) throws PortalException {
+
+		try {
+			if (Validator.isNull(screenName)) {
+				screenName = email.substring(0, email.indexOf(StringPool.AT));
+			}
+			//_log.info("companyId: " + serviceContext.getCompanyId());
+			long companyId = serviceContext.getCompanyId();
+			User user = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, email);
+			if (user != null) {
+				employee.setMappingUserId(user.getUserId());
+
+				employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
+						employee.getFullName(), employee.getEmployeeNo(), employee.getGender(), employee.getBirthdate(),
+						employee.getTelNo(), employee.getMobile(), employee.getEmail(), employee.getWorkingStatus(),
+						employee.getMainJobPostId(), employee.getPhotoFileEntryId(), employee.getMappingUserId(),
+						employee.getTitle(), employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
+			} else {
+				long[] userGroupIds = {};
+				List<Long> roleIds = new ArrayList<>();
+				Role role = RoleLocalServiceUtil.fetchRole(companyId, "employee");
+				if (Validator.isNotNull(role)) {
+					roleIds.add(role.getRoleId());
+				}
+				long[] resultRoles = roleIds.stream().mapToLong(l -> l).toArray();
+				long[] organizationIds = new long[] {};
+				long[] groupIds = { groupId, 20143 };
+
+				// String passWord = PwdGenerator.getPassword();
+				String secret = "12345";
+
+				String fullName = employee.getFullName();
+				String[] fml = new String[3];
+
+				String[] splitName = StringUtil.split(fullName, StringPool.SPACE);
+
+				if (splitName != null && splitName.length > 0) {
+					fml[0] = splitName[0];
+					fml[1] = splitName.length >= 3
+							? StringUtil.merge(ArrayUtil.subset(splitName, 1, splitName.length - 1), StringPool.SPACE)
+							: StringPool.BLANK;
+					fml[2] = splitName.length >= 2 ? splitName[splitName.length - 1] : splitName[0];
+				} else {
+					fml[0] = screenName;
+					fml[1] = StringPool.BLANK;
+					fml[2] = screenName;
+				}
+
+				//_log.info("/////0" + fml[0]);
+				//_log.info("//////1" + fml[1]);
+				//_log.info("//////2" + fml[2]);
+
+				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, secret, secret, false,
+						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
+						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
+						organizationIds, resultRoles, userGroupIds, false, serviceContext);
+				if (newUser != null) {
+					newUser.setPasswordReset(false);
+					UserLocalServiceUtil.updateUser(newUser);
+
+					Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+					indexer.reindex(newUser);
+
+					employee.setMappingUserId(newUser.getUserId());
+
+					employee = EmployeeLocalServiceUtil.updateEmployee(userId, employee.getEmployeeId(),
+							employee.getFullName(), employee.getEmployeeNo(), employee.getGender(),
+							employee.getBirthdate(), employee.getTelNo(), employee.getMobile(), employee.getEmail(),
+							employee.getWorkingStatus(), employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
+							employee.getMappingUserId(), employee.getTitle(), employee.getRecruitDate(),
+							employee.getLeaveDate(), serviceContext);
+
+					User fromUser = UserLocalServiceUtil.fetchUser(userId);
+
+					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
+
+					payLoad.put("USERNAME", newUser.getScreenName());
+					payLoad.put("USEREMAIL", newUser.getEmailAddress());
+					payLoad.put("PASSWORD", secret);
+
+					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
+							User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),
+							fromUser.getFullName(), employee.getFullName(), employee.getMappingUserId(),
+							employee.getEmail(), employee.getTelNo(), new Date(), null, serviceContext);
+				}
+			}
+			// JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			//_log.info("Employee Update: " + employee);
+
+			// jsonObject.put("screenName", newUser.getScreenName());
+			// jsonObject.put("email", newUser.getEmailAddress());
+			// jsonObject.put("exist", false);
+			// jsonObject.put("duplicate", Boolean.FALSE.toString());
+
+		} catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+			// jsonObject.put("screenName", StringPool.BLANK);
+			// jsonObject.put("email", StringPool.BLANK);
+			// jsonObject.put("exist", Boolean.TRUE);
+			// jsonObject.put("duplicate", Boolean.TRUE.toString());
+		}
+
+		return employee;
+	}
+
+	/** DB QA USER */
+	@Override
+	public void updateEmployeeDB_QA(long userId, long groupId, String employeeNo, String fullName, String title,
+			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
+			String roles, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException, PortalException {
+
+		// Convert String to Date
+		Date birthDay = null;
+		if (Validator.isNotNull(birthDate)) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+			try {
+				birthDay = sdf.parse(birthDate);
+			} catch (java.text.ParseException e) {
+			}
+		}
+		
+		Employee employee = EmployeeLocalServiceUtil.getEmployeeByEmpNo(groupId, employeeNo);
+		boolean isNew = false;
+
+		//Update or create Employee
+		if (employee == null) {
+			employee = EmployeeLocalServiceUtil.addEmployee(
+					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
+					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
+					0l, title, false, null, null, serviceContext);
+			isNew = true;
+		} else {
+			if (Validator.isNotNull(fullName)) {
+				employee.setFullName(fullName);
+			}
+			if (Validator.isNotNull(email)) {
+				employee.setEmail(email);
+			}
+			if (Validator.isNotNull(gender)) {
+				employee.setGender(GetterUtil.get(gender, 0));
+			}
+			if (Validator.isNotNull(birthDate)) {
+				employee.setBirthdate(birthDay);
+			}
+			if (Validator.isNotNull(telNo)) {
+				employee.setTelNo(telNo);
+			}
+			if (Validator.isNotNull(title)) {
+				employee.setTitle(title);
+			}
+			if (Validator.isNotNull(workingStatus)) {
+				employee.setWorkingStatus(GetterUtil.get(workingStatus, 0));
+			}
+
+			employee = EmployeeLocalServiceUtil.updateEmployee(
+				userId, employee.getEmployeeId(), employee.getFullName(),
+				employee.getEmployeeNo(), employee.getGender(),
+				employee.getBirthdate(), employee.getTelNo(), employee.getMobile(),
+				employee.getEmail(), employee.getWorkingStatus(),
+				employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
+				employee.getMappingUserId(), employee.getTitle(),
+				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
+		}
+		//_log.info("Employee Create: "+employee);
+
+		//Check exits account and create new account
+		if (isNew) {
 			employee = createNewEmployeeAccount(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+		} else {
+			String secret = "dvcdt@2019";
+			UserLocalServiceUtil.updatePassword(userId, secret, secret, false);
 		}
 		//_log.info("Employee UPUP: "+employee);
 		//_log.info("roles: "+roles);
@@ -945,7 +1147,7 @@ public class EmployeeActions implements EmployeeInterface {
 				long[] groupIds = { groupId, 20143 };
 
 				// String passWord = PwdGenerator.getPassword();
-				String secret = "12345";
+				String secret = "dvcdt@2019";
 
 				String fullName = employee.getFullName();
 				String[] fml = new String[3];
@@ -1002,25 +1204,11 @@ public class EmployeeActions implements EmployeeInterface {
 							employee.getEmail(), employee.getTelNo(), new Date(), null, serviceContext);
 				}
 			}
-			// JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-			//_log.info("Employee Update: " + employee);
-
-			// jsonObject.put("screenName", newUser.getScreenName());
-			// jsonObject.put("email", newUser.getEmailAddress());
-			// jsonObject.put("exist", false);
-			// jsonObject.put("duplicate", Boolean.FALSE.toString());
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
-			// jsonObject.put("screenName", StringPool.BLANK);
-			// jsonObject.put("email", StringPool.BLANK);
-			// jsonObject.put("exist", Boolean.TRUE);
-			// jsonObject.put("duplicate", Boolean.TRUE.toString());
 		}
 
 		return employee;
 	}
-
 }
