@@ -220,6 +220,9 @@ public interface DossierActionLocalService extends BaseLocalService,
 
 	public List<DossierAction> findOverdue(Date now);
 
+	public List<DossierAction> findOverdueByType(Date now, String type,
+		String value);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

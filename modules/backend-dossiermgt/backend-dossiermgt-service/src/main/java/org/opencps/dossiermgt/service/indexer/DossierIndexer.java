@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
@@ -42,6 +44,7 @@ import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -50,6 +53,7 @@ import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -264,10 +268,111 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			}
 			
 			if (durationCount > 0) {
-				double durationComing = durationCount / 5;
-				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
-						object.getGroupId());
-				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+				//Need performance tuning!!!!
+				long dossierActionId = object.getDossierActionId();
+				if (dossierActionId != 0) {
+					DossierAction lastAc = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					if (lastAc != null) {
+						ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(lastAc.getServiceProcessId());
+						if (sp != null) {
+							String dueDatePattern = sp.getDueDatePattern();
+							try {
+								JSONObject dueDateObj = JSONFactoryUtil.createJSONObject(dueDatePattern);
+								if (dueDateObj.has(DossierTerm.DUE_DATE_NOTIFY)) {
+									String type = "";
+									String value = "";
+									JSONObject notifyObj = dueDateObj.getJSONObject(DossierTerm.DUE_DATE_NOTIFY);
+									if (notifyObj.has(DossierTerm.DUE_DATE_NOTIFY_TYPE)) {
+										type = notifyObj.getString(DossierTerm.DUE_DATE_NOTIFY_TYPE);
+									}
+									if (notifyObj.has(DossierTerm.DUE_DATE_NOTIFY_VALUE)) {
+										value = notifyObj.getString(DossierTerm.DUE_DATE_NOTIFY_VALUE);
+									}
+									if (!"".contentEquals(type.trim())) {
+										if (DossierTerm.DUE_DATE_NOTIFY_TYPE_PERCENT.contentEquals(type)) {
+											try {
+												int valueInt = Integer.parseInt(value);
+												double durationComing = durationCount / valueInt;
+												long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+														object.getGroupId());
+												document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+											}
+											catch (NumberFormatException e) {
+												
+											}
+										}
+										else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
+											if ((int)durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+												try {
+													int valueInt = Integer.parseInt(value);
+													double durationComing = durationCount - valueInt;
+													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+															object.getGroupId());
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+												}
+												catch (NumberFormatException e) {
+													
+												}												
+											}
+											else if ((int)durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+												try {
+													int valueInt = Integer.parseInt(value) * DossierTerm.WORKING_HOUR_PER_DAY;
+													double durationComing = durationCount - valueInt;
+													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+															object.getGroupId());
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+												}
+												catch (NumberFormatException e) {
+													
+												}												
+											}
+										}
+										else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
+											if ((int)durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+												try {
+													int valueInt = Integer.parseInt(value) / DossierTerm.WORKING_HOUR_PER_DAY;
+													double durationComing = durationCount - valueInt;
+													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+															object.getGroupId());
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+												}
+												catch (NumberFormatException e) {
+													
+												}												
+											}
+											else if ((int)durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+												try {
+													int valueInt = Integer.parseInt(value);
+													double durationComing = durationCount - valueInt;
+													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+															object.getGroupId());
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+												}
+												catch (NumberFormatException e) {
+													
+												}												
+											}
+										}										
+									}
+								}
+								else {
+									double durationComing = durationCount / 5;
+									long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+											object.getGroupId());
+									document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);									
+								}
+							}
+							catch (Exception e) {
+								
+							}
+						}
+					}
+				}
+				
+//				double durationComing = durationCount / 5;
+//				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
+//						object.getGroupId());
+//				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 			} else {
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
 			}

@@ -268,4 +268,15 @@ public class DossierTerm {
 	
 	public static final String PAUSE_LOCK_STATE_TERM = "LOCK";
 	public static final String SYSTEM_ID = "systemId";
+	
+	public static final String DUE_DATE_NOTIFY = "dueDateNotify";
+	public static final String DUE_DATE_NOTIFY_TYPE = "type";
+	public static final String DUE_DATE_NOTIFY_VALUE = "value";
+	public static final String DUE_DATE_NOTIFY_TYPE_DAY = "day";
+	public static final String DUE_DATE_NOTIFY_TYPE_PERCENT = "%";
+	public static final String DUE_DATE_NOTIFY_TYPE_HOUR = "hour";
+	
+	public static final int DURATION_UNIT_DAY = 0;
+	public static final int DURATION_UNIT_HOUR = 1;
+	public static final int WORKING_HOUR_PER_DAY = 8;
 }

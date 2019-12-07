@@ -82,7 +82,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
 					payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
 					payload.getDomainCode(), payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(),
-					payload.getOutsideCount(), payload.getInsideCount());
+					payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;
@@ -246,7 +246,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
 					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-					payload.getInsideCount());
+					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;
@@ -269,7 +269,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
 					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-					payload.getInsideCount());
+					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;

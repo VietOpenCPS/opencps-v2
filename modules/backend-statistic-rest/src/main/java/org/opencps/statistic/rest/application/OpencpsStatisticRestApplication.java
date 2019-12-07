@@ -325,6 +325,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 						model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
+						model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 						
 						dossierData.add(model);
 					}
@@ -902,6 +903,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 				
 				dossierData.add(model);
 			}	
@@ -1070,6 +1072,9 @@ public class OpencpsStatisticRestApplication extends Application {
 								request.setUnresolvedCount(statistic.getUnresolvedCount());
 								request.setWaitingCount(statistic.getWaitingCount());
 								request.setYear(statistic.getYear());
+								request.setViaPostalCount(statistic.getViaPostalCount());
+								request.setSaturdayCount(statistic.getSaturdayCount());
+								
 								DossierStatisticModel model = callReportService.callRestService(request);
 								_log.debug(model);
 							}
