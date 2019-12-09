@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.action.util;
 import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -21,6 +22,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -37,6 +42,10 @@ import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 public class DossierNumberGenerator {
 
 	private static final String CONSTANT_ICREMENT = "opencps.dossier#";
+	private static final String SCOPE_GOV_AGENCY_CODE_PATTERN = "scopeGovAgencyCode";
+	private static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	private static final String DOSSIER_NO_PATTERN_KEY = "dossierNoPattern";
+	
 	public static String generateReferenceUID(long groupId) {
 
 		return UUID.randomUUID().toString();
@@ -49,6 +58,24 @@ public class DossierNumberGenerator {
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
+		if (SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(seriNumberPattern)) {
+			DictCollection govCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GOVERNMENT_AGENCY, groupId);
+			if (govCollection != null) {
+				DictItem govItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(dossier.getGovAgencyCode(), govCollection.getDictCollectionId(), groupId);
+				if (govItem != null) {
+					try {
+						JSONObject metaObj = JSONFactoryUtil.createJSONObject(govItem.getMetaData());
+						if (metaObj.has(DOSSIER_NO_PATTERN_KEY)) {
+							seriNumberPattern = metaObj.getString(DOSSIER_NO_PATTERN_KEY);
+						}
+					}
+					catch (JSONException e) {
+						
+					}
+				}
+			}
+		}
+		
 		if (dossier != null) {
 			String codePatternGov = "\\{(a+|A+)\\}";
 			String codePatternDate = "\\{(n+|N+)\\}";
