@@ -4,7 +4,6 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -51,7 +50,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -7048,18 +7046,27 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			if (dossier != null) {
 				String[] keys = key.split("\\.");
-				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
-				for (int i = 0; i < keys.length - 1; i++) {
-					String objectKey = keys[i];
-					if (obj.has(objectKey)) {
-						obj = obj.getJSONObject(objectKey);
+				if (dossier.getMetaData() != null) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+					for (int i = 0; i < keys.length - 1; i++) {
+						String objectKey = keys[i];
+						if (obj.has(objectKey)) {
+							obj = obj.getJSONObject(objectKey);
+						}
+						else {
+							return Response.status(200).entity("").build();
+						}
+					}					
+					if (obj != null && obj.has(keys[keys.length - 1])) {
+						return Response.status(200).entity(obj.getString(keys[keys.length - 1])).build();						
 					}
 					else {
-						return Response.status(200).entity("").build();
+						return Response.status(200).entity("").build();						
 					}
 				}
-				
-				return Response.status(200).entity(obj.getString(keys[keys.length - 1])).build();
+				else {
+					return Response.status(200).entity("").build();					
+				}
 			}
 			else {
 				return Response.status(200).entity("").build();				
