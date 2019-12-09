@@ -279,4 +279,7 @@ public class DossierTerm {
 	public static final int DURATION_UNIT_DAY = 0;
 	public static final int DURATION_UNIT_HOUR = 1;
 	public static final int WORKING_HOUR_PER_DAY = 8;
+	
+	public static final String SMS_NOTIFY = "smsNotify";
+	public static final String EMAIL_NOTIFY = "emailNotify";
 }

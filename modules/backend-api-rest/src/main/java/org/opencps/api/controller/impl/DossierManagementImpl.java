@@ -7105,7 +7105,7 @@ public class DossierManagementImpl implements DossierManagement {
 						obj.put(key, request.getParameter(key));																		
 					}
 					else {
-						if (index >= keys.length - 2) {
+						if (index == keys.length - 1) {
 							tempObj.put(keys[index], request.getParameter(key));							
 						}
 						else {

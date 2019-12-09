@@ -50,7 +50,6 @@ import org.springframework.web.client.RestTemplate;
 @Component(immediate = true, property = {
 		"org.osgi.http.websocket.endpoint.path=/o/v1/socket/web" }, service = Endpoint.class)
 public class AdminEndpoind extends Endpoint {
-
 	public static final String _TIMESTAMP = "dd/MM/yyyy HH:mm";
 	private static final Log _log = LogFactoryUtil.getLog(AdminEndpoind.class);
 

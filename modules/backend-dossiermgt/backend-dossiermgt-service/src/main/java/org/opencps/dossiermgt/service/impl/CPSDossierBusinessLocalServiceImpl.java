@@ -14,12 +14,39 @@
 
 package org.opencps.dossiermgt.service.impl;
 
-import java.io.BufferedReader;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -29,7 +56,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +70,6 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
@@ -70,8 +95,6 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
-import org.opencps.datamgt.util.ExtendDueDateUtils;
-import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -92,7 +115,6 @@ import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -134,7 +156,6 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
-import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -170,37 +191,6 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.transaction.Isolation;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-
 import backend.auth.api.exception.NotFoundException;
 
 /**
@@ -227,6 +217,9 @@ public class CPSDossierBusinessLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil} to access the cps dossier business local service.
 	 */
+	private static final String BN_TELEPHONE = "BN_telephone";
+	private static final String BN_ADDRESS = "BN_address";
+	private static final String BN_EMAIL = "BN_email";
 	
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
@@ -2876,6 +2869,29 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			jsonData.put(DossierTerm.GROUP_DOSSIERS, groupDossierArr);
 		}
+		DictCollection govCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GOVERNMENT_AGENCY, dossier.getGroupId());
+		if (govCollection != null) {
+			DictItem govAgenItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(dossier.getGovAgencyCode(), govCollection.getDictCollectionId(), dossier.getGroupId());
+			String metaDataItem = govAgenItem.getMetaData();
+			try {
+				JSONObject metaObj = JSONFactoryUtil.createJSONObject(metaDataItem);
+				if (govAgenItem != null) {
+					if (metaObj.has(BN_TELEPHONE)) {
+						jsonData.put(BN_TELEPHONE, metaObj.getString(BN_TELEPHONE));									
+					}
+					if (metaObj.has(BN_EMAIL)) {
+						jsonData.put(BN_EMAIL, metaObj.getString(BN_EMAIL));									
+					}
+					if (metaObj.has(BN_ADDRESS)) {
+						jsonData.put(BN_ADDRESS, metaObj.getString(BN_ADDRESS));									
+					}
+				}
+			}
+			catch (Exception e) {
+				
+			}
+		}			
+
 		return jsonData;
 	}
 
@@ -3347,10 +3363,69 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierAction;
 	}
 	
+	private boolean isSmsNotify(Dossier dossier) {
+		String metaData = dossier.getMetaData();
+		if (Validator.isNotNull(metaData)) {
+			try {
+				JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+				//
+				Iterator<String> keys = jsonMetaData.keys();
+
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = jsonMetaData.getString(key);
+					if (Validator.isNotNull(value) && value.contentEquals(DossierTerm.SMS_NOTIFY)) {
+						try {
+							Boolean isSmsNotify = Boolean.parseBoolean(value);
+							return isSmsNotify;
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+						
+					}
+				}
+			} catch (JSONException e) {
+				_log.debug(e);
+			}
+		}
+		
+		return true;
+	}
+
+	private boolean isEmailNotify(Dossier dossier) {
+		String metaData = dossier.getMetaData();
+		if (Validator.isNotNull(metaData)) {
+			try {
+				JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+				//
+				Iterator<String> keys = jsonMetaData.keys();
+
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = jsonMetaData.getString(key);
+					if (Validator.isNotNull(value) && value.contentEquals(DossierTerm.EMAIL_NOTIFY)) {
+						try {
+							Boolean isEmailNotify = Boolean.parseBoolean(value);
+							return isEmailNotify;
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+						
+					}
+				}
+			} catch (JSONException e) {
+				_log.debug(e);
+			}
+		}
+		
+		return true;
+	}
+	
 	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        
         try {		
         	payloadObj.put(
 					"Dossier", JSONFactoryUtil.createJSONObject(
@@ -3391,6 +3466,8 @@ public class CPSDossierBusinessLocalServiceImpl
 						try {
 							Applicant applicant = ApplicantLocalServiceUtil.fetchByAppId(dossier.getApplicantIdNo());
 							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
+							String contactEmail = (isEmailNotify(dossier)) ? dossier.getContactEmail() : StringPool.BLANK;
+							String telNo = (isSmsNotify(dossier)) ? dossier.getContactTelNo() : StringPool.BLANK;
 							
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
@@ -3401,8 +3478,8 @@ public class CPSDossierBusinessLocalServiceImpl
 									u.getFullName(), 
 									dossier.getApplicantName(), 
 									toUserId, 
-									dossier.getContactEmail(), 
-									dossier.getContactTelNo(), 
+									contactEmail, 
+									telNo, 
 									now, 
 									expired, 
 									context);
@@ -4482,8 +4559,12 @@ public class CPSDossierBusinessLocalServiceImpl
 					queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
 					queue.setToUsername(dossier.getUserName());
 					queue.setToUserId(dossier.getUserId());
-					queue.setToEmail(dossier.getContactEmail());
-					queue.setToTelNo(dossier.getContactTelNo());
+					if (isEmailNotify(dossier)) {
+						queue.setToEmail(dossier.getContactEmail());						
+					}
+					if (isSmsNotify(dossier)) {
+						queue.setToTelNo(dossier.getContactTelNo());						
+					}
 					
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
@@ -6658,8 +6739,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				queue.setClassPK(String.valueOf(dossier.getPrimaryKey()));
 				queue.setToUsername(dossier.getUserName());
 				queue.setToUserId(dossier.getUserId());
-				queue.setToEmail(dossier.getContactEmail());
-				queue.setToTelNo(dossier.getContactTelNo());
+				if (isEmailNotify(dossier)) {
+					queue.setToEmail(dossier.getContactEmail());
+				}
+				if (isSmsNotify(dossier)) {
+					queue.setToTelNo(dossier.getContactTelNo());
+				}
 				
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {

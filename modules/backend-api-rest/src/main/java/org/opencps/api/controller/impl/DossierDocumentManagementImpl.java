@@ -34,12 +34,10 @@ import org.opencps.api.controller.DossierDocumentManagement;
 import org.opencps.api.controller.util.DossierDocumentUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.dossierdocument.model.DossierDocumentInputModel;
-import org.opencps.api.v21.model.UserManagement.Users.Employee;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DocumentType;
@@ -60,8 +58,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
-public class DossierDocumentManagementImpl implements DossierDocumentManagement {
-
+public class DossierDocumentManagementImpl implements DossierDocumentManagement {	
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentManagementImpl.class);
 	@Override
 	public Response getPreview(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
