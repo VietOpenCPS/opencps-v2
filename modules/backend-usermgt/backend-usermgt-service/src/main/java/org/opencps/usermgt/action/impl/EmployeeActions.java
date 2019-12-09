@@ -858,6 +858,97 @@ public class EmployeeActions implements EmployeeInterface {
 
 	}
 
+	@Override
+	public void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullName, String title,
+			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
+			String roles, String scope, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException, PortalException {
+
+		// Convert String to Date
+		Date birthDay = null;
+		if (Validator.isNotNull(birthDate)) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+			try {
+				birthDay = sdf.parse(birthDate);
+			} catch (java.text.ParseException e) {
+			}
+		}
+		
+		Employee employee = EmployeeLocalServiceUtil.getEmployeeByEmpNo(groupId, employeeNo);
+		boolean isNew = false;
+
+		//Update or create Employee
+		if (employee == null) {
+			employee = EmployeeLocalServiceUtil.addEmployee(
+					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
+					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
+					0l, title, scope, false, null, null, serviceContext);
+			isNew = true;
+		} else {
+			if (Validator.isNotNull(fullName)) {
+				employee.setFullName(fullName);
+			}
+			if (Validator.isNotNull(email)) {
+				employee.setEmail(email);
+			}
+			if (Validator.isNotNull(gender)) {
+				employee.setGender(GetterUtil.get(gender, 0));
+			}
+			if (Validator.isNotNull(birthDate)) {
+				employee.setBirthdate(birthDay);
+			}
+			if (Validator.isNotNull(telNo)) {
+				employee.setTelNo(telNo);
+			}
+			if (Validator.isNotNull(title)) {
+				employee.setTitle(title);
+			}
+			if (Validator.isNotNull(workingStatus)) {
+				employee.setWorkingStatus(GetterUtil.get(workingStatus, 0));
+			}
+			if (Validator.isNotNull(scope)) {
+				employee.setScope(scope);
+			}
+			employee = EmployeeLocalServiceUtil.updateEmployee(
+				userId, employee.getEmployeeId(), employee.getFullName(),
+				employee.getEmployeeNo(), employee.getGender(),
+				employee.getBirthdate(), employee.getTelNo(), employee.getMobile(),
+				employee.getEmail(), employee.getWorkingStatus(),
+				employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
+				employee.getMappingUserId(), employee.getTitle(), employee.getScope(),
+				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
+		}
+		//_log.info("Employee Create: "+employee);
+
+		//Check exits account and create new account
+		if (isNew) {
+			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+		}
+		//_log.info("Employee UPUP: "+employee);
+		//_log.info("roles: "+roles);
+		//Import employee JobPos
+		if (Validator.isNotNull(roles)) {
+			String[] roleArr = StringUtil.split(roles);
+			if (roleArr != null && roleArr.length > 0) {
+				long employeeId = employee.getEmployeeId();
+				if (isNew) {
+					processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
+				} else {
+					List<EmployeeJobPos> empJobPosList =
+							EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+
+					if (Validator.isNull(empJobPosList) || empJobPosList.isEmpty()) {
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, null, serviceContext);
+					} else {
+						processUpdateEmpJobPos(userId, groupId, roleArr, employee, empJobPosList, serviceContext);
+					}
+
+				}
+			}
+		}
+
+	}
+
 	//Create account
 	private Employee createNewEmployeeAccount_QA(long userId, long groupId, Employee employee, String screenName,
 			String email, ServiceContext serviceContext) throws PortalException {

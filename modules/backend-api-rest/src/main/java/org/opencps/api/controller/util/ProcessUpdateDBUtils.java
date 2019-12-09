@@ -523,6 +523,7 @@ public class ProcessUpdateDBUtils {
 				Integer workingStatus = 1;
 				String jobTitle;
 				String roles;
+				String scope;
 				for (Employee employee : employeeList) {
 					employeeNo = employee.getEmployeeNo();
 					fullname = employee.getFullname();
@@ -534,11 +535,12 @@ public class ProcessUpdateDBUtils {
 					workingStatus = employee.getWorkingStatus();
 					jobTitle = employee.getJobTitle();
 					roles = employee.getRoles();
+					scope = employee.getScope();
 					if (Validator.isNotNull(employeeNo)) {
 						_log.info("employeeNo: "+employeeNo);
 						// Check record exits DB
 						actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
-								telNo, email, workingStatus, jobTitle, roles, serviceContext);
+								telNo, email, workingStatus, jobTitle, roles, scope, serviceContext);
 					}
 				}
 			}

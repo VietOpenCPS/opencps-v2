@@ -1340,6 +1340,7 @@ public class ReadXMLFileUtils {
 					emp.setTelNo(employee.getTelNo());
 					emp.setEmail(employee.getEmail());
 					emp.setWorkingStatus(employee.getWorkingStatus());
+					emp.setScope(employee.getScope());
 					JobPos mainJob = JobPosLocalServiceUtil.fetchJobPos(employee.getMainJobPostId());
 					if (mainJob != null) {
 						emp.setJobTitle(mainJob.getTitle());

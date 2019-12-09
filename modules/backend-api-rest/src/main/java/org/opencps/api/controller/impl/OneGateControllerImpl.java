@@ -60,6 +60,8 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -121,7 +123,14 @@ public class OneGateControllerImpl implements OneGateController {
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
+			
 			for (ServiceConfig serviceConfig : serviceConfigs) {
+				if (employee != null && Validator.isNotNull(employee.getScope())) {
+					if (!serviceConfig.getGovAgencyCode().contentEquals(employee.getScope())) {
+						continue;
+					}
+				}
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	

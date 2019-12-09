@@ -64,7 +64,7 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(53);
+		StringBundler sb = new StringBundler(55);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -118,6 +118,8 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 		sb.append(fileCertPath);
 		sb.append(", fileSignPath=");
 		sb.append(fileSignPath);
+		sb.append(", scope=");
+		sb.append(scope);
 		sb.append("}");
 
 		return sb.toString();
@@ -247,6 +249,13 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 			employeeImpl.setFileSignPath(fileSignPath);
 		}
 
+		if (scope == null) {
+			employeeImpl.setScope("");
+		}
+		else {
+			employeeImpl.setScope(scope);
+		}
+
 		employeeImpl.resetOriginalValues();
 
 		return employeeImpl;
@@ -291,6 +300,7 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 		fileSignId = objectInput.readLong();
 		fileCertPath = objectInput.readUTF();
 		fileSignPath = objectInput.readUTF();
+		scope = objectInput.readUTF();
 	}
 
 	@Override
@@ -393,6 +403,13 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 		else {
 			objectOutput.writeUTF(fileSignPath);
 		}
+
+		if (scope == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(scope);
+		}
 	}
 
 	public String uuid;
@@ -421,4 +438,5 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 	public long fileSignId;
 	public String fileCertPath;
 	public String fileSignPath;
+	public String scope;
 }

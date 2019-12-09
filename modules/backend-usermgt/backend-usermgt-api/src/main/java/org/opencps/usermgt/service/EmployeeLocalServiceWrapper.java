@@ -66,6 +66,26 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Employee addEmployee(long userId,
+		long groupId, String fullName, String employeeNo, int gender,
+		java.util.Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, String title, String scope,
+		boolean isCreateUser, java.util.Date recruitDate,
+		java.util.Date leaveDate,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws org.opencps.usermgt.exception.DuplicateEmployeeNoException,
+			org.opencps.usermgt.exception.DuplicateEmployeeEmailException,
+			backend.auth.api.exception.UnauthenticationException,
+			backend.auth.api.exception.UnauthorizationException,
+			com.liferay.portal.kernel.exception.NoSuchUserException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return _employeeLocalService.addEmployee(userId, groupId, fullName,
+			employeeNo, gender, birthDate, telNo, mobile, email, workingStatus,
+			mainJobPostId, title, scope, isCreateUser, recruitDate, leaveDate,
+			serviceContext);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.Employee adminProcessData(
 		com.liferay.portal.kernel.json.JSONObject objectData) {
 		return _employeeLocalService.adminProcessData(objectData);
@@ -466,6 +486,27 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 			fullName, employeeNo, gender, birthDate, telNo, mobile, email,
 			workingStatus, mainJobPostId, photoFileEntryId, mappingUserId,
 			title, recruitDate, leaveDate, serviceContext);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Employee updateEmployee(long userId,
+		long employeeId, String fullName, String employeeNo, int gender,
+		java.util.Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, long photoFileEntryId,
+		long mappingUserId, String title, String scope,
+		java.util.Date recruitDate, java.util.Date leaveDate,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws org.opencps.usermgt.exception.DuplicateEmployeeNoException,
+			org.opencps.usermgt.exception.DuplicateEmployeeEmailException,
+			backend.auth.api.exception.UnauthenticationException,
+			backend.auth.api.exception.UnauthorizationException,
+			com.liferay.portal.kernel.exception.NoSuchUserException,
+			backend.auth.api.exception.NotFoundException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return _employeeLocalService.updateEmployee(userId, employeeId,
+			fullName, employeeNo, gender, birthDate, telNo, mobile, email,
+			workingStatus, mainJobPostId, photoFileEntryId, mappingUserId,
+			title, scope, recruitDate, leaveDate, serviceContext);
 	}
 
 	@Override
