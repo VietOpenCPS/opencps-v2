@@ -727,7 +727,7 @@ public class DossierActionsImpl implements DossierActions {
 									lstStepRoles.add(psr);
 								}
 							}
-							lstUser.addAll(processRoleListUser(lstStepRoles, serviceProcessId));
+							lstUser.addAll(processRoleListUser(dossier, lstStepRoles, serviceProcessId));
 						}						
 					}
 					if (lstUser != null && !lstUser.isEmpty()) {
@@ -3306,10 +3306,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	}
 
 	// LamTV_Process role list user
-	private List<User> processRoleListUser(List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
+	private List<User> processRoleListUser(Dossier dossier, List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
 		// Check roles
 		_log.debug("processStepRoleList: "+processStepRoleList);
+		Map<Long, Employee> mapEmps = new HashMap<Long, Employee>();
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG(dossier.getGroupId());
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+		}
+		
 		if (processStepRoleList != null && processStepRoleList.size() > 0) {
 			_log.debug("processStepRoleList.size(): "+processStepRoleList.size());
 			lstUser = new ArrayList<User>();
@@ -3321,12 +3327,17 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
 						if (!user.isLockout() && user.isActive()) {
-							HashMap<String, Object> moderator = new HashMap<>();
-							moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
-							user.setModelAttributes(moderator);
-							user.setModelAttributes(assigned);
+							if (mapEmps.containsKey(user.getUserId())) {
+								Employee e = mapEmps.get(user.getUserId());
+								if (checkGovDossierEmployee(dossier, e)) {
+									HashMap<String, Object> moderator = new HashMap<>();
+									moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
+									user.setModelAttributes(moderator);
+									user.setModelAttributes(assigned);
 
-							lstUser.add(user);
+									lstUser.add(user);
+								}
+							}
 						}
 					}
 				}
@@ -3705,7 +3716,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							lstStepRoles.add(psr);
 						}
 					}
-					lstUser.addAll(processRoleListUser(lstStepRoles, ps.getServiceProcessId()));
+					lstUser.addAll(processRoleListUser(dossier, lstStepRoles, ps.getServiceProcessId()));
 				}						
 			}
 		}
