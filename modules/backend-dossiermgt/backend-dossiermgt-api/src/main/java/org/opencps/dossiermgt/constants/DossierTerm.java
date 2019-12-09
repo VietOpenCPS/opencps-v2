@@ -282,4 +282,5 @@ public class DossierTerm {
 	
 	public static final String SMS_NOTIFY = "smsNotify";
 	public static final String EMAIL_NOTIFY = "emailNotify";
+	public static final String SERVICE_LEVEL = "serviceLevel";
 }
