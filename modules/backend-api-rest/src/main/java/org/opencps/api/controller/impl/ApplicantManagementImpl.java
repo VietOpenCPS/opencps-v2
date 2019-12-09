@@ -185,7 +185,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.APPLICANTIDTYPE, query.getType());
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
-
+			params.put(ApplicantTerm.APPLICANTNAME, query.getApplicantName());
+			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 

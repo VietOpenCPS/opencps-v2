@@ -49,7 +49,8 @@ import javax.xml.bind.annotation.XmlType;
     "end",
     "type",
     "lock",
-    "idNo"
+    "idNo",
+    "applicantName"
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
@@ -70,7 +71,15 @@ public class ApplicantSearchModel {
     protected String lock;
 	@QueryParam(value = "idNo")
     protected String idNo;
+	@QueryParam(value = "applicantName")
+    protected String applicantName;
 
+	public String getApplicantName() {
+		return applicantName;
+	}
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
 	public String getLock() {
 		return lock;
 	}

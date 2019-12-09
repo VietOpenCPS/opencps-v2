@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -44,6 +45,7 @@ import java.util.Locale;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
@@ -980,7 +982,9 @@ public class EmployeeActions implements EmployeeInterface {
 				long[] groupIds = { groupId, 20143 };
 
 				// String passWord = PwdGenerator.getPassword();
-				String secret = "12345";
+				String scInConfig = PropsUtil.get(EmployeeTerm.OPENCPS_DEFAULT_EMPLOYEE_SC);
+				
+				String secret = Validator.isNotNull(scInConfig) ? scInConfig : "12345";
 
 				String fullName = employee.getFullName();
 				String[] fml = new String[3];

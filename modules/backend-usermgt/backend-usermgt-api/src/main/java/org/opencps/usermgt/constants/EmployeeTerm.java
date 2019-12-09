@@ -104,6 +104,8 @@ public class EmployeeTerm {
 	
 	public static final String TITLE_SORTABLE = "title_sortable";
 
+	public static final String OPENCPS_DEFAULT_EMPLOYEE_SC = "org.opencps.employee.default.pwd";
+	
 	private long employeeId;
 
 	private long groupId;

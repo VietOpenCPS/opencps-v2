@@ -101,8 +101,10 @@ public class ApplicantUtils {
 			model.setContactName(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTNAME)));
 			model.setContactTelNo(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTTELNO)));
 			model.setContactEmail(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTEMAIL)));
-
+			model.setApplicantProfile(doc.get(ApplicantTerm.PROFILE));
+			
 			long mappingUserId = GetterUtil.getLong(doc.get(ApplicantTerm.MAPPINGUSERID));
+			
 			MappingUser mappingUser = processMappingUser(mappingUserId);
 			if (mappingUser != null) {
 				model.setMappingUser(mappingUser);
