@@ -532,7 +532,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
-
+		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 		Indexer<Applicant> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
@@ -609,7 +609,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		if (Validator.isNotNull(applicantName)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantName);
 
+			query.addFields(ApplicantTerm.APPLICANTNAME);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		booleanQuery.addRequiredTerm(
 			Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
@@ -626,6 +632,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
+		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 
 		Indexer<Applicant> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
@@ -698,6 +705,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 					key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(applicantName)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantName);
+
+			query.addFields(ApplicantTerm.APPLICANTNAME);
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
