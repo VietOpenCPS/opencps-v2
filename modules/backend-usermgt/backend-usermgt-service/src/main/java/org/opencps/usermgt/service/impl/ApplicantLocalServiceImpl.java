@@ -657,7 +657,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 				query.addFields(
 					ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL,
-					ApplicantTerm.CONTACTTELNO, ApplicantTerm.ADDRESS);
+					ApplicantTerm.CONTACTTELNO, ApplicantTerm.ADDRESS, ApplicantTerm.APPLICANTNAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
