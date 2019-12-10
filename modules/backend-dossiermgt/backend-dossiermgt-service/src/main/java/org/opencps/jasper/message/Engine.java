@@ -80,6 +80,7 @@ public class Engine implements MessageListener {
 			_log.error(e);
 		}
 	}
+	private int MAX_TRY_COUNT = 5;
 	
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
@@ -223,9 +224,22 @@ public class Engine implements MessageListener {
 			}
 			else if (engineClass.isAssignableFrom(DossierDocument.class)) {
 				DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
-				
+				int tryCount = 0;
+				while (dossierDocument == null) {
+					try {
+						Thread.sleep(5000);
+						dossierDocument = DossierDocumentLocalServiceUtil.fetchDossierDocument(classPK);
+						tryCount++;
+						if (tryCount == MAX_TRY_COUNT) break;
+					}
+					catch (InterruptedException e) {
+						break;
+					}
+				}
     			ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
+    			_log.info("jasper export dossier document: " + dossierDocument );
+    			
     			serviceContext.setUserId(dossierDocument.getUserId());
     
     			long fileEntryId = 0;
