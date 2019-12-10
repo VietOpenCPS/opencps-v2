@@ -2892,6 +2892,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		}			
 
+		if (jsonData.has(DossierTerm.EXTEND_DATE) && Validator.isNotNull(jsonData.get(DossierTerm.EXTEND_DATE))
+				&& GetterUtil.getLong(jsonData.get(DossierTerm.EXTEND_DATE)) > 0) {
+			Date extendDate = new Date(GetterUtil.getLong(jsonData.get(DossierTerm.EXTEND_DATE)));
+			jsonData.put(DossierTerm.EXTEND_DATE, APIDateTimeUtils.convertDateToString(extendDate, APIDateTimeUtils._NORMAL_DATE_TIME));		
+		}
+
 		return jsonData;
 	}
 
