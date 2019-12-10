@@ -95,6 +95,10 @@ public class StatisticEngineUpdate {
 			data.setGroupId(tempData.getGroupId());
 			data.setViaPostalCount(tempData.getViaPostalCount());
 			data.setSaturdayCount(tempData.getSaturdayCount());
+			data.setDossierOnline3Count(tempData.getDossierOnline3Count());
+			data.setDossierOnline4Count(tempData.getDossierOnline4Count());
+			data.setReceiveDossierSatCount(tempData.getReceiveDossierSatCount());
+			data.setReleaseDossierSatCount(tempData.getReleaseDossierSatCount());
 			
 			statisticDataResult.put(key, data);
 		}

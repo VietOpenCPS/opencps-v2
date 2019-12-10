@@ -107,6 +107,10 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("viaPostalCount", getViaPostalCount());
 		attributes.put("notViaPostalCount", getNotViaPostalCount());
 		attributes.put("saturdayCount", getSaturdayCount());
+		attributes.put("dossierOnline3Count", getDossierOnline3Count());
+		attributes.put("dossierOnline4Count", getDossierOnline4Count());
+		attributes.put("receiveDossierSatCount", getReceiveDossierSatCount());
+		attributes.put("releaseDossierSatCount", getReleaseDossierSatCount());
 
 		return attributes;
 	}
@@ -389,6 +393,34 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		if (saturdayCount != null) {
 			setSaturdayCount(saturdayCount);
 		}
+
+		Integer dossierOnline3Count = (Integer)attributes.get(
+				"dossierOnline3Count");
+
+		if (dossierOnline3Count != null) {
+			setDossierOnline3Count(dossierOnline3Count);
+		}
+
+		Integer dossierOnline4Count = (Integer)attributes.get(
+				"dossierOnline4Count");
+
+		if (dossierOnline4Count != null) {
+			setDossierOnline4Count(dossierOnline4Count);
+		}
+
+		Integer receiveDossierSatCount = (Integer)attributes.get(
+				"receiveDossierSatCount");
+
+		if (receiveDossierSatCount != null) {
+			setReceiveDossierSatCount(receiveDossierSatCount);
+		}
+
+		Integer releaseDossierSatCount = (Integer)attributes.get(
+				"releaseDossierSatCount");
+
+		if (releaseDossierSatCount != null) {
+			setReleaseDossierSatCount(releaseDossierSatCount);
+		}
 	}
 
 	@Override
@@ -479,6 +511,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getDoneCount() {
 		return _opencpsDossierStatistic.getDoneCount();
+	}
+
+	/**
+	* Returns the dossier online3 count of this opencps dossier statistic.
+	*
+	* @return the dossier online3 count of this opencps dossier statistic
+	*/
+	@Override
+	public int getDossierOnline3Count() {
+		return _opencpsDossierStatistic.getDossierOnline3Count();
+	}
+
+	/**
+	* Returns the dossier online4 count of this opencps dossier statistic.
+	*
+	* @return the dossier online4 count of this opencps dossier statistic
+	*/
+	@Override
+	public int getDossierOnline4Count() {
+		return _opencpsDossierStatistic.getDossierOnline4Count();
 	}
 
 	/**
@@ -732,6 +784,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the receive dossier sat count of this opencps dossier statistic.
+	*
+	* @return the receive dossier sat count of this opencps dossier statistic
+	*/
+	@Override
+	public int getReceiveDossierSatCount() {
+		return _opencpsDossierStatistic.getReceiveDossierSatCount();
+	}
+
+	/**
 	* Returns the release count of this opencps dossier statistic.
 	*
 	* @return the release count of this opencps dossier statistic
@@ -739,6 +801,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public int getReleaseCount() {
 		return _opencpsDossierStatistic.getReleaseCount();
+	}
+
+	/**
+	* Returns the release dossier sat count of this opencps dossier statistic.
+	*
+	* @return the release dossier sat count of this opencps dossier statistic
+	*/
+	@Override
+	public int getReleaseDossierSatCount() {
+		return _opencpsDossierStatistic.getReleaseDossierSatCount();
 	}
 
 	/**
@@ -1012,6 +1084,26 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the dossier online3 count of this opencps dossier statistic.
+	*
+	* @param dossierOnline3Count the dossier online3 count of this opencps dossier statistic
+	*/
+	@Override
+	public void setDossierOnline3Count(int dossierOnline3Count) {
+		_opencpsDossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+	}
+
+	/**
+	* Sets the dossier online4 count of this opencps dossier statistic.
+	*
+	* @param dossierOnline4Count the dossier online4 count of this opencps dossier statistic
+	*/
+	@Override
+	public void setDossierOnline4Count(int dossierOnline4Count) {
+		_opencpsDossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+	}
+
+	/**
 	* Sets the dossier statistic ID of this opencps dossier statistic.
 	*
 	* @param dossierStatisticId the dossier statistic ID of this opencps dossier statistic
@@ -1278,6 +1370,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the receive dossier sat count of this opencps dossier statistic.
+	*
+	* @param receiveDossierSatCount the receive dossier sat count of this opencps dossier statistic
+	*/
+	@Override
+	public void setReceiveDossierSatCount(int receiveDossierSatCount) {
+		_opencpsDossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+	}
+
+	/**
 	* Sets the release count of this opencps dossier statistic.
 	*
 	* @param releaseCount the release count of this opencps dossier statistic
@@ -1285,6 +1387,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setReleaseCount(int releaseCount) {
 		_opencpsDossierStatistic.setReleaseCount(releaseCount);
+	}
+
+	/**
+	* Sets the release dossier sat count of this opencps dossier statistic.
+	*
+	* @param releaseDossierSatCount the release dossier sat count of this opencps dossier statistic
+	*/
+	@Override
+	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
+		_opencpsDossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
 	}
 
 	/**

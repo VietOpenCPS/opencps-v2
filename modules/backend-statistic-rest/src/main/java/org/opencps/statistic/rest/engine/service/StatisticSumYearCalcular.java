@@ -1250,7 +1250,11 @@ public class StatisticSumYearCalcular {
 		int onegateCount = 0;
 		int viaPostalCount = 0;
 		int saturdayCount = 0;
-
+		int dossierOnline3Count = 0;
+		int dossierOnline4Count = 0;
+		int receiveDossierSatCount = 0;
+		int releaseDossierSatCount = 0;
+		
 		if (month == 0 && year == 0) {
 			for (DossierStatisticData data : source) {
 
@@ -1275,6 +1279,10 @@ public class StatisticSumYearCalcular {
 				waitingCount = waitingCount + data.getWaitingCount();
 				viaPostalCount = viaPostalCount + data.getViaPostalCount();
 				saturdayCount = saturdayCount + data.getSaturdayCount();
+				dossierOnline3Count = dossierOnline3Count + data.getDossierOnline3Count();
+				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
+				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
+				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 			}
 		} else {
 			for (DossierStatisticData data : source) {
@@ -1294,6 +1302,10 @@ public class StatisticSumYearCalcular {
 				onegateCount = onegateCount + data.getOnegateCount();
 				viaPostalCount = viaPostalCount + data.getViaPostalCount();
 				saturdayCount = saturdayCount + data.getSaturdayCount();
+				dossierOnline3Count = dossierOnline3Count + data.getDossierOnline3Count();
+				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
+				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
+				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
@@ -1349,6 +1361,10 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setGroupId(groupId);
 		dossierStatisticData.setViaPostalCount(viaPostalCount);
 		dossierStatisticData.setSaturdayCount(saturdayCount);
+		dossierStatisticData.setDossierOnline3Count(dossierOnline3Count);
+		dossierStatisticData.setDossierOnline4Count(dossierOnline4Count);
+		dossierStatisticData.setReceiveDossierSatCount(receiveDossierSatCount);
+		dossierStatisticData.setReleaseDossierSatCount(releaseDossierSatCount);
 		
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}

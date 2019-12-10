@@ -80,6 +80,10 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setViaPostalCount(model.getViaPostalCount());
 		soapModel.setNotViaPostalCount(model.getNotViaPostalCount());
 		soapModel.setSaturdayCount(model.getSaturdayCount());
+		soapModel.setDossierOnline3Count(model.getDossierOnline3Count());
+		soapModel.setDossierOnline4Count(model.getDossierOnline4Count());
+		soapModel.setReceiveDossierSatCount(model.getReceiveDossierSatCount());
+		soapModel.setReleaseDossierSatCount(model.getReleaseDossierSatCount());
 
 		return soapModel;
 	}
@@ -507,6 +511,38 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_saturdayCount = saturdayCount;
 	}
 
+	public int getDossierOnline3Count() {
+		return _dossierOnline3Count;
+	}
+
+	public void setDossierOnline3Count(int dossierOnline3Count) {
+		_dossierOnline3Count = dossierOnline3Count;
+	}
+
+	public int getDossierOnline4Count() {
+		return _dossierOnline4Count;
+	}
+
+	public void setDossierOnline4Count(int dossierOnline4Count) {
+		_dossierOnline4Count = dossierOnline4Count;
+	}
+
+	public int getReceiveDossierSatCount() {
+		return _receiveDossierSatCount;
+	}
+
+	public void setReceiveDossierSatCount(int receiveDossierSatCount) {
+		_receiveDossierSatCount = receiveDossierSatCount;
+	}
+
+	public int getReleaseDossierSatCount() {
+		return _releaseDossierSatCount;
+	}
+
+	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
+		_releaseDossierSatCount = releaseDossierSatCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -553,4 +589,8 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _viaPostalCount;
 	private int _notViaPostalCount;
 	private int _saturdayCount;
+	private int _dossierOnline3Count;
+	private int _dossierOnline4Count;
+	private int _receiveDossierSatCount;
+	private int _releaseDossierSatCount;
 }

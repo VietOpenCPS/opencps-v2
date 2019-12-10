@@ -64,6 +64,13 @@ public class StatisticEngineFetchEntry {
 		if (isReceivedSaturday && isFinishSaturday) {
 			statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
 		}
+		if (isReceivedSaturday) {
+			statisticData.setReceiveDossierSatCount(statisticData.getReceiveDossierSatCount() + 1);
+		}
+		if (isFinishSaturday) {
+			statisticData.setReleaseDossierSatCount(statisticData.getReleaseDossierSatCount() + 1);
+		}
+		
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		if (dossierData.getDossierStatus().contentEquals("denied")) {

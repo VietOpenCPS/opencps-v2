@@ -147,7 +147,7 @@ public class CheckFileUtils {
 
 	private static boolean checkExtentionFile(CommonsMultipartFile multipartFile) {
 		//return false;
-		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar" };
+		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar", "cer" };
 		
 		String extentFile = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 //		System.out.println("multipartFile.getOriginalFilename(): "+multipartFile.getOriginalFilename());
@@ -162,7 +162,7 @@ public class CheckFileUtils {
 
 	private static boolean checkExtentionFile(DLFileEntry fileEntry) {
 		//return false;
-		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar" };
+		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar", "cer" };
 		
 		String extentFile = FilenameUtils.getExtension(fileEntry.getFileName());
 //		System.out.println("multipartFile.getOriginalFilename(): "+multipartFile.getOriginalFilename());
@@ -177,7 +177,7 @@ public class CheckFileUtils {
 
 	private static boolean checkExtentionFile(FileEntry fileEntry) {
 		//return false;
-		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar" };
+		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar", "cer" };
 		
 		String extentFile = FilenameUtils.getExtension(fileEntry.getFileName());
 //		System.out.println("multipartFile.getOriginalFilename(): "+multipartFile.getOriginalFilename());

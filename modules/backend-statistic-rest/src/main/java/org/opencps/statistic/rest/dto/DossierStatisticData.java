@@ -319,6 +319,43 @@ public class DossierStatisticData {
 	private String system;
 	private int viaPostalCount;
 	private int saturdayCount;
+	private int dossierOnline3Count;
+	private int dossierOnline4Count;
+	private int receiveDossierSatCount;
+	private int releaseDossierSatCount;
+	
+	public int getDossierOnline3Count() {
+		return dossierOnline3Count;
+	}
+
+	public void setDossierOnline3Count(int dossierOnline3Count) {
+		this.dossierOnline3Count = dossierOnline3Count;
+	}
+
+	public int getDossierOnline4Count() {
+		return dossierOnline4Count;
+	}
+
+	public void setDossierOnline4Count(int dossierOnline4Count) {
+		this.dossierOnline4Count = dossierOnline4Count;
+	}
+
+	public int getReceiveDossierSatCount() {
+		return receiveDossierSatCount;
+	}
+
+	public void setReceiveDossierSatCount(int receiveDossierSatCount) {
+		this.receiveDossierSatCount = receiveDossierSatCount;
+	}
+
+	public int getReleaseDossierSatCount() {
+		return releaseDossierSatCount;
+	}
+
+	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
+		this.releaseDossierSatCount = releaseDossierSatCount;
+	}
+
 	public int getViaPostalCount() {
 		return viaPostalCount;
 	}

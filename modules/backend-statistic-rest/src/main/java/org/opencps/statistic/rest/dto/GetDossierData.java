@@ -19,6 +19,15 @@ public class GetDossierData {
 	private String lockState;
 	private String system;
 	private int viaPostal;
+	private int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
 
 	public int getViaPostal() {
 		return viaPostal;

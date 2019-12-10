@@ -43,6 +43,7 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -52,6 +53,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
@@ -275,6 +277,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					if (lastAc != null) {
 						ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(lastAc.getServiceProcessId());
 						if (sp != null) {
+							//Add service level
+							ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
+							if (sc != null) {
+								document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
+							}
 							String dueDatePattern = sp.getDueDatePattern();
 							try {
 								JSONObject dueDateObj = JSONFactoryUtil.createJSONObject(dueDatePattern);

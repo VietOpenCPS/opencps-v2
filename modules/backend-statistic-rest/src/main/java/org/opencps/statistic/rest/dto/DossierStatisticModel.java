@@ -97,7 +97,39 @@ public class DossierStatisticModel implements Serializable {
 	protected int viaPostalCount;
 	@FormParam(value="saturdayCount")
 	protected int saturdayCount;
+	@FormParam(value="dossierOnline3Count")
+	protected int dossierOnline3Count;
+	@FormParam(value="dossierOnline4Count")
+	protected int dossierOnline4Count;
+	@FormParam(value="receiveDossierSatCount")
+	protected int receiveDossierSatCount;
+	@FormParam(value="releaseDossierSatCount")
+	protected int releaseDossierSatCount;
 
+	public int getDossierOnline3Count() {
+		return dossierOnline3Count;
+	}
+	public void setDossierOnline3Count(int dossierOnline3Count) {
+		this.dossierOnline3Count = dossierOnline3Count;
+	}
+	public int getDossierOnline4Count() {
+		return dossierOnline4Count;
+	}
+	public void setDossierOnline4Count(int dossierOnline4Count) {
+		this.dossierOnline4Count = dossierOnline4Count;
+	}
+	public int getReceiveDossierSatCount() {
+		return receiveDossierSatCount;
+	}
+	public void setReceiveDossierSatCount(int receiveDossierSatCount) {
+		this.receiveDossierSatCount = receiveDossierSatCount;
+	}
+	public int getReleaseDossierSatCount() {
+		return releaseDossierSatCount;
+	}
+	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
+		this.releaseDossierSatCount = releaseDossierSatCount;
+	}
 	public int getViaPostalCount() {
 		return viaPostalCount;
 	}

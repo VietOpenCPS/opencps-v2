@@ -477,7 +477,9 @@ public class DossierUtils {
 			}
 			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
-			
+			if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
+				model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
+			}
 			ouputs.add(model);
 		}
 

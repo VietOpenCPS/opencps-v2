@@ -206,7 +206,8 @@ import javax.xml.bind.annotation.XmlType;
     "documentDate",
     "lock",
     "timeOverdueText",
-    "systemId"
+    "systemId",
+    "serviceLevel"
 })
 public class DossierDataModel {
 
@@ -319,6 +320,15 @@ public class DossierDataModel {
     protected String lock;
     protected String timeOverdueText;
     protected Integer systemId;
+    protected int serviceLevel;
+
+	public int getServiceLevel() {
+		return serviceLevel;
+	}
+
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
 
 	public Integer getSystemId() {
 		return systemId;

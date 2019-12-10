@@ -56,6 +56,10 @@
 		<column name="viaPostalCount" type="int" />
 		<column name="notViaPostalCount" type="int" />
 		<column name="saturdayCount" type="int" />
+		<column name="dossierOnline3Count" type="int" />
+		<column name="dossierOnline4Count" type="int" />
+		<column name="receiveDossierSatCount" type="int" />
+		<column name="releaseDossierSatCount" type="int" />
 		
 		<!-- Order -->
 

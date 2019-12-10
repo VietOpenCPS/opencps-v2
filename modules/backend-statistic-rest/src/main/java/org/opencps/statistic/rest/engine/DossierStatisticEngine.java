@@ -524,13 +524,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
-				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
-					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
-				}
-				if ("35818".contentEquals(doc.get(DossierTerm.GROUP_ID))) {
-					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
-				}
+//				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+//					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
+//				}
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
+				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
+					model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
+				}
 				
 				dossierData.add(model);
 			}

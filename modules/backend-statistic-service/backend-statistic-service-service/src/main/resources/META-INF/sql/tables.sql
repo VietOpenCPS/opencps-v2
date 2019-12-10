@@ -70,7 +70,11 @@ create table opencps_statistic (
 	system VARCHAR(75) null,
 	viaPostalCount INTEGER,
 	notViaPostalCount INTEGER,
-	saturdayCount INTEGER
+	saturdayCount INTEGER,
+	dossierOnline3Count INTEGER,
+	dossierOnline4Count INTEGER,
+	receiveDossierSatCount INTEGER,
+	releaseDossierSatCount INTEGER
 );
 
 create table opencps_voting_statistic (

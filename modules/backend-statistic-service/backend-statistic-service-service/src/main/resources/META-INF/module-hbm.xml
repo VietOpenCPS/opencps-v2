@@ -54,6 +54,10 @@
 		<property name="viaPostalCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="notViaPostalCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="saturdayCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="dossierOnline3Count" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="dossierOnline4Count" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="receiveDossierSatCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="releaseDossierSatCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.statistic.model.impl.OpencpsPersonStatisticImpl" table="opencps_person_statistic">
 		<id name="personStatisticId" type="long">

@@ -111,7 +111,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int viaPostalCount, int saturdayCount)
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount)
 		throws PortalException, SystemException;
 
 	/**
@@ -150,8 +152,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount)
-		throws PortalException, SystemException;
+		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
+		int dossierOnline4Count, int receiveDossierSatCount,
+		int releaseDossierSatCount) throws PortalException, SystemException;
 
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
@@ -435,7 +438,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int viaPostalCount, int saturdayCount)
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount)
 		throws PortalException, SystemException;
 
 	/**
@@ -458,6 +463,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, int viaPostalCount, int saturdayCount,
+		int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
 		int outsideCount, int insideCount)
