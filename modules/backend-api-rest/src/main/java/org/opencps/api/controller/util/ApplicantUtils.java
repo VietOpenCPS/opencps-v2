@@ -1,10 +1,12 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.MappingUser;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -16,6 +18,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ApplicantUtils {
 
@@ -90,7 +93,11 @@ public class ApplicantUtils {
 			model.setApplicantName(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTNAME)));
 			model.setApplicantIdType(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDTYPE)));
 			model.setApplicantIdNo(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDNO)));
-			model.setApplicantIdDate(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDDATE)));
+			if (doc.hasField(ApplicantTerm.APPLICANTIDDATE) && Validator.isNotNull(doc.get(ApplicantTerm.APPLICANTIDDATE))) {
+				Date applicantDate = APIDateTimeUtils.convertStringToDate(doc.get(ApplicantTerm.APPLICANTIDDATE), APIDateTimeUtils._LUCENE_PATTERN);
+				String applicantIdDateText = APIDateTimeUtils.convertDateToString(applicantDate, APIDateTimeUtils._NORMAL_DATE);
+				model.setApplicantIdDate(applicantIdDateText);
+			}
 			model.setAddress(GetterUtil.getString(doc.get(ApplicantTerm.ADDRESS)));
 			model.setCityCode(GetterUtil.getString(doc.get(ApplicantTerm.CITYCODE)));
 			model.setCityName(GetterUtil.getString(doc.get(ApplicantTerm.CITYNAME)));

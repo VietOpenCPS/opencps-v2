@@ -278,9 +278,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(lastAc.getServiceProcessId());
 						if (sp != null) {
 							//Add service level
-							ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
-							if (sc != null) {
-								document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
+							try {
+								ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
+								if (sc != null) {
+									document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
+								}
+							}
+							catch (Exception e) {
+								
 							}
 							String dueDatePattern = sp.getDueDatePattern();
 							try {
