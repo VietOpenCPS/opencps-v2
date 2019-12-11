@@ -14,17 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.EmployeeTerm;
-import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
-import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
-import org.opencps.usermgt.exception.NoSuchEmployeeException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
@@ -52,7 +41,11 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
+import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyFactoryUtil;
+import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -1209,11 +1202,17 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		// }
 		// }
 		// _log.info("user: "+JSONFactoryUtil.looseSerialize(user));
-
+		if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+			userLocalService.deleteGroupUser(object.getGroupId(), object.getMappingUserId());
+		}
+		else if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+			userLocalService.addGroupUser(object.getGroupId(), object.getMappingUserId());
+		}
 		return employeePersistence.update(object);
 
 	}
 
+	
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds) {
 
 		return employeePersistence.findByG_EMPID(groupId, employeeIds);

@@ -33,10 +33,12 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 public class DossierNumberGenerator {
@@ -57,14 +59,19 @@ public class DossierNumberGenerator {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		String dossierNumber = StringPool.BLANK;
-//		_log.info("seriNumberPattern: "+seriNumberPattern);
-		if (SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(seriNumberPattern)) {
+		_log.debug("seriNumberPattern: "+seriNumberPattern);
+		ServiceProcess sp = ServiceProcessLocalServiceUtil.getByG_PNO(groupId, dossier.getProcessNo());
+		
+		if (sp != null && SCOPE_GOV_AGENCY_CODE_PATTERN.contentEquals(sp.getDossierNoPattern())) {
 			DictCollection govCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GOVERNMENT_AGENCY, groupId);
+			_log.debug("GOV COLLECTION: " + govCollection);
 			if (govCollection != null) {
 				DictItem govItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(dossier.getGovAgencyCode(), govCollection.getDictCollectionId(), groupId);
+				_log.debug("GOV ITEM: " + govItem + ", " + dossier.getGovAgencyCode());
 				if (govItem != null) {
 					try {
 						JSONObject metaObj = JSONFactoryUtil.createJSONObject(govItem.getMetaData());
+						_log.debug("GOV META: " + govItem.getMetaData());
 						if (metaObj.has(DOSSIER_NO_PATTERN_KEY)) {
 							seriNumberPattern = metaObj.getString(DOSSIER_NO_PATTERN_KEY);
 						}
@@ -75,6 +82,8 @@ public class DossierNumberGenerator {
 				}
 			}
 		}
+
+		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		
 		if (dossier != null) {
 			String codePatternGov = "\\{(a+|A+)\\}";
