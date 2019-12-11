@@ -1,6 +1,11 @@
 
 package org.opencps.datamgt.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,11 +16,6 @@ import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DueDateUtils {
 
@@ -809,7 +809,6 @@ public class DueDateUtils {
 	}
 
 	public String getOverDueCalcToString() {
-
 		long seconds = getOverDue() / 1000;
 		long minutes = seconds / 60;
 		long hours = minutes / 60;

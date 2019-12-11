@@ -529,7 +529,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				}
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
-					model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
+					try {
+						model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
+					}
+					catch (Exception e) {
+						
+					}
 				}
 				
 				dossierData.add(model);
@@ -668,7 +673,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 2, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

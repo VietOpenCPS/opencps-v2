@@ -582,9 +582,9 @@ public class DossierUtils {
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
 		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return (int)durationCount + strOverDue;
+			return Math.abs((int)durationCount) + strOverDue;
 		} else {
-			return (int)overDue + strOverDue;
+			return Math.abs((int)overDue) + strOverDue;
 		}
 	}
 
