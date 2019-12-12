@@ -592,10 +592,26 @@ public class CPSDossierBusinessLocalServiceImpl
 							
 							List<DossierFile> lstOriginFiles = dossierFileLocalService.findByDID(dossier.getOriginDossierId());
 							if (lstOriginFiles.size() > 0) {
+								List<String> lstCheckParts = new ArrayList<String>();
+								
+								if (payloadObject.has(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS)) {
+									try {
+										JSONArray partArrs = payloadObject.getJSONArray(DossierSyncTerm.PAYLOAD_SYNC_DOSSIER_PARTS);
+										for (int tempI = 0; tempI <= partArrs.length(); tempI++) {
+											JSONObject partObj = partArrs.getJSONObject(tempI);
+											lstCheckParts.add(partObj.getString(DossierPartTerm.PART_NO));
+										}
+									}
+									catch (Exception e) {
+										
+									}
+								}
+								
 								for (DossierFile df : lstOriginFiles) {
 									boolean flagHslt = false;
 									for (DossierPart dp : lstParts) {
-										if (dp.getPartNo().equals(df.getDossierPartNo())) {
+										if (dp.getPartNo().equals(df.getDossierPartNo())
+												&& (lstCheckParts.size() == 0 || (lstCheckParts.size() > 0 && lstCheckParts.contains(dp.getPartNo())))) {
 											flagHslt = true;
 											break;
 										}
@@ -616,7 +632,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				//Sync result files
 				
 			}
-			
+						
 			payloadObject.put("dossierFiles", dossierFilesArr);
 			
 			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
