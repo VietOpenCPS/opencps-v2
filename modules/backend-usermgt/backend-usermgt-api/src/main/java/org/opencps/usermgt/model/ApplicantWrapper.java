@@ -83,10 +83,11 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 		attributes.put("contactEmail", getContactEmail());
 		attributes.put("mappingUserId", getMappingUserId());
 		attributes.put("activationCode", getActivationCode());
-		attributes.put("lock_", isLock_());
+		attributes.put("lock_", getLock_());
 		attributes.put("profile", getProfile());
 		attributes.put("tmpPass", getTmpPass());
 		attributes.put("representativeEnterprise", getRepresentativeEnterprise());
+		attributes.put("verification", getVerification());
 
 		return attributes;
 	}
@@ -260,6 +261,12 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 
 		if (representativeEnterprise != null) {
 			setRepresentativeEnterprise(representativeEnterprise);
+		}
+
+		Integer verification = (Integer)attributes.get("verification");
+
+		if (verification != null) {
+			setVerification(verification);
 		}
 	}
 
@@ -454,7 +461,7 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	* @return the lock_ of this applicant
 	*/
 	@Override
-	public boolean getLock_() {
+	public Boolean getLock_() {
 		return _applicant.getLock_();
 	}
 
@@ -574,6 +581,16 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	}
 
 	/**
+	* Returns the verification of this applicant.
+	*
+	* @return the verification of this applicant
+	*/
+	@Override
+	public int getVerification() {
+		return _applicant.getVerification();
+	}
+
+	/**
 	* Returns the ward code of this applicant.
 	*
 	* @return the ward code of this applicant
@@ -606,16 +623,6 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	@Override
 	public boolean isEscapedModel() {
 		return _applicant.isEscapedModel();
-	}
-
-	/**
-	* Returns <code>true</code> if this applicant is lock_.
-	*
-	* @return <code>true</code> if this applicant is lock_; <code>false</code> otherwise
-	*/
-	@Override
-	public boolean isLock_() {
-		return _applicant.isLock_();
 	}
 
 	@Override
@@ -820,12 +827,12 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	}
 
 	/**
-	* Sets whether this applicant is lock_.
+	* Sets the lock_ of this applicant.
 	*
 	* @param lock_ the lock_ of this applicant
 	*/
 	@Override
-	public void setLock_(boolean lock_) {
+	public void setLock_(Boolean lock_) {
 		_applicant.setLock_(lock_);
 	}
 
@@ -947,6 +954,16 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	@Override
 	public void setUuid(String uuid) {
 		_applicant.setUuid(uuid);
+	}
+
+	/**
+	* Sets the verification of this applicant.
+	*
+	* @param verification the verification of this applicant
+	*/
+	@Override
+	public void setVerification(int verification) {
+		_applicant.setVerification(verification);
 	}
 
 	/**

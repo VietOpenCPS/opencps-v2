@@ -743,6 +743,11 @@
         	<finder-column name="groupId"></finder-column>
             <finder-column name="groupDossierId"></finder-column>
         </finder>
+        <finder name="G_UID_DS" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="userId"></finder-column>
+            <finder-column name="dossierStatus"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

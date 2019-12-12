@@ -52,7 +52,8 @@ create table opencps_applicant (
 	lock_ BOOLEAN,
 	profile TEXT null,
 	tmpPass VARCHAR(75) null,
-	representativeEnterprise VARCHAR(200) null
+	representativeEnterprise VARCHAR(200) null,
+	verification INTEGER
 );
 
 create table opencps_employee (

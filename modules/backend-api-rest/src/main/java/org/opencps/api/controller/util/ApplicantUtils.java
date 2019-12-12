@@ -50,6 +50,7 @@ public class ApplicantUtils {
 		model.setContactName(applicant.getContactName());
 		model.setContactTelNo(applicant.getContactTelNo());
 		model.setApplicantProfile(applicant.getProfile());
+		model.setVerification(applicant.getVerification());
 		
 		long mappingUserId = applicant.getMappingUserId();
 		MappingUser mappingUser = processMappingUser(mappingUserId);
@@ -71,7 +72,7 @@ public class ApplicantUtils {
 //			mappingUser.setLocking(user.getLockout());
 //		}
 //		model.setMappingUser(mappingUser);
-
+		
 		return model;
 	}
 
@@ -116,7 +117,11 @@ public class ApplicantUtils {
 			if (mappingUser != null) {
 				model.setMappingUser(mappingUser);
 			}
-
+			
+			if (doc.hasField(ApplicantTerm.VERIFICATION)) {
+				model.setVerification(GetterUtil.getInteger(doc.get(ApplicantTerm.VERIFICATION)));
+			}
+			
 			data.add(model);
 		}
 

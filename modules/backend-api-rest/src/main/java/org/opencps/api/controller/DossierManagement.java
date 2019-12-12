@@ -1521,5 +1521,5 @@ public interface DossierManagement {
 	public Response putMetaDataDetailDossier(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext, @PathParam("id") String id);	
+		@Context ServiceContext serviceContext, @PathParam("id") String id, @FormParam(value="data") String data);	
 }

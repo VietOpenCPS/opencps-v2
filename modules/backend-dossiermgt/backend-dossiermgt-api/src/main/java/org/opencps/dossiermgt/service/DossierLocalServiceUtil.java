@@ -101,6 +101,11 @@ public class DossierLocalServiceUtil {
 			serviceCode);
 	}
 
+	public static int countByG_UID_DS(long groupId, long userId,
+		String dossierStatus) {
+		return getService().countByG_UID_DS(groupId, userId, dossierStatus);
+	}
+
 	public static int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo) {
 		return getService()
@@ -320,6 +325,11 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
 		long groupId, long groupDossierId) {
 		return getService().findByG_GDID(groupId, groupDossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
+		long groupId, long userId, String dossierStatus) {
+		return getService().findByG_UID_DS(groupId, userId, dossierStatus);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByGID(

@@ -58,7 +58,7 @@
 		</field>
 		<field name="mappingUserId" type="long" />
 		<field name="activationCode" type="String" />
-		<field name="lock_" type="boolean" />
+		<field name="lock_" type="Boolean" />
 		<field name="profile" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -66,6 +66,7 @@
 		<field name="representativeEnterprise" type="String">
 			<hint name="max-length">200</hint>
 		</field>
+		<field name="verification" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />

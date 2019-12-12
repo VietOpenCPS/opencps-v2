@@ -50,6 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -7098,7 +7099,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response putMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String data) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -7108,46 +7109,91 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			if (dossier != null) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
-				Enumeration<String> keyIt = request.getParameterNames();
-				
-				while (keyIt.hasMoreElements()) {
-					String key = keyIt.nextElement();			
-					String[] keys = key.split("\\.");
-					JSONObject tempObj = obj;
-					int index = 0;
-					for (int i = 0; i < keys.length; i++) {
-						if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
-							tempObj = tempObj.getJSONObject(keys[i]);
-						}
-						else {
-							index = i;
-							break;
-						}
-					}
-					if (keys.length == 1) {
-						obj.put(key, request.getParameter(key));																		
-					}
-					else {
-						if (index == keys.length - 1) {
-							tempObj.put(keys[index], request.getParameter(key));							
-						}
-						else {
-							JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
-							mergeObj.put(keys[keys.length - 1], request.getParameter(key));
-							for (int i = keys.length - 2; i > index; i--) {
-								JSONObject indexObj = JSONFactoryUtil.createJSONObject();
-								indexObj.put(keys[i], mergeObj);
-								mergeObj = indexObj;
+				if (Validator.isNull(data)) {
+					Enumeration<String> keyIt = request.getParameterNames();
+					
+					while (keyIt.hasMoreElements()) {
+						String key = keyIt.nextElement();			
+						String[] keys = key.split("\\.");
+						JSONObject tempObj = obj;
+						int index = 0;
+						for (int i = 0; i < keys.length; i++) {
+							if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+								tempObj = tempObj.getJSONObject(keys[i]);
 							}
-							tempObj.put(keys[index], mergeObj);
+							else {
+								index = i;
+								break;
+							}
+						}
+						if (keys.length == 1) {
+							obj.put(key, request.getParameter(key));																		
+						}
+						else {
+							if (index == keys.length - 1) {
+								tempObj.put(keys[index], request.getParameter(key));							
+							}
+							else {
+								JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+								mergeObj.put(keys[keys.length - 1], request.getParameter(key));
+								for (int i = keys.length - 2; i > index; i--) {
+									JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+									indexObj.put(keys[i], mergeObj);
+									mergeObj = indexObj;
+								}
+								tempObj.put(keys[index], mergeObj);
+							}
 						}
 					}
+					
+					dossier.setMetaData(obj.toJSONString());
+					DossierLocalServiceUtil.updateDossier(dossier);
+					
+					return Response.status(200).entity("{ 'ok': true }").build();					
 				}
-				
-				dossier.setMetaData(obj.toJSONString());
-				DossierLocalServiceUtil.updateDossier(dossier);
-				
-				return Response.status(200).entity("{ 'ok': true }").build();
+				else {
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
+					Iterator<String> keyIt = dataObj.keys();
+					
+					while (keyIt.hasNext()) {
+						String key = keyIt.next();			
+						String[] keys = key.split("\\.");
+						JSONObject tempObj = obj;
+						int index = 0;
+						for (int i = 0; i < keys.length; i++) {
+							if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+								tempObj = tempObj.getJSONObject(keys[i]);
+							}
+							else {
+								index = i;
+								break;
+							}
+						}
+						if (keys.length == 1) {
+							obj.put(key, dataObj.get(key));																		
+						}
+						else {
+							if (index == keys.length - 1) {
+								tempObj.put(keys[index], dataObj.get(key));							
+							}
+							else {
+								JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+								mergeObj.put(keys[keys.length - 1], dataObj.get(key));
+								for (int i = keys.length - 2; i > index; i--) {
+									JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+									indexObj.put(keys[i], mergeObj);
+									mergeObj = indexObj;
+								}
+								tempObj.put(keys[index], mergeObj);
+							}
+						}
+					}
+					
+					dossier.setMetaData(obj.toJSONString());
+					DossierLocalServiceUtil.updateDossier(dossier);
+					
+					return Response.status(200).entity("{ 'ok': true }").build();					
+				}
 			}
 			else {
 				return Response.status(200).entity("{ 'ok': false }").build();				

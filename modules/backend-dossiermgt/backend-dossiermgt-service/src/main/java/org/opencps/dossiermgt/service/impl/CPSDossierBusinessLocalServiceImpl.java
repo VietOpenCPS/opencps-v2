@@ -180,6 +180,7 @@ import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImp
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -2307,6 +2308,17 @@ public class CPSDossierBusinessLocalServiceImpl
 //			dossierAction.setState(DossierActionTerm.STATE_ALREADY_PROCESSED);
 //			dossierAction.setModifiedDate(new Date());
 			dossierAction = dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ALREADY_PROCESSED);								
+		}
+		
+		//Check verification
+		if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(curStatus)) {
+			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			if (checkApplicant != null && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+				if (checkApplicant.getVerification() == ApplicantTerm.LOCKED || checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
+					checkApplicant.setVerification(ApplicantTerm.UNLOCKED);
+					ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+				}
+			}
 		}
 		
 //		if (DossierTerm.DOSSIER_STATUS_DENIED.equals(curStatus)
@@ -4646,6 +4658,15 @@ public class CPSDossierBusinessLocalServiceImpl
 			dossierLocalService.updateDossier(dossier);
 			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
 			
+			//Check verification applicant
+			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			if (checkApplicant != null) {
+				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(groupId, user.getUserId(), DossierTerm.DOSSIER_STATUS_NEW);
+				if (countDossier == DossierTerm.MAX_DOSSIER_WITHOUT_VERIFICATION) {
+					checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
+					ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+				}
+			}
 			return dossier;
 		}
 

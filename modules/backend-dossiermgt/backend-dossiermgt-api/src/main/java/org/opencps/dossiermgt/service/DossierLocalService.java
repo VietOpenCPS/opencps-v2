@@ -112,6 +112,8 @@ public interface DossierLocalService extends BaseLocalService,
 	public int countByG_NOTS_O_SC(long groupId, String[] dossierStatuses,
 		int originality, String serviceCode);
 
+	public int countByG_UID_DS(long groupId, long userId, String dossierStatus);
+
 	public int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo);
 
@@ -260,6 +262,9 @@ public interface DossierLocalService extends BaseLocalService,
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
 	public List<Dossier> findByG_GDID(long groupId, long groupDossierId);
+
+	public List<Dossier> findByG_UID_DS(long groupId, long userId,
+		String dossierStatus);
 
 	public List<Dossier> findByGID(long groupId, int start, int end);
 

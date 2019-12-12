@@ -63,6 +63,7 @@
 		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="tmpPass" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="representativeEnterprise" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="verification" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeImpl" table="opencps_employee">
 		<id name="employeeId" type="long">
