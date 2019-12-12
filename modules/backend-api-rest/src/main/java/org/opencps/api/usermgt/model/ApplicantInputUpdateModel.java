@@ -63,7 +63,8 @@ import javax.xml.bind.annotation.XmlType;
     "wardName",
     "contactName",
     "contactTelNo",
-    "contactEmail"
+    "contactEmail",
+    "profile"
 })
 public class ApplicantInputUpdateModel {
 
@@ -97,8 +98,18 @@ public class ApplicantInputUpdateModel {
     protected String contactEmail;
 	@DefaultValue(StringPool.BLANK) @FormParam(value = "password")
     protected String password;
+	@DefaultValue(StringPool.BLANK) @FormParam(value = "profile")
+    protected String profile;
+	
+    public String getProfile() {
+		return profile;
+	}
 
-    /**
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
+	/**
      * Gets the value of the applicantName property.
      * 
      * @return

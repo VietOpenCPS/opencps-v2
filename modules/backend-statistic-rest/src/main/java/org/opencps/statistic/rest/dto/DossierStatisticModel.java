@@ -93,7 +93,23 @@ public class DossierStatisticModel implements Serializable {
 	protected long groupId;
 	@FormParam(value="system")
 	protected String system;
+	@FormParam(value="viaPostalCount")
+	protected int viaPostalCount;
+	@FormParam(value="saturdayCount")
+	protected int saturdayCount;
 
+	public int getViaPostalCount() {
+		return viaPostalCount;
+	}
+	public void setViaPostalCount(int viaPostalCount) {
+		this.viaPostalCount = viaPostalCount;
+	}
+	public int getSaturdayCount() {
+		return saturdayCount;
+	}
+	public void setSaturdayCount(int saturdayCount) {
+		this.saturdayCount = saturdayCount;
+	}
 	public long getGroupId() {
 		return groupId;
 	}

@@ -7,7 +7,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;

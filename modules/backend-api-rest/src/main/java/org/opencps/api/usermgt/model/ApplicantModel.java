@@ -69,7 +69,8 @@ import javax.xml.bind.annotation.XmlType;
     "contactName",
     "contactTelNo",
     "contactEmail",
-    "mappingUser"
+    "mappingUser",
+    "applicantProfile"
 })
 
 @XmlRootElement(name = "ApplicantModel")
@@ -93,8 +94,17 @@ public class ApplicantModel {
     protected String contactTelNo;
     protected String contactEmail;
     protected MappingUser mappingUser;
+    protected String applicantProfile;
+    
+    public String getApplicantProfile() {
+		return applicantProfile;
+	}
 
-    /**
+	public void setApplicantProfile(String applicantProfile) {
+		this.applicantProfile = applicantProfile;
+	}
+
+	/**
      * Gets the value of the applicantId property.
      * 
      * @return

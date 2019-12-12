@@ -1125,7 +1125,8 @@ public class UserActions implements UserInterface {
 						applicant.getActivationCode());
 					result.put("applicantLock", applicant.getLock_());
 					//result.put("applicantTmpPass", applicant.getTmpPass());
-
+					result.put("applicantProfile", applicant.getProfile());
+					
 					result.put("userId", applicant.getMappingUserId());
 					result.put("userName", applicant.getApplicantName());
 					result.put("mappingUserId", applicant.getMappingUserId());

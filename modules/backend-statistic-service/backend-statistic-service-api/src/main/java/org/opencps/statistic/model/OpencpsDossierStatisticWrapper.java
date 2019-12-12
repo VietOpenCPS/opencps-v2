@@ -104,6 +104,9 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("outsideCount", getOutsideCount());
 		attributes.put("insideCount", getInsideCount());
 		attributes.put("system", getSystem());
+		attributes.put("viaPostalCount", getViaPostalCount());
+		attributes.put("notViaPostalCount", getNotViaPostalCount());
+		attributes.put("saturdayCount", getSaturdayCount());
 
 		return attributes;
 	}
@@ -368,6 +371,24 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		if (system != null) {
 			setSystem(system);
 		}
+
+		Integer viaPostalCount = (Integer)attributes.get("viaPostalCount");
+
+		if (viaPostalCount != null) {
+			setViaPostalCount(viaPostalCount);
+		}
+
+		Integer notViaPostalCount = (Integer)attributes.get("notViaPostalCount");
+
+		if (notViaPostalCount != null) {
+			setNotViaPostalCount(notViaPostalCount);
+		}
+
+		Integer saturdayCount = (Integer)attributes.get("saturdayCount");
+
+		if (saturdayCount != null) {
+			setSaturdayCount(saturdayCount);
+		}
 	}
 
 	@Override
@@ -556,6 +577,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the not via postal count of this opencps dossier statistic.
+	*
+	* @return the not via postal count of this opencps dossier statistic
+	*/
+	@Override
+	public int getNotViaPostalCount() {
+		return _opencpsDossierStatistic.getNotViaPostalCount();
+	}
+
+	/**
 	* Returns the onegate count of this opencps dossier statistic.
 	*
 	* @return the onegate count of this opencps dossier statistic
@@ -741,6 +772,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Returns the saturday count of this opencps dossier statistic.
+	*
+	* @return the saturday count of this opencps dossier statistic
+	*/
+	@Override
+	public int getSaturdayCount() {
+		return _opencpsDossierStatistic.getSaturdayCount();
+	}
+
+	/**
 	* Returns the system of this opencps dossier statistic.
 	*
 	* @return the system of this opencps dossier statistic
@@ -818,6 +859,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public String getUuid() {
 		return _opencpsDossierStatistic.getUuid();
+	}
+
+	/**
+	* Returns the via postal count of this opencps dossier statistic.
+	*
+	* @return the via postal count of this opencps dossier statistic
+	*/
+	@Override
+	public int getViaPostalCount() {
+		return _opencpsDossierStatistic.getViaPostalCount();
 	}
 
 	/**
@@ -1072,6 +1123,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the not via postal count of this opencps dossier statistic.
+	*
+	* @param notViaPostalCount the not via postal count of this opencps dossier statistic
+	*/
+	@Override
+	public void setNotViaPostalCount(int notViaPostalCount) {
+		_opencpsDossierStatistic.setNotViaPostalCount(notViaPostalCount);
+	}
+
+	/**
 	* Sets the onegate count of this opencps dossier statistic.
 	*
 	* @param onegateCount the onegate count of this opencps dossier statistic
@@ -1257,6 +1318,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
+	* Sets the saturday count of this opencps dossier statistic.
+	*
+	* @param saturdayCount the saturday count of this opencps dossier statistic
+	*/
+	@Override
+	public void setSaturdayCount(int saturdayCount) {
+		_opencpsDossierStatistic.setSaturdayCount(saturdayCount);
+	}
+
+	/**
 	* Sets the system of this opencps dossier statistic.
 	*
 	* @param system the system of this opencps dossier statistic
@@ -1334,6 +1405,16 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public void setUuid(String uuid) {
 		_opencpsDossierStatistic.setUuid(uuid);
+	}
+
+	/**
+	* Sets the via postal count of this opencps dossier statistic.
+	*
+	* @param viaPostalCount the via postal count of this opencps dossier statistic
+	*/
+	@Override
+	public void setViaPostalCount(int viaPostalCount) {
+		_opencpsDossierStatistic.setViaPostalCount(viaPostalCount);
 	}
 
 	/**

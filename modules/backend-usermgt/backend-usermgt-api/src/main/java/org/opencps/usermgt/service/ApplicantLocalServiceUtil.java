@@ -454,6 +454,20 @@ public class ApplicantLocalServiceUtil {
 			contactName, contactTelNo, contactEmail);
 	}
 
+	public static org.opencps.usermgt.model.Applicant updateApplicant(
+		long groupId, long userId, long companyId, String applicantName,
+		String applicantIdType, String applicantIdNo,
+		java.util.Date applicantIdDate, String address, String cityCode,
+		String cityName, String districtCode, String districtName,
+		String wardCode, String wardName, String contactName,
+		String contactTelNo, String contactEmail, String profile) {
+		return getService()
+				   .updateApplicant(groupId, userId, companyId, applicantName,
+			applicantIdType, applicantIdNo, applicantIdDate, address, cityCode,
+			cityName, districtCode, districtName, wardCode, wardName,
+			contactName, contactTelNo, contactEmail, profile);
+	}
+
 	/**
 	* @param context
 	* @param appicantId

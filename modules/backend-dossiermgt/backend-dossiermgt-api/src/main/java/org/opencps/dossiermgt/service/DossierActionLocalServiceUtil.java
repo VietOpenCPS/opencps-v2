@@ -258,6 +258,11 @@ public class DossierActionLocalServiceUtil {
 		return getService().findOverdue(now);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierAction> findOverdueByType(
+		java.util.Date now, String type, String value) {
+		return getService().findOverdueByType(now, type, value);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

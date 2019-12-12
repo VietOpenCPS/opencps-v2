@@ -65,7 +65,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(87);
+		StringBundler sb = new StringBundler(93);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -153,6 +153,12 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		sb.append(insideCount);
 		sb.append(", system=");
 		sb.append(system);
+		sb.append(", viaPostalCount=");
+		sb.append(viaPostalCount);
+		sb.append(", notViaPostalCount=");
+		sb.append(notViaPostalCount);
+		sb.append(", saturdayCount=");
+		sb.append(saturdayCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -268,6 +274,10 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 			opencpsDossierStatisticImpl.setSystem(system);
 		}
 
+		opencpsDossierStatisticImpl.setViaPostalCount(viaPostalCount);
+		opencpsDossierStatisticImpl.setNotViaPostalCount(notViaPostalCount);
+		opencpsDossierStatisticImpl.setSaturdayCount(saturdayCount);
+
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
 		return opencpsDossierStatisticImpl;
@@ -351,6 +361,12 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 		insideCount = objectInput.readInt();
 		system = objectInput.readUTF();
+
+		viaPostalCount = objectInput.readInt();
+
+		notViaPostalCount = objectInput.readInt();
+
+		saturdayCount = objectInput.readInt();
 	}
 
 	@Override
@@ -480,6 +496,12 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		else {
 			objectOutput.writeUTF(system);
 		}
+
+		objectOutput.writeInt(viaPostalCount);
+
+		objectOutput.writeInt(notViaPostalCount);
+
+		objectOutput.writeInt(saturdayCount);
 	}
 
 	public String uuid;
@@ -525,4 +547,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public int outsideCount;
 	public int insideCount;
 	public String system;
+	public int viaPostalCount;
+	public int notViaPostalCount;
+	public int saturdayCount;
 }

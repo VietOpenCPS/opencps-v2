@@ -8,7 +8,6 @@ import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -51,7 +50,6 @@ import org.springframework.web.client.RestTemplate;
 @Component(immediate = true, property = {
 		"org.osgi.http.websocket.endpoint.path=/o/v1/socket/web" }, service = Endpoint.class)
 public class AdminEndpoind extends Endpoint {
-
 	public static final String _TIMESTAMP = "dd/MM/yyyy HH:mm";
 	private static final Log _log = LogFactoryUtil.getLog(AdminEndpoind.class);
 

@@ -93,6 +93,8 @@ public class StatisticEngineUpdate {
 			data.setReporting(tempData.isReporting());
 			data.setCompanyId(tempData.getCompanyId());
 			data.setGroupId(tempData.getGroupId());
+			data.setViaPostalCount(tempData.getViaPostalCount());
+			data.setSaturdayCount(tempData.getSaturdayCount());
 			
 			statisticDataResult.put(key, data);
 		}

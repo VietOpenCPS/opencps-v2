@@ -77,6 +77,9 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setOutsideCount(model.getOutsideCount());
 		soapModel.setInsideCount(model.getInsideCount());
 		soapModel.setSystem(model.getSystem());
+		soapModel.setViaPostalCount(model.getViaPostalCount());
+		soapModel.setNotViaPostalCount(model.getNotViaPostalCount());
+		soapModel.setSaturdayCount(model.getSaturdayCount());
 
 		return soapModel;
 	}
@@ -480,6 +483,30 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_system = system;
 	}
 
+	public int getViaPostalCount() {
+		return _viaPostalCount;
+	}
+
+	public void setViaPostalCount(int viaPostalCount) {
+		_viaPostalCount = viaPostalCount;
+	}
+
+	public int getNotViaPostalCount() {
+		return _notViaPostalCount;
+	}
+
+	public void setNotViaPostalCount(int notViaPostalCount) {
+		_notViaPostalCount = notViaPostalCount;
+	}
+
+	public int getSaturdayCount() {
+		return _saturdayCount;
+	}
+
+	public void setSaturdayCount(int saturdayCount) {
+		_saturdayCount = saturdayCount;
+	}
+
 	private String _uuid;
 	private long _dossierStatisticId;
 	private long _companyId;
@@ -523,4 +550,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private int _outsideCount;
 	private int _insideCount;
 	private String _system;
+	private int _viaPostalCount;
+	private int _notViaPostalCount;
+	private int _saturdayCount;
 }
