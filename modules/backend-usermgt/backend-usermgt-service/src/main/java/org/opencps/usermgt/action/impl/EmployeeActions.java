@@ -949,6 +949,17 @@ public class EmployeeActions implements EmployeeInterface {
 			}
 		}
 
+		try {
+			if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+				UserLocalServiceUtil.deleteGroupUser(employee.getGroupId(), employee.getMappingUserId());
+			}
+			else if (employee.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+				UserLocalServiceUtil.addGroupUser(employee.getGroupId(), employee.getMappingUserId());
+			}
+		}
+		catch (Exception e) {
+			
+		}
 	}
 
 	//Create account
