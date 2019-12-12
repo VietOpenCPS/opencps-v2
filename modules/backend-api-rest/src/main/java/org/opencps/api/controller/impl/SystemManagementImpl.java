@@ -25,9 +25,9 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -43,8 +43,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.SystemManagement;
-import org.opencps.api.controller.util.ServiceProcessUtils;
-import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -57,11 +55,9 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -69,7 +65,6 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -449,5 +444,46 @@ public class SystemManagementImpl implements SystemManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response batchChangePassword(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String suffix, String newPassword) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			long groupId = header.getRequestHeaders().containsKey("groupId") ? GetterUtil.getLong(header.getHeaderString("groupId")) : 0l;
+			
+			List<User> lstUsers = (groupId == 0) ? UserLocalServiceUtil.getUsers(QueryUtil.ALL_POS, QueryUtil.ALL_POS) : UserLocalServiceUtil.getGroupUsers(groupId);
+			for (User u : lstUsers) {
+				if (u.getEmailAddress().endsWith(suffix)) {
+					u.setPasswordEncrypted(false);
+					UserLocalServiceUtil.updateUser(u);
+					UserLocalServiceUtil.updatePassword(u.getUserId(), newPassword, newPassword, false);
+				}
+			}
+			return Response.status(200).entity(StringPool.BLANK).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return BusinessExceptionImpl.processException(e);
+		}
+
 	}	
 }

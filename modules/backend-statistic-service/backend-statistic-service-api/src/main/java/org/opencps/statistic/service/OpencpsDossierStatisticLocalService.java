@@ -100,6 +100,20 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int outsideCount, int insideCount)
 		throws PortalException, SystemException;
 
+	public OpencpsDossierStatistic createOnlyStatistic(long companyId,
+		long groupId, long userId, String userName, int month, int year,
+		int totalCount, int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount, int saturdayCount)
+		throws PortalException, SystemException;
+
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
 	*
@@ -122,6 +136,21 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount)
+		throws PortalException, SystemException;
+
+	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
+		long groupId, long userId, String userName, int month, int year,
+		String system, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, boolean reporting,
+		int onegateCount, int outsideCount, int insideCount,
+		int viaPostalCount, int saturdayCount)
 		throws PortalException, SystemException;
 
 	/**
@@ -394,6 +423,21 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int outsideCount, int insideCount)
 		throws PortalException, SystemException;
 
+	public OpencpsDossierStatistic updateOnlyStatistic(
+		OpencpsDossierStatistic dossierStatistic, long companyId, long groupId,
+		long userId, String userName, int month, int year, int totalCount,
+		int deniedCount, int cancelledCount, int processCount,
+		int remainingCount, int receivedCount, int onlineCount,
+		int releaseCount, int betimesCount, int ontimeCount, int overtimeCount,
+		int doneCount, int releasingCount, int unresolvedCount,
+		int processingCount, int undueCount, int overdueCount,
+		int pausingCount, int ontimePercentage, int overtimeInside,
+		int overtimeOutside, int interoperatingCount, int waitingCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount, int saturdayCount)
+		throws PortalException, SystemException;
+
 	/**
 	* Updates the opencps dossier statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -403,6 +447,21 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public OpencpsDossierStatistic updateOpencpsDossierStatistic(
 		OpencpsDossierStatistic opencpsDossierStatistic);
+
+	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
+		long companyId, long groupId, long userId, String userName, int month,
+		int year, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, int viaPostalCount, int saturdayCount,
+		String govAgencyCode, String govAgencyName, String domainCode,
+		String domainName, boolean reporting, int onegateCount,
+		int outsideCount, int insideCount)
+		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
 		long companyId, long groupId, long userId, String userName, int month,

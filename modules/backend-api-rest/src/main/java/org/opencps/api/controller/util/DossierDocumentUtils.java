@@ -18,6 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -39,6 +43,10 @@ import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class DossierDocumentUtils {
+	private static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	private static final String BN_TELEPHONE = "BN_telephone";
+	private static final String BN_ADDRESS = "BN_address";
+	private static final String BN_EMAIL = "BN_email";
 
 	//LamTV_ Mapping process dossier and formData
 	public static JSONObject processMergeDossierFormData(Dossier dossier, JSONObject jsonData) {
@@ -108,6 +116,28 @@ public class DossierDocumentUtils {
 			} catch (JSONException e) {
 				_log.debug(e);
 			}
+			DictCollection govCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GOVERNMENT_AGENCY, dossier.getGroupId());
+			if (govCollection != null) {
+				DictItem govAgenItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(dossier.getGovAgencyCode(), govCollection.getDictCollectionId(), dossier.getGroupId());
+				String metaDataItem = govAgenItem.getMetaData();
+				try {
+					JSONObject metaObj = JSONFactoryUtil.createJSONObject(metaDataItem);
+					if (govAgenItem != null) {
+						if (metaObj.has(BN_TELEPHONE)) {
+							jsonData.put(BN_TELEPHONE, metaObj.getString(BN_TELEPHONE));									
+						}
+						if (metaObj.has(BN_EMAIL)) {
+							jsonData.put(BN_EMAIL, metaObj.getString(BN_EMAIL));									
+						}
+						if (metaObj.has(BN_ADDRESS)) {
+							jsonData.put(BN_ADDRESS, metaObj.getString(BN_ADDRESS));									
+						}
+					}
+				}
+				catch (Exception e) {
+					
+				}
+			}			
 		}
 		
 		try {

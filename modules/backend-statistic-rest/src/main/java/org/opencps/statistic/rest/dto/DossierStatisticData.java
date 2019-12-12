@@ -317,4 +317,21 @@ public class DossierStatisticData {
 	private long companyId;
 	private long groupId;
 	private String system;
+	private int viaPostalCount;
+	private int saturdayCount;
+	public int getViaPostalCount() {
+		return viaPostalCount;
+	}
+
+	public void setViaPostalCount(int viaPostalCount) {
+		this.viaPostalCount = viaPostalCount;
+	}
+
+	public int getSaturdayCount() {
+		return saturdayCount;
+	}
+
+	public void setSaturdayCount(int saturdayCount) {
+		this.saturdayCount = saturdayCount;
+	}
 }

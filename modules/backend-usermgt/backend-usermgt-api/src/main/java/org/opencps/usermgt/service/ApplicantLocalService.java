@@ -370,6 +370,14 @@ public interface ApplicantLocalService extends BaseLocalService,
 		String wardName, String contactName, String contactTelNo,
 		String contactEmail);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplicant(long groupId, long userId, long companyId,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName, String contactName, String contactTelNo,
+		String contactEmail, String profile);
+
 	/**
 	* @param context
 	* @param appicantId

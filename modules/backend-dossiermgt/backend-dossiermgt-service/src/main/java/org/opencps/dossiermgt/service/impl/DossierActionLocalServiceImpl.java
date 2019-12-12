@@ -16,7 +16,6 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -42,12 +41,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.base.DossierActionLocalServiceBaseImpl;
@@ -588,6 +588,32 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 //	@ThreadLocalCachable
 	public List<DossierAction> findOverdue(Date now) {
 		return dossierActionPersistence.findByDD(now, 0l);
+	}
+
+	public List<DossierAction> findOverdueByType(Date now, String type, String value) {
+		int valueInt = 0;
+		try {
+			valueInt = Integer.parseInt(value);
+		}
+		catch (NumberFormatException e) {
+			
+		}
+		Calendar c = Calendar.getInstance();
+		if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
+			c.setTime(now);
+			c.add(Calendar.HOUR, -valueInt);
+			
+			return findOverdue(c.getTime());
+		}
+		else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
+			c.setTime(now);
+			c.add(Calendar.HOUR, -valueInt * DossierTerm.WORKING_HOUR_PER_DAY);
+			
+			return findOverdue(c.getTime());			
+		}
+		else {
+			return dossierActionPersistence.findByDD(now, 0l);			
+		}
 	}
 	
 	@Indexable(type = IndexableType.REINDEX)

@@ -50,9 +50,9 @@ create table opencps_applicant (
 	mappingUserId LONG,
 	activationCode VARCHAR(75) null,
 	lock_ BOOLEAN,
-	profile VARCHAR(75) null,
+	profile TEXT null,
 	tmpPass VARCHAR(75) null,
-	representativeEnterprise VARCHAR(75) null
+	representativeEnterprise VARCHAR(200) null
 );
 
 create table opencps_employee (

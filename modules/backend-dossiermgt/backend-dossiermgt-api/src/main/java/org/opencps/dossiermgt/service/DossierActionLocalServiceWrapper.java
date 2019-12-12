@@ -279,6 +279,12 @@ public class DossierActionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierAction> findOverdueByType(
+		java.util.Date now, String type, String value) {
+		return _dossierActionLocalService.findOverdueByType(now, type, value);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _dossierActionLocalService.getActionableDynamicQuery();
 	}

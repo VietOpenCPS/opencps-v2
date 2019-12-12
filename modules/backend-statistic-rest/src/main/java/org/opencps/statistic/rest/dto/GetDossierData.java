@@ -18,6 +18,15 @@ public class GetDossierData {
 	private String domainName;
 	private String lockState;
 	private String system;
+	private int viaPostal;
+
+	public int getViaPostal() {
+		return viaPostal;
+	}
+
+	public void setViaPostal(int viaPostal) {
+		this.viaPostal = viaPostal;
+	}
 
 	public String getDossierStatus() {
 		return dossierStatus;

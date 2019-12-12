@@ -800,6 +800,101 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicantPersistence.update(applicant);
 	}
 
+	// Add applicant when listener
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplicant(
+		long groupId, long userId, long companyId, String applicantName,
+		String applicantIdType, String applicantIdNo, Date applicantIdDate,
+		String address, String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail, String profile) {
+
+		Applicant applicant =
+			applicantPersistence.fetchByF_APLC_GID(groupId, applicantIdNo);
+		Date now = new Date();
+
+		if (applicant == null) {
+			long applicantId =
+				counterLocalService.increment(Applicant.class.getName());
+			applicant = applicantPersistence.create(applicantId);
+
+			// Add audit field
+			applicant.setCreateDate(now);
+			applicant.setModifiedDate(now);
+			applicant.setCompanyId(companyId);
+			applicant.setUserId(userId);
+			applicant.setGroupId(groupId);
+
+			applicant.setApplicantName(applicantName);
+			applicant.setApplicantIdType(applicantIdType);
+			applicant.setApplicantIdNo(applicantIdNo);
+			applicant.setApplicantIdDate(applicantIdDate);
+			applicant.setAddress(address);
+			applicant.setCityCode(cityCode);
+			applicant.setCityName(cityName);
+			applicant.setDistrictCode(districtCode);
+			applicant.setDistrictName(districtName);
+			applicant.setWardCode(wardCode);
+			applicant.setWardName(wardName);
+			applicant.setContactName(contactName);
+			applicant.setContactTelNo(contactTelNo);
+			applicant.setContactEmail(contactEmail);
+			applicant.setProfile(profile);
+		}
+		else {
+
+			applicant.setModifiedDate(now);
+			applicant.setUserId(userId);
+
+			if (Validator.isNotNull(applicantName))
+				applicant.setApplicantName(applicantName);
+
+			if (Validator.isNotNull(applicantIdType))
+				applicant.setApplicantIdType(applicantIdType);
+
+			if (Validator.isNotNull(applicantIdNo))
+				applicant.setApplicantIdNo(applicantIdNo);
+
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+
+			if (Validator.isNotNull(address))
+				applicant.setAddress(address);
+
+			if (Validator.isNotNull(cityCode))
+				applicant.setCityCode(cityCode);
+
+			if (Validator.isNotNull(cityName))
+				applicant.setCityName(cityName);
+
+			if (Validator.isNotNull(districtCode))
+				applicant.setDistrictCode(districtCode);
+
+			if (Validator.isNotNull(districtName))
+				applicant.setDistrictName(districtName);
+
+			if (Validator.isNotNull(wardCode))
+				applicant.setWardCode(wardCode);
+
+			if (Validator.isNotNull(wardName))
+				applicant.setWardName(wardName);
+
+			if (Validator.isNotNull(contactName))
+				applicant.setContactName(contactName);
+
+			if (Validator.isNotNull(contactTelNo))
+				applicant.setContactTelNo(contactTelNo);
+
+			if (Validator.isNotNull(contactEmail))
+				applicant.setContactEmail(contactEmail);
+			if (Validator.isNotNull(profile)) {
+				applicant.setProfile(profile);
+			}
+		}
+
+		return applicantPersistence.update(applicant);
+	}
+	
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant adminProcessDelete(Long id) {

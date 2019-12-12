@@ -127,6 +127,19 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
+	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String contactEmail, String profile) throws PortalException {
+
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId,  applicantId, applicantName,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, profile,
+				StringPool.BLANK);
+
+		return applicant;
+	}
+	
+	@Override
 	public Applicant updateProfile(ServiceContext context, long groupId, long applicantId, String profile) throws PortalException {
 		// TODO Auto-generated method stub
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId, StringPool.BLANK,

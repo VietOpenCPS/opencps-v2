@@ -46,6 +46,7 @@ public class ApplicantUtils {
 		model.setWardName(applicant.getWardName());
 		model.setContactName(applicant.getContactName());
 		model.setContactTelNo(applicant.getContactTelNo());
+		model.setApplicantProfile(applicant.getProfile());
 		
 		long mappingUserId = applicant.getMappingUserId();
 		MappingUser mappingUser = processMappingUser(mappingUserId);
