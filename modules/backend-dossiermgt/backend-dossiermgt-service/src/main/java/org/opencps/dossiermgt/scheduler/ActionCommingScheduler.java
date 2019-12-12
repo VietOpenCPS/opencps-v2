@@ -110,8 +110,10 @@ public class ActionCommingScheduler extends BaseMessageListener {
 									value = notifyObj.getString(DossierTerm.DUE_DATE_NOTIFY_VALUE);
 								}
 								List<DossierAction> lstactions = DossierActionLocalServiceUtil.findOverdueByType(now, type, value);
+								_log.debug("ACTION COMMING SCHEDULER SIZE: " + lstactions.size());
 								for (DossierAction action : lstactions) {
-									List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getListUser(action.getDossierActionId());
+									List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(action.getDossierId(), action.getStepCode());
+									_log.debug("ACTION COMMING SCHEDULER LIST USER: " + lstDaus.size());
 									Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(action.getGroupId(), NotificationTemplateTerm.EMPL_04);
 							        Calendar cal = Calendar.getInstance();
 							        cal.setTime(now);
