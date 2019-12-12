@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.ServiceInfoManagement;
@@ -66,6 +68,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
@@ -901,6 +904,104 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		}
 
 		return Response.status(200).entity("{}").build();
+	}
+
+	@Override
+	public Response updateFileTemplateOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String templateNo,
+			Attachment fileScript, Attachment fileReport, String templateName, String strFileEntryId, String eForm, String strFormScriptFileId,
+			String strFormReportFileId, String eFormNoPattern, String eFormNamePattern) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		long userId = serviceContext.getUserId();
+
+		ServiceFileTemplate serviceFileTemplate = null;
+		long serviceInfoId = Long.valueOf(id);
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			serviceFileTemplate = ServiceFileTemplateLocalServiceUtil.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
+			
+			if (serviceFileTemplate != null) {
+				//Check formScript
+				long formScriptId = 0;
+				long formReportId = 0;
+				if (fileScript != null) {
+					DataHandler handlerScript = fileScript.getDataHandler();
+					
+					if (handlerScript != null && handlerScript.getInputStream() != null) {
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+								userId, groupId, 0, handlerScript.getInputStream(), 
+								FilenameUtils.getExtension(handlerScript.getName()), 
+								handlerScript.getName()
+								.substring(handlerScript.getName().lastIndexOf(".") + 1),
+								handlerScript.getInputStream().available(), serviceContext);
+						if (fileEntry != null) {
+							formScriptId = fileEntry.getFileEntryId();
+						}
+					}
+				}
+
+				//Check formReport
+				if (fileReport != null) {
+					DataHandler handlerReport = fileReport.getDataHandler();
+
+					if (handlerReport != null && handlerReport.getInputStream() != null) {
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+								userId, groupId, 0, handlerReport.getInputStream(), 
+								FilenameUtils.getExtension(handlerReport.getName()), 
+								handlerReport.getName()
+								.substring(handlerReport.getName().lastIndexOf(".") + 1),
+								handlerReport.getInputStream().available(), serviceContext);
+						if (fileEntry != null) {
+							formReportId = fileEntry.getFileEntryId();
+						}
+					}
+				}
+
+				//Update service file template
+				serviceFileTemplate.setFormScriptFileId(formScriptId);
+				serviceFileTemplate.setFormReportFileId(formReportId);
+				if (Validator.isNotNull(templateName))
+					serviceFileTemplate.setTemplateName(templateName);
+				
+				long fileEntryId = GetterUtil.getLong(strFileEntryId);
+				if (fileEntryId > 0)
+					serviceFileTemplate.setFileEntryId(fileEntryId);
+				
+				if (Validator.isNotNull(eForm))
+					serviceFileTemplate.setEForm(GetterUtil.getBoolean(eForm));
+				
+				long formScriptFileId = GetterUtil.getLong(strFormScriptFileId);
+				if (formScriptFileId > 0)
+					serviceFileTemplate.setFormScriptFileId(formScriptFileId);
+				
+				long formReportFileId = GetterUtil.getLong(strFormReportFileId);
+				if (formReportFileId > 0)
+					serviceFileTemplate.setFormReportFileId(formReportFileId);
+				
+				if (Validator.isNotNull(eFormNoPattern))
+					serviceFileTemplate.setEFormNoPattern(eFormNoPattern);
+				
+				if (Validator.isNotNull(eFormNamePattern))
+					serviceFileTemplate.setEFormNamePattern(eFormNamePattern);
+
+				ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(serviceFileTemplate);
+				//
+				FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
+				return Response.status(200).entity(result).build();
+			} else {
+				return Response.status(500).entity("Internal Server!!!").build();
+			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }

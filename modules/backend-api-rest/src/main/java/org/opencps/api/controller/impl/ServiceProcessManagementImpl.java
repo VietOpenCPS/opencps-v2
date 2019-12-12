@@ -1428,4 +1428,32 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		}			
 	}
 
+	@Override
+	public Response updateProcessPostAction(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id,
+			ProcessSequenceInputModel input) {
+
+		BackendAuth auth = new BackendAuthImpl();
+		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String postAction = input.getPostAction();
+			//
+			ProcessAction action = ProcessActionLocalServiceUtil.fetchProcessAction(id);
+			if (action != null && Validator.isNotNull(postAction)) {
+				action.setPostAction(postAction);
+				//
+				ProcessActionLocalServiceUtil.updateProcessAction(action);
+			}
+			return Response.status(200).entity("{Update sucess}").build();
+		}catch (Exception e) {
+			_log.error(e);
+		}
+
+		return Response.status(500).entity("{Update error}").build();
+	}
 }
