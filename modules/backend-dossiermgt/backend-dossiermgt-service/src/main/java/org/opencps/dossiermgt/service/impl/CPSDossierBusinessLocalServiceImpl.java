@@ -513,6 +513,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
 					formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 					formDataObj.put("url", context.getPortalURL());
+					formDataObj.put("documentCode", documentCode);
 					if (employee != null) {
 						formDataObj.put("userName", employee.getFullName());
 					} else {
