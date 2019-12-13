@@ -31,12 +31,13 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.exception.NoSuchNotificationQueueException;
+import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
@@ -55,10 +56,12 @@ import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+//@Component(immediate = true, service = ActionCommingScheduler.class)
 public class ActionCommingScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static final int GROUP_TYPE_SITE = 1;
@@ -151,21 +154,29 @@ public class ActionCommingScheduler extends BaseMessageListener {
 												String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
 												String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
 												User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-												
-												NotificationQueueLocalServiceUtil.addNotificationQueue(
-														dau.getUserId(), action.getGroupId(), 
-														NotificationTemplateTerm.EMPL_04, 
-														Dossier.class.getName(), 
-														String.valueOf(action.getDossierId()), 
-														payloadObj.toJSONString(), 
-														fullName, 
-														fullName, 
-														dau.getUserId(), 
-														u != null ? u.getEmailAddress() : StringPool.BLANK, 
-														telNo, 
-														now, 
-														expired, 
-														serviceContext);																		
+												NotificationQueue oldQueue = null;
+												try {
+													oldQueue = NotificationQueueLocalServiceUtil.findByF_NT_CN_CPK_EMAIL(action.getGroupId(), NotificationTemplateTerm.EMPL_04, Dossier.class.getName(), String.valueOf(action.getDossierId()), u != null ? u.getEmailAddress() : StringPool.BLANK);
+												}
+												catch (NoSuchNotificationQueueException e) {
+													
+												}
+												if (oldQueue == null) {
+													NotificationQueueLocalServiceUtil.addNotificationQueue(
+															dau.getUserId(), action.getGroupId(), 
+															NotificationTemplateTerm.EMPL_04, 
+															Dossier.class.getName(), 
+															String.valueOf(action.getDossierId()), 
+															payloadObj.toJSONString(), 
+															fullName, 
+															fullName, 
+															dau.getUserId(), 
+															u != null ? u.getEmailAddress() : StringPool.BLANK, 
+															telNo, 
+															now, 
+															expired, 
+															serviceContext);																															
+												}
 											}	
 										}
 									}

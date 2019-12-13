@@ -127,6 +127,14 @@
 			return-type="Collection">
 			<finder-column name="expireDate" comparator="&gt;=" />
 		</finder>
+		<finder name="F_NT_CN_CPK_EMAIL"
+			return-type="NotificationQueue">
+			<finder-column name="groupId" />
+			<finder-column name="notificationType" />
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+			<finder-column name="toEmail"></finder-column>
+		</finder>
 
 	</entity>
 

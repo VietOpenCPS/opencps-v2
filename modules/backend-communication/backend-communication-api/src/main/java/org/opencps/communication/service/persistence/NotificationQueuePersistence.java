@@ -599,6 +599,77 @@ public interface NotificationQueuePersistence extends BasePersistence<Notificati
 	public int countByF_LessThan_ExpireDate(Date expireDate);
 
 	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or throws a {@link NoSuchNotificationQueueException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the matching notification queue
+	* @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	*/
+	public NotificationQueue findByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail) throws NoSuchNotificationQueueException;
+
+	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public NotificationQueue fetchByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail);
+
+	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public NotificationQueue fetchByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail, boolean retrieveFromCache);
+
+	/**
+	* Removes the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the notification queue that was removed
+	*/
+	public NotificationQueue removeByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail) throws NoSuchNotificationQueueException;
+
+	/**
+	* Returns the number of notification queues where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63;.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the number of matching notification queues
+	*/
+	public int countByF_NT_CN_CPK_EMAIL(long groupId, String notificationType,
+		String className, String classPK, String toEmail);
+
+	/**
 	* Caches the notification queue in the entity cache if it is enabled.
 	*
 	* @param notificationQueue the notification queue

@@ -804,6 +804,100 @@ public class NotificationQueueUtil {
 	}
 
 	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or throws a {@link NoSuchNotificationQueueException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the matching notification queue
+	* @throws NoSuchNotificationQueueException if a matching notification queue could not be found
+	*/
+	public static NotificationQueue findByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getPersistence()
+				   .findByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, toEmail);
+	}
+
+	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public static NotificationQueue fetchByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail) {
+		return getPersistence()
+				   .fetchByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, toEmail);
+	}
+
+	/**
+	* Returns the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching notification queue, or <code>null</code> if a matching notification queue could not be found
+	*/
+	public static NotificationQueue fetchByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, toEmail, retrieveFromCache);
+	}
+
+	/**
+	* Removes the notification queue where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the notification queue that was removed
+	*/
+	public static NotificationQueue removeByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getPersistence()
+				   .removeByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, toEmail);
+	}
+
+	/**
+	* Returns the number of notification queues where groupId = &#63; and notificationType = &#63; and className = &#63; and classPK = &#63; and toEmail = &#63;.
+	*
+	* @param groupId the group ID
+	* @param notificationType the notification type
+	* @param className the class name
+	* @param classPK the class pk
+	* @param toEmail the to email
+	* @return the number of matching notification queues
+	*/
+	public static int countByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK,
+		String toEmail) {
+		return getPersistence()
+				   .countByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, toEmail);
+	}
+
+	/**
 	* Caches the notification queue in the entity cache if it is enabled.
 	*
 	* @param notificationQueue the notification queue

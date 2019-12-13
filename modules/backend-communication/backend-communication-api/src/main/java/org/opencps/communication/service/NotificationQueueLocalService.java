@@ -206,6 +206,10 @@ public interface NotificationQueueLocalService extends BaseLocalService,
 	public List<NotificationQueue> findByF_notificationType_LessThanExpireDate(
 		String notificationType, Date date);
 
+	public NotificationQueue findByF_NT_CN_CPK_EMAIL(long groupId,
+		String notificationType, String className, String classPK, String email)
+		throws NoSuchNotificationQueueException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

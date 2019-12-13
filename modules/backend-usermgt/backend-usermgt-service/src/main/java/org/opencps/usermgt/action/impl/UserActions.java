@@ -1130,6 +1130,7 @@ public class UserActions implements UserInterface {
 					result.put("userId", applicant.getMappingUserId());
 					result.put("userName", applicant.getApplicantName());
 					result.put("mappingUserId", applicant.getMappingUserId());
+					result.put("verification", applicant.getVerification());
 
 				}
 

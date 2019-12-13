@@ -237,6 +237,15 @@ public class NotificationQueueLocalServiceUtil {
 			date);
 	}
 
+	public static org.opencps.communication.model.NotificationQueue findByF_NT_CN_CPK_EMAIL(
+		long groupId, String notificationType, String className,
+		String classPK, String email)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return getService()
+				   .findByF_NT_CN_CPK_EMAIL(groupId, notificationType,
+			className, classPK, email);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
