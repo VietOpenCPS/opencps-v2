@@ -1252,7 +1252,49 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				else if (actionConfig.getNotificationType().startsWith("USER")) {
 					
-				}				
+				}
+				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
+					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
+					for (DossierActionUser dau : lstDaus) {
+						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
+//							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+							Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ dau.getUserId());
+							Employee employee = null;
+//							employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+							if (employeeCache == null) {
+								employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
+								if (employee != null) {
+									cache.addToCache("Employee",
+											groupId +"_"+ dau.getUserId(), (Serializable) employee,
+											ttl);
+								}
+							} else {
+								employee = (Employee) employeeCache;
+							}
+
+							if (employee != null) {
+								String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
+								String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
+								long start = System.currentTimeMillis();
+								NotificationQueueLocalServiceUtil.addNotificationQueue(
+										user.getUserId(), groupId, 
+										actionConfig.getNotificationType(), 
+										Dossier.class.getName(), 
+										String.valueOf(dossier.getDossierId()), 
+										payloadObj.toJSONString(), 
+										user.getFullName(), 
+										fullName, 
+										dau.getUserId(), 
+										employee.getEmail(), 
+										telNo, 
+										now, 
+										expired, 
+										context);
+								_log.debug("ADD NOTI QUEUE: " + (System.currentTimeMillis() - start));
+							}
+						}
+					}
+				}
 			}
 		}	
 		
@@ -2384,6 +2426,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			bResult.put(DossierTerm.RECEIVE_DATE, true);
 		}
 		
+		if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus()) && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			if (checkApplicant != null) {
+				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(), DossierTerm.DOSSIER_STATUS_RECEIVING);
+				_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
+				if (countDossier >= DossierTerm.MAX_DOSSIER_WITHOUT_VERIFICATION) {
+					if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
+						checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
+						ApplicantLocalServiceUtil.updateApplicant(checkApplicant);						
+					}
+				}
+			}			
+		}
 		//int dateOption = actionConfig.getDateOption();
 		_log.debug("dateOption: "+dateOption);
 		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
@@ -4661,10 +4716,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Check verification applicant
 			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
 			if (checkApplicant != null) {
-				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(groupId, user.getUserId(), DossierTerm.DOSSIER_STATUS_NEW);
-				if (countDossier == DossierTerm.MAX_DOSSIER_WITHOUT_VERIFICATION) {
-					checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
-					ApplicantLocalServiceUtil.updateApplicant(checkApplicant);
+				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(groupId, user.getUserId(), DossierTerm.DOSSIER_STATUS_RECEIVING);
+				_log.debug("APPLICANT NUMBER OF CREATE DOSSIER: " + countDossier);
+				if (countDossier >= DossierTerm.MAX_DOSSIER_WITHOUT_VERIFICATION) {
+					if (checkApplicant.getVerification() != ApplicantTerm.UNLOCKED) {
+						checkApplicant.setVerification(ApplicantTerm.LOCKED_DOSSIER);
+						ApplicantLocalServiceUtil.updateApplicant(checkApplicant);						
+					}
 				}
 			}
 			return dossier;

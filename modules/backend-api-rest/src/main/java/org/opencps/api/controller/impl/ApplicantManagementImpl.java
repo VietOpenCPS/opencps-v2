@@ -63,7 +63,9 @@ import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -268,12 +270,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
 				if (Validator.isNull(requestUser)) {
-					throw new NoSuchUserException();
+//					throw new NoSuchUserException();
 				} else {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
@@ -281,8 +284,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					}
 				}
 			}
+			if (employee != null && requestUser == null) {
+				isAllowed = true;
+			}
 			
-
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String address = HtmlUtil.escape(input.getAddress());
 			String cityCode = HtmlUtil.escape(input.getCityCode());
