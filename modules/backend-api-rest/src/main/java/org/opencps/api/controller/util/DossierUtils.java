@@ -272,6 +272,21 @@ public class DossierUtils {
 	//					_log.info("subTimeStamp: "+subTimeStamp);
 						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId, false);
+						
+//						DueDateUtils overdue = new DueDateUtils(now, dueDateCalc, durationUnit, groupId);
+//						_log.debug("NOW: " + now + ", DUE DATE: " + dueDateCalc + ", UNIT: " + durationUnit);
+//						double overdueDate = overdue.getOverDueCalcToHours();
+//						_log.debug("OVERDUE DATE HOURS: " + overdueDate);
+//						int retval = Double.compare(durationUnit, 1.0);
+//						if (retval < 0) {
+//							overdueDate = overdue.getOverDueCalcToDate();
+//						}
+//						else {
+//							overdueDate = overdue.getOverDueCalcToHours();
+//						}
+//						_log.debug("OVERDUE DATE: " + overdueDate);
+//						String strOverDue = calculatorStepOverDue(durationCount, durationUnit, overdueDate, groupId);
+						
 						if (Validator.isNotNull(strOverDue)) {
 							if (subTimeStamp > 0) {
 	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
@@ -316,6 +331,18 @@ public class DossierUtils {
 //								_log.info("START STEP OVERDUE");
 								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 										dueDateActionTimeStamp, groupId, true);
+//								DueDateUtils overdue = new DueDateUtils(now, dueDate, durationUnit, groupId);
+//								
+//								double overdueDate = overdue.getOverDueCalcToHours();
+//								int retval = Double.compare(durationUnit, 1.0);
+//								if (retval < 0) {
+//									overdueDate = overdue.getOverDueCalcToDate();
+//								}
+//								else {
+//									overdueDate = overdue.getOverDueCalcToHours();
+//								}
+//								String stepOverDue = calculatorStepOverDue(durationCount, durationUnit, overdueDate, groupId);
+
 								if (Validator.isNotNull(stepOverDue)) {
 									if (subTimeStamp > 0) {
 //										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
@@ -486,6 +513,57 @@ public class DossierUtils {
 		return ouputs;
 	}
 
+	public static String calculatorStepOverDue(double durationCount, int durationUnit, double overdue, long groupId) {
+		String strOverDue;
+		double overDue;
+		int retval = Double.compare(durationUnit, 1.0);
+		if (retval < 0) {
+			strOverDue = " ngày";
+			double dueCountReal = overdue;
+			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
+			overDue = (double) Math.ceil(subDueCount * 4) / 4;
+			_log.debug("overdue: " + overdue);
+			_log.debug("overDue: "+overDue);
+			//TODO: Process a.0 = a
+			boolean flagCeil = false;
+			String strOverDueConvert = String.valueOf(overDue);
+			if (Validator.isNotNull(strOverDueConvert)) {
+				if (strOverDueConvert.contains(EXTEND_ONE_VALUE) || strOverDueConvert.contains(EXTEND_TWO_VALUE)) {
+					flagCeil = true;
+				}
+			}
+			//Check overDue
+			if (Double.compare(overDue, 0.0) == 0) {
+				return StringPool.BLANK;
+			}
+			if (!flagCeil) {
+				//_log.info("flagCeil: "+flagCeil);
+				//_log.info("overDue: "+overDue);
+				//_log.info("durationCount: "+durationCount);
+				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+					return (int)durationCount + strOverDue;
+				} else {
+					return overDue + strOverDue;
+				}
+			}
+		} else {
+			strOverDue = " giờ";
+			double dueCountReal = overdue;
+			overDue = (double) Math.round(dueCountReal);
+			//
+			if (Double.compare(overDue, 0.0) == 0) {
+				return StringPool.BLANK;
+			}
+		}
+
+		_log.debug("overDue: "+overDue);
+		_log.debug("strOverDue: "+strOverDue);
+		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
+			return Math.abs((int)durationCount) + strOverDue;
+		} else {
+			return Math.abs((int)overDue) + strOverDue;
+		}		
+	}
 	public static String calculatorOverDue(double durationCount, int durationUnit, long subTimeStamp, long releaseDateTimeStamp,
 			long dueDateTimeStamp, long groupId, boolean flagStepDue) {
 
@@ -536,8 +614,8 @@ public class DossierUtils {
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
 			}
-//			_log.info("dueCount: "+dueCount);
-//			_log.info("countDayHoliday: "+countDayHoliday);
+//			_log.debug("dueCount: "+dueCount);
+//			_log.debug("countDayHoliday: "+countDayHoliday);
 			double dueCountReal = dueCount - countDayHoliday + countWork;
 			double subDueCount = (double) Math.round(dueCountReal * 100) / 100;
 			overDue = (double) Math.ceil(subDueCount * 4) / 4;
