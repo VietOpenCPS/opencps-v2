@@ -64,6 +64,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -2469,7 +2470,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
 		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null ? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
-		Integer undueTime = (params.get(DossierTerm.UNDUE_TIME) != null) ? GetterUtil.getInteger(params.get(DossierTerm.UNDUE_TIME)) : 0;
+		String undueTime = (params.get(DossierTerm.UNDUE_TIME) != null) ? GetterUtil.getString(params.get(DossierTerm.UNDUE_TIME)) : "0";
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2501,7 +2502,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
 				originDossierId, time, undueTime, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
-				documentDate, strSystemId, viaPostal, booleanCommon);
+				documentDate, strSystemId, viaPostal, booleanCommon, GetterUtil.getLong(groupId));
 
 		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -2587,7 +2588,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String documentDate = GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
 		String strSystemId = GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null ? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
-		Integer undueTime = (params.get(DossierTerm.UNDUE_TIME) != null) ? GetterUtil.getInteger(params.get(DossierTerm.UNDUE_TIME)) : 0;
+		String undueTime = (params.get(DossierTerm.UNDUE_TIME) != null) ? GetterUtil.getString(params.get(DossierTerm.UNDUE_TIME)) : "0";
 		
 		Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2616,7 +2617,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				applicantIdNo, serviceName, fromReleaseDate, toReleaseDate, fromFinishDate, toFinishDate,
 				fromReceiveNotDoneDate, toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate, toStatisticDate,
 				originDossierId, time, undueTime, register, day, groupDossierId, assignedUserId, delegateType, documentNo,
-				documentDate, strSystemId, viaPostal, booleanCommon);
+				documentDate, strSystemId, viaPostal, booleanCommon, GetterUtil.getLong(groupId));
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -2718,9 +2719,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String domainName, String applicantName, String applicantIdNo, String serviceName, String fromReleaseDate,
 			String toReleaseDate, String fromFinishDate, String toFinishDate, String fromReceiveNotDoneDate,
 			String toReceiveNotDoneDate, String paymentStatus, String origin, String fromStatisticDate,
-			String toStatisticDate, Integer originDossierId, String time, Integer undueTime, String register, int day, Long groupDossierId,
+			String toStatisticDate, Integer originDossierId, String time, String undueTime, String register, int day, Long groupDossierId,
 			String assignedUserId, Integer delegateType, String documentNo, String documentDate, String strSystemId,
-			Integer viaPostal, BooleanQuery booleanQuery) throws ParseException {
+			Integer viaPostal, BooleanQuery booleanQuery, long groupId) throws ParseException {
 
 		//viaPostal
 		if (Validator.isNotNull(viaPostal)) {
@@ -3673,12 +3674,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (lstTimes != null && lstTimes.length > 1) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < lstTimes.length; i++) {
-					BooleanQuery query = processStatisticDossier(lstTimes[i], undueTime);
+					BooleanQuery query = processStatisticDossier(lstTimes[i], undueTime, groupId);
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
-				booleanQuery.add(processStatisticDossier(time, undueTime), BooleanClauseOccur.MUST);
+				booleanQuery.add(processStatisticDossier(time, undueTime, groupId), BooleanClauseOccur.MUST);
 			}
 		}
 
@@ -3735,7 +3736,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return booleanQuery;
 	}
 
-	private BooleanQuery processStatisticDossier(String subTime, Integer undueTime) throws ParseException {
+	private BooleanQuery processStatisticDossier(String subTime, String undueTime, long groupId) throws ParseException {
 		BooleanQuery booleanQuery = new BooleanQueryImpl();
 		// Check list dossier is betimes
 		if (subTime.equals(DossierTerm.BE_TIME)) {
@@ -3924,23 +3925,57 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			// Check condition dueDate < now
 			Date date = new Date();
 			long nowTime = date.getTime();
-			_log.debug("SEARCH DOSSIER UNDUE TIME: " + undueTime);
-			if (undueTime != 0) {
-				long startTime = (nowTime + (undueTime) * 24 * 60 * 60 * 1000);
-				long endTime = (nowTime + (undueTime + 1) * 24 * 60 * 60 * 1000);
-				Date startDate = new Date(startTime);
-				_log.debug("START: " + startDate);
-				Date endDate = new Date(endTime);
-				_log.debug("END: " + endDate);
-				
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
-						String.valueOf(startTime), String.valueOf(endTime), true, true);
-				subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+			if (undueTime.contains("gt") || undueTime.contains("lt")) {
+				if (undueTime.contains("gt")) {
+					_log.debug("GT: " + undueTime.split("gt")[1]);
+					Integer undueTimeInt = GetterUtil.getInteger(undueTime.split("gt")[1]);
+					_log.debug("SEARCH DOSSIER UNDUE TIME: " + undueTimeInt);
+					if (undueTimeInt != 0) {
+						DueDateUtils startDue = new DueDateUtils(date, (undueTimeInt - 0.25) * 1.0, 0, groupId);
+						Date startDate = startDue.getDueDate();
+						
+						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+								String.valueOf(startDate.getTime()), null, true, false);
+						subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+					}					
+				}
+				else if (undueTime.contains("lt")) {
+					_log.debug("LT: " + undueTime.split("lt")[1]);
+					Integer undueTimeInt = GetterUtil.getInteger(undueTime.split("lt")[1]);
+					_log.debug("SEARCH DOSSIER UNDUE TIME: " + undueTimeInt);
+					if (undueTimeInt != 0) {
+						DueDateUtils endDue = new DueDateUtils(date, (undueTimeInt + 0.75) * 1.0, 0, groupId);
+						Date endDate = endDue.getDueDate();
+						_log.debug("END: " + endDate);
+						
+						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+								String.valueOf(date.getTime()), String.valueOf(endDate.getTime()), true, true);
+						subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+					}					
+				}
 			}
 			else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
-						String.valueOf(nowTime), null, true, false);
-				subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+				Integer undueTimeInt = GetterUtil.getInteger(undueTime);
+				_log.debug("SEARCH DOSSIER UNDUE TIME: " + undueTimeInt);
+				if (undueTimeInt != 0) {
+					DueDateUtils startDue = new DueDateUtils(date, (undueTimeInt - 0.25) * 1.0, 0, groupId);
+					Date startDate = startDue.getDueDate();
+					DueDateUtils endDue = new DueDateUtils(date, (undueTimeInt + 0.75) * 1.0, 0, groupId);
+					Date endDate = endDue.getDueDate();
+//					long startTime = (nowTime + (undueTime) * 24 * 60 * 60 * 1000);
+//					long endTime = (nowTime + (undueTime + 1) * 24 * 60 * 60 * 1000);
+					_log.debug("START: " + startDate);
+					_log.debug("END: " + endDate);
+					
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+							String.valueOf(startDate.getTime()), String.valueOf(endDate.getTime()), true, true);
+					subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+				else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(DossierTerm.DUE_DATE_TIMESTAMP,
+							String.valueOf(nowTime), null, true, false);
+					subQueryThree.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}				
 			}
 			/** Check condition (dueDate != null && now < dueDate) - END **/
 

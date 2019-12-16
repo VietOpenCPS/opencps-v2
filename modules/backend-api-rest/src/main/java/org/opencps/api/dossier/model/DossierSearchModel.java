@@ -255,13 +255,13 @@ public class DossierSearchModel {
     @QueryParam(value = "viapostal")
     protected Integer viapostal;
     @QueryParam(value = "undueTime")
-    protected Integer undueTime;
+    protected String undueTime;
     
-	public Integer getUndueTime() {
+	public String getUndueTime() {
 		return undueTime;
 	}
 
-	public void setUndueTime(Integer undueTime) {
+	public void setUndueTime(String undueTime) {
 		this.undueTime = undueTime;
 	}
 
