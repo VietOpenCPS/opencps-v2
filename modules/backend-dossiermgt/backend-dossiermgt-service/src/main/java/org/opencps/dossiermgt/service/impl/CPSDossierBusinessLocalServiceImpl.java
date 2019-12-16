@@ -1212,7 +1212,8 @@ public class CPSDossierBusinessLocalServiceImpl
 			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
 				}
 				Date expired = cal.getTime();
-
+				_log.debug("ADD NOTI: " + actionConfig.getNotificationType());
+				
 				if (actionConfig.getNotificationType().startsWith("APLC")) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
@@ -1254,8 +1255,11 @@ public class CPSDossierBusinessLocalServiceImpl
 					
 				}
 				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
+					_log.debug("ADD NOTI EMPL");
 					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
+					_log.debug("ADD NOTI LIST DAU: " + lstDaus.size());
 					for (DossierActionUser dau : lstDaus) {
+						_log.debug("ADD NOTI DAU: " + dau.getAssigned());
 						if (dau.getAssigned() == DossierActionUserTerm.ASSIGNED_TH || dau.getAssigned() == DossierActionUserTerm.ASSIGNED_PH) {
 //							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, dau.getUserId());
 							Serializable employeeCache = cache.getFromCache("Employee", groupId +"_"+ dau.getUserId());
@@ -1272,10 +1276,12 @@ public class CPSDossierBusinessLocalServiceImpl
 								employee = (Employee) employeeCache;
 							}
 
+							_log.debug("ADD NOTI EMPLOYEE: " + employee);
 							if (employee != null) {
 								String telNo = employee != null ? employee.getTelNo() : StringPool.BLANK;
 								String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
 								long start = System.currentTimeMillis();
+								_log.debug("BEFORE ADD NOTI EMPLOYEE: " + actionConfig.getNotificationType());
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
 										actionConfig.getNotificationType(), 
