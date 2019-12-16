@@ -285,4 +285,6 @@ public class DossierTerm {
 	
 	public static final String SERVICE_LEVEL = "serviceLevel";
 	public static final int MAX_DOSSIER_WITHOUT_VERIFICATION = 3;
+	
+	public static final String UNDUE_TIME = "undueTime";
 }

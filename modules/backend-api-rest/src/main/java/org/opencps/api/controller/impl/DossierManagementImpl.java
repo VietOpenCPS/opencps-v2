@@ -497,6 +497,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
+			//Undue time
+			params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
+			
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());

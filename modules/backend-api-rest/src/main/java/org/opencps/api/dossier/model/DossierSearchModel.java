@@ -121,7 +121,8 @@ import javax.xml.bind.annotation.XmlType;
     "documentNo",
     "documentDate",
     "systemId",
-    "viapostal"
+    "viapostal",
+    "undueTime"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -253,6 +254,16 @@ public class DossierSearchModel {
     protected String systemId;
     @QueryParam(value = "viapostal")
     protected Integer viapostal;
+    @QueryParam(value = "undueTime")
+    protected Integer undueTime;
+    
+	public Integer getUndueTime() {
+		return undueTime;
+	}
+
+	public void setUndueTime(Integer undueTime) {
+		this.undueTime = undueTime;
+	}
 
 	public Integer getViapostal() {
 		return viapostal;
