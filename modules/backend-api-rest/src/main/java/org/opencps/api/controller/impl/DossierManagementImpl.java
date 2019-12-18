@@ -1,6 +1,40 @@
 
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -14,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -148,40 +183,6 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -7027,5 +7028,116 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		return result;
+	}
+
+	@Override
+	public Response getMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, String key) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new Exception("Do not have permission");
+			}
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				String[] keys = key.split("\\.");
+				if (dossier.getMetaData() != null) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+					for (int i = 0; i < keys.length - 1; i++) {
+						String objectKey = keys[i];
+						if (obj.has(objectKey)) {
+							obj = obj.getJSONObject(objectKey);
+						}
+						else {
+							return Response.status(200).entity("").build();
+						}
+					}					
+					if (obj != null && obj.has(keys[keys.length - 1])) {
+						return Response.status(200).entity(obj.getString(keys[keys.length - 1])).build();						
+					}
+					else {
+						return Response.status(200).entity("").build();						
+					}
+				}
+				else {
+					return Response.status(200).entity("").build();					
+				}
+			}
+			else {
+				return Response.status(200).entity("").build();				
+			}
+		}
+		catch (Exception e) {
+			_log.debug(e);
+			return Response.status(
+				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
+				"Do not have permission").build();
+		}
+	}
+
+	@Override
+	public Response putMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new Exception("Do not have permission");
+			}
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			if (dossier != null) {
+				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+				Enumeration<String> keyIt = request.getParameterNames();
+				
+				while (keyIt.hasMoreElements()) {
+					String key = keyIt.nextElement();			
+					String[] keys = key.split("\\.");
+					JSONObject tempObj = obj;
+					int index = 0;
+					for (int i = 0; i < keys.length; i++) {
+						if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+							tempObj = tempObj.getJSONObject(keys[i]);
+						}
+						else {
+							index = i;
+							break;
+						}
+					}
+					if (keys.length == 1) {
+						obj.put(key, request.getParameter(key));																		
+					}
+					else {
+						if (index == keys.length - 1) {
+							tempObj.put(keys[index], request.getParameter(key));							
+						}
+						else {
+							JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+							mergeObj.put(keys[keys.length - 1], request.getParameter(key));
+							for (int i = keys.length - 2; i > index; i--) {
+								JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+								indexObj.put(keys[i], mergeObj);
+								mergeObj = indexObj;
+							}
+							tempObj.put(keys[index], mergeObj);
+						}
+					}
+				}
+				
+				dossier.setMetaData(obj.toJSONString());
+				DossierLocalServiceUtil.updateDossier(dossier);
+				
+				return Response.status(200).entity("{ 'ok': true }").build();
+			}
+			else {
+				return Response.status(200).entity("{ 'ok': false }").build();				
+			}
+		}
+		catch (Exception e) {
+			_log.debug(e);
+			return Response.status(
+				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
+				"Do not have permission").build();
+		}
 	}
 }

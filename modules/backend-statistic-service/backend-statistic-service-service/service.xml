@@ -53,6 +53,9 @@
 		<column name="outsideCount" type="int"/>
 		<column name="insideCount" type="int"/>
 		<column name="system" type="String" />
+		<column name="viaPostalCount" type="int" />
+		<column name="notViaPostalCount" type="int" />
+		<column name="saturdayCount" type="int" />
 		
 		<!-- Order -->
 

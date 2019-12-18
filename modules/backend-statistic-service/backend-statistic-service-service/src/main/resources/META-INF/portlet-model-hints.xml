@@ -45,6 +45,9 @@
 		<field name="outsideCount" type="int" />
 		<field name="insideCount" type="int" />
 		<field name="system" type="String" />
+		<field name="viaPostalCount" type="int" />
+		<field name="notViaPostalCount" type="int" />
+		<field name="saturdayCount" type="int" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsPersonStatistic">
 		<field name="uuid" type="String" />

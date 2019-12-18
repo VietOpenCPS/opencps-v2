@@ -606,6 +606,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
+				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
+				}
+				if ("35818".contentEquals(doc.get(DossierTerm.GROUP_ID))) {
+					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
+				}
+				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 				
 				dossierData.add(model);
 			}
@@ -743,7 +750,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

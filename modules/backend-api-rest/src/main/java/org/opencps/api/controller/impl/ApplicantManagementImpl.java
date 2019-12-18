@@ -60,9 +60,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.usermgt.action.ApplicantActions;
-import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
-import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -295,6 +293,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String cityName = HtmlUtil.escape(input.getCityName());
 			String districtName = HtmlUtil.escape(input.getDistrictName());
 			String wardName = HtmlUtil.escape(input.getWardName());
+			String profile = input.getProfile();
 			
 			if (Validator.isNotNull(input.getCityCode()) && Validator.isNull(cityName)) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -312,7 +311,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (isAllowed) {
 				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
 						cityName, districtCode, districtName, wardCode,
-						wardName, contactName, contactTelNo, contactEmail);
+						wardName, contactName, contactTelNo, contactEmail, profile);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 

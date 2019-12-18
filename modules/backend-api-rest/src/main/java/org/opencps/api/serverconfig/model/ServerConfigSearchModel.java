@@ -45,7 +45,8 @@ import javax.xml.bind.annotation.XmlType;
     "start",
     "end",
     "sort",
-    "order"
+    "order",
+    "eFormNo"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -59,6 +60,8 @@ public class ServerConfigSearchModel {
     protected String sort;
 	@QueryParam("order")
     protected String order;
+	@QueryParam("eFormNo")
+    protected String eFormNo;
 
     /**
      * Gets the value of the keyword property.
@@ -179,5 +182,13 @@ public class ServerConfigSearchModel {
     public void setOrder(String value) {
         this.order = value;
     }
+
+	public String geteFormNo() {
+		return eFormNo;
+	}
+
+	public void seteFormNo(String eFormNo) {
+		this.eFormNo = eFormNo;
+	}
 
 }

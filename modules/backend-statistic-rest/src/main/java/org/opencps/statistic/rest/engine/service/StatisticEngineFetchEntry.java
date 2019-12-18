@@ -1,8 +1,9 @@
 package org.opencps.statistic.rest.engine.service;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,7 +16,10 @@ import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
-
+	private static final int USED_POSTAL = 2;
+	private static final int NOT_USED_POSTAL = 1;
+	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
+	
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
 			Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
 //		int month = LocalDate.now().getMonthValue();
@@ -42,6 +46,24 @@ public class StatisticEngineFetchEntry {
 		Date finishDate = Validator.isNull(dossierData.getFinishDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
+		int viaPostal = dossierData.getViaPostal();
+		if (viaPostal != 0)
+			_log.info("VIA POSTAL STATISTIC: " + viaPostal);
+		if (viaPostal == USED_POSTAL) {
+			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
+		}
+		else {
+			
+		}
+		Calendar receivedStatistic = Calendar.getInstance();
+		receivedStatistic.setTime(receviedDate);
+		boolean isReceivedSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+		Calendar finishStatistic = Calendar.getInstance();
+		finishStatistic.setTime(receviedDate);
+		boolean isFinishSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+		if (isReceivedSaturday && isFinishSaturday) {
+			statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
+		}
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
 		if (dossierData.getDossierStatus().contentEquals("denied")) {
@@ -173,6 +195,20 @@ public class StatisticEngineFetchEntry {
 				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+		int viaPostalCount = dossierData.getViaPostal();
+		if (viaPostalCount == USED_POSTAL) {
+			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
+		}
+		Calendar receivedStatistic = Calendar.getInstance();
+		receivedStatistic.setTime(receviedDate);
+		boolean isReceivedSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+		Calendar finishStatistic = Calendar.getInstance();
+		finishStatistic.setTime(receviedDate);
+		boolean isFinishSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+		if (isReceivedSaturday && isFinishSaturday) {
+			statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
+		}
+
 		if (dossierData.getDossierStatus().contentEquals("denied")) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {

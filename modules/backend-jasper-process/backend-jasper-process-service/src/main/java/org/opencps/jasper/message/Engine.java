@@ -131,7 +131,7 @@ public class Engine implements MessageListener {
 
 				if (Validator.isNotNull(fileExport)) {
 					
-					_log.info("Jasper export success: " + fileExport);
+					_log.info("Jasper export success: " + fileExport + ", " + classPK);
 					
 					JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
 					msgDataIn.put("className", className);

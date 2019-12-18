@@ -224,6 +224,11 @@
 		<finder return-type="Collection" name="P">
 			<finder-column name="protocol"/>
 		</finder>
+		<finder return-type="ServerConfig" name="F_G_S_P">
+			<finder-column name="groupId"/>
+			<finder-column name="serverNo"/>
+			<finder-column name="protocol"/>
+		</finder>
 	</entity>
 
 	<entity name="ZaloMap" local-service="true"

@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +27,6 @@ import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
-import org.opencps.statistic.rest.dto.VotingResultResponse;
-import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
@@ -1251,6 +1248,8 @@ public class StatisticSumYearCalcular {
 		int waitingCount = 0;
 		int ontimePercentage = 0;
 		int onegateCount = 0;
+		int viaPostalCount = 0;
+		int saturdayCount = 0;
 
 		if (month == 0 && year == 0) {
 			for (DossierStatisticData data : source) {
@@ -1274,6 +1273,8 @@ public class StatisticSumYearCalcular {
 				overdueCount = overdueCount+ data.getOverdueCount();
 				interoperatingCount = interoperatingCount + data.getInteroperatingCount();
 				waitingCount = waitingCount + data.getWaitingCount();
+				viaPostalCount = viaPostalCount + data.getViaPostalCount();
+				saturdayCount = saturdayCount + data.getSaturdayCount();
 			}
 		} else {
 			for (DossierStatisticData data : source) {
@@ -1291,6 +1292,8 @@ public class StatisticSumYearCalcular {
 				overtimeOutside = overtimeOutside + data.getOvertimeOutside();
 				overtimeInside = overtimeInside + data.getOvertimeInside();
 				onegateCount = onegateCount + data.getOnegateCount();
+				viaPostalCount = viaPostalCount + data.getViaPostalCount();
+				saturdayCount = saturdayCount + data.getSaturdayCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
@@ -1344,7 +1347,9 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setSystem(system);
 		dossierStatisticData.setCompanyId(companyId);
 		dossierStatisticData.setGroupId(groupId);
-
+		dossierStatisticData.setViaPostalCount(viaPostalCount);
+		dossierStatisticData.setSaturdayCount(saturdayCount);
+		
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}
 

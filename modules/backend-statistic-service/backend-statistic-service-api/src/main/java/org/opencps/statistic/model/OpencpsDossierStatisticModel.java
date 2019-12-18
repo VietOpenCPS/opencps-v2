@@ -713,6 +713,48 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setSystem(String system);
 
+	/**
+	 * Returns the via postal count of this opencps dossier statistic.
+	 *
+	 * @return the via postal count of this opencps dossier statistic
+	 */
+	public int getViaPostalCount();
+
+	/**
+	 * Sets the via postal count of this opencps dossier statistic.
+	 *
+	 * @param viaPostalCount the via postal count of this opencps dossier statistic
+	 */
+	public void setViaPostalCount(int viaPostalCount);
+
+	/**
+	 * Returns the not via postal count of this opencps dossier statistic.
+	 *
+	 * @return the not via postal count of this opencps dossier statistic
+	 */
+	public int getNotViaPostalCount();
+
+	/**
+	 * Sets the not via postal count of this opencps dossier statistic.
+	 *
+	 * @param notViaPostalCount the not via postal count of this opencps dossier statistic
+	 */
+	public void setNotViaPostalCount(int notViaPostalCount);
+
+	/**
+	 * Returns the saturday count of this opencps dossier statistic.
+	 *
+	 * @return the saturday count of this opencps dossier statistic
+	 */
+	public int getSaturdayCount();
+
+	/**
+	 * Sets the saturday count of this opencps dossier statistic.
+	 *
+	 * @param saturdayCount the saturday count of this opencps dossier statistic
+	 */
+	public void setSaturdayCount(int saturdayCount);
+
 	@Override
 	public boolean isNew();
 

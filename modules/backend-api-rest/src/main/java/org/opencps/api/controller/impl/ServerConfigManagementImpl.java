@@ -13,8 +13,14 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.controller.ServerConfigManagement;
 import org.opencps.api.controller.util.ServerConfigUtils;
 import org.opencps.api.serverconfig.model.ServerConfigDetailModel;
@@ -350,6 +357,130 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			
 			return Response.status(200).entity(result.toJSONString()).build();
 
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getProtocolOfServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String protocolCode) {
+
+		//BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+
+			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByProtocol(groupId, protocolCode);
+
+			if (configList != null && configList.size() > 0) {
+				ServerConfig config = configList.get(0);
+
+				ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
+
+				return Response.status(200).entity(result).build();
+			}
+
+			return Response.status(500).entity("Internal Server").build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getProtocolConnectOfServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String serverNo, String protocolCode,
+			ServerConfigSearchModel query) {
+		//BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		try {
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+			String eFormNo = query.geteFormNo();
+			System.out.println("eFormNo: "+eFormNo);
+			StringBuilder sb = new StringBuilder();
+			if ("API_CONNECT".equals(protocolCode)) {
+				System.out.println("protocolCode: "+protocolCode);
+				ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, serverNo, protocolCode);
+				System.out.println("serverConfig: "+serverConfig);
+				if (serverConfig != null) {
+
+					String configs = serverConfig.getConfigs();
+					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(configs);
+					if (jsonConfig != null) {
+						String method = jsonConfig.getString("method");
+						System.out.println("method: "+method);
+						
+						if ("GET".equals(method) && Validator.isNotNull(eFormNo)) {
+							String urlGet = jsonConfig.getString("url").replace("{eFormNo}", eFormNo);
+							System.out.println("urlGet: "+urlGet);
+							//
+							long groupIdGet = 0;
+							String authStrEnc = "";
+							//
+							String params = jsonConfig.getString("params");
+							System.out.println("params: "+params);
+							if (Validator.isNotNull(params)) {
+								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(params);
+								//
+								String strHeader = jsonParams.getString("header");
+								if (Validator.isNotNull(strHeader)) {
+									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(strHeader);
+									//
+									groupIdGet = jsonHeader.getLong("groupId");
+									System.out.println("groupIdGet: "+groupIdGet);
+									
+								}
+							}
+							
+							//AUTHEN
+							String authenticate = jsonConfig.getString("authenticate");
+							System.out.println("authenticate: "+authenticate);
+							if (Validator.isNotNull(authenticate)) {
+								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);
+								//
+								String type = jsonAuthen.getString("type");
+								System.out.println("type: "+type);
+								if ("base".equals(type)) {
+									String userName = jsonAuthen.getString("username");
+									String password = jsonAuthen.getString("password");
+									System.out.println("userName: "+userName);
+									System.out.println("password: "+password);
+									//
+									authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+									
+								}
+							}
+							
+							URL urlVal = new URL(urlGet);
+
+							System.out.println("API URL: " + urlGet);
+							java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+							conn.setRequestProperty("groupId", String.valueOf(groupIdGet));
+							conn.setRequestMethod(method);
+							conn.setRequestProperty("Accept", "application/json");
+							conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+							System.out.println("BASIC AUTHEN: " + authStrEnc);
+
+							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+							int cp;
+							while ((cp = brf.read()) != -1) {
+								sb.append((char) cp);
+							}
+							_log.debug("RESULT PROXY: " + sb.toString());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
+						}
+						
+					}
+				}
+			}
+
+			return Response.status(500).entity("Internal Server").build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

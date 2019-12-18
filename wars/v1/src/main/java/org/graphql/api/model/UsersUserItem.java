@@ -132,6 +132,17 @@ public class UsersUserItem {
 	@JsonProperty("title")
 	private String title = null;
 
+	@JsonProperty("applicantProfile")
+	private String applicantProfile = null;
+	
+	public String getApplicantProfile() {
+		return applicantProfile;
+	}
+
+	public void setApplicantProfile(String applicantProfile) {
+		this.applicantProfile = applicantProfile;
+	}
+
 	public UsersUserItem className(String className) {
 		this.className = className;
 		return this;

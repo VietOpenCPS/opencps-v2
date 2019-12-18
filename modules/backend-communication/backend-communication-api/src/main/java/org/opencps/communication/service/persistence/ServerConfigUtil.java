@@ -766,6 +766,77 @@ public class ServerConfigUtil {
 	}
 
 	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or throws a {@link NoSuchServerConfigException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the matching server config
+	* @throws NoSuchServerConfigException if a matching server config could not be found
+	*/
+	public static ServerConfig findByF_G_S_P(long groupId, String serverNo,
+		String protocol)
+		throws org.opencps.communication.exception.NoSuchServerConfigException {
+		return getPersistence().findByF_G_S_P(groupId, serverNo, protocol);
+	}
+
+	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public static ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol) {
+		return getPersistence().fetchByF_G_S_P(groupId, serverNo, protocol);
+	}
+
+	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public static ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_G_S_P(groupId, serverNo, protocol,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the server config that was removed
+	*/
+	public static ServerConfig removeByF_G_S_P(long groupId, String serverNo,
+		String protocol)
+		throws org.opencps.communication.exception.NoSuchServerConfigException {
+		return getPersistence().removeByF_G_S_P(groupId, serverNo, protocol);
+	}
+
+	/**
+	* Returns the number of server configs where groupId = &#63; and serverNo = &#63; and protocol = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the number of matching server configs
+	*/
+	public static int countByF_G_S_P(long groupId, String serverNo,
+		String protocol) {
+		return getPersistence().countByF_G_S_P(groupId, serverNo, protocol);
+	}
+
+	/**
 	* Caches the server config in the entity cache if it is enabled.
 	*
 	* @param serverConfig the server config

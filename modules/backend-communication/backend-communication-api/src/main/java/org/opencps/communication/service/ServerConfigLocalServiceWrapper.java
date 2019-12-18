@@ -233,6 +233,13 @@ public class ServerConfigLocalServiceWrapper implements ServerConfigLocalService
 	}
 
 	@Override
+	public org.opencps.communication.model.ServerConfig getByServerNoAndProtocol(
+		long groupId, String serverNo, String protocol) {
+		return _serverConfigLocalService.getByServerNoAndProtocol(groupId,
+			serverNo, protocol);
+	}
+
+	@Override
 	public java.util.List<org.opencps.communication.model.ServerConfig> getGroupId(
 		long groupId) {
 		return _serverConfigLocalService.getGroupId(groupId);
