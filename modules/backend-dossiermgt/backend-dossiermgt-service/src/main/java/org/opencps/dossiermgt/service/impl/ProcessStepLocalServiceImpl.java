@@ -92,7 +92,7 @@ public class ProcessStepLocalServiceImpl extends ProcessStepLocalServiceBaseImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ProcessStep updateProcessStep(long groupId, long processStepId, String stepCode, String stepName,
-			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, int durationCount,
+			long serviceProcessId, String sequenceNo, String dossierStatus, String dossierSubStatus, double durationCount,
 			String customProcessUrl, String stepInstruction, String briefNote, boolean editable, String lockState, Integer checkInput,
 			ServiceContext context) throws PortalException {
 

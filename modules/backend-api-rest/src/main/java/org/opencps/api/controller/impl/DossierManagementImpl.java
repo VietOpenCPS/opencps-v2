@@ -416,11 +416,6 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
 
-			//ViaPostal
-			Integer viaPostal = query.getViapostal();
-			if (viaPostal != null) {
-				params.put(DossierTerm.VIA_POSTAL, viaPostal);
-			}
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -867,12 +862,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
-			}
-
-			//ViaPostal
-			Integer viaPostal = query.getViapostal();
-			if (viaPostal != null) {
-				params.put(DossierTerm.VIA_POSTAL, viaPostal);
 			}
 
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
@@ -6701,7 +6690,8 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response importDossierFromOldDB(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		Attachment file, String actionCode, String pathBase, long dvcGroupId) {
+		Attachment file, String actionCode, String pathBase, long dvcGroupId, long groupId,
+		String govAgencyCode, String govAgencyName) {
 
 		try {
 
@@ -6716,6 +6706,11 @@ public class DossierManagementImpl implements DossierManagement {
 			for (int i = 0; i < dataFile.length(); i++) {
 
 				JSONObject dossierJson = dataFile.getJSONObject(i);
+				
+				if (Validator.isNull(dossierJson.get(ConvertDossierFromV1Dot9Utils.TEMP_SERVICECODE))) {
+					
+					continue;
+				}
 				dossierJson.put(
 					ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
 				dossierJson.put("online", true);
@@ -6729,8 +6724,10 @@ public class DossierManagementImpl implements DossierManagement {
 					dossierJson.put(
 						ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
 				}
+				JSONObject temp = ConvertDossierFromV1Dot9Utils.getDossierObject(company.getCompanyId(), groupId, user.getUserId(), user.getFullName(), govAgencyCode, govAgencyName);
+				JSONObject importD = ConvertDossierFromV1Dot9Utils.mergeJSONObject(temp, dossierJson);
 				JSONObject dossier =
-					ConvertDossierFromV1Dot9Utils.setDossierObject(dossierJson);
+					ConvertDossierFromV1Dot9Utils.setDossierObject(importD);
 				if (dvcGroupId <= 0) {
 					ConvertDossierFromV1Dot9Utils.insertUserDossier(
 						dossier.getLong(
@@ -6799,7 +6796,6 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
-		System.out.println("START IMPORT APPLICANT");
 		try {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -6895,8 +6891,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://10.21.201.63:3306/dvc_opencps", "dvc_user",
-				"dvc_user@2019!@#$");
+				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
+				"dvc@2019");
 			// here sonoo is database name, root is username and password
 			String query = "select * from thanhnv_dossier_mapped_done";
 			if (groupId > 0) {
@@ -6986,8 +6982,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://10.21.201.63:3306/dvc_opencps", "dvc_user",
-				"dvc_user@2019!@#$");
+				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
+				"dvc@2019");
 			// here sonoo is database name, root is username and password
 			stmt = con.createStatement();
 			String query = "select * from thanhnv_dossierPart_mapped_done2";
