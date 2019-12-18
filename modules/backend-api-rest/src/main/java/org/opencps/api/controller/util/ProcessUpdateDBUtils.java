@@ -170,6 +170,7 @@ public class ProcessUpdateDBUtils {
 		try {
 			StepConfigActions actions = new StepConfigActionsImpl();
 			List<StepConfig> stepConfigList = stepList.getStepConfig();
+			_log.debug("STEP CONFIG SIZE: " + stepConfigList.size());
 			if (stepConfigList != null && stepConfigList.size() > 0) {
 				for (StepConfig stepConfig : stepConfigList) {
 					String stepCode = stepConfig.getStepCode();
@@ -180,8 +181,10 @@ public class ProcessUpdateDBUtils {
 					String menuGroup = stepConfig.getMenuGroup();
 					String menuStepName = stepConfig.getMenuStepName();
 					String buttonConfig = stepConfig.getButtonConfig();
+					_log.debug("STEP CONFIG DETAIL: " + stepConfig + ", " + actions);
 					if (Validator.isNotNull(stepCode)) {
 						// Check record exits DB
+						_log.debug("STEP CONFIG BEFORE UPDATE: " + stepCode);
 						actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
 								menuGroup, menuStepName, buttonConfig);
 					}

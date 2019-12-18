@@ -221,6 +221,8 @@ public class ReadXMLFileUtils {
 				break;
 			case ConstantUtils.XML_STEP_CONFIG:
 				StepConfigList stepList = convertXMLToStepConfig(xmlString);
+				_log.debug("STEP CONFIG: " + stepList.getStepConfig());
+				_log.debug("STEP CONFIG SIZE: " + stepList.getStepConfig().size());
 				flag = ProcessUpdateDBUtils.processUpdateStepConfig(stepList, groupId, userId, serviceContext);
 				if (flag) {
 					sbParentFile.append(fileName);
