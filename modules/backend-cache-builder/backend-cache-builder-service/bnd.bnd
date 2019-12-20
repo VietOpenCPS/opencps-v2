@@ -5,4 +5,5 @@ Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 Export-Package: \
 	org.opencps.cache.actions,\
-	org.opencps.cache.actions.impl
+	org.opencps.cache.actions.impl,\
+	org.opencps.cache.service.util

@@ -586,7 +586,7 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	* @return the verification of this applicant
 	*/
 	@Override
-	public int getVerification() {
+	public Integer getVerification() {
 		return _applicant.getVerification();
 	}
 
@@ -962,7 +962,7 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	* @param verification the verification of this applicant
 	*/
 	@Override
-	public void setVerification(int verification) {
+	public void setVerification(Integer verification) {
 		_applicant.setVerification(verification);
 	}
 

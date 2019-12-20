@@ -553,7 +553,7 @@
 		<column name="profile" type="String" />
 		<column name="tmpPass" type="String" />
 		<column name="representativeEnterprise" type="String" />
-		<column name="verification" type="int" />
+		<column name="verification" type="Integer" />
 
 		<order by="asc">
 			<order-column name="applicantName"/>

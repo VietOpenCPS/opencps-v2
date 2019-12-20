@@ -526,14 +526,14 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	 *
 	 * @return the verification of this applicant
 	 */
-	public int getVerification();
+	public Integer getVerification();
 
 	/**
 	 * Sets the verification of this applicant.
 	 *
 	 * @param verification the verification of this applicant
 	 */
-	public void setVerification(int verification);
+	public void setVerification(Integer verification);
 
 	@Override
 	public boolean isNew();

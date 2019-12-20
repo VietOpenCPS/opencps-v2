@@ -18,8 +18,6 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -55,9 +53,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.opencps.auth.api.keys.NotificationType;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -68,7 +63,6 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -172,7 +166,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
-
+		_log.debug("ADD APPLICANT");
 		if (applicantId == 0) {
 
 			validateAdd(
@@ -186,6 +180,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				counterLocalService.increment(Applicant.class.getName());
 
 			applicant = applicantPersistence.create(applicantId);
+			_log.debug("ADD APPLICANT: " + applicant);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(
 				context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
@@ -245,8 +240,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int year = calendar.get(Calendar.YEAR);
 			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
-			// spn.getFirstName() + "," + spn.getMidName());
+			 _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
+			 spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(
 				creatorUserId, context.getCompanyId(), autoPassword, password,
 				password, autoScreenName, screenName, contactEmail, 0l,
@@ -254,8 +249,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 				dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds,
 				organizationIds, roleIds, userGroupIds, sendEmail, context);
-			// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
-			// mappingUser.getFullName());
+			 _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
+			 mappingUser.getFullName());
 			mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 
 			long mappingUserId = mappingUser.getUserId();
@@ -287,7 +282,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setProfile(profile);
 			applicant.setActivationCode(activationCode);
 			applicant.setTmpPass(password);
-
+			applicant.setVerification(0);
 		}
 		else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
@@ -344,8 +339,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
+		_log.debug("BEFORE UPDATE APPLICANT");
 		applicantPersistence.update(applicant);
-
+		_log.debug("AFTER UPDATE APPLICANT");
 		return applicant;
 	}
 

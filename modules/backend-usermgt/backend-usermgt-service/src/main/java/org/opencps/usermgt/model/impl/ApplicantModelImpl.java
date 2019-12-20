@@ -911,12 +911,12 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	}
 
 	@Override
-	public int getVerification() {
+	public Integer getVerification() {
 		return _verification;
 	}
 
 	@Override
-	public void setVerification(int verification) {
+	public void setVerification(Integer verification) {
 		_verification = verification;
 	}
 
@@ -1515,7 +1515,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
-	private int _verification;
+	private Integer _verification;
 	private long _columnBitmask;
 	private Applicant _escapedModel;
 }
