@@ -1,0 +1,2 @@
+contextPath=/auth/dvcqg
+jaxRsApplicationFilterStrings=(component.name=org.opencps.usermgt.restapi.BackendUsermgtServiceRestService)
