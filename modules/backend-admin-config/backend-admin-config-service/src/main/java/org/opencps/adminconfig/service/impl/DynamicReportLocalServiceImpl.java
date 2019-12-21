@@ -15,6 +15,7 @@
 package org.opencps.adminconfig.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
@@ -132,6 +133,62 @@ public class DynamicReportLocalServiceImpl
 		dynamicReportPersistence.update(object);
 
 		return object;
+	}
+	
+	//LamTV_Add ouput DB
+	@Indexable(type = IndexableType.REINDEX)
+	public DynamicReport updateDynamicReportDB(long userId, long groupId, String reportCode, String reportName,
+			int sharing, String filterConfig, String tableConfig,
+			String userConfig, String reportType) throws NoSuchUserException {
+
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+		
+		DynamicReport dynamicReport = dynamicReportPersistence.fetchByF_GID_CODE(groupId, reportCode);
+
+		if (dynamicReport == null) {
+			long dynamicReportId = counterLocalService.increment(DynamicReport.class.getName());
+			dynamicReport = dynamicReportPersistence.create(dynamicReportId);
+
+			// Group instance
+			dynamicReport.setGroupId(groupId);
+			// Audit fields
+			dynamicReport.setCompanyId(user.getCompanyId());
+			dynamicReport.setUserId(user.getUserId());
+			dynamicReport.setUserName(user.getFullName());
+			dynamicReport.setCreateDate(now);
+			dynamicReport.setModifiedDate(now);
+
+			dynamicReport.setReportCode(reportCode);
+			dynamicReport.setReportName(reportName);
+			dynamicReport.setSharing(sharing);
+			dynamicReport.setFilterConfig(filterConfig);
+			dynamicReport.setTableConfig(tableConfig);
+			dynamicReport.setUserConfig(userConfig);
+			dynamicReport.setReportType(reportType);
+		} else {
+			dynamicReport.setModifiedDate(now);
+			if (Validator.isNotNull(reportCode))
+				dynamicReport.setReportCode(reportCode);
+			if (Validator.isNotNull(reportName))
+				dynamicReport.setReportName(reportName);
+			if (Validator.isNotNull(sharing))
+				dynamicReport.setSharing(sharing);
+			if (Validator.isNotNull(filterConfig))
+				dynamicReport.setFilterConfig(filterConfig);
+			if (Validator.isNotNull(tableConfig))
+				dynamicReport.setTableConfig(tableConfig);
+			if (Validator.isNotNull(userConfig))
+				dynamicReport.setUserConfig(userConfig);
+			if (Validator.isNotNull(reportType))
+				dynamicReport.setReportType(reportType);
+		}
+
+		return dynamicReportPersistence.update(dynamicReport);
+	}
+
+	public DynamicReport fetchByG_CODE(long groupId, String reportCode) {
+		return dynamicReportPersistence.fetchByF_GID_CODE(groupId, reportCode);
 	}
 	
 }

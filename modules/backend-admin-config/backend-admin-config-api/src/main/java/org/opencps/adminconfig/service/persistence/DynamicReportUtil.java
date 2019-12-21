@@ -516,6 +516,69 @@ public class DynamicReportUtil {
 	}
 
 	/**
+	* Returns the dynamic report where groupId = &#63; and reportCode = &#63; or throws a {@link NoSuchDynamicReportException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param reportCode the report code
+	* @return the matching dynamic report
+	* @throws NoSuchDynamicReportException if a matching dynamic report could not be found
+	*/
+	public static DynamicReport findByF_GID_CODE(long groupId, String reportCode)
+		throws org.opencps.adminconfig.exception.NoSuchDynamicReportException {
+		return getPersistence().findByF_GID_CODE(groupId, reportCode);
+	}
+
+	/**
+	* Returns the dynamic report where groupId = &#63; and reportCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param reportCode the report code
+	* @return the matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	*/
+	public static DynamicReport fetchByF_GID_CODE(long groupId,
+		String reportCode) {
+		return getPersistence().fetchByF_GID_CODE(groupId, reportCode);
+	}
+
+	/**
+	* Returns the dynamic report where groupId = &#63; and reportCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param reportCode the report code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	*/
+	public static DynamicReport fetchByF_GID_CODE(long groupId,
+		String reportCode, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByF_GID_CODE(groupId, reportCode, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dynamic report where groupId = &#63; and reportCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param reportCode the report code
+	* @return the dynamic report that was removed
+	*/
+	public static DynamicReport removeByF_GID_CODE(long groupId,
+		String reportCode)
+		throws org.opencps.adminconfig.exception.NoSuchDynamicReportException {
+		return getPersistence().removeByF_GID_CODE(groupId, reportCode);
+	}
+
+	/**
+	* Returns the number of dynamic reports where groupId = &#63; and reportCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param reportCode the report code
+	* @return the number of matching dynamic reports
+	*/
+	public static int countByF_GID_CODE(long groupId, String reportCode) {
+		return getPersistence().countByF_GID_CODE(groupId, reportCode);
+	}
+
+	/**
 	* Caches the dynamic report in the entity cache if it is enabled.
 	*
 	* @param dynamicReport the dynamic report

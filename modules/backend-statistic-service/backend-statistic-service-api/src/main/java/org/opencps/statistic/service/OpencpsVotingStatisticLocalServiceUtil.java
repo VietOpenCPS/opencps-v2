@@ -184,6 +184,22 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> fetchByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode) {
+		return getService()
+				   .fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode,
+			domainCode);
+	}
+
+	public static org.opencps.statistic.model.OpencpsVotingStatistic fetchByG_M_Y_G_D_VC(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String votingCode) {
+		return getService()
+				   .fetchByG_M_Y_G_D_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode);
+	}
+
 	public static org.opencps.statistic.model.OpencpsVotingStatistic fetchOpencpsVotingStatistic(
 		long votingStatisticId) {
 		return getService().fetchOpencpsVotingStatistic(votingStatisticId);

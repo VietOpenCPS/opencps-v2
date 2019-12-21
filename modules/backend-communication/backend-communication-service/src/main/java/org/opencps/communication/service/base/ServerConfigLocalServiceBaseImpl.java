@@ -46,7 +46,6 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalService;
 import org.opencps.communication.service.persistence.NotificationQueuePersistence;
 import org.opencps.communication.service.persistence.NotificationtemplatePersistence;
-import org.opencps.communication.service.persistence.PreferencesPersistence;
 import org.opencps.communication.service.persistence.ServerConfigPersistence;
 import org.opencps.communication.service.persistence.ZaloMapPersistence;
 
@@ -397,44 +396,6 @@ public abstract class ServerConfigLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the preferences local service.
-	 *
-	 * @return the preferences local service
-	 */
-	public org.opencps.communication.service.PreferencesLocalService getPreferencesLocalService() {
-		return preferencesLocalService;
-	}
-
-	/**
-	 * Sets the preferences local service.
-	 *
-	 * @param preferencesLocalService the preferences local service
-	 */
-	public void setPreferencesLocalService(
-		org.opencps.communication.service.PreferencesLocalService preferencesLocalService) {
-		this.preferencesLocalService = preferencesLocalService;
-	}
-
-	/**
-	 * Returns the preferences persistence.
-	 *
-	 * @return the preferences persistence
-	 */
-	public PreferencesPersistence getPreferencesPersistence() {
-		return preferencesPersistence;
-	}
-
-	/**
-	 * Sets the preferences persistence.
-	 *
-	 * @param preferencesPersistence the preferences persistence
-	 */
-	public void setPreferencesPersistence(
-		PreferencesPersistence preferencesPersistence) {
-		this.preferencesPersistence = preferencesPersistence;
-	}
-
-	/**
 	 * Returns the server config local service.
 	 *
 	 * @return the server config local service
@@ -682,10 +643,6 @@ public abstract class ServerConfigLocalServiceBaseImpl
 	protected org.opencps.communication.service.NotificationtemplateLocalService notificationtemplateLocalService;
 	@BeanReference(type = NotificationtemplatePersistence.class)
 	protected NotificationtemplatePersistence notificationtemplatePersistence;
-	@BeanReference(type = org.opencps.communication.service.PreferencesLocalService.class)
-	protected org.opencps.communication.service.PreferencesLocalService preferencesLocalService;
-	@BeanReference(type = PreferencesPersistence.class)
-	protected PreferencesPersistence preferencesPersistence;
 	@BeanReference(type = ServerConfigLocalService.class)
 	protected ServerConfigLocalService serverConfigLocalService;
 	@BeanReference(type = ServerConfigPersistence.class)

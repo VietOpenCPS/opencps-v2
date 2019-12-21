@@ -241,6 +241,10 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month,
+		int year, String govAgencyCode, String domainCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> fetchDossierStatistic(long groupId,
 		int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)

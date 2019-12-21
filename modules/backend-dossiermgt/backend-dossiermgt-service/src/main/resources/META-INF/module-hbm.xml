@@ -23,7 +23,6 @@
 	<import class="org.opencps.dossiermgt.model.DossierSync" />
 	<import class="org.opencps.dossiermgt.model.DossierTemplate" />
 	<import class="org.opencps.dossiermgt.model.DossierUser" />
-	<import class="org.opencps.dossiermgt.model.DynamicReport" />
 	<import class="org.opencps.dossiermgt.model.EForm" />
 	<import class="org.opencps.dossiermgt.model.MenuConfig" />
 	<import class="org.opencps.dossiermgt.model.MenuRole" />
@@ -594,25 +593,6 @@
 		<property name="moderator" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="visited" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-	</class>
-	<class name="org.opencps.dossiermgt.model.impl.DynamicReportImpl" table="opencps_dynamicreport">
-		<id name="dynamicReportId" type="long">
-			<generator class="assigned" />
-		</id>
-		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="createDate" type="org.hibernate.type.TimestampType" />
-		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
-		<property name="reportCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="reportName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="sharing" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
-		<property name="filterConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="reportType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.EFormImpl" table="opencps_eform">
 		<id access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eFormId" type="long">

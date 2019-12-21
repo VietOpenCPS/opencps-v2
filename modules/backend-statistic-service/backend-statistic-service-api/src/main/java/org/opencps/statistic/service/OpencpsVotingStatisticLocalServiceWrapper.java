@@ -189,6 +189,22 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> fetchByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode) {
+		return _opencpsVotingStatisticLocalService.fetchByG_M_Y_G_D(groupId,
+			month, year, govAgencyCode, domainCode);
+	}
+
+	@Override
+	public org.opencps.statistic.model.OpencpsVotingStatistic fetchByG_M_Y_G_D_VC(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String votingCode) {
+		return _opencpsVotingStatisticLocalService.fetchByG_M_Y_G_D_VC(groupId,
+			month, year, govAgencyCode, domainCode, votingCode);
+	}
+
+	@Override
 	public org.opencps.statistic.model.OpencpsVotingStatistic fetchOpencpsVotingStatistic(
 		long votingStatisticId) {
 		return _opencpsVotingStatisticLocalService.fetchOpencpsVotingStatistic(votingStatisticId);

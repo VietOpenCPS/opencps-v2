@@ -1454,6 +1454,266 @@ public class DynamicReportPersistenceImpl extends BasePersistenceImpl<DynamicRep
 	private static final String _FINDER_COLUMN_F_REPORTTYPE_REPORTTYPE_1 = "dynamicReport.reportType IS NULL";
 	private static final String _FINDER_COLUMN_F_REPORTTYPE_REPORTTYPE_2 = "dynamicReport.reportType = ?";
 	private static final String _FINDER_COLUMN_F_REPORTTYPE_REPORTTYPE_3 = "(dynamicReport.reportType IS NULL OR dynamicReport.reportType = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_CODE = new FinderPath(DynamicReportModelImpl.ENTITY_CACHE_ENABLED,
+			DynamicReportModelImpl.FINDER_CACHE_ENABLED,
+			DynamicReportImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByF_GID_CODE",
+			new String[] { Long.class.getName(), String.class.getName() },
+			DynamicReportModelImpl.GROUPID_COLUMN_BITMASK |
+			DynamicReportModelImpl.REPORTCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_CODE = new FinderPath(DynamicReportModelImpl.ENTITY_CACHE_ENABLED,
+			DynamicReportModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_CODE",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the dynamic report where groupId = &#63; and reportCode = &#63; or throws a {@link NoSuchDynamicReportException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param reportCode the report code
+	 * @return the matching dynamic report
+	 * @throws NoSuchDynamicReportException if a matching dynamic report could not be found
+	 */
+	@Override
+	public DynamicReport findByF_GID_CODE(long groupId, String reportCode)
+		throws NoSuchDynamicReportException {
+		DynamicReport dynamicReport = fetchByF_GID_CODE(groupId, reportCode);
+
+		if (dynamicReport == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", reportCode=");
+			msg.append(reportCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDynamicReportException(msg.toString());
+		}
+
+		return dynamicReport;
+	}
+
+	/**
+	 * Returns the dynamic report where groupId = &#63; and reportCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param reportCode the report code
+	 * @return the matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	 */
+	@Override
+	public DynamicReport fetchByF_GID_CODE(long groupId, String reportCode) {
+		return fetchByF_GID_CODE(groupId, reportCode, true);
+	}
+
+	/**
+	 * Returns the dynamic report where groupId = &#63; and reportCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param reportCode the report code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dynamic report, or <code>null</code> if a matching dynamic report could not be found
+	 */
+	@Override
+	public DynamicReport fetchByF_GID_CODE(long groupId, String reportCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, reportCode };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_CODE,
+					finderArgs, this);
+		}
+
+		if (result instanceof DynamicReport) {
+			DynamicReport dynamicReport = (DynamicReport)result;
+
+			if ((groupId != dynamicReport.getGroupId()) ||
+					!Objects.equals(reportCode, dynamicReport.getReportCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DYNAMICREPORT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CODE_GROUPID_2);
+
+			boolean bindReportCode = false;
+
+			if (reportCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_1);
+			}
+			else if (reportCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_3);
+			}
+			else {
+				bindReportCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReportCode) {
+					qPos.add(reportCode);
+				}
+
+				List<DynamicReport> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CODE,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DynamicReportPersistenceImpl.fetchByF_GID_CODE(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DynamicReport dynamicReport = list.get(0);
+
+					result = dynamicReport;
+
+					cacheResult(dynamicReport);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CODE,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DynamicReport)result;
+		}
+	}
+
+	/**
+	 * Removes the dynamic report where groupId = &#63; and reportCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param reportCode the report code
+	 * @return the dynamic report that was removed
+	 */
+	@Override
+	public DynamicReport removeByF_GID_CODE(long groupId, String reportCode)
+		throws NoSuchDynamicReportException {
+		DynamicReport dynamicReport = findByF_GID_CODE(groupId, reportCode);
+
+		return remove(dynamicReport);
+	}
+
+	/**
+	 * Returns the number of dynamic reports where groupId = &#63; and reportCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param reportCode the report code
+	 * @return the number of matching dynamic reports
+	 */
+	@Override
+	public int countByF_GID_CODE(long groupId, String reportCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_CODE;
+
+		Object[] finderArgs = new Object[] { groupId, reportCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DYNAMICREPORT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_CODE_GROUPID_2);
+
+			boolean bindReportCode = false;
+
+			if (reportCode == null) {
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_1);
+			}
+			else if (reportCode.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_3);
+			}
+			else {
+				bindReportCode = true;
+
+				query.append(_FINDER_COLUMN_F_GID_CODE_REPORTCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindReportCode) {
+					qPos.add(reportCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_CODE_GROUPID_2 = "dynamicReport.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_CODE_REPORTCODE_1 = "dynamicReport.reportCode IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_CODE_REPORTCODE_2 = "dynamicReport.reportCode = ?";
+	private static final String _FINDER_COLUMN_F_GID_CODE_REPORTCODE_3 = "(dynamicReport.reportCode IS NULL OR dynamicReport.reportCode = '')";
 
 	public DynamicReportPersistenceImpl() {
 		setModelClass(DynamicReport.class);
@@ -1471,6 +1731,11 @@ public class DynamicReportPersistenceImpl extends BasePersistenceImpl<DynamicRep
 			dynamicReport);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_REPORTCODE,
+			new Object[] {
+				dynamicReport.getGroupId(), dynamicReport.getReportCode()
+			}, dynamicReport);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CODE,
 			new Object[] {
 				dynamicReport.getGroupId(), dynamicReport.getReportCode()
 			}, dynamicReport);
@@ -1555,6 +1820,16 @@ public class DynamicReportPersistenceImpl extends BasePersistenceImpl<DynamicRep
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_REPORTCODE, args,
 			dynamicReportModelImpl, false);
+
+		args = new Object[] {
+				dynamicReportModelImpl.getGroupId(),
+				dynamicReportModelImpl.getReportCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_CODE, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CODE, args,
+			dynamicReportModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1578,6 +1853,27 @@ public class DynamicReportPersistenceImpl extends BasePersistenceImpl<DynamicRep
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_REPORTCODE, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_REPORTCODE, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dynamicReportModelImpl.getGroupId(),
+					dynamicReportModelImpl.getReportCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CODE, args);
+		}
+
+		if ((dynamicReportModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_CODE.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dynamicReportModelImpl.getOriginalGroupId(),
+					dynamicReportModelImpl.getOriginalReportCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CODE, args);
 		}
 	}
 

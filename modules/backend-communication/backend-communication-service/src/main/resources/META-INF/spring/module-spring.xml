@@ -11,8 +11,6 @@
 	<bean class="org.opencps.communication.service.persistence.impl.NotificationQueuePersistenceImpl" id="org.opencps.communication.service.persistence.NotificationQueuePersistence" parent="basePersistence" />
 	<bean class="org.opencps.communication.service.impl.NotificationtemplateLocalServiceImpl" id="org.opencps.communication.service.NotificationtemplateLocalService" />
 	<bean class="org.opencps.communication.service.persistence.impl.NotificationtemplatePersistenceImpl" id="org.opencps.communication.service.persistence.NotificationtemplatePersistence" parent="basePersistence" />
-	<bean class="org.opencps.communication.service.impl.PreferencesLocalServiceImpl" id="org.opencps.communication.service.PreferencesLocalService" />
-	<bean class="org.opencps.communication.service.persistence.impl.PreferencesPersistenceImpl" id="org.opencps.communication.service.persistence.PreferencesPersistence" parent="basePersistence" />
 	<bean class="org.opencps.communication.service.impl.ServerConfigLocalServiceImpl" id="org.opencps.communication.service.ServerConfigLocalService" />
 	<bean class="org.opencps.communication.service.persistence.impl.ServerConfigPersistenceImpl" id="org.opencps.communication.service.persistence.ServerConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.communication.service.impl.ZaloMapLocalServiceImpl" id="org.opencps.communication.service.ZaloMapLocalService" />

@@ -303,8 +303,13 @@ public class RestfulController {
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
 
-				Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-				
+				Employee employee = null;
+				try {
+					employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+				}
+				catch (Exception e) {
+					
+				}
 				User user = UserLocalServiceUtil.fetchUser(userId);
 //				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 //				
@@ -320,7 +325,7 @@ public class RestfulController {
 //						request.getRemoteHost(), 
 //						userAgent, 
 //						userTrackerPath);
-				if (Validator.isNotNull(employee)) {
+				if (Validator.isNotNull(employee) && employee != null) {
 
 					if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
 						return "pending";

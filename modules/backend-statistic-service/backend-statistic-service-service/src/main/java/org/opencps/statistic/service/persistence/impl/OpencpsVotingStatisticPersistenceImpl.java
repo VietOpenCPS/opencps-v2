@@ -2088,10 +2088,23 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	private static final String _FINDER_COLUMN_G_UID_Y_GROUPID_2 = "opencpsVotingStatistic.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_UID_Y_USERID_2 = "opencpsVotingStatistic.userId = ? AND ";
 	private static final String _FINDER_COLUMN_G_UID_Y_YEAR_2 = "opencpsVotingStatistic.year = ?";
-	public static final FinderPath FINDER_PATH_FETCH_BY_M_Y_DM_G = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_M_Y_DM_G = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
 			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
-			OpencpsVotingStatisticImpl.class, FINDER_CLASS_NAME_ENTITY,
-			"fetchByM_Y_DM_G",
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByM_Y_DM_G",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), String.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G =
+		new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByM_Y_DM_G",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
 				Integer.class.getName(), String.class.getName(),
@@ -2112,114 +2125,147 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			});
 
 	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
+	 * Returns all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
 	 * @param domainCode the domain code
-	 * @return the matching opencps voting statistic
-	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 * @return the matching opencps voting statistics
 	 */
 	@Override
-	public OpencpsVotingStatistic findByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String domainCode)
-		throws NoSuchOpencpsVotingStatisticException {
-		OpencpsVotingStatistic opencpsVotingStatistic = fetchByM_Y_DM_G(groupId,
-				month, year, govAgencyCode, domainCode);
+	public List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId, int month,
+		int year, String govAgencyCode, String domainCode) {
+		return findByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
 
-		if (opencpsVotingStatistic == null) {
-			StringBundler msg = new StringBundler(12);
+	/**
+	 * Returns a range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @return the range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, int start, int end) {
+		return findByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode,
+			start, end, null);
+	}
 
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return findByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode,
+			start, end, orderByComparator, true);
+	}
 
-			msg.append("groupId=");
-			msg.append(groupId);
+	/**
+	 * Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param start the lower bound of the range of opencps voting statistics
+	 * @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps voting statistics
+	 */
+	@Override
+	public List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-			msg.append(", month=");
-			msg.append(month);
-
-			msg.append(", year=");
-			msg.append(year);
-
-			msg.append(", govAgencyCode=");
-			msg.append(govAgencyCode);
-
-			msg.append(", domainCode=");
-			msg.append(domainCode);
-
-			msg.append("}");
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(msg.toString());
-			}
-
-			throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G;
+			finderArgs = new Object[] {
+					groupId, month, year, govAgencyCode, domainCode
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_M_Y_DM_G;
+			finderArgs = new Object[] {
+					groupId, month, year, govAgencyCode, domainCode,
+					
+					start, end, orderByComparator
+				};
 		}
 
-		return opencpsVotingStatistic;
-	}
-
-	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param month the month
-	 * @param year the year
-	 * @param govAgencyCode the gov agency code
-	 * @param domainCode the domain code
-	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
-	 */
-	@Override
-	public OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String domainCode) {
-		return fetchByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode,
-			true);
-	}
-
-	/**
-	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param month the month
-	 * @param year the year
-	 * @param govAgencyCode the gov agency code
-	 * @param domainCode the domain code
-	 * @param retrieveFromCache whether to retrieve from the finder cache
-	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
-	 */
-	@Override
-	public OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String domainCode,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] {
-				groupId, month, year, govAgencyCode, domainCode
-			};
-
-		Object result = null;
+		List<OpencpsVotingStatistic> list = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_M_Y_DM_G,
+			list = (List<OpencpsVotingStatistic>)finderCache.getResult(finderPath,
 					finderArgs, this);
-		}
 
-		if (result instanceof OpencpsVotingStatistic) {
-			OpencpsVotingStatistic opencpsVotingStatistic = (OpencpsVotingStatistic)result;
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsVotingStatistic opencpsVotingStatistic : list) {
+					if ((groupId != opencpsVotingStatistic.getGroupId()) ||
+							(month != opencpsVotingStatistic.getMonth()) ||
+							(year != opencpsVotingStatistic.getYear()) ||
+							!Objects.equals(govAgencyCode,
+								opencpsVotingStatistic.getGovAgencyCode()) ||
+							!Objects.equals(domainCode,
+								opencpsVotingStatistic.getDomainCode())) {
+						list = null;
 
-			if ((groupId != opencpsVotingStatistic.getGroupId()) ||
-					(month != opencpsVotingStatistic.getMonth()) ||
-					(year != opencpsVotingStatistic.getYear()) ||
-					!Objects.equals(govAgencyCode,
-						opencpsVotingStatistic.getGovAgencyCode()) ||
-					!Objects.equals(domainCode,
-						opencpsVotingStatistic.getDomainCode())) {
-				result = null;
+						break;
+					}
+				}
 			}
 		}
 
-		if (result == null) {
-			StringBundler query = new StringBundler(7);
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(7 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(7);
+			}
 
 			query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
 
@@ -2257,6 +2303,15 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2);
 			}
 
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
 			String sql = query.toString();
 
 			Session session = null;
@@ -2282,34 +2337,25 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					qPos.add(domainCode);
 				}
 
-				List<OpencpsVotingStatistic> list = q.list();
+				if (!pagination) {
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
 
-				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G,
-						finderArgs, list);
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
 				}
 				else {
-					if (list.size() > 1) {
-						Collections.sort(list, Collections.reverseOrder());
-
-						if (_log.isWarnEnabled()) {
-							_log.warn(
-								"OpencpsVotingStatisticPersistenceImpl.fetchByM_Y_DM_G(long, int, int, String, String, boolean) with parameters (" +
-								StringUtil.merge(finderArgs) +
-								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
-						}
-					}
-
-					OpencpsVotingStatistic opencpsVotingStatistic = list.get(0);
-
-					result = opencpsVotingStatistic;
-
-					cacheResult(opencpsVotingStatistic);
+					list = (List<OpencpsVotingStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
 				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G,
-					finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -2318,32 +2364,381 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 			}
 		}
 
-		if (result instanceof List<?>) {
-			return null;
-		}
-		else {
-			return (OpencpsVotingStatistic)result;
-		}
+		return list;
 	}
 
 	/**
-	 * Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param month the month
 	 * @param year the year
 	 * @param govAgencyCode the gov agency code
 	 * @param domainCode the domain code
-	 * @return the opencps voting statistic that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
 	 */
 	@Override
-	public OpencpsVotingStatistic removeByM_Y_DM_G(long groupId, int month,
-		int year, String govAgencyCode, String domainCode)
+	public OpencpsVotingStatistic findByM_Y_DM_G_First(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
 		throws NoSuchOpencpsVotingStatisticException {
-		OpencpsVotingStatistic opencpsVotingStatistic = findByM_Y_DM_G(groupId,
-				month, year, govAgencyCode, domainCode);
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByM_Y_DM_G_First(groupId,
+				month, year, govAgencyCode, domainCode, orderByComparator);
 
-		return remove(opencpsVotingStatistic);
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(12);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByM_Y_DM_G_First(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		List<OpencpsVotingStatistic> list = findByM_Y_DM_G(groupId, month,
+				year, govAgencyCode, domainCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByM_Y_DM_G_Last(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByM_Y_DM_G_Last(groupId,
+				month, year, govAgencyCode, domainCode, orderByComparator);
+
+		if (opencpsVotingStatistic != null) {
+			return opencpsVotingStatistic;
+		}
+
+		StringBundler msg = new StringBundler(12);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByM_Y_DM_G_Last(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		int count = countByM_Y_DM_G(groupId, month, year, govAgencyCode,
+				domainCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsVotingStatistic> list = findByM_Y_DM_G(groupId, month,
+				year, govAgencyCode, domainCode, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps voting statistics before and after the current opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	 *
+	 * @param votingStatisticId the primary key of the current opencps voting statistic
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a opencps voting statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic[] findByM_Y_DM_G_PrevAndNext(
+		long votingStatisticId, long groupId, int month, int year,
+		String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = findByPrimaryKey(votingStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsVotingStatistic[] array = new OpencpsVotingStatisticImpl[3];
+
+			array[0] = getByM_Y_DM_G_PrevAndNext(session,
+					opencpsVotingStatistic, groupId, month, year,
+					govAgencyCode, domainCode, orderByComparator, true);
+
+			array[1] = opencpsVotingStatistic;
+
+			array[2] = getByM_Y_DM_G_PrevAndNext(session,
+					opencpsVotingStatistic, groupId, month, year,
+					govAgencyCode, domainCode, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsVotingStatistic getByM_Y_DM_G_PrevAndNext(
+		Session session, OpencpsVotingStatistic opencpsVotingStatistic,
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(8 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(7);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_M_Y_DM_G_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_M_Y_DM_G_MONTH_2);
+
+		query.append(_FINDER_COLUMN_M_Y_DM_G_YEAR_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_GOVAGENCYCODE_2);
+		}
+
+		boolean bindDomainCode = false;
+
+		if (domainCode == null) {
+			query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1);
+		}
+		else if (domainCode.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3);
+		}
+		else {
+			bindDomainCode = true;
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsVotingStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (bindDomainCode) {
+			qPos.add(domainCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsVotingStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsVotingStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 */
+	@Override
+	public void removeByM_Y_DM_G(long groupId, int month, int year,
+		String govAgencyCode, String domainCode) {
+		for (OpencpsVotingStatistic opencpsVotingStatistic : findByM_Y_DM_G(
+				groupId, month, year, govAgencyCode, domainCode,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsVotingStatistic);
+		}
 	}
 
 	/**
@@ -2457,6 +2852,425 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_1 = "opencpsVotingStatistic.domainCode IS NULL";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_2 = "opencpsVotingStatistic.domainCode = ?";
 	private static final String _FINDER_COLUMN_M_Y_DM_G_DOMAINCODE_3 = "(opencpsVotingStatistic.domainCode IS NULL OR opencpsVotingStatistic.domainCode = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_M_Y_DM_G_VC = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsVotingStatisticImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByM_Y_DM_G_VC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			OpencpsVotingStatisticModelImpl.GROUPID_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.MONTH_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.YEAR_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.DOMAINCODE_COLUMN_BITMASK |
+			OpencpsVotingStatisticModelImpl.VOTINGCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_M_Y_DM_G_VC = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByM_Y_DM_G_VC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param votingCode the voting code
+	 * @return the matching opencps voting statistic
+	 * @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic findByM_Y_DM_G_VC(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, String votingCode)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = fetchByM_Y_DM_G_VC(groupId,
+				month, year, govAgencyCode, domainCode, votingCode);
+
+		if (opencpsVotingStatistic == null) {
+			StringBundler msg = new StringBundler(14);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", month=");
+			msg.append(month);
+
+			msg.append(", year=");
+			msg.append(year);
+
+			msg.append(", govAgencyCode=");
+			msg.append(govAgencyCode);
+
+			msg.append(", domainCode=");
+			msg.append(domainCode);
+
+			msg.append(", votingCode=");
+			msg.append(votingCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchOpencpsVotingStatisticException(msg.toString());
+		}
+
+		return opencpsVotingStatistic;
+	}
+
+	/**
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param votingCode the voting code
+	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByM_Y_DM_G_VC(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, String votingCode) {
+		return fetchByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode, true);
+	}
+
+	/**
+	 * Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param votingCode the voting code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	 */
+	@Override
+	public OpencpsVotingStatistic fetchByM_Y_DM_G_VC(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, String votingCode,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, month, year, govAgencyCode, domainCode, votingCode
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC,
+					finderArgs, this);
+		}
+
+		if (result instanceof OpencpsVotingStatistic) {
+			OpencpsVotingStatistic opencpsVotingStatistic = (OpencpsVotingStatistic)result;
+
+			if ((groupId != opencpsVotingStatistic.getGroupId()) ||
+					(month != opencpsVotingStatistic.getMonth()) ||
+					(year != opencpsVotingStatistic.getYear()) ||
+					!Objects.equals(govAgencyCode,
+						opencpsVotingStatistic.getGovAgencyCode()) ||
+					!Objects.equals(domainCode,
+						opencpsVotingStatistic.getDomainCode()) ||
+					!Objects.equals(votingCode,
+						opencpsVotingStatistic.getVotingCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(8);
+
+			query.append(_SQL_SELECT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_MONTH_2);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				List<OpencpsVotingStatistic> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"OpencpsVotingStatisticPersistenceImpl.fetchByM_Y_DM_G_VC(long, int, int, String, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					OpencpsVotingStatistic opencpsVotingStatistic = list.get(0);
+
+					result = opencpsVotingStatistic;
+
+					cacheResult(opencpsVotingStatistic);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (OpencpsVotingStatistic)result;
+		}
+	}
+
+	/**
+	 * Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param votingCode the voting code
+	 * @return the opencps voting statistic that was removed
+	 */
+	@Override
+	public OpencpsVotingStatistic removeByM_Y_DM_G_VC(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, String votingCode)
+		throws NoSuchOpencpsVotingStatisticException {
+		OpencpsVotingStatistic opencpsVotingStatistic = findByM_Y_DM_G_VC(groupId,
+				month, year, govAgencyCode, domainCode, votingCode);
+
+		return remove(opencpsVotingStatistic);
+	}
+
+	/**
+	 * Returns the number of opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param votingCode the voting code
+	 * @return the number of matching opencps voting statistics
+	 */
+	@Override
+	public int countByM_Y_DM_G_VC(long groupId, int month, int year,
+		String govAgencyCode, String domainCode, String votingCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_M_Y_DM_G_VC;
+
+		Object[] finderArgs = new Object[] {
+				groupId, month, year, govAgencyCode, domainCode, votingCode
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_COUNT_OPENCPSVOTINGSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_MONTH_2);
+
+			query.append(_FINDER_COLUMN_M_Y_DM_G_VC_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_2);
+			}
+
+			boolean bindVotingCode = false;
+
+			if (votingCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_1);
+			}
+			else if (votingCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_3);
+			}
+			else {
+				bindVotingCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindVotingCode) {
+					qPos.add(votingCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_GROUPID_2 = "opencpsVotingStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_MONTH_2 = "opencpsVotingStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_YEAR_2 = "opencpsVotingStatistic.year = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_1 = "opencpsVotingStatistic.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_2 = "opencpsVotingStatistic.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_GOVAGENCYCODE_3 = "(opencpsVotingStatistic.govAgencyCode IS NULL OR opencpsVotingStatistic.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_1 = "opencpsVotingStatistic.domainCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_2 = "opencpsVotingStatistic.domainCode = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_DOMAINCODE_3 = "(opencpsVotingStatistic.domainCode IS NULL OR opencpsVotingStatistic.domainCode = '') AND ";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_1 = "opencpsVotingStatistic.votingCode IS NULL";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_2 = "opencpsVotingStatistic.votingCode = ?";
+	private static final String _FINDER_COLUMN_M_Y_DM_G_VC_VOTINGCODE_3 = "(opencpsVotingStatistic.votingCode IS NULL OR opencpsVotingStatistic.votingCode = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_D_M_Y = new FinderPath(OpencpsVotingStatisticModelImpl.ENTITY_CACHE_ENABLED,
 			OpencpsVotingStatisticModelImpl.FINDER_CACHE_ENABLED,
 			OpencpsVotingStatisticImpl.class,
@@ -4390,13 +5204,14 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				opencpsVotingStatistic.getGroupId()
 			}, opencpsVotingStatistic);
 
-		finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC,
 			new Object[] {
 				opencpsVotingStatistic.getGroupId(),
 				opencpsVotingStatistic.getMonth(),
 				opencpsVotingStatistic.getYear(),
 				opencpsVotingStatistic.getGovAgencyCode(),
-				opencpsVotingStatistic.getDomainCode()
+				opencpsVotingStatistic.getDomainCode(),
+				opencpsVotingStatistic.getVotingCode()
 			}, opencpsVotingStatistic);
 
 		opencpsVotingStatistic.resetOriginalValues();
@@ -4491,12 +5306,13 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 				opencpsVotingStatisticModelImpl.getMonth(),
 				opencpsVotingStatisticModelImpl.getYear(),
 				opencpsVotingStatisticModelImpl.getGovAgencyCode(),
-				opencpsVotingStatisticModelImpl.getDomainCode()
+				opencpsVotingStatisticModelImpl.getDomainCode(),
+				opencpsVotingStatisticModelImpl.getVotingCode()
 			};
 
-		finderCache.putResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args,
+		finderCache.putResult(FINDER_PATH_COUNT_BY_M_Y_DM_G_VC, args,
 			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G, args,
+		finderCache.putResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC, args,
 			opencpsVotingStatisticModelImpl, false);
 	}
 
@@ -4530,25 +5346,27 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 					opencpsVotingStatisticModelImpl.getMonth(),
 					opencpsVotingStatisticModelImpl.getYear(),
 					opencpsVotingStatisticModelImpl.getGovAgencyCode(),
-					opencpsVotingStatisticModelImpl.getDomainCode()
+					opencpsVotingStatisticModelImpl.getDomainCode(),
+					opencpsVotingStatisticModelImpl.getVotingCode()
 				};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G_VC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC, args);
 		}
 
 		if ((opencpsVotingStatisticModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_M_Y_DM_G.getColumnBitmask()) != 0) {
+				FINDER_PATH_FETCH_BY_M_Y_DM_G_VC.getColumnBitmask()) != 0) {
 			Object[] args = new Object[] {
 					opencpsVotingStatisticModelImpl.getOriginalGroupId(),
 					opencpsVotingStatisticModelImpl.getOriginalMonth(),
 					opencpsVotingStatisticModelImpl.getOriginalYear(),
 					opencpsVotingStatisticModelImpl.getOriginalGovAgencyCode(),
-					opencpsVotingStatisticModelImpl.getOriginalDomainCode()
+					opencpsVotingStatisticModelImpl.getOriginalDomainCode(),
+					opencpsVotingStatisticModelImpl.getOriginalVotingCode()
 				};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G_VC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_M_Y_DM_G_VC, args);
 		}
 	}
 
@@ -4768,6 +5586,18 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 
 			args = new Object[] {
 					opencpsVotingStatisticModelImpl.getGroupId(),
+					opencpsVotingStatisticModelImpl.getMonth(),
+					opencpsVotingStatisticModelImpl.getYear(),
+					opencpsVotingStatisticModelImpl.getGovAgencyCode(),
+					opencpsVotingStatisticModelImpl.getDomainCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G,
+				args);
+
+			args = new Object[] {
+					opencpsVotingStatisticModelImpl.getGroupId(),
 					opencpsVotingStatisticModelImpl.getDomainCode(),
 					opencpsVotingStatisticModelImpl.getMonth(),
 					opencpsVotingStatisticModelImpl.getYear()
@@ -4862,6 +5692,33 @@ public class OpencpsVotingStatisticPersistenceImpl extends BasePersistenceImpl<O
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_UID_Y, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UID_Y,
+					args);
+			}
+
+			if ((opencpsVotingStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsVotingStatisticModelImpl.getOriginalGroupId(),
+						opencpsVotingStatisticModelImpl.getOriginalMonth(),
+						opencpsVotingStatisticModelImpl.getOriginalYear(),
+						opencpsVotingStatisticModelImpl.getOriginalGovAgencyCode(),
+						opencpsVotingStatisticModelImpl.getOriginalDomainCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G,
+					args);
+
+				args = new Object[] {
+						opencpsVotingStatisticModelImpl.getGroupId(),
+						opencpsVotingStatisticModelImpl.getMonth(),
+						opencpsVotingStatisticModelImpl.getYear(),
+						opencpsVotingStatisticModelImpl.getGovAgencyCode(),
+						opencpsVotingStatisticModelImpl.getDomainCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_DM_G,
 					args);
 			}
 

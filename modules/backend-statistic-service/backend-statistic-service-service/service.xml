@@ -132,7 +132,13 @@
 		</finder>
 		<finder return-type="Collection" name="G">
 			<finder-column name="groupId"></finder-column>
-		</finder>		
+		</finder>	
+
+		<finder return-type="Collection" name="G_M_Y_GC_DC" where="govAgencyCode is null and domainCode is null">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="month"></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>			
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"
@@ -172,12 +178,20 @@
 			<finder-column name="year"></finder-column>
 		</finder>
 		
-		<finder return-type="OpencpsVotingStatistic" name="M_Y_DM_G">
+		<finder return-type="Collection" name="M_Y_DM_G">
 			<finder-column name="groupId"/>
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 			<finder-column name="govAgencyCode"/>
 			<finder-column name="domainCode"/>
+		</finder>
+		<finder return-type="OpencpsVotingStatistic" name="M_Y_DM_G_VC">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="votingCode"/>
 		</finder>
 		
 		<finder return-type="Collection" name="G_D_M_Y">

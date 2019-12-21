@@ -7,10 +7,6 @@ create index IX_DE33B5F5 on opencps_notificationtemplate (expireDuration);
 create index IX_E0577FD5 on opencps_notificationtemplate (groupId, notificationType[$COLUMN_LENGTH:255$], interval_[$COLUMN_LENGTH:255$]);
 create index IX_54F70B3C on opencps_notificationtemplate (interval_[$COLUMN_LENGTH:255$]);
 
-create unique index IX_A55BFF69 on opencps_preferences (groupId, userId);
-create index IX_158E960F on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], companyId);
-create unique index IX_A6935451 on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], groupId);
-
 create index IX_51758EA8 on opencps_serverconfig (groupId, protocol[$COLUMN_LENGTH:255$]);
 create index IX_37FC3174 on opencps_serverconfig (groupId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_B089E85A on opencps_serverconfig (protocol[$COLUMN_LENGTH:255$]);

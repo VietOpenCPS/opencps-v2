@@ -42,18 +42,6 @@ create table opencps_notificationtemplate (
 	grouping BOOLEAN
 );
 
-create table opencps_preferences (
-	uuid_ VARCHAR(75) null,
-	preferencesId LONG not null primary key,
-	groupId LONG,
-	companyId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	preferences TEXT null
-);
-
 create table opencps_serverconfig (
 	serverConfigId LONG not null primary key,
 	groupId LONG,
