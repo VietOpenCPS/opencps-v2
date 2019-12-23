@@ -3,10 +3,9 @@ package org.fds.opencps.dvcqg.authentication;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,10 +32,16 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		String code = request.getParameter("code");
-		//String state = request.getParameter("state");
-		//String encoded = Base64.getEncoder().encodeToString(("duantv@fds.vn"+":"+"Abc@1234").getBytes(StandardCharsets.UTF_8));
 		
-		//_log.info(code + "|" + encoded);
+		String state = request.getParameter("state");
+		boolean isValidToken = true;
+		try {
+			AuthTokenUtil.checkCSRFToken(request, state);
+		} catch (Exception e) {
+			isValidToken = false;
+		}
+		
+		_log.info("---------------------->>> " + isValidToken);
 		
 		StringBuffer responseContent = new StringBuffer();
 		responseContent.append("<script src=\"https://code.jquery.com/jquery-3.4.1.min.js\"></script>");
@@ -60,7 +65,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"        $('#userinfo').append('Error: ' + errorMessage);\r\n" + 
 				"    },\r\n" + 
 				"	beforeSend: function (xhr) {\r\n" + 
-				"		xhr.setRequestHeader (\"Authorization\", \"Basic dGVzdEBsaWZlcmF5LmNvbTpraG9uZ2JpZXQ=\");\r\n" + 
+				
 				"	}\r\n" + 
 				"});");
 		
@@ -87,7 +92,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"			$('#userinfo').append('Error: ' + errorMessage);\r\n" + 
 				"		},\r\n" + 
 				"		beforeSend: function (xhr) {\r\n" + 
-				"			xhr.setRequestHeader (\"Authorization\", \"Basic dGVzdEBsaWZlcmF5LmNvbTpraG9uZ2JpZXQ=\");\r\n" + 
+				
 				"		}\r\n" + 
 				"	});\r\n" + 
 				"};");
