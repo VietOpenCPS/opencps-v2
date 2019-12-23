@@ -165,18 +165,19 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //				return Response.status(200).entity(results).build();				
 //			}
 
-			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.ok(results);
-				builder.tag(etag);
-			}
-			
-		    builder.cacheControl(cc);
-		    
-		    return builder.build();
+//			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+//			CacheControl cc = new CacheControl();
+//			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.ok(results);
+//				builder.tag(etag);
+//			}
+//			
+//		    builder.cacheControl(cc);
+//		    
+//		    return builder.build();
+		    return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
