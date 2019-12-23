@@ -79,7 +79,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"		data: JSON.stringify(userinfo),\r\n" + 
 				"		success: function (data,status,xhr) {\r\n" + 
 				"			$('#userinfo').append(JSON.stringify(data));\r\n" + 
-				"        	window.callback_dvcqg(data);\r\n" + 
+				"        	window.top.callback_dvcqg(data);\r\n" + 
 				"		},\r\n" + 
 				"		\r\n" + 
 				"		error: function (jqXhr, textStatus, errorMessage) { \r\n" + 
