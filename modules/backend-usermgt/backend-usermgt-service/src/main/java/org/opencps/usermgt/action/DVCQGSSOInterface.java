@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface DVCQGSSOInterface {
 
@@ -14,7 +15,7 @@ public interface DVCQGSSOInterface {
 	
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request,  ServiceContext serviceContext, String authToken);
 	
-	public JSONObject doAuth(User user, HttpServletRequest request, ServiceContext serviceContext, String userInfo) throws Exception;
+	public JSONObject doAuth(User user, HttpServletRequest request,HttpServletResponse response, ServiceContext serviceContext, String userInfo) throws Exception;
 	
 	public boolean isValidAccessToken(String accessToken);
 

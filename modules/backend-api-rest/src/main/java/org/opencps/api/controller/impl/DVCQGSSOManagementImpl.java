@@ -31,13 +31,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 		String endpoint = action.getAuthURL(user, groupId, serviceContext, vnconnect, currentURL);
-		//request.getSession().setAttribute("groupId", groupId);
-		//request.getSession().setAttribute("currentURL", currentURL);
-		//request.getSession().setMaxInactiveInterval(36000);
-		//Cookie cookie1 = new Cookie("groupId", String.valueOf(groupId));
-		//response.addCookie(cookie1);
-		//Cookie cookie2 = new Cookie("currentURL", currentURL);
-		//response.addCookie(cookie2);
+		// request.getSession().setAttribute("groupId", groupId);
+		// request.getSession().setAttribute("currentURL", currentURL);
+		// request.getSession().setMaxInactiveInterval(36000);
+		// Cookie cookie1 = new Cookie("groupId", String.valueOf(groupId));
+		// response.addCookie(cookie1);
+		// Cookie cookie2 = new Cookie("currentURL", currentURL);
+		// response.addCookie(cookie2);
 		return Response.status(200).entity(endpoint).build();
 	}
 
@@ -46,7 +46,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		JSONObject result = action.getUserInfo(user, groupId,request, serviceContext, authToken);
+		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken);
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
@@ -55,12 +55,12 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	public Response doAuth(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String userinfo) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
-		if(Validator.isNotNull(userinfo)) {
+
+		if (Validator.isNotNull(userinfo)) {
 			DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-			
+
 			try {
-				result = action.doAuth(user, request, serviceContext, userinfo);
+				result = action.doAuth(user, request, response, serviceContext, userinfo);
 				return Response.status(200).entity(result.toJSONString()).build();
 			} catch (Exception e) {
 				_log.error(e);
@@ -68,13 +68,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 				result.put("description", "authentication failed");
 				return Response.status(401).entity(result.toJSONString()).build();
 			}
-			
-		}else {
+
+		} else {
 			result.put("message", "authentication failed");
 			result.put("description", "can't get user info");
 			return Response.status(401).entity(result.toJSONString()).build();
 		}
-		
+
 	}
 
 }
