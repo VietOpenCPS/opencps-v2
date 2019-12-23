@@ -416,7 +416,11 @@ public class DossierManagementImpl implements DossierManagement {
 			else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
-
+			//ViaPostal
+			Integer viaPostal = query.getViapostal();
+			if (viaPostal != null) {
+				params.put(DossierTerm.VIA_POSTAL, viaPostal);
+			}
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
@@ -865,6 +869,11 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
 
+			//ViaPostal
+			Integer viaPostal = query.getViapostal();
+			if (viaPostal != null) {
+				params.put(DossierTerm.VIA_POSTAL, viaPostal);
+			}
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
