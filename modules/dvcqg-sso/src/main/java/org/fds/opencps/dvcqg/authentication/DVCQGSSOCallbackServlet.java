@@ -3,7 +3,6 @@ package org.fds.opencps.dvcqg.authentication;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 
 import java.io.IOException;
 
@@ -33,16 +32,8 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 		
 		String code = request.getParameter("code");
 		
-		String state = request.getParameter("state");
-		boolean isValidToken = true;
-		try {
-			AuthTokenUtil.checkCSRFToken(request, state);
-		} catch (Exception e) {
-			isValidToken = false;
-		}
-		
-		_log.info("---------------------->>> " + isValidToken);
-		
+		//String state = request.getParameter("state");
+
 		StringBuffer responseContent = new StringBuffer();
 		responseContent.append("<script src=\"https://code.jquery.com/jquery-3.4.1.min.js\"></script>");
 		responseContent.append("<script src=\"https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js\"></script>");
