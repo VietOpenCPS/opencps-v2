@@ -507,6 +507,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			if (mapGovs.containsKey(sc.getGovAgencyCode())) {
 				lstGovConfigs = mapGovs.get(sc.getGovAgencyCode());
 			}
+			else {
+				mapGovs.put(sc.getGovAgencyCode(), lstGovConfigs);
+			}
 			
 			lstGovConfigs.add(sc);
 		}
@@ -525,7 +528,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 //				List<ServiceConfig> lstGovs = ServiceConfigLocalServiceUtil.searchByGovAgency(query.getKeyword(), govItem.getItemCode(), groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				List<ServiceConfig> lstGovs = mapGovs.get(govItem.getItemCode());
 				
-				long countGov = lstGovs.size();
+				long countGov = lstGovs != null ? lstGovs.size() : 0;
 				
 				if (countGov != 0) {
 	
