@@ -718,20 +718,21 @@ public class UserManagementImpl implements UserManagement {
 			_log.debug(e);
 		}
 
-		EntityTag etag = new EntityTag(String.valueOf(("USER_LOGIN_INFO_" + user.getGroupId() + "_" + user.getUserId()).hashCode()));
-	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-		CacheControl cc = new CacheControl();
-		cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-		cc.setPrivate(true);	
-
-	    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-			builder = Response.ok(dataUser.toJSONString());
-			builder.tag(etag);
-		}
+//		EntityTag etag = new EntityTag(String.valueOf(("USER_LOGIN_INFO_" + user.getGroupId() + "_" + user.getUserId()).hashCode()));
+//	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//		CacheControl cc = new CacheControl();
+//		cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//		cc.setPrivate(true);	
+//
+//	    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//			builder = Response.ok(dataUser.toJSONString());
+//			builder.tag(etag);
+//		}
+//	    
+//	    builder.cacheControl(cc);
+//	    return builder.build();
+	    return Response.status(200).entity(dataUser.toJSONString()).build();
 	    
-	    builder.cacheControl(cc);
-	    return builder.build();
-		
 //	    if (OpenCPSConfigUtil.isHttpCacheEnable()) {
 //			CacheControl cc = new CacheControl();
 //		    cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
