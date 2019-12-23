@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
@@ -402,6 +403,13 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 //				throw new UnauthenticationException();
 //			}
 			String eFormNo = query.geteFormNo();
+			String maCha = query.getMaCha();
+			String nameDM = query.getNameDM();
+			String parentId = query.getParentId();
+			String govAgencyName = query.getGovAgencyName();
+			String employeeName = query.getEmployeeName();
+			String maNgKy = query.getMa_ng_ky();
+			String maCQQL = query.getMa_cqql();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -416,9 +424,46 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 						String method = jsonConfig.getString("method");
 						System.out.println("method: "+method);
 						
-						if ("GET".equals(method) && Validator.isNotNull(eFormNo)) {
-							String urlGet = jsonConfig.getString("url").replace("{eFormNo}", eFormNo);
-							System.out.println("urlGet: "+urlGet);
+						if ("GET".equalsIgnoreCase(method)) {
+							System.out.println("methodEQUAL: "+method);
+							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
+							String urlGet = "";
+							try {
+								urlGet = jsonConfig.getString("url");
+								if (urlGet.contains("{eFormNo}")) {
+									urlGet = urlGet.replace("{eFormNo}", URLEncoder.encode(String.valueOf(eFormNo), "UTF-8"));
+								}
+								if (urlGet.contains("{maCha}")) {
+									urlGet = urlGet.replace("{maCha}", URLEncoder.encode(String.valueOf(maCha), "UTF-8"));
+								}
+								if (urlGet.contains("{nameDM}")) {
+									urlGet = urlGet.replace("{nameDM}", URLEncoder.encode(String.valueOf(nameDM), "UTF-8"));
+								}
+								if (urlGet.contains("{parentId}")) {
+									urlGet = urlGet.replace("{parentId}", URLEncoder.encode(String.valueOf(parentId), "UTF-8"));
+								}
+								if (urlGet.contains("{govAgencyName}")) {
+									urlGet = urlGet.replace("{govAgencyName}", URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8"));
+								}
+								if (urlGet.contains("{employeeName}")) {
+									urlGet = urlGet.replace("{employeeName}", URLEncoder.encode(String.valueOf(employeeName), "UTF-8"));
+								}
+								if (urlGet.contains("{ma_ng_ky}")) {
+									urlGet = urlGet.replace("{ma_ng_ky}", maNgKy);
+								}
+								if (urlGet.contains("{ma_cqql}")) {
+									urlGet = urlGet.replace("{ma_cqql}", maCQQL);
+								}
+//								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
+//										replaceAll("{maCha}", maCha)
+//										.replaceAll("{parentId}", parentId)
+//										.replaceAll("{govAgencyName}", govAgencyName)
+//										.replaceAll("{employeeName}", employeeName);
+								System.out.println("urlGet: "+urlGet);
+							} catch (Exception e) {
+								System.out.println("error: "+e);
+							}
+							
 							//
 							long groupIdGet = 0;
 							String authStrEnc = "";
@@ -467,12 +512,13 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
 							System.out.println("BASIC AUTHEN: " + authStrEnc);
 
+							JSONFactoryUtil.looseSerialize(conn);
 							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 							int cp;
 							while ((cp = brf.read()) != -1) {
 								sb.append((char) cp);
 							}
-							_log.debug("RESULT PROXY: " + sb.toString());
+							System.out.println("RESULT PROXY: " + sb.toString());
 							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
 						}
 						
