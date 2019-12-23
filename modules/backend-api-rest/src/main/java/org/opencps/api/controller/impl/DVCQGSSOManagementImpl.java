@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
@@ -30,7 +29,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			String currentURL) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		String endpoint = action.getAuthURL(user, groupId, serviceContext, vnconnect, currentURL);
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, vnconnect, currentURL);
 		// request.getSession().setAttribute("groupId", groupId);
 		// request.getSession().setAttribute("currentURL", currentURL);
 		// request.getSession().setMaxInactiveInterval(36000);
