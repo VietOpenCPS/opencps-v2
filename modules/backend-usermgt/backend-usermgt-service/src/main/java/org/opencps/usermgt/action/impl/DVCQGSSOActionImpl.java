@@ -22,6 +22,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +51,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
-
-			String accessToken = request.getSession().getAttribute("accessToken").toString();
-
+			String accessToken = StringPool.BLANK;
+			if (request.getSession().getAttribute("accessToken") != null) {
+				accessToken = request.getSession().getAttribute("accessToken").toString();
+			}
+			
 			if (Validator.isNotNull(accessToken) && isValidAccessToken(serverConfig, accessToken)) {
 				return StringPool.BLANK;
 			}
@@ -63,7 +66,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String auth_endpoint = config.getString("auth_endpoint");
 				String clientid = config.getString("clientid");
 				String callback_url = config.getString("callback_url");
-				String scope = config.getString("openid");
+				String scope = config.getString("scope");
 				String acr_values = config.getString("acr_values");
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
 						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
@@ -239,8 +242,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	}
 
 	private boolean isValidAccessToken(ServerConfig serverConfig, String accessToken) {
-		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
-
+	
 		HttpURLConnection conn = null;
 		try {
 
@@ -259,25 +261,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			conn.setReadTimeout(60 * 1000);
-
 			conn.setUseCaches(false);
-
+			conn.setReadTimeout(60 * 1000);
 			StringBuffer params = new StringBuffer();
 			params.append("token=" + accessToken);
 			params.append("&state=0");
-
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			conn.setReadTimeout(60 * 1000);
-
-			conn.setUseCaches(false);
-
 			byte[] postData = params.toString().getBytes("UTF-8");
 			int postDataLength = postData.length;
 			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
@@ -298,18 +286,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 				int responseCode = conn.getResponseCode();
 
-				System.out.println("response: " + sb.toString() + "|" + responseCode);
+				_log.info("response: " + sb.toString() + "|" + responseCode);
 
 				if (responseCode == 200) {
 					JSONObject object = JSONFactoryUtil.createJSONObject(sb.toString());
 
 					String client_id = object.getString("client_id");
-					if (client_id == config.getString("clientid")) {
-						// TODO check exp
+					long exp = object.getLong("exp");
+					if (client_id.equals(config.getString("clientid")) && exp > System.currentTimeMillis()/1000) {
+						_log.info("------------------>>>>>>> accessToken " + accessToken + "| has expire");
 						return true;
 					}
-					// Fix tam
-					return true;
+					
+					return false;
 				} else {
 					return false;
 				}
@@ -324,7 +313,13 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				conn.disconnect();
 			}
 		}
-
+	}
+	
+	public static void main(String[] args) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.set(Calendar.MILLISECOND, 0);
+		System.out.println(c.getTimeInMillis());
 	}
 
 	private JSONObject getAccessToken(User user, long groupId, ServiceContext serviceContext, String authToken,
@@ -348,8 +343,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			params.append("&client_secret=" + client_secret);
 
 			String endpoint = auth_server + accesstoken_endpoint;
-
-			_log.info(params.toString());
 
 			URL url = new URL(endpoint);
 
@@ -477,7 +470,10 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		}
 
 		long mappingUserId = applicant.getMappingUserId();
-		String accessToken = request.getSession().getAttribute("accessToken").toString();
+		String accessToken = StringPool.BLANK;
+		if(request.getSession().getAttribute("accessToken") != null) {
+			accessToken = request.getSession().getAttribute("accessToken").toString();
+		}
 		_log.info("------------>>> accessToken: " + accessToken + "| mappingUserId " + mappingUserId);
 		result.put("status", 0);
 		result.put("message", "success");
@@ -502,6 +498,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		session = renewSession(request, session);
 
 		// Set cookies
+		
+		session.setAttribute("accessToken", accessToken);
 
 		String domain = CookieKeys.getDomain(request);
 
