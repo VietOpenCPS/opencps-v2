@@ -416,7 +416,6 @@ public class DossierManagementImpl implements DossierManagement {
 			else {
 				params.put(DossierTerm.SYSTEM_ID, 0);
 			}
-
 			//ViaPostal
 			Integer viaPostal = query.getViapostal();
 			if (viaPostal != null) {
@@ -875,7 +874,6 @@ public class DossierManagementImpl implements DossierManagement {
 			if (viaPostal != null) {
 				params.put(DossierTerm.VIA_POSTAL, viaPostal);
 			}
-
 			params.put(DossierTerm.SECET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -6702,7 +6700,8 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response importDossierFromOldDB(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		Attachment file, String actionCode, String pathBase, long dvcGroupId) {
+		Attachment file, String actionCode, String pathBase, long dvcGroupId, long groupId,
+		String govAgencyCode, String govAgencyName) {
 
 		try {
 
@@ -6717,6 +6716,11 @@ public class DossierManagementImpl implements DossierManagement {
 			for (int i = 0; i < dataFile.length(); i++) {
 
 				JSONObject dossierJson = dataFile.getJSONObject(i);
+				
+				if (Validator.isNull(dossierJson.get(ConvertDossierFromV1Dot9Utils.TEMP_SERVICECODE))) {
+					
+					continue;
+				}
 				dossierJson.put(
 					ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
 				dossierJson.put("online", true);
@@ -6730,8 +6734,10 @@ public class DossierManagementImpl implements DossierManagement {
 					dossierJson.put(
 						ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
 				}
+				JSONObject temp = ConvertDossierFromV1Dot9Utils.getDossierObject(company.getCompanyId(), groupId, user.getUserId(), user.getFullName(), govAgencyCode, govAgencyName);
+				JSONObject importD = ConvertDossierFromV1Dot9Utils.mergeJSONObject(temp, dossierJson);
 				JSONObject dossier =
-					ConvertDossierFromV1Dot9Utils.setDossierObject(dossierJson);
+					ConvertDossierFromV1Dot9Utils.setDossierObject(importD);
 				if (dvcGroupId <= 0) {
 					ConvertDossierFromV1Dot9Utils.insertUserDossier(
 						dossier.getLong(
@@ -6800,7 +6806,6 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
-		System.out.println("START IMPORT APPLICANT");
 		try {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();

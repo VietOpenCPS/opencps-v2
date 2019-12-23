@@ -1,0 +1,2 @@
+contextPath=/auth/dvcqg
+authVerifierProperties=auth.verifier.AuthHeaderAuthVerifier.urls.includes=*
