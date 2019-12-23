@@ -381,7 +381,7 @@ public class ProcessStepLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.ProcessStep updateProcessStep(
 		long groupId, long processStepId, String stepCode, String stepName,
 		long serviceProcessId, String sequenceNo, String dossierStatus,
-		String dossierSubStatus, int durationCount, String customProcessUrl,
+		String dossierSubStatus, double durationCount, String customProcessUrl,
 		String stepInstruction, String briefNote, boolean editable,
 		String lockState, Integer checkInput,
 		com.liferay.portal.kernel.service.ServiceContext context)

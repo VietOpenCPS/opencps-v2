@@ -4,7 +4,6 @@ package org.opencps.api.controller.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +11,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class ConvertDossierFromV1Dot9Utils {
 
@@ -196,28 +198,30 @@ public class ConvertDossierFromV1Dot9Utils {
 			if (oldDossierFile != null) {
 				_log.info("__Start update file at:" + new Date());
 
-//				DossierFile dossierFile = null;
-//
-//				System.out.println(oldDossierFile.getReferenceUid());
-//				dossierFile = action.updateDossierFile(
-//					groupId, dossier.getDossierId(),
-//					oldDossierFile.getReferenceUid(), "sourceFileName", inputStream,
-//					serviceContext);
+				// DossierFile dossierFile = null;
+				//
+				// System.out.println(oldDossierFile.getReferenceUid());
+				// dossierFile = action.updateDossierFile(
+				// groupId, dossier.getDossierId(),
+				// oldDossierFile.getReferenceUid(), "sourceFileName",
+				// inputStream,
+				// serviceContext);
 				// _log.info("__End update file at:" + new Date());
 
-//				dossierFile.setRemoved(false);
+				// dossierFile.setRemoved(false);
 				// _log.info("__Start update dossier file at:" + new Date());
-//				DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+				// DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 				// _log.info("__End update dossier file at:" + new Date());
 			}
 			else {
-				 _log.info("__Start add file at:" + new Date());
+				_log.info("__Start add file at:" + new Date());
 				DossierFile dossierFile = null;
 				// _log.info(
 				// groupId + "===" + dossier.getDossierId() + "===" +
 				// dossierPartNo + "===" + displayName);
 
-				InputStream inputStream = getFileFromDVCOld(j.getString("fileUrl"));
+				InputStream inputStream =
+					getFileFromDVCOld(j.getString("fileUrl"));
 
 				if (dossier == null || inputStream == null) {
 					return;
@@ -260,18 +264,18 @@ public class ConvertDossierFromV1Dot9Utils {
 
 			result = oracle.openStream();
 			_log.info(url);
-//			if (url.indexOf("txt") > 0) {
-//				br = new BufferedReader(new InputStreamReader(result));
-//
-//				String line = null;
-//
-//				while ((line = br.readLine()) != null) {
-//					if (line.equalsIgnoreCase("quit")) {
-//						break;
-//					}
-//					System.out.println("Line entered : " + line);
-//				}
-//			}
+			// if (url.indexOf("txt") > 0) {
+			// br = new BufferedReader(new InputStreamReader(result));
+			//
+			// String line = null;
+			//
+			// while ((line = br.readLine()) != null) {
+			// if (line.equalsIgnoreCase("quit")) {
+			// break;
+			// }
+			// System.out.println("Line entered : " + line);
+			// }
+			// }
 
 		}
 		catch (Exception e) {
@@ -292,122 +296,137 @@ public class ConvertDossierFromV1Dot9Utils {
 		return result;
 	}
 
+	public static JSONObject getDossierObject(
+		long companyId, long groupId, long userId, String fullName,
+		String govAgencyCode, String govAgencyName) {
+
+		JSONObject objectData = JSONFactoryUtil.createJSONObject();
+
+		objectData.put(TEMP_UUID_, PortalUUIDUtil.generate());
+		objectData.put(TEMP_DOSSIERID, 0l);
+		objectData.put(TEMP_GROUPID, groupId);
+		objectData.put(TEMP_COMPANYID, companyId);
+		objectData.put(TEMP_USERID, userId);
+		objectData.put(TEMP_USERNAME, fullName);
+		objectData.put(
+			TEMP_CREATEDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+		objectData.put(
+			TEMP_MODIFIEDDATE,
+			_dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+		objectData.put(TEMP_REFERENCEUID, PortalUUIDUtil.generate());
+		objectData.put(TEMP_COUNTER, 1);
+		objectData.put(TEMP_SERVICECODE, "");
+		objectData.put(TEMP_SERVICENAME, "");
+		objectData.put(TEMP_GOVAGENCYCODE, govAgencyCode);
+		objectData.put(TEMP_GOVAGENCYNAME, govAgencyName);
+		objectData.put(TEMP_APPLICANTNAME, "");
+		objectData.put(TEMP_APPLICANTIDTYPE, "");
+		objectData.put(TEMP_APPLICANTIDNO, "");
+		objectData.put(TEMP_APPLICANTIDDATE, 0l);
+		objectData.put(TEMP_ADDRESS, "");
+		objectData.put(TEMP_CITYCODE, "");
+		objectData.put(TEMP_CITYNAME, "");
+		objectData.put(TEMP_DISTRICTCODE, "");
+		objectData.put(TEMP_DISTRICTNAME, "");
+		objectData.put(TEMP_WARDCODE, "");
+		objectData.put(TEMP_WARDNAME, "");
+		objectData.put(TEMP_CONTACTNAME, "");
+		objectData.put(TEMP_CONTACTTELNO, "");
+		objectData.put(TEMP_CONTACTEMAIL, "");
+		objectData.put(
+			TEMP_DOSSIERTEMPLATENO, "MAU_" + objectData.get(TEMP_SERVICECODE));
+		objectData.put(
+			TEMP_DOSSIERTEMPLATENAME, objectData.get(TEMP_SERVICENAME));
+		objectData.put(TEMP_DOSSIERNOTE, "");
+		objectData.put(TEMP_SUBMISSIONNOTE, "");
+		objectData.put(TEMP_APPLICANTNOTE, "");
+		objectData.put(TEMP_BRIEFNOTE, "");
+		objectData.put(TEMP_DOSSIERNO, String.valueOf(new Date().getTime()) + String.format("%04d", new Random().nextInt(10000)));
+		objectData.put(TEMP_SUBMITTING, "0");
+//		objectData.put(
+//			TEMP_SUBMITDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//		objectData.put(
+//			TEMP_RECEIVEDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//		objectData.put(
+//			TEMP_DUEDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//		objectData.put(
+//			TEMP_RELEASEDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//		objectData.put(
+//			TEMP_FINISHDATE, _dateToString(new Date(), "dd/MM/yyyy HH:mm:ss"));
+		objectData.put(TEMP_CANCELLINGDATE, 0l);
+		objectData.put(TEMP_CORRECTTINGDATE, 0l);
+		objectData.put(TEMP_DOSSIERSTATUS, "releasing");
+		objectData.put(TEMP_DOSSIERSTATUSTEXT, "Chờ trả kết quả");
+		objectData.put(TEMP_DOSSIERSUBSTATUS, "releasing_0");
+		objectData.put(TEMP_DOSSIERSUBSTATUSTEXT, "Trả kết quả tại một cửa");
+		objectData.put(TEMP_FOLDERID, 0l);
+		objectData.put(TEMP_DOSSIERACTIONID, 0l);
+		objectData.put(TEMP_VIAPOST, 0);
+		objectData.put(TEMP_POSTADDRESS, "");
+		objectData.put(TEMP_PASSWORD_, "1111");
+		objectData.put(TEMP_NOTIFICATION, "0");
+		objectData.put(TEMP_VIAPOSTAL, 1);
+		objectData.put(TEMP_POSTALADDRESS, "");
+		objectData.put(TEMP_POSTALCITYCODE, "");
+		objectData.put(TEMP_POSTALCITYNAME, "");
+		objectData.put(TEMP_POSTALTELNO, "");
+		objectData.put(TEMP_ONLINE_, "0");
+		objectData.put(TEMP_SERVERNO, "SERVER_DVC");
+		objectData.put(TEMP_ENDORSEMENTDATE, 0l);
+		objectData.put(TEMP_LOCKSTATE, "");
+		objectData.put(TEMP_DOSSIERREGISTER, "");
+		objectData.put(TEMP_DELEGATENAME, "");
+		objectData.put(TEMP_DELEGATEIDNO, "");
+		objectData.put(TEMP_DELEGATETELNO, "");
+		objectData.put(TEMP_DELEGATEEMAIL, "");
+		objectData.put(TEMP_DELEGATEADDRESS, "");
+		objectData.put(TEMP_DELEGATECITYCODE, "");
+		objectData.put(TEMP_DELEGATECITYNAME, "");
+		objectData.put(TEMP_DELEGATEDISTRICTCODE, "");
+		objectData.put(TEMP_DELEGATEDISTRICTNAME, "");
+		objectData.put(TEMP_DELEGATEWARDCODE, "");
+		objectData.put(TEMP_DELEGATEWARDNAME, "");
+		objectData.put(TEMP_EXTENDDATE, 0l);
+		objectData.put(TEMP_POSTALSERVICECODE, "");
+		objectData.put(TEMP_POSTALSERVICENAME, "");
+		objectData.put(TEMP_POSTALDISTRICTCODE, "");
+		objectData.put(TEMP_POSTALDISTRICTNAME, "");
+		objectData.put(TEMP_POSTALWARDCODE, "");
+		objectData.put(TEMP_POSTALWARDNAME, "");
+		objectData.put(TEMP_ORIGINAL, false); // boolean
+		objectData.put(TEMP_REGISTERBOOKCODE, "REGISTER_01");
+		objectData.put(TEMP_REGISTERBOOKNAME, "Sổ theo dõi");
+		objectData.put(
+			TEMP_PROCESSNO, "QT_" + objectData.get(TEMP_SERVICECODE));
+		objectData.put(TEMP_ORIGINALITY, 3);
+		objectData.put(TEMP_ORIGINDOSSIERID, 0l);
+		objectData.put(TEMP_PROCESSDATE, 0l);
+		objectData.put(TEMP_DURATIONCOUNT, 1.0d);
+		objectData.put(TEMP_DURATIONUNIT, 0);
+		objectData.put(TEMP_SAMPLECOUNT, 0l);
+		objectData.put(TEMP_DOSSIERNAME, objectData.get(TEMP_SERVICENAME));
+		objectData.put(TEMP_ORIGINDOSSIERNO, "");
+		objectData.put(TEMP_GROUPDOSSIERID, 0l);
+		objectData.put(TEMP_METADATA, "");
+		objectData.put(TEMP_DELEGATETYPE, 0);
+		objectData.put(TEMP_DOCUMENTNO, "");
+		objectData.put(TEMP_DOCUMENTDATE, 0l);
+		return objectData;
+	}
+
 	public static JSONObject setDossierObject(JSONObject j) {
 
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		// objectData.put(TEMP_UUID_, "bf7ca69d-c381-df77-4ab3-041f861f325f");
-		// objectData.put(TEMP_DOSSIERID, 0l);
-		// objectData.put(TEMP_GROUPID, groupId);
-		// objectData.put(TEMP_COMPANYID, 20099l);
-		// objectData.put(TEMP_USERID, userId);
-		// objectData.put(TEMP_USERNAME, "Phạm Thế Dương");
-		// objectData.put(TEMP_CREATEDATE, "2019-08-20 10:58:53");
-		// objectData.put(TEMP_MODIFIEDDATE, "2019-08-20 11:21:24");
-		// objectData.put(
-		// TEMP_REFERENCEUID, "e265ee9b-31a0-4761-8d63-614630b4ed56");
-		// objectData.put(TEMP_COUNTER, 1);
-		// objectData.put(TEMP_SERVICECODE, "BGTVT-285800");
-		// objectData.put(
-		// TEMP_SERVICENAME,
-		// "Gia hạn giấy phép xây dựng công trình thiết yếu trong phạm vi đất
-		// dành cho đường sắt");
-		// objectData.put(TEMP_GOVAGENCYCODE, "CDSVN");
-		// objectData.put(TEMP_GOVAGENCYNAME, "Cục Đường sắt Việt Nam");
-		// objectData.put(TEMP_APPLICANTNAME, "NGUYỄN THỊ PHƯƠNG");
-		// objectData.put(TEMP_APPLICANTIDTYPE, "citizen");
-		// objectData.put(TEMP_APPLICANTIDNO, "1183009539");
-		// objectData.put(TEMP_APPLICANTIDDATE, 0l);
-		// objectData.put(TEMP_ADDRESS, "Cổ Điển");
-		// objectData.put(TEMP_CITYCODE, "01");
-		// objectData.put(TEMP_CITYNAME, "Hà Nội");
-		// objectData.put(TEMP_DISTRICTCODE, "17");
-		// objectData.put(TEMP_DISTRICTNAME, "Huyện Đông Anh");
-		// objectData.put(TEMP_WARDCODE, "508");
-		// objectData.put(TEMP_WARDNAME, "Xã Hải Bối");
-		// objectData.put(TEMP_CONTACTNAME, "NGUYỄN THỊ PHƯƠNG");
-		// objectData.put(TEMP_CONTACTTELNO, "0978266524");
-		// objectData.put(TEMP_CONTACTEMAIL, "phuongnt@yopmail.com");
-		// objectData.put(TEMP_DOSSIERTEMPLATENO, "MAU_BGTVT-285800");
-		// objectData.put(
-		// TEMP_DOSSIERTEMPLATENAME,
-		// "Gia hạn giấy phép xây dựng công trình thiết yếu trong phạm vi đất
-		// dành cho đường sắt");
-		// objectData.put(TEMP_DOSSIERNOTE, "");
-		// objectData.put(TEMP_SUBMISSIONNOTE, "");
-		// objectData.put(TEMP_APPLICANTNOTE, "");
-		// objectData.put(TEMP_BRIEFNOTE, "");
-		// objectData.put(
-		// TEMP_DOSSIERNO, Validator.isNull(dossierNo)
-		// ? "000.00.20.G04.111111.1113" : dossierNo);
-		// objectData.put(TEMP_SUBMITTING, "0");
-		// objectData.put(TEMP_SUBMITDATE, "2019-08-20 10:58:55");
-		// objectData.put(TEMP_RECEIVEDATE, "2019-08-20 10:58:40");
-		// objectData.put(TEMP_DUEDATE, "2019-08-20 19:30:00");
-		// objectData.put(TEMP_RELEASEDATE, "2019-08-20 11:21:16");
-		// objectData.put(TEMP_FINISHDATE, "2019-08-20 11:21:24");
-		// objectData.put(TEMP_CANCELLINGDATE, 0l);
-		// objectData.put(TEMP_CORRECTTINGDATE, 0l);
-		// objectData.put(TEMP_DOSSIERSTATUS, "releasing");
-		// objectData.put(TEMP_DOSSIERSTATUSTEXT, "Chờ trả kết quả");
-		// objectData.put(TEMP_DOSSIERSUBSTATUS, "releasing_0");
-		// objectData.put(TEMP_DOSSIERSUBSTATUSTEXT, "Trả kết quả tại một cửa");
-		// objectData.put(TEMP_FOLDERID, 0l);
-		// objectData.put(TEMP_DOSSIERACTIONID, 0l);
-		// objectData.put(TEMP_VIAPOST, 0);
-		// objectData.put(TEMP_POSTADDRESS, "");
-		// objectData.put(TEMP_PASSWORD_, "1111");
-		// objectData.put(TEMP_NOTIFICATION, "0");
-		// objectData.put(TEMP_VIAPOSTAL, 1);
-		// objectData.put(TEMP_POSTALADDRESS, "");
-		// objectData.put(TEMP_POSTALCITYCODE, "");
-		// objectData.put(TEMP_POSTALCITYNAME, "");
-		// objectData.put(TEMP_POSTALTELNO, "");
-		// objectData.put(TEMP_ONLINE_, "0");
-		// objectData.put(TEMP_SERVERNO, "SERVER_DVC");
-		// objectData.put(TEMP_ENDORSEMENTDATE, 0l);
-		// objectData.put(TEMP_LOCKSTATE, "");
-		// objectData.put(TEMP_DOSSIERREGISTER, "");
-		// objectData.put(TEMP_DELEGATENAME, "NGUYỄN THỊ PHƯƠNG");
-		// objectData.put(TEMP_DELEGATEIDNO, "1183009539");
-		// objectData.put(TEMP_DELEGATETELNO, "0978266524");
-		// objectData.put(TEMP_DELEGATEEMAIL, "phuongnt@yopmail.com");
-		// objectData.put(TEMP_DELEGATEADDRESS, "Cổ Điển");
-		// objectData.put(TEMP_DELEGATECITYCODE, "1");
-		// objectData.put(TEMP_DELEGATECITYNAME, "Hà Nội");
-		// objectData.put(TEMP_DELEGATEDISTRICTCODE, "17");
-		// objectData.put(TEMP_DELEGATEDISTRICTNAME, "Huyện Đông Anh");
-		// objectData.put(TEMP_DELEGATEWARDCODE, "508");
-		// objectData.put(TEMP_DELEGATEWARDNAME, "Xã Hải Bối");
-		// objectData.put(TEMP_EXTENDDATE, 0l);
-		// objectData.put(TEMP_POSTALSERVICECODE, "");
-		// objectData.put(TEMP_POSTALSERVICENAME, "");
-		// objectData.put(TEMP_POSTALDISTRICTCODE, "");
-		// objectData.put(TEMP_POSTALDISTRICTNAME, "");
-		// objectData.put(TEMP_POSTALWARDCODE, "");
-		// objectData.put(TEMP_POSTALWARDNAME, "");
-		// objectData.put(TEMP_ORIGINAL, false); // boolean
-		// objectData.put(TEMP_REGISTERBOOKCODE, "REGISTER_01");
-		// objectData.put(TEMP_REGISTERBOOKNAME, "Sổ theo dõi");
-		// objectData.put(TEMP_PROCESSNO, "QT_BGTVT-285800");
-		// objectData.put(TEMP_ORIGINALITY, 3);
-		// objectData.put(TEMP_ORIGINDOSSIERID, 0l);
-		// objectData.put(TEMP_PROCESSDATE, 0l);
-		// objectData.put(TEMP_DURATIONCOUNT, 1.0d);
-		// objectData.put(TEMP_DURATIONUNIT, 0);
-		// objectData.put(TEMP_SAMPLECOUNT, 0l);
-		// objectData.put(
-		// TEMP_DOSSIERNAME,
-		// "Gia hạn giấy phép xây dựng công trình thiết yếu trong phạm vi đất
-		// dành cho đường sắt");
-		// objectData.put(TEMP_ORIGINDOSSIERNO, "");
-		// objectData.put(TEMP_GROUPDOSSIERID, 0l);
-		// objectData.put(TEMP_METADATA, "");
-		// objectData.put(TEMP_DELEGATETYPE, 0);
-		// objectData.put(TEMP_DOCUMENTNO, "");
-		// objectData.put(TEMP_DOCUMENTDATE, 0l);
-
 		objectData = j;
+
+		objectData.put(TEMP_DOSSIERNAME, objectData.get(TEMP_SERVICENAME));
+		objectData.put(
+			TEMP_PROCESSNO, "QT_" + objectData.get(TEMP_SERVICECODE));
+		objectData.put(
+			TEMP_DOSSIERTEMPLATENO, "MAU_" + objectData.get(TEMP_SERVICECODE));
+		objectData.put(
+			TEMP_DOSSIERTEMPLATENAME, objectData.get(TEMP_SERVICENAME));
 
 		Dossier dossier = DossierLocalServiceUtil.getByDossierNo(
 			objectData.getLong(TEMP_GROUPID),
@@ -424,6 +443,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			System.out.println(
 				"insert dossier ====== ====== ===== " +
 					objectData.getString(TEMP_DOSSIERNO));
+
 			dossier = DossierLocalServiceUtil.adminProcessData(objectData);
 		}
 
@@ -431,6 +451,34 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		objectData.put(TEMP_DOSSIERID, dossier.getDossierId());
 		return objectData;
+	}
+
+	public static JSONObject mergeJSONObject(JSONObject o1, JSONObject o2) {
+
+		JSONObject mergedObj = JSONFactoryUtil.createJSONObject();
+
+		try {
+			Iterator i1 = o1.keys();
+			Iterator i2 = o2.keys();
+			String tmp_key;
+			while (i1.hasNext()) {
+				tmp_key = (String) i1.next();
+				mergedObj.put(tmp_key, o1.get(tmp_key));
+			}
+			while (i2.hasNext()) {
+				tmp_key = (String) i2.next();
+				// only update if not null
+				if (Validator.isNotNull(o2.get(tmp_key))) {
+					mergedObj.put(tmp_key, o2.get(tmp_key));
+				}
+			}
+		}
+		catch (Exception e) {
+			// e.printStackTrace();
+			_log.error(e);
+		}
+
+		return mergedObj;
 	}
 
 	public static void insertUserDossier(long groupId, long dossierId) {
@@ -449,15 +497,17 @@ public class ConvertDossierFromV1Dot9Utils {
 		System.out.println(
 			groupId + "start import dossier user done..." + dossierId);
 	}
-	
+
 	public static void insertUserDossierDvc(long mappingID, long dossierId) {
 
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingID);
+		Applicant applicant =
+			ApplicantLocalServiceUtil.fetchByMappingID(mappingID);
 		if (Validator.isNotNull(applicant)) {
 
 			DossierUserActions duActions = new DossierUserActionsImpl();;
 			duActions.addDossierUser(
-				applicant.getGroupId(), dossierId, applicant.getMappingUserId(), 1, true);
+				applicant.getGroupId(), dossierId, applicant.getMappingUserId(),
+				1, true);
 		}
 		System.out.println(
 			mappingID + "start import dossier user done..." + dossierId);
@@ -487,7 +537,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
 			properties, params, serviceContext);
 
-		_log.info(resPostDossier);
+		System.out.println(resPostDossier);
 
 		return resPostDossier;
 
@@ -810,6 +860,11 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		return objectData;
 
+	}
+
+	public static String _dateToString(Date date, String format) {
+
+		return new SimpleDateFormat(format).format(date);
 	}
 
 	public static JSONObject buildDossierFileJSONObject(ResultSet rs) {

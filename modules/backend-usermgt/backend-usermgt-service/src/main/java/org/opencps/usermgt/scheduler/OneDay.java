@@ -52,7 +52,6 @@ public class OneDay extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) {
 
-		System.out.println("==========================OneDay=======================================");
 		if (!isRunning) {
 			isRunning = true;
 		}
@@ -74,14 +73,12 @@ public class OneDay extends BaseMessageListener {
 			
 			List<Employee> employees = EmployeeLocalServiceUtil.findByWorkstatus(0l, 1);
 			
-			System.out.println("=================================================================employees size" + employees.size());
 			for (Employee emp : employees) {
 
-				System.out.println("employees map id: " + emp.getMappingUserId());
 				User user = UserLocalServiceUtil.getUser(emp.getMappingUserId());
 				if (Validator.isNotNull(user) && UserLocalServiceUtil.isPasswordExpiringSoon(user)) {
 
-					createNotificationQueueExpiredSoon(emp);
+//					createNotificationQueueExpiredSoon(emp);
 					break;
 				}
 			}

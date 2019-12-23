@@ -180,7 +180,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 	public ProcessStep updateProcessStep(
 		long groupId, String oldStepCode, String newStepCode, String stepName,
 		long serviceProcessId, String sequenceNo, String dossierStatus,
-		String dossierSubStatus, int durationCount, String customProcessUrl,
+		String dossierSubStatus, double durationCount, String customProcessUrl,
 		String stepInstruction, String briefNote, boolean editable,
 		String lockState, Integer checkInput, ServiceContext context)
 		throws PortalException {

@@ -521,7 +521,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			ProcessStep step = actions.updateProcessStep(groupId, StringPool.BLANK, stepCode,
 					stepName, id, sequenceNo, dossierStatus,
-					dossierSubStatus, GetterUtil.getInteger(durationCount),
+					dossierSubStatus, GetterUtil.getDouble(durationCount),
 					customProcessUrl, stepInstruction, briefNote,
 					GetterUtil.getBoolean(editable), lockState, checkInput, serviceContext);
 
@@ -582,7 +582,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			ProcessStep step = actions.updateProcessStep(groupId, code, stepCode, stepName, id,
 					sequenceNo, dossierStatus, dossierSubStatus,
-					GetterUtil.getInteger(durationCount), customProcessUrl,
+					GetterUtil.getDouble(durationCount), customProcessUrl,
 					stepInstruction, briefNote, GetterUtil.getBoolean(editable),
 					lockState, checkInput, serviceContext);
 
