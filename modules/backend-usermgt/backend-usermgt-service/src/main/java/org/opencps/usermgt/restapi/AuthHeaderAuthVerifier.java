@@ -1,8 +1,6 @@
 
 package org.opencps.usermgt.restapi;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.auth.AuthException;
@@ -50,9 +48,7 @@ public class AuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implements 
 		long groupId = GetterUtil.getLong(request.getHeader("groupId"));
 
 		String accessToken = GetterUtil.getString(request.getHeader("accessToken"));
-		
-		System.out.println("----------------------->>>> " + userId + "|" + groupId + "|" + accessToken);
-		
+
 		//TODO validate accessToken
 
 		if (userId == 0 || groupId == 0 || Validator.isNull(accessToken)) {
@@ -62,8 +58,6 @@ public class AuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implements 
 		DVCQGSSOActionImpl actionImpl = new DVCQGSSOActionImpl();
 		
 		boolean isValid = actionImpl.isValidAccessToken(accessToken);
-		
-		System.out.println("----------------------->>>> isValid " + isValid);
 		
 		if(!isValid) {
 			return null;
@@ -135,7 +129,5 @@ public class AuthHeaderAuthVerifier extends BasicAuthHeaderAutoLogin implements 
 
 		return true;
 	}
-
-	private Log _log = LogFactoryUtil.getLog(AuthHeaderAuthVerifier.class.getName());
 
 }

@@ -17,10 +17,10 @@ public interface DVCQGSSOInterface {
 			int vnconnect, String currentURL);
 
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			int vnconnect, String currentURL);
+			String state);
 
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String authToken);
+			String authToken, String state);
 
 	public JSONObject doAuth(User user, HttpServletRequest request, HttpServletResponse response,
 			ServiceContext serviceContext, String userInfo) throws Exception;
