@@ -179,8 +179,9 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 	public int countByF_votingId_selected_filter_date(long votingId, String selected, Date fromDate, Date toDate) {
 		List<VotingResult> lstResults = votingResultPersistence.findByF_votingId_selected_gt_date(votingId, selected, fromDate);
 		int count = 0;
+		//??? fromDate == null && toDate == null wtf
 		for (VotingResult vr : lstResults) {
-			if (vr.getModifiedDate().before(toDate)) {
+			if ((fromDate == null && toDate == null) ||  vr.getModifiedDate().before(toDate)) {
 				count++;
 			}
 		}
