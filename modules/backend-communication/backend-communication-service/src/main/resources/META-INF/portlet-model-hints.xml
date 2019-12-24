@@ -77,19 +77,6 @@
 		</field>
 		<field name="grouping" type="boolean" />
 	</model>
-	<model name="org.opencps.communication.model.Preferences">
-		<field name="uuid" type="String" />
-		<field name="preferencesId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="preferences" type="String">
-			<hint-collection name="LONGEST_TEXT" />
-		</field>
-	</model>
 	<model name="org.opencps.communication.model.ServerConfig">
 		<field name="serverConfigId" type="long" />
 		<field name="groupId" type="long" />

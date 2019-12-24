@@ -313,6 +313,14 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic fetchByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode) {
+		return getService()
+				   .fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode,
+			domainCode);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)

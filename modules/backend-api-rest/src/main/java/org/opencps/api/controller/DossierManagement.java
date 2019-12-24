@@ -1397,7 +1397,10 @@ public interface DossierManagement {
 		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("actionCode") String actionCode,
 		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("pathBase") String pathBase,
-		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("dvcGroupId") long dvcGroupId);
+		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("dvcGroupId") long dvcGroupId,
+		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("groupId") long groupId,
+		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("govAgencyCode") String govAgencyCode,
+		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("govAgencyName") String govAgencyName);
 
 	@POST
 	@Path("/convert/olddossierfiles")

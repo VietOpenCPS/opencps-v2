@@ -461,6 +461,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						.fetchDossierAction(dossierObjectActionId);
 				
 				if (dossierAction != null) {
+					ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
+					if (sc != null) {
+						document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
+					}
 					// if (Validator.isNotNull(dossierAction.getCreateDate())) {
 					document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
 							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));

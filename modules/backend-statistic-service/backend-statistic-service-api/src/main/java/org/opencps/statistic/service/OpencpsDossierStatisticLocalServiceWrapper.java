@@ -320,6 +320,14 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic fetchByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode) {
+		return _opencpsDossierStatisticLocalService.fetchByG_M_Y_G_D(groupId,
+			month, year, govAgencyCode, domainCode);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> fetchDossierStatistic(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String groupAgenvyCode, int start, int end)

@@ -221,6 +221,10 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		return serverConfigPersistence.findByG_P(groupId, protocol);
 	}
 
+	public ServerConfig getByServerNoAndProtocol(long groupId, String serverNo, String protocol) {
+		return serverConfigPersistence.fetchByF_G_S_P(groupId, serverNo, protocol);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public ServerConfig adminProcessDelete(Long id) {

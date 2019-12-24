@@ -175,6 +175,14 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsVotingStatistic> fetchByG_M_Y_G_D(long groupId,
+		int month, int year, String govAgencyCode, String domainCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsVotingStatistic fetchByG_M_Y_G_D_VC(long groupId, int month,
+		int year, String govAgencyCode, String domainCode, String votingCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpencpsVotingStatistic fetchOpencpsVotingStatistic(
 		long votingStatisticId);
 

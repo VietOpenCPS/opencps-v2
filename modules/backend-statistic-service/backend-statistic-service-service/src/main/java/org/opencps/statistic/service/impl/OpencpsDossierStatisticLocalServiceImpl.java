@@ -378,7 +378,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;
-		_log.debug(dossierStatisticId);
+		// _log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
@@ -885,6 +885,9 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return opencpsDossierStatisticPersistence.findByG(groupId);
 	}
 	
+	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode, String domainCode) {
+		return opencpsDossierStatisticPersistence.fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
 
 }

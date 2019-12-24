@@ -705,76 +705,216 @@ public class OpencpsVotingStatisticUtil {
 	}
 
 	/**
-	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
+	* Returns all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
 	*
 	* @param groupId the group ID
 	* @param month the month
 	* @param year the year
 	* @param govAgencyCode the gov agency code
 	* @param domainCode the domain code
-	* @return the matching opencps voting statistic
-	* @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	* @return the matching opencps voting statistics
 	*/
-	public static OpencpsVotingStatistic findByM_Y_DM_G(long groupId,
-		int month, int year, String govAgencyCode, String domainCode)
-		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
+	public static List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId,
+		int month, int year, String govAgencyCode, String domainCode) {
 		return getPersistence()
 				   .findByM_Y_DM_G(groupId, month, year, govAgencyCode,
 			domainCode);
 	}
 
 	/**
-	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	* Returns a range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param groupId the group ID
 	* @param month the month
 	* @param year the year
 	* @param govAgencyCode the gov agency code
 	* @param domainCode the domain code
-	* @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	* @param start the lower bound of the range of opencps voting statistics
+	* @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	* @return the range of matching opencps voting statistics
 	*/
-	public static OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId,
-		int month, int year, String govAgencyCode, String domainCode) {
+	public static List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		int start, int end) {
 		return getPersistence()
-				   .fetchByM_Y_DM_G(groupId, month, year, govAgencyCode,
-			domainCode);
+				   .findByM_Y_DM_G(groupId, month, year, govAgencyCode,
+			domainCode, start, end);
 	}
 
 	/**
-	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	* Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param groupId the group ID
 	* @param month the month
 	* @param year the year
 	* @param govAgencyCode the gov agency code
 	* @param domainCode the domain code
-	* @param retrieveFromCache whether to retrieve from the finder cache
-	* @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	* @param start the lower bound of the range of opencps voting statistics
+	* @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps voting statistics
 	*/
-	public static OpencpsVotingStatistic fetchByM_Y_DM_G(long groupId,
+	public static List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId,
 		int month, int year, String govAgencyCode, String domainCode,
+		int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByM_Y_DM_G(groupId, month, year, govAgencyCode,
+			domainCode, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsVotingStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param start the lower bound of the range of opencps voting statistics
+	* @param end the upper bound of the range of opencps voting statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps voting statistics
+	*/
+	public static List<OpencpsVotingStatistic> findByM_Y_DM_G(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		int start, int end,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
-				   .fetchByM_Y_DM_G(groupId, month, year, govAgencyCode,
-			domainCode, retrieveFromCache);
+				   .findByM_Y_DM_G(groupId, month, year, govAgencyCode,
+			domainCode, start, end, orderByComparator, retrieveFromCache);
 	}
 
 	/**
-	* Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
+	* Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
 	*
 	* @param groupId the group ID
 	* @param month the month
 	* @param year the year
 	* @param govAgencyCode the gov agency code
 	* @param domainCode the domain code
-	* @return the opencps voting statistic that was removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps voting statistic
+	* @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
 	*/
-	public static OpencpsVotingStatistic removeByM_Y_DM_G(long groupId,
-		int month, int year, String govAgencyCode, String domainCode)
+	public static OpencpsVotingStatistic findByM_Y_DM_G_First(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
 		return getPersistence()
-				   .removeByM_Y_DM_G(groupId, month, year, govAgencyCode,
-			domainCode);
+				   .findByM_Y_DM_G_First(groupId, month, year, govAgencyCode,
+			domainCode, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic fetchByM_Y_DM_G_First(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByM_Y_DM_G_First(groupId, month, year, govAgencyCode,
+			domainCode, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps voting statistic
+	* @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic findByM_Y_DM_G_Last(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
+		return getPersistence()
+				   .findByM_Y_DM_G_Last(groupId, month, year, govAgencyCode,
+			domainCode, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic fetchByM_Y_DM_G_Last(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByM_Y_DM_G_Last(groupId, month, year, govAgencyCode,
+			domainCode, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps voting statistics before and after the current opencps voting statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63;.
+	*
+	* @param votingStatisticId the primary key of the current opencps voting statistic
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps voting statistic
+	* @throws NoSuchOpencpsVotingStatisticException if a opencps voting statistic with the primary key could not be found
+	*/
+	public static OpencpsVotingStatistic[] findByM_Y_DM_G_PrevAndNext(
+		long votingStatisticId, long groupId, int month, int year,
+		String govAgencyCode, String domainCode,
+		OrderByComparator<OpencpsVotingStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
+		return getPersistence()
+				   .findByM_Y_DM_G_PrevAndNext(votingStatisticId, groupId,
+			month, year, govAgencyCode, domainCode, orderByComparator);
+	}
+
+	/**
+	* Removes all the opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	*/
+	public static void removeByM_Y_DM_G(long groupId, int month, int year,
+		String govAgencyCode, String domainCode) {
+		getPersistence()
+			.removeByM_Y_DM_G(groupId, month, year, govAgencyCode, domainCode);
 	}
 
 	/**
@@ -792,6 +932,104 @@ public class OpencpsVotingStatisticUtil {
 		return getPersistence()
 				   .countByM_Y_DM_G(groupId, month, year, govAgencyCode,
 			domainCode);
+	}
+
+	/**
+	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or throws a {@link NoSuchOpencpsVotingStatisticException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param votingCode the voting code
+	* @return the matching opencps voting statistic
+	* @throws NoSuchOpencpsVotingStatisticException if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic findByM_Y_DM_G_VC(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		String votingCode)
+		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
+		return getPersistence()
+				   .findByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode);
+	}
+
+	/**
+	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param votingCode the voting code
+	* @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic fetchByM_Y_DM_G_VC(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		String votingCode) {
+		return getPersistence()
+				   .fetchByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode);
+	}
+
+	/**
+	* Returns the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param votingCode the voting code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching opencps voting statistic, or <code>null</code> if a matching opencps voting statistic could not be found
+	*/
+	public static OpencpsVotingStatistic fetchByM_Y_DM_G_VC(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		String votingCode, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode, retrieveFromCache);
+	}
+
+	/**
+	* Removes the opencps voting statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param votingCode the voting code
+	* @return the opencps voting statistic that was removed
+	*/
+	public static OpencpsVotingStatistic removeByM_Y_DM_G_VC(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		String votingCode)
+		throws org.opencps.statistic.exception.NoSuchOpencpsVotingStatisticException {
+		return getPersistence()
+				   .removeByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode);
+	}
+
+	/**
+	* Returns the number of opencps voting statistics where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and votingCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param votingCode the voting code
+	* @return the number of matching opencps voting statistics
+	*/
+	public static int countByM_Y_DM_G_VC(long groupId, int month, int year,
+		String govAgencyCode, String domainCode, String votingCode) {
+		return getPersistence()
+				   .countByM_Y_DM_G_VC(groupId, month, year, govAgencyCode,
+			domainCode, votingCode);
 	}
 
 	/**

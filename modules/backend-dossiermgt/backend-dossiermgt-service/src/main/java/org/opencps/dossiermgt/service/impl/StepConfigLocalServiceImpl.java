@@ -198,11 +198,13 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
 			throws PortalException {
-
+		_log.debug("STEP CONFIG START: " + groupId + ", " + stepCode);
 		User user = userLocalService.getUser(userId);
 		Date now = new Date();
-
+		_log.debug("STEP CONFIG UPDATE AFTER: " + groupId + ", " + stepCode);
 			StepConfig object = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
+			_log.debug("STEP CONFIG UPDATE: " + groupId + ", " + stepCode);
+			_log.debug("STEP CONFIG UPDATE: " + object);
 			if (object == null) {
 				long stepConfigId = counterLocalService.increment(StepConfig.class.getName());
 				object = stepConfigPersistence.create(stepConfigId);
@@ -221,6 +223,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 				object.setMenuGroup(menuGroup);
 				object.setMenuStepName(menuStepName);
 				object.setButtonConfig(buttonConfig);
+				_log.debug("STEP CONFIG CREATE");
 			} else {
 				object.setUserId(user.getUserId());
 				object.setModifiedDate(new Date());
@@ -231,7 +234,7 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 				object.setMenuGroup(menuGroup);
 				object.setMenuStepName(menuStepName);
 				object.setButtonConfig(buttonConfig);
-
+				_log.debug("STEP CONFIG UPDATE ELSE: " + object);
 			}
 
 		return stepConfigPersistence.update(object);

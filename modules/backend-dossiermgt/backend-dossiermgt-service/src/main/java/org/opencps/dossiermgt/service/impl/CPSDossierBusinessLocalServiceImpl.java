@@ -45,8 +45,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -56,6 +60,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,6 +77,8 @@ import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.adminconfig.model.DynamicReport;
+import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -141,7 +148,6 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.DynamicReport;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -156,6 +162,7 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.rest.utils.ExecuteOneActionTerm;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
@@ -167,7 +174,6 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -514,6 +520,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					JSONObject formDataObj = processMergeDossierFormData(dossier, payloadTmp);
 					formDataObj = processMergeDossierProcessRole(dossier, 1, formDataObj, dossierAction);
 					formDataObj.put("url", context.getPortalURL());
+					formDataObj.put("documentCode", documentCode);
 					if (employee != null) {
 						formDataObj.put("userName", employee.getFullName());
 					} else {
@@ -941,94 +948,109 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CALL_API"));
-					if (jsonCallAPI != null) {
+					if (jsonCallAPI != null && jsonCallAPI.has("serverNo")) {
 						String serverNo = jsonCallAPI.getString("serverNo");
 						if (Validator.isNotNull(serverNo)) {
 							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
 							if (serverConfig != null) {
 								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 								//
-								String method = configObj.getString("method");
+								String method = StringPool.BLANK;
+								if (configObj != null && configObj.has("method")) {
+									method = configObj.getString("method");
+									System.out.println("method: "+method);
+								}
 								//params
-								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(configObj.getString("params"));
+								JSONObject jsonParams = null;
+								if (configObj != null && configObj.has("params")) {
+									jsonParams = JSONFactoryUtil.createJSONObject(configObj.getString("params"));
+								}
 								if (jsonParams != null) {
 									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(jsonParams.getString("header"));
 									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(jsonParams.getString("body"));
 									
 									
-									String serverUrl = StringPool.BLANK;
 									String authStrEnc = StringPool.BLANK;
 									String apiUrl = StringPool.BLANK;
 									StringBuilder sb = new StringBuilder();
-//									try {
-//										URL urlVal = null;
-//										String groupIdRequest = StringPool.BLANK;
-//										StringBuilder postData = new StringBuilder();
-//										Iterator<?> keys = jsonBody.keys();
-//										while (keys.hasNext()) {
-//											String key = (String) keys.next();
-//											if (!"".equals(postData.toString())) {
-//												postData.append("&");
-//											}
-//											postData.append(key);
-//											postData.append("=");
-//											postData.append(jsonBody.get(key));
-//										}
-//
-//										if (configObj.has(SyncServerTerm.SERVER_USERNAME)
-//												&& configObj.has(SyncServerTerm.SERVER_SECRET)
-//												&& configObj.has(SyncServerTerm.SERVER_URL)
-//												&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-//											authStrEnc = Base64.getEncoder()
-//													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
-//															+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET))
-//																	.getBytes());
-//
-//											serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-//											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
-//										}
-//
-//										//apiUrl = serverUrl + url;
-//										apiUrl = serverUrl;
-//										if ("GET".equals(method)) {
-//											urlVal = new URL(apiUrl + "?" + postData.toString());
-//										} else {
-//											urlVal = new URL(apiUrl);
-//										}
-//										_log.debug("API URL: " + apiUrl);
-//										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
-//												.openConnection();
-//										conn.setRequestProperty("groupId", groupIdRequest);
-//										conn.setRequestMethod(method);
-//										conn.setRequestProperty("Accept", "application/json");
-//										conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
-//										_log.debug("BASIC AUTHEN: " + authStrEnc);
-//										if ("POST".equals(method) || "PUT".equals(method)) {
-//											conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//											conn.setRequestProperty("Content-Length",
-//													"" + Integer.toString(postData.toString().getBytes().length));
-//
-//											conn.setUseCaches(false);
-//											conn.setDoInput(true);
-//											conn.setDoOutput(true);
-//											_log.debug("POST DATA: " + postData.toString());
-//											OutputStream os = conn.getOutputStream();
-//											os.write(postData.toString().getBytes());
-//											os.close();
-//										}
-//
-//										BufferedReader brf = new BufferedReader(
-//												new InputStreamReader(conn.getInputStream()));
-//
-//										int cp;
-//										while ((cp = brf.read()) != -1) {
-//											sb.append((char) cp);
-//										}
-//										_log.debug("RESULT PROXY: " + sb.toString());
-//										//return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
-//									} catch (IOException e) {
-//										_log.debug("Something went wrong while reading/writing in stream!!");
-//									}
+									try {
+										URL urlVal = null;
+										String groupIdRequest = StringPool.BLANK;
+										StringBuilder postData = new StringBuilder();
+										Iterator<?> keys = jsonBody.keys();
+										while (keys.hasNext()) {
+											String key = (String) keys.next();
+											if (!"".equals(postData.toString())) {
+												postData.append("&");
+											}
+											postData.append(key);
+											postData.append("=");
+											postData.append(jsonBody.get(key));
+										}
+
+										if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+												&& configObj.has(SyncServerTerm.SERVER_SECRET)
+												&& Validator.isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
+												&& Validator.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
+											authStrEnc = Base64.getEncoder()
+													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+															+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET))
+																	.getBytes());
+										}
+										if (configObj.has(SyncServerTerm.SERVER_URL)) {
+											apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+											if (apiUrl.contains("{_dossierId}")) {
+												apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossierId));
+											}
+										}
+										if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+										}
+										if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
+											if (jsonHeader.has("groupId")) {
+												groupIdRequest = String.valueOf(jsonHeader.getLong("groupId"));
+											}
+										}
+
+										if ("GET".equals(method)) {
+											urlVal = new URL(apiUrl + "?" + postData.toString());
+										} else {
+											urlVal = new URL(apiUrl);
+										}
+										_log.debug("API URL: " + apiUrl);
+										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+												.openConnection();
+										conn.setRequestProperty("groupId", groupIdRequest);
+										conn.setRequestMethod(method);
+										conn.setRequestProperty("Accept", "application/json");
+										if (Validator.isNotNull(authStrEnc)) {
+											conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+										}
+										if ("POST".equals(method) || "PUT".equals(method)) {
+											conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+											conn.setRequestProperty("Content-Length",
+													"" + Integer.toString(postData.toString().getBytes().length));
+
+											conn.setUseCaches(false);
+											conn.setDoInput(true);
+											conn.setDoOutput(true);
+											_log.debug("POST DATA: " + postData.toString());
+											OutputStream os = conn.getOutputStream();
+											os.write(postData.toString().getBytes());
+											os.close();
+										}
+
+										BufferedReader brf = new BufferedReader(
+												new InputStreamReader(conn.getInputStream()));
+
+										int cp;
+										while ((cp = brf.read()) != -1) {
+											sb.append((char) cp);
+										}
+										_log.debug("RESULT PROXY: " + sb.toString());
+									} catch (IOException e) {
+										_log.debug("Something went wrong while reading/writing in stream!!");
+									}
 								}
 							}
 						}
@@ -2986,7 +3008,6 @@ public class CPSDossierBusinessLocalServiceImpl
 			Date extendDate = new Date(GetterUtil.getLong(jsonData.get(DossierTerm.EXTEND_DATE)));
 			jsonData.put(DossierTerm.EXTEND_DATE, APIDateTimeUtils.convertDateToString(extendDate, APIDateTimeUtils._NORMAL_DATE_TIME));		
 		}
-
 		return jsonData;
 	}
 

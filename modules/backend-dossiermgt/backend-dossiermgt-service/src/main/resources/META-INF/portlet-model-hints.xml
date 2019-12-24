@@ -398,7 +398,7 @@
 		<field name="pending" type="boolean" />
 		<field name="rollbackable" type="boolean" />
 		<field name="stepCode" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="stepName" type="String">
 			<hint name="max-length">500</hint>
@@ -526,7 +526,7 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="deliverableCode" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">255</hint>
 		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierLog">
@@ -580,7 +580,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="templateNo" type="String" />
 		<field name="partNo" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="partName" type="String">
 			<hint name="max-length">500</hint>
@@ -601,7 +601,7 @@
 		</field>
 		<field name="required" type="boolean" />
 		<field name="fileTemplateNo" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="eSign" type="boolean" />
 		<field name="deliverableType" type="String">
@@ -738,23 +738,6 @@
 		<field name="moderator" type="int" />
 		<field name="visited" type="boolean" />
 		<field name="roleId" type="long" />
-	</model>
-	<model name="org.opencps.dossiermgt.model.DynamicReport">
-		<field name="uuid" type="String" />
-		<field name="dynamicReportId" type="long" />
-		<field name="companyId" type="long" />
-		<field name="groupId" type="long" />
-		<field name="userId" type="long" />
-		<field name="userName" type="String" />
-		<field name="createDate" type="Date" />
-		<field name="modifiedDate" type="Date" />
-		<field name="reportCode" type="String" />
-		<field name="reportName" type="String" />
-		<field name="sharing" type="int" />
-		<field name="filterConfig" type="String" />
-		<field name="tableConfig" type="String" />
-		<field name="userConfig" type="String" />
-		<field name="reportType" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.EForm">
 		<field name="uuid" type="String" />
@@ -918,13 +901,13 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceProcessId" type="long" />
 		<field name="preStepCode" type="String">
-			<hint name="max-length">4000</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="postStepCode" type="String">
-			<hint name="max-length">4000</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="autoEvent" type="String">
-			<hint name="max-length">4000</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="preCondition" type="String">
 			<hint name="max-length">4000</hint>
@@ -933,7 +916,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="actionName" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">255</hint>
 		</field>
 		<field name="allowAssignUser" type="int" />
 		<field name="assignUserId" type="long" />

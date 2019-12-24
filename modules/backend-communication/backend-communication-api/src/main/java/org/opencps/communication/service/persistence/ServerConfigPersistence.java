@@ -588,6 +588,62 @@ public interface ServerConfigPersistence extends BasePersistence<ServerConfig> {
 	public int countByP(String protocol);
 
 	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or throws a {@link NoSuchServerConfigException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the matching server config
+	* @throws NoSuchServerConfigException if a matching server config could not be found
+	*/
+	public ServerConfig findByF_G_S_P(long groupId, String serverNo,
+		String protocol) throws NoSuchServerConfigException;
+
+	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol);
+
+	/**
+	* Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol, boolean retrieveFromCache);
+
+	/**
+	* Removes the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the server config that was removed
+	*/
+	public ServerConfig removeByF_G_S_P(long groupId, String serverNo,
+		String protocol) throws NoSuchServerConfigException;
+
+	/**
+	* Returns the number of server configs where groupId = &#63; and serverNo = &#63; and protocol = &#63;.
+	*
+	* @param groupId the group ID
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the number of matching server configs
+	*/
+	public int countByF_G_S_P(long groupId, String serverNo, String protocol);
+
+	/**
 	* Caches the server config in the entity cache if it is enabled.
 	*
 	* @param serverConfig the server config

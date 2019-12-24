@@ -1,5 +1,6 @@
 package org.opencps.api.controller;
 
+import com.beust.jcommander.internal.Nullable;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -212,6 +214,31 @@ public interface ServiceInfoManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of ServiceInfo that need to be get file content", required = true) @PathParam("id") String id,
 			@ApiParam(value = "templateNo of FileTemplate that need to be get file content", required = true) @PathParam("templateNo") String templateNo);
+
+	@PUT
+	@Path("/{id}/filetemplates/{templateNo}")
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Delete FileTemplate of ServiceInfo)", response = FileTemplateModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns FileTemplate was deleted", response = FileTemplateModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response updateFileTemplateOfServiceInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "id of ServiceInfo that need to be delete", required = true) @PathParam("id") String id,
+			@ApiParam(value = "templateNo of FileTemplate that need to be delete", required = true) @PathParam("templateNo") String templateNo,
+			@Multipart(value = "fileScript", required = false) @Nullable Attachment fileScript,
+			@Multipart(value = "fileReport", required = false) @Nullable Attachment fileReport,
+			@Multipart(value = "templateName", required = false) @Nullable String templateName,
+			@Multipart(value = "fileEntryId", required = false) @Nullable String fileEntryId,
+			@Multipart(value = "eForm", required = false) @Nullable String eForm,
+			@Multipart(value = "formScriptFileId", required = false) @Nullable String formScriptFileId,
+			@Multipart(value = "formReportFileId", required = false) @Nullable String formReportFileId,
+			@Multipart(value = "eFormNoPattern", required = false) @Nullable String eFormNoPattern,
+			@Multipart(value = "eFormNamePattern", required = false) @Nullable String eFormNamePattern);
 
 	@DELETE
 	@Path("/{id}/filetemplates/{templateNo}")

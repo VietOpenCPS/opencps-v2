@@ -80,7 +80,8 @@ public class Engine implements MessageListener {
 			_log.error(e);
 		}
 	}
-	private int MAX_TRY_COUNT = 5;
+	
+	private static final int MAX_TRY_COUNT = 5;
 	
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
@@ -236,7 +237,8 @@ public class Engine implements MessageListener {
 						break;
 					}
 				}
-    			ServiceContext serviceContext = new ServiceContext();
+
+				ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
     			_log.info("jasper export dossier document: " + dossierDocument );
     			

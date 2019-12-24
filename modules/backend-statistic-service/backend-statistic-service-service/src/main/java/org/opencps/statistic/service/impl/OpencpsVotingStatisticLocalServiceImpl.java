@@ -131,5 +131,10 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	public void removeVotingStatisticByYear(long companyId, long groupId, int month, int year) {
 		opencpsVotingStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
 	}
-
+	public OpencpsVotingStatistic fetchByG_M_Y_G_D_VC(long groupId, int month, int year, String govAgencyCode, String domainCode, String votingCode) {
+		return opencpsVotingStatisticPersistence.fetchByM_Y_DM_G_VC(groupId, month, year, govAgencyCode, domainCode, votingCode);
+	}
+	public List<OpencpsVotingStatistic> fetchByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode, String domainCode) {
+		return opencpsVotingStatisticPersistence.findByM_Y_DM_G(groupId, month, year,  govAgencyCode, domainCode);
+	}
 }

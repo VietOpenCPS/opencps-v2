@@ -25,6 +25,9 @@ dependencies {
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-service")
 
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
+	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
 	testCompile group: "junit", name: "junit", version: "4.12"
 }	
 

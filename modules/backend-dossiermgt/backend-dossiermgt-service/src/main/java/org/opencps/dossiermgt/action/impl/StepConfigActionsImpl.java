@@ -80,7 +80,7 @@ public class StepConfigActionsImpl implements StepConfigActions {
 	public StepConfig updateStepConfigDB(long userId, long groupId, String stepCode, String stepName, Integer stepType,
 			String dossierStatus, String dossierSubStatus, String menuGroup, String menuStepName, String buttonConfig)
 			throws PortalException {
-
+		_log.debug("BEFORE UPDATE STEP CONFIG: " + userId + "," + groupId + "," + stepCode + "," + stepName + "," + stepType + "," + dossierStatus + "," + dossierSubStatus + "," + menuGroup + "," + menuStepName + "," + buttonConfig);
 		return StepConfigLocalServiceUtil.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType,
 				dossierStatus, dossierSubStatus, menuGroup, menuStepName, buttonConfig);
 	}

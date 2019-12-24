@@ -2459,6 +2459,321 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 	private static final String _FINDER_COLUMN_P_PROTOCOL_1 = "serverConfig.protocol IS NULL";
 	private static final String _FINDER_COLUMN_P_PROTOCOL_2 = "serverConfig.protocol = ?";
 	private static final String _FINDER_COLUMN_P_PROTOCOL_3 = "(serverConfig.protocol IS NULL OR serverConfig.protocol = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_G_S_P = new FinderPath(ServerConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServerConfigModelImpl.FINDER_CACHE_ENABLED, ServerConfigImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_G_S_P",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			ServerConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			ServerConfigModelImpl.SERVERNO_COLUMN_BITMASK |
+			ServerConfigModelImpl.PROTOCOL_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_G_S_P = new FinderPath(ServerConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServerConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_G_S_P",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or throws a {@link NoSuchServerConfigException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the matching server config
+	 * @throws NoSuchServerConfigException if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig findByF_G_S_P(long groupId, String serverNo,
+		String protocol) throws NoSuchServerConfigException {
+		ServerConfig serverConfig = fetchByF_G_S_P(groupId, serverNo, protocol);
+
+		if (serverConfig == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", serverNo=");
+			msg.append(serverNo);
+
+			msg.append(", protocol=");
+			msg.append(protocol);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchServerConfigException(msg.toString());
+		}
+
+		return serverConfig;
+	}
+
+	/**
+	 * Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the matching server config, or <code>null</code> if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol) {
+		return fetchByF_G_S_P(groupId, serverNo, protocol, true);
+	}
+
+	/**
+	 * Returns the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching server config, or <code>null</code> if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig fetchByF_G_S_P(long groupId, String serverNo,
+		String protocol, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, serverNo, protocol };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_G_S_P,
+					finderArgs, this);
+		}
+
+		if (result instanceof ServerConfig) {
+			ServerConfig serverConfig = (ServerConfig)result;
+
+			if ((groupId != serverConfig.getGroupId()) ||
+					!Objects.equals(serverNo, serverConfig.getServerNo()) ||
+					!Objects.equals(protocol, serverConfig.getProtocol())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_SERVERCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_S_P_GROUPID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				List<ServerConfig> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_G_S_P,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ServerConfigPersistenceImpl.fetchByF_G_S_P(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ServerConfig serverConfig = list.get(0);
+
+					result = serverConfig;
+
+					cacheResult(serverConfig);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_G_S_P,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ServerConfig)result;
+		}
+	}
+
+	/**
+	 * Removes the server config where groupId = &#63; and serverNo = &#63; and protocol = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the server config that was removed
+	 */
+	@Override
+	public ServerConfig removeByF_G_S_P(long groupId, String serverNo,
+		String protocol) throws NoSuchServerConfigException {
+		ServerConfig serverConfig = findByF_G_S_P(groupId, serverNo, protocol);
+
+		return remove(serverConfig);
+	}
+
+	/**
+	 * Returns the number of server configs where groupId = &#63; and serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the number of matching server configs
+	 */
+	@Override
+	public int countByF_G_S_P(long groupId, String serverNo, String protocol) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_G_S_P;
+
+		Object[] finderArgs = new Object[] { groupId, serverNo, protocol };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_SERVERCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_G_S_P_GROUPID_2);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_F_G_S_P_SERVERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_F_G_S_P_PROTOCOL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_G_S_P_GROUPID_2 = "serverConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_G_S_P_SERVERNO_1 = "serverConfig.serverNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_G_S_P_SERVERNO_2 = "serverConfig.serverNo = ? AND ";
+	private static final String _FINDER_COLUMN_F_G_S_P_SERVERNO_3 = "(serverConfig.serverNo IS NULL OR serverConfig.serverNo = '') AND ";
+	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_1 = "serverConfig.protocol IS NULL";
+	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_2 = "serverConfig.protocol = ?";
+	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_3 = "(serverConfig.protocol IS NULL OR serverConfig.protocol = '')";
 
 	public ServerConfigPersistenceImpl() {
 		setModelClass(ServerConfig.class);
@@ -2483,6 +2798,12 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_CF_NM,
 			new Object[] { serverConfig.getServerName() }, serverConfig);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_G_S_P,
+			new Object[] {
+				serverConfig.getGroupId(), serverConfig.getServerNo(),
+				serverConfig.getProtocol()
+			}, serverConfig);
 
 		serverConfig.resetOriginalValues();
 	}
@@ -2578,6 +2899,17 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_CF_NM, args,
 			serverConfigModelImpl, false);
+
+		args = new Object[] {
+				serverConfigModelImpl.getGroupId(),
+				serverConfigModelImpl.getServerNo(),
+				serverConfigModelImpl.getProtocol()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_G_S_P, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_G_S_P, args,
+			serverConfigModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -2635,6 +2967,29 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_CF_NM, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_CF_NM, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					serverConfigModelImpl.getGroupId(),
+					serverConfigModelImpl.getServerNo(),
+					serverConfigModelImpl.getProtocol()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_S_P, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_G_S_P, args);
+		}
+
+		if ((serverConfigModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_G_S_P.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					serverConfigModelImpl.getOriginalGroupId(),
+					serverConfigModelImpl.getOriginalServerNo(),
+					serverConfigModelImpl.getOriginalProtocol()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_G_S_P, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_G_S_P, args);
 		}
 	}
 

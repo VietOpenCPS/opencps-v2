@@ -687,13 +687,28 @@ public class DossierMgtUtils {
 	}
 
 	private static boolean checkStepDone(String stepCode, Dossier dossier) {
-		List<DossierAction> lstDActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), stepCode);
-		if (lstDActions.size() > 0) {
-			return true;
+		if (Validator.isNotNull(stepCode)) {
+			if (stepCode.contains("|")) {
+				String[] stepArr = stepCode.split("|");
+				for (String step : stepArr) {
+					List<DossierAction> lstDActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), step);
+					if (lstDActions.size() > 0) {
+						return true;
+					}
+				}
+				return false;
+			} else {
+				List<DossierAction> lstDActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), stepCode);
+				if (lstDActions.size() > 0) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	private static boolean checkRoleDone(String roleCode, Dossier dossier) {

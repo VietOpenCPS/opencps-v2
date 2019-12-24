@@ -138,39 +138,7 @@
 
 	</entity>
 
-	<entity name="Preferences" uuid="true" local-service="true"
-		remote-service="false" table="opencps_preferences">
 
-		<!-- PK fields -->
-
-		<column name="preferencesId" primary="true" type="long" />
-
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="preferences" type="String" />
-
-		<order by="asc">
-			<order-column name="createDate"></order-column>
-		</order>
-
-		<finder return-type="Preferences" name="F_userId" unique="true">
-			<finder-column name="groupId"></finder-column>
-			<finder-column name="userId"></finder-column>
-		</finder>
-
-	</entity>
-	
 	<entity name="ServerConfig" local-service="true"
 		remote-service="false" table="opencps_serverconfig">
 
@@ -230,6 +198,11 @@
 		</finder>
 
 		<finder return-type="Collection" name="P">
+			<finder-column name="protocol"/>
+		</finder>
+		<finder return-type="ServerConfig" name="F_G_S_P">
+			<finder-column name="groupId"/>
+			<finder-column name="serverNo"/>
 			<finder-column name="protocol"/>
 		</finder>
 	</entity>

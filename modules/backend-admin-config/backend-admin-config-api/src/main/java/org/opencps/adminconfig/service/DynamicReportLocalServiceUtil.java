@@ -191,6 +191,11 @@ public class DynamicReportLocalServiceUtil {
 		return getService().fetchByCode(groupId, reportCode);
 	}
 
+	public static org.opencps.adminconfig.model.DynamicReport fetchByG_CODE(
+		long groupId, String reportCode) {
+		return getService().fetchByG_CODE(groupId, reportCode);
+	}
+
 	public static org.opencps.adminconfig.model.DynamicReport fetchDynamicReport(
 		long dynamicReportId) {
 		return getService().fetchDynamicReport(dynamicReportId);
@@ -276,6 +281,17 @@ public class DynamicReportLocalServiceUtil {
 	public static org.opencps.adminconfig.model.DynamicReport updateDynamicReport(
 		org.opencps.adminconfig.model.DynamicReport dynamicReport) {
 		return getService().updateDynamicReport(dynamicReport);
+	}
+
+	public static org.opencps.adminconfig.model.DynamicReport updateDynamicReportDB(
+		long userId, long groupId, String reportCode, String reportName,
+		int sharing, String filterConfig, String tableConfig,
+		String userConfig, String reportType)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return getService()
+				   .updateDynamicReportDB(userId, groupId, reportCode,
+			reportName, sharing, filterConfig, tableConfig, userConfig,
+			reportType);
 	}
 
 	public static DynamicReportLocalService getService() {
