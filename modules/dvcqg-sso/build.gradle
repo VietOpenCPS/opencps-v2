@@ -18,6 +18,7 @@ dependencies {
     compileOnly group: 'freemarker', name: 'freemarker', version: '2.3.9'
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.bridges", version: "2.0.0"
   	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"    
+    compileOnly group: 'com.liferay', name: 'com.liferay.portal.security.auto.login', version: '4.0.11'
 }
 
 apply plugin: 'java' 

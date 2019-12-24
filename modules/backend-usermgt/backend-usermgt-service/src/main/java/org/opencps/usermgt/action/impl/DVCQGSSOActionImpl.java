@@ -7,10 +7,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.AuthenticatedUserUUIDStoreUtil;
-import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
@@ -23,6 +22,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,22 +44,33 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	private Log _log = LogFactoryUtil.getLog(DVCQGSSOActionImpl.class);
 
 	@Override
-	public String getAuthURL(User user, long groupId, ServiceContext serviceContext, int vnconnect, String currentURL) {
+	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			int vnconnect, String currentURL) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
+
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
+			String accessToken = StringPool.BLANK;
+			if (request.getSession().getAttribute("accessToken") != null) {
+				accessToken = request.getSession().getAttribute("accessToken").toString();
+			}
+			
+			if (Validator.isNotNull(accessToken) && isValidAccessToken(serverConfig, accessToken)) {
+				return StringPool.BLANK;
+			}
 
 			try {
-
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 				String auth_server = config.getString("auth_server");
 				String auth_endpoint = config.getString("auth_endpoint");
 				String clientid = config.getString("clientid");
 				String callback_url = config.getString("callback_url");
-
+				String scope = config.getString("scope");
+				String acr_values = config.getString("acr_values");
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
-						+ "&redirect_uri=" + callback_url + "&scope=openid" + "&acr_values=LoA1";
+						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
+						+ AuthTokenUtil.getToken(request);
 
 				return endpoint;
 
@@ -69,11 +80,13 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			}
 
 		}
+
 		return StringPool.BLANK;
 	}
 
 	@Override
-	public String checkAuth(User user, long groupId, ServiceContext serviceContext, int vnconnect, String currentURL) {
+	public String checkAuth(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			int vnconnect, String currentURL) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -87,9 +100,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String auth_endpoint = config.getString("auth_endpoint");
 				String clientid = config.getString("clientid");
 				String callback_url = config.getString("callback_url");
-
+				String scope = config.getString("openid");
+				String acr_values = config.getString("acr_values");
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
-						+ "&redirect_uri=" + callback_url + "&scope=openid" + "&acr_values=LoA1";
+						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
+						+ AuthTokenUtil.getToken(request);
 
 				URL url = new URL(endpoint);
 
@@ -149,7 +164,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String accessToken = accessTokenInfo.getString("access_token");
 				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
 				request.getSession().setAttribute("accessToken", accessToken);
-				_log.info(">>>>>>>>>>>>>>>>getUserInfo " + request.getRequestedSessionId());
 			}
 		}
 		return result;
@@ -221,93 +235,91 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
-			HttpURLConnection conn = null;
-			try {
-
-				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-				String auth_server = config.getString("auth_server");
-				String validatetoken_endpoint = config.getString("validatetoken_endpoint");
-
-				String endpoint = auth_server + validatetoken_endpoint;
-
-				URL url = new URL(endpoint);
-
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
-				conn.setDoInput(true);
-				conn.setDoOutput(true);
-				conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-				conn.setRequestProperty("Accept", "application/json");
-				conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-				conn.setReadTimeout(60 * 1000);
-
-				conn.setUseCaches(false);
-
-				StringBuffer params = new StringBuffer();
-				params.append("token=" + accessToken);
-				params.append("&state=0");
-
-				conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("POST");
-				conn.setDoInput(true);
-				conn.setDoOutput(true);
-
-				conn.setRequestProperty("Accept", "application/json");
-				conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-				conn.setReadTimeout(60 * 1000);
-
-				conn.setUseCaches(false);
-
-				byte[] postData = params.toString().getBytes("UTF-8");
-				int postDataLength = postData.length;
-				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-					wr.write(postData);
-				}
-				conn.connect();
-
-				try (BufferedReader bufferedReader = new BufferedReader(
-						new InputStreamReader((conn.getInputStream())))) {
-
-					String output = StringPool.BLANK;
-
-					StringBuilder sb = new StringBuilder();
-
-					while ((output = bufferedReader.readLine()) != null) {
-						sb.append(output);
-					}
-
-					int responseCode = conn.getResponseCode();
-
-					System.out.println("response: " + sb.toString() + "|" + responseCode);
-
-					if (responseCode == 200) {
-						JSONObject object = JSONFactoryUtil.createJSONObject(sb.toString());
-
-						String client_id = object.getString("client_id");
-						if (client_id == config.getString("clientid")) {
-							// TODO check exp
-							return true;
-						}
-						// Fix tam
-						return true;
-					} else {
-						return false;
-					}
-
-				}
-
-			} catch (Exception e) {
-				_log.error(e);
-				return false;
-			} finally {
-				if (conn != null) {
-					conn.disconnect();
-				}
-			}
+			return isValidAccessToken(serverConfig, accessToken);
 		}
 
 		return false;
+	}
+
+	private boolean isValidAccessToken(ServerConfig serverConfig, String accessToken) {
+	
+		HttpURLConnection conn = null;
+		try {
+
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			String auth_server = config.getString("auth_server");
+			String validatetoken_endpoint = config.getString("validatetoken_endpoint");
+
+			String endpoint = auth_server + validatetoken_endpoint;
+
+			URL url = new URL(endpoint);
+
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			conn.setUseCaches(false);
+			conn.setReadTimeout(60 * 1000);
+			StringBuffer params = new StringBuffer();
+			params.append("token=" + accessToken);
+			params.append("&state=0");
+			byte[] postData = params.toString().getBytes("UTF-8");
+			int postDataLength = postData.length;
+			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+				wr.write(postData);
+			}
+			conn.connect();
+
+			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((conn.getInputStream())))) {
+
+				String output = StringPool.BLANK;
+
+				StringBuilder sb = new StringBuilder();
+
+				while ((output = bufferedReader.readLine()) != null) {
+					sb.append(output);
+				}
+
+				int responseCode = conn.getResponseCode();
+
+				_log.info("response: " + sb.toString() + "|" + responseCode);
+
+				if (responseCode == 200) {
+					JSONObject object = JSONFactoryUtil.createJSONObject(sb.toString());
+
+					String client_id = object.getString("client_id");
+					long exp = object.getLong("exp");
+					if (client_id.equals(config.getString("clientid")) && exp > System.currentTimeMillis()/1000) {
+						_log.info("------------------>>>>>>> accessToken " + accessToken + "| has expire");
+						return true;
+					}
+					
+					return false;
+				} else {
+					return false;
+				}
+
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.set(Calendar.MILLISECOND, 0);
+		System.out.println(c.getTimeInMillis());
 	}
 
 	private JSONObject getAccessToken(User user, long groupId, ServiceContext serviceContext, String authToken,
@@ -331,8 +343,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			params.append("&client_secret=" + client_secret);
 
 			String endpoint = auth_server + accesstoken_endpoint;
-
-			_log.info(params.toString());
 
 			URL url = new URL(endpoint);
 
@@ -415,7 +425,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		long groupId = userInfoObject.getLong("groupId");
 		Applicant applicant = null;
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		// applicantIdNo)
 		// ca nhan
 		_log.info(">>>>>>>>>>>>>>>>>>>>>>>> userInfoObject " + userInfoObject.toJSONString());
 		if (LoaiTaiKhoan == 1) {
@@ -430,7 +439,9 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
 
-		} else if (LoaiTaiKhoan == 2) {
+		}
+		// doanh nghiep
+		else if (LoaiTaiKhoan == 2) {
 			if (Validator.isNull(MaSoThue) && Validator.isNull(MaSoDoanhNghiep)) {
 				return createErrorMessage("Unknown MaSoThue, MaSoDoanhNghiep");
 			}
@@ -459,19 +470,23 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		}
 
 		long mappingUserId = applicant.getMappingUserId();
-		_log.info("------------>>> accessToken: " + request.getSession().getAttribute("accessToken") + "|"
-				+ request.getRequestedSessionId());
+		String accessToken = StringPool.BLANK;
+		if(request.getSession().getAttribute("accessToken") != null) {
+			accessToken = request.getSession().getAttribute("accessToken").toString();
+		}
+		_log.info("------------>>> accessToken: " + accessToken + "| mappingUserId " + mappingUserId);
 		result.put("status", 0);
 		result.put("message", "success");
 		result.put("userId", mappingUserId);
 		result.put("groupId", groupId);
-		result.put("accessToken", request.getSession().getAttribute("accessToken"));
+		// result.put("accessToken", accessToken);
 		result.put("email", applicant.getContactEmail());
-		//AuthenticatedSessionManagerUtil.login(request, response, applicant.getContactEmail(), applicant.getTmpPass(),
-		//		false, CompanyConstants.AUTH_TYPE_EA);
-		
-		
-		
+
+		// AuthenticatedSessionManagerUtil.login(request, response,
+		// applicant.getContactEmail(), applicant.getTmpPass(),
+		// false, CompanyConstants.AUTH_TYPE_EA);
+
+		// @See AuthenticatedSessionManagerImpl.java
 		CookieKeys.validateSupportCookie(request);
 
 		HttpSession session = request.getSession();
@@ -480,10 +495,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		User userLogin = UserLocalServiceUtil.getUser(mappingUserId);
 
-	
 		session = renewSession(request, session);
 
 		// Set cookies
+		
+		session.setAttribute("accessToken", accessToken);
 
 		String domain = CookieKeys.getDomain(request);
 
@@ -499,9 +515,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		session.setAttribute("j_remoteuser", userIdString);
 
-		
-		Cookie companyIdCookie = new Cookie(
-			CookieKeys.COMPANY_ID, String.valueOf(company.getCompanyId()));
+		Cookie companyIdCookie = new Cookie(CookieKeys.COMPANY_ID, String.valueOf(company.getCompanyId()));
 
 		if (domain != null) {
 			companyIdCookie.setDomain(domain);
@@ -509,9 +523,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		companyIdCookie.setPath(StringPool.SLASH);
 
-		Cookie idCookie = new Cookie(
-			CookieKeys.ID,
-			Encryptor.encrypt(company.getKeyObj(), userIdString));
+		Cookie idCookie = new Cookie(CookieKeys.ID, Encryptor.encrypt(company.getKeyObj(), userIdString));
 
 		if (domain != null) {
 			idCookie.setDomain(domain);
@@ -526,8 +538,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		if (rememberMe) {
 			companyIdCookie.setMaxAge(loginMaxAge);
 			idCookie.setMaxAge(loginMaxAge);
-		}
-		else {
+		} else {
 
 			// This was explicitly changed from 0 to -1 so that the cookie lasts
 			// as long as the browser. This allows an external servlet wrapped
@@ -541,18 +552,15 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		boolean secure = request.isSecure();
 
-			Boolean httpsInitial = (Boolean)session.getAttribute(
-				WebKeys.HTTPS_INITIAL);
+		Boolean httpsInitial = (Boolean) session.getAttribute(WebKeys.HTTPS_INITIAL);
 
-			if ((httpsInitial == null) || !httpsInitial.booleanValue()) {
-				secure = false;
-			}
+		if ((httpsInitial == null) || !httpsInitial.booleanValue()) {
+			secure = false;
+		}
 
 		CookieKeys.addCookie(request, response, companyIdCookie, secure);
+
 		CookieKeys.addCookie(request, response, idCookie, secure);
-		
-		_log.info("----->>>>>>> Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()) " + Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
-		_log.info("----->>>>>>> Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass())2 " + userLogin.getPassword());
 
 		if (rememberMe) {
 			Cookie loginCookie = new Cookie(CookieKeys.LOGIN, TenDoanhNghiep);
@@ -566,12 +574,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			CookieKeys.addCookie(request, response, loginCookie, secure);
 
-			Cookie passwordCookie = new Cookie(
-				CookieKeys.PASSWORD,
-				Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
-			
-			_log.info("----->>>>>>> Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()) " + Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
-			_log.info("----->>>>>>> Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass())2 " + userLogin.getPassword());
+			Cookie passwordCookie = new Cookie(CookieKeys.PASSWORD,
+					Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
 
 			if (domain != null) {
 				passwordCookie.setDomain(domain);
@@ -582,8 +586,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			CookieKeys.addCookie(request, response, passwordCookie, secure);
 
-			Cookie rememberMeCookie = new Cookie(
-				CookieKeys.REMEMBER_ME, Boolean.TRUE.toString());
+			Cookie rememberMeCookie = new Cookie(CookieKeys.REMEMBER_ME, Boolean.TRUE.toString());
 
 			if (domain != null) {
 				rememberMeCookie.setDomain(domain);
@@ -594,9 +597,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			CookieKeys.addCookie(request, response, rememberMeCookie, secure);
 
-			Cookie screenNameCookie = new Cookie(
-				CookieKeys.SCREEN_NAME,
-				Encryptor.encrypt(company.getKeyObj(), userLogin.getScreenName()));
+			Cookie screenNameCookie = new Cookie(CookieKeys.SCREEN_NAME,
+					Encryptor.encrypt(company.getKeyObj(), userLogin.getScreenName()));
 
 			if (domain != null) {
 				screenNameCookie.setDomain(domain);
@@ -610,12 +612,9 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		boolean AUTH_USER_UUID_STORE_ENABLED = false;
 		if (AUTH_USER_UUID_STORE_ENABLED) {
-			String userUUID = userIdString.concat(StringPool.PERIOD).concat(
-				String.valueOf(System.nanoTime()));
+			String userUUID = userIdString.concat(StringPool.PERIOD).concat(String.valueOf(System.nanoTime()));
 
-			Cookie userUUIDCookie = new Cookie(
-				CookieKeys.USER_UUID,
-				Encryptor.encrypt(company.getKeyObj(), userUUID));
+			Cookie userUUIDCookie = new Cookie(CookieKeys.USER_UUID, Encryptor.encrypt(company.getKeyObj(), userUUID));
 
 			userUUIDCookie.setPath(StringPool.SLASH);
 
@@ -623,8 +622,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			if (rememberMe) {
 				userUUIDCookie.setMaxAge(loginMaxAge);
-			}
-			else {
+			} else {
 				userUUIDCookie.setMaxAge(-1);
 			}
 
@@ -632,35 +630,30 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			AuthenticatedUserUUIDStoreUtil.register(userUUID);
 		}
-		// invokeValidateAccessToken(mappingUserId, groupId,
-		// request.getSession().getAttribute("accessToken").toString());
+
 		return result;
 	}
-	
-	
-	public HttpSession renewSession(
-			HttpServletRequest request, HttpSession session)
-		throws Exception {
+
+	public HttpSession renewSession(HttpServletRequest request, HttpSession session) throws Exception {
 
 		// Invalidate the previous session to prevent session fixation attacks
 
-		//String[] protectedAttributeNames =
-		//	PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES;
+		// String[] protectedAttributeNames =
+		// PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES;
 
-		String[] protectedAttributeNames = new String[] {"CAS_LOGIN","HTTPS_INITIAL","LAST_PATH","OPEN_ID_CONNECT_SESSION"};
-		
+		String[] protectedAttributeNames = new String[] { "CAS_LOGIN", "HTTPS_INITIAL", "LAST_PATH",
+				"OPEN_ID_CONNECT_SESSION" };
+
 		Map<String, Object> protectedAttributes = new HashMap<>();
 
 		for (String protectedAttributeName : protectedAttributeNames) {
-			Object protectedAttributeValue = session.getAttribute(
-				protectedAttributeName);
+			Object protectedAttributeValue = session.getAttribute(protectedAttributeName);
 
 			if (protectedAttributeValue == null) {
 				continue;
 			}
 
-			protectedAttributes.put(
-				protectedAttributeName, protectedAttributeValue);
+			protectedAttributes.put(protectedAttributeName, protectedAttributeValue);
 		}
 
 		session.invalidate();
@@ -668,23 +661,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		session = request.getSession(true);
 
 		for (String protectedAttributeName : protectedAttributeNames) {
-			Object protectedAttributeValue = protectedAttributes.get(
-				protectedAttributeName);
+			Object protectedAttributeValue = protectedAttributes.get(protectedAttributeName);
 
 			if (protectedAttributeValue == null) {
 				continue;
 			}
 
-			session.setAttribute(
-				protectedAttributeName, protectedAttributeValue);
+			session.setAttribute(protectedAttributeName, protectedAttributeValue);
 		}
 
 		return session;
 	}
 
-	
-	
-
+	@Deprecated
 	private void invokeValidateAccessToken(long userId, long groupId, String accessToken) {
 
 		HttpURLConnection conn = null;
