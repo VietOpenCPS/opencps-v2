@@ -538,6 +538,24 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Applicant updateApplication(
+		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
+		long applicantId, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String profile, String password, boolean activeUser)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _applicantLocalService.updateApplication(context, groupId,
+			applicantId, applicantName, applicantIdType, applicantIdNo,
+			applicantIdDate, address, cityCode, cityName, districtCode,
+			districtName, wardCode, wardName, contactName, contactTelNo,
+			contactEmail, profile, password, activeUser);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.Applicant updateApplicationDB(
 		long groupId, long userId, long applicantId, String applicantIdNo,
 		String applicantName, String applicantIdType,

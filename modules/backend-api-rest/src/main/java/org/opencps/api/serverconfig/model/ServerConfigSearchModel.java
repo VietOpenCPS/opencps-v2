@@ -45,7 +45,15 @@ import javax.xml.bind.annotation.XmlType;
     "start",
     "end",
     "sort",
-    "order"
+    "order",
+    "eFormNo",
+    "maCha",
+    "nameDM",
+    "parentId",
+    "govAgencyName",
+    "employeeName",
+    "ma_ng_ky",
+    "ma_cqql"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -59,6 +67,22 @@ public class ServerConfigSearchModel {
     protected String sort;
 	@QueryParam("order")
     protected String order;
+	@QueryParam("eFormNo")
+    protected String eFormNo;
+	@QueryParam("maCha")
+    protected String maCha;
+	@QueryParam("nameDM")
+    protected String nameDM;
+	@QueryParam("parentId")
+    protected String parentId;
+	@QueryParam("govAgencyName")
+    protected String govAgencyName;
+	@QueryParam("employeeName")
+    protected String employeeName;
+	@QueryParam("ma_ng_ky")
+    protected String ma_ng_ky;
+	@QueryParam("ma_cqql")
+    protected String ma_cqql;
 
     /**
      * Gets the value of the keyword property.
@@ -179,5 +203,69 @@ public class ServerConfigSearchModel {
     public void setOrder(String value) {
         this.order = value;
     }
+
+	public String geteFormNo() {
+		return eFormNo;
+	}
+
+	public void seteFormNo(String eFormNo) {
+		this.eFormNo = eFormNo;
+	}
+
+	public String getMaCha() {
+		return maCha;
+	}
+
+	public void setMaCha(String maCha) {
+		this.maCha = maCha;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getNameDM() {
+		return nameDM;
+	}
+
+	public void setNameDM(String nameDM) {
+		this.nameDM = nameDM;
+	}
+
+	public String getMa_ng_ky() {
+		return ma_ng_ky;
+	}
+
+	public void setMa_ng_ky(String ma_ng_ky) {
+		this.ma_ng_ky = ma_ng_ky;
+	}
+
+	public String getMa_cqql() {
+		return ma_cqql;
+	}
+
+	public void setMa_cqql(String ma_cqql) {
+		this.ma_cqql = ma_cqql;
+	}
 
 }

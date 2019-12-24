@@ -242,6 +242,53 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
+				
+//				3 year before
+//				int lastYear2 = LocalDate.now().getYear() - 2;
+//				boolean flagLastYear2 = true;
+//				Map<Integer, Boolean> mapFlagPrev2 = new HashMap<>();
+//				Map<Integer, Map<String, DossierStatisticData>> calculateLastData2 = new HashMap<>();
+//				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+//					List<OpencpsDossierStatistic> dossierStatisticList2 = engineUpdateAction
+//							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear2, true);
+//					if (dossierStatisticList2 != null && dossierStatisticList2.size() > 0) {
+//						flagLastYear2 = false;
+//					}
+//					if (flagLastYear2) {
+//						try {
+//							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear2, payload,
+//								engineUpdateAction, serviceDomainResponse, calculateLastData2);
+//							calculateDatas.put(lastYear2, calculateLastData2);
+//						}
+//						catch (Exception e) {
+//							_log.debug(e);
+//						}
+//					}
+//					mapFlagPrev2.put(lastMonth, flagLastYear2);
+//				}
+//
+//				int lastYear3 = LocalDate.now().getYear() - 3;
+//				boolean flagLastYear3 = true;
+//				Map<Integer, Boolean> mapFlagPrev3 = new HashMap<>();
+//				Map<Integer, Map<String, DossierStatisticData>> calculateLastData3 = new HashMap<>();
+//				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+//					List<OpencpsDossierStatistic> dossierStatisticList3 = engineUpdateAction
+//							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear3, true);
+//					if (dossierStatisticList3 != null && dossierStatisticList3.size() > 0) {
+//						flagLastYear3 = false;
+//					}
+//					if (flagLastYear3) {
+//						try {
+//							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear3, payload,
+//								engineUpdateAction, serviceDomainResponse, calculateLastData3);
+//							calculateDatas.put(lastYear3, calculateLastData3);
+//						}
+//						catch (Exception e) {
+//							_log.debug(e);
+//						}
+//					}
+//					mapFlagPrev3.put(lastMonth, flagLastYear3);
+//				}
 
 //				List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(site.getGroupId());
 //				if (allSiteDatas.size() == 0 && site.getGroupId() == 52737) {
@@ -264,8 +311,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
 						}
 					}
-				}			
-				
+				}
+
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlagPrev.get(lastMonth)) {
@@ -275,8 +322,29 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
 						}
 					}
-				}			
-	
+				}
+
+//				3 year before
+//				StatisticEngineUpdate statisticEngineUpdate2 = new StatisticEngineUpdate();
+//				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+//					if (mapFlagPrev2.get(lastMonth)) {
+//						if (calculateDatas.get(lastYear2) != null &&
+//								calculateDatas.get(lastYear2).get(lastMonth) != null) {
+//							statisticEngineUpdate2.updateStatisticData(calculateDatas.get(lastYear2).get(lastMonth));
+//						}
+//					}
+//				}
+//
+//				StatisticEngineUpdate statisticEngineUpdate3 = new StatisticEngineUpdate();
+//				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+//					if (mapFlagPrev3.get(lastMonth)) {
+//						if (calculateDatas.get(lastYear3) != null &&
+//								calculateDatas.get(lastYear3).get(lastMonth) != null) {
+//							statisticEngineUpdate3.updateStatisticData(calculateDatas.get(lastYear3).get(lastMonth));
+//						}
+//					}
+//				}
+
 				/* Update summary */
 				//Delete record
 //				try {
@@ -291,6 +359,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
 				// Last year
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
+
+//				3 year before
+//				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear2);
+//				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear3);
 				//Caculate statistic all year
 				_log.info("START STATISTIC ALL YEAR: ");
 				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0);
@@ -500,7 +572,17 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get("data");
 			List<GetDossierData> dossierData = new ArrayList<>();
+			int total = jsonData.getInt("total");
+
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
+			_log.debug("GET DOSSIER total: " + total);
+
+			if (total > datas.size() && datas.size() == 0) {
+				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
+				datas = (List<Document>) jsonData2.get("data");
+				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+			}
+
 			for (Document doc : datas) {
 				GetDossierData model = new GetDossierData();
 				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));

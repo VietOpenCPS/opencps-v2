@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "sequenceNo",
     "sequenceName",
     "sequenceRole",
-    "durationCount"
+    "durationCount",
+    "postAction"
 })
 public class ProcessSequenceInputModel {
 
@@ -53,6 +54,8 @@ public class ProcessSequenceInputModel {
     protected String sequenceRole;
 	@FormParam(value="durationCount")
     protected Double durationCount;
+	@FormParam(value="postAction")
+    protected String postAction;
 
     /**
      * Gets the value of the sequenceNo property.
@@ -150,4 +153,11 @@ public class ProcessSequenceInputModel {
         this.durationCount = value;
     }
 
+	public String getPostAction() {
+		return postAction;
+	}
+
+	public void setPostAction(String postAction) {
+		this.postAction = postAction;
+	}
 }
