@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
+
 
 /**
 * <p>Java class for DossierActionNextActionModel complex type.
@@ -66,7 +68,8 @@ import javax.xml.bind.annotation.XmlType;
  "createFiles",
  "returnFiles",
  "checkInput",
- "configNote"
+ "configNote",
+ "dossierParts"
 })
 @XmlRootElement(name = "DossierDetailNextActionModel")
 public class DossierDetailNextActionModel {
@@ -90,6 +93,7 @@ public class DossierDetailNextActionModel {
 	protected List<DossierActionNextActionReturnFiles> returnFiles;
 	protected Integer checkInput;
 	protected String configNote;
+	protected List<DossierTemplatePartDataModel> dossierParts;
 
 	public Long getProcessActionId() {
 		return processActionId;
@@ -366,5 +370,14 @@ public class DossierDetailNextActionModel {
 	
 	public void setReceiving(ReceivingModel value) {
 		this.receiving = value;
+	}
+	
+
+	public List<DossierTemplatePartDataModel> getDossierParts() {
+		return dossierParts;
+	}
+	
+	public void setDossierParts(List<DossierTemplatePartDataModel> value) {
+		this.dossierParts = value;
 	}
 }
