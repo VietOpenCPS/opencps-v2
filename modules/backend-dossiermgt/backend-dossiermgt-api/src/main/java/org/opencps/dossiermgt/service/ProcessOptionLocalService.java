@@ -205,6 +205,8 @@ public interface ProcessOptionLocalService extends BaseLocalService,
 
 	public List<ProcessOption> findAll(int start, int end);
 
+	public List<ProcessOption> findByGroup(long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

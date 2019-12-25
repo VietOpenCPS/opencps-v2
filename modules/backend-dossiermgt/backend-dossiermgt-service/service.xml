@@ -448,6 +448,10 @@
 			<finder-column name="serviceProcessId" />
 			<finder-column name="dossierTemplateId" />
 		</finder>
+
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
+		</finder>
 	</entity>
 
 	<entity name="Dossier" table="opencps_dossier" local-service="true"

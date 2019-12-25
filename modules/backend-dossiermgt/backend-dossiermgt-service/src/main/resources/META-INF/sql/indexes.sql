@@ -196,6 +196,7 @@ create index IX_34CDC00 on opencps_processaction (serviceProcessId, preStepCode[
 create index IX_EBDC8BC on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_39594E3E on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_D8C5543 on opencps_processoption (groupId);
 create index IX_28B30015 on opencps_processoption (serviceConfigId, dossierTemplateId);
 create index IX_5B82BB8E on opencps_processoption (serviceConfigId, optionOrder);
 create index IX_9D238C20 on opencps_processoption (serviceProcessId, dossierTemplateId);

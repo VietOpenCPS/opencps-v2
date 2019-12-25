@@ -221,6 +221,11 @@ public class ProcessOptionLocalServiceUtil {
 		return getService().findAll(start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ProcessOption> findByGroup(
+		long groupId) {
+		return getService().findByGroup(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

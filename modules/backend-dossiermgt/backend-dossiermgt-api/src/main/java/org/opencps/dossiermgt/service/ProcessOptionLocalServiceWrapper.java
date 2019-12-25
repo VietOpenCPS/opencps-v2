@@ -233,6 +233,12 @@ public class ProcessOptionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ProcessOption> findByGroup(
+		long groupId) {
+		return _processOptionLocalService.findByGroup(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _processOptionLocalService.getActionableDynamicQuery();
 	}
