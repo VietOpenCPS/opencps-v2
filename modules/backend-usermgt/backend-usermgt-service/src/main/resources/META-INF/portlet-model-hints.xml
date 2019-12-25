@@ -251,6 +251,8 @@
 		<field name="questionType" type="String" />
 		<field name="subDomainCode" type="String" />
 		<field name="subDomainName" type="String" />
+		<field name="phone" type="String" />
+		<field name="address" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />

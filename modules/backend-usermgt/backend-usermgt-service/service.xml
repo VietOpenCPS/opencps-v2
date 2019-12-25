@@ -675,7 +675,9 @@
 		<column name="questionType" type="String" />
 		<column name="subDomainCode" type="String" />
 		<column name="subDomainName" type="String" />
-
+		<column name="phone" type="String"></column>
+		<column name="address" type="String"></column>
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />

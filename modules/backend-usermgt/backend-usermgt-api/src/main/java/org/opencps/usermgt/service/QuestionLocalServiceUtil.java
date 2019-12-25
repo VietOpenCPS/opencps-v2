@@ -273,11 +273,13 @@ public class QuestionLocalServiceUtil {
 		long companyId, long groupId, long questionId, String fullname,
 		String email, String content, int publish, String domainCode,
 		String domainName, String govAgencyCode, String govAgencyName,
-		String questionType, String subDomainCode, String subDomainName) {
+		String questionType, String subDomainCode, String subDomainName,
+		String phone, String address) {
 		return getService()
 				   .updateQuestion(companyId, groupId, questionId, fullname,
 			email, content, publish, domainCode, domainName, govAgencyCode,
-			govAgencyName, questionType, subDomainCode, subDomainName);
+			govAgencyName, questionType, subDomainCode, subDomainName, phone,
+			address);
 	}
 
 	/**

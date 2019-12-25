@@ -299,6 +299,36 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	 */
 	public void setSubDomainName(String subDomainName);
 
+	/**
+	 * Returns the phone of this question.
+	 *
+	 * @return the phone of this question
+	 */
+	@AutoEscape
+	public String getPhone();
+
+	/**
+	 * Sets the phone of this question.
+	 *
+	 * @param phone the phone of this question
+	 */
+	public void setPhone(String phone);
+
+	/**
+	 * Returns the address of this question.
+	 *
+	 * @return the address of this question
+	 */
+	@AutoEscape
+	public String getAddress();
+
+	/**
+	 * Sets the address of this question.
+	 *
+	 * @param address the address of this question
+	 */
+	public void setAddress(String address);
+
 	@Override
 	public boolean isNew();
 

@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -98,6 +98,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(subDomainCode);
 		sb.append(", subDomainName=");
 		sb.append(subDomainName);
+		sb.append(", phone=");
+		sb.append(phone);
+		sb.append(", address=");
+		sb.append(address);
 		sb.append("}");
 
 		return sb.toString();
@@ -197,6 +201,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 			questionImpl.setSubDomainName(subDomainName);
 		}
 
+		if (phone == null) {
+			questionImpl.setPhone("");
+		}
+		else {
+			questionImpl.setPhone(phone);
+		}
+
+		if (address == null) {
+			questionImpl.setAddress("");
+		}
+		else {
+			questionImpl.setAddress(address);
+		}
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -223,6 +241,8 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		questionType = objectInput.readUTF();
 		subDomainCode = objectInput.readUTF();
 		subDomainName = objectInput.readUTF();
+		phone = objectInput.readUTF();
+		address = objectInput.readUTF();
 	}
 
 	@Override
@@ -307,6 +327,20 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		else {
 			objectOutput.writeUTF(subDomainName);
 		}
+
+		if (phone == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(phone);
+		}
+
+		if (address == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(address);
+		}
 	}
 
 	public long questionId;
@@ -325,4 +359,6 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String questionType;
 	public String subDomainCode;
 	public String subDomainName;
+	public String phone;
+	public String address;
 }

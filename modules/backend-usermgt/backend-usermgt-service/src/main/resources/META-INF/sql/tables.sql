@@ -178,7 +178,9 @@ create table opencps_question (
 	govAgencyName VARCHAR(75) null,
 	questionType VARCHAR(75) null,
 	subDomainCode VARCHAR(75) null,
-	subDomainName VARCHAR(75) null
+	subDomainName VARCHAR(75) null,
+	phone VARCHAR(75) null,
+	address VARCHAR(75) null
 );
 
 create table opencps_resourcerole (

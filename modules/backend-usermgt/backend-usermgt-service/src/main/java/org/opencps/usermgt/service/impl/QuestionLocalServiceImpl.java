@@ -44,7 +44,7 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 		long companyId, long groupId, long questionId, String fullname,
 		String email, String content, int publish, String domainCode,
 		String domainName, String govAgencyCode, String govAgencyName,
-		String questionType, String subDomainCode, String subDomainName) {
+		String questionType, String subDomainCode, String subDomainName, String phone, String address) {
 		Question question = null;
 		Date now = new Date();
 		
@@ -67,6 +67,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 			question.setQuestionType(questionType);
 			question.setSubDomainCode(subDomainCode);
 			question.setSubDomainName(subDomainName);
+			question.setPhone(phone);
+			question.setAddress(address);
 		}
 		else {
 			question = questionPersistence.fetchByPrimaryKey(questionId);
@@ -85,6 +87,8 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 			question.setQuestionType(questionType);
 			question.setSubDomainCode(subDomainCode);
 			question.setSubDomainName(subDomainName);
+			question.setPhone(phone);
+			question.setAddress(address);
 		}
 		return questionPersistence.update(question);
 	}

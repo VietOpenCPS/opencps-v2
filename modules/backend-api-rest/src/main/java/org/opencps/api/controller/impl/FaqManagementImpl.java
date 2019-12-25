@@ -102,7 +102,7 @@ public class FaqManagementImpl implements FaqManagement {
 				input.getDomainCode(), input.getDomainName(),
 				input.getGovAgencyCode(), input.getGovAgencyName(),
 				input.getQuestionType(), input.getSubDomainCode(),
-				input.getSubDomainName());
+				input.getSubDomainName(), input.getPhone(), input.getAddress());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());
@@ -350,7 +350,7 @@ public class FaqManagementImpl implements FaqManagement {
 				input.getPublish(), input.getDomainCode(),
 				input.getDomainName(), input.getGovAgencyCode(),
 				input.getGovAgencyName(), input.getQuestionType(),
-				input.getSubDomainCode(), input.getSubDomainName());
+				input.getSubDomainCode(), input.getSubDomainName(), input.getPhone(), input.getAddress());
 			if (question != null) {
 				QuestionDetailModel result = new QuestionDetailModel();
 				result.setContent(question.getContent());

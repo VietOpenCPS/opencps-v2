@@ -210,6 +210,8 @@
 		<property name="questionType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="phone" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="address" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ResourceRoleImpl" table="opencps_resourcerole">
 		<id name="resourceRoleId" type="long">

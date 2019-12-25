@@ -769,6 +769,14 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 										questionData.getString("govAgencyCode");
 									if (Validator.isNotNull(content) &&
 										Validator.isNotNull(govAgencyCode)) {
+										String phone = StringPool.BLANK;
+										String address = StringPool.BLANK;
+										if (questionData.has("phone")) {
+											phone = questionData.getString("phone");
+										}
+										if (questionData.has("address")) {
+											address = questionData.getString("address");
+										}
 										Question question =
 											QuestionLocalServiceUtil.updateQuestion(
 												serviceContext.getCompanyId(),
@@ -789,7 +797,9 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 												questionData.getString(
 													"subDomainCode"),
 												questionData.getString(
-													"subDomainName"));
+													"subDomainName"),
+												phone,
+												address);
 										if (question != null) {
 											AnswerLocalServiceUtil.updateAnswer(
 												userId, groupId, 0l,
