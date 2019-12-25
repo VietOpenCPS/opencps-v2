@@ -577,7 +577,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
 			_log.debug("GET DOSSIER total: " + total);
 
-			if (total > datas.size() && datas.size() == 0) {
+			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
 				datas = (List<Document>) jsonData2.get("data");
 				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
