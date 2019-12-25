@@ -1,0 +1,33 @@
+dependencies {
+
+	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	compileOnly group: "javax.portlet", name: "portlet-api", version: "3.0.0"
+	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
+	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
+	compileOnly group: 'com.liferay', name: 'com.liferay.petra.string', version: '2.0.1'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
+	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
+    compileOnly group: "jstl", name: "jstl", version: "1.2"
+    compileOnly group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0'
+    compileOnly group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
+    compileOnly group: 'freemarker', name: 'freemarker', version: '2.3.9'
+	compileOnly group: "com.liferay.portal", name: "com.liferay.util.bridges", version: "2.0.0"
+  	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"    
+    compileOnly group: 'com.liferay', name: 'com.liferay.portal.security.auto.login', version: '4.0.11'
+}
+
+apply plugin: 'java' 
+apply plugin: 'war'
+
+repositories {
+  mavenCentral()
+}
+
+war {
+    archiveName 'dvcqg-sso.war'
+}

@@ -411,6 +411,16 @@ public interface ApplicantLocalService extends BaseLocalService,
 		throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplication(ServiceContext context, long groupId,
+		long applicantId, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String profile, String password, boolean activeUser)
+		throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Applicant updateApplicationDB(long groupId, long userId,
 		long applicantId, String applicantIdNo, String applicantName,
 		String applicantIdType, Date applicantIdDate, String contactEmail,
