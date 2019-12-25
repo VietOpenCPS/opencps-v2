@@ -59,6 +59,7 @@
 		<column name="upvoteCount" type="int" />
 		<column name="userHasUpvoted" type="String" />
 		<column name="upvotedUsers" type="String" />
+        <column name="opinion" type="boolean"></column>
 
 		<!-- Order -->
 		<order by="asc">
@@ -69,15 +70,6 @@
 			<finder-column name="groupId"></finder-column>
 		</finder>
 
-        <column name="opinion" type="boolean"></column>
-		<order by="asc">
-			<order-column name="modifiedDate" />
-		</order>
-
-		<finder return-type="Collection" name="F_groupId"
-			where=" ( content is not null ) ">
-			<finder-column name="groupId"></finder-column>
-		</finder>
         <finder name="F_groupId_userId_className_classPK_opinion" return-type="Comment">
             <finder-column name="groupId"></finder-column>
             <finder-column name="userId"></finder-column>

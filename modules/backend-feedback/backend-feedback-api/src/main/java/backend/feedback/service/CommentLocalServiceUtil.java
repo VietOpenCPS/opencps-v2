@@ -243,7 +243,8 @@ public class CommentLocalServiceUtil {
 	}
 
 	public static backend.feedback.model.Comment findByPrimaryKey(
-		long commentId) throws NoSuchCommentException {
+		long commentId)
+		throws backend.feedback.exception.NoSuchCommentException {
 		return getService().findByPrimaryKey(commentId);
 	}
 
@@ -382,7 +383,7 @@ public class CommentLocalServiceUtil {
 		String email, long parent, String content, String pings,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.NoSuchUserException,
-			javax.ws.rs.NotFoundException {
+			backend.auth.api.exception.NotFoundException {
 		return getService()
 				   .updateComment(userId, commentId, className, classPK,
 			fullname, email, parent, content, pings, serviceContext);
@@ -391,7 +392,7 @@ public class CommentLocalServiceUtil {
 	public static backend.feedback.model.Comment updateComment(long commentId,
 		String className, String classPK, String email, int upvoteCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws javax.ws.rs.NotFoundException {
+		throws backend.auth.api.exception.NotFoundException {
 		return getService()
 				   .updateComment(commentId, className, classPK, email,
 			upvoteCount, serviceContext);

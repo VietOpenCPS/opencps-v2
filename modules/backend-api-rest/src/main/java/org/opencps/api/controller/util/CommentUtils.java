@@ -32,12 +32,12 @@ import org.opencps.api.comment.model.CommentSearchModel;
 import org.opencps.api.comment.model.CommentTopList;
 import org.opencps.api.comment.model.CommentTopModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.datamgt.constants.CommentTerm;
-import org.opencps.datamgt.model.Comment;
 import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.BackendAuthImpl;
 import backend.auth.api.keys.ModelNameKeys;
+import backend.feedback.constants.CommentTerm;
+import backend.feedback.model.Comment;
 
 /**
  * @author trungnt

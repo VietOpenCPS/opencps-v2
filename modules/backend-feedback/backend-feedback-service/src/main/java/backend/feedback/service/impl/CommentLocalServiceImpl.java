@@ -56,12 +56,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.NotFoundException;
-
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.exception.NoSuchCommentException;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
+import backend.utils.DLFolderUtil;
+import backend.auth.api.exception.NotFoundException;
 
 /**
  * The implementation of the comment local service.

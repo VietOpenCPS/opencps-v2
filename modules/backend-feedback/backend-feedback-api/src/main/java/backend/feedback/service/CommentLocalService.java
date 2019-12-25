@@ -16,6 +16,10 @@ package backend.feedback.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import backend.auth.api.exception.NotFoundException;
+
+import backend.feedback.exception.NoSuchCommentException;
+
 import backend.feedback.model.Comment;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -50,8 +54,6 @@ import java.io.Serializable;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.NotFoundException;
 
 /**
  * Provides the local service interface for Comment. Methods of this
