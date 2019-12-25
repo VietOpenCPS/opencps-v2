@@ -17,7 +17,8 @@ create table opencps_comment (
 	pings VARCHAR(75) null,
 	upvoteCount INTEGER,
 	userHasUpvoted VARCHAR(75) null,
-	upvotedUsers VARCHAR(75) null
+	upvotedUsers VARCHAR(75) null,
+	opinion BOOLEAN
 );
 
 create table opencps_evaluation (

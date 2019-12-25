@@ -49,12 +49,12 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 		String className, String classPK, String fullname, String email,
 		long parent, String content, long fileSize,
 		java.io.InputStream inputStream, String fileName, String fileType,
-		int upvoteCount, String pings,
+		int upvoteCount, String pings, boolean opinion,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 		return _commentLocalService.addComment(userId, groupId, className,
 			classPK, fullname, email, parent, content, fileSize, inputStream,
-			fileName, fileType, upvoteCount, pings, serviceContext);
+			fileName, fileType, upvoteCount, pings, opinion, serviceContext);
 	}
 
 	@Override
@@ -93,10 +93,12 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	*
 	* @param comment the comment
 	* @return the comment that was removed
+	* @throws PortalException
 	*/
 	@Override
 	public backend.feedback.model.Comment deleteComment(
-		backend.feedback.model.Comment comment) {
+		backend.feedback.model.Comment comment)
+		throws com.liferay.portal.kernel.exception.PortalException {
 		return _commentLocalService.deleteComment(comment);
 	}
 
@@ -111,20 +113,6 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	public backend.feedback.model.Comment deleteComment(long commentId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _commentLocalService.deleteComment(commentId);
-	}
-
-	/**
-	* @param dictCollectionId
-	* @param serviceContext
-	* @return
-	* @throws PortalException
-	* @throws Exception
-	*/
-	@Override
-	public backend.feedback.model.Comment deleteComment(long commentId,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _commentLocalService.deleteComment(commentId, serviceContext);
 	}
 
 	/**
@@ -222,6 +210,14 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	}
 
 	@Override
+	public backend.feedback.model.Comment fetchByF_groupId_userId_className_classPK_opinion(
+		long groupId, long userId, String className, String classPK,
+		boolean opinion) {
+		return _commentLocalService.fetchByF_groupId_userId_className_classPK_opinion(groupId,
+			userId, className, classPK, opinion);
+	}
+
+	@Override
 	public backend.feedback.model.Comment fetchComment(long commentId) {
 		return _commentLocalService.fetchComment(commentId);
 	}
@@ -237,6 +233,25 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	public backend.feedback.model.Comment fetchCommentByUuidAndGroupId(
 		String uuid, long groupId) {
 		return _commentLocalService.fetchCommentByUuidAndGroupId(uuid, groupId);
+	}
+
+	@Override
+	public java.util.List<backend.feedback.model.Comment> findByF_groupId(
+		long groupId, int start, int end) {
+		return _commentLocalService.findByF_groupId(groupId, start, end);
+	}
+
+	@Override
+	public java.util.List<backend.feedback.model.Comment> findByF_groupId_className_classPK(
+		long groupId, String className, String classPK) {
+		return _commentLocalService.findByF_groupId_className_classPK(groupId,
+			className, classPK);
+	}
+
+	@Override
+	public backend.feedback.model.Comment findByPrimaryKey(long commentId)
+		throws NoSuchCommentException {
+		return _commentLocalService.findByPrimaryKey(commentId);
 	}
 
 	@Override
@@ -387,7 +402,8 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 		long commentId, String className, String classPK, String fullname,
 		String email, long parent, String content, String pings,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		throws com.liferay.portal.kernel.exception.NoSuchUserException,
+			javax.ws.rs.NotFoundException {
 		return _commentLocalService.updateComment(userId, commentId, className,
 			classPK, fullname, email, parent, content, pings, serviceContext);
 	}
@@ -395,7 +411,8 @@ public class CommentLocalServiceWrapper implements CommentLocalService,
 	@Override
 	public backend.feedback.model.Comment updateComment(long commentId,
 		String className, String classPK, String email, int upvoteCount,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws javax.ws.rs.NotFoundException {
 		return _commentLocalService.updateComment(commentId, className,
 			classPK, email, upvoteCount, serviceContext);
 	}

@@ -1,4 +1,5 @@
-create index IX_A96619E8 on opencps_comment (groupId);
+create index IX_A4AAE818 on opencps_comment (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$]);
+create index IX_19A6AF20 on opencps_comment (groupId, userId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$], opinion);
 create index IX_354CE276 on opencps_comment (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_2E778E78 on opencps_comment (uuid_[$COLUMN_LENGTH:75$], groupId);
 

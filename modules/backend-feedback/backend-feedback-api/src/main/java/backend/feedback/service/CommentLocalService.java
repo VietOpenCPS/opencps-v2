@@ -51,6 +51,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.NotFoundException;
+
 /**
  * Provides the local service interface for Comment. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -88,7 +90,8 @@ public interface CommentLocalService extends BaseLocalService,
 		String classPK, String fullname, String email, long parent,
 		String content, long fileSize, InputStream inputStream,
 		String fileName, String fileType, int upvoteCount, String pings,
-		ServiceContext serviceContext) throws Exception;
+		boolean opinion, ServiceContext serviceContext)
+		throws Exception;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Comment adminProcessData(JSONObject objectData);
@@ -113,9 +116,10 @@ public interface CommentLocalService extends BaseLocalService,
 	*
 	* @param comment the comment
 	* @return the comment that was removed
+	* @throws PortalException
 	*/
 	@Indexable(type = IndexableType.DELETE)
-	public Comment deleteComment(Comment comment);
+	public Comment deleteComment(Comment comment) throws PortalException;
 
 	/**
 	* Deletes the comment with the primary key from the database. Also notifies the appropriate model listeners.
@@ -126,17 +130,6 @@ public interface CommentLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.DELETE)
 	public Comment deleteComment(long commentId) throws PortalException;
-
-	/**
-	* @param dictCollectionId
-	* @param serviceContext
-	* @return
-	* @throws PortalException
-	* @throws Exception
-	*/
-	@Indexable(type = IndexableType.DELETE)
-	public Comment deleteComment(long commentId, ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -205,6 +198,11 @@ public interface CommentLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Comment fetchByF_groupId_userId_className_classPK_opinion(
+		long groupId, long userId, String className, String classPK,
+		boolean opinion);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Comment fetchComment(long commentId);
 
 	/**
@@ -216,6 +214,14 @@ public interface CommentLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Comment fetchCommentByUuidAndGroupId(String uuid, long groupId);
+
+	public List<Comment> findByF_groupId(long groupId, int start, int end);
+
+	public List<Comment> findByF_groupId_className_classPK(long groupId,
+		String className, String classPK);
+
+	public Comment findByPrimaryKey(long commentId)
+		throws NoSuchCommentException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -326,10 +332,10 @@ public interface CommentLocalService extends BaseLocalService,
 	public Comment updateComment(long userId, long commentId, String className,
 		String classPK, String fullname, String email, long parent,
 		String content, String pings, ServiceContext serviceContext)
-		throws NoSuchUserException;
+		throws NoSuchUserException, NotFoundException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Comment updateComment(long commentId, String className,
 		String classPK, String email, int upvoteCount,
-		ServiceContext serviceContext);
+		ServiceContext serviceContext) throws NotFoundException;
 }

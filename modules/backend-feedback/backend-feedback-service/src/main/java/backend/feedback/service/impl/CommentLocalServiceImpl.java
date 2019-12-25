@@ -15,6 +15,7 @@
 package backend.feedback.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -51,11 +53,13 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.NotFoundException;
 
 import backend.feedback.constants.CommentTerm;
+import backend.feedback.exception.NoSuchCommentException;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
 
@@ -89,13 +93,28 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	private static Log _log = LogFactoryUtil.getLog(CommentLocalServiceImpl.class);
 
 	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public Comment addComment(long userId, long groupId, String className, String classPK, String fullname,
 			String email, long parent, String content, long fileSize, InputStream inputStream, String fileName,
-			String fileType, int upvoteCount, String pings, ServiceContext serviceContext) throws Exception {
+			String fileType, int upvoteCount, String pings, boolean opinion, ServiceContext serviceContext)
+			throws Exception {
 
-		long commentId = counterLocalService.increment(Comment.class.getName());
+		Comment latestComment = null;
 
-		Comment comment = commentPersistence.create(commentId);
+		Comment comment = null;
+
+		if (opinion) {
+			latestComment = fetchByF_groupId_userId_className_classPK_opinion(groupId, userId, className, classPK,
+					opinion);
+
+		}
+
+		if (latestComment == null) {
+			long commentId = counterLocalService.increment(Comment.class.getName());
+			comment = commentPersistence.create(commentId);
+		} else {
+			comment = latestComment;
+		}
 
 		if (userId > 0) {
 			User user = userPersistence.findByPrimaryKey(userId);
@@ -115,41 +134,39 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		comment.setUserName(fullname);
 		comment.setCreateDate(serviceContext.getCreateDate(now));
 		comment.setModifiedDate(serviceContext.getCreateDate(now));
-
+		comment.setOpinion(opinion);
 		// Add attachment
 		if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
 
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
 
-			// String destination = "Comments/";
+			String destination = "Comments/";
 
 			Calendar calendar = Calendar.getInstance();
 
 			calendar.setTime(now);
 
-			// destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
-			// destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
-			// destination += calendar.get(Calendar.DAY_OF_MONTH);
+			destination += calendar.get(Calendar.YEAR) + StringPool.SLASH;
+			destination += calendar.get(Calendar.MONTH) + StringPool.SLASH;
+			destination += calendar.get(Calendar.DAY_OF_MONTH);
 
-			// DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId,
-			// false, 0, destination,
-			// "Comment attactment", false, serviceContext);
+			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
+					"Comment attactment", false, serviceContext);
 
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
 
-			// FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId,
-			// dlFolder.getFolderId(), fileName,
-			// fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment
-			// attachment",
-			// StringPool.BLANK, inputStream, fileSize, serviceContext);
+			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), fileName,
+					fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment attachment",
+					StringPool.BLANK, inputStream, fileSize, serviceContext);
 
 			// DLFolderUtil.setFilePermissions(fileEntry);
+			 DLFolderUtil.removeGuestPermissions(fileEntry);
 
-			// comment.setFileEntryId(fileEntry.getFileEntryId());
+			comment.setFileEntryId(fileEntry.getFileEntryId());
 
 		}
 
@@ -164,8 +181,115 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		comment.setPings(pings);
 		comment.setExpandoBridgeAttributes(serviceContext);
 
-		return commentPersistence.update(comment);
+		commentPersistence.update(comment);
 
+		return comment;
+	}
+
+	@Override
+	public long countLuceneSearchEngine(Map<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		// TODO Auto-generated method stub
+
+		Indexer<Comment> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Comment.class);
+
+		searchContext.addFullQueryEntryClassName(Comment.class.getName());
+		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
+
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		// searchContext.setAttribute("params", params);
+
+		// LAY CAC THAM SO TRONG PARAMS.
+
+		String classPK = GetterUtil.getString(params.get("classPK"));
+
+		String keywords = GetterUtil.getString(params.get("keywords"));
+
+		String groupId = GetterUtil.getString(params.get("groupId"));
+
+		String className = GetterUtil.getString(params.get("className"));
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+			String[] keyword = keywords.split(StringPool.SPACE);
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(CommentTerm.EMAIL);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(CommentTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(classPK)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(classPK);
+
+			query.addFields(CommentTerm.CLASS_PK);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(className);
+
+			query.addFields(CommentTerm.CLASS_NAME);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Comment.class.getName());
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public Comment deleteComment(Comment comment) throws PortalException {
+
+		try {
+
+			if (comment.getFileEntryId() > 0) {
+
+				DLAppLocalServiceUtil.deleteFileEntry(comment.getFileEntryId());
+			}
+
+			comment = commentPersistence.remove(comment);
+
+		} catch (NoSuchCommentException e) {
+			_log.debug(e);
+			// _log.error(e);
+			// throw new NotFoundException();
+		} catch (PortalException e) {
+			_log.debug(e);
+			// _log.error(e);
+			// throw new PortalException();
+		}
+
+		return comment;
 	}
 
 	/**
@@ -176,7 +300,8 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 	 * @throws Exception
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	public Comment deleteComment(long commentId, ServiceContext serviceContext) throws PortalException {
+	@Override
+	public Comment deleteComment(long commentId) throws PortalException {
 
 		Comment comment = null;
 
@@ -191,17 +316,146 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 			comment = commentPersistence.remove(commentId);
 
+		} catch (NoSuchCommentException e) {
+			_log.debug(e);
+			// _log.error(e);
+			// throw new NotFoundException();
 		} catch (PortalException e) {
-			_log.error(e);
-			throw new PortalException();
+			_log.debug(e);
+			// _log.error(e);
+			// throw new PortalException();
 		}
 
 		return comment;
 	}
 
+	@Override
+	public Comment fetchByF_groupId_userId_className_classPK_opinion(long groupId, long userId, String className,
+			String classPK, boolean opinion) {
+
+		return commentPersistence.fetchByF_groupId_userId_className_classPK_opinion(groupId, userId, className, classPK,
+				opinion);
+	}
+
+	@Override
+	public List<Comment> findByF_groupId(long groupId, int start, int end) {
+
+		return commentPersistence.findByF_groupId(groupId, start, end);
+	}
+
+	@Override
+	public List<Comment> findByF_groupId_className_classPK(long groupId, String className, String classPK) {
+
+		return commentPersistence.findByF_groupId_className_classPK(groupId, className, classPK);
+	}
+
+	@Override
+	public Comment findByPrimaryKey(long commentId) throws NoSuchCommentException {
+
+		return commentPersistence.findByPrimaryKey(commentId);
+	}
+
+	@Override
+	public Hits luceneSearchEngine(Map<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		Indexer<Comment> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Comment.class);
+
+		searchContext.addFullQueryEntryClassName(Comment.class.getName());
+		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
+
+		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		// searchContext.setAttribute("params", params);
+
+		// LAY CAC THAM SO TRONG PARAMS.
+
+		String classPK = GetterUtil.getString(params.get("classPK"));
+
+		String keywords = GetterUtil.getString(params.get("keywords"));
+
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
+
+		String className = GetterUtil.getString(params.get("className"));
+
+		String opinion = GetterUtil.getString(params.get(CommentTerm.OPINION));
+		// if (Validator.isNull(opinion)) {
+		// opinion = String.valueOf(false);
+		// }
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+			String[] keyword = keywords.split(StringPool.SPACE);
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(CommentTerm.EMAIL);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(CommentTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(classPK)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(classPK);
+
+			query.addFields(CommentTerm.CLASS_PK);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(className)) {
+
+			MultiMatchQuery query = new MultiMatchQuery(className);
+
+			query.addFields(CommentTerm.CLASS_NAME);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(opinion)) {
+			MultiMatchQuery query = new MultiMatchQuery(opinion);
+
+			query.addFields(CommentTerm.OPINION);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Comment.class.getName());
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
-	public Comment updateComment(long commentId, String className, String classPK, String email, int upvoteCount,
-			ServiceContext serviceContext) {
+	@Override
+	public Comment updateComment(long userId, long commentId, String className, String classPK, String fullname,
+			String email, long parent, String content, String pings, ServiceContext serviceContext)
+			throws NoSuchUserException, NotFoundException {
+
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		Comment comment = commentPersistence.fetchByPrimaryKey(commentId);
 
@@ -211,7 +465,41 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		Date now = new Date();
 
+		// Audit fields
+		comment.setUserId(user.getUserId());
+		comment.setUserName(user.getFullName());
 		comment.setModifiedDate(serviceContext.getCreateDate(now));
+
+		// Other fields
+
+		// comment.setClassName(className);
+		// comment.setClassPK(classPK);
+		comment.setFullname(fullname);
+		comment.setEmail(email);
+		comment.setParent(parent);
+		comment.setContent(content);
+		comment.setPings(pings);
+		comment.setExpandoBridgeAttributes(serviceContext);
+
+		commentPersistence.update(comment);
+
+		return comment;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public Comment updateComment(long commentId, String className, String classPK, String email, int upvoteCount,
+			ServiceContext serviceContext) throws NotFoundException {
+
+		Comment comment = commentPersistence.fetchByPrimaryKey(commentId);
+
+		if (Validator.isNull(comment)) {
+			throw new NotFoundException();
+		}
+
+		// Date now = new Date();
+
+		// comment.setModifiedDate(serviceContext.getCreateDate(now));
 
 		// Other fields
 		int counter = comment.getUpvoteCount();
@@ -244,187 +532,9 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		comment.setUpvoteCount(counter);
 		comment.setExpandoBridgeAttributes(serviceContext);
 
-		return commentPersistence.update(comment);
+		commentPersistence.update(comment);
 
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	public Comment updateComment(long userId, long commentId, String className, String classPK, String fullname,
-			String email, long parent, String content, String pings, ServiceContext serviceContext)
-			throws NoSuchUserException {
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		Comment comment = commentPersistence.fetchByPrimaryKey(commentId);
-
-		if (Validator.isNull(comment)) {
-			throw new NotFoundException();
-		}
-
-		Date now = new Date();
-
-		// Audit fields
-		comment.setUserId(user.getUserId());
-		comment.setUserName(user.getFullName());
-		comment.setModifiedDate(serviceContext.getCreateDate(now));
-
-		// Other fields
-
-		// comment.setClassName(className);
-		// comment.setClassPK(classPK);
-		comment.setFullname(fullname);
-		comment.setEmail(email);
-		comment.setParent(parent);
-		comment.setContent(content);
-		comment.setPings(pings);
-		comment.setExpandoBridgeAttributes(serviceContext);
-
-		return commentPersistence.update(comment);
-
-	}
-
-	// public List<Comment> findByF_groupId(long groupId, int start, int end) {
-	//
-	// return commentPersistence.findByF_groupId(groupId, start, end);
-	// }
-
-	public Hits luceneSearchEngine(Map<String, Object> params, Sort[] sorts, int start, int end,
-			SearchContext searchContext) throws ParseException, SearchException {
-
-		// TODO Auto-generated method stub
-
-		Indexer<Comment> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Comment.class);
-
-		searchContext.addFullQueryEntryClassName(Comment.class.getName());
-		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
-
-		searchContext.setAttribute("paginationType", "regular");
-		searchContext.setLike(true);
-		searchContext.setStart(start);
-		searchContext.setEnd(end);
-		searchContext.setAndSearch(true);
-		searchContext.setSorts(sorts);
-
-		// searchContext.setAttribute("params", params);
-
-		// LAY CAC THAM SO TRONG PARAMS.
-
-		String classPK = GetterUtil.getString(params.get("classPK"));
-
-		String keywords = GetterUtil.getString(params.get("keywords"));
-
-		String groupId = GetterUtil.getString(params.get("groupId"));
-
-		BooleanQuery booleanQuery = null;
-
-		if (Validator.isNotNull(keywords)) {
-			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
-			booleanQuery = indexer.getFullQuery(searchContext);
-		}
-
-		if (Validator.isNotNull(keywords)) {
-			String[] keyword = keywords.split(StringPool.SPACE);
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(CommentTerm.EMAIL);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
-		}
-
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(CommentTerm.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(classPK)) {
-
-			MultiMatchQuery query = new MultiMatchQuery(classPK);
-
-			query.addFields(CommentTerm.CLASS_PK);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Comment.class.getName());
-
-		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
-
-	}
-
-	public long countLuceneSearchEngine(Map<String, Object> params, SearchContext searchContext)
-			throws ParseException, SearchException {
-
-		// TODO Auto-generated method stub
-
-		Indexer<Comment> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Comment.class);
-
-		searchContext.addFullQueryEntryClassName(Comment.class.getName());
-		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
-
-		searchContext.setAttribute("paginationType", "regular");
-		searchContext.setLike(true);
-		searchContext.setAndSearch(true);
-
-		// searchContext.setAttribute("params", params);
-
-		// LAY CAC THAM SO TRONG PARAMS.
-
-		String classPK = GetterUtil.getString(params.get("classPK"));
-
-		String keywords = GetterUtil.getString(params.get("keywords"));
-
-		String groupId = GetterUtil.getString(params.get("groupId"));
-
-		BooleanQuery booleanQuery = null;
-
-		if (Validator.isNotNull(keywords)) {
-			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		} else {
-			booleanQuery = indexer.getFullQuery(searchContext);
-		}
-
-		if (Validator.isNotNull(keywords)) {
-			String[] keyword = keywords.split(StringPool.SPACE);
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(CommentTerm.EMAIL);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
-		}
-
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(CommentTerm.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(classPK)) {
-
-			MultiMatchQuery query = new MultiMatchQuery(classPK);
-
-			query.addFields(CommentTerm.CLASS_PK);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Comment.class.getName());
-
-		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
-
+		return comment;
 	}
 
 	// super_admin Generators

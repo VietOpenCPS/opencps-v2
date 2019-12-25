@@ -52,6 +52,7 @@ public class CommentSoap implements Serializable {
 		soapModel.setUpvoteCount(model.getUpvoteCount());
 		soapModel.setUserHasUpvoted(model.getUserHasUpvoted());
 		soapModel.setUpvotedUsers(model.getUpvotedUsers());
+		soapModel.setOpinion(model.isOpinion());
 
 		return soapModel;
 	}
@@ -256,6 +257,18 @@ public class CommentSoap implements Serializable {
 		_upvotedUsers = upvotedUsers;
 	}
 
+	public boolean getOpinion() {
+		return _opinion;
+	}
+
+	public boolean isOpinion() {
+		return _opinion;
+	}
+
+	public void setOpinion(boolean opinion) {
+		_opinion = opinion;
+	}
+
 	private String _uuid;
 	private long _commentId;
 	private long _companyId;
@@ -275,4 +288,5 @@ public class CommentSoap implements Serializable {
 	private int _upvoteCount;
 	private String _userHasUpvoted;
 	private String _upvotedUsers;
+	private boolean _opinion;
 }
