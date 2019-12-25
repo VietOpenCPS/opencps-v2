@@ -50,6 +50,8 @@ import org.opencps.api.dossierfile.model.DossierFileSearchResultsModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.cache.actions.CacheActions;
+import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
@@ -1069,7 +1071,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					DossierFileUtils.mappingToDossierFileData(resultFiles));
 			}
 
-			CacheLocalServiceUtil.closeCachePool();
+			CacheActions cache = new CacheActionsImpl();
+			cache.clearCache();
 			
 			return Response.status(200).entity(results).build();
 

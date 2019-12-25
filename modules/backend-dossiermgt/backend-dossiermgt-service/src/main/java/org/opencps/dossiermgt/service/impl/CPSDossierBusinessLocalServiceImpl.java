@@ -822,7 +822,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
 					dossier, curStatus, curSubStatus, prevStatus,
-					dateOption != null ? dateOption : actionConfig.getDateOption(), option, serviceProcess, context);
+					dateOption != null ? dateOption : (actionConfig != null ? actionConfig.getDateOption() : 0), option, serviceProcess, context);
 			for (Map.Entry<String, Boolean> entry : resultFlagChanged.entrySet()) {
 				flagChanged.put(entry.getKey(), entry.getValue());
 			}
