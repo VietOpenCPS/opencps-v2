@@ -1064,6 +1064,21 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierActionId(previousAction.getPreviousActionId());
 				dossierLocalService.updateDossier(dossier);
 				
+				// chỉ cán bộ thao tác trước đó có moderator = 1
+				List<DossierActionUser> lstDaus =
+								DossierActionUserLocalServiceUtil.getByDossierAndStepCode(
+									dossier.getDossierId(), previousAction.getStepCode());
+
+				for (DossierActionUser dau : lstDaus) {
+					
+					if (dau.getUserId() == backCurStep.getUserId()) {
+						dau.setModerator(1);
+					} else {
+						dau.setModerator(0);
+					}
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				}
+
 				return previousAction;
 			}
 			
