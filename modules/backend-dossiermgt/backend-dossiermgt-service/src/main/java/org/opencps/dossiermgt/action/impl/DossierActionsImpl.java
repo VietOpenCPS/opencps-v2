@@ -4048,10 +4048,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		return dossier;
 	}
-	@Override
-	public File genneralQRCode(long userId, long groupId, long dossierId, ServiceContext serviceContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-		
+
 }
