@@ -31,6 +31,14 @@ public interface DVCQGSSOManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @FormParam("vnconnect") int vnconnect,
 			@FormParam("curenturl") String currentURL);
+	
+	@GET
+	@Path("/authurl")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
+	public Response getAuthURL(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("state") String state);
 
 	@GET
 	@Path("/userinfo")
@@ -38,7 +46,7 @@ public interface DVCQGSSOManagement {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
 	public Response getUserInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken);
+			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken, @QueryParam("state") String state);
 	
 	@POST
 	@Path("/auth")

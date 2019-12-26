@@ -1,0 +1,8 @@
+Bundle-Name: pay-gate-integration
+Bundle-SymbolicName: pgi
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+Export-Package: \
+	com.google.zxing.*,\
+	com.beust.jcommander,\
+	com.beust.jcommander.validators

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -45,7 +46,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			int vnconnect, String currentURL) {
+			String state) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
@@ -55,7 +56,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			if (request.getSession().getAttribute("accessToken") != null) {
 				accessToken = request.getSession().getAttribute("accessToken").toString();
 			}
-			
+
 			if (Validator.isNotNull(accessToken) && isValidAccessToken(serverConfig, accessToken)) {
 				return StringPool.BLANK;
 			}
@@ -70,7 +71,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String acr_values = config.getString("acr_values");
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
 						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
-						+ AuthTokenUtil.getToken(request);
+						+ state;
 
 				return endpoint;
 
@@ -154,7 +155,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String authToken) {
+			String authToken, String state) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -163,6 +164,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				String accessToken = accessTokenInfo.getString("access_token");
 				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
+				request.getSession().setAttribute("sso_state", state);
 				request.getSession().setAttribute("accessToken", accessToken);
 			}
 		}
@@ -242,7 +244,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	}
 
 	private boolean isValidAccessToken(ServerConfig serverConfig, String accessToken) {
-	
+
 		HttpURLConnection conn = null;
 		try {
 
@@ -293,11 +295,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 					String client_id = object.getString("client_id");
 					long exp = object.getLong("exp");
-					if (client_id.equals(config.getString("clientid")) && exp > System.currentTimeMillis()/1000) {
+					if (client_id.equals(config.getString("clientid")) && exp > System.currentTimeMillis() / 1000) {
 						_log.info("------------------>>>>>>> accessToken " + accessToken + "| has expire");
 						return true;
 					}
-					
+
 					return false;
 				} else {
 					return false;
@@ -314,7 +316,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date());
@@ -399,7 +401,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	private JSONObject createErrorMessage(String error) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		result.put("status", -1);
+		result.put("status", 401);
 		result.put("message", error);
 		return result;
 	}
@@ -418,27 +420,30 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String ThuDienTu = userInfoObject.getString("ThuDienTu");
 		String HoVaTen = userInfoObject.getString("HoVaTen");
 		String sub = userInfoObject.getString("sub");
-		String TechID = userInfoObject.getString("TechID");
 		String TenDoanhNghiep = userInfoObject.getString("TenDoanhNghiep");
 		String MaSoDoanhNghiep = userInfoObject.getString("MaSoDoanhNghiep");
 		String SoDinhDanh = userInfoObject.getString("SoDinhDanh");
+		String TechID = userInfoObject.getString("TechID");
 		long groupId = userInfoObject.getLong("groupId");
 		Applicant applicant = null;
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		// ca nhan
-		_log.info(">>>>>>>>>>>>>>>>>>>>>>>> userInfoObject " + userInfoObject.toJSONString());
-		if (LoaiTaiKhoan == 1) {
 
+		_log.info(">>>>>>>>>>>>>>>>>>>>>>>> userInfoObject " + userInfoObject.toJSONString());
+
+		//Bỏ phần check theo loại tk, và cmtnd -> check theo trường mappingClassName và mappingClassPK
+		// ca nhan
+		/*if (LoaiTaiKhoan == 1) {
+		
 			if (Validator.isNull(SoCMND) && Validator.isNull(SoDinhDanh)) {
 				return createErrorMessage("Unknown SoCMND, SoDinhDanh");
 			}
 			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 					Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
-
+		
 			if (applicant == null) {
 				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
-
+		
 		}
 		// doanh nghiep
 		else if (LoaiTaiKhoan == 2) {
@@ -452,14 +457,15 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			}
 		} else {
 			return createErrorMessage("Unknown LoaiTaiKhoan");
-		}
+		}*/
 
-		if (applicant == null) {
+		//bỏ tự tạo tài khoản
+		/*if (applicant == null) {
 			// create
 			if (Validator.isNull(ThuDienTu)) {
 				return createErrorMessage("Unknown ThuDienTu");
 			}
-
+		
 			applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L,
 					LoaiTaiKhoan == 1 ? HoVaTen : TenDoanhNghiep, LoaiTaiKhoan == 1 ? "citizen" : "business",
 					LoaiTaiKhoan == 1 ? (Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh)
@@ -467,170 +473,207 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE), DiaChi, StringPool.BLANK,
 					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, SoDienThoai, ThuDienTu, StringPool.BLANK, TechID, true);
+		}*/
+
+		applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(groupId, "dvcqg", TechID);
+
+		if (applicant == null) {
+			userInfoObject.put("userId", 0);
+			userInfoObject.put("status", 200);
+			return userInfoObject;
 		}
 
 		long mappingUserId = applicant.getMappingUserId();
+		
+		User mappingUser = UserLocalServiceUtil.fetchUser(mappingUserId);
+		
+		if(mappingUser == null) {
+			return createErrorMessage("account not exist with userId = " + mappingUserId);
+		}
+		
+		if(mappingUser.getStatus() != WorkflowConstants.STATUS_APPROVED) {
+			return createErrorMessage("the account has been locked");
+		}
+		
 		String accessToken = StringPool.BLANK;
-		if(request.getSession().getAttribute("accessToken") != null) {
+
+		if (request.getSession().getAttribute("accessToken") != null) {
 			accessToken = request.getSession().getAttribute("accessToken").toString();
 		}
+
+		String state = StringPool.BLANK;
+		if (request.getSession().getAttribute("sso_state") != null) {
+			state = request.getSession().getAttribute("sso_state").toString();
+		}
 		_log.info("------------>>> accessToken: " + accessToken + "| mappingUserId " + mappingUserId);
-		result.put("status", 0);
+
+		if (state.equalsIgnoreCase("auth")) {
+			// AuthenticatedSessionManagerUtil.login(request, response,
+			// applicant.getContactEmail(), applicant.getTmpPass(),
+			// false, CompanyConstants.AUTH_TYPE_EA);
+
+			// @See AuthenticatedSessionManagerImpl.java
+			CookieKeys.validateSupportCookie(request);
+
+			HttpSession session = request.getSession();
+
+			Company company = PortalUtil.getCompany(request);
+
+			User userLogin = UserLocalServiceUtil.getUser(mappingUserId);
+
+			session = renewSession(request, session);
+
+			// Set cookies
+
+			session.setAttribute("accessToken", accessToken);
+
+			String domain = CookieKeys.getDomain(request);
+
+			if (Validator.isNull(domain)) {
+				domain = null;
+			}
+
+			String userIdString = String.valueOf(userLogin.getUserId());
+
+			session.setAttribute("j_username", userIdString);
+
+			session.setAttribute("j_password", userLogin.getPassword());
+
+			session.setAttribute("j_remoteuser", userIdString);
+
+			Cookie companyIdCookie = new Cookie(CookieKeys.COMPANY_ID, String.valueOf(company.getCompanyId()));
+
+			if (domain != null) {
+				companyIdCookie.setDomain(domain);
+			}
+
+			companyIdCookie.setPath(StringPool.SLASH);
+
+			Cookie idCookie = new Cookie(CookieKeys.ID, Encryptor.encrypt(company.getKeyObj(), userIdString));
+
+			if (domain != null) {
+				idCookie.setDomain(domain);
+			}
+
+			idCookie.setPath(StringPool.SLASH);
+
+			int loginMaxAge = 31536000;
+
+			boolean rememberMe = true;
+
+			if (rememberMe) {
+				companyIdCookie.setMaxAge(loginMaxAge);
+				idCookie.setMaxAge(loginMaxAge);
+			} else {
+
+				// This was explicitly changed from 0 to -1 so that the cookie lasts
+				// as long as the browser. This allows an external servlet wrapped
+				// in AutoLoginFilter to work throughout the client connection. The
+				// cookies ARE removed on an actual logout, so there is no security
+				// issue. See LEP-4678 and LEP-5177.
+
+				companyIdCookie.setMaxAge(-1);
+				idCookie.setMaxAge(-1);
+			}
+
+			boolean secure = request.isSecure();
+
+			Boolean httpsInitial = (Boolean) session.getAttribute(WebKeys.HTTPS_INITIAL);
+
+			if ((httpsInitial == null) || !httpsInitial.booleanValue()) {
+				secure = false;
+			}
+
+			CookieKeys.addCookie(request, response, companyIdCookie, secure);
+
+			CookieKeys.addCookie(request, response, idCookie, secure);
+
+			if (rememberMe) {
+				Cookie loginCookie = new Cookie(CookieKeys.LOGIN, mappingUser.getEmailAddress());
+
+				if (domain != null) {
+					loginCookie.setDomain(domain);
+				}
+
+				loginCookie.setMaxAge(loginMaxAge);
+				loginCookie.setPath(StringPool.SLASH);
+
+				CookieKeys.addCookie(request, response, loginCookie, secure);
+
+				Cookie passwordCookie = new Cookie(CookieKeys.PASSWORD,
+						Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
+
+				if (domain != null) {
+					passwordCookie.setDomain(domain);
+				}
+
+				passwordCookie.setMaxAge(loginMaxAge);
+				passwordCookie.setPath(StringPool.SLASH);
+
+				CookieKeys.addCookie(request, response, passwordCookie, secure);
+
+				Cookie rememberMeCookie = new Cookie(CookieKeys.REMEMBER_ME, Boolean.TRUE.toString());
+
+				if (domain != null) {
+					rememberMeCookie.setDomain(domain);
+				}
+
+				rememberMeCookie.setMaxAge(loginMaxAge);
+				rememberMeCookie.setPath(StringPool.SLASH);
+
+				CookieKeys.addCookie(request, response, rememberMeCookie, secure);
+
+				Cookie screenNameCookie = new Cookie(CookieKeys.SCREEN_NAME,
+						Encryptor.encrypt(company.getKeyObj(), userLogin.getScreenName()));
+
+				if (domain != null) {
+					screenNameCookie.setDomain(domain);
+				}
+
+				screenNameCookie.setMaxAge(loginMaxAge);
+				screenNameCookie.setPath(StringPool.SLASH);
+
+				CookieKeys.addCookie(request, response, screenNameCookie, secure);
+			}
+
+			boolean AUTH_USER_UUID_STORE_ENABLED = false;
+			if (AUTH_USER_UUID_STORE_ENABLED) {
+				String userUUID = userIdString.concat(StringPool.PERIOD).concat(String.valueOf(System.nanoTime()));
+
+				Cookie userUUIDCookie = new Cookie(CookieKeys.USER_UUID,
+						Encryptor.encrypt(company.getKeyObj(), userUUID));
+
+				userUUIDCookie.setPath(StringPool.SLASH);
+
+				session.setAttribute(WebKeys.USER_UUID, userUUID);
+
+				if (rememberMe) {
+					userUUIDCookie.setMaxAge(loginMaxAge);
+				} else {
+					userUUIDCookie.setMaxAge(-1);
+				}
+
+				CookieKeys.addCookie(request, response, userUUIDCookie, secure);
+
+				AuthenticatedUserUUIDStoreUtil.register(userUUID);
+			}
+		} else if (state.equalsIgnoreCase("mapping")) {
+			mappingUserId = user.getUserId();
+			applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+			if (applicant == null) {
+				return createErrorMessage("not found applicant with userId = " + mappingUserId);
+			}
+
+			applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, applicant.getApplicantId(),
+					"dvcqg", TechID);
+		}
+
+		result.put("status", 200);
 		result.put("message", "success");
 		result.put("userId", mappingUserId);
 		result.put("groupId", groupId);
 		// result.put("accessToken", accessToken);
 		result.put("email", applicant.getContactEmail());
-
-		// AuthenticatedSessionManagerUtil.login(request, response,
-		// applicant.getContactEmail(), applicant.getTmpPass(),
-		// false, CompanyConstants.AUTH_TYPE_EA);
-
-		// @See AuthenticatedSessionManagerImpl.java
-		CookieKeys.validateSupportCookie(request);
-
-		HttpSession session = request.getSession();
-
-		Company company = PortalUtil.getCompany(request);
-
-		User userLogin = UserLocalServiceUtil.getUser(mappingUserId);
-
-		session = renewSession(request, session);
-
-		// Set cookies
-		
-		session.setAttribute("accessToken", accessToken);
-
-		String domain = CookieKeys.getDomain(request);
-
-		if (Validator.isNull(domain)) {
-			domain = null;
-		}
-
-		String userIdString = String.valueOf(userLogin.getUserId());
-
-		session.setAttribute("j_username", userIdString);
-
-		session.setAttribute("j_password", userLogin.getPassword());
-
-		session.setAttribute("j_remoteuser", userIdString);
-
-		Cookie companyIdCookie = new Cookie(CookieKeys.COMPANY_ID, String.valueOf(company.getCompanyId()));
-
-		if (domain != null) {
-			companyIdCookie.setDomain(domain);
-		}
-
-		companyIdCookie.setPath(StringPool.SLASH);
-
-		Cookie idCookie = new Cookie(CookieKeys.ID, Encryptor.encrypt(company.getKeyObj(), userIdString));
-
-		if (domain != null) {
-			idCookie.setDomain(domain);
-		}
-
-		idCookie.setPath(StringPool.SLASH);
-
-		int loginMaxAge = 31536000;
-
-		boolean rememberMe = true;
-
-		if (rememberMe) {
-			companyIdCookie.setMaxAge(loginMaxAge);
-			idCookie.setMaxAge(loginMaxAge);
-		} else {
-
-			// This was explicitly changed from 0 to -1 so that the cookie lasts
-			// as long as the browser. This allows an external servlet wrapped
-			// in AutoLoginFilter to work throughout the client connection. The
-			// cookies ARE removed on an actual logout, so there is no security
-			// issue. See LEP-4678 and LEP-5177.
-
-			companyIdCookie.setMaxAge(-1);
-			idCookie.setMaxAge(-1);
-		}
-
-		boolean secure = request.isSecure();
-
-		Boolean httpsInitial = (Boolean) session.getAttribute(WebKeys.HTTPS_INITIAL);
-
-		if ((httpsInitial == null) || !httpsInitial.booleanValue()) {
-			secure = false;
-		}
-
-		CookieKeys.addCookie(request, response, companyIdCookie, secure);
-
-		CookieKeys.addCookie(request, response, idCookie, secure);
-
-		if (rememberMe) {
-			Cookie loginCookie = new Cookie(CookieKeys.LOGIN, TenDoanhNghiep);
-
-			if (domain != null) {
-				loginCookie.setDomain(domain);
-			}
-
-			loginCookie.setMaxAge(loginMaxAge);
-			loginCookie.setPath(StringPool.SLASH);
-
-			CookieKeys.addCookie(request, response, loginCookie, secure);
-
-			Cookie passwordCookie = new Cookie(CookieKeys.PASSWORD,
-					Encryptor.encrypt(company.getKeyObj(), applicant.getTmpPass()));
-
-			if (domain != null) {
-				passwordCookie.setDomain(domain);
-			}
-
-			passwordCookie.setMaxAge(loginMaxAge);
-			passwordCookie.setPath(StringPool.SLASH);
-
-			CookieKeys.addCookie(request, response, passwordCookie, secure);
-
-			Cookie rememberMeCookie = new Cookie(CookieKeys.REMEMBER_ME, Boolean.TRUE.toString());
-
-			if (domain != null) {
-				rememberMeCookie.setDomain(domain);
-			}
-
-			rememberMeCookie.setMaxAge(loginMaxAge);
-			rememberMeCookie.setPath(StringPool.SLASH);
-
-			CookieKeys.addCookie(request, response, rememberMeCookie, secure);
-
-			Cookie screenNameCookie = new Cookie(CookieKeys.SCREEN_NAME,
-					Encryptor.encrypt(company.getKeyObj(), userLogin.getScreenName()));
-
-			if (domain != null) {
-				screenNameCookie.setDomain(domain);
-			}
-
-			screenNameCookie.setMaxAge(loginMaxAge);
-			screenNameCookie.setPath(StringPool.SLASH);
-
-			CookieKeys.addCookie(request, response, screenNameCookie, secure);
-		}
-
-		boolean AUTH_USER_UUID_STORE_ENABLED = false;
-		if (AUTH_USER_UUID_STORE_ENABLED) {
-			String userUUID = userIdString.concat(StringPool.PERIOD).concat(String.valueOf(System.nanoTime()));
-
-			Cookie userUUIDCookie = new Cookie(CookieKeys.USER_UUID, Encryptor.encrypt(company.getKeyObj(), userUUID));
-
-			userUUIDCookie.setPath(StringPool.SLASH);
-
-			session.setAttribute(WebKeys.USER_UUID, userUUID);
-
-			if (rememberMe) {
-				userUUIDCookie.setMaxAge(loginMaxAge);
-			} else {
-				userUUIDCookie.setMaxAge(-1);
-			}
-
-			CookieKeys.addCookie(request, response, userUUIDCookie, secure);
-
-			AuthenticatedUserUUIDStoreUtil.register(userUUID);
-		}
-
 		return result;
 	}
 
