@@ -2696,6 +2696,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (stepArr != null && stepArr.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < stepArr.length; i++) {
+					_log.info("SEARCH DOSSIER STEP CODE: " + stepArr[i]);
 					MultiMatchQuery query = new MultiMatchQuery(stepArr[i]);
 					query.addField(DossierTerm.STEP_CODE);
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
