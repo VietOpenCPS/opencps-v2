@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action;
 
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;

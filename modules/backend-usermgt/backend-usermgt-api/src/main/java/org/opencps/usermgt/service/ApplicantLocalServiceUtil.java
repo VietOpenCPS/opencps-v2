@@ -235,6 +235,13 @@ public class ApplicantLocalServiceUtil {
 		return getService().fetchByF_APLC_GID(groupId, applicantIdNo);
 	}
 
+	public static org.opencps.usermgt.model.Applicant fetchByF_GID_MCN_MCPK(
+		long groupId, String mappingClassName, String mappingClassPK) {
+		return getService()
+				   .fetchByF_GID_MCN_MCPK(groupId, mappingClassName,
+			mappingClassPK);
+	}
+
 	public static org.opencps.usermgt.model.Applicant fetchByMappingID(
 		long mappingID) {
 		return getService().fetchByMappingID(mappingID);
@@ -252,6 +259,14 @@ public class ApplicantLocalServiceUtil {
 	public static java.util.List<org.opencps.usermgt.model.Applicant> findByContactEmailList(
 		String contactEmail) {
 		return getService().findByContactEmailList(contactEmail);
+	}
+
+	public static org.opencps.usermgt.model.Applicant findByF_GID_MCN_MCPK(
+		long groupId, String mappingClassName, String mappingClassPK)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getService()
+				   .findByF_GID_MCN_MCPK(groupId, mappingClassName,
+			mappingClassPK);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -466,6 +481,16 @@ public class ApplicantLocalServiceUtil {
 			applicantIdType, applicantIdNo, applicantIdDate, address, cityCode,
 			cityName, districtCode, districtName, wardCode, wardName,
 			contactName, contactTelNo, contactEmail, profile);
+	}
+
+	public static org.opencps.usermgt.model.Applicant updateApplication(
+		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
+		long applicantId, String mappingClassName, String mappingClassPK)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateApplication(context, groupId, applicantId,
+			mappingClassName, mappingClassPK);
 	}
 
 	/**

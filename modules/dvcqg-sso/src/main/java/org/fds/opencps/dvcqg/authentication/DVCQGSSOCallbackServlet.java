@@ -32,7 +32,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 		
 		String code = request.getParameter("code");
 		
-		//String state = request.getParameter("state");
+		String state = request.getParameter("state");
 
 		StringBuffer responseContent = new StringBuffer();
 		responseContent.append("<script src=\"https://code.jquery.com/jquery-3.4.1.min.js\"></script>");
@@ -47,7 +47,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"    async: false,  \r\n" + 
 				"    success: function (data,status,xhr) {\r\n" + 
 				"		 $.LoadingOverlay(\"show\");\r\n" +
-				"        doLogin(data);\r\n" + 
+				"        doAuth(data);\r\n" + 
 				"    },\r\n" + 
 				"    complete: function (data,status,xhr) {\r\n" + 
 				"		 $.LoadingOverlay(\"hide\");\r\n" +
@@ -60,7 +60,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"	}\r\n" + 
 				"});");
 		
-		responseContent.append("function doLogin(userinfo){\r\n" + 
+		responseContent.append("function doAuth(userinfo){\r\n" + 
 				"	$.ajax('/o/rest/v2/dvcqgsso/auth', \r\n" + 
 				"	{\r\n" + 
 				"		dataType: 'json', \r\n" + 

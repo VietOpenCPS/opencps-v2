@@ -66,6 +66,8 @@
 		<field name="representativeEnterprise" type="String">
 			<hint name="max-length">200</hint>
 		</field>
+		<field name="mappingClassName" type="String" />
+		<field name="mappingClassPK" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
