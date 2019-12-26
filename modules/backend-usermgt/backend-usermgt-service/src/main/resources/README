@@ -2,3 +2,27 @@ module Applicant Thêm 2 trường
 mappingClassName
 mappingClassPK
 Để lưu thông tin mapping với các tài khoản của hệ thống bên ngoài(DVCQG)
+
+path callback: domain/o/dvcqg-sso/callback
+
+
+server config:
+- Portocol: DVCQG-OPENID
+- Config:(lưu ý auth_server hệ thống thật là https://xacthuc.dichvucong.gov.vn)
+{
+  "clientid": "OquR7wSYGvoE987j0pTs4vIMj_0a",
+  "client_secret": "k4VCERTFzJtx3gYyLAgbLeFODh4a",
+  "auth_server": "https://testxacthuc.dichvucong.gov.vn",
+  "auth_endpoint": "/oauth2/authorize",
+  "accesstoken_endpoint": "/oauth2/token",
+  "revoketoken_endpoint": "/oauth2/revoke",
+  "userinfo_endpoint": "/oauth2/userinfo",
+  "logout_endpoint": "/oidc/logout",
+  "validatetoken_endpoint": "/oauth2/introspect",
+  "jwtecksignature_endpoint": "/oauth2/jwks",
+  "checksession_endpoint": "/oidc/checksession",
+  "callback_url": "http://hanoi.fds.vn:1580/o/dvcqg-sso/callback",
+"groupId": 35166,
+"scope":"openid",
+"acr_values":"LoA1"
+}

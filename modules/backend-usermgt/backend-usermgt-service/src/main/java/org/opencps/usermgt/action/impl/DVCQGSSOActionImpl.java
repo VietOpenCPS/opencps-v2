@@ -165,13 +165,16 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				String accessToken = accessTokenInfo.getString("access_token");
 				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
-				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>result.getString(\"TechID\") " + result.getString("TechID"));
+				
 				Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(result.getLong("groupId"), "dvcqg", result.getString("TechID"));
-				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>result.getString(\"TechID\")2 " + applicant);
+				
 				result.put("userId", applicant != null ? applicant.getMappingUserId() : 0);
 				result.put("state", 200);
 				request.getSession().setAttribute("sso_state", state);
 				request.getSession().setAttribute("accessToken", accessToken);
+				
+				//PortalSessionThreadLocal.getHttpSession().setAttribute("sso_state", state); 
+				//PortalSessionThreadLocal.getHttpSession().setAttribute("accessToken", accessToken); 
 			}
 		}
 		return result;
@@ -416,19 +419,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	public JSONObject doAuth(User user, HttpServletRequest request, HttpServletResponse response,
 			ServiceContext serviceContext, String userInfo) throws Exception {
 		JSONObject userInfoObject = JSONFactoryUtil.createJSONObject(userInfo);
-		int LoaiTaiKhoan = userInfoObject.getInt("LoaiTaiKhoan");
-		String HoChieu = userInfoObject.getString("HoChieu");
-		String SoCMND = userInfoObject.getString("SoCMND");
-		String MaSoThue = userInfoObject.getString("MaSoThue");
-		int GioiTinh = userInfoObject.getInt("GioiTinh");
-		String DiaChi = userInfoObject.getString("DiaChi");
-		String SoDienThoai = userInfoObject.getString("SoDienThoai");
-		String ThuDienTu = userInfoObject.getString("ThuDienTu");
-		String HoVaTen = userInfoObject.getString("HoVaTen");
-		String sub = userInfoObject.getString("sub");
-		String TenDoanhNghiep = userInfoObject.getString("TenDoanhNghiep");
-		String MaSoDoanhNghiep = userInfoObject.getString("MaSoDoanhNghiep");
-		String SoDinhDanh = userInfoObject.getString("SoDinhDanh");
+		//int LoaiTaiKhoan = userInfoObject.getInt("LoaiTaiKhoan");
+		//String HoChieu = userInfoObject.getString("HoChieu");
+		//String SoCMND = userInfoObject.getString("SoCMND");
+		//String MaSoThue = userInfoObject.getString("MaSoThue");
+		//int GioiTinh = userInfoObject.getInt("GioiTinh");
+		//String DiaChi = userInfoObject.getString("DiaChi");
+		//String SoDienThoai = userInfoObject.getString("SoDienThoai");
+		//String ThuDienTu = userInfoObject.getString("ThuDienTu");
+		//String HoVaTen = userInfoObject.getString("HoVaTen");
+		//String sub = userInfoObject.getString("sub");
+		//String TenDoanhNghiep = userInfoObject.getString("TenDoanhNghiep");
+		//String MaSoDoanhNghiep = userInfoObject.getString("MaSoDoanhNghiep");
+		//String SoDinhDanh = userInfoObject.getString("SoDinhDanh");
 		String TechID = userInfoObject.getString("TechID");
 		long groupId = userInfoObject.getLong("groupId");
 		Applicant applicant = null;
@@ -488,11 +491,19 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		if (request.getSession().getAttribute("accessToken") != null) {
 			accessToken = request.getSession().getAttribute("accessToken").toString();
 		}
+		
+		/*if (PortalSessionThreadLocal.getHttpSession().getAttribute("accessToken") != null) {
+			accessToken = PortalSessionThreadLocal.getHttpSession().getAttribute("accessToken").toString();
+		}*/
 
 		String state = StringPool.BLANK;
 		if (request.getSession().getAttribute("sso_state") != null) {
 			state = request.getSession().getAttribute("sso_state").toString();
 		}
+		
+		/*if (PortalSessionThreadLocal.getHttpSession().getAttribute("sso_state") != null) {
+			state = PortalSessionThreadLocal.getHttpSession().getAttribute("sso_state").toString();
+		}*/
 		
 		long mappingUserId = 0;
 		
@@ -676,13 +687,13 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, applicant.getApplicantId(),
 					"dvcqg", TechID);
 		}
-
+		
 		result.put("status", 200);
 		result.put("message", "success");
 		result.put("userId", mappingUserId);
 		result.put("groupId", groupId);
 		// result.put("accessToken", accessToken);
-		result.put("email", applicant.getContactEmail());
+		result.put("email", applicant != null ? applicant.getContactEmail() : StringPool.BLANK);
 		return result;
 	}
 
