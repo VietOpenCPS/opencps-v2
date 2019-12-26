@@ -407,7 +407,10 @@ public class CPSDossierBusinessLocalServiceImpl
 						dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING) : StringPool.BLANK);
 						dossier.setDossierSubStatus(StringPool.BLANK);
 						dossier.setDossierSubStatusText(StringPool.BLANK);
-						dossier.setLockState(curStep.getLockState());
+						if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+							dossier.setLockState(curStep.getLockState());
+						}
 						dossier.setDossierNote(dossierNote);;
 					}
 					
@@ -1061,6 +1064,21 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierActionId(previousAction.getPreviousActionId());
 				dossierLocalService.updateDossier(dossier);
 				
+				// chỉ cán bộ thao tác trước đó có moderator = 1
+				List<DossierActionUser> lstDaus =
+								DossierActionUserLocalServiceUtil.getByDossierAndStepCode(
+									dossier.getDossierId(), previousAction.getStepCode());
+
+				for (DossierActionUser dau : lstDaus) {
+					
+					if (dau.getUserId() == backCurStep.getUserId()) {
+						dau.setModerator(1);
+					} else {
+						dau.setModerator(0);
+					}
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				}
+
 				return previousAction;
 			}
 			
@@ -2126,7 +2144,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossier.setDossierStatusText(statusText);
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
-		dossier.setLockState(lockState);
+		if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+			dossier.setLockState(lockState);
+		}
 		dossier.setDossierNote(stepInstruction);
 
 //		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
@@ -2459,7 +2480,10 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		} 
 		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-			dossier.setLockState(StringPool.BLANK);
+			if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+				dossier.setLockState(StringPool.BLANK);
+			}
 			if (dossier.getDueDate() != null) {
 				if (serviceProcess != null) {
 //					Date newDueDate = HolidayUtils.getDueDate(new Date(),
