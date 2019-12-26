@@ -39,7 +39,8 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 		responseContent.append("<script src=\"https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js\"></script>");
 		responseContent.append("<script>");
 		responseContent.append("$( document ).ready(function() {\r\n"); 
-		responseContent.append("$.ajax('/o/rest/v2/dvcqgsso/userinfo?authToken=" + code +"', \r\n" + 
+		responseContent.append("var state = '" + state + "';\r\n");
+		responseContent.append("$.ajax('/o/rest/v2/dvcqgsso/userinfo?authToken=" + code +"&state=" + state + "', \r\n" + 
 				"{\r\n" + 
 				"    type: 'GET', \r\n" + 
 				"    dataType: 'json', \r\n" + 
@@ -47,7 +48,16 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"    async: false,  \r\n" + 
 				"    success: function (data,status,xhr) {\r\n" + 
 				"		 $.LoadingOverlay(\"show\");\r\n" +
-				"        doAuth(data);\r\n" + 
+				"        if(state == 'mapping'){\r\n" +
+				"        	doAuth(data);\r\n" + 
+				"        }else{\r\n" +
+				"        	if(parseInt(data.userId) > 0){\r\n" +
+				"        		doAuth(data);\r\n" + 
+				"        	}else{\r\n" +
+				"        		window.top.callback_dvcqg(data);\r\n" + 
+				"        	}\r\n" +
+				"        }\r\n" +
+				
 				"    },\r\n" + 
 				"    complete: function (data,status,xhr) {\r\n" + 
 				"		 $.LoadingOverlay(\"hide\");\r\n" +
@@ -74,7 +84,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 				"		},\r\n" + 
 				"		data: JSON.stringify(userinfo),\r\n" + 
 				"		success: function (data,status,xhr) {\r\n" + 
-				"			$('#userinfo').append(JSON.stringify(data));\r\n" + 
+				"			$('#userinfo').append('Authorization successful');\r\n" + 
 				"        	window.top.callback_dvcqg(data);\r\n" + 
 				"		},\r\n" + 
 				"		\r\n" + 

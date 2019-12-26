@@ -39,7 +39,6 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.usermgt.action.DVCQGSSOInterface;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.util.DateTimeUtils;
 
 public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	private Log _log = LogFactoryUtil.getLog(DVCQGSSOActionImpl.class);
@@ -52,14 +51,15 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
-			String accessToken = StringPool.BLANK;
+			/*String accessToken = StringPool.BLANK;
 			if (request.getSession().getAttribute("accessToken") != null) {
 				accessToken = request.getSession().getAttribute("accessToken").toString();
 			}
-
-			if (Validator.isNotNull(accessToken) && isValidAccessToken(serverConfig, accessToken)) {
+			
+			if (Validator.isNotNull(accessToken) && isValidAccessToken(serverConfig, accessToken)
+					&& state.equals("auth")) {
 				return StringPool.BLANK;
-			}
+			}*/
 
 			try {
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -157,6 +157,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
 			String authToken, String state) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
+	
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
@@ -164,6 +165,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				String accessToken = accessTokenInfo.getString("access_token");
 				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
+				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>result.getString(\"TechID\") " + result.getString("TechID"));
+				Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(result.getLong("groupId"), "dvcqg", result.getString("TechID"));
+				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>result.getString(\"TechID\")2 " + applicant);
+				result.put("userId", applicant != null ? applicant.getMappingUserId() : 0);
+				result.put("state", 200);
 				request.getSession().setAttribute("sso_state", state);
 				request.getSession().setAttribute("accessToken", accessToken);
 			}
@@ -477,24 +483,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(groupId, "dvcqg", TechID);
 
-		if (applicant == null) {
-			userInfoObject.put("userId", 0);
-			userInfoObject.put("status", 200);
-			return userInfoObject;
-		}
-
-		long mappingUserId = applicant.getMappingUserId();
-		
-		User mappingUser = UserLocalServiceUtil.fetchUser(mappingUserId);
-		
-		if(mappingUser == null) {
-			return createErrorMessage("account not exist with userId = " + mappingUserId);
-		}
-		
-		if(mappingUser.getStatus() != WorkflowConstants.STATUS_APPROVED) {
-			return createErrorMessage("the account has been locked");
-		}
-		
 		String accessToken = StringPool.BLANK;
 
 		if (request.getSession().getAttribute("accessToken") != null) {
@@ -505,9 +493,30 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		if (request.getSession().getAttribute("sso_state") != null) {
 			state = request.getSession().getAttribute("sso_state").toString();
 		}
-		_log.info("------------>>> accessToken: " + accessToken + "| mappingUserId " + mappingUserId);
+		
+		long mappingUserId = 0;
+		
+		_log.info("------------>>> accessToken: " + accessToken + "|state " + state);
+
+		if (applicant == null && state.equals("auth")) {
+			userInfoObject.put("userId", 0);
+			userInfoObject.put("status", 200);
+			return userInfoObject;
+		}
 
 		if (state.equalsIgnoreCase("auth")) {
+
+			mappingUserId = applicant.getMappingUserId();
+
+			User mappingUser = UserLocalServiceUtil.fetchUser(mappingUserId);
+
+			if (mappingUser == null) {
+				return createErrorMessage("account not exist with userId = " + mappingUserId);
+			}
+
+			if (mappingUser.getStatus() != WorkflowConstants.STATUS_APPROVED) {
+				return createErrorMessage("the account has been locked");
+			}
 			// AuthenticatedSessionManagerUtil.login(request, response,
 			// applicant.getContactEmail(), applicant.getTmpPass(),
 			// false, CompanyConstants.AUTH_TYPE_EA);
