@@ -499,11 +499,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					DossierActionUtils.getDossierPartCrossDossier(
 						groupId, (ProcessAction) jsonData.get("processAction"),
 						dossier);
-				if (dossierParts.size() > 0) {
+				_log.debug(dossierParts.size());
 
-					result.setDossierParts(dossierParts);
-				}
+				result.setDossierParts(dossierParts);
 			}
+			_log.debug(result);
 			return Response.status(200).entity(result).build();
 
 		}
