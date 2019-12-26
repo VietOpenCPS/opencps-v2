@@ -216,8 +216,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (isAdmin) {
 			}
 			else {
-				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
-				params.put(DossierTerm.MAPPING_PERMISSION, permission);
+				//???
+				if (!ownerBoolean) {
+					String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+					params.put(DossierTerm.MAPPING_PERMISSION, permission);					
+				}
 			}
 
 			String stepCode = query.getStep();
