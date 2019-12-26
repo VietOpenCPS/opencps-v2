@@ -277,6 +277,13 @@ public class VotingUtils {
 
 //				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected(ett.getVotingId(),
 //						String.valueOf(i + 1));
+				//??? Not provide fromDate and toDate in API call
+				if (fromDate == null) {
+					fromDate = new Date(0);
+				}
+				if (toDate == null) {
+					toDate = new Date();
+				}
 				votingCount = VotingResultLocalServiceUtil.countByF_votingId_selected_filter_date(ett.getVotingId(),
 						String.valueOf(i + 1), fromDate, toDate);
 

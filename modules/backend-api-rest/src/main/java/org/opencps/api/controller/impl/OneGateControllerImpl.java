@@ -121,6 +121,25 @@ public class OneGateControllerImpl implements OneGateController {
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
+			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
+			for (ServiceProcessRole spr : lstPRoles) {
+				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
+				if (mapPRoles.containsKey(spr.getServiceProcessId())) {
+					lstTempSprs = mapPRoles.get(spr.getServiceProcessId());
+				}
+				else {
+					mapPRoles.put(spr.getServiceProcessId(), lstTempSprs);
+				}
+				
+				lstTempSprs.add(spr);
+			}
+			
+			List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
+			Map<Long, DossierTemplate> mapTemplates = new HashMap<Long, DossierTemplate>();
+			for (DossierTemplate dt : lstTemplates) {
+				mapTemplates.put(dt.getDossierTemplateId(), dt);
+			}
 			for (ServiceConfig serviceConfig : serviceConfigs) {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
@@ -152,11 +171,12 @@ public class OneGateControllerImpl implements OneGateController {
 							for (ProcessOption processOption : processOptions) {
 			//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
 								long serviceProcessId = processOption.getServiceProcessId();
-								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
-								
+//								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
+								List<ServiceProcessRole> lstRoles = mapPRoles.get(serviceProcessId);
+																
 								boolean hasPermission = false;
 		//						_log.info("List role: " + lstRoles);
-								if (lstRoles.size() > 0) {
+								if (lstRoles != null && lstRoles.size() > 0) {
 		//							_log.info("Role of users : " + user);
 									for (ServiceProcessRole spr : lstRoles) {
 										for (int i = 0; i < roleIds.length; i++) {
@@ -178,16 +198,17 @@ public class OneGateControllerImpl implements OneGateController {
 									elmOption.put("optionName", processOption.getOptionName());
 									elmOption.put("instructionNote", processOption.getInstructionNote());
 									
-									try {
-										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+//									try {
+//										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
+										DossierTemplate dossierTemplate = mapTemplates.get(processOption.getDossierTemplateId());
 										if (dossierTemplate != null) {
 											elmOption.put("templateNo", dossierTemplate.getTemplateNo());
 											elmOption.put("templateName", dossierTemplate.getTemplateName());						
 										}
-									}
-									catch (NoSuchDossierTemplateException e) {
-										_log.error(e);
-									}
+//									}
+//									catch (NoSuchDossierTemplateException e) {
+//										_log.error(e);
+//									}
 									options.put(elmOption);							
 								}
 								
