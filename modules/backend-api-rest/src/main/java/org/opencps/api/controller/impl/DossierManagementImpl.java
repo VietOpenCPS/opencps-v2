@@ -489,11 +489,12 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
 			params.put(DossierTerm.REGISTER, query.getRegister());
-			
 
-			System.out.println("backLogDate " + query.getToBacklogDate());
 			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
 			params.put(DossierTerm.BACKLOG, query.getBacklog());
+			if (Validator.isNotNull(query.getAssignedUserIdSearch())) {
+				params.put(DossierTerm.ASSIGNED_USER_ID_SEARCH, query.getAssignedUserIdSearch());
+			}
 
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
 			// Delegate

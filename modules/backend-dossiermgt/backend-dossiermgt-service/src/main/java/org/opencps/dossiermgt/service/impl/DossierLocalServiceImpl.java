@@ -2855,6 +2855,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
 		String assignedUserId =
 			GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
+		String assignedUserIdSearch =
+						GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID_SEARCH));
 
 		// Delegate
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null
@@ -2908,7 +2910,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			fromFinishDate, toFinishDate, fromReceiveNotDoneDate,
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
-			groupDossierId, assignedUserId, delegateType, documentNo,
+			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog,
 			booleanCommon);
 
@@ -3034,6 +3036,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			params.get(DossierTerm.APPLICANT_FOLLOW_ID_NO));
 		String assignedUserId =
 			GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID));
+		String assignedUserIdSearch =
+			GetterUtil.getString(params.get(DossierTerm.ASSIGNED_USER_ID_SEARCH));
 
 		// Delegate
 		Integer delegateType = params.get(DossierTerm.DELEGATE_TYPE) != null
@@ -3084,7 +3088,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			fromFinishDate, toFinishDate, fromReceiveNotDoneDate,
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
-			groupDossierId, assignedUserId, delegateType, documentNo,
+			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog,
 			booleanCommon);
 
@@ -3212,7 +3216,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String toReceiveNotDoneDate, String paymentStatus, String origin,
 		String fromStatisticDate, String toStatisticDate,
 		Integer originDossierId, String time, String register, int day,
-		Long groupDossierId, String assignedUserId, Integer delegateType,
+		Long groupDossierId, String assignedUserId, String assignedUserIdSearch, Integer delegateType,
 		String documentNo, String documentDate, String strSystemId,
 		Integer viaPostal, String backlogDate, Integer backlog,
 		BooleanQuery booleanQuery)
@@ -3966,6 +3970,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				query.addFields(DossierTerm.ASSIGNED_USER_ID);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+
+		// loc theo can bo da xu ly ho so
+		if (Validator.isNotNull(assignedUserIdSearch)) {
+			String[] assignedArr = StringUtil.split(assignedUserIdSearch);
+			BooleanQuery query = new BooleanQueryImpl();
+			for (String key : assignedArr) {
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+					DossierTerm.ASSIGNED_USER_ID,
+					key.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery, BooleanClauseOccur.MUST);
+			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		// _log.debug("originality: "+originality);
