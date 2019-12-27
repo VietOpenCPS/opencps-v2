@@ -248,6 +248,10 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 		return stepConfigPersistence.findByF_MS_SS(groupId, mainStatus, subStatus);
 	}
 
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodeArr) {
+		return stepConfigPersistence.findByG_SCS(groupId, stepCodeArr);
+	}
+	
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public StepConfig adminProcessDelete(Long id) {

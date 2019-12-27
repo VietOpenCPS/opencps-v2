@@ -144,6 +144,7 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
@@ -167,6 +168,7 @@ import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -442,7 +444,39 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.DAY, query.getDay());
-			params.put(DossierTerm.STEP, step);
+			if (step.contains("x")) {
+				String stepCode = query.getStep();
+//				_log.info("STEPCODE: "+stepCode);
+				if (Validator.isNotNull(stepCode)) {
+					String[] stepArr = stepCode.split(StringPool.COMMA);
+					if (stepArr != null && stepArr.length > 0) {
+						List<StepConfig> lstSteps = StepConfigLocalServiceUtil.findByG_SCS(groupId, stepArr);
+						StringBuilder stepBuilder = new StringBuilder();
+						for (StepConfig sc : lstSteps) {
+							if (sc.getStepCode().contains("x")) {
+								for (int i = 0; i <= 9; i++) {
+									String stepCodeRep = sc.getStepCode().replace("x", i + "");
+									if (!"".contentEquals(stepBuilder.toString())) {
+										stepBuilder.append(",");
+									}
+									stepBuilder.append(stepCodeRep);
+								}
+							}
+							else {
+								if (!"".contentEquals(stepBuilder.toString())) {
+									stepBuilder.append(",");
+								}
+								stepBuilder.append(sc.getStepCode());								
+							}
+						}
+						params.put(DossierTerm.STEP, stepBuilder.toString());	
+					}
+				} else {
+				}
+			}
+			else {
+				params.put(DossierTerm.STEP, step);				
+			}
 			params.put(DossierTerm.OWNER, owner);
 			params.put(
 				DossierTerm.APPLICANT_FOLLOW_ID_NO,
