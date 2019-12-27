@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -23,16 +24,23 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.activation.DataHandler;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -45,11 +53,21 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.jni.FileInfo;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -1111,4 +1129,47 @@ public class OpencpsStatisticRestApplication extends Application {
 			return statistic.getTotalCount() + "";
 		}
 	}
+	
+	@POST
+	@Path("/import/manual")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response importManualStatistic(@HeaderParam("groupId") long groupId,
+		@Multipart("file") Attachment file) {
+		try {
+			DataHandler dataHandle = file.getDataHandler();
+			
+			InputStream excelFile = dataHandle.getInputStream();
+			String fileName = dataHandle.getName();
+			
+            Workbook workbook = null;
+            if (fileName.endsWith("xls")) {
+                workbook = new HSSFWorkbook(excelFile);            	
+            }
+            else if (fileName.endsWith("xlsx")) {
+                workbook = new XSSFWorkbook(excelFile);
+            }
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            iterator.next();
+                        
+            while (iterator.hasNext()) {
+                Row currentRow = iterator.next();
+                if (currentRow.getRowNum() == 0) continue;
+                Iterator<Cell> itCells = currentRow.cellIterator();
+                while (itCells.hasNext()) {
+                	Cell currentCell = itCells.next();
+                	System.out.println("DATA: " + currentCell.getStringCellValue());
+                }
+            }
+
+		}
+		catch (Exception e) {
+			
+		}
+		return Response.status(200).entity("{}").build();
+	}
+
 }

@@ -52,6 +52,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalService;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualPersistence;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticPersistence;
@@ -503,6 +504,44 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps dossier statistic manual local service.
+	 *
+	 * @return the opencps dossier statistic manual local service
+	 */
+	public org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService getOpencpsDossierStatisticManualLocalService() {
+		return opencpsDossierStatisticManualLocalService;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic manual local service.
+	 *
+	 * @param opencpsDossierStatisticManualLocalService the opencps dossier statistic manual local service
+	 */
+	public void setOpencpsDossierStatisticManualLocalService(
+		org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService opencpsDossierStatisticManualLocalService) {
+		this.opencpsDossierStatisticManualLocalService = opencpsDossierStatisticManualLocalService;
+	}
+
+	/**
+	 * Returns the opencps dossier statistic manual persistence.
+	 *
+	 * @return the opencps dossier statistic manual persistence
+	 */
+	public OpencpsDossierStatisticManualPersistence getOpencpsDossierStatisticManualPersistence() {
+		return opencpsDossierStatisticManualPersistence;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic manual persistence.
+	 *
+	 * @param opencpsDossierStatisticManualPersistence the opencps dossier statistic manual persistence
+	 */
+	public void setOpencpsDossierStatisticManualPersistence(
+		OpencpsDossierStatisticManualPersistence opencpsDossierStatisticManualPersistence) {
+		this.opencpsDossierStatisticManualPersistence = opencpsDossierStatisticManualPersistence;
+	}
+
+	/**
 	 * Returns the opencps person statistic local service.
 	 *
 	 * @return the opencps person statistic local service
@@ -787,6 +826,10 @@ public abstract class OpencpsVotingStatisticLocalServiceBaseImpl
 	protected OpencpsDossierStatisticPersistence opencpsDossierStatisticPersistence;
 	@BeanReference(type = OpencpsDossierStatisticFinder.class)
 	protected OpencpsDossierStatisticFinder opencpsDossierStatisticFinder;
+	@BeanReference(type = org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService.class)
+	protected org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService opencpsDossierStatisticManualLocalService;
+	@BeanReference(type = OpencpsDossierStatisticManualPersistence.class)
+	protected OpencpsDossierStatisticManualPersistence opencpsDossierStatisticManualPersistence;
 	@BeanReference(type = org.opencps.statistic.service.OpencpsPersonStatisticLocalService.class)
 	protected org.opencps.statistic.service.OpencpsPersonStatisticLocalService opencpsPersonStatisticLocalService;
 	@BeanReference(type = OpencpsPersonStatisticPersistence.class)
