@@ -221,6 +221,12 @@ public class StepConfigLocalServiceWrapper implements StepConfigLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.StepConfig> findByG_SCS(
+		long groupId, String[] stepCodeArr) {
+		return _stepConfigLocalService.findByG_SCS(groupId, stepCodeArr);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _stepConfigLocalService.getActionableDynamicQuery();
 	}

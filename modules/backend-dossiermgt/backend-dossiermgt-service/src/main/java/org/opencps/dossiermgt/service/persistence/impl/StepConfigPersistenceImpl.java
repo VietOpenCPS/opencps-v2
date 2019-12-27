@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -3172,6 +3174,912 @@ public class StepConfigPersistenceImpl extends BasePersistenceImpl<StepConfig>
 	private static final String _FINDER_COLUMN_F_MS_SS_DOSSIERSUBSTATUS_1 = "stepConfig.dossierSubStatus IS NULL";
 	private static final String _FINDER_COLUMN_F_MS_SS_DOSSIERSUBSTATUS_2 = "stepConfig.dossierSubStatus = ?";
 	private static final String _FINDER_COLUMN_F_MS_SS_DOSSIERSUBSTATUS_3 = "(stepConfig.dossierSubStatus IS NULL OR stepConfig.dossierSubStatus = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SCS = new FinderPath(StepConfigModelImpl.ENTITY_CACHE_ENABLED,
+			StepConfigModelImpl.FINDER_CACHE_ENABLED, StepConfigImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_SCS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS = new FinderPath(StepConfigModelImpl.ENTITY_CACHE_ENABLED,
+			StepConfigModelImpl.FINDER_CACHE_ENABLED, StepConfigImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_SCS",
+			new String[] { Long.class.getName(), String.class.getName() },
+			StepConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			StepConfigModelImpl.STEPCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_SCS = new FinderPath(StepConfigModelImpl.ENTITY_CACHE_ENABLED,
+			StepConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SCS",
+			new String[] { Long.class.getName(), String.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SCS = new FinderPath(StepConfigModelImpl.ENTITY_CACHE_ENABLED,
+			StepConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_SCS",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the step configs where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @return the matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String stepCode) {
+		return findByG_SCS(groupId, stepCode, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @return the range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end) {
+		return findByG_SCS(groupId, stepCode, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator) {
+		return findByG_SCS(groupId, stepCode, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS;
+			finderArgs = new Object[] { groupId, stepCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SCS;
+			finderArgs = new Object[] {
+					groupId, stepCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<StepConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<StepConfig>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (StepConfig stepConfig : list) {
+					if ((groupId != stepConfig.getGroupId()) ||
+							!Objects.equals(stepCode, stepConfig.getStepCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_STEPCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SCS_GROUPID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(StepConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				if (!pagination) {
+					list = (List<StepConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<StepConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching step config
+	 * @throws NoSuchStepConfigException if a matching step config could not be found
+	 */
+	@Override
+	public StepConfig findByG_SCS_First(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws NoSuchStepConfigException {
+		StepConfig stepConfig = fetchByG_SCS_First(groupId, stepCode,
+				orderByComparator);
+
+		if (stepConfig != null) {
+			return stepConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", stepCode=");
+		msg.append(stepCode);
+
+		msg.append("}");
+
+		throw new NoSuchStepConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the first step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching step config, or <code>null</code> if a matching step config could not be found
+	 */
+	@Override
+	public StepConfig fetchByG_SCS_First(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator) {
+		List<StepConfig> list = findByG_SCS(groupId, stepCode, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching step config
+	 * @throws NoSuchStepConfigException if a matching step config could not be found
+	 */
+	@Override
+	public StepConfig findByG_SCS_Last(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws NoSuchStepConfigException {
+		StepConfig stepConfig = fetchByG_SCS_Last(groupId, stepCode,
+				orderByComparator);
+
+		if (stepConfig != null) {
+			return stepConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", stepCode=");
+		msg.append(stepCode);
+
+		msg.append("}");
+
+		throw new NoSuchStepConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the last step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching step config, or <code>null</code> if a matching step config could not be found
+	 */
+	@Override
+	public StepConfig fetchByG_SCS_Last(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator) {
+		int count = countByG_SCS(groupId, stepCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<StepConfig> list = findByG_SCS(groupId, stepCode, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the step configs before and after the current step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param stepConfigId the primary key of the current step config
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next step config
+	 * @throws NoSuchStepConfigException if a step config with the primary key could not be found
+	 */
+	@Override
+	public StepConfig[] findByG_SCS_PrevAndNext(long stepConfigId,
+		long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws NoSuchStepConfigException {
+		StepConfig stepConfig = findByPrimaryKey(stepConfigId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			StepConfig[] array = new StepConfigImpl[3];
+
+			array[0] = getByG_SCS_PrevAndNext(session, stepConfig, groupId,
+					stepCode, orderByComparator, true);
+
+			array[1] = stepConfig;
+
+			array[2] = getByG_SCS_PrevAndNext(session, stepConfig, groupId,
+					stepCode, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected StepConfig getByG_SCS_PrevAndNext(Session session,
+		StepConfig stepConfig, long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_STEPCONFIG_WHERE);
+
+		query.append(_FINDER_COLUMN_G_SCS_GROUPID_2);
+
+		boolean bindStepCode = false;
+
+		if (stepCode == null) {
+			query.append(_FINDER_COLUMN_G_SCS_STEPCODE_1);
+		}
+		else if (stepCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_SCS_STEPCODE_3);
+		}
+		else {
+			bindStepCode = true;
+
+			query.append(_FINDER_COLUMN_G_SCS_STEPCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(StepConfigModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindStepCode) {
+			qPos.add(stepCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(stepConfig);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<StepConfig> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the step configs where groupId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCodes the step codes
+	 * @return the matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodes) {
+		return findByG_SCS(groupId, stepCodes, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the step configs where groupId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCodes the step codes
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @return the range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodes,
+		int start, int end) {
+		return findByG_SCS(groupId, stepCodes, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the step configs where groupId = &#63; and stepCode = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCodes the step codes
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodes,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator) {
+		return findByG_SCS(groupId, stepCodes, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @param start the lower bound of the range of step configs
+	 * @param end the upper bound of the range of step configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching step configs
+	 */
+	@Override
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodes,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		if (stepCodes == null) {
+			stepCodes = new String[0];
+		}
+		else if (stepCodes.length > 1) {
+			stepCodes = ArrayUtil.distinct(stepCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(stepCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (stepCodes.length == 1) {
+			return findByG_SCS(groupId, stepCodes[0], start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { groupId, StringUtil.merge(stepCodes) };
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(stepCodes),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<StepConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<StepConfig>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SCS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (StepConfig stepConfig : list) {
+					if ((groupId != stepConfig.getGroupId()) ||
+							!ArrayUtil.contains(stepCodes,
+								stepConfig.getStepCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_STEPCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SCS_GROUPID_2);
+
+			if (stepCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < stepCodes.length; i++) {
+					String stepCode = stepCodes[i];
+
+					if (stepCode == null) {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_1);
+					}
+					else if (stepCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_2);
+					}
+
+					if ((i + 1) < stepCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(StepConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				for (String stepCode : stepCodes) {
+					if ((stepCode != null) && !stepCode.isEmpty()) {
+						qPos.add(stepCode);
+					}
+				}
+
+				if (!pagination) {
+					list = (List<StepConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<StepConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SCS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SCS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the step configs where groupId = &#63; and stepCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 */
+	@Override
+	public void removeByG_SCS(long groupId, String stepCode) {
+		for (StepConfig stepConfig : findByG_SCS(groupId, stepCode,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(stepConfig);
+		}
+	}
+
+	/**
+	 * Returns the number of step configs where groupId = &#63; and stepCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCode the step code
+	 * @return the number of matching step configs
+	 */
+	@Override
+	public int countByG_SCS(long groupId, String stepCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_SCS;
+
+		Object[] finderArgs = new Object[] { groupId, stepCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_STEPCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SCS_GROUPID_2);
+
+			boolean bindStepCode = false;
+
+			if (stepCode == null) {
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_1);
+			}
+			else if (stepCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_3);
+			}
+			else {
+				bindStepCode = true;
+
+				query.append(_FINDER_COLUMN_G_SCS_STEPCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindStepCode) {
+					qPos.add(stepCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of step configs where groupId = &#63; and stepCode = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param stepCodes the step codes
+	 * @return the number of matching step configs
+	 */
+	@Override
+	public int countByG_SCS(long groupId, String[] stepCodes) {
+		if (stepCodes == null) {
+			stepCodes = new String[0];
+		}
+		else if (stepCodes.length > 1) {
+			stepCodes = ArrayUtil.distinct(stepCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(stepCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] { groupId, StringUtil.merge(stepCodes) };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SCS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_STEPCONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SCS_GROUPID_2);
+
+			if (stepCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < stepCodes.length; i++) {
+					String stepCode = stepCodes[i];
+
+					if (stepCode == null) {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_1);
+					}
+					else if (stepCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_SCS_STEPCODE_2);
+					}
+
+					if ((i + 1) < stepCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				for (String stepCode : stepCodes) {
+					if ((stepCode != null) && !stepCode.isEmpty()) {
+						qPos.add(stepCode);
+					}
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SCS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_SCS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_SCS_GROUPID_2 = "stepConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SCS_STEPCODE_1 = "stepConfig.stepCode IS NULL";
+	private static final String _FINDER_COLUMN_G_SCS_STEPCODE_2 = "stepConfig.stepCode = ?";
+	private static final String _FINDER_COLUMN_G_SCS_STEPCODE_3 = "(stepConfig.stepCode IS NULL OR stepConfig.stepCode = '')";
 
 	public StepConfigPersistenceImpl() {
 		setModelClass(StepConfig.class);
@@ -3598,6 +4506,15 @@ public class StepConfigPersistenceImpl extends BasePersistenceImpl<StepConfig>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MS_SS,
 				args);
 
+			args = new Object[] {
+					stepConfigModelImpl.getGroupId(),
+					stepConfigModelImpl.getStepCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SCS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3679,6 +4596,27 @@ public class StepConfigPersistenceImpl extends BasePersistenceImpl<StepConfig>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MS_SS, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MS_SS,
+					args);
+			}
+
+			if ((stepConfigModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						stepConfigModelImpl.getOriginalGroupId(),
+						stepConfigModelImpl.getOriginalStepCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SCS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS,
+					args);
+
+				args = new Object[] {
+						stepConfigModelImpl.getGroupId(),
+						stepConfigModelImpl.getStepCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SCS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SCS,
 					args);
 			}
 		}

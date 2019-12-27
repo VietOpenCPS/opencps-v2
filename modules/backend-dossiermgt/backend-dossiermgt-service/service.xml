@@ -2301,6 +2301,10 @@
 			<finder-column name="dossierStatus" />
 			<finder-column name="dossierSubStatus" />
 		</finder>
+        <finder name="G_SCS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="stepCode" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 		
 	</entity>
 	
