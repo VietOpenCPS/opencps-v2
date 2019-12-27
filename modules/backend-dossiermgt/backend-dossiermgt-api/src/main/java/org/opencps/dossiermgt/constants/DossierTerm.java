@@ -109,6 +109,8 @@ public class DossierTerm {
 	public static final String DOSSIER_ID_CTN = "dossierIdCTN";
 	public static final String FROM_SUBMIT_DATE = "fromSubmitDate";
 	public static final String TO_SUBMIT_DATE = "toSubmitDate";
+	public static final String TO_BACKLOGDATE = "toBacklogDate";
+	public static final String BACKLOG = "backlog";
 	
 	public static final String DOSSIER_NO_SEARCH = "dossierNoSearch";
 	public static final String CERT_NO_SEARCH = "certNoSearch";
