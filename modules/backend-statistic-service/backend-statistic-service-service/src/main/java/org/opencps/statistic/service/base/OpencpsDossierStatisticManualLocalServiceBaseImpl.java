@@ -52,6 +52,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualFinder;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualPersistence;
 import org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
@@ -546,6 +547,25 @@ public abstract class OpencpsDossierStatisticManualLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the opencps dossier statistic manual finder.
+	 *
+	 * @return the opencps dossier statistic manual finder
+	 */
+	public OpencpsDossierStatisticManualFinder getOpencpsDossierStatisticManualFinder() {
+		return opencpsDossierStatisticManualFinder;
+	}
+
+	/**
+	 * Sets the opencps dossier statistic manual finder.
+	 *
+	 * @param opencpsDossierStatisticManualFinder the opencps dossier statistic manual finder
+	 */
+	public void setOpencpsDossierStatisticManualFinder(
+		OpencpsDossierStatisticManualFinder opencpsDossierStatisticManualFinder) {
+		this.opencpsDossierStatisticManualFinder = opencpsDossierStatisticManualFinder;
+	}
+
+	/**
 	 * Returns the opencps person statistic local service.
 	 *
 	 * @return the opencps person statistic local service
@@ -834,6 +854,8 @@ public abstract class OpencpsDossierStatisticManualLocalServiceBaseImpl
 	protected OpencpsDossierStatisticManualLocalService opencpsDossierStatisticManualLocalService;
 	@BeanReference(type = OpencpsDossierStatisticManualPersistence.class)
 	protected OpencpsDossierStatisticManualPersistence opencpsDossierStatisticManualPersistence;
+	@BeanReference(type = OpencpsDossierStatisticManualFinder.class)
+	protected OpencpsDossierStatisticManualFinder opencpsDossierStatisticManualFinder;
 	@BeanReference(type = org.opencps.statistic.service.OpencpsPersonStatisticLocalService.class)
 	protected org.opencps.statistic.service.OpencpsPersonStatisticLocalService opencpsPersonStatisticLocalService;
 	@BeanReference(type = OpencpsPersonStatisticPersistence.class)

@@ -196,6 +196,26 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 			domainCode);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .fetchDossierStatistic(groupId, month, year, domain,
+			govAgencyCode, groupAgenvyCode, start, end);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .fetchDossierStatistic(groupId, month, year, domain,
+			govAgencyCode, system, groupAgenvyCode, start, end);
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatisticManual fetchOpencpsDossierStatisticManual(
 		long dossierStatisticId) {
 		return getService()
@@ -378,6 +398,10 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static void removeAll() {
+		getService().removeAll();
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatisticManual removeByG_M_Y_G_D(
 		long groupId, int month, int year, String govAgencyCode,
 		String domainCode)
@@ -407,6 +431,16 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticManualException {
 		getService()
 			.removeDossierStatisticManualByYear(companyId, groupId, month, year);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> searchDossierStatisticSystem(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .searchDossierStatisticSystem(groupId, month, year, domain,
+			govAgencyCode, system, groupAgenvyCode, start, end);
 	}
 
 	/**

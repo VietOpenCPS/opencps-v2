@@ -22,6 +22,8 @@ dependencies {
 	compileInclude name : "poi-ooxml-4.0.1", transitive:false
 	compileInclude name : "poi-ooxml-schemas-4.0.1", transitive:false
 	compileInclude name : "xmlbeans-3.0.2", transitive:false
+	compileInclude name : "commons-collections4-4.1", transitive:false
+	compileInclude name : "commons-compress-1.18", transitive:false
 	
 	compileOnly project(":modules:backend-auth")
 	

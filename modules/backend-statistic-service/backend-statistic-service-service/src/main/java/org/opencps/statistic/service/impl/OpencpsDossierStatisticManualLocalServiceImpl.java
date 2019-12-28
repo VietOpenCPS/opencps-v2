@@ -208,6 +208,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
+			dossierStatistic.setSystem("1");
 		} else {
 			dossierStatistic = opencpsDossierStatisticManualPersistence.findByPrimaryKey(dossierStatisticId);
 			dossierStatistic.setModifiedDate(now);
@@ -249,7 +250,8 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
 			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
-			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);			
+			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);	
+			dossierStatistic.setSystem("1");
 		}
 
 		int ontimePercent = 100;
@@ -319,5 +321,39 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 	public OpencpsDossierStatisticManual fetchByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode, String domainCode) {
 		return opencpsDossierStatisticManualPersistence.fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
 	}
+	
+	public List<OpencpsDossierStatisticManual> fetchDossierStatistic(long groupId, int month, int year, String domain,
+			String govAgencyCode, String groupAgenvyCode, int start, int end)
+			throws PortalException, SystemException {
+		return opencpsDossierStatisticManualFinder.searchDossierStatistic(groupId, year, domain, govAgencyCode,
+				groupAgenvyCode, start, end);
+	}
+
+	public List<OpencpsDossierStatisticManual> fetchDossierStatistic(long groupId, int month, int year, String domain,
+			String govAgencyCode, String system, String groupAgenvyCode, int start, int end)
+			throws PortalException, SystemException {
+		if (month == 0 && year == -1) {
+			//_log.info("START month all and year all: ");
+			return opencpsDossierStatisticManualFinder.searchYearDossierStatistic(groupId, month, domain, govAgencyCode, system,
+					groupAgenvyCode, start, end);
+		} else {
+			return opencpsDossierStatisticManualFinder.searchDossierStatistic(groupId, year, domain, govAgencyCode, system,
+					groupAgenvyCode, start, end);
+		}
+		
+	}
+	
+	public List<OpencpsDossierStatisticManual> searchDossierStatisticSystem(long groupId, int month, int year, String domain,
+			String govAgencyCode, String system, String groupAgenvyCode, int start, int end)
+			throws PortalException, SystemException {
+
+		return opencpsDossierStatisticManualFinder.searchByDomainAgencySystem(groupId, month, year, domain,
+				govAgencyCode, system, groupAgenvyCode, start, end);
+	}
+
+	public void removeAll() {
+		opencpsDossierStatisticManualPersistence.removeAll();
+	}
+	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticManualLocalServiceImpl.class);	
 }

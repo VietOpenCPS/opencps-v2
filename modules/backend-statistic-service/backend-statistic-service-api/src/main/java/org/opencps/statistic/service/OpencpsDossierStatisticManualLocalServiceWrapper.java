@@ -197,6 +197,27 @@ public class OpencpsDossierStatisticManualLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticManualLocalService.fetchDossierStatistic(groupId,
+			month, year, domain, govAgencyCode, groupAgenvyCode, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticManualLocalService.fetchDossierStatistic(groupId,
+			month, year, domain, govAgencyCode, system, groupAgenvyCode, start,
+			end);
+	}
+
+	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatisticManual fetchOpencpsDossierStatisticManual(
 		long dossierStatisticId) {
 		return _opencpsDossierStatisticManualLocalService.fetchOpencpsDossierStatisticManual(dossierStatisticId);
@@ -391,6 +412,11 @@ public class OpencpsDossierStatisticManualLocalServiceWrapper
 	}
 
 	@Override
+	public void removeAll() {
+		_opencpsDossierStatisticManualLocalService.removeAll();
+	}
+
+	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatisticManual removeByG_M_Y_G_D(
 		long groupId, int month, int year, String govAgencyCode,
 		String domainCode)
@@ -421,6 +447,17 @@ public class OpencpsDossierStatisticManualLocalServiceWrapper
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticManualException {
 		_opencpsDossierStatisticManualLocalService.removeDossierStatisticManualByYear(companyId,
 			groupId, month, year);
+	}
+
+	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatisticManual> searchDossierStatisticSystem(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticManualLocalService.searchDossierStatisticSystem(groupId,
+			month, year, domain, govAgencyCode, system, groupAgenvyCode, start,
+			end);
 	}
 
 	/**

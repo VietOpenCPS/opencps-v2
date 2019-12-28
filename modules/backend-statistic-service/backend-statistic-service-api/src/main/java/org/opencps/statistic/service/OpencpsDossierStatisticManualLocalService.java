@@ -180,6 +180,18 @@ public interface OpencpsDossierStatisticManualLocalService
 		int month, int year, String govAgencyCode, String domainCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatisticManual> fetchDossierStatistic(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpencpsDossierStatisticManual fetchOpencpsDossierStatisticManual(
 		long dossierStatisticId);
 
@@ -316,6 +328,8 @@ public interface OpencpsDossierStatisticManualLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void removeAll();
+
 	public OpencpsDossierStatisticManual removeByG_M_Y_G_D(long groupId,
 		int month, int year, String govAgencyCode, String domainCode)
 		throws NoSuchOpencpsDossierStatisticManualException;
@@ -331,6 +345,12 @@ public interface OpencpsDossierStatisticManualLocalService
 	public void removeDossierStatisticManualByYear(long companyId,
 		long groupId, int month, int year)
 		throws NoSuchOpencpsDossierStatisticManualException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatisticManual> searchDossierStatisticSystem(
+		long groupId, int month, int year, String domain, String govAgencyCode,
+		String system, String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
 
 	/**
 	* Updates the opencps dossier statistic manual in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
