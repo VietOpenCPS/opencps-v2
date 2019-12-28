@@ -123,7 +123,8 @@ import javax.xml.bind.annotation.XmlType;
     "systemId",
     "viapostal",
     "toBacklogDate",
-    "backlog"
+    "backlog",
+    "assignedUserIdSearch"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -259,6 +260,8 @@ public class DossierSearchModel {
     protected String toBacklogDate;
     @QueryParam(value = "backlog")
     protected int backlog;
+    @QueryParam(value = "assignedUserId")
+    protected String assignedUserIdSearch;
 
 	public Integer getViapostal() {
 		return viapostal;
@@ -1138,6 +1141,14 @@ public class DossierSearchModel {
 
 	public void setBacklog(int value) {
 		this.backlog = value;
+	}
+
+	public String getAssignedUserIdSearch() {
+		return assignedUserIdSearch;
+	}
+
+	public void setAssignedUserIdSearch(String assignedUserIdSearch) {
+		this.assignedUserIdSearch = assignedUserIdSearch;
 	}
 
 }

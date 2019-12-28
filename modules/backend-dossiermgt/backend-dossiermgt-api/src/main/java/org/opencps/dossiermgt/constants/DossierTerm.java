@@ -84,6 +84,7 @@ public class DossierTerm {
 	public static final String DOSSIER_OVER_DUE = "dossierOverdue";
 	public static final String ACTION_USERIDS = "actionUserIds";
 	public static final String ASSIGNED_USER_ID = "assignedUserId";
+	public static final String ASSIGNED_USER_ID_SEARCH = "assignedUserIdSearch";
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";
