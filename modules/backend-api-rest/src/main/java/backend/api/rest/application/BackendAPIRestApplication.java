@@ -44,6 +44,7 @@ import org.opencps.api.controller.impl.BookingManagementImpl;
 import org.opencps.api.controller.impl.CacheTestManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
+import org.opencps.api.controller.impl.DVCQGIManagementImpl;
 import org.opencps.api.controller.impl.DVCQGSSOManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
 import org.opencps.api.controller.impl.DataTempManagementImpl;
@@ -219,6 +220,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new MenuConfigManagementImpl());
 		singletons.add(new JasperUtilsManagermentImpl());
 		singletons.add(new DVCQGSSOManagementImpl());
+		
+		singletons.add(new DVCQGIManagementImpl());
 
 		singletons.add(this);
 

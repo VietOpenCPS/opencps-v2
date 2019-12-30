@@ -15,4 +15,8 @@ public interface PayGateIntegrationAction {
 
 	public JSONObject doConfirm(User user, ServiceContext serviceContext, String billcode, String merchant_code,
 			String order_id, String check_sum);
+
+	public JSONObject receiveResult(User user, ServiceContext serviceContext, String billcode, String cust_msisdn,
+			String error_code, String merchant_code, String order_id, int payment_status, long trans_amount,
+			String vt_transaction_id, String check_sum);
 }
