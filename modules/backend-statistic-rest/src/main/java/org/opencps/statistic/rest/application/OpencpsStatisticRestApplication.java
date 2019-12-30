@@ -59,6 +59,8 @@ import org.apache.poi.hpsf.Array;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -1144,6 +1146,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			String fileName = dataHandle.getName();
 			
             Workbook workbook = null;
+            
             if (fileName.endsWith("xls")) {
                 workbook = new HSSFWorkbook(excelFile);            	
             }
@@ -1155,6 +1158,7 @@ public class OpencpsStatisticRestApplication extends Application {
             Map<Integer, List<OpencpsDossierStatisticManual>> mapStatistics = new HashMap<Integer, List<OpencpsDossierStatisticManual>>();
             
             OpencpsDossierStatisticManualLocalServiceUtil.removeAll();
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
@@ -1183,28 +1187,33 @@ public class OpencpsStatisticRestApplication extends Application {
                 int ontimeCount = 0;
                 int overdueCount = 0;
                 currentCell = currentRow.getCell(4);
-                if (currentCell.getCellType() == CellType.NUMERIC) {
-                	receivedCount = (int)currentCell.getNumericCellValue();
+                CellValue cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	receivedCount = (int)cellValue.getNumberValue();
                 }
                 currentCell = currentRow.getCell(5);
-                if (currentCell.getCellType() == CellType.NUMERIC) {
-                	ontimeCount = (int)currentCell.getNumericCellValue();
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	ontimeCount = (int)cellValue.getNumberValue();
                 }
                 currentCell = currentRow.getCell(6);
-                if (currentCell.getCellType() == CellType.NUMERIC) {
-                	overdueCount = (int)currentCell.getNumericCellValue();
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	overdueCount = (int)cellValue.getNumberValue();
                 }
                 currentCell = currentRow.getCell(7);
+                cellValue = evaluator.evaluate(currentCell);
                 int onlineCount = 0;
                 int releaseCount = 0;
                 
-                if (currentCell.getCellType() == CellType.NUMERIC) {
-                	onlineCount = (int)currentCell.getNumericCellValue();
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	onlineCount = (int)cellValue.getNumberValue();
                 }
                 
                 currentCell = currentRow.getCell(8);
-                if (currentCell.getCellType() == CellType.NUMERIC) {
-                	releaseCount = (int)currentCell.getNumericCellValue();
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	releaseCount = (int)cellValue.getNumberValue();
                 }
                 OpencpsDossierStatisticManual manual = OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, month, year, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", "", domainCode, domainName, false, 0, 0, 0);
                 List<OpencpsDossierStatisticManual> lstManual = new ArrayList<OpencpsDossierStatisticManual>();

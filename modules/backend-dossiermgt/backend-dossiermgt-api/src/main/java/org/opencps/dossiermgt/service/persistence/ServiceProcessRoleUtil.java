@@ -489,6 +489,253 @@ public class ServiceProcessRoleUtil {
 	}
 
 	/**
+	* Returns all the service process roles where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @return the matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long serviceProcessId) {
+		return getPersistence().findBySPS(serviceProcessId);
+	}
+
+	/**
+	* Returns a range of all the service process roles where serviceProcessId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessId the service process ID
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @return the range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long serviceProcessId,
+		int start, int end) {
+		return getPersistence().findBySPS(serviceProcessId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the service process roles where serviceProcessId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessId the service process ID
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long serviceProcessId,
+		int start, int end,
+		OrderByComparator<ServiceProcessRole> orderByComparator) {
+		return getPersistence()
+				   .findBySPS(serviceProcessId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the service process roles where serviceProcessId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessId the service process ID
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long serviceProcessId,
+		int start, int end,
+		OrderByComparator<ServiceProcessRole> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findBySPS(serviceProcessId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first service process role in the ordered set where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service process role
+	* @throws NoSuchServiceProcessRoleException if a matching service process role could not be found
+	*/
+	public static ServiceProcessRole findBySPS_First(long serviceProcessId,
+		OrderByComparator<ServiceProcessRole> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceProcessRoleException {
+		return getPersistence()
+				   .findBySPS_First(serviceProcessId, orderByComparator);
+	}
+
+	/**
+	* Returns the first service process role in the ordered set where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service process role, or <code>null</code> if a matching service process role could not be found
+	*/
+	public static ServiceProcessRole fetchBySPS_First(long serviceProcessId,
+		OrderByComparator<ServiceProcessRole> orderByComparator) {
+		return getPersistence()
+				   .fetchBySPS_First(serviceProcessId, orderByComparator);
+	}
+
+	/**
+	* Returns the last service process role in the ordered set where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service process role
+	* @throws NoSuchServiceProcessRoleException if a matching service process role could not be found
+	*/
+	public static ServiceProcessRole findBySPS_Last(long serviceProcessId,
+		OrderByComparator<ServiceProcessRole> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceProcessRoleException {
+		return getPersistence()
+				   .findBySPS_Last(serviceProcessId, orderByComparator);
+	}
+
+	/**
+	* Returns the last service process role in the ordered set where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service process role, or <code>null</code> if a matching service process role could not be found
+	*/
+	public static ServiceProcessRole fetchBySPS_Last(long serviceProcessId,
+		OrderByComparator<ServiceProcessRole> orderByComparator) {
+		return getPersistence()
+				   .fetchBySPS_Last(serviceProcessId, orderByComparator);
+	}
+
+	/**
+	* Returns the service process roles before and after the current service process role in the ordered set where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessRolePK the primary key of the current service process role
+	* @param serviceProcessId the service process ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next service process role
+	* @throws NoSuchServiceProcessRoleException if a service process role with the primary key could not be found
+	*/
+	public static ServiceProcessRole[] findBySPS_PrevAndNext(
+		ServiceProcessRolePK serviceProcessRolePK, long serviceProcessId,
+		OrderByComparator<ServiceProcessRole> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchServiceProcessRoleException {
+		return getPersistence()
+				   .findBySPS_PrevAndNext(serviceProcessRolePK,
+			serviceProcessId, orderByComparator);
+	}
+
+	/**
+	* Returns all the service process roles where serviceProcessId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessIds the service process IDs
+	* @return the matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long[] serviceProcessIds) {
+		return getPersistence().findBySPS(serviceProcessIds);
+	}
+
+	/**
+	* Returns a range of all the service process roles where serviceProcessId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessIds the service process IDs
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @return the range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long[] serviceProcessIds,
+		int start, int end) {
+		return getPersistence().findBySPS(serviceProcessIds, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the service process roles where serviceProcessId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessIds the service process IDs
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long[] serviceProcessIds,
+		int start, int end,
+		OrderByComparator<ServiceProcessRole> orderByComparator) {
+		return getPersistence()
+				   .findBySPS(serviceProcessIds, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the service process roles where serviceProcessId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceProcessRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serviceProcessId the service process ID
+	* @param start the lower bound of the range of service process roles
+	* @param end the upper bound of the range of service process roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service process roles
+	*/
+	public static List<ServiceProcessRole> findBySPS(long[] serviceProcessIds,
+		int start, int end,
+		OrderByComparator<ServiceProcessRole> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findBySPS(serviceProcessIds, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the service process roles where serviceProcessId = &#63; from the database.
+	*
+	* @param serviceProcessId the service process ID
+	*/
+	public static void removeBySPS(long serviceProcessId) {
+		getPersistence().removeBySPS(serviceProcessId);
+	}
+
+	/**
+	* Returns the number of service process roles where serviceProcessId = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @return the number of matching service process roles
+	*/
+	public static int countBySPS(long serviceProcessId) {
+		return getPersistence().countBySPS(serviceProcessId);
+	}
+
+	/**
+	* Returns the number of service process roles where serviceProcessId = any &#63;.
+	*
+	* @param serviceProcessIds the service process IDs
+	* @return the number of matching service process roles
+	*/
+	public static int countBySPS(long[] serviceProcessIds) {
+		return getPersistence().countBySPS(serviceProcessIds);
+	}
+
+	/**
 	* Caches the service process role in the entity cache if it is enabled.
 	*
 	* @param serviceProcessRole the service process role

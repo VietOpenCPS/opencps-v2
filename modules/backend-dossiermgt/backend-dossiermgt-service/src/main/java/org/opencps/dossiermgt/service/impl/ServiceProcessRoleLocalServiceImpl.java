@@ -15,11 +15,8 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
@@ -168,4 +165,7 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 		return 0;
 	}
 
+	public List<ServiceProcessRole> findBySPS(long[] serviceProcessArr) {
+		return serviceProcessRolePersistence.findBySPS(serviceProcessArr);
+	}
 }

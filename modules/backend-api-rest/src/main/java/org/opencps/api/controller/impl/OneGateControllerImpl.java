@@ -93,6 +93,7 @@ public class OneGateControllerImpl implements OneGateController {
 			long startTime = System.currentTimeMillis();
 			
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+			
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
 			if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {

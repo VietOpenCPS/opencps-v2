@@ -178,6 +178,8 @@ public interface ServiceProcessRoleLocalService extends BaseLocalService,
 	@ThreadLocalCachable
 	public List<ServiceProcessRole> findByS_P_ID(long serviceProcessId);
 
+	public List<ServiceProcessRole> findBySPS(long[] serviceProcessArr);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

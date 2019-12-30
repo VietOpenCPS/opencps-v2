@@ -1275,6 +1275,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// true, input.getApplicantNote(),
 			// Integer.valueOf(input.getOriginality()), serviceContext);
 			//
+			_log.debug("UPDATE DOSSIER: " + input.getCityCode());
+			
 			Dossier dossier = actions.initUpdateDossierFull(
 				groupId, id, input.getApplicantName(),
 				input.getApplicantIdType(), input.getApplicantIdNo(),

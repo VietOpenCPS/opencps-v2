@@ -1192,7 +1192,9 @@
 		<finder return-type="ServiceProcessRole" name="F_CODE">
 			<finder-column name="roleCode" />
 		</finder>
-
+		<finder return-type="Collection" name="SPS">
+			<finder-column name="serviceProcessId" arrayable-operator="OR" comparator="="/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="ProcessStep" remote-service="false"

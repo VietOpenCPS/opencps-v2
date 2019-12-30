@@ -5569,7 +5569,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(dossierName)) {
 			dossier.setDossierName(dossierName);
 		}
-		System.out.println("Dossier name: " + dossierName);
+//		System.out.println("Dossier name: " + dossierName);
 		dossier.setBriefNote(briefNote);
 		//Process add status of group dossier
 		if (dossier.getOriginality() == 9) {
@@ -5590,7 +5590,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (systemId > 0) {
 			dossier.setSystemId(systemId);
 		}
-
+		_log.debug("DOSSIER CITY CODE: " + dossier.getCityCode());
+		_log.debug("DOSSIER CITY NAME: " + dossier.getCityName());
+		
 		return dossierPersistence.update(dossier);
 	}
 	
