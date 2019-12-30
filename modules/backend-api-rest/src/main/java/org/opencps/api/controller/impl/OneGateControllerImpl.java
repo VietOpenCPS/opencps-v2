@@ -117,6 +117,9 @@ public class OneGateControllerImpl implements OneGateController {
 			endTime = System.currentTimeMillis();
 			_log.debug("PROCESS OPTION GET DB: " + (endTime - startTime) / 1000 + " s");
 			startTime = System.currentTimeMillis();
+			long[] spArr = new long[lstOptions.size()];
+			int count = 0;
+			
 			for (ProcessOption po : lstOptions) {
 				if (mapProcessOptions.get(po.getServiceConfigId()) == null) {
 					List<ProcessOption> lstPos = new ArrayList<>();
@@ -127,14 +130,17 @@ public class OneGateControllerImpl implements OneGateController {
 					List<ProcessOption> lstPos = mapProcessOptions.get(po.getServiceConfigId());
 					lstPos.add(po);
 				}
+				spArr[count++] = po.getServiceProcessId();
 			}
+			
 			endTime = System.currentTimeMillis();
 			_log.debug("PROCESS OPTION GET: " + (endTime - startTime) / 1000 + " s");
 			startTime = System.currentTimeMillis();
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
-			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+//			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.findBySPS(spArr);
 			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
 			for (ServiceProcessRole spr : lstPRoles) {
 				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
