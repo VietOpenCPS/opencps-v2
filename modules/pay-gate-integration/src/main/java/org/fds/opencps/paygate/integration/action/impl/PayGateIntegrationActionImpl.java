@@ -188,4 +188,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		result.put("error_code", error_code);
 		return result;
 	}
+
+	@Override
+	public JSONObject receiveResult(User user, ServiceContext serviceContext, String billcode, String cust_msisdn,
+			String error_code, String merchant_code, String order_id, int payment_status, long trans_amount,
+			String vt_transaction_id, String check_sum) {
+		
+		return null;
+	}
 }

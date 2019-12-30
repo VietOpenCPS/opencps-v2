@@ -78,7 +78,7 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
-	
+
 	@POST
 	@Path("/vtp/receiveresult")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
@@ -86,11 +86,14 @@ public class PayGateIntegrationApplication extends Application {
 	public Response receiveResult(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @FormParam("billcode") String billcode,
+			@FormParam("cust_msisdn") String cust_msisdn, @FormParam("error_code") String error_code,
 			@FormParam("merchant_code") String merchant_code, @FormParam("order_id") String order_id,
-			@FormParam("check_sum") String check_sum) {
+			@FormParam("payment_status") int payment_status, @FormParam("trans_amount") long trans_amount,
+			@FormParam("vt_transaction_id") String vt_transaction_id, @FormParam("check_sum") String check_sum) {
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
-		JSONObject result = actionImpl.doConfirm(user, serviceContext, billcode, merchant_code, order_id, check_sum);
+		JSONObject result = actionImpl.receiveResult(user, serviceContext, billcode, cust_msisdn, error_code,
+				merchant_code, order_id, payment_status, trans_amount, vt_transaction_id, check_sum);
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
