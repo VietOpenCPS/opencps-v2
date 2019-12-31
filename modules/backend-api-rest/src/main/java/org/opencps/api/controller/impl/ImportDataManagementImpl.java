@@ -32,7 +32,6 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -908,46 +907,6 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 						// dictItemDataUtil.getDictItemByItemCode(code,
 						// input.getItemCode(), groupId,
 						// serviceContext);
-
-						for (ServerConfig sc : lstServers) {
-							String configs = sc.getConfigs();
-							if (Validator.isNotNull(configs)) {
-								try {
-									JSONObject configObj =
-										JSONFactoryUtil.createJSONObject(
-											configs);
-									if (configObj.has(
-										SyncServerTerm.SERVER_TYPE) &&
-										configObj.getString(
-											SyncServerTerm.SERVER_TYPE).equals(
-												SyncServerTerm.SYNC_SERVER_TYPE) &&
-										configObj.has(
-											SyncServerTerm.SERVER_USERNAME) &&
-										configObj.has(
-											SyncServerTerm.SERVER_SECRET) &&
-										configObj.has(
-											SyncServerTerm.SERVER_URL) &&
-										(configObj.has(SyncServerTerm.PUSH) &&
-											configObj.getBoolean(
-												SyncServerTerm.PUSH))) {
-										if (groupId == sc.getGroupId()) {
-											pushDictItemUtil.addPushDictItem(
-												user.getUserId(), groupId,
-												sc.getServerNo(),
-												collectionCode, itemCode,
-												itemName, itemNameEN,
-												itemDescription, parentItemCode,
-												sibling,
-												SyncServerTerm.METHOD_CREATE,
-												"", serviceContext);
-										}
-									}
-								}
-								catch (Exception e) {
-									_log.error(e);
-								}
-							}
-						}
 					}
 					catch (Exception e) {
 						_log.error(e);
