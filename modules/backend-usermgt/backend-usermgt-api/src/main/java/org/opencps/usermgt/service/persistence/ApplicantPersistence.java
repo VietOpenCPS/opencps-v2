@@ -1107,6 +1107,66 @@ public interface ApplicantPersistence extends BasePersistence<Applicant> {
 	public int countByF_EMAIL(String contactEmail);
 
 	/**
+	* Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param mappingClassName the mapping class name
+	* @param mappingClassPK the mapping class pk
+	* @return the matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public Applicant findByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param mappingClassName the mapping class name
+	* @param mappingClassPK the mapping class pk
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK);
+
+	/**
+	* Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param mappingClassName the mapping class name
+	* @param mappingClassPK the mapping class pk
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param mappingClassName the mapping class name
+	* @param mappingClassPK the mapping class pk
+	* @return the applicant that was removed
+	*/
+	public Applicant removeByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK)
+		throws NoSuchApplicantException;
+
+	/**
+	* Returns the number of applicants where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param mappingClassName the mapping class name
+	* @param mappingClassPK the mapping class pk
+	* @return the number of matching applicants
+	*/
+	public int countByF_GID_MCN_MCPK(long groupId, String mappingClassName,
+		String mappingClassPK);
+
+	/**
 	* Caches the applicant in the entity cache if it is enabled.
 	*
 	* @param applicant the applicant

@@ -528,6 +528,36 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	 */
 	public void setRepresentativeEnterprise(String representativeEnterprise);
 
+	/**
+	 * Returns the mapping class name of this applicant.
+	 *
+	 * @return the mapping class name of this applicant
+	 */
+	@AutoEscape
+	public String getMappingClassName();
+
+	/**
+	 * Sets the mapping class name of this applicant.
+	 *
+	 * @param mappingClassName the mapping class name of this applicant
+	 */
+	public void setMappingClassName(String mappingClassName);
+
+	/**
+	 * Returns the mapping class pk of this applicant.
+	 *
+	 * @return the mapping class pk of this applicant
+	 */
+	@AutoEscape
+	public String getMappingClassPK();
+
+	/**
+	 * Sets the mapping class pk of this applicant.
+	 *
+	 * @param mappingClassPK the mapping class pk of this applicant
+	 */
+	public void setMappingClassPK(String mappingClassPK);
+
 	@Override
 	public boolean isNew();
 

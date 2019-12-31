@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 
 import java.io.Serializable;
@@ -215,6 +216,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public Applicant fetchByF_APLC_GID(long groupId, String applicantIdNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant fetchByMappingID(long mappingID);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -223,6 +228,10 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public List<Applicant> findByAppIds(String applicantIdNo);
 
 	public List<Applicant> findByContactEmailList(String contactEmail);
+
+	public Applicant findByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK)
+		throws NoSuchApplicantException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -377,6 +386,11 @@ public interface ApplicantLocalService extends BaseLocalService,
 		String districtCode, String districtName, String wardCode,
 		String wardName, String contactName, String contactTelNo,
 		String contactEmail, String profile);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplication(ServiceContext context, long groupId,
+		long applicantId, String mappingClassName, String mappingClassPK)
+		throws PortalException, SystemException;
 
 	/**
 	* @param context

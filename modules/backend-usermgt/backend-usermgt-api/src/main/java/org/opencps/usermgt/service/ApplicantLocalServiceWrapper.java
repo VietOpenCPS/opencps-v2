@@ -244,6 +244,13 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Applicant fetchByF_GID_MCN_MCPK(
+		long groupId, String mappingClassName, String mappingClassPK) {
+		return _applicantLocalService.fetchByF_GID_MCN_MCPK(groupId,
+			mappingClassName, mappingClassPK);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.Applicant fetchByMappingID(long mappingID) {
 		return _applicantLocalService.fetchByMappingID(mappingID);
 	}
@@ -263,6 +270,14 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 	public java.util.List<org.opencps.usermgt.model.Applicant> findByContactEmailList(
 		String contactEmail) {
 		return _applicantLocalService.findByContactEmailList(contactEmail);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Applicant findByF_GID_MCN_MCPK(
+		long groupId, String mappingClassName, String mappingClassPK)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return _applicantLocalService.findByF_GID_MCN_MCPK(groupId,
+			mappingClassName, mappingClassPK);
 	}
 
 	@Override
@@ -495,6 +510,16 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 			applicantIdDate, address, cityCode, cityName, districtCode,
 			districtName, wardCode, wardName, contactName, contactTelNo,
 			contactEmail, profile);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Applicant updateApplication(
+		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
+		long applicantId, String mappingClassName, String mappingClassPK)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _applicantLocalService.updateApplication(context, groupId,
+			applicantId, mappingClassName, mappingClassPK);
 	}
 
 	/**

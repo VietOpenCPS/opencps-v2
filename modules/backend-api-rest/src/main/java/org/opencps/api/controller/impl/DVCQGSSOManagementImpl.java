@@ -29,7 +29,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			String currentURL) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, vnconnect, currentURL);
+		String endpoint = action.checkAuth(user, groupId, request, serviceContext, vnconnect, currentURL);
 		// request.getSession().setAttribute("groupId", groupId);
 		// request.getSession().setAttribute("currentURL", currentURL);
 		// request.getSession().setMaxInactiveInterval(36000);
@@ -42,10 +42,10 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
-		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken);
+		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state);
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
@@ -74,6 +74,15 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			return Response.status(401).entity(result.toJSONString()).build();
 		}
 
+	}
+
+	@Override
+	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String state) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state);
+		return Response.status(200).entity(endpoint).build();
 	}
 
 }

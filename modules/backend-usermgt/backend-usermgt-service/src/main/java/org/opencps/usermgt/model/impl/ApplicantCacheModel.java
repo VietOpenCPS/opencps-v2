@@ -65,7 +65,7 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -123,6 +123,10 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		sb.append(tmpPass);
 		sb.append(", representativeEnterprise=");
 		sb.append(representativeEnterprise);
+		sb.append(", mappingClassName=");
+		sb.append(mappingClassName);
+		sb.append(", mappingClassPK=");
+		sb.append(mappingClassPK);
 		sb.append("}");
 
 		return sb.toString();
@@ -295,6 +299,20 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 			applicantImpl.setRepresentativeEnterprise(representativeEnterprise);
 		}
 
+		if (mappingClassName == null) {
+			applicantImpl.setMappingClassName("");
+		}
+		else {
+			applicantImpl.setMappingClassName(mappingClassName);
+		}
+
+		if (mappingClassPK == null) {
+			applicantImpl.setMappingClassPK("");
+		}
+		else {
+			applicantImpl.setMappingClassPK(mappingClassPK);
+		}
+
 		applicantImpl.resetOriginalValues();
 
 		return applicantImpl;
@@ -336,6 +354,8 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		profile = objectInput.readUTF();
 		tmpPass = objectInput.readUTF();
 		representativeEnterprise = objectInput.readUTF();
+		mappingClassName = objectInput.readUTF();
+		mappingClassPK = objectInput.readUTF();
 	}
 
 	@Override
@@ -490,6 +510,20 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		else {
 			objectOutput.writeUTF(representativeEnterprise);
 		}
+
+		if (mappingClassName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(mappingClassName);
+		}
+
+		if (mappingClassPK == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(mappingClassPK);
+		}
 	}
 
 	public String uuid;
@@ -520,4 +554,6 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 	public String profile;
 	public String tmpPass;
 	public String representativeEnterprise;
+	public String mappingClassName;
+	public String mappingClassPK;
 }

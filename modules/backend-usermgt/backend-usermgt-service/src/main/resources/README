@@ -1,0 +1,10 @@
+module Applicant Thêm 2 trường
+mappingClassName
+mappingClassPK
+Để lưu thông tin mapping với các tài khoản của hệ thống bên ngoài(DVCQG)
+
+path callback: domain/o/dvcqg-sso/callback
+
+
+server config:
+- Portocol: DVCQG-OPENID

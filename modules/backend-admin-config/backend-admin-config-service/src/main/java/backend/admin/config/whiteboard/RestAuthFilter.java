@@ -67,7 +67,7 @@ public class RestAuthFilter implements Filter {
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
-	final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\S+/filetemplates/\\S+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers/\\S+/files/\\S+", "/o/rest/v2/dossiers/\\S+", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid", "/o/rest/v2/jaspers/preview", "/o/rest/v2/dvcqgsso/checkauth","/o/rest/v2/dvcqgsso/auth","/o/auth/dvcqg/validatetoken"};
+	final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\S+/filetemplates/\\S+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/dossiers/\\S+/files/\\S+", "/o/rest/v2/dossiers/\\S+", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/serviceinfos", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/sms/inet", "/o/rest/v2/sms/zaloid", "/o/rest/v2/jaspers/preview", "/o/rest/v2/dvcqgsso/checkauth","/o/rest/v2/dvcqgsso/auth","/o/auth/dvcqg/validatetoken","/o/rest/v2/dvcqgsso/userinfo"};
 	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
 	final static String[] DISALLOW_METHODS = new String[] { "OPTIONS" };
 	final static String[] DISALLOW_METHODS_IGNORE_PATTERN = new String[] { "/o/rest/v2/faq" };

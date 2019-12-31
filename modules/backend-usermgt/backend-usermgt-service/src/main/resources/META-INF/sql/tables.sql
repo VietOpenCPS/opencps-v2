@@ -52,7 +52,9 @@ create table opencps_applicant (
 	lock_ BOOLEAN,
 	profile TEXT null,
 	tmpPass VARCHAR(75) null,
-	representativeEnterprise VARCHAR(200) null
+	representativeEnterprise VARCHAR(200) null,
+	mappingClassName VARCHAR(75) null,
+	mappingClassPK VARCHAR(75) null
 );
 
 create table opencps_employee (

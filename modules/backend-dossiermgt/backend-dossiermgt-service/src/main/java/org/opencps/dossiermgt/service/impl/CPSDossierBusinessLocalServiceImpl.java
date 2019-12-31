@@ -102,6 +102,7 @@ import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
@@ -407,7 +408,10 @@ public class CPSDossierBusinessLocalServiceImpl
 						dossier.setDossierStatusText(jsonDataStatusText != null ? jsonDataStatusText.getString(DossierTerm.DOSSIER_STATUS_INTEROPERATING) : StringPool.BLANK);
 						dossier.setDossierSubStatus(StringPool.BLANK);
 						dossier.setDossierSubStatusText(StringPool.BLANK);
-						dossier.setLockState(curStep.getLockState());
+						if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+							dossier.setLockState(curStep.getLockState());
+						}
 						dossier.setDossierNote(dossierNote);;
 					}
 					
@@ -1061,6 +1065,21 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossier.setDossierActionId(previousAction.getPreviousActionId());
 				dossierLocalService.updateDossier(dossier);
 				
+				// chỉ cán bộ thao tác trước đó có moderator = 1
+				List<DossierActionUser> lstDaus =
+								DossierActionUserLocalServiceUtil.getByDossierAndStepCode(
+									dossier.getDossierId(), previousAction.getStepCode());
+
+				for (DossierActionUser dau : lstDaus) {
+					
+					if (dau.getUserId() == backCurStep.getUserId()) {
+						dau.setModerator(1);
+					} else {
+						dau.setModerator(0);
+					}
+					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+				}
+
 				return previousAction;
 			}
 			
@@ -2126,7 +2145,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		dossier.setDossierStatusText(statusText);
 		dossier.setDossierSubStatus(subStatus);
 		dossier.setDossierSubStatusText(subStatusText);
-		dossier.setLockState(lockState);
+		if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+			dossier.setLockState(lockState);
+		}
 		dossier.setDossierNote(stepInstruction);
 
 //		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
@@ -2459,7 +2481,10 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		} 
 		else if (dateOption == DossierTerm.DATE_OPTION_RESET_DUE_DATE) {
-			dossier.setLockState(StringPool.BLANK);
+			if (dossier != null && !DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+				dossier.setLockState(StringPool.BLANK);
+			}
 			if (dossier.getDueDate() != null) {
 				if (serviceProcess != null) {
 //					Date newDueDate = HolidayUtils.getDueDate(new Date(),
@@ -3113,6 +3138,33 @@ public class CPSDossierBusinessLocalServiceImpl
 				_log.debug(e);
 			}
 		}	
+		
+		//add by TrungNT
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
+		if(Validator.isNotNull(mappingDossierStatus)) {
+			lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
+			for (ServerConfig sc : lstScs) {
+				try {
+					List<PublishQueue> lstQueues = publishQueueLocalService.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+					if (lstQueues == null || lstQueues.isEmpty()) {
+						publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+					}
+//					PublishQueue pq = PublishQueueLocalServiceUtil.getByG_DID_SN(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo());
+//					if (pq == null) {
+//						PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);					
+//					}
+//					else {
+//						if (pq.getStatus() == PublishQueueTerm.STATE_ACK_ERROR) {
+//							PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), pq.getPublishQueueId(), dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);																
+//						}
+//					}
+				} catch (PortalException e) {
+					_log.debug(e);
+				}
+			}
+		}
+			
 	}
 	
 	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,

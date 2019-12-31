@@ -169,12 +169,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		_log.debug("In dossier file create");
 		try {
-			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
-			
-			if (!flagCheck) {
-				return Response.status(HttpStatus.SC_FORBIDDEN)
-						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
-			}
+//			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+//			
+//			if (!flagCheck) {
+//				return Response.status(HttpStatus.SC_FORBIDDEN)
+//						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+//			}
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
 			}
@@ -192,6 +192,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(200).entity(result).build();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

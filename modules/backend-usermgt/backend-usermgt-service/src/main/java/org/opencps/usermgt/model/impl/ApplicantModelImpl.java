@@ -95,7 +95,9 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			{ "lock_", Types.BOOLEAN },
 			{ "profile", Types.VARCHAR },
 			{ "tmpPass", Types.VARCHAR },
-			{ "representativeEnterprise", Types.VARCHAR }
+			{ "representativeEnterprise", Types.VARCHAR },
+			{ "mappingClassName", Types.VARCHAR },
+			{ "mappingClassPK", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -128,9 +130,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		TABLE_COLUMNS_MAP.put("profile", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("tmpPass", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("representativeEnterprise", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("mappingClassName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("mappingClassPK", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_applicant (uuid_ VARCHAR(75) null,applicantId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address STRING null,cityCode VARCHAR(75) null,cityName VARCHAR(500) null,districtCode VARCHAR(75) null,districtName VARCHAR(500) null,wardCode VARCHAR(75) null,wardName VARCHAR(500) null,contactName VARCHAR(500) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(500) null,mappingUserId LONG,activationCode VARCHAR(75) null,lock_ BOOLEAN,profile TEXT null,tmpPass VARCHAR(75) null,representativeEnterprise VARCHAR(200) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_applicant (uuid_ VARCHAR(75) null,applicantId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address STRING null,cityCode VARCHAR(75) null,cityName VARCHAR(500) null,districtCode VARCHAR(75) null,districtName VARCHAR(500) null,wardCode VARCHAR(75) null,wardName VARCHAR(500) null,contactName VARCHAR(500) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(500) null,mappingUserId LONG,activationCode VARCHAR(75) null,lock_ BOOLEAN,profile TEXT null,tmpPass VARCHAR(75) null,representativeEnterprise VARCHAR(200) null,mappingClassName VARCHAR(75) null,mappingClassPK VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_applicant";
 	public static final String ORDER_BY_JPQL = " ORDER BY applicant.applicantName ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_applicant.applicantName ASC";
@@ -152,9 +156,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	public static final long CONTACTEMAIL_COLUMN_BITMASK = 8L;
 	public static final long CONTACTTELNO_COLUMN_BITMASK = 16L;
 	public static final long GROUPID_COLUMN_BITMASK = 32L;
-	public static final long MAPPINGUSERID_COLUMN_BITMASK = 64L;
-	public static final long UUID_COLUMN_BITMASK = 128L;
-	public static final long APPLICANTNAME_COLUMN_BITMASK = 256L;
+	public static final long MAPPINGCLASSNAME_COLUMN_BITMASK = 64L;
+	public static final long MAPPINGCLASSPK_COLUMN_BITMASK = 128L;
+	public static final long MAPPINGUSERID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
+	public static final long APPLICANTNAME_COLUMN_BITMASK = 1024L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Applicant"));
 
@@ -223,6 +229,8 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		attributes.put("profile", getProfile());
 		attributes.put("tmpPass", getTmpPass());
 		attributes.put("representativeEnterprise", getRepresentativeEnterprise());
+		attributes.put("mappingClassName", getMappingClassName());
+		attributes.put("mappingClassPK", getMappingClassPK());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -399,6 +407,18 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 		if (representativeEnterprise != null) {
 			setRepresentativeEnterprise(representativeEnterprise);
+		}
+
+		String mappingClassName = (String)attributes.get("mappingClassName");
+
+		if (mappingClassName != null) {
+			setMappingClassName(mappingClassName);
+		}
+
+		String mappingClassPK = (String)attributes.get("mappingClassPK");
+
+		if (mappingClassPK != null) {
+			setMappingClassPK(mappingClassPK);
 		}
 	}
 
@@ -907,6 +927,56 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	}
 
 	@Override
+	public String getMappingClassName() {
+		if (_mappingClassName == null) {
+			return "";
+		}
+		else {
+			return _mappingClassName;
+		}
+	}
+
+	@Override
+	public void setMappingClassName(String mappingClassName) {
+		_columnBitmask |= MAPPINGCLASSNAME_COLUMN_BITMASK;
+
+		if (_originalMappingClassName == null) {
+			_originalMappingClassName = _mappingClassName;
+		}
+
+		_mappingClassName = mappingClassName;
+	}
+
+	public String getOriginalMappingClassName() {
+		return GetterUtil.getString(_originalMappingClassName);
+	}
+
+	@Override
+	public String getMappingClassPK() {
+		if (_mappingClassPK == null) {
+			return "";
+		}
+		else {
+			return _mappingClassPK;
+		}
+	}
+
+	@Override
+	public void setMappingClassPK(String mappingClassPK) {
+		_columnBitmask |= MAPPINGCLASSPK_COLUMN_BITMASK;
+
+		if (_originalMappingClassPK == null) {
+			_originalMappingClassPK = _mappingClassPK;
+		}
+
+		_mappingClassPK = mappingClassPK;
+	}
+
+	public String getOriginalMappingClassPK() {
+		return GetterUtil.getString(_originalMappingClassPK);
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Applicant.class.getName()));
@@ -971,6 +1041,8 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		applicantImpl.setProfile(getProfile());
 		applicantImpl.setTmpPass(getTmpPass());
 		applicantImpl.setRepresentativeEnterprise(getRepresentativeEnterprise());
+		applicantImpl.setMappingClassName(getMappingClassName());
+		applicantImpl.setMappingClassPK(getMappingClassPK());
 
 		applicantImpl.resetOriginalValues();
 
@@ -1054,6 +1126,10 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		applicantModelImpl._originalMappingUserId = applicantModelImpl._mappingUserId;
 
 		applicantModelImpl._setOriginalMappingUserId = false;
+
+		applicantModelImpl._originalMappingClassName = applicantModelImpl._mappingClassName;
+
+		applicantModelImpl._originalMappingClassPK = applicantModelImpl._mappingClassPK;
 
 		applicantModelImpl._columnBitmask = 0;
 	}
@@ -1254,12 +1330,28 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			applicantCacheModel.representativeEnterprise = null;
 		}
 
+		applicantCacheModel.mappingClassName = getMappingClassName();
+
+		String mappingClassName = applicantCacheModel.mappingClassName;
+
+		if ((mappingClassName != null) && (mappingClassName.length() == 0)) {
+			applicantCacheModel.mappingClassName = null;
+		}
+
+		applicantCacheModel.mappingClassPK = getMappingClassPK();
+
+		String mappingClassPK = applicantCacheModel.mappingClassPK;
+
+		if ((mappingClassPK != null) && (mappingClassPK.length() == 0)) {
+			applicantCacheModel.mappingClassPK = null;
+		}
+
 		return applicantCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1317,6 +1409,10 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append(getTmpPass());
 		sb.append(", representativeEnterprise=");
 		sb.append(getRepresentativeEnterprise());
+		sb.append(", mappingClassName=");
+		sb.append(getMappingClassName());
+		sb.append(", mappingClassPK=");
+		sb.append(getMappingClassPK());
 		sb.append("}");
 
 		return sb.toString();
@@ -1324,7 +1420,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(88);
+		StringBundler sb = new StringBundler(94);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Applicant");
@@ -1442,6 +1538,14 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			"<column><column-name>representativeEnterprise</column-name><column-value><![CDATA[");
 		sb.append(getRepresentativeEnterprise());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>mappingClassName</column-name><column-value><![CDATA[");
+		sb.append(getMappingClassName());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>mappingClassPK</column-name><column-value><![CDATA[");
+		sb.append(getMappingClassPK());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1492,6 +1596,10 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
+	private String _mappingClassName;
+	private String _originalMappingClassName;
+	private String _mappingClassPK;
+	private String _originalMappingClassPK;
 	private long _columnBitmask;
 	private Applicant _escapedModel;
 }

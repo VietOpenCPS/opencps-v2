@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -4047,5 +4048,5 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 		return dossier;
 	}
-		
+
 }

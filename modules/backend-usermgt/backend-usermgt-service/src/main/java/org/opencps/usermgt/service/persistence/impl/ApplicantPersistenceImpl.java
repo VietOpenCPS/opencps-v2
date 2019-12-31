@@ -4815,6 +4815,337 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 	private static final String _FINDER_COLUMN_F_EMAIL_CONTACTEMAIL_1 = "applicant.contactEmail IS NULL";
 	private static final String _FINDER_COLUMN_F_EMAIL_CONTACTEMAIL_2 = "applicant.contactEmail = ?";
 	private static final String _FINDER_COLUMN_F_EMAIL_CONTACTEMAIL_3 = "(applicant.contactEmail IS NULL OR applicant.contactEmail = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_GID_MCN_MCPK",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			ApplicantModelImpl.GROUPID_COLUMN_BITMASK |
+			ApplicantModelImpl.MAPPINGCLASSNAME_COLUMN_BITMASK |
+			ApplicantModelImpl.MAPPINGCLASSPK_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_MCN_MCPK = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_GID_MCN_MCPK",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingClassName the mapping class name
+	 * @param mappingClassPK the mapping class pk
+	 * @return the matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_GID_MCN_MCPK(groupId, mappingClassName,
+				mappingClassPK);
+
+		if (applicant == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", mappingClassName=");
+			msg.append(mappingClassName);
+
+			msg.append(", mappingClassPK=");
+			msg.append(mappingClassPK);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchApplicantException(msg.toString());
+		}
+
+		return applicant;
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingClassName the mapping class name
+	 * @param mappingClassPK the mapping class pk
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK) {
+		return fetchByF_GID_MCN_MCPK(groupId, mappingClassName, mappingClassPK,
+			true);
+	}
+
+	/**
+	 * Returns the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingClassName the mapping class name
+	 * @param mappingClassPK the mapping class pk
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, mappingClassName, mappingClassPK
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK,
+					finderArgs, this);
+		}
+
+		if (result instanceof Applicant) {
+			Applicant applicant = (Applicant)result;
+
+			if ((groupId != applicant.getGroupId()) ||
+					!Objects.equals(mappingClassName,
+						applicant.getMappingClassName()) ||
+					!Objects.equals(mappingClassPK,
+						applicant.getMappingClassPK())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_GROUPID_2);
+
+			boolean bindMappingClassName = false;
+
+			if (mappingClassName == null) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_1);
+			}
+			else if (mappingClassName.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_3);
+			}
+			else {
+				bindMappingClassName = true;
+
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_2);
+			}
+
+			boolean bindMappingClassPK = false;
+
+			if (mappingClassPK == null) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_1);
+			}
+			else if (mappingClassPK.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_3);
+			}
+			else {
+				bindMappingClassPK = true;
+
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindMappingClassName) {
+					qPos.add(mappingClassName);
+				}
+
+				if (bindMappingClassPK) {
+					qPos.add(mappingClassPK);
+				}
+
+				List<Applicant> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ApplicantPersistenceImpl.fetchByF_GID_MCN_MCPK(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Applicant applicant = list.get(0);
+
+					result = applicant;
+
+					cacheResult(applicant);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Applicant)result;
+		}
+	}
+
+	/**
+	 * Removes the applicant where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingClassName the mapping class name
+	 * @param mappingClassPK the mapping class pk
+	 * @return the applicant that was removed
+	 */
+	@Override
+	public Applicant removeByF_GID_MCN_MCPK(long groupId,
+		String mappingClassName, String mappingClassPK)
+		throws NoSuchApplicantException {
+		Applicant applicant = findByF_GID_MCN_MCPK(groupId, mappingClassName,
+				mappingClassPK);
+
+		return remove(applicant);
+	}
+
+	/**
+	 * Returns the number of applicants where groupId = &#63; and mappingClassName = &#63; and mappingClassPK = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param mappingClassName the mapping class name
+	 * @param mappingClassPK the mapping class pk
+	 * @return the number of matching applicants
+	 */
+	@Override
+	public int countByF_GID_MCN_MCPK(long groupId, String mappingClassName,
+		String mappingClassPK) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_MCN_MCPK;
+
+		Object[] finderArgs = new Object[] {
+				groupId, mappingClassName, mappingClassPK
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_APPLICANT_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_GROUPID_2);
+
+			boolean bindMappingClassName = false;
+
+			if (mappingClassName == null) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_1);
+			}
+			else if (mappingClassName.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_3);
+			}
+			else {
+				bindMappingClassName = true;
+
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_2);
+			}
+
+			boolean bindMappingClassPK = false;
+
+			if (mappingClassPK == null) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_1);
+			}
+			else if (mappingClassPK.equals("")) {
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_3);
+			}
+			else {
+				bindMappingClassPK = true;
+
+				query.append(_FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindMappingClassName) {
+					qPos.add(mappingClassName);
+				}
+
+				if (bindMappingClassPK) {
+					qPos.add(mappingClassPK);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_GROUPID_2 = "applicant.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_1 =
+		"applicant.mappingClassName IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_2 =
+		"applicant.mappingClassName = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSNAME_3 =
+		"(applicant.mappingClassName IS NULL OR applicant.mappingClassName = '') AND ";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_1 = "applicant.mappingClassPK IS NULL";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_2 = "applicant.mappingClassPK = ?";
+	private static final String _FINDER_COLUMN_F_GID_MCN_MCPK_MAPPINGCLASSPK_3 = "(applicant.mappingClassPK IS NULL OR applicant.mappingClassPK = '')";
 
 	public ApplicantPersistenceImpl() {
 		setModelClass(Applicant.class);
@@ -4875,6 +5206,12 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
 			new Object[] { applicant.getMappingUserId() }, applicant);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK,
+			new Object[] {
+				applicant.getGroupId(), applicant.getMappingClassName(),
+				applicant.getMappingClassPK()
+			}, applicant);
 
 		applicant.resetOriginalValues();
 	}
@@ -5011,6 +5348,17 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args,
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID, args,
+			applicantModelImpl, false);
+
+		args = new Object[] {
+				applicantModelImpl.getGroupId(),
+				applicantModelImpl.getMappingClassName(),
+				applicantModelImpl.getMappingClassPK()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_MCN_MCPK, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK, args,
 			applicantModelImpl, false);
 	}
 
@@ -5166,6 +5514,29 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getGroupId(),
+					applicantModelImpl.getMappingClassName(),
+					applicantModelImpl.getMappingClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_MCN_MCPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK, args);
+		}
+
+		if ((applicantModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					applicantModelImpl.getOriginalGroupId(),
+					applicantModelImpl.getOriginalMappingClassName(),
+					applicantModelImpl.getOriginalMappingClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_MCN_MCPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK, args);
 		}
 	}
 

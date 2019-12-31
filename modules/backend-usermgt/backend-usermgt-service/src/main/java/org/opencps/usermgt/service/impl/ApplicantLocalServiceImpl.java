@@ -18,8 +18,6 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -55,9 +53,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.opencps.auth.api.keys.NotificationType;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -68,7 +63,7 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
+import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -500,6 +495,33 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 		}
+
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+	
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplication(ServiceContext context, long groupId, long applicantId, String mappingClassName,
+			String mappingClassPK) throws PortalException, SystemException {
+		Applicant applicant = null;
+
+		Date now = new Date();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+
+		applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+		applicant.setModifiedDate(now);
+		applicant.setUserId(context.getUserId());
+		applicant.setUserName(auditUser.getFullName());
+
+		if (Validator.isNotNull(mappingClassName))
+			applicant.setMappingClassName(mappingClassName);
+
+		if (Validator.isNotNull(mappingClassPK))
+			applicant.setMappingClassPK(mappingClassPK);
 
 		applicantPersistence.update(applicant);
 
@@ -1431,6 +1453,14 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	public List<Applicant> findByContactEmailList(String contactEmail) {
 
 		return applicantPersistence.findByF_EMAIL(contactEmail);
+	}
+	
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId, String mappingClassName, String mappingClassPK) {
+		return applicantPersistence.fetchByF_GID_MCN_MCPK(groupId, mappingClassName, mappingClassPK);
+	}
+	
+	public Applicant findByF_GID_MCN_MCPK(long groupId, String mappingClassName, String mappingClassPK) throws NoSuchApplicantException {
+		return applicantPersistence.findByF_GID_MCN_MCPK(groupId, mappingClassName, mappingClassPK);
 	}
 
 	// private Log _log =
