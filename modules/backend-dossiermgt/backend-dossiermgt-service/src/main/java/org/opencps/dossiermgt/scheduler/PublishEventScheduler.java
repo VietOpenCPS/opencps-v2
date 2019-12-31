@@ -29,6 +29,7 @@ import java.util.Map;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -202,6 +203,33 @@ public class PublishEventScheduler extends BaseMessageListener {
 			} catch (PortalException e) {
 				_log.error(e);
 			}					
+		}
+		//add by TrungNt
+		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
+			
+			try {
+				if (dossier != null && dossier.getOriginality() > 0) {
+					DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+					
+					JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier);
+					if(result.has("error_code") && result.getString("error_code").equals("0")) {
+						PublishQueueLocalServiceUtil.updatePublishQueue(
+								sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
+								sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+								String.valueOf(dossier.getDossierNo()), result.toJSONString(),
+								new ServiceContext());	
+						return true;
+					}
+					
+					return false;
+					
+				}
+				else {
+					return true;
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}				
 		}
 		return true;
 	}

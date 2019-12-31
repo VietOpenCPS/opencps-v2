@@ -78,7 +78,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			{ "govAgencyName", Types.VARCHAR },
 			{ "questionType", Types.VARCHAR },
 			{ "subDomainCode", Types.VARCHAR },
-			{ "subDomainName", Types.VARCHAR }
+			{ "subDomainName", Types.VARCHAR },
+			{ "phone", Types.VARCHAR },
+			{ "address", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -99,9 +101,11 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("questionType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("subDomainCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("subDomainName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("phone", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("address", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(75) null,phone VARCHAR(75) null,address VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";
@@ -179,6 +183,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		attributes.put("questionType", getQuestionType());
 		attributes.put("subDomainCode", getSubDomainCode());
 		attributes.put("subDomainName", getSubDomainName());
+		attributes.put("phone", getPhone());
+		attributes.put("address", getAddress());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -282,6 +288,18 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		if (subDomainName != null) {
 			setSubDomainName(subDomainName);
+		}
+
+		String phone = (String)attributes.get("phone");
+
+		if (phone != null) {
+			setPhone(phone);
+		}
+
+		String address = (String)attributes.get("address");
+
+		if (address != null) {
+			setAddress(address);
 		}
 	}
 
@@ -557,6 +575,36 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		_subDomainName = subDomainName;
 	}
 
+	@Override
+	public String getPhone() {
+		if (_phone == null) {
+			return "";
+		}
+		else {
+			return _phone;
+		}
+	}
+
+	@Override
+	public void setPhone(String phone) {
+		_phone = phone;
+	}
+
+	@Override
+	public String getAddress() {
+		if (_address == null) {
+			return "";
+		}
+		else {
+			return _address;
+		}
+	}
+
+	@Override
+	public void setAddress(String address) {
+		_address = address;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -604,6 +652,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionImpl.setQuestionType(getQuestionType());
 		questionImpl.setSubDomainCode(getSubDomainCode());
 		questionImpl.setSubDomainName(getSubDomainName());
+		questionImpl.setPhone(getPhone());
+		questionImpl.setAddress(getAddress());
 
 		questionImpl.resetOriginalValues();
 
@@ -793,12 +843,28 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			questionCacheModel.subDomainName = null;
 		}
 
+		questionCacheModel.phone = getPhone();
+
+		String phone = questionCacheModel.phone;
+
+		if ((phone != null) && (phone.length() == 0)) {
+			questionCacheModel.phone = null;
+		}
+
+		questionCacheModel.address = getAddress();
+
+		String address = questionCacheModel.address;
+
+		if ((address != null) && (address.length() == 0)) {
+			questionCacheModel.address = null;
+		}
+
 		return questionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{questionId=");
 		sb.append(getQuestionId());
@@ -832,6 +898,10 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		sb.append(getSubDomainCode());
 		sb.append(", subDomainName=");
 		sb.append(getSubDomainName());
+		sb.append(", phone=");
+		sb.append(getPhone());
+		sb.append(", address=");
+		sb.append(getAddress());
 		sb.append("}");
 
 		return sb.toString();
@@ -839,7 +909,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(52);
+		StringBundler sb = new StringBundler(58);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Question");
@@ -909,6 +979,14 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			"<column><column-name>subDomainName</column-name><column-value><![CDATA[");
 		sb.append(getSubDomainName());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>phone</column-name><column-value><![CDATA[");
+		sb.append(getPhone());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>address</column-name><column-value><![CDATA[");
+		sb.append(getAddress());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -943,6 +1021,8 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	private String _subDomainCode;
 	private String _originalSubDomainCode;
 	private String _subDomainName;
+	private String _phone;
+	private String _address;
 	private long _columnBitmask;
 	private Question _escapedModel;
 }

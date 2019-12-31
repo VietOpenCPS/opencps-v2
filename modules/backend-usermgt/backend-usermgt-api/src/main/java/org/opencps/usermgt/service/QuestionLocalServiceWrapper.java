@@ -282,11 +282,11 @@ public class QuestionLocalServiceWrapper implements QuestionLocalService,
 		long groupId, long questionId, String fullname, String email,
 		String content, int publish, String domainCode, String domainName,
 		String govAgencyCode, String govAgencyName, String questionType,
-		String subDomainCode, String subDomainName) {
+		String subDomainCode, String subDomainName, String phone, String address) {
 		return _questionLocalService.updateQuestion(companyId, groupId,
 			questionId, fullname, email, content, publish, domainCode,
 			domainName, govAgencyCode, govAgencyName, questionType,
-			subDomainCode, subDomainName);
+			subDomainCode, subDomainName, phone, address);
 	}
 
 	/**

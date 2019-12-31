@@ -63,6 +63,10 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
+<<<<<<< HEAD
+=======
+import org.opencps.usermgt.exception.NoSuchApplicantException;
+>>>>>>> release-candidate-upstream
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -500,6 +504,33 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		_log.debug("BEFORE UPDATE APPLICANT");
 		applicantPersistence.update(applicant);
 		_log.debug("AFTER UPDATE APPLICANT");
+		return applicant;
+	}
+	
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplication(ServiceContext context, long groupId, long applicantId, String mappingClassName,
+			String mappingClassPK) throws PortalException, SystemException {
+		Applicant applicant = null;
+
+		Date now = new Date();
+
+		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+
+		applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+		applicant.setModifiedDate(now);
+		applicant.setUserId(context.getUserId());
+		applicant.setUserName(auditUser.getFullName());
+
+		if (Validator.isNotNull(mappingClassName))
+			applicant.setMappingClassName(mappingClassName);
+
+		if (Validator.isNotNull(mappingClassPK))
+			applicant.setMappingClassPK(mappingClassPK);
+
+		applicantPersistence.update(applicant);
+
 		return applicant;
 	}
 
@@ -1446,6 +1477,14 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	public List<Applicant> findByContactEmailList(String contactEmail) {
 
 		return applicantPersistence.findByF_EMAIL(contactEmail);
+	}
+	
+	public Applicant fetchByF_GID_MCN_MCPK(long groupId, String mappingClassName, String mappingClassPK) {
+		return applicantPersistence.fetchByF_GID_MCN_MCPK(groupId, mappingClassName, mappingClassPK);
+	}
+	
+	public Applicant findByF_GID_MCN_MCPK(long groupId, String mappingClassName, String mappingClassPK) throws NoSuchApplicantException {
+		return applicantPersistence.findByF_GID_MCN_MCPK(groupId, mappingClassName, mappingClassPK);
 	}
 
 	// private Log _log =

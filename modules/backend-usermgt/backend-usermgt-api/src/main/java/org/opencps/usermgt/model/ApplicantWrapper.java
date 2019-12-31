@@ -88,6 +88,8 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 		attributes.put("tmpPass", getTmpPass());
 		attributes.put("representativeEnterprise", getRepresentativeEnterprise());
 		attributes.put("verification", getVerification());
+		attributes.put("mappingClassName", getMappingClassName());
+		attributes.put("mappingClassPK", getMappingClassPK());
 
 		return attributes;
 	}
@@ -267,6 +269,17 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 
 		if (verification != null) {
 			setVerification(verification);
+		}		
+		String mappingClassName = (String)attributes.get("mappingClassName");
+
+		if (mappingClassName != null) {
+			setMappingClassName(mappingClassName);
+		}
+
+		String mappingClassPK = (String)attributes.get("mappingClassPK");
+
+		if (mappingClassPK != null) {
+			setMappingClassPK(mappingClassPK);
 		}
 	}
 
@@ -463,6 +476,26 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	@Override
 	public Boolean getLock_() {
 		return _applicant.getLock_();
+	}
+
+	/**
+	* Returns the mapping class name of this applicant.
+	*
+	* @return the mapping class name of this applicant
+	*/
+	@Override
+	public String getMappingClassName() {
+		return _applicant.getMappingClassName();
+	}
+
+	/**
+	* Returns the mapping class pk of this applicant.
+	*
+	* @return the mapping class pk of this applicant
+	*/
+	@Override
+	public String getMappingClassPK() {
+		return _applicant.getMappingClassPK();
 	}
 
 	/**
@@ -834,6 +867,26 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 	@Override
 	public void setLock_(Boolean lock_) {
 		_applicant.setLock_(lock_);
+	}
+
+	/**
+	* Sets the mapping class name of this applicant.
+	*
+	* @param mappingClassName the mapping class name of this applicant
+	*/
+	@Override
+	public void setMappingClassName(String mappingClassName) {
+		_applicant.setMappingClassName(mappingClassName);
+	}
+
+	/**
+	* Sets the mapping class pk of this applicant.
+	*
+	* @param mappingClassPK the mapping class pk of this applicant
+	*/
+	@Override
+	public void setMappingClassPK(String mappingClassPK) {
+		_applicant.setMappingClassPK(mappingClassPK);
 	}
 
 	/**

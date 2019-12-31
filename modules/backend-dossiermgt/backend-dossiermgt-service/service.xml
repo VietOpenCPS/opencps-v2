@@ -2628,7 +2628,94 @@
 	
 	<entity local-service="true" name="CPSDossierBusiness"
 		remote-service="false">
-	</entity>		
+	</entity>
+	
+	<entity local-service="true" name="ServiceInfoMapping" remote-service="false" uuid="false" table="opencps_serviceinfomapping">
+
+		<!-- PK fields -->
+
+		<column name="serviceInfoMappingId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serviceCode" type="String" />
+		<column name="serviceCodeDVCQG" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+
+		<finder return-type="ServiceInfoMapping" name="F_GID_SC">
+			<finder-column name="groupId" />
+            <finder-column name="serviceCode"></finder-column>
+		</finder>
+		<finder return-type="ServiceInfoMapping" name="F_GID_SCDVCQG">
+			<finder-column name="groupId" />
+            <finder-column name="serviceCodeDVCQG"></finder-column>
+		</finder>
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
+	</entity>
+	
+	<entity local-service="true" name="DossierStatusMapping" remote-service="false" uuid="false" table="opencps_dossierstatusmapping">
+
+		<!-- PK fields -->
+
+		<column name="dossierStatusMappingId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="statusCode" type="String" />
+		<column name="statusCodeDVCQG" type="String" />
+
+		<!-- Order -->
+
+		<!-- Finder methods -->
+        <column name="subStatusCode" type="String"></column>
+
+		<finder return-type="Collection" name="F_GID_SC">
+			<finder-column name="groupId" />
+            <finder-column name="statusCode"></finder-column>
+		</finder>
+		<finder return-type="Collection" name="F_GID_SCDVCQG">
+			<finder-column name="groupId" />
+            <finder-column name="statusCodeDVCQG"></finder-column>
+		</finder>
+		<!-- References -->
+        <finder name="F_GID_SUBSC" return-type="DossierStatusMapping">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="subStatusCode"></finder-column>
+        </finder>
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
+	</entity>
 	
 	<exceptions>
 		<exception>RequiredServiceCode</exception>

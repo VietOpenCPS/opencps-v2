@@ -477,6 +477,19 @@ create table opencps_dossierstatistic (
 	reporting BOOLEAN
 );
 
+create table opencps_dossierstatusmapping (
+	dossierStatusMappingId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	statusCode VARCHAR(75) null,
+	statusCodeDVCQG VARCHAR(75) null,
+	subStatusCode VARCHAR(75) null
+);
+
 create table opencps_dossiersync (
 	uuid_ VARCHAR(75) null,
 	DossierSyncId LONG not null primary key,
@@ -909,6 +922,18 @@ create table opencps_serviceinfo (
 	maxLevel INTEGER,
 	public_ BOOLEAN,
 	govAgencyText VARCHAR(75) null
+);
+
+create table opencps_serviceinfomapping (
+	serviceInfoMappingId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	serviceCode VARCHAR(75) null,
+	serviceCodeDVCQG VARCHAR(75) null
 );
 
 create table opencps_serviceprocess (

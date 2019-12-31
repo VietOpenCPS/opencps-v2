@@ -53,7 +53,12 @@ create table opencps_applicant (
 	profile TEXT null,
 	tmpPass VARCHAR(75) null,
 	representativeEnterprise VARCHAR(200) null,
+<<<<<<< HEAD
 	verification INTEGER
+=======
+	mappingClassName VARCHAR(75) null,
+	mappingClassPK VARCHAR(75) null
+>>>>>>> release-candidate-upstream
 );
 
 create table opencps_employee (
@@ -180,7 +185,9 @@ create table opencps_question (
 	govAgencyName VARCHAR(75) null,
 	questionType VARCHAR(75) null,
 	subDomainCode VARCHAR(75) null,
-	subDomainName VARCHAR(75) null
+	subDomainName VARCHAR(75) null,
+	phone VARCHAR(75) null,
+	address VARCHAR(75) null
 );
 
 create table opencps_resourcerole (

@@ -84,6 +84,7 @@ public class DossierTerm {
 	public static final String DOSSIER_OVER_DUE = "dossierOverdue";
 	public static final String ACTION_USERIDS = "actionUserIds";
 	public static final String ASSIGNED_USER_ID = "assignedUserId";
+	public static final String ASSIGNED_USER_ID_SEARCH = "assignedUserIdSearch";
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";
@@ -109,6 +110,8 @@ public class DossierTerm {
 	public static final String DOSSIER_ID_CTN = "dossierIdCTN";
 	public static final String FROM_SUBMIT_DATE = "fromSubmitDate";
 	public static final String TO_SUBMIT_DATE = "toSubmitDate";
+	public static final String TO_BACKLOGDATE = "toBacklogDate";
+	public static final String BACKLOG = "backlog";
 	
 	public static final String DOSSIER_NO_SEARCH = "dossierNoSearch";
 	public static final String CERT_NO_SEARCH = "certNoSearch";

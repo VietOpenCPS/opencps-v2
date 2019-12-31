@@ -20,6 +20,7 @@
 	<import class="org.opencps.dossiermgt.model.DossierPart" />
 	<import class="org.opencps.dossiermgt.model.DossierRequestUD" />
 	<import class="org.opencps.dossiermgt.model.DossierStatistic" />
+	<import class="org.opencps.dossiermgt.model.DossierStatusMapping" />
 	<import class="org.opencps.dossiermgt.model.DossierSync" />
 	<import class="org.opencps.dossiermgt.model.DossierTemplate" />
 	<import class="org.opencps.dossiermgt.model.DossierUser" />
@@ -42,6 +43,7 @@
 	<import class="org.opencps.dossiermgt.model.ServiceConfig" />
 	<import class="org.opencps.dossiermgt.model.ServiceFileTemplate" />
 	<import class="org.opencps.dossiermgt.model.ServiceInfo" />
+	<import class="org.opencps.dossiermgt.model.ServiceInfoMapping" />
 	<import class="org.opencps.dossiermgt.model.ServiceProcess" />
 	<import class="org.opencps.dossiermgt.model.ServiceProcessRole" />
 	<import class="org.opencps.dossiermgt.model.StepConfig" />
@@ -542,6 +544,20 @@
 		<property name="domainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="reporting" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
+	<class name="org.opencps.dossiermgt.model.impl.DossierStatusMappingImpl" table="opencps_dossierstatusmapping">
+		<id name="dossierStatusMappingId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="statusCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="statusCodeDVCQG" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="subStatusCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierSyncImpl" table="opencps_dossiersync">
 		<id name="DossierSyncId" type="long">
 			<generator class="assigned" />
@@ -1008,6 +1024,19 @@
 		<property name="maxLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="public_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="govAgencyText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoMappingImpl" table="opencps_serviceinfomapping">
+		<id name="serviceInfoMappingId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="serviceCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="serviceCodeDVCQG" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceProcessImpl" table="opencps_serviceprocess">
 		<id name="serviceProcessId" type="long">

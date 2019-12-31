@@ -62,6 +62,8 @@ public class ApplicantSoap implements Serializable {
 		soapModel.setTmpPass(model.getTmpPass());
 		soapModel.setRepresentativeEnterprise(model.getRepresentativeEnterprise());
 		soapModel.setVerification(model.getVerification());
+		soapModel.setMappingClassName(model.getMappingClassName());
+		soapModel.setMappingClassPK(model.getMappingClassPK());
 
 		return soapModel;
 	}
@@ -345,6 +347,21 @@ public class ApplicantSoap implements Serializable {
 	public void setVerification(Integer verification) {
 		_verification = verification;
 	}
+	public String getMappingClassName() {
+		return _mappingClassName;
+	}
+
+	public void setMappingClassName(String mappingClassName) {
+		_mappingClassName = mappingClassName;
+	}
+
+	public String getMappingClassPK() {
+		return _mappingClassPK;
+	}
+
+	public void setMappingClassPK(String mappingClassPK) {
+		_mappingClassPK = mappingClassPK;
+	}
 
 	private String _uuid;
 	private long _applicantId;
@@ -375,4 +392,6 @@ public class ApplicantSoap implements Serializable {
 	private String _tmpPass;
 	private String _representativeEnterprise;
 	private Integer _verification;
+	private String _mappingClassName;
+	private String _mappingClassPK;
 }

@@ -66,7 +66,12 @@
 		<field name="representativeEnterprise" type="String">
 			<hint name="max-length">200</hint>
 		</field>
+<<<<<<< HEAD
 		<field name="verification" type="Integer" />
+=======
+		<field name="mappingClassName" type="String" />
+		<field name="mappingClassPK" type="String" />
+>>>>>>> release-candidate-upstream
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
@@ -253,6 +258,8 @@
 		<field name="questionType" type="String" />
 		<field name="subDomainCode" type="String" />
 		<field name="subDomainName" type="String" />
+		<field name="phone" type="String" />
+		<field name="address" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />

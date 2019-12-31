@@ -122,7 +122,13 @@ import javax.xml.bind.annotation.XmlType;
     "documentDate",
     "systemId",
     "viapostal",
+<<<<<<< HEAD
     "undueTime"
+=======
+    "toBacklogDate",
+    "backlog",
+    "assignedUserIdSearch"
+>>>>>>> release-candidate-upstream
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -254,6 +260,7 @@ public class DossierSearchModel {
     protected String systemId;
     @QueryParam(value = "viapostal")
     protected Integer viapostal;
+<<<<<<< HEAD
     @QueryParam(value = "undueTime")
     protected String undueTime;
     
@@ -264,6 +271,14 @@ public class DossierSearchModel {
 	public void setUndueTime(String undueTime) {
 		this.undueTime = undueTime;
 	}
+=======
+    @QueryParam(value = "toBacklogDate")
+    protected String toBacklogDate;
+    @QueryParam(value = "backlog")
+    protected int backlog;
+    @QueryParam(value = "assignedUserId")
+    protected String assignedUserIdSearch;
+>>>>>>> release-candidate-upstream
 
 	public Integer getViapostal() {
 		return viapostal;
@@ -1127,6 +1142,30 @@ public class DossierSearchModel {
 
 	public void setPermission(String permission) {
 		this.permission = permission;
+	}
+
+	public String getToBacklogDate() {
+		return toBacklogDate;
+	}
+
+	public void setToBacklogDate(String toBacklogDate) {
+		this.toBacklogDate = toBacklogDate;
+	}
+
+	public int getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(int value) {
+		this.backlog = value;
+	}
+
+	public String getAssignedUserIdSearch() {
+		return assignedUserIdSearch;
+	}
+
+	public void setAssignedUserIdSearch(String assignedUserIdSearch) {
+		this.assignedUserIdSearch = assignedUserIdSearch;
 	}
 
 }

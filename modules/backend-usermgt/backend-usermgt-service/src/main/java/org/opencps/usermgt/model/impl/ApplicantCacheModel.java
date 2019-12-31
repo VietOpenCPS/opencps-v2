@@ -65,7 +65,7 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -125,6 +125,10 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		sb.append(representativeEnterprise);
 		sb.append(", verification=");
 		sb.append(verification);
+		sb.append(", mappingClassName=");
+		sb.append(mappingClassName);
+		sb.append(", mappingClassPK=");
+		sb.append(mappingClassPK);
 		sb.append("}");
 
 		return sb.toString();
@@ -298,6 +302,19 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		}
 
 		applicantImpl.setVerification(verification);
+		if (mappingClassName == null) {
+			applicantImpl.setMappingClassName("");
+		}
+		else {
+			applicantImpl.setMappingClassName(mappingClassName);
+		}
+
+		if (mappingClassPK == null) {
+			applicantImpl.setMappingClassPK("");
+		}
+		else {
+			applicantImpl.setMappingClassPK(mappingClassPK);
+		}
 
 		applicantImpl.resetOriginalValues();
 
@@ -342,6 +359,8 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		representativeEnterprise = objectInput.readUTF();
 
 		verification = objectInput.readInt();
+		mappingClassName = objectInput.readUTF();
+		mappingClassPK = objectInput.readUTF();
 	}
 
 	@Override
@@ -498,6 +517,19 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		}
 
 		objectOutput.writeInt(verification);
+		if (mappingClassName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(mappingClassName);
+		}
+
+		if (mappingClassPK == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(mappingClassPK);
+		}
 	}
 
 	public String uuid;
@@ -529,4 +561,6 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 	public String tmpPass;
 	public String representativeEnterprise;
 	public int verification;
+	public String mappingClassName;
+	public String mappingClassPK;
 }

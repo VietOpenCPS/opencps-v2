@@ -73,6 +73,8 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("questionType", getQuestionType());
 		attributes.put("subDomainCode", getSubDomainCode());
 		attributes.put("subDomainName", getSubDomainName());
+		attributes.put("phone", getPhone());
+		attributes.put("address", getAddress());
 
 		return attributes;
 	}
@@ -174,6 +176,18 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		if (subDomainName != null) {
 			setSubDomainName(subDomainName);
 		}
+
+		String phone = (String)attributes.get("phone");
+
+		if (phone != null) {
+			setPhone(phone);
+		}
+
+		String address = (String)attributes.get("address");
+
+		if (address != null) {
+			setAddress(address);
+		}
 	}
 
 	@Override
@@ -184,6 +198,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public int compareTo(Question question) {
 		return _question.compareTo(question);
+	}
+
+	/**
+	* Returns the address of this question.
+	*
+	* @return the address of this question
+	*/
+	@Override
+	public String getAddress() {
+		return _question.getAddress();
 	}
 
 	/**
@@ -302,6 +326,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	}
 
 	/**
+	* Returns the phone of this question.
+	*
+	* @return the phone of this question
+	*/
+	@Override
+	public String getPhone() {
+		return _question.getPhone();
+	}
+
+	/**
 	* Returns the primary key of this question.
 	*
 	* @return the primary key of this question
@@ -389,6 +423,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void persist() {
 		_question.persist();
+	}
+
+	/**
+	* Sets the address of this question.
+	*
+	* @param address the address of this question
+	*/
+	@Override
+	public void setAddress(String address) {
+		_question.setAddress(address);
 	}
 
 	@Override
@@ -525,6 +569,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setNew(boolean n) {
 		_question.setNew(n);
+	}
+
+	/**
+	* Sets the phone of this question.
+	*
+	* @param phone the phone of this question
+	*/
+	@Override
+	public void setPhone(String phone) {
+		_question.setPhone(phone);
 	}
 
 	/**

@@ -52,6 +52,7 @@ import org.opencps.dossiermgt.service.persistence.DossierPartPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierRequestUDPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierStatisticPersistence;
+import org.opencps.dossiermgt.service.persistence.DossierStatusMappingPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
@@ -74,6 +75,7 @@ import org.opencps.dossiermgt.service.persistence.RegistrationPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePersistence;
+import org.opencps.dossiermgt.service.persistence.ServiceInfoMappingPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePersistence;
@@ -858,6 +860,44 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	public void setDossierStatisticPersistence(
 		DossierStatisticPersistence dossierStatisticPersistence) {
 		this.dossierStatisticPersistence = dossierStatisticPersistence;
+	}
+
+	/**
+	 * Returns the dossier status mapping local service.
+	 *
+	 * @return the dossier status mapping local service
+	 */
+	public org.opencps.dossiermgt.service.DossierStatusMappingLocalService getDossierStatusMappingLocalService() {
+		return dossierStatusMappingLocalService;
+	}
+
+	/**
+	 * Sets the dossier status mapping local service.
+	 *
+	 * @param dossierStatusMappingLocalService the dossier status mapping local service
+	 */
+	public void setDossierStatusMappingLocalService(
+		org.opencps.dossiermgt.service.DossierStatusMappingLocalService dossierStatusMappingLocalService) {
+		this.dossierStatusMappingLocalService = dossierStatusMappingLocalService;
+	}
+
+	/**
+	 * Returns the dossier status mapping persistence.
+	 *
+	 * @return the dossier status mapping persistence
+	 */
+	public DossierStatusMappingPersistence getDossierStatusMappingPersistence() {
+		return dossierStatusMappingPersistence;
+	}
+
+	/**
+	 * Sets the dossier status mapping persistence.
+	 *
+	 * @param dossierStatusMappingPersistence the dossier status mapping persistence
+	 */
+	public void setDossierStatusMappingPersistence(
+		DossierStatusMappingPersistence dossierStatusMappingPersistence) {
+		this.dossierStatusMappingPersistence = dossierStatusMappingPersistence;
 	}
 
 	/**
@@ -1713,6 +1753,44 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the service info mapping local service.
+	 *
+	 * @return the service info mapping local service
+	 */
+	public org.opencps.dossiermgt.service.ServiceInfoMappingLocalService getServiceInfoMappingLocalService() {
+		return serviceInfoMappingLocalService;
+	}
+
+	/**
+	 * Sets the service info mapping local service.
+	 *
+	 * @param serviceInfoMappingLocalService the service info mapping local service
+	 */
+	public void setServiceInfoMappingLocalService(
+		org.opencps.dossiermgt.service.ServiceInfoMappingLocalService serviceInfoMappingLocalService) {
+		this.serviceInfoMappingLocalService = serviceInfoMappingLocalService;
+	}
+
+	/**
+	 * Returns the service info mapping persistence.
+	 *
+	 * @return the service info mapping persistence
+	 */
+	public ServiceInfoMappingPersistence getServiceInfoMappingPersistence() {
+		return serviceInfoMappingPersistence;
+	}
+
+	/**
+	 * Sets the service info mapping persistence.
+	 *
+	 * @param serviceInfoMappingPersistence the service info mapping persistence
+	 */
+	public void setServiceInfoMappingPersistence(
+		ServiceInfoMappingPersistence serviceInfoMappingPersistence) {
+		this.serviceInfoMappingPersistence = serviceInfoMappingPersistence;
+	}
+
+	/**
 	 * Returns the service process local service.
 	 *
 	 * @return the service process local service
@@ -2115,6 +2193,10 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierStatisticLocalService dossierStatisticLocalService;
 	@BeanReference(type = DossierStatisticPersistence.class)
 	protected DossierStatisticPersistence dossierStatisticPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.DossierStatusMappingLocalService.class)
+	protected org.opencps.dossiermgt.service.DossierStatusMappingLocalService dossierStatusMappingLocalService;
+	@BeanReference(type = DossierStatusMappingPersistence.class)
+	protected DossierStatusMappingPersistence dossierStatusMappingPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.DossierSyncLocalService.class)
 	protected org.opencps.dossiermgt.service.DossierSyncLocalService dossierSyncLocalService;
 	@BeanReference(type = DossierSyncPersistence.class)
@@ -2205,6 +2287,10 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ServiceInfoLocalService serviceInfoLocalService;
 	@BeanReference(type = ServiceInfoPersistence.class)
 	protected ServiceInfoPersistence serviceInfoPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.ServiceInfoMappingLocalService.class)
+	protected org.opencps.dossiermgt.service.ServiceInfoMappingLocalService serviceInfoMappingLocalService;
+	@BeanReference(type = ServiceInfoMappingPersistence.class)
+	protected ServiceInfoMappingPersistence serviceInfoMappingPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.ServiceProcessLocalService.class)
 	protected org.opencps.dossiermgt.service.ServiceProcessLocalService serviceProcessLocalService;
 	@BeanReference(type = ServiceProcessPersistence.class)

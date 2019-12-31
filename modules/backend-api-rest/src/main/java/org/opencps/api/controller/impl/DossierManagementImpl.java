@@ -444,7 +444,11 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.DAY, query.getDay());
+<<<<<<< HEAD
 			if (Validator.isNotNull(step) && step.contains("x")) {
+=======
+			if (step.contains("x")) {
+>>>>>>> release-candidate-upstream
 				String stepCode = query.getStep();
 //				_log.info("STEPCODE: "+stepCode);
 				if (Validator.isNotNull(stepCode)) {
@@ -534,6 +538,12 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
 			
 			params.put(DossierTerm.REGISTER, query.getRegister());
+
+			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
+			params.put(DossierTerm.BACKLOG, query.getBacklog());
+			if (Validator.isNotNull(query.getAssignedUserIdSearch())) {
+				params.put(DossierTerm.ASSIGNED_USER_ID_SEARCH, query.getAssignedUserIdSearch());
+			}
 
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
 			// Delegate
