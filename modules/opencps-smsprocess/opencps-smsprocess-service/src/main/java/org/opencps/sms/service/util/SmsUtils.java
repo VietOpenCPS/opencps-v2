@@ -14,11 +14,12 @@ import org.opencps.sms.service.dto.MOData;
 
 public class SmsUtils {
 
+	public static final String FORMAT_TIME = "yyyy-MM-dd hh:mm:ss";
 
     public static Date convertDate(String src) {
 
         try {
-        	SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        	SimpleDateFormat _dateFormat = new SimpleDateFormat(FORMAT_TIME);
             return _dateFormat.parse(src);
         }
         catch (ParseException e) {
