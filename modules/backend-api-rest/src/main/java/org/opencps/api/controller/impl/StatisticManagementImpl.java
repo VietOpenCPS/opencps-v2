@@ -221,7 +221,6 @@ public class StatisticManagementImpl implements StatisticManagement {
 					String permission = user.getUserId() + StringPool.UNDERLINE + "write";
 					params.put(DossierTerm.MAPPING_PERMISSION, permission);					
 				}
-<<<<<<< HEAD
 			}
 			if (Validator.isNotNull(query.getAgency())) {
 				
@@ -231,8 +230,6 @@ public class StatisticManagementImpl implements StatisticManagement {
 				if (e != null && !Validator.isNull(e.getScope())) {
 					params.put(DossierTerm.AGENCY, e.getScope());
 				}
-=======
->>>>>>> release-candidate-upstream
 			}
 			String stepCode = query.getStep();
 //			_log.info("STEPCODE: "+stepCode);

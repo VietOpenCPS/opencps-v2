@@ -270,13 +270,9 @@ create index IX_3E222E7E on opencps_serviceinfo (serviceCode[$COLUMN_LENGTH:75$]
 create index IX_D3675C7A on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_D630B97C on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-<<<<<<< HEAD
-=======
 create index IX_ADAA235C on opencps_serviceinfomapping (groupId, serviceCode[$COLUMN_LENGTH:75$]);
 create index IX_6962B74F on opencps_serviceinfomapping (groupId, serviceCodeDVCQG[$COLUMN_LENGTH:75$]);
 
-create index IX_55C498C3 on opencps_serviceprocess (groupId, processName[$COLUMN_LENGTH:4000$]);
->>>>>>> release-candidate-upstream
 create index IX_CE466FF9 on opencps_serviceprocess (groupId, processNo[$COLUMN_LENGTH:255$]);
 create index IX_996BC77F on opencps_serviceprocess (groupId, serverNo[$COLUMN_LENGTH:255$]);
 create index IX_79BCECBB on opencps_serviceprocess (serverNo[$COLUMN_LENGTH:255$]);

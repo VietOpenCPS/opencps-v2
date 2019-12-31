@@ -347,6 +347,7 @@ public class ApplicantSoap implements Serializable {
 	public void setVerification(Integer verification) {
 		_verification = verification;
 	}
+
 	public String getMappingClassName() {
 		return _mappingClassName;
 	}

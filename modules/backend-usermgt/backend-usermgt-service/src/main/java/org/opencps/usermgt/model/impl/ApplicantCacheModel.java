@@ -65,7 +65,7 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(61);
+		StringBundler sb = new StringBundler(63);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -302,6 +302,7 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		}
 
 		applicantImpl.setVerification(verification);
+
 		if (mappingClassName == null) {
 			applicantImpl.setMappingClassName("");
 		}
@@ -517,6 +518,7 @@ public class ApplicantCacheModel implements CacheModel<Applicant>,
 		}
 
 		objectOutput.writeInt(verification);
+
 		if (mappingClassName == null) {
 			objectOutput.writeUTF("");
 		}

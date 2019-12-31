@@ -128,7 +128,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(75) null,fullName VARCHAR(500) null,title VARCHAR(255) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(75) null,mobile VARCHAR(75) null,email VARCHAR(500) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(500) null,fileSignPath VARCHAR(500) null,scope VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(75) null,fullName VARCHAR(75) null,title VARCHAR(75) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(75) null,mobile VARCHAR(75) null,email VARCHAR(75) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(75) null,fileSignPath VARCHAR(75) null,scope VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee";
 	public static final String ORDER_BY_JPQL = " ORDER BY employee.employeeNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee.employeeNo ASC";

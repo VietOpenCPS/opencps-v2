@@ -522,7 +522,6 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	public void setRepresentativeEnterprise(String representativeEnterprise);
 
 	/**
-<<<<<<< HEAD
 	 * Returns the verification of this applicant.
 	 *
 	 * @return the verification of this applicant
@@ -535,6 +534,7 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	 * @param verification the verification of this applicant
 	 */
 	public void setVerification(Integer verification);
+
 	/**
 	 * Returns the mapping class name of this applicant.
 	 *

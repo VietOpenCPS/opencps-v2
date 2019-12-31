@@ -63,10 +63,7 @@ import org.opencps.usermgt.exception.NoApplicantIdDateException;
 import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoApplicantIdTypeException;
 import org.opencps.usermgt.exception.NoApplicantNameException;
-<<<<<<< HEAD
-=======
 import org.opencps.usermgt.exception.NoSuchApplicantException;
->>>>>>> release-candidate-upstream
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;

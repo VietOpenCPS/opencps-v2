@@ -1,4 +1,3 @@
-
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
@@ -444,11 +443,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.DAY, query.getDay());
-<<<<<<< HEAD
 			if (Validator.isNotNull(step) && step.contains("x")) {
-=======
-			if (step.contains("x")) {
->>>>>>> release-candidate-upstream
 				String stepCode = query.getStep();
 //				_log.info("STEPCODE: "+stepCode);
 				if (Validator.isNotNull(stepCode)) {

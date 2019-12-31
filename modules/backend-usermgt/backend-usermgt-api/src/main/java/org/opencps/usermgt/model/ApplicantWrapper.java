@@ -269,7 +269,8 @@ public class ApplicantWrapper implements Applicant, ModelWrapper<Applicant> {
 
 		if (verification != null) {
 			setVerification(verification);
-		}		
+		}
+
 		String mappingClassName = (String)attributes.get("mappingClassName");
 
 		if (mappingClassName != null) {
