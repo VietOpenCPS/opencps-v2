@@ -74,6 +74,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.opencps.adminconfig.model.DynamicReport;
 import org.opencps.adminconfig.service.DynamicReportLocalService;
+import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -510,7 +511,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				String registerBookName = StringPool.BLANK;
 				if (Validator.isNotNull(registerBookCode)) {
 					DynamicReport report =
-						dynamicReportLocalService.fetchByG_CODE(
+						DynamicReportLocalServiceUtil.fetchByG_CODE(
 							groupId, registerBookCode);
 					if (report != null) {
 						registerBookName = report.getReportName();
@@ -595,7 +596,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				String registerBookName = StringPool.BLANK;
 				if (Validator.isNotNull(registerBookCode)) {
 					DynamicReport report =
-						dynamicReportLocalService.fetchByG_CODE(
+						DynamicReportLocalServiceUtil.fetchByG_CODE(
 							groupId, registerBookCode);
 					if (report != null) {
 						registerBookName = report.getReportName();
@@ -6903,8 +6904,5 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	
 	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.countByG_UID_DS(groupId, userId, dossierStatus);
-	}
-	
-	@Reference
-	DynamicReportLocalService dynamicReportLocalService;
+	}	
 }
