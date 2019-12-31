@@ -27,13 +27,15 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import react.login.constants.ReactLoginPortletKeys;
+import react.login.utils.ConfigProps;
+
 /**
  * @author phucnv
  * @date Sep 12, 2017
  */
 @Component(property = {
-	"javax.portlet.name=npmreactlogin",
-	"mvc.command.name=/login/login"
+	"javax.portlet.name=npmreactlogin", "mvc.command.name=/login/login"
 }, service = MVCActionCommand.class)
 public class LoginMVCActionCommand extends BaseMVCActionCommand {
 
@@ -47,7 +49,7 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 	protected void doProcessAction(
 		ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-		
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -57,21 +59,25 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		HttpServletResponse response =
 			PortalUtil.getHttpServletResponse(actionResponse);
 
-		String login = ParamUtil.getString(actionRequest, "login");
-		String password = ParamUtil.getString(actionRequest, "password");
-		String action = ParamUtil.getString(actionRequest, "action");
-		boolean rememberMe = ParamUtil.getBoolean(actionRequest, "rememberMe");
+		String login = ParamUtil.getString(
+			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_LOGIN);
+		String password = ParamUtil.getString(
+			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_PASSWORD);
+		String action = ParamUtil.getString(
+			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_ACTION);
+		boolean rememberMe = ParamUtil.getBoolean(
+			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_REMEMBER_ME);
 		String authType = CompanyConstants.AUTH_TYPE_EA;
-		
+
 		if (!Validator.isEmailAddress(login)) {
-			
+
 			Applicant app = ApplicantLocalServiceUtil.fetchByAppId(login);
-			
+
 			if (Validator.isNotNull(app)) {
 				login = app.getContactEmail();
 			}
 		}
-		
+
 		Applicant applicant = UserMgtUtils.getApplicant(login);
 
 		login = applicant != null ? applicant.getContactEmail() : login;
@@ -84,17 +90,22 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		if (user != null &&
 			user.getStatus() == WorkflowConstants.STATUS_PENDING) {
 
-			actionResponse.sendRedirect(themeDisplay.getURLHome() +
-				"/register#/xac-thuc-tai-khoan?active_user_id=" + user.getUserId() +
-					"&redirectURL=" + themeDisplay.getURLCurrent());
+			actionResponse.sendRedirect(
+				themeDisplay.getURLHome() +
+					ConfigProps.get(ReactLoginPortletKeys.REGISTER_ENDPOINT) +
+					user.getUserId() +
+					ConfigProps.get(ReactLoginPortletKeys.REGISTER_REDIRECT) +
+					themeDisplay.getURLCurrent());
 		}
 		else {
 			AuthenticatedSessionManagerUtil.login(
 				request, response, login, password, rememberMe, authType);
 
-			if (action != null && "confirm_account".equals(action)) {
+			if (action != null &&
+				ReactLoginPortletKeys.ACTION_CONFIRM_ACCOUNT.equals(action)) {
 				actionResponse.sendRedirect(
-						themeDisplay.getURLHome() + "/profile");
+					themeDisplay.getURLHome() + ConfigProps.get(
+						ReactLoginPortletKeys.PROFILE_ENDPOINT));
 			}
 			else {
 				actionResponse.sendRedirect(themeDisplay.getPathMain());
