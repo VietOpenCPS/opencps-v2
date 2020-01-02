@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -44,7 +43,7 @@ import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -60,8 +59,6 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -456,6 +453,41 @@ public class OneGateControllerImpl implements OneGateController {
 //				results.put("paymentFeeTotal", 0);
 //			}
 
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getGovAgencies(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		ServiceProcessActions actions = new ServiceProcessActionsImpl();
+	
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<ServiceConfig> lstConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+			Map<String, String> mapConfigs = new HashMap<String, String>();
+			
+			for (ServiceConfig sc : lstConfigs) {
+				mapConfigs.put(sc.getGovAgencyCode(), sc.getGovAgencyName());
+			}
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			for (String govAgencyCode : mapConfigs.keySet()) {
+				JSONObject govObj = JSONFactoryUtil.createJSONObject();
+				govObj.put(ServiceConfigTerm.GOVAGENCY_NAME, mapConfigs.get(govAgencyCode));
+				govObj.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+				
+				results.put(govObj);
+			}
+			
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {

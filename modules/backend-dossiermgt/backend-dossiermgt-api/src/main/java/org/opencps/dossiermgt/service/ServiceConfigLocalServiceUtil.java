@@ -64,6 +64,13 @@ public class ServiceConfigLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static int countByBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .countByBySIAndGAC(groupId, serviceInfoId, govAgencyCode);
+	}
+
 	public static long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return getService().countByGovAgency(keyword, govAgencyCode, groupId);
@@ -214,6 +221,13 @@ public class ServiceConfigLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfigByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchServiceConfigByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static org.opencps.dossiermgt.model.ServiceConfig findByBySIAndGAC(
+		long groupId, long serviceInfoId, String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .findByBySIAndGAC(groupId, serviceInfoId, govAgencyCode);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

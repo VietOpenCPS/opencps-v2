@@ -59,6 +59,14 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
+	public int countByBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _serviceConfigLocalService.countByBySIAndGAC(groupId,
+			serviceInfoId, govAgencyCode);
+	}
+
+	@Override
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return _serviceConfigLocalService.countByGovAgency(keyword,
@@ -224,6 +232,14 @@ public class ServiceConfigLocalServiceWrapper
 		String uuid, long groupId) {
 		return _serviceConfigLocalService.fetchServiceConfigByUuidAndGroupId(uuid,
 			groupId);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceConfig findByBySIAndGAC(
+		long groupId, long serviceInfoId, String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _serviceConfigLocalService.findByBySIAndGAC(groupId,
+			serviceInfoId, govAgencyCode);
 	}
 
 	@Override

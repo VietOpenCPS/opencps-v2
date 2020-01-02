@@ -55,7 +55,8 @@ import javax.xml.bind.annotation.XmlType;
     "sort",
     "order",
     "active",
-    "top"
+    "top",
+    "agency"
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
@@ -79,8 +80,18 @@ public class ServiceInfoSearchModel {
     protected String active;
 	@QueryParam(value = "top")
     protected String top;
+	@QueryParam(value = "agency")
+	protected String agency;
+	
+    public String getAgency() {
+		return agency;
+	}
 
-    /**
+	public void setAgency(String agency) {
+		this.agency = agency;
+	}
+
+	/**
      * Gets the value of the keyword property.
      * 
      * @return
