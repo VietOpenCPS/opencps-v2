@@ -3670,7 +3670,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private String checkPaymentMethod(int mt) {
 		String pmMethod = "";
 		if (mt == 1) {
-			pmMethod = "Chuyển khoản";//KeyPay
+			pmMethod = "KeyPay";//KeyPay
 		} else if (mt == 2) {
 			pmMethod = "Chuyển khoản";
 		} else if (mt == 3) {
