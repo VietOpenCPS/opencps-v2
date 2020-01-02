@@ -51,6 +51,12 @@ public class ResourceRoleTerm {
 
 	public static final String TO_USERID_SORTABLE = "toUserId_sortable";
 
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String SELECTED = "selected";
+	public static final String READONLY = "readonly";
+
 	private long resourceRoleId;
 
 	private long groupId;

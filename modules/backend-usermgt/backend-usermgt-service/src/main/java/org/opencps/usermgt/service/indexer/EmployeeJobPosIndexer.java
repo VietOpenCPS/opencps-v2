@@ -25,6 +25,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
@@ -51,10 +52,10 @@ public class EmployeeJobPosIndexer extends BaseIndexer<EmployeeJobPos> {
 			SearchContext searchContext) throws Exception {
 
 		@SuppressWarnings("unchecked")
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(JobPosTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(JobPosTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
@@ -76,7 +77,7 @@ public class EmployeeJobPosIndexer extends BaseIndexer<EmployeeJobPos> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(employeeJobPos.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(employeeJobPos.getUserName()));
 		
-		document.addNumberSortable(EmployeeJobPosTerm.GROUP_ID, employeeJobPos.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, employeeJobPos.getGroupId());
 		document.addNumberSortable(EmployeeJobPosTerm.EMPLOYEE_JOBPOST_ID, employeeJobPos.getEmployeeJobPosId());
 		document.addNumberSortable(EmployeeJobPosTerm.EMPLOYEE_ID, employeeJobPos.getEmployeeId());
 		document.addNumberSortable(EmployeeJobPosTerm.JOBPOST_ID, employeeJobPos.getJobPostId());

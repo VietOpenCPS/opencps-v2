@@ -124,39 +124,6 @@ public class OneDay extends BaseMessageListener {
 
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 
-		 String guestBaseUrl = PropValues.PORTAL_DOMAIN +
-		 "/web/cong-dich-vu-cong";
-		object.put(
-			ApplicantListenerMessageKeys.ACTIVATION_CODE,
-			"sssss");
-		object.put(
-			ApplicantListenerMessageKeys.ACTIVATION_LINK,
-			guestBaseUrl +
-				"/register#/xac-thuc-tai-khoan?active_user_id=" +
-				model.getEmployeeId());
-		object.put(
-			ApplicantListenerMessageKeys.USER_NAME,
-			model.getFullName());
-		 object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL,
-		 "http:v2.opencps.vn");
-		object.put("toName", model.getFullName());
-		object.put("toAddress", "nguyenthanh.ptiter@gmail.com");
-		
-		 String payload1 =
-		 ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01,
-		 object, model.getGroupId()).toString();
-		 _log.info("payloadTest1: "+payload1);
-		JSONObject payload = JSONFactoryUtil.createJSONObject();
-		try {
-			 _log.info("START PAYLOAD: ");
-			payload.put(
-				"Applicant", JSONFactoryUtil.createJSONObject(
-					JSONFactoryUtil.looseSerialize(model)));
-		}
-		catch (JSONException parse) {
-			_log.error(parse);
-		}
-		 _log.info("payloadTest: "+payload.toJSONString());
 //		queue.setPayload(payload.toJSONString());
 
 //		queue.setExpireDate(cal.getTime());

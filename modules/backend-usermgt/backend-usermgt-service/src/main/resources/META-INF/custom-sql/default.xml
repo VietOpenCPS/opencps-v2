@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom-sql>
+	<sql id="org.opencps.usermgt.service.persistence.QuestionFinder.findQuestionSearch">
+		<![CDATA[
+			SELECT q.* 
+			FROM opencps_question AS q 
+			LEFT JOIN opencps_answer as a 
+			ON q.questionId = a.questionId 
+			WHERE 
+				1 = 1 AND 
+				(q.domainCode = ?) AND
+				(q.govAgencyCode = ?) AND
+				(q.publish = ?) AND
+				(q.questionType = ?) AND 
+				(q.subDomainCode = ?) AND 
+				1 = 1
+			GROUP BY q.questionId
+			HAVING count(a.answerId) = ? 
+			LIMIT ?
+			OFFSET ?
+		]]>
+	</sql>
+	
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder.searchStatisicSystem">
+		<![CDATA[
+			SELECT opencps_statistic.* 
+			FROM opencps_statistic 
+			WHERE 
+				(opencps_statistic.month = ?) AND
+				(opencps_statistic.year = ?) AND
+				(opencps_statistic.system = ?) AND
+				(opencps_statistic.domainCode = ?) AND
+				(opencps_statistic.govAgencyCode = ?) AND 
+				(opencps_statistic.groupAgencyCode = ?) AND 
+				(opencps_statistic.groupId = ?)
+			ORDER BY month DESC
+		]]>
+	</sql>
+
+</custom-sql>

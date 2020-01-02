@@ -1,14 +1,5 @@
 package org.opencps.usermgt.action.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-
-import org.opencps.usermgt.action.WorkingUnitInterface;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
-import org.opencps.usermgt.utils.DateTimeUtils;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -26,6 +17,16 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+
+import org.opencps.usermgt.action.WorkingUnitInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -48,11 +49,11 @@ public class WorkingUnitActions implements WorkingUnitInterface {
 
 			hits = WorkingUnitLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = WorkingUnitLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

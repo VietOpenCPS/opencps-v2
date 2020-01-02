@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ public class LiferayUserLoginListener extends BaseModelListener<User> {
 		try {
 			UserLoginLocalServiceUtil.updateUserLogin(model.getCompanyId(), model.getGroupId(), model.getUserId(), model.getScreenName(), 
 					model.getLoginDate(), new Date(),
-					0l, "", 0, null, model.getLoginIP());
+					0l, StringPool.BLANK, 0, null, model.getLoginIP());
 		} catch (SystemException e) {
 			_log.debug(e);
 		} catch (PortalException e) {

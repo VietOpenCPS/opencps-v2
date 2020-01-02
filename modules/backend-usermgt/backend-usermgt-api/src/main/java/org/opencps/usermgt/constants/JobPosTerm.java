@@ -1,3 +1,4 @@
+
 package org.opencps.usermgt.constants;
 
 import java.util.Date;
@@ -30,7 +31,7 @@ public class JobPosTerm {
 	public static final String LEADER = "leader";
 
 	public static final String MAPPING_ROLE_ID = "mappingRoleId";
-	
+
 	public static final String JOBPOS_CODE = "jobPosCode";
 
 	// sortable
@@ -54,9 +55,17 @@ public class JobPosTerm {
 
 	public static final String LEADER_SORTABLE = "leader_sortable";
 
-	public static final String MAPPING_ROLE_ID_SORTABLE = "mappingRoleId_sortable";
+	public static final String MAPPING_ROLE_ID_SORTABLE =
+		"mappingRoleId_sortable";
 
 	public static final String JOBPOS_CODE_SORTABLE = "jobPosCode_sortable";
+
+	public static final String JOBPOS_ACTION_ID = "actionId";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long jobPosId;
 
@@ -81,90 +90,112 @@ public class JobPosTerm {
 	private int leader;
 
 	public long getJobPosId() {
+
 		return jobPosId;
 	}
 
 	public void setJobPosId(long jobPosId) {
+
 		this.jobPosId = jobPosId;
 	}
 
 	public long getGroupId() {
+
 		return groupId;
 	}
 
 	public void setGroupId(long groupId) {
+
 		this.groupId = groupId;
 	}
 
 	public long getCompanyId() {
+
 		return companyId;
 	}
 
 	public void setCompanyId(long companyId) {
+
 		this.companyId = companyId;
 	}
 
 	public long getUserId() {
+
 		return userId;
 	}
 
 	public void setUserId(long userId) {
+
 		this.userId = userId;
 	}
 
 	public String getUserName() {
+
 		return userName;
 	}
 
 	public void setUserName(String userName) {
+
 		this.userName = userName;
 	}
 
 	public Date getCreateDate() {
+
 		return createDate;
 	}
 
 	public void setCreateDate(Date createDate) {
+
 		this.createDate = createDate;
 	}
 
 	public Date getModifiedDate() {
+
 		return modifiedDate;
 	}
 
 	public void setModifiedDate(Date modifiedDate) {
+
 		this.modifiedDate = modifiedDate;
 	}
 
 	public String getTitle() {
+
 		return title;
 	}
 
 	public void setTitle(String title) {
+
 		this.title = title;
 	}
 
 	public long getMappingRoleId() {
+
 		return mappingRoleId;
 	}
 
 	public void setMappingRoleId(long mappingRoleId) {
+
 		this.mappingRoleId = mappingRoleId;
 	}
 
 	public String getDescription() {
+
 		return description;
 	}
 
 	public void setDescription(String description) {
+
 		this.description = description;
 	}
 
 	public int getLeader() {
+
 		return leader;
 	}
 
 	public void setLeader(int leader) {
+
 		this.leader = leader;
 	}
 

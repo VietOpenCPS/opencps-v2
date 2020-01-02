@@ -1,13 +1,5 @@
 package org.opencps.usermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.action.JobposInterface;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -28,6 +20,16 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -51,11 +53,11 @@ public class JobposActions implements JobposInterface {
 
 			hits = JobPosLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = JobPosLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -114,9 +116,9 @@ public class JobposActions implements JobposInterface {
 
 		String[] permissionData = ActionKeys.getListPermissionData();
 
-		result.put("data", permissionData);
+		result.put(ApplicantTerm.DATA, permissionData);
 
-		result.put("total", permissionData.length);
+		result.put(ApplicantTerm.TOTAL, permissionData.length);
 
 		return result;
 	}
@@ -208,7 +210,7 @@ public class JobposActions implements JobposInterface {
 			for (int n = 0; n < jPermissions.length(); n++) {
 				JSONObject action = jPermissions.getJSONObject(n);
 
-				actionIds.add(action.getString("actionId"));
+				actionIds.add(action.getString(JobPosTerm.JOBPOS_ACTION_ID));
 
 			}
 
