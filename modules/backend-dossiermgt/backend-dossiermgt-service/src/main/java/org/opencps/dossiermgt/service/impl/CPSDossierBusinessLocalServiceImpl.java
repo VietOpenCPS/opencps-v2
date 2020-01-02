@@ -1272,13 +1272,17 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
+								String fromFullName = user.getFullName();
+								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
+									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
+								}
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
 										actionConfig.getNotificationType(), 
 										Dossier.class.getName(), 
 										String.valueOf(dossier.getDossierId()), 
 										payloadObj.toJSONString(), 
-										user.getFullName(), 
+										fromFullName, 
 										dossier.getApplicantName(), 
 										foundApplicant.getMappingUserId(), 
 										dossier.getContactEmail(), 
@@ -3656,14 +3660,17 @@ public class CPSDossierBusinessLocalServiceImpl
 							long toUserId = (applicant != null ? applicant.getMappingUserId() : 0l);
 							String contactEmail = (isEmailNotify(dossier)) ? dossier.getContactEmail() : StringPool.BLANK;
 							String telNo = (isSmsNotify(dossier)) ? dossier.getContactTelNo() : StringPool.BLANK;
-							
+							String fromFullName = u.getFullName();
+							if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
+								fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
+							}
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
 									payloadObj.toJSONString(), 
-									u.getFullName(), 
+									fromFullName, 
 									dossier.getApplicantName(), 
 									toUserId, 
 									contactEmail, 
