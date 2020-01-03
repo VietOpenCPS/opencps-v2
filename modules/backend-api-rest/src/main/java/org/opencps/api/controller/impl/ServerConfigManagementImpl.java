@@ -410,6 +410,11 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String employeeName = query.getEmployeeName();
 			String maNgKy = query.getMa_ng_ky();
 			String maCQQL = query.getMa_cqql();
+			String loai = query.getLoai();
+			String ten = query.getTen();
+			String cqTen = query.getCqTen();
+			String cqId = query.getCqId();
+			String soHoChieu = query.getSoHoChieu();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -431,28 +436,44 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							try {
 								urlGet = jsonConfig.getString("url");
 								if (urlGet.contains("{eFormNo}")) {
-									urlGet = urlGet.replace("{eFormNo}", URLEncoder.encode(String.valueOf(eFormNo), "UTF-8"));
+									urlGet = urlGet.replace("{eFormNo}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(eFormNo), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{maCha}")) {
-									urlGet = urlGet.replace("{maCha}", URLEncoder.encode(String.valueOf(maCha), "UTF-8"));
+									urlGet = urlGet.replace("{maCha}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(maCha), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{nameDM}")) {
-									urlGet = urlGet.replace("{nameDM}", URLEncoder.encode(String.valueOf(nameDM), "UTF-8"));
+									urlGet = urlGet.replace("{nameDM}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(nameDM), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{parentId}")) {
-									urlGet = urlGet.replace("{parentId}", URLEncoder.encode(String.valueOf(parentId), "UTF-8"));
+									urlGet = urlGet.replace("{parentId}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(parentId), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{govAgencyName}")) {
-									urlGet = urlGet.replace("{govAgencyName}", URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8"));
+									urlGet = urlGet.replace("{govAgencyName}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{employeeName}")) {
-									urlGet = urlGet.replace("{employeeName}", URLEncoder.encode(String.valueOf(employeeName), "UTF-8"));
+									urlGet = urlGet.replace("{employeeName}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(employeeName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{ma_ng_ky}")) {
 									urlGet = urlGet.replace("{ma_ng_ky}", maNgKy);
 								}
 								if (urlGet.contains("{ma_cqql}")) {
 									urlGet = urlGet.replace("{ma_cqql}", maCQQL);
+								}
+								//HCTN
+								if (urlGet.contains("{loai}")) {
+									urlGet = urlGet.replace("{loai}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(loai), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{ten}")) {
+									urlGet = urlGet.replace("{ten}", Validator.isNotNull(ten) ? URLEncoder.encode(String.valueOf(ten), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{cqTen}")) {
+									urlGet = urlGet.replace("{cqTen}", Validator.isNotNull(cqTen) ? URLEncoder.encode(String.valueOf(cqTen), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{cqId}")) {
+									urlGet = urlGet.replace("{cqId}", Validator.isNotNull(cqId) ? URLEncoder.encode(String.valueOf(cqId), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{soHoChieu}")) {
+									urlGet = urlGet.replace("{soHoChieu}", Validator.isNotNull(soHoChieu) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)

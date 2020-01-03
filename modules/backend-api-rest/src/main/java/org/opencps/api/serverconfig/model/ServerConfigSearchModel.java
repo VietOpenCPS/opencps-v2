@@ -53,7 +53,12 @@ import javax.xml.bind.annotation.XmlType;
     "govAgencyName",
     "employeeName",
     "ma_ng_ky",
-    "ma_cqql"
+    "ma_cqql",
+    "loai",
+    "ten",
+    "cqTen",
+    "cqId",
+    "soHoChieu"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -83,6 +88,16 @@ public class ServerConfigSearchModel {
     protected String ma_ng_ky;
 	@QueryParam("ma_cqql")
     protected String ma_cqql;
+	@QueryParam("loai")
+    protected String loai;
+	@QueryParam("ten")
+    protected String ten;
+	@QueryParam("cqTen")
+    protected String cqTen;
+	@QueryParam("cqId")
+    protected String cqId;
+	@QueryParam("soHoChieu")
+    protected String soHoChieu;
 
     /**
      * Gets the value of the keyword property.
@@ -266,6 +281,46 @@ public class ServerConfigSearchModel {
 
 	public void setMa_cqql(String ma_cqql) {
 		this.ma_cqql = ma_cqql;
+	}
+
+	public String getLoai() {
+		return loai;
+	}
+
+	public void setLoai(String loai) {
+		this.loai = loai;
+	}
+
+	public String getTen() {
+		return ten;
+	}
+
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
+
+	public String getCqTen() {
+		return cqTen;
+	}
+
+	public void setCqTen(String cqTen) {
+		this.cqTen = cqTen;
+	}
+
+	public String getCqId() {
+		return cqId;
+	}
+
+	public void setCqId(String cqId) {
+		this.cqId = cqId;
+	}
+
+	public String getSoHoChieu() {
+		return soHoChieu;
+	}
+
+	public void setSoHoChieu(String soHoChieu) {
+		this.soHoChieu = soHoChieu;
 	}
 
 }
