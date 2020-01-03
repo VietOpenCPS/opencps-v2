@@ -48,6 +48,7 @@ import org.opencps.dossiermgt.rest.model.DossierFileModel;
 import org.opencps.dossiermgt.rest.model.DossierInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.InformDossierInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
@@ -454,7 +455,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		StringBuilder messageText = new StringBuilder();
 		StringBuilder acknowlegement = new StringBuilder(); 
 				
-		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier);
+		InformDossierInputModel model = OpenCPSConverter.convertInformDossierToInputModel(dossier);
 		DossierDetailModel result = client.putDossier(model);
 		messageText.append("PUT /dossiers/inform\n");
 		messageText.append(JSONFactoryUtil.looseSerialize(model));

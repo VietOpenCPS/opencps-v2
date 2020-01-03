@@ -30,6 +30,7 @@ import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.InformDossierInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
@@ -126,11 +127,11 @@ public class OpenCPSRestClient {
 		return result;
 	}
 	
-	public DossierDetailModel putDossier(DossierInputModel model) {
+	public DossierDetailModel putDossier(InformDossierInputModel model) {
 		DossierDetailModel result = null;
 		InvokeREST callRest = new InvokeREST();
 		HashMap<String, String> properties = new HashMap<String, String>();
-		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
+		Map<String, Object> params = OpenCPSConverter.convertInformHttpParams(model);
 		ServiceContext context = new ServiceContext();
 		
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",

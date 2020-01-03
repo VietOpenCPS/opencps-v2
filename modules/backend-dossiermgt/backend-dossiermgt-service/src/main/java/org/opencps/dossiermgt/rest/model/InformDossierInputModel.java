@@ -25,9 +25,9 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="referenceUid" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="documentType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="documentName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="documentCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="dossierNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="receiveDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *         &lt;element name="dueDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,17 +39,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "referenceUid",
-    "documentType",
-    "documentName",
-    "documentCode"
+    "dossierNo",
+    "receiveDate",
+    "dueDate"
 })
-@XmlRootElement(name = "DossierDocumentModel")
-public class DossierDocumentModel {
+@XmlRootElement(name = "InformDossierInputModel")
+public class InformDossierInputModel {
 
     protected String referenceUid;
-    protected String documentType;
-    protected String documentName;
-    protected String documentCode;
+    protected String dossierNo;
+    protected Long receiveDate;
+    protected Long dueDate;
 
     /**
      * Gets the value of the referenceUid property.
@@ -76,75 +76,75 @@ public class DossierDocumentModel {
     }
 
     /**
-     * Gets the value of the documentType property.
+     * Gets the value of the dossierNo property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDocumentType() {
-        return documentType;
+    public String getDossierNo() {
+        return dossierNo;
     }
 
     /**
-     * Sets the value of the documentType property.
+     * Sets the value of the dossierNo property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDocumentType(String value) {
-        this.documentType = value;
+    public void setDossierNo(String value) {
+        this.dossierNo = value;
     }
 
     /**
-     * Gets the value of the documentName property.
+     * Gets the value of the receiveDate property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    public String getDocumentName() {
-        return documentName;
+    public Long getReceiveDate() {
+        return receiveDate;
     }
 
     /**
-     * Sets the value of the documentName property.
+     * Sets the value of the receiveDate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    public void setDocumentName(String value) {
-        this.documentName = value;
+    public void setReceiveDate(Long value) {
+        this.receiveDate = value;
     }
 
     /**
-     * Gets the value of the documentCode property.
+     * Gets the value of the dueDate property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    public String getDocumentCode() {
-        return documentCode;
+    public Long getDueDate() {
+        return dueDate;
     }
 
     /**
-     * Sets the value of the documentCode property.
+     * Sets the value of the dueDate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Long }
      *     
      */
-    public void setDocumentCode(String value) {
-        this.documentCode = value;
+    public void setDueDate(Long value) {
+        this.dueDate = value;
     }
 
 }
