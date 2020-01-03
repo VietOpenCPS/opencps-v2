@@ -464,15 +464,8 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response getGovAgencies(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 	
-		BackendAuth auth = new BackendAuthImpl();
-
 		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
 			List<ServiceConfig> lstConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 			Map<String, String> mapConfigs = new HashMap<String, String>();
 			
