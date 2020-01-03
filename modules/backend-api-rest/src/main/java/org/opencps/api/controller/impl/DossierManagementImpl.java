@@ -7255,4 +7255,94 @@ public class DossierManagementImpl implements DossierManagement {
 				"Do not have permission").build();
 		}
 	}
+	
+	@Override
+	public Response updateInformDossier(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext, String id,
+		DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		DossierActions actions = new DossierActionsImpl();
+		DossierPermission dossierPermission = new DossierPermission();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			dossierPermission.hasCreateDossier(
+				groupId, user.getUserId(), input.getServiceCode(),
+				input.getGovAgencyCode(), input.getDossierTemplateNo());
+
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
+			String postalCityName = StringPool.BLANK;
+
+			if (Validator.isNotNull(input.getCityCode()))
+				cityName = getDictItemName(
+					groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+			if (Validator.isNotNull(input.getDistrictCode()))
+				districtName = getDictItemName(
+					groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+			if (Validator.isNotNull(input.getWardCode()))
+				wardName = getDictItemName(
+					groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+
+			if (Validator.isNotNull(input.getPostalCityCode())) {
+				postalCityName = getDictItemName(
+					groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+			}
+			Integer delegateType =
+				(input.getDelegateType() != null ? input.getDelegateType() : 0);
+			String documentNo = input.getDocumentNo();
+			Date documentDate = null;
+			if (input.getDocumentDate() != null &&
+				Validator.isNotNull(input.getDocumentDate())) {
+				documentDate = new Date(input.getDocumentDate());
+			}
+			//
+			int systemId =
+				input.getSystemId() != null ? input.getSystemId() : 0;
+
+			_log.debug("UPDATE DOSSIER: " + input.getCityCode());
+			Dossier oldDossier = DossierUtils.getDossier(id, groupId);
+			if (oldDossier != null) {
+				Dossier dossier = actions.initUpdateDossierFull(
+						groupId, oldDossier.getDossierId(), input.getApplicantName(),
+						input.getApplicantIdType(), input.getApplicantIdNo(),
+						input.getApplicantIdDate(), input.getAddress(),
+						input.getCityCode(), cityName, input.getDistrictCode(),
+						districtName, input.getWardCode(), wardName,
+						input.getContactName(), input.getContactTelNo(),
+						input.getContactEmail(), input.getDossierTemplateNo(),
+						input.getViaPostal(), input.getPostalAddress(),
+						input.getPostalCityCode(), postalCityName,
+						input.getPostalTelNo(), input.getApplicantNote(),
+						input.isSameAsApplicant(), input.getDelegateName(),
+						input.getDelegateIdNo(), input.getDelegateTelNo(),
+						input.getDelegateEmail(), input.getDelegateAddress(),
+						input.getDelegateCityCode(), input.getDelegateDistrictCode(),
+						input.getDelegateWardCode(), input.getSampleCount(),
+						input.getDossierName(), input.getBriefNote(), delegateType,
+						documentNo, documentDate, systemId, serviceContext);				
+				DossierDetailModel result =
+						DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+
+				return Response.status(200).entity(result).build();
+			}
+			else {
+				DossierDetailModel result =
+						new DossierDetailModel();
+
+				return Response.status(200).entity(result).build();				
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}	
 }

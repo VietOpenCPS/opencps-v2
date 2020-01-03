@@ -137,6 +137,32 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		}
 	}
 	
+	@Override
+	public void processInformDossier() {
+		dossierSync.setState(DossierSyncTerm.STATE_ALREADY_SENT);
+		DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+		if (syncInformDossier()) {
+			dossierSync.setState(DossierSyncTerm.STATE_RECEIVED_ACK);
+			DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
+			dossierAction.setPending(false);
+			DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+		}
+		else {
+			int retry = dossierSync.getRetry();
+			retry++;
+			if (retry < DossierSyncTerm.MAX_RETRY) {
+				dossierSync.setRetry(retry);
+				dossierSync.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);						
+			}
+			else {
+				dossierSync.setState(DossierSyncTerm.STATE_ACK_ERROR);
+				DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);	
+			}
+		}
+	}
+	
 	private boolean syncInform() {
 		Dossier dossier = DossierLocalServiceUtil.getByRef(dossierSync.getGroupId(), dossierSync.getDossierRefUid());
 		if (dossier == null) {
@@ -420,6 +446,28 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		}		
 	}
 	
+	private boolean syncInformDossier() {
+		Dossier dossier = DossierLocalServiceUtil.getByRef(dossierSync.getGroupId(), dossierSync.getDossierRefUid());
+		if (dossier == null) {
+			return false;
+		}
+		StringBuilder messageText = new StringBuilder();
+		StringBuilder acknowlegement = new StringBuilder(); 
+				
+		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier);
+		DossierDetailModel result = client.putDossier(model);
+		messageText.append("PUT /dossiers/inform\n");
+		messageText.append(JSONFactoryUtil.looseSerialize(model));
+		messageText.append("\n");
+		acknowlegement.append(JSONFactoryUtil.looseSerialize(result));
+		acknowlegement.append("\n");
+		
+		dossierSync.setMessageText(messageText.toString());
+		dossierSync.setAcknowlegement(messageText.toString());
+		DossierSyncLocalServiceUtil.updateDossierSync(dossierSync);
+		
+		return true;
+	}
 	private boolean syncRequest() {
 		Dossier dossier = DossierLocalServiceUtil.getByRef(dossierSync.getGroupId(), dossierSync.getDossierRefUid());
 		if (dossier == null) {

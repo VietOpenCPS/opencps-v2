@@ -642,66 +642,90 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			else {
 				//Sync result files
-				
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}
 			}
-						
-			payloadObject.put("dossierFiles", dossierFilesArr);
 			
-			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-				List<DossierFile> lsDossierFile = lstFiles;
-				dossierFilesArr = JSONFactoryUtil.createJSONArray();
-
-				// check return file
-				List<String> returnDossierFileTemplateNos = ListUtil
-						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
-
-				for (DossierFile dossierFile : lsDossierFile) {
-					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST |
+				actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
+				
+				payloadObject.put("dossierFiles", dossierFilesArr);
+				
+				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+					List<DossierFile> lsDossierFile = lstFiles;
+					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+	
+					// check return file
+					List<String> returnDossierFileTemplateNos = ListUtil
+							.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+	
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+	
+						}
+	
 					}
-
+					payloadObject.put("dossierFiles", dossierFilesArr);				
+				}
+				
+				List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+	
+				for (DossierDocument dossierDocument : lstDossierDocuments) {
+					JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+					dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+					dossierDocumentArr.put(dossierDocumentObj);
 				}
 				payloadObject.put("dossierFiles", dossierFilesArr);				
-			}
-			
-			List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
-
-			for (DossierDocument dossierDocument : lstDossierDocuments) {
-				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
-				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
-				dossierDocumentArr.put(dossierDocumentObj);
-			}
-			payloadObject.put("dossierFiles", dossierFilesArr);				
-			payloadObject.put("dossierDocuments", dossierDocumentArr);
-			
-			//Put dossier note
-			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			//Put dossier note
-			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
-			
-//			_log.info("Flag changed: " + flagChanged);
-			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
-			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+				payloadObject.put("dossierDocuments", dossierDocumentArr);
+				
+				//Put dossier note
+				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+				//Put dossier note
+				payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+				
+	//			_log.info("Flag changed: " + flagChanged);
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+							syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+				}
+				else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
+				}
+				//Gửi thông tin hồ sơ để tra cứu
+				if (state == DossierSyncTerm.STATE_NOT_SYNC
+						&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+						&& OpenCPSConfigUtil.isPublishEventEnable()) {
+					publishEvent(dossier, context, dossierAction.getDossierActionId());
+				}
 			}
-			else {
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
-					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
-			}
-			//Gửi thông tin hồ sơ để tra cứu
-			if (state == DossierSyncTerm.STATE_NOT_SYNC
-					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
-					&& OpenCPSConfigUtil.isPublishEventEnable()) {
-				publishEvent(dossier, context, dossierAction.getDossierActionId());
+			else if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}				
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+							syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+				}
+				else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
+				}
 			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT

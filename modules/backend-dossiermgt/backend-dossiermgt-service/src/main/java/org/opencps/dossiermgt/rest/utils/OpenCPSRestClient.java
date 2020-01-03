@@ -126,6 +126,22 @@ public class OpenCPSRestClient {
 		return result;
 	}
 	
+	public DossierDetailModel putDossier(DossierInputModel model) {
+		DossierDetailModel result = null;
+		InvokeREST callRest = new InvokeREST();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		Map<String, Object> params = OpenCPSConverter.convertHttpParams(model);
+		ServiceContext context = new ServiceContext();
+		
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",
+				baseUrl,DOSSIERS_BASE_PATH + "/inform/" + model.getReferenceUid(), username,
+				password, properties, params, context);
+		_log.debug("Call post API result: " + resultObj.toJSONString());
+		result = OpenCPSConverter.convertDossierDetail(resultObj);
+		
+		return result;
+	}
+
 	public DossierFileModel postDossierFile(File file, String dossierUnique, DossierFileModel model) {
 		DossierFileModel result = null;
 
