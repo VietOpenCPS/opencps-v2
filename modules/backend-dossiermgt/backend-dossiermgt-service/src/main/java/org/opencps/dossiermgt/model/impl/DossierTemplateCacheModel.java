@@ -65,7 +65,7 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -91,6 +91,8 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 		sb.append(templateNo);
 		sb.append(", newFormScript=");
 		sb.append(newFormScript);
+		sb.append(", formMeta=");
+		sb.append(formMeta);
 		sb.append("}");
 
 		return sb.toString();
@@ -161,6 +163,13 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 			dossierTemplateImpl.setNewFormScript(newFormScript);
 		}
 
+		if (formMeta == null) {
+			dossierTemplateImpl.setFormMeta("");
+		}
+		else {
+			dossierTemplateImpl.setFormMeta(formMeta);
+		}
+
 		dossierTemplateImpl.resetOriginalValues();
 
 		return dossierTemplateImpl;
@@ -184,6 +193,7 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 		description = objectInput.readUTF();
 		templateNo = objectInput.readUTF();
 		newFormScript = objectInput.readUTF();
+		formMeta = objectInput.readUTF();
 	}
 
 	@Override
@@ -241,6 +251,13 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 		else {
 			objectOutput.writeUTF(newFormScript);
 		}
+
+		if (formMeta == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(formMeta);
+		}
 	}
 
 	public String uuid;
@@ -255,4 +272,5 @@ public class DossierTemplateCacheModel implements CacheModel<DossierTemplate>,
 	public String description;
 	public String templateNo;
 	public String newFormScript;
+	public String formMeta;
 }

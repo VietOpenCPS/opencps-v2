@@ -45,6 +45,7 @@ public class DossierTemplateSoap implements Serializable {
 		soapModel.setDescription(model.getDescription());
 		soapModel.setTemplateNo(model.getTemplateNo());
 		soapModel.setNewFormScript(model.getNewFormScript());
+		soapModel.setFormMeta(model.getFormMeta());
 
 		return soapModel;
 	}
@@ -195,6 +196,14 @@ public class DossierTemplateSoap implements Serializable {
 		_newFormScript = newFormScript;
 	}
 
+	public String getFormMeta() {
+		return _formMeta;
+	}
+
+	public void setFormMeta(String formMeta) {
+		_formMeta = formMeta;
+	}
+
 	private String _uuid;
 	private long _dossierTemplateId;
 	private long _groupId;
@@ -207,4 +216,5 @@ public class DossierTemplateSoap implements Serializable {
 	private String _description;
 	private String _templateNo;
 	private String _newFormScript;
+	private String _formMeta;
 }

@@ -740,6 +740,13 @@
 					</xsd:simpleType>
 				</xsd:element>
 				<xsd:element ref="parts" />
+				<xsd:element name="formMeta">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:maxLength value="65535"></xsd:maxLength>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

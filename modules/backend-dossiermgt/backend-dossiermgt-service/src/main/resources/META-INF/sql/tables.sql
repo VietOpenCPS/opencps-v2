@@ -527,7 +527,8 @@ create table opencps_dossiertemplate (
 	templateName STRING null,
 	description TEXT null,
 	templateNo VARCHAR(255) null,
-	newFormScript TEXT null
+	newFormScript TEXT null,
+	formMeta STRING null
 );
 
 create table opencps_dossieruser (

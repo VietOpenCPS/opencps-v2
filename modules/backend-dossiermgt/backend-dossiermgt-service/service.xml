@@ -236,6 +236,7 @@
 		<column name="description" type="String" />
 		<column name="templateNo" type="String" />
 		<column name="newFormScript" type="String" />
+		<column name="formMeta" type="String" />
 
 		<!-- Order -->
 

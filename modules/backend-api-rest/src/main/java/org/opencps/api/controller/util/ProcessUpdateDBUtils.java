@@ -900,10 +900,11 @@ public class ProcessUpdateDBUtils {
 				String templateName = template.getTemplateName();
 				String description = template.getDescription();
 				String newFormScript = template.getNewFormScript();
+				String formMeta = template.getFormMeta();
 				
 				// Update serviceInfo
 				DossierTemplateActions actionTemp = new DossierTemplateActionsImpl();
-				actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript, serviceContext);
+				actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript, formMeta, serviceContext);
 				// Update fileName
 				Parts parts = template.getParts();
 				if (parts != null) {

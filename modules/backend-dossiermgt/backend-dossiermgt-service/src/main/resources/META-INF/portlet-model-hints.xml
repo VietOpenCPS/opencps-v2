@@ -742,6 +742,9 @@
 		<field name="newFormScript" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="formMeta" type="String">
+			<hint name="max-length">4000</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">
 		<field name="uuid" type="String" />

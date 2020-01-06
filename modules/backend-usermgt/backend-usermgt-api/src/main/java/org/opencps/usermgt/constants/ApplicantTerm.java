@@ -29,4 +29,8 @@ public class ApplicantTerm {
 	public static final int LOCKED_DOSSIER = 2;
 	
 	public static final String VERIFICATION = "verification";
+	
+	public static final String APPLICANTIDTYPE_CITIZEN = "citizen";
+	public static final String APPLICANTIDTYPE_BUSINESS = "business";
+	public static final String APPLICANTIDTYPE_ORGANIZATION = "organization";
 }

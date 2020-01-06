@@ -9,5 +9,5 @@ public class DossierTemplateTerm {
 	public static final String DESCRIPTION = "description";
 	public static final String TEMPLATE_NO = "templateNo";
 	public static final String NEWFORM_SCRIPT = "newFormScript";
-
+	public static final String FORM_META = "formMeta";
 }
