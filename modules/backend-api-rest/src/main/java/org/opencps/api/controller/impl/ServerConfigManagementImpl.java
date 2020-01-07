@@ -415,6 +415,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String cqTen = query.getCqTen();
 			String cqId = query.getCqId();
 			String soHoChieu = query.getSoHoChieu();
+			String hoTen = query.getHoTen();
+			String ngaySinh = query.getNgaySinh();
+			String noiSinh = query.getNoiSinh();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -474,6 +477,15 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								}
 								if (urlGet.contains("{soHoChieu}")) {
 									urlGet = urlGet.replace("{soHoChieu}", Validator.isNotNull(soHoChieu) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{hoTen}")) {
+									urlGet = urlGet.replace("{hoTen}", Validator.isNotNull(hoTen) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{ngaySinh}")) {
+									urlGet = urlGet.replace("{ngaySinh}", Validator.isNotNull(ngaySinh) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{noiSinh}")) {
+									urlGet = urlGet.replace("{noiSinh}", Validator.isNotNull(noiSinh) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
