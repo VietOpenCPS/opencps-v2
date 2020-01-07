@@ -308,7 +308,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String auth_endpoint = config.getString("auth_endpoint");
 			String username = config.getString("username");
 			String password = config.getString("password");
-
+			String sdtcode = config.getString("sdtcode");
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("username", username);
@@ -326,6 +326,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("sdtcode", sdtcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -437,7 +438,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String adapter_url = config.getString("adapter_url");
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
-
+			String sdtcode = config.getString("sdtcode");
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("session", accessToken);
@@ -460,6 +461,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("sdtcode", sdtcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -513,6 +515,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
 			String accessToken = getAccessToken(config);
+			String sdtcode = config.getString("sdtcode");
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -539,6 +542,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("sdtcode", sdtcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -602,6 +606,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String adapter_url = config.getString("adapter_url");
 			String share_endpoint = config.getString("share_endpoint");
 			String madonvi = config.getString("madonvi");
+			String sdtcode = config.getString("sdtcode");
 			String accessToken = getAccessToken(config);
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
@@ -629,6 +634,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("sdtcode", sdtcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -714,6 +720,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
 			String accessToken = getAccessToken(config);
+			String sdtcode = config.getString("sdtcode");
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -742,6 +749,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("sdtcode", sdtcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
