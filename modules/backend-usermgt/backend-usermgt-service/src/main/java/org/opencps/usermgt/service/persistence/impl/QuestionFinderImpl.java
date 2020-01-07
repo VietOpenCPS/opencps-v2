@@ -40,6 +40,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	private static final String CONDITION_NOT_HAVE_ANSWER = "having count(a.answerId) = 0 ";
 	private static final String CONDITION_LIMIT = "LIMIT ?";
 	private static final String CONDITION_OFFSET = "OFFSET ?";
+	private static final String QUESTION_ENTITY = "Question";
 
 	@SuppressWarnings("unchecked")
 	public List<Question> findQuestionSearch(long groupId, String keyword, String domainCode, String govAgencyCode, Integer publish, String questionType, 
@@ -87,7 +88,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);
-			q.addEntity("Question", QuestionImpl.class);
+			q.addEntity(QUESTION_ENTITY, QuestionImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
@@ -123,7 +124,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			qPos.add(start);
 
 			List<Question> ls = (List<Question>) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			
+
 			if (ls.size() > 0) {
 				return ls;
 			} 
@@ -190,7 +191,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);
-			q.addEntity("Question", QuestionImpl.class);
+			q.addEntity(QUESTION_ENTITY, QuestionImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
@@ -220,11 +221,10 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			}
 
 			List<Question> ls = (List<Question>) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			
+
 			if (ls.size() > 0) {
 				return ls.size();
 			} 
-
 
 		} catch (Exception e) {
 			_log.error(e);

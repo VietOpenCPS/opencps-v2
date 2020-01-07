@@ -43,6 +43,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -208,9 +209,17 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 					PwdGenerator.getPassword(ApplicantTerm.PASSWORD_LENGHT);
 			}
 
-			String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicantIdType)
-				? ConfigProps.get(ConfigConstants.HEADER_USER) : (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicantIdType)
-					? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
+			String applicantTypeCitizen = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN);
+			String applicantTypeBussiness = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS);
+			String headerUser = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_USER);
+			String headerCompany = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_COMPANY);
+			String headerBussiness = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_BUSSINESS);
+			String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
+					: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
+							: headerBussiness));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn =

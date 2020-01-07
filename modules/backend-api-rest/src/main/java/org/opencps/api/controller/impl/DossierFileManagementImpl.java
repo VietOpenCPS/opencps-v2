@@ -6,6 +6,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -173,7 +175,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 //			
 //			if (!flagCheck) {
 //				return Response.status(HttpStatus.SC_FORBIDDEN)
-//						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+//						.entity(LanguageUtil.get(
+//			LocaleUtil.fromLanguageId(org.opencps.dossiermgt.action.util.ConstantUtils.LANGUAGE_ID), 
+//			org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
 //			}
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
@@ -305,7 +309,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
-						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+						.entity(LanguageUtil.get(
+								LocaleUtil.fromLanguageId(org.opencps.dossiermgt.action.util.ConstantUtils.LANGUAGE_ID), 
+								org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
 			}
 
 			DossierFile dossierFile =

@@ -3,6 +3,7 @@ package org.opencps.backend.usermgt.service.util;
 public class ConfigConstants {
 
 	/** CONSTANT UTILS */
+	public static final String LANGUAGE_ID = "vi_VN";
 	public static final String PAGINATION_TYPE_REGULAR = "regular";
 //	public static final String SEARCH_KEYWORD = "keywords";
 //	public static final String TREE_INDEX = "treeIndex_sortable";
@@ -117,16 +118,15 @@ public class ConfigConstants {
 //	public static final String NGSP_PROTOCOL = "org.opencps.ngsp.protocol";
 
 	/** CONSTANT ERROR */
-	public static final String ATTACHMENT_ERROR = "org.opencps.error.attachment";
-	public static final String ERROR_GROUP = "org.opencps.error.group";
-	public static final String ERROR_FOLDER = "org.opencps.error.folder";
-	public static final String MSG_ERROR = "org.opencps.message.error";
-	public static final String ERROR_MSG_BUSSINESS = "org.opencps.error.bussiness";
-	public static final String ERROR_NAME_BUSSINESS = "org.opencps.error.name.bussiness";
-	public static final String ERROR_CAPTCHA_INCORRECT = "org.opencps.captcha.error.incorrect";
-	public static final String ERROR_NOT_PERMISSION = "org.opencps.error.permission";
-	public static final String ERROR_NOT_CONFIG = "org.opencps.error.config";
-	public static final String ERROR_INTERNAL_SERVER = "org.opecps.error.internal";
+//	public static final String ATTACHMENT_ERROR = "org.opencps.error.attachment";
+//	public static final String ERROR_FOLDER = "org.opencps.error.folder";
+//	public static final String MSG_ERROR = "org.opencps.message.error";
+//	public static final String ERROR_MSG_BUSSINESS = "org.opencps.error.bussiness";
+//	public static final String ERROR_NAME_BUSSINESS = "org.opencps.error.name.bussiness";
+//	public static final String ERROR_CAPTCHA_INCORRECT = "org.opencps.captcha.error.incorrect";
+//	public static final String ERROR_NOT_PERMISSION = "org.opencps.error.permission";
+//	public static final String ERROR_NOT_CONFIG = "org.opencps.error.config";
+//	public static final String ERROR_INTERNAL_SERVER = "org.opecps.error.internal";
 	
 	/** EXTENTION FILE */
 	public static final String EXTENTION_ZIP = "org.opencps.extention.file.zip";

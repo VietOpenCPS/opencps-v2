@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -55,22 +56,22 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String applicantIdNo, String applicantIdDate, String contactEmail, String password)
 			throws PortalException, SystemException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context,groupId, 0, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail,
-				StringPool.BLANK, password);
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, contactEmail, StringPool.BLANK, password);
 
 		return applicant;
 	}
 
-	public Applicant register(ServiceContext context, long groupId,  String applicantName, String applicantIdType,
+	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String password) throws PortalException, SystemException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-				wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode,
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
 
 		return applicant;
 	}
@@ -117,13 +118,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	public String getApplicantByUserId(ServiceContext serviceContext) throws PortalException {
 		return JSONFactoryUtil.looseSerialize(ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()));
 	}
-	
-	@Override
-	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail) throws PortalException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId,  applicantId, applicantName,
+	@Override
+	public Applicant updateApplicant(ServiceContext context, long groupId, long applicantId, String applicantName,
+			String address, String cityCode, String cityName, String districtCode, String districtName, String wardCode,
+			String wardName, String contactName, String contactTelNo, String contactEmail) throws PortalException {
+
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId, applicantName,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
 				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK,
 				StringPool.BLANK);
@@ -132,24 +133,25 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
-	public Applicant updateApplicant(ServiceContext context,long groupId, long applicantId, String applicantName, String address, String cityCode,
-			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String contactEmail, String profile) throws PortalException {
+	public Applicant updateApplicant(ServiceContext context, long groupId, long applicantId, String applicantName,
+			String address, String cityCode, String cityName, String districtCode, String districtName, String wardCode,
+			String wardName, String contactName, String contactTelNo, String contactEmail, String profile)
+			throws PortalException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId,  applicantId, applicantName,
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId, applicantName,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, address, cityCode, cityName, districtCode,
-				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, profile,
-				StringPool.BLANK);
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, profile, StringPool.BLANK);
 
 		return applicant;
 	}
-	
+
 	@Override
-	public Applicant updateProfile(ServiceContext context, long groupId, long applicantId, String profile) throws PortalException {
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId, StringPool.BLANK,
+	public Applicant updateProfile(ServiceContext context, long groupId, long applicantId, String profile)
+			throws PortalException {
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, applicantId,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, profile, StringPool.BLANK);
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, profile, StringPool.BLANK);
 
 		return applicant;
 	}
@@ -179,7 +181,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 	}
-	
+
 	@Override
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
 		return ApplicantLocalServiceUtil.fetchByMappingID(userId);
@@ -205,22 +207,22 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		Applicant applicant = ApplicantLocalServiceUtil.fetchApplicant(id);
 		if (applicant != null) {
 			if (applicant.getMappingUserId() > 0 && Validator.isNotNull(applicant.getActivationCode())) {
-				//Active account register
+				// Active account register
 				ApplicantLocalServiceUtil.activateApplicant(applicant.getApplicantId(), context);
-				//Send Email
+				// Send Email
 				NotificationQueue queue = null;
 				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 				queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-				
+
 				Date now = new Date();
 				Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-				
+
 				queue.setCreateDate(now);
 				queue.setModifiedDate(now);
 				queue.setGroupId(applicant.getGroupId());
 				queue.setCompanyId(applicant.getCompanyId());
-				
+
 				queue.setNotificationType(NotificationType.APPLICANT_02);
 				queue.setClassName(Applicant.class.getName());
 				queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
@@ -228,27 +230,26 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				queue.setToUserId(applicant.getUserId());
 				queue.setToEmail(applicant.getContactEmail());
 				queue.setToTelNo(applicant.getContactTelNo());
-				
+
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
-					payload.put(
-						ApplicantListenerMessageKeys.APPLICANT, JSONFactoryUtil.createJSONObject(
-							JSONFactoryUtil.looseSerialize(applicant)));
-				}
-				catch (JSONException parse) {
+					payload.put(ApplicantListenerMessageKeys.APPLICANT,
+							JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(applicant)));
+				} catch (JSONException parse) {
 					_log.error(parse);
 				}
 				queue.setPayload(payload.toJSONString());
 				queue.setExpireDate(cal.getTime());
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			} else {
-				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
+				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(),
+						ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 				boolean autoPassword = false;
 				boolean autoScreenName = true;
 				boolean sendEmail = false;
 
-				long[] groupIds = new long [] {groupId};
+				long[] groupIds = new long[] { groupId };
 				long[] organizationIds = null;
 				long[] roleIds = null;
 				long[] userGroupIds = null;
@@ -258,11 +259,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 
 				//
-				
-				String secretKey1 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER)});
-				String secretKey2 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE)});
-				String secretKey3 = PwdGenerator.getPassword(2, new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE)});
-				String secretKey4 = PwdGenerator.getPassword(1 , new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL)});
+
+				String secretKey1 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER) });
+				String secretKey2 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE) });
+				String secretKey3 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE) });
+				String secretKey4 = PwdGenerator.getPassword(1,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL) });
 				String secretKey5 = PwdGenerator.getPassword(4,
 						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER),
 								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE),
@@ -270,8 +275,17 @@ public class ApplicantActionsImpl implements ApplicantActions {
 								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL_ALL) });
 				String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 
-				String firstName = (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN).equals(applicant.getApplicantIdType()) ? ConfigProps.get(ConfigConstants.HEADER_USER)
-						: (ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS).equals(applicant.getApplicantIdType()) ? ConfigProps.get(ConfigConstants.HEADER_COMPANY) : ConfigProps.get(ConfigConstants.HEADER_BUSSINESS)));
+				String applicantTypeCitizen = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN);
+				String applicantTypeBussiness = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS);
+				String headerUser = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_USER);
+				String headerCompany = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_COMPANY);
+				String headerBussiness = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_BUSSINESS);
+				String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
+						: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
+								: headerBussiness));
 				String lastName = applicant.getApplicantName();
 
 				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -281,7 +295,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					roleIds = new long[] { roleDefault.getRoleId() };
 				}
 
-				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_ADMIN));
+				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(),
+						ConfigProps.get(ConfigConstants.ROLE_ADMIN));
 
 				List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(adminRole.getRoleId());
 
@@ -298,14 +313,17 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				int year = calendar.get(Calendar.YEAR);
 				int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-				//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
-				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
-							password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
-							LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-							dayOfMonth, year, ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds, organizationIds, roleIds,
-							userGroupIds, sendEmail, context);
-				//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
-				//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
+				// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName()
+				// + "," + spn.getMidName());
+				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(),
+						autoPassword, password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l,
+						StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(),
+						spn.getLastName(), 0, 0, true, month, dayOfMonth, year,
+						ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds, organizationIds, roleIds,
+						userGroupIds, sendEmail, context);
+				// _log.info("MAPPING USER: " + mappingUser.getLastName() + "," +
+				// mappingUser.getFullName());
+				// mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 				UserLocalServiceUtil.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
 				UserLocalServiceUtil.updatePassword(mappingUser.getUserId(), password, password, false, true);
 
@@ -313,28 +331,28 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				applicant.setMappingUserId(mappingUser.getUserId());
 				applicant.setActivationCode(StringPool.BLANK);
 				applicant.setTmpPass(password);
-				
+
 				ApplicantLocalServiceUtil.updateApplicant(applicant);
-				//Send mail
-				//_log.info("Applicant Log trigger!");
+				// Send mail
+				// _log.info("Applicant Log trigger!");
 				if (applicant.getMappingUserId() > 0) {
 					NotificationQueue queue = null;
-					
+
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-					
+
 					queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					
+
 					Date now = new Date();
-					
+
 					Calendar cal = Calendar.getInstance();
-					
+
 					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-					
+
 					queue.setCreateDate(now);
 					queue.setModifiedDate(now);
 					queue.setGroupId(applicant.getGroupId());
 					queue.setCompanyId(applicant.getCompanyId());
-					
+
 					queue.setNotificationType(NotificationType.APPLICANT_02);
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
@@ -342,25 +360,23 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setToUserId(applicant.getUserId());
 					queue.setToEmail(applicant.getContactEmail());
 					queue.setToTelNo(applicant.getContactTelNo());
-					
+
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put(
-							ApplicantListenerMessageKeys.APPLICANT, JSONFactoryUtil.createJSONObject(
-								JSONFactoryUtil.looseSerialize(applicant)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(applicant)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
-					//_log.info("payloadTest: "+payload.toJSONString());
+					// _log.info("payloadTest: "+payload.toJSONString());
 					queue.setPayload(payload.toJSONString());
 					queue.setExpireDate(cal.getTime());
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
-					
-					//binhth add user applicant to siteGroup
+
+					// binhth add user applicant to siteGroup
 					GroupLocalServiceUtil.addUserGroup(applicant.getMappingUserId(), applicant.getGroupId());
-					//Add applicant to search
+					// Add applicant to search
 					String applicantIdNo = applicant.getApplicantIdNo();
 					String applicantName = applicant.getApplicantName();
 					String applicantIdType = applicant.getApplicantIdType();
@@ -375,10 +391,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					String contactName = applicant.getContactName();
 					String contactTelNo = applicant.getContactTelNo();
 					String contactEmail = applicant.getContactEmail();
-					
-					ApplicantLocalServiceUtil.updateApplicant(0l, applicant.getMappingUserId(), companyId, applicantName, applicantIdType, applicantIdNo,
-							applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-							contactName, contactTelNo, contactEmail);
+
+					ApplicantLocalServiceUtil.updateApplicant(0l, applicant.getMappingUserId(), companyId,
+							applicantName, applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, contactTelNo, contactEmail);
 				}
 			}
 		}
@@ -389,8 +405,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	@Override
 	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String applicantName,
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
-			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException {
-		
+			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext)
+			throws PortalException {
+
 		// Check exits applicantIdNo
 		int flagUser = 0;
 		if (Validator.isNotNull(applicantIdNo)) {
@@ -398,7 +415,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			if (appList != null && appList.size() > 0) {
 				for (Applicant applicant : appList) {
 					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-					if (flagUser == 2) break;
+					if (flagUser == 2)
+						break;
 				}
 			}
 		}
@@ -408,7 +426,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			if (appList != null && appList.size() > 0) {
 				for (Applicant applicant : appList) {
 					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-					if (flagUser == 2) break;
+					if (flagUser == 2)
+						break;
 				}
 			}
 		}
@@ -424,7 +443,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 		if (flagUser != 2) {
-			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
+			DictCollection dc = DictCollectionLocalServiceUtil
+					.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
 			String cityName = getDictItemName(groupId, dc, cityCode);
 			String districtName = getDictItemName(groupId, dc, districtCode);
 			String wardName = getDictItemName(groupId, dc, wardCode);
@@ -437,19 +457,20 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				} catch (ParseException e) {
 				}
 			}
-			
-			//Process update applicant and user
+
+			// Process update applicant and user
 			if (flagUser == 0) {
-				//Add applicant and user
-				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
+				// Add applicant and user
+				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo,
+						applicantName, applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode,
+						cityName, districtCode, districtName, wardCode, wardName, serviceContext);
 				if (app != null) {
-					//Send Email active account
+					// Send Email active account
 					Date now = new Date();
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					NotificationQueue queue = NotificationQueueLocalServiceUtil
+							.createNotificationQueue(notificationQueueId);
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
 
@@ -457,7 +478,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setModifiedDate(now);
 					queue.setGroupId(groupId);
 					queue.setCompanyId(serviceContext.getCompanyId());
-					
+
 					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(app.getApplicantId()));
@@ -465,37 +486,38 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setToUserId(app.getMappingUserId());
 					queue.setToEmail(contactEmail);
 					queue.setToTelNo(StringPool.BLANK);
-					
+
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put(ApplicantListenerMessageKeys.APPLICANT, JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
-					//_log.info("payloadTest: "+payload.toJSONString());
+					// _log.info("payloadTest: "+payload.toJSONString());
 					queue.setPayload(payload.toJSONString());
-					
+
 					queue.setExpireDate(cal.getTime());
-					
+
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
-				//Add applicant search
+				// Add applicant search
 				ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
 						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
 			} else if (flagUser == 1) {
-				//Add applicant and user
-				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
+				// Add applicant and user
+				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo,
+						applicantName, applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode,
+						cityName, districtCode, districtName, wardCode, wardName, serviceContext);
 				if (app != null) {
-					//Send Email active account
+					// Send Email active account
 					Date now = new Date();
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+					NotificationQueue queue = NotificationQueueLocalServiceUtil
+							.createNotificationQueue(notificationQueueId);
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
 
@@ -503,7 +525,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setModifiedDate(now);
 					queue.setGroupId(groupId);
 					queue.setCompanyId(serviceContext.getCompanyId());
-					
+
 					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(app.getApplicantId()));
@@ -511,28 +533,28 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setToUserId(app.getMappingUserId());
 					queue.setToEmail(contactEmail);
 					queue.setToTelNo(StringPool.BLANK);
-					
+
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put(ApplicantListenerMessageKeys.APPLICANT, JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
-					//_log.info("payloadTest: "+payload.toJSONString());
+					// _log.info("payloadTest: "+payload.toJSONString());
 					queue.setPayload(payload.toJSONString());
-					
+
 					queue.setExpireDate(cal.getTime());
-					
+
 					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
 			} else if (flagUser == 3) {
-				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
+				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo,
+						applicantName, applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode,
+						cityName, districtCode, districtName, wardCode, wardName, serviceContext);
 				//
-				//Add applicant search
+				// Add applicant search
 				ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
 						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
 						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
@@ -543,9 +565,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	private String getDictItemName(long groupId, DictCollection dc, String itemCode) {
 		if (Validator.isNotNull(dc)) {
 			DictItem it = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, dc.getPrimaryKey(), groupId);
-			if(Validator.isNotNull(it)){
+			if (Validator.isNotNull(it)) {
 				return it.getItemName();
-			}else{
+			} else {
 				return StringPool.BLANK;
 			}
 		} else {
