@@ -52,7 +52,6 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
-import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.CheckFileUtils;
@@ -1282,6 +1281,54 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 
+	}
+
+	@Override
+	public Response previewDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			DossierFile dossierFile =
+				DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
+					id, referenceUid);
+
+			// download file with dossierFileID
+			if (Validator.isNull(dossierFile) &&
+				Validator.isNumber(referenceUid)) {
+				dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(
+					Long.valueOf(referenceUid));
+			}
+
+			if (dossierFile.getFileEntryId() > 0) {
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+					dossierFile.getFileEntryId());
+
+				File file = DLFileEntryLocalServiceUtil.getFile(
+					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header(
+					"Content-Disposition",
+					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
+			}
+			else {
+				return Response.status(
+					HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}	
 	}
 
 }

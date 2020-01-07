@@ -898,4 +898,117 @@ public class SignatureManagementImpl implements SignatureManagement{
 		}
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 	}
+
+	@Override
+	public Response vgcaDossierFilesBySignature(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id, String fileEntries, String dossierFiles,
+			String actionCode, String actionUser, String actionNote, String assignUserId, String subUsers,
+			String postStepCode, String payload, String payment, String assignUsers, String userNote)
+			throws PortalException, Exception {
+		BackendAuth auth = new BackendAuthImpl();
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long dossierId = Long.valueOf(id);
+		long userId = user.getUserId();
+
+		if (!auth.isAuth(serviceContext)) {
+			throw new UnauthenticationException();
+		}
+
+		String[] fileEntryIdArr = StringUtil.split(fileEntries);
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		boolean signOk = true;
+		String[] dossierFileIdArr = StringUtil.split(dossierFiles);
+		
+		for (int i = 0; i < fileEntryIdArr.length; i++) {
+			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
+			if (fileEntryId > 0) {
+					DossierFile df = DossierFileLocalServiceUtil.fetchDossierFile(Long.parseLong(dossierFileIdArr[i]));
+					long oldFileEntryId = df.getFileEntryId();
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(oldFileEntryId);
+					DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(fileEntryId);
+					File fileSigned = DLFileEntryLocalServiceUtil.getFile(fileEntryId, newFileEntry.getVersion(), false);
+					
+					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
+							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
+							StringPool.BLANK, true, fileSigned, serviceContext);
+					// Update deliverable with deliverableType
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
+					if (dossierFile != null) {
+						String deliverableCode = dossierFile.getDeliverableCode();
+						if (Validator.isNotNull(deliverableCode)) {
+							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
+							if (deliverable != null) {
+								String deliState = String.valueOf(deliverable.getDeliverableState());
+								if (!"2".equals(deliState)) {
+									deliverable.setDeliverableState(2);
+									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+								}
+							}
+						}
+					}
+			} else {
+				signOk = false;
+			}			
+		}
+
+		//Next action
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (dossier != null) {
+			DossierActions dossierAction = new DossierActionsImpl();
+			if (Validator.isNotNull(actionCode)) {
+				ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+				_log.info("Action config: " + actConfig);
+				String serviceCode = dossier.getServiceCode();
+				String govAgencyCode = dossier.getGovAgencyCode();
+				String dossierTempNo = dossier.getDossierTemplateNo();
+				ErrorMsgModel errorModel = new ErrorMsgModel();
+				if (actConfig != null) {
+					boolean insideProcess = actConfig.getInsideProcess();
+					ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode,
+							dossierTempNo, groupId);
+					if (insideProcess) {
+						if (option != null) {
+							long serviceProcessId = option.getServiceProcessId();
+							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+									serviceProcessId);
+							if (proAction != null) {
+								dossierAction.doAction(groupId, userId, dossier, option, proAction,
+										actionCode, actionUser, actionNote,
+										payload, assignUsers, payment,
+										actConfig.getSyncType(), serviceContext, errorModel);
+							}
+						}
+					} else {
+						dossierAction.doAction(groupId, userId, dossier, option, null, actionCode,
+								actionUser, actionNote, payload,
+								assignUsers, payment, actConfig.getSyncType(),
+								serviceContext, errorModel);
+					}
+					//Process send email or sms
+				} else {
+					ProcessOption option = DossierUtils.getProcessOption(serviceCode, govAgencyCode, dossierTempNo,
+							groupId);
+					if (option != null) {
+						long serviceProcessId = option.getServiceProcessId();
+						ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+								serviceProcessId);
+						if (proAction != null) {
+							dossierAction.doAction(groupId, userId, dossier, option, proAction,
+									actionCode, actionUser, actionNote, payload,
+									assignUsers, payment, 0, serviceContext, errorModel);
+						}
+					}
+				}
+			}
+
+			// Process success
+			result.put("msg", "success");
+		}
+		
+		if (!signOk) {
+			result.put("msg", "fileEntryId");
+		}
+		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();	
+	}
 }

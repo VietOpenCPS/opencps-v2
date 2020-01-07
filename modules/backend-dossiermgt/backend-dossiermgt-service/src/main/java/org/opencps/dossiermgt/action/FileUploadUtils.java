@@ -32,7 +32,6 @@ public class FileUploadUtils {
 			String fileName, String fileType, long fileSize, String destination, String desc,
 			ServiceContext serviceContext) throws Exception {
 		FileEntry fileEntry = null;
-
 		if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
 
 			serviceContext.setAddGroupPermissions(true);
@@ -53,7 +52,6 @@ public class FileUploadUtils {
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 			PermissionThreadLocal.setPermissionChecker(checker);
-
 			fileEntry = DLAppServiceUtil.addFileEntry(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName, fileType,
 					System.currentTimeMillis() + StringPool.DASH + fileName, desc, StringPool.BLANK, inputStream,
 					fileSize, serviceContext);
@@ -151,7 +149,6 @@ public class FileUploadUtils {
 		throws Exception {
 		
 		FileEntry fileEntry = null;
-
 		if (inputStream != null && Validator.isNotNull(sourceFileName)) {
 			
 			if(Validator.isNull(fileType)) {
@@ -183,7 +180,6 @@ public class FileUploadUtils {
 
 			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
 					StringPool.BLANK, false, serviceContext);
-
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 
 			PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);

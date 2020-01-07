@@ -93,6 +93,7 @@ import org.opencps.api.controller.impl.StatisticManagementImpl;
 import org.opencps.api.controller.impl.SystemManagementImpl;
 import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
 import org.opencps.api.controller.impl.UserManagementImpl;
+import org.opencps.api.controller.impl.VGCAManagementImpl;
 import org.opencps.api.controller.impl.VotingManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
@@ -220,7 +221,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DVCQGSSOManagementImpl());
 		
 		singletons.add(new DVCQGIManagementImpl());
-
+		singletons.add(new VGCAManagementImpl());
+		
 		singletons.add(this);
 
 		// add service provider
