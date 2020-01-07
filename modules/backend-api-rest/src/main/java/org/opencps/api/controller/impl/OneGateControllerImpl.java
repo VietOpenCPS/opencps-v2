@@ -102,6 +102,7 @@ public class OneGateControllerImpl implements OneGateController {
 			if (lstServiceInfos != null && lstServiceInfos.size() > 0) {
 				for (ServiceInfo serviceInfo : lstServiceInfos) {
 					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
+					_log.debug("SERVICE INFO: " + serviceInfo.getServiceInfoId() + ", " + serviceInfo.getDomainCode());
 				}
 			}
 			long endTime = System.currentTimeMillis();
@@ -135,7 +136,11 @@ public class OneGateControllerImpl implements OneGateController {
 			startTime = System.currentTimeMillis();
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
+			_log.info("USER: " + user.getUserId());
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
+			for (int i = 0; i < roleIds.length; i++) {
+				_log.debug("ROLE: " + roleIds[i]);
+			}
 //			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.findBySPS(spArr);
 			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
@@ -161,6 +166,7 @@ public class OneGateControllerImpl implements OneGateController {
 			endTime = System.currentTimeMillis();
 			_log.debug("DOSSIER TEMPLATE GET: " + (endTime - startTime) / 1000 + " s");
 			for (ServiceConfig serviceConfig : serviceConfigs) {
+				_log.debug("SERVICE CONFIG: " + serviceConfig.getServiceLevel() + ", " + serviceConfig.getServiceConfigId() + ", " + serviceConfig.getServiceInfoId());
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
@@ -193,13 +199,15 @@ public class OneGateControllerImpl implements OneGateController {
 								long serviceProcessId = processOption.getServiceProcessId();
 //								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 								List<ServiceProcessRole> lstRoles = mapPRoles.get(serviceProcessId);
-																
+								_log.debug("CHECK ROLE PROCESS: " + serviceProcessId);				
 								boolean hasPermission = false;
 		//						_log.info("List role: " + lstRoles);
 								if (lstRoles != null && lstRoles.size() > 0) {
 		//							_log.info("Role of users : " + user);
 									for (ServiceProcessRole spr : lstRoles) {
+										_log.debug("CHECK ROLE: " + spr.getRoleId() + " " + spr.getRoleCode());
 										for (int i = 0; i < roleIds.length; i++) {
+											_log.debug("ROLE ID: " + roleIds[i]);
 											if (roleIds[i] == spr.getRoleId()) {
 												hasPermission = true;
 												break;										
@@ -211,6 +219,7 @@ public class OneGateControllerImpl implements OneGateController {
 								if (isAdmin) {
 									hasPermission = true;
 								}
+								_log.debug("HAS PERMISSION: " + hasPermission);
 								if (hasPermission) {
 									JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 									
