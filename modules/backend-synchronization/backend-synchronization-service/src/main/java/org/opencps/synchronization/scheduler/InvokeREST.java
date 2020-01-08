@@ -1,5 +1,14 @@
 package org.opencps.synchronization.scheduler;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.StringPool;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -7,20 +16,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.opencps.synchronization.util.MultipartUtility;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-
 public class InvokeREST {
+
+	private static final String FILE_PARAM_KEY = "file";
 
 	public JSONObject callAPI(long groupId, String httpMethod, String accept, String pathBase, String endPoint,
 			String username, String password, HashMap<String, String> properties, ServiceContext serviceContext) {
@@ -33,16 +41,17 @@ public class InvokeREST {
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
-			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+			conn.setRequestProperty(HttpHeaders.AUTHORIZATION,
+					HttpServletRequest.BASIC_AUTH + StringPool.SPACE + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {
@@ -90,18 +99,19 @@ public class InvokeREST {
 
 			conn = (HttpURLConnection) url.openConnection();
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+			conn.setRequestProperty(HttpHeaders.AUTHORIZATION,
+					HttpServletRequest.BASIC_AUTH + StringPool.SPACE + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {
@@ -113,15 +123,15 @@ public class InvokeREST {
 
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)
-					postData.append('&');
-				postData.append(java.net.URLEncoder.encode(param.getKey(), "UTF-8"));
-				postData.append('=');
-				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+					postData.append(StringPool.AMPERSAND);
+				postData.append(java.net.URLEncoder.encode(param.getKey(), StandardCharsets.UTF_8.name()));
+				postData.append(StringPool.EQUAL);
+				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), StandardCharsets.UTF_8.name()));
 			}
 
-			byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+			byte[] postDataBytes = postData.toString().getBytes(StandardCharsets.UTF_8.name());
 
-			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 
 			conn.getOutputStream().write(postDataBytes);
 
@@ -175,16 +185,16 @@ public class InvokeREST {
 
 		try {
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
 			String requestURL = pathBase + endPoint;
 
-			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
+			MultipartUtility multipart = new MultipartUtility(requestURL, StandardCharsets.UTF_8.name(), groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
-			multipart.addFilePart("file", file);
+			multipart.addFilePart(FILE_PARAM_KEY, file);
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry<String, String> m : properties.entrySet()) {

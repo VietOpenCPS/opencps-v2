@@ -56,4 +56,7 @@ public class DataMGTTempConstants implements Constants, WebKeys {
 //		
 //		DICTITEM_DOCUMENT_INIT.put("5", "B\u1ED9 d\u1EEF li\u1EC7u");
 //	}
+	public static final String TOTAL = "total";
+	public static final String DATA = "data";
+
 }

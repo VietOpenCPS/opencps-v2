@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
+import backend.synchronization.service.util.ConfigConstants;
 
 /**
  * The implementation of the dict group temp local service.
@@ -351,8 +352,8 @@ public class DictGroupTempLocalServiceImpl
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTempTerm.GROUP_ID);
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
 		
@@ -360,7 +361,7 @@ public class DictGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -403,7 +404,7 @@ public class DictGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -440,8 +441,8 @@ public class DictGroupTempLocalServiceImpl
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictGroupTempTerm.GROUP_ID);
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictGroupTempTerm.USER_ID);
 		String dictCollectionCode = (String) params.get(DictGroupTempTerm.DICT_COLLECTION_CODE);
 		
@@ -449,7 +450,7 @@ public class DictGroupTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictGroupTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictGroupTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -489,7 +490,7 @@ public class DictGroupTempLocalServiceImpl
 
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(DictGroupTempTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 
