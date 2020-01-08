@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.StringPool;
@@ -21,8 +22,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.opencps.synchronization.util.MultipartUtility;
 
@@ -45,7 +44,7 @@ public class InvokeREST {
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 			conn.setRequestProperty(HttpHeaders.AUTHORIZATION,
-					HttpServletRequest.BASIC_AUTH + StringPool.SPACE + authStringEnc);
+					HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
 			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
@@ -104,7 +103,7 @@ public class InvokeREST {
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
 			conn.setRequestProperty(HttpHeaders.AUTHORIZATION,
-					HttpServletRequest.BASIC_AUTH + StringPool.SPACE + authStringEnc);
+					HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
