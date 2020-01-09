@@ -570,14 +570,9 @@ public interface DossierFileManagement {
 		@ApiParam(value = "id of dossierFile", required = true) @PathParam("dossierFileId") long dossierFileId);
 	
 	@GET
-	@Path("/{id}/files/{referenceUid}/preview")
+	@Path("/{id}/files/{referenceUid}/preview.pdf")
 	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-		MediaType.APPLICATION_FORM_URLENCODED
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
-		MediaType.APPLICATION_FORM_URLENCODED
+		"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
 	})
 	@ApiOperation(value = "getDossierFilesByDossierReferenceUid", response = DossierFileResultsModel.class)
 	@ApiResponses(value = {

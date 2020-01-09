@@ -323,7 +323,16 @@ public class DossierStatisticData {
 	private int dossierOnline4Count;
 	private int receiveDossierSatCount;
 	private int releaseDossierSatCount;
+	private String groupAgencyCode;
 	
+	public String getGroupAgencyCode() {
+		return groupAgencyCode;
+	}
+
+	public void setGroupAgencyCode(String groupAgencyCode) {
+		this.groupAgencyCode = groupAgencyCode;
+	}
+
 	public int getDossierOnline3Count() {
 		return dossierOnline3Count;
 	}

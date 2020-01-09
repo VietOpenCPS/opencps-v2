@@ -532,7 +532,6 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		try {
 			session = openSession();
-
 			String sql = _customSQL.get(getClass(), SEARCH_DOSSIER_STATISTIC_SYSTEM);
 
 			// LOG.info(sql);
@@ -570,7 +569,6 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 
 			//LOG.info(sql);
-
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(true);

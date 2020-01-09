@@ -1286,13 +1286,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	@Override
 	public Response previewDossierFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String referenceUid) {
-		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
 			DossierFile dossierFile =
 				DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
 					id, referenceUid);
@@ -1315,8 +1310,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 				responseBuilder.header(
 					"Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+					"inline; filename=\"" + fileEntry.getFileName() + "\"");
 				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header("Content-Length", file.length());
 
 				return responseBuilder.build();
 			}

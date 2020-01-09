@@ -1,7 +1,6 @@
 package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -21,16 +20,16 @@ public class StatisticEngineFetch {
 	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting, List<String> lstGroupGovs) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 		for (GetDossierData dossierData : lsDossierData) {
 			if (Validator.isNotNull(dossierData.getDomainCode())) {
 				StatisticEngineFetchEntry engineFetchEntry = new StatisticEngineFetchEntry();
-				// all site, all domain, all system
+				// all site, all domain, all system, all group gov
 				
-				String type1 = "all@all@all@" + groupId;
+				String type1 = "all@all@all@all@" + groupId;
 	
 				DossierStatisticData dataType1 = new DossierStatisticData();
 				dataType1.setGroupId(groupId);
@@ -50,10 +49,8 @@ public class StatisticEngineFetch {
 	
 				statisticData.put(type1, dataType1);
 
-				// all site, all domain, each system
-				
 				String type2 = "all@all@" + dossierData.getSystem() +"@" + groupId;
-	
+				
 				DossierStatisticData dataType2 = new DossierStatisticData();
 				dataType2.setGroupId(groupId);
 				dataType2.setGovAgencyCode(StringPool.BLANK);
@@ -71,7 +68,7 @@ public class StatisticEngineFetch {
 				dataType2 = processOnTimePercent(dataType2);
 	
 				statisticData.put(type2, dataType2);
-	
+					
 				// all site, each domain, all system
 				String type3 = "all@" + dossierData.getDomainCode() + "@all@" + groupId;
 				
@@ -203,6 +200,32 @@ public class StatisticEngineFetch {
 
 				statisticData.put(type8, dataType8);
 
+				// all site, all domain, all system, each group gov
+				for (String groupGovAgency : lstGroupGovs) {
+					if (groupGovAgency.contains(dossierData.getGovAgencyCode())) {
+						String type9 = "all@all@all@" + groupGovAgency + "@" + groupId;
+						
+						DossierStatisticData dataType9 = new DossierStatisticData();
+						dataType9.setGroupId(groupId);
+						dataType9.setGovAgencyCode(StringPool.BLANK);
+						dataType9.setGovAgencyName(StringPool.BLANK);
+						dataType9.setDomainCode(StringPool.BLANK);
+						dataType9.setDomainName(StringPool.BLANK);
+						dataType9.setSystem(StringPool.BLANK);
+						dataType9.setGroupAgencyCode(groupGovAgency);
+						
+						if (statisticData.containsKey(type9)) {
+							dataType9 = statisticData.get(type9);
+						}
+			
+						engineFetchEntry.updateDossierStatisticData(dataType9, dossierData, fromStatisticDate, toStatisticDate,
+								reporting);
+						dataType9 = processOnTimePercent(dataType9);
+			
+						statisticData.put(type9, dataType9);											
+					}
+				}
+				
 			}
 		}
 	}

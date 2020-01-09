@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,6 +44,10 @@ import java.util.Map;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
@@ -88,6 +93,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
+	private static final String GROUP_STATISTIC = "GROUP_4T";
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_log.debug("START STATISTIC DOSSIER: " + isRunningDossier);
@@ -116,8 +123,20 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
-			
 			for (Group site : sites) {
+				DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GROUP_STATISTIC, site.getGroupId());
+				List<DictItem> lstGovs = (dc != null) ? DictItemLocalServiceUtil.findByF_dictCollectionId(dc.getDictCollectionId()) : new ArrayList<DictItem>();
+				StringBuilder groupGovAgency = new StringBuilder();
+				List<String> lstGroupGovs = new ArrayList<String>();
+
+				for (DictItem di : lstGovs) {
+					if (!"".contentEquals(groupGovAgency.toString())) {
+						groupGovAgency.append(StringPool.COMMA);
+					}
+					groupGovAgency.append(di.getItemCode());
+				}
+				lstGroupGovs.add(groupGovAgency.toString());
+				
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 				
@@ -196,7 +215,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							try {
 //								Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-									engineUpdateAction, serviceDomainResponse, calculateData);
+									engineUpdateAction, serviceDomainResponse, calculateData, lstGroupGovs);
 								calculateDatas.put(yearCurrent, calculateData);
 							}
 							catch (Exception e) {
@@ -208,7 +227,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-								engineUpdateAction, serviceDomainResponse, calculateData);
+								engineUpdateAction, serviceDomainResponse, calculateData, lstGroupGovs);
 							calculateDatas.put(yearCurrent, calculateData);
 						}
 						catch (Exception e) {
@@ -233,7 +252,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (flagLastYear) {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse, calculateLastData);
+								engineUpdateAction, serviceDomainResponse, calculateLastData, lstGroupGovs);
 							calculateDatas.put(lastYear, calculateLastData);
 						}
 						catch (Exception e) {
@@ -356,16 +375,16 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				//Current year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs);
 				// Last year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs);
 
 //				3 year before
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear2);
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear3);
 				//Caculate statistic all year
 				_log.info("START STATISTIC ALL YEAR: ");
-				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0);
+				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs);
 			}
 	
 			
@@ -386,7 +405,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	@SuppressWarnings("unchecked")
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
 			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
-			Map<Integer, Map<String, DossierStatisticData>> calculateData)
+			Map<Integer, Map<String, DossierStatisticData>> calculateData, List<String> lstGroupGovs)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		
@@ -462,7 +481,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 						Date firstDay = StatisticUtils.getFirstDay(month, year);
 						Date lastDay = StatisticUtils.getLastDay(month, year);
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
 //						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 //						
 //						statisticEngineUpdate.updateStatisticData(statisticData);	
@@ -688,7 +707,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
+					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
 	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 	//					
 	//					statisticEngineUpdate.updateStatisticData(statisticData);	

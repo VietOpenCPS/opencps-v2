@@ -932,6 +932,9 @@ public class SignatureManagementImpl implements SignatureManagement{
 					DLAppLocalServiceUtil.updateFileEntry(user.getUserId(), dlFileEntry.getFileEntryId(), dlFileEntry.getTitle(),
 							dlFileEntry.getMimeType(), dlFileEntry.getTitle(), dlFileEntry.getDescription(),
 							StringPool.BLANK, true, fileSigned, serviceContext);
+					
+					DLAppLocalServiceUtil.deleteFileEntry(newFileEntry.getFileEntryId());
+					
 					// Update deliverable with deliverableType
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getByFileEntryId(fileEntryId);
 					if (dossierFile != null) {

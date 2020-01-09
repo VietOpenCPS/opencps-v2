@@ -81,7 +81,7 @@ public class StatisticEngineUpdateAction {
 					payload.getUndueCount(), payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(),
 					payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
 					payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-					payload.getDomainCode(), payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(),
+					payload.getDomainCode(), payload.getDomainName(), payload.getGroupAgencyCode(), payload.isReporting(), payload.getOnegateCount(),
 					payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
