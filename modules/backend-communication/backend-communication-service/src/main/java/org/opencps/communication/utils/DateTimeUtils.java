@@ -34,6 +34,8 @@ public class DateTimeUtils {
 	
 	public static final String _VN_TIME_FORMAT_HOUR = "HH:mm";
 	
+	public static final String _VN_TIME_ZONE_ = "Asia/Ho_Chi_Minh";
+	
 	public static String convertDateToString(Date date, String pattern) {
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			pattern);
@@ -42,7 +44,7 @@ public class DateTimeUtils {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(_VN_TIME_ZONE_));
 
 		Calendar calendar = Calendar.getInstance();
 

@@ -66,7 +66,7 @@ public class ViettelSMSUtils {
 					configObj.getString(SendSMSTerm.CC_API_PORT_ADDRESS));
 				portType = locator.getCcApiPort();
 
-				String toTelNoRpl = "0".equals(toTelNo.substring(0, 1))
+				String toTelNoRpl = String.valueOf(0).equals(toTelNo.substring(0, 1))
 					? configObj.getString(SendSMSTerm.COUNTRY_CODE) +
 						toTelNo.substring(1)
 					: toTelNo;
@@ -81,11 +81,7 @@ public class ViettelSMSUtils {
 			}
 			else {
 
-				// handle with hashCode
-				portType = locator.getCcApiPort();
-				result = portType.wsCpMt(
-					"viettelmcdt", "789456a@#123", "VIETTELMCDT", "1", toTelNo,
-					toTelNo, "ViettelMCDT", "bulksms", body, "F");
+				_log.debug("Config send sms isnot exactly");
 			}
 		}
 

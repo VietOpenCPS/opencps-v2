@@ -34,6 +34,12 @@ public class SendSMSTerm {
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
 	public static final String COUNTRY_CODE = "countryCode";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	/**
 	 * Zalo Preference to send message zalo
@@ -42,6 +48,8 @@ public class SendSMSTerm {
 	public static final String SERVER_CONFIG_SERVERNO_ZALO = "ZALO";
 	public static final String OAID_TOKEN_ACCESS = "oaid_token_access";
 	public static final String ZALO_GROUPID = "groupId";
+	public static final String DATA = "data";
+	public static final String TOTAL = "total";
 	// public static final String ZALO_UID = "ZALO_UID";
 	// public static final String UID = "uid";
 	// public static final String ZALO_TEL_NO_EXITS_MES = "telNoExitsMes";
@@ -68,7 +76,7 @@ public class SendSMSTerm {
 	// public static final String ZALO_URLS_URLS = "urls";
 	// public static final String ZALO_URLS_PATH_BASE = "pathBase";
 	// public static final String ZALO_URLS_END_POINT = "endPoint";
-	// public static final String ZALO_URLS_GROUP_ID = "groupId";
+	// public static final String ZALO_URLS_GROUP_ID = Field.GROUP_ID;
 	// public static final String ZALO_URLS_USER_NAME = "userName";
 	// public static final String ZALO_URLS_PASS_WORD = "password";
 

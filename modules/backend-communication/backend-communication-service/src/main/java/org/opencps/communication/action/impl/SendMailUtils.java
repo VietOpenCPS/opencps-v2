@@ -17,6 +17,8 @@
 
 package org.opencps.communication.action.impl;
 
+import org.opencps.communication.constants.SendMailTerm;
+
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -37,19 +39,17 @@ public class SendMailUtils {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
-			String fromName = "He thong dich vu cong truc tuyen";
+			String fromName = SendMailTerm.FROM_NAME;
 			//_log.info("payLoad: "+payLoad);
-			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
+			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong(SendMailTerm.COMPANY_ID), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
-			//String fromAddress = "khoavd@fds.vn";
+			String toName = payLoad.getString(SendMailTerm.TO_NAME);
 
-			String toName = payLoad.getString("toName");
+			String toAddress = payLoad.getString(SendMailTerm.TO_ADDRESS);
 
-			String toAddress = payLoad.getString("toAddress");
+			String subject = payLoad.getString(SendMailTerm.SUBJECT);
 
-			String subject = payLoad.getString("subject");
-
-			String body = payLoad.getString("body");
+			String body = payLoad.getString(SendMailTerm.BODY);
 			//_log.info("body: "+body);
 
 			SubscriptionSender subscriptionSender = new SubscriptionSender();
@@ -66,13 +66,11 @@ public class SendMailUtils {
 
 			subscriptionSender.setSubject(subject);
 			
-			subscriptionSender.setUserId(payLoad.getLong("userId"));
+			subscriptionSender.setUserId(payLoad.getLong(SendMailTerm.USER_ID));
 			
-			subscriptionSender.setMailId("user", payLoad.getLong("userId"));
+			subscriptionSender.setMailId(SendMailTerm.USER, payLoad.getLong(SendMailTerm.USER_ID));
 
 			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
-			
-			//subscriptionSender.addRuntimeSubscribers("khoavd@fds.vn", "khoafds");
 
 			subscriptionSender.flushNotificationsAsync();
 			

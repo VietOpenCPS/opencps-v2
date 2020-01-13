@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.communication.bussiness.BaseNotificationQueueBusiness;
+import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.exception.NoSuchNotificationQueueException;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
@@ -75,9 +76,9 @@ public class NotificationQueueBusinessImpl
 			NotificationQueueLocalServiceUtil.getNotificationQueues(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		result.put("data", listQueue);
+		result.put(SendSMSTerm.DATA, listQueue);
 
-		result.put("total", listQueue.size());
+		result.put(SendSMSTerm.TOTAL, listQueue.size());
 
 		return result;
 	}
