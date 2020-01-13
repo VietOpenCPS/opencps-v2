@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -75,7 +76,20 @@ public class RestAuthFilter implements Filter {
 	
 	private static final String hostExtractorRegexString = "(?:https?://)?(?:www\\.)?(.+\\.)(com|au\\.uk|co\\.in|be|in|uk|org\\.in|org|net|edu|gov\\.vn|mil)";
 	private static final Pattern hostExtractorRegexPattern = Pattern.compile(hostExtractorRegexString);
-
+	private static final String CONTENT_TYPE = "application/json; charset=utf-8";
+	private static final String ENCODING = "UTF-8";
+	private static final String ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+	private static final String ALLOW_HEADER = "Access-Control-Allow-Headers";
+	private static final String ALLOW_METHOD = "Access-Control-Allow-Methods";
+	private static final String ALLOW_CREDENTIAL = "Access-Control-Allow-Credentials";
+	private static final String METHOD_ACCESS = "DELETE,POST,GET,PUT,HEAD";
+	private static final String X_FORWARDED_FOR = "X-FORWARDED-FOR";
+	private static final String HEADER_ORIGIN = "Origin";
+	private static final String LOCAL_ACCESSS = "localaccess";
+	private static final String USER_REQUEST_ID = "userid";
+	private static final String PERMISSION_DENIED = "permission denied";
+	private static final String ACCEPT_ENCODING_GZIP = "gzip";
+	
 	public static String getDomainName(String url){
 	    if (url == null) return null;
 	    url = url.trim();
@@ -116,15 +130,15 @@ public class RestAuthFilter implements Filter {
 		}
 		
 		String method = httpRequest.getMethod();
-		String ipAddress = httpRequest.getHeader("X-FORWARDED-FOR");  
+		String ipAddress = httpRequest.getHeader(X_FORWARDED_FOR);  
 		if (ipAddress == null) {  
 		   ipAddress = httpRequest.getRemoteAddr();  
 		} 
-		String origin = httpRequest.getHeader("Origin");
+		String origin = httpRequest.getHeader(HEADER_ORIGIN);
 		
-		_log.debug("Request IP: " + ipAddress);
-		_log.debug("Allow ips: " + allowIps);
-		_log.debug("Origin: " + origin);
+//		_log.debug("Request IP: " + ipAddress);
+//		_log.debug("Allow ips: " + allowIps);
+//		_log.debug("Origin: " + origin);
 		String domain = StringPool.BLANK;
 		if (origin != null) {
 			domain = getDomainName(origin);			
@@ -156,10 +170,10 @@ public class RestAuthFilter implements Filter {
 				}
 			}
 		}
-		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
-			pAuth = httpRequest.getParameter("Token");
+		if (Validator.isNotNull(httpRequest.getParameter(P_AUTH))) {
+			pAuth = httpRequest.getParameter(P_AUTH);
 		}
-		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
+		if (exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader(LOCAL_ACCESSS)) ? httpRequest.getHeader(LOCAL_ACCESSS).equals(pAuth) : false) ) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 			//System.out.println("RestAuthFilter.doFilter()" + userObj);
 			if (Validator.isNotNull(userObj) || exclude) {
@@ -171,7 +185,7 @@ public class RestAuthFilter implements Filter {
 					authOK(servletRequest, servletResponse, filterChain, 0);
 				}
 			} else {
-				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
+				long sockId = Validator.isNotNull(httpRequest.getHeader(USER_REQUEST_ID)) ? Long.valueOf(httpRequest.getHeader(USER_REQUEST_ID)) : 0;
 				httpRequest.setAttribute(USER_ID, sockId);
 				authOK(servletRequest, servletResponse, filterChain, sockId);
 			}
@@ -197,19 +211,19 @@ public class RestAuthFilter implements Filter {
 			if (isBasic) {
 
 				try {
-					// Get encoded user and password, comes after "BASIC "  
-			        String userpassEncoded = strBasic.substring(6);  
-			        String decodetoken = new String(Base64.decode(userpassEncoded),
-			                StringPool.UTF8);
-			        String account[] = decodetoken.split(":");
-			        
-			        String email = account[0];
-			        String password = account[1];
-		        
-					long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(httpRequest, email, password, CompanyConstants.AUTH_TYPE_EA);
-				
+					// Get encoded user and password, comes after "BASIC "
+					String userpassEncoded = strBasic.substring(6);
+					String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
+					String account[] = decodetoken.split(StringPool.COLON);
+
+					String email = account[0];
+					String password = account[1];
+
+					long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(httpRequest, email, password,
+							CompanyConstants.AUTH_TYPE_EA);
+
 					authOK(servletRequest, servletResponse, filterChain, userId);
-					
+
 				} catch (PortalException e) {
 					_log.debug(e);
 					authFailure(servletResponse);
@@ -223,16 +237,16 @@ public class RestAuthFilter implements Filter {
 
 	}
 
-	private void authOKCORS(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
-			throws IOException, ServletException {
+	private void authOKCORS(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain,
+			long userId) throws IOException, ServletException {
 		servletRequest.setAttribute(USER_ID, userId);
-	    HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-		httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-		httpResponse.addHeader("Access-Control-Allow-Headers", "*");
-		httpResponse.addHeader("Access-Control-Allow-Methods", "DELETE,POST,GET,PUT,HEAD");
-		httpResponse.addHeader("Access-Control-Allow-Credentials", "true");
-		
-	    filterChain.doFilter(servletRequest, httpResponse);
+		HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+		httpResponse.addHeader(ALLOW_ORIGIN, StringPool.STAR);
+		httpResponse.addHeader(ALLOW_HEADER, StringPool.STAR);
+		httpResponse.addHeader(ALLOW_METHOD, METHOD_ACCESS);
+		httpResponse.addHeader(ALLOW_CREDENTIAL, StringPool.TRUE);
+
+		filterChain.doFilter(servletRequest, httpResponse);
 	}
 	
 	private void authOK(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, long userId)
@@ -271,19 +285,17 @@ public class RestAuthFilter implements Filter {
 	}
 
 	private void authFailure(ServletResponse servletResponse) throws IOException {
-		servletResponse.setCharacterEncoding("UTF-8");
-		servletResponse.setContentType("application/json; charset=utf-8");
+		servletResponse.setCharacterEncoding(ENCODING);
+		servletResponse.setContentType(CONTENT_TYPE);
 		
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		// response.addHeader("Access-Control-Allow-Origin", "*");
-		// response.addHeader("Access-Control-Allow-Headers", "*");
-		// response.addHeader("Access-Control-Allow-Methods", "*");
+		
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType(CONTENT_TYPE);
 		
-		PrintWriter out = response.getWriter();												
+		PrintWriter out = response.getWriter();
 		
-		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), "permission denied", "");
+		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), PERMISSION_DENIED, StringPool.BLANK);
 		
 		out.println(error.toString());
 		out.flush();
@@ -295,9 +307,9 @@ public class RestAuthFilter implements Filter {
 	}
 
 	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
-		String acceptEncoding = httpRequest.getHeader("Accept-Encoding");
+		String acceptEncoding = httpRequest.getHeader(HttpHeaders.ACCEPT_ENCODING);
 
 	    return acceptEncoding != null && 
-	             acceptEncoding.indexOf("gzip") != -1;
+	             acceptEncoding.indexOf(ACCEPT_ENCODING_GZIP) != -1;
 	}	
 }

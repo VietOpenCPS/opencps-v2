@@ -10,6 +10,9 @@ public class OpenCPSErrorDetails {
 	private Date timestamp;
 	private String message;
 	private String rest_api;
+	private static final String TIME_STAMP = "timestamp";
+	private static final String MESSAGE = "message";
+	private static final String REST_API = "rest_api";
 
 	public OpenCPSErrorDetails(Date timestamp, String message, String rest_api) {
 		super();
@@ -45,9 +48,9 @@ public class OpenCPSErrorDetails {
 	@Override
 	public String toString() {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		result.put("timestamp", new Date().getTime());
-		result.put("message", this.message);
-		result.put("rest_api", this.rest_api);
+		result.put(TIME_STAMP, new Date().getTime());
+		result.put(MESSAGE, this.message);
+		result.put(REST_API, this.rest_api);
 		return result.toJSONString();
 	}
 }
