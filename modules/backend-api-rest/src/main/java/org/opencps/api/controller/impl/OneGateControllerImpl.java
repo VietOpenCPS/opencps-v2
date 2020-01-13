@@ -16,9 +16,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
@@ -462,20 +464,48 @@ public class OneGateControllerImpl implements OneGateController {
 		try {
 			List<ServiceConfig> lstConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 			Map<String, String> mapConfigs = new HashMap<String, String>();
+			Map<String, Set<Long>> mapSis = new HashMap<String, Set<Long>>();
 			
 			for (ServiceConfig sc : lstConfigs) {
 				mapConfigs.put(sc.getGovAgencyCode(), sc.getGovAgencyName());
+				Set<Long> sInfos = new HashSet<Long>();
+				if (mapSis.containsKey(sc.getGovAgencyCode())) {
+					sInfos = mapSis.get(sc.getGovAgencyCode());
+				}
+				else {
+					mapSis.put(sc.getGovAgencyCode(), sInfos);
+				}
+				if (!sInfos.contains(sc.getServiceInfoId())) {
+					sInfos.add(sc.getServiceInfoId());
+				}
 			}
+			Map<String, Integer> countConfigs = new HashMap<String, Integer>();
+			for (ServiceConfig sc : lstConfigs) {
+				if (mapSis.containsKey(sc.getGovAgencyCode())) {
+					countConfigs.put(sc.getGovAgencyCode(), mapSis.get(sc.getGovAgencyCode()).size());
+				}
+			}
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			int total = 0;
+			
 			JSONArray results = JSONFactoryUtil.createJSONArray();
 			for (String govAgencyCode : mapConfigs.keySet()) {
 				JSONObject govObj = JSONFactoryUtil.createJSONObject();
 				govObj.put(ServiceConfigTerm.GOVAGENCY_NAME, mapConfigs.get(govAgencyCode));
 				govObj.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
-				
+				if (countConfigs.containsKey(govAgencyCode)) {
+					govObj.put("count", countConfigs.get(govAgencyCode));
+				}
+				else {
+					govObj.put("count", 0);
+				}
+				total += govObj.getInt("count");
 				results.put(govObj);
 			}
+			result.put("total", total);
+			result.put("data", results);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

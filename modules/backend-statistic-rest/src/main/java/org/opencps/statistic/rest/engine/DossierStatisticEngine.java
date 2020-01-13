@@ -151,41 +151,43 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
 				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 				lstGovs = new ArrayList<DictItem>();
-				groupGovAgency = new StringBuilder();
+				StringBuilder groupGovAgencyQH = new StringBuilder();
 				
 				for (DictItemGroup dig : lstDigs) {
 					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
 					lstGovs.add(di);
 				}
 				for (DictItem di : lstGovs) {
-					if (!"".contentEquals(groupGovAgency.toString())) {
-						groupGovAgency.append(StringPool.COMMA);
+					if (!"".contentEquals(groupGovAgencyQH.toString())) {
+						groupGovAgencyQH.append(StringPool.COMMA);
 					}
-					groupGovAgency.append(di.getItemCode());
+					groupGovAgencyQH.append(di.getItemCode());
 				}
-				if (!"".contentEquals(groupGovAgency.toString())) {
-					lstGroupGovs.add(groupGovAgency.toString());					
+				if (!"".contentEquals(groupGovAgencyQH.toString())) {
+					lstGroupGovs.add(groupGovAgencyQH.toString());					
 				}
 				
 				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
 				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 				lstGovs = new ArrayList<DictItem>();
-				groupGovAgency = new StringBuilder();
+				StringBuilder groupGovAgencyXP = new StringBuilder();
 				
 				for (DictItemGroup dig : lstDigs) {
 					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
 					lstGovs.add(di);
 				}
 				for (DictItem di : lstGovs) {
-					if (!"".contentEquals(groupGovAgency.toString())) {
-						groupGovAgency.append(StringPool.COMMA);
+					if (!"".contentEquals(groupGovAgencyXP.toString())) {
+						groupGovAgencyXP.append(StringPool.COMMA);
 					}
-					groupGovAgency.append(di.getItemCode());
+					groupGovAgencyXP.append(di.getItemCode());
 				}
-				if (!"".contentEquals(groupGovAgency.toString())) {
-					lstGroupGovs.add(groupGovAgency.toString());					
+				if (!"".contentEquals(groupGovAgencyXP.toString())) {
+					lstGroupGovs.add(groupGovAgencyXP.toString());					
 				}
-
+				for (String groupGovAgencyCode : lstGroupGovs) {
+					_log.debug("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 				

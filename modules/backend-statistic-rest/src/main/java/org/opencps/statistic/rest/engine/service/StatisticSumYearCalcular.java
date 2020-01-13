@@ -60,12 +60,6 @@ public class StatisticSumYearCalcular {
 		dossierStatisticRequest.setStart(QueryUtil.ALL_POS);
 		dossierStatisticRequest.setEnd(QueryUtil.ALL_POS);
 		StringBuilder groupAgencyCode = new StringBuilder();
-		for (String gc : lstGroupGovs) {
-			if (!"".contentEquals(groupAgencyCode.toString())) {
-				groupAgencyCode.append(StringPool.COMMA);
-			}
-			groupAgencyCode.append(gc);
-		}
 		/** #1 */
 		/* case domain = null && agency = null && system = null */
 		if (!isDomain && !isAgency && !isSystem) {
@@ -612,11 +606,12 @@ public class StatisticSumYearCalcular {
 
 		}
 
+		for (String gc : lstGroupGovs) {
 			try {
 				dossierStatisticRequest.setDomain(DossierStatisticConstants.TOTAL);
 				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
 				dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
-				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode.toString());
+				dossierStatisticRequest.setGroupAgencyCode(gc.toString());
 				
 				//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
@@ -634,7 +629,7 @@ public class StatisticSumYearCalcular {
 							DossierStatisticData latestMonthStatisticData = source.get(0);
 
 							try {
-								getDetailData(companyId, groupId, 0, year, null, null, null, null, null, groupAgencyCode.toString(), source,
+								getDetailData(companyId, groupId, 0, year, null, null, null, null, null, gc.toString(), source,
 										latestMonthStatisticData);
 							} catch (SystemException e) {
 								_log.error(e);
@@ -648,7 +643,7 @@ public class StatisticSumYearCalcular {
 			} catch (Exception e) {
 				_log.error(e);
 			}
-					
+		}					
 	}
 
 	/* Caculate all year */
@@ -1215,18 +1210,12 @@ public class StatisticSumYearCalcular {
 		}
 		
 		//Each group gov agency
-		StringBuilder groupAgencyCode = new StringBuilder();
 		for (String gc : lstGroupGovs) {
-			if (!"".contentEquals(groupAgencyCode.toString())) {
-				groupAgencyCode.append(StringPool.COMMA);
-			}
-			groupAgencyCode.append(gc);
-		}
 			try {
 				dossierStatisticRequest.setDomain(DossierStatisticConstants.TOTAL);
 				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
 				dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
-				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode.toString());
+				dossierStatisticRequest.setGroupAgencyCode(gc);
 				
 				// DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
@@ -1247,7 +1236,7 @@ public class StatisticSumYearCalcular {
 							DossierStatisticData latestMonthStatisticData = source.get(0);
 
 							try {
-								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, null, source,
+								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, gc, source,
 										latestMonthStatisticData);
 							} catch (SystemException e) {
 								_log.error(e);
@@ -1261,6 +1250,7 @@ public class StatisticSumYearCalcular {
 			} catch (Exception e) {
 				_log.error(e);
 			}					
+		}
 	}
 
 	/* Tìm kiếm domain theo tháng và năm */
