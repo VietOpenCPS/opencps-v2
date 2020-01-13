@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -30,13 +31,11 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 		String endpoint = action.checkAuth(user, groupId, request, serviceContext, vnconnect, currentURL);
-		// request.getSession().setAttribute("groupId", groupId);
-		// request.getSession().setAttribute("currentURL", currentURL);
-		// request.getSession().setMaxInactiveInterval(36000);
-		// Cookie cookie1 = new Cookie("groupId", String.valueOf(groupId));
-		// response.addCookie(cookie1);
-		// Cookie cookie2 = new Cookie("currentURL", currentURL);
-		// response.addCookie(cookie2);
+		HttpSession session = request.getSession();
+		session.setAttribute("_GROUP_ID", groupId);
+		session.setAttribute("_CURRENT_URL", currentURL);
+		session.setMaxInactiveInterval(36000);
+
 		return Response.status(200).entity(endpoint).build();
 	}
 
@@ -79,9 +78,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String state) {
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
+
 		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state);
+
 		return Response.status(200).entity(endpoint).build();
 	}
 

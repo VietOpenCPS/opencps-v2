@@ -1,9 +1,6 @@
 
 package org.fds.opencps.dvcqg.authentication;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -30,6 +27,7 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+
 		String code = request.getParameter("code");
 		
 		String state = request.getParameter("state");
@@ -155,7 +153,4 @@ public class DVCQGSSOCallbackServlet extends HttpServlet {
 		response.getWriter().write("NO CONTENT!");
 	}
 	
-	
-
-	private Log _log = LogFactoryUtil.getLog(DVCQGSSOCallbackServlet.class);
 }

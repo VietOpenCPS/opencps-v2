@@ -403,6 +403,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 	private LinkedHashMap<String, Object> processAddQueryParams(String subQuery, long userId, String stepCode, LinkedHashMap<String, Object> params) {
 
+		params.put(DossierTerm.ASSIGNED_USER_ID, StringPool.BLANK);
 		if (Validator.isNotNull(subQuery)) {
 			String[] elementParams = subQuery.split("&");
 			for (String param : elementParams) {
