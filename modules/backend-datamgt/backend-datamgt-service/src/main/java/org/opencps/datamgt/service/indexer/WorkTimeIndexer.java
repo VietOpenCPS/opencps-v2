@@ -62,7 +62,7 @@ public class WorkTimeIndexer extends BaseIndexer<WorkTime> {
 		document.addNumberSortable(WorkTimeTerm.WORKTIME_ID, workTime.getWorkTimeId());
 		document.addNumberSortable(WorkTimeTerm.DAY, workTime.getDay());
 		
-		document.addNumberSortable(WorkTimeTerm.GROUP_ID, workTime.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, workTime.getGroupId());
 		document.addTextSortable(WorkTimeTerm.HOURS, workTime.getHours());
 		
 		document.setSortableTextFields(

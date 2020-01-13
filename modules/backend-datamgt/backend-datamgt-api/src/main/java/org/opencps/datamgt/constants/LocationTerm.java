@@ -22,8 +22,6 @@ public class LocationTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -53,6 +51,12 @@ public class LocationTerm {
 	public static final String LOCATION_SORTABLE = "location_sortable";
 
 	public static final String GEOLOCATION_SORTABLE = "geolocation_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 
 	private long locationId;

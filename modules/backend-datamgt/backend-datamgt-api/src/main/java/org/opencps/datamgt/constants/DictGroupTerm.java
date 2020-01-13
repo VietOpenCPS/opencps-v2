@@ -26,8 +26,6 @@ public class DictGroupTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -71,6 +69,12 @@ public class DictGroupTerm {
 	public static final String GROUP_NAME_EN_SORTABLE = "groupNameEN_sortable";
 
 	public static final String GROUP_DESCRIPTION_SORTABLE = "groupDescription_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public DictGroupTerm() {
 

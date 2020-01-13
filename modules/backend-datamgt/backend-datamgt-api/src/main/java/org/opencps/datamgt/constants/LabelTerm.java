@@ -22,8 +22,6 @@ public class LabelTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -58,6 +56,12 @@ public class LabelTerm {
 	public static final String LABEL_COLOR_SORTABLE = "color_sortable";
 	
 	public static final String SCOPE_SORTABLE = "scope_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long labelId;
 	private long companyId;

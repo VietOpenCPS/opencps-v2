@@ -22,8 +22,6 @@ public class WorkTimeTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -54,6 +52,12 @@ public class WorkTimeTerm {
 	public static final String DAY_SORTABLE = "day_Number_sortable";
 
 	public static final String HOURS_SORTABLE = "hours_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long workTimeId;
 	private long companyId;
