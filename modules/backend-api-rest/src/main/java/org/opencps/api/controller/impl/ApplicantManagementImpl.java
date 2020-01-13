@@ -40,6 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
@@ -675,7 +676,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
+	
 	@Override
 	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
@@ -704,6 +705,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
 			JSONObject data = result.getJSONObject("Data");
 			JSONObject returnObj = JSONFactoryUtil.createJSONObject();
+			LevenshteinDistance levensh = LevenshteinDistance.getDefaultInstance();
 			
 			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
 				returnObj.put("error", true);
@@ -713,16 +715,30 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			else {
 				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
 				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
-					if (Validator.isNotNull(applicantName) && !applicantName.equals(mainInfoObj.getString("NAME"))) {
-						returnObj.put("warning", true);
-						returnObj.put("message", "Thông tin tên doanh nghiệp có thể chưa đúng!");
+					if (Validator.isNotNull(applicantName)) {
+						if (mainInfoObj.has("NAME")) {
+							int countChar = applicantName.replaceAll("\\s+", "").length();
+							
+							int distance = levensh.apply(applicantName, mainInfoObj.getString("NAME"));
+							if (distance > (1.0 * countChar / 2)) {
+								returnObj.put("warning", true);
+								returnObj.put("message", "Thông tin tên doanh nghiệp có thể chưa đúng!");															
+							}
+						}
 					}
 				}
 				JSONObject representativesObj = data.getJSONObject("Representatives");
 				if (representativesObj != null) {
 					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
-						returnObj.put("warning", true);
-						returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+						if (representativesObj.has("FULL_NAME")) {
+							int countChar = contactName.replaceAll("\\s+", "").length();
+							
+							int distance = levensh.apply(contactName, mainInfoObj.getString("FULL_NAME"));
+							if (distance > (1.0 * countChar / 2)) {
+								returnObj.put("warning", true);
+								returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+							}
+						}
 					}					
 				}
 				return Response.status(200).entity(returnObj.toJSONString()).build();							
