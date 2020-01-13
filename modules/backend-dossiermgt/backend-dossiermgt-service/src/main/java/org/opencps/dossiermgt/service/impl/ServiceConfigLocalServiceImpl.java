@@ -652,8 +652,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
 	}
 
-	@ThreadLocalCachable
-	public int countByBySIAndGAC(long groupId, long serviceInfoId, String govAgencyCode)
+	public int countBySIAndGAC(long groupId, long serviceInfoId, String govAgencyCode)
 			throws PortalException {
 		return serviceConfigPersistence.countByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
 	}

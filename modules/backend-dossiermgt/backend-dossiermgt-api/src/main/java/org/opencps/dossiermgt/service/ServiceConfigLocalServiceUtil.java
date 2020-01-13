@@ -64,16 +64,16 @@ public class ServiceConfigLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
-	public static int countByBySIAndGAC(long groupId, long serviceInfoId,
-		String govAgencyCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService()
-				   .countByBySIAndGAC(groupId, serviceInfoId, govAgencyCode);
-	}
-
 	public static long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return getService().countByGovAgency(keyword, govAgencyCode, groupId);
+	}
+
+	public static int countBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .countBySIAndGAC(groupId, serviceInfoId, govAgencyCode);
 	}
 
 	public static long countLucene(

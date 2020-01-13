@@ -59,18 +59,18 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
-	public int countByBySIAndGAC(long groupId, long serviceInfoId,
-		String govAgencyCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _serviceConfigLocalService.countByBySIAndGAC(groupId,
-			serviceInfoId, govAgencyCode);
-	}
-
-	@Override
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId) {
 		return _serviceConfigLocalService.countByGovAgency(keyword,
 			govAgencyCode, groupId);
+	}
+
+	@Override
+	public int countBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _serviceConfigLocalService.countBySIAndGAC(groupId,
+			serviceInfoId, govAgencyCode);
 	}
 
 	@Override
