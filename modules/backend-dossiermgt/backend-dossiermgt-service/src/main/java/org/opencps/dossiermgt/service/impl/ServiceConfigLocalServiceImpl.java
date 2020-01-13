@@ -646,6 +646,18 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return object;
 	}
 
+	@ThreadLocalCachable
+	public ServiceConfig findByBySIAndGAC(long groupId, long serviceInfoId, String govAgencyCode)
+			throws PortalException {
+		return serviceConfigPersistence.fetchByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+	}
+
+	@ThreadLocalCachable
+	public int countByBySIAndGAC(long groupId, long serviceInfoId, String govAgencyCode)
+			throws PortalException {
+		return serviceConfigPersistence.countByGID_SI_GAC(groupId, serviceInfoId, govAgencyCode);
+	}
+
 	public static final String CLASS_NAME = ServiceConfig.class.getName();
 
 }

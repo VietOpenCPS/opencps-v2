@@ -18,6 +18,13 @@ dependencies {
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
 	compileOnly group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 	
+	compileInclude name : "poi-4.0.1", transitive:false
+	compileInclude name : "poi-ooxml-4.0.1", transitive:false
+	compileInclude name : "poi-ooxml-schemas-4.0.1", transitive:false
+	compileInclude name : "xmlbeans-3.0.2", transitive:false
+	compileInclude name : "commons-collections4-4.1", transitive:false
+	compileInclude name : "commons-compress-1.18", transitive:false
+	
 	compileOnly project(":modules:backend-auth")
 	
 	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
@@ -37,4 +44,9 @@ dependencies {
 	
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")	
+}
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
 }

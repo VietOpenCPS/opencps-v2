@@ -4,4 +4,5 @@ public interface IMessageProcessor {
 	public void processRequest();
 	public void processInform();
 	public void process();
+	public void processInformDossier();
 }

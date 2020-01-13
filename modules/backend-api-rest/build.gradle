@@ -35,16 +35,15 @@ dependencies {
 	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-communication:backend-communication-service")
-	compileOnly project(":modules:backend-synchronization:backend-synchronization-api")
-	compileOnly project(":modules:backend-synchronization:backend-synchronization-service")
-	//compileOnly project(":modules:backend-deliverable:backend-deliverable-api")
-	//compileOnly project(":modules:backend-deliverable:backend-deliverable-service")
 	
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-service")
 	
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
+
+	compileOnly project(":modules:backend-feedback:backend-feedback-api")
+	compileOnly project(":modules:backend-feedback:backend-feedback-service")
 
 	compileOnly project(":modules:backend-auth")
 	// https://mvnrepository.com/artifact/uk.org.okapibarcode/okapibarcode
@@ -88,7 +87,7 @@ dependencies {
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
 
 	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
-
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 }
 
 repositories {

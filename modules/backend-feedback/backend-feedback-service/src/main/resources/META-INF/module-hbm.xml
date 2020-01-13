@@ -28,6 +28,7 @@
 		<property name="upvoteCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="userHasUpvoted" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="upvotedUsers" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="opinion" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="backend.feedback.model.impl.EvaluationImpl" table="opencps_evaluation">
 		<id name="evaluationId" type="long">

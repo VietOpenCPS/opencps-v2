@@ -24,4 +24,13 @@ public class ApplicantTerm {
 	public static final String PROFILE = "profile";
 	public static final String LOCK = "lock";
 
+	public static final int LOCKED = 0;
+	public static final int UNLOCKED = 1;
+	public static final int LOCKED_DOSSIER = 2;
+	
+	public static final String VERIFICATION = "verification";
+	
+	public static final String APPLICANTIDTYPE_CITIZEN = "citizen";
+	public static final String APPLICANTIDTYPE_BUSINESS = "business";
+	public static final String APPLICANTIDTYPE_ORGANIZATION = "organization";
 }

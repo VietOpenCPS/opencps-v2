@@ -65,7 +65,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(93);
+		StringBundler sb = new StringBundler(101);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -159,6 +159,14 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		sb.append(notViaPostalCount);
 		sb.append(", saturdayCount=");
 		sb.append(saturdayCount);
+		sb.append(", dossierOnline3Count=");
+		sb.append(dossierOnline3Count);
+		sb.append(", dossierOnline4Count=");
+		sb.append(dossierOnline4Count);
+		sb.append(", receiveDossierSatCount=");
+		sb.append(receiveDossierSatCount);
+		sb.append(", releaseDossierSatCount=");
+		sb.append(releaseDossierSatCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -277,6 +285,10 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		opencpsDossierStatisticImpl.setViaPostalCount(viaPostalCount);
 		opencpsDossierStatisticImpl.setNotViaPostalCount(notViaPostalCount);
 		opencpsDossierStatisticImpl.setSaturdayCount(saturdayCount);
+		opencpsDossierStatisticImpl.setDossierOnline3Count(dossierOnline3Count);
+		opencpsDossierStatisticImpl.setDossierOnline4Count(dossierOnline4Count);
+		opencpsDossierStatisticImpl.setReceiveDossierSatCount(receiveDossierSatCount);
+		opencpsDossierStatisticImpl.setReleaseDossierSatCount(releaseDossierSatCount);
 
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
@@ -367,6 +379,14 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		notViaPostalCount = objectInput.readInt();
 
 		saturdayCount = objectInput.readInt();
+
+		dossierOnline3Count = objectInput.readInt();
+
+		dossierOnline4Count = objectInput.readInt();
+
+		receiveDossierSatCount = objectInput.readInt();
+
+		releaseDossierSatCount = objectInput.readInt();
 	}
 
 	@Override
@@ -502,6 +522,14 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		objectOutput.writeInt(notViaPostalCount);
 
 		objectOutput.writeInt(saturdayCount);
+
+		objectOutput.writeInt(dossierOnline3Count);
+
+		objectOutput.writeInt(dossierOnline4Count);
+
+		objectOutput.writeInt(receiveDossierSatCount);
+
+		objectOutput.writeInt(releaseDossierSatCount);
 	}
 
 	public String uuid;
@@ -550,4 +578,8 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public int viaPostalCount;
 	public int notViaPostalCount;
 	public int saturdayCount;
+	public int dossierOnline3Count;
+	public int dossierOnline4Count;
+	public int receiveDossierSatCount;
+	public int releaseDossierSatCount;
 }

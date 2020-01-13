@@ -131,7 +131,7 @@ public interface DictcollectionInterface {
 
 	public boolean deleteAllDictGroup(long userId, long groupId, long dictCollectionId);
 
-	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
+	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
 			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException;
 
 	/**LGSP - START */
@@ -143,4 +143,6 @@ public interface DictcollectionInterface {
 
 	public JSONObject getDictItemsLGSP(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
+
+	public void updateDictItemGroupDB(long userId, long groupId, long dictGroupId, long dictItemId, String dictGroupName, ServiceContext serviceContext) throws NoSuchUserException;
 }

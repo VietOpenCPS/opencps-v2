@@ -8,4 +8,5 @@ Export-Package: \
 	org.opencps.adminconfig.model,\
 	org.opencps.adminconfig.service,\
 	org.opencps.adminconfig.service.persistence,\
-	backend.admin.config.whiteboard
+	backend.admin.config.whiteboard,\
+	backend.admin.config.service.util

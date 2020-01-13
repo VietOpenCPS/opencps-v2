@@ -72,6 +72,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.opencps.adminconfig.model.DynamicReport;
+import org.opencps.adminconfig.service.DynamicReportLocalService;
+import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -96,7 +99,6 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.DynamicReport;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessStep;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -104,12 +106,12 @@ import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
+import org.osgi.service.component.annotations.Reference;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -135,7 +137,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * the dossier local service.
 	 */
 	protected Log _log = LogFactoryUtil.getLog(DossierLocalServiceImpl.class);
-
+		
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier syncDossier(Dossier dossier)
 		throws PortalException {
@@ -6895,4 +6897,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.fetchByDO_NO(dossierNo);
 	}
+	
+	public List<Dossier> findByG_UID_DS(long groupId, long userId, String dossierStatus) {
+		return dossierPersistence.findByG_UID_DS(groupId, userId, dossierStatus);
+	}
+	
+	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
+		return dossierPersistence.countByG_UID_DS(groupId, userId, dossierStatus);
+	}	
 }

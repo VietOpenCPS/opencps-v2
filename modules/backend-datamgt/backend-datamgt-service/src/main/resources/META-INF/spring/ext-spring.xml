@@ -10,6 +10,4 @@
 	<bean class="org.opencps.datamgt.service.indexer.HolidayIndexer" id="org.opencps.datamgt.service.indexer.HolidayIndexer" />
 	<bean class="org.opencps.datamgt.service.indexer.WorkTimeIndexer" id="org.opencps.datamgt.service.indexer.WorkTimeIndexer" />
 	
-	<!-- 15-12-2017 thanhnv: move Comment from mobilink -->
-	<bean class="org.opencps.datamgt.service.indexer.CommentIndexer" id="org.opencps.datamgt.service.indexer.CommentIndexer" />
 </beans>

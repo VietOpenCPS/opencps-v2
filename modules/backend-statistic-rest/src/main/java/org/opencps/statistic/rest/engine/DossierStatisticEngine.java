@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,6 +44,12 @@ import java.util.Map;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
@@ -88,6 +95,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
+	private static final String GROUP_SBN = "SBN";
+	private static final String GROUP_QUAN_HUYEN = "QUAN_HUYEN";
+	private static final String GROUP_XA_PHUONG = "XA_PHUONG";
+	
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		_log.debug("START STATISTIC DOSSIER: " + isRunningDossier);
@@ -116,8 +127,67 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
-			
 			for (Group site : sites) {
+				StringBuilder groupGovAgency = new StringBuilder();
+				List<String> lstGroupGovs = new ArrayList<String>();
+
+				DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_SBN, site.getGroupId());
+				List<DictItemGroup> lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+				List<DictItem> lstGovs = new ArrayList<DictItem>();
+				for (DictItemGroup dig : lstDigs) {
+					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+					lstGovs.add(di);
+				}
+				for (DictItem di : lstGovs) {
+					if (!"".contentEquals(groupGovAgency.toString())) {
+						groupGovAgency.append(StringPool.COMMA);
+					}
+					groupGovAgency.append(di.getItemCode());
+				}
+				if (!"".contentEquals(groupGovAgency.toString())) {
+					lstGroupGovs.add(groupGovAgency.toString());					
+				}
+
+				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
+				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+				lstGovs = new ArrayList<DictItem>();
+				StringBuilder groupGovAgencyQH = new StringBuilder();
+				
+				for (DictItemGroup dig : lstDigs) {
+					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+					lstGovs.add(di);
+				}
+				for (DictItem di : lstGovs) {
+					if (!"".contentEquals(groupGovAgencyQH.toString())) {
+						groupGovAgencyQH.append(StringPool.COMMA);
+					}
+					groupGovAgencyQH.append(di.getItemCode());
+				}
+				if (!"".contentEquals(groupGovAgencyQH.toString())) {
+					lstGroupGovs.add(groupGovAgencyQH.toString());					
+				}
+				
+				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
+				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+				lstGovs = new ArrayList<DictItem>();
+				StringBuilder groupGovAgencyXP = new StringBuilder();
+				
+				for (DictItemGroup dig : lstDigs) {
+					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+					lstGovs.add(di);
+				}
+				for (DictItem di : lstGovs) {
+					if (!"".contentEquals(groupGovAgencyXP.toString())) {
+						groupGovAgencyXP.append(StringPool.COMMA);
+					}
+					groupGovAgencyXP.append(di.getItemCode());
+				}
+				if (!"".contentEquals(groupGovAgencyXP.toString())) {
+					lstGroupGovs.add(groupGovAgencyXP.toString());					
+				}
+				for (String groupGovAgencyCode : lstGroupGovs) {
+					_log.debug("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 				
@@ -180,7 +250,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
-						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
 						List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 						if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
@@ -196,7 +266,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							try {
 //								Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 								processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-									engineUpdateAction, serviceDomainResponse, calculateData);
+									engineUpdateAction, serviceDomainResponse, calculateData, lstGroupGovs);
 								calculateDatas.put(yearCurrent, calculateData);
 							}
 							catch (Exception e) {
@@ -208,7 +278,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
-								engineUpdateAction, serviceDomainResponse, calculateData);
+								engineUpdateAction, serviceDomainResponse, calculateData, lstGroupGovs);
 							calculateDatas.put(yearCurrent, calculateData);
 						}
 						catch (Exception e) {
@@ -233,7 +303,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (flagLastYear) {
 						try {
 							processUpdateStatistic(site.getGroupId(), lastMonth, lastYear, payload,
-								engineUpdateAction, serviceDomainResponse, calculateLastData);
+								engineUpdateAction, serviceDomainResponse, calculateLastData, lstGroupGovs);
 							calculateDatas.put(lastYear, calculateLastData);
 						}
 						catch (Exception e) {
@@ -356,16 +426,16 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				//Current year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear());
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs);
 				// Last year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs);
 
 //				3 year before
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear2);
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear3);
 				//Caculate statistic all year
-				_log.info("START STATISTIC ALL YEAR: ");
-				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0);
+//				_log.info("START STATISTIC ALL YEAR: ");
+				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs);
 			}
 	
 			
@@ -386,7 +456,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	@SuppressWarnings("unchecked")
 	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
 			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
-			Map<Integer, Map<String, DossierStatisticData>> calculateData)
+			Map<Integer, Map<String, DossierStatisticData>> calculateData, List<String> lstGroupGovs)
 			throws Exception {
 //		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 		
@@ -462,7 +532,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 						Date firstDay = StatisticUtils.getFirstDay(month, year);
 						Date lastDay = StatisticUtils.getLastDay(month, year);
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
 //						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 //						
 //						statisticEngineUpdate.updateStatisticData(statisticData);	
@@ -606,13 +676,18 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
-				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
-					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
-				}
-				if ("35818".contentEquals(doc.get(DossierTerm.GROUP_ID))) {
-					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
-				}
+//				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+//					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
+//				}
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
+				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
+					try {
+						model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
+					}
+					catch (Exception e) {
+						
+					}
+				}
 				
 				dossierData.add(model);
 			}
@@ -683,10 +758,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false);
+					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
 	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 	//					
 	//					statisticEngineUpdate.updateStatisticData(statisticData);	
+					_log.debug("PUT MONTH: " + month + ", " + groupId);
 					calculateData.put(month, statisticData);
 //					}
 //					else {
@@ -750,7 +826,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

@@ -113,7 +113,11 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			{ "system", Types.VARCHAR },
 			{ "viaPostalCount", Types.INTEGER },
 			{ "notViaPostalCount", Types.INTEGER },
-			{ "saturdayCount", Types.INTEGER }
+			{ "saturdayCount", Types.INTEGER },
+			{ "dossierOnline3Count", Types.INTEGER },
+			{ "dossierOnline4Count", Types.INTEGER },
+			{ "receiveDossierSatCount", Types.INTEGER },
+			{ "releaseDossierSatCount", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -164,9 +168,13 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		TABLE_COLUMNS_MAP.put("viaPostalCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("notViaPostalCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("saturdayCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("dossierOnline3Count", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("dossierOnline4Count", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("receiveDossierSatCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("releaseDossierSatCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(75) null,groupAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(75) null,groupAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsDossierStatistic.dossierStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_statistic.dossierStatisticId ASC";
@@ -279,6 +287,10 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		attributes.put("viaPostalCount", getViaPostalCount());
 		attributes.put("notViaPostalCount", getNotViaPostalCount());
 		attributes.put("saturdayCount", getSaturdayCount());
+		attributes.put("dossierOnline3Count", getDossierOnline3Count());
+		attributes.put("dossierOnline4Count", getDossierOnline4Count());
+		attributes.put("receiveDossierSatCount", getReceiveDossierSatCount());
+		attributes.put("releaseDossierSatCount", getReleaseDossierSatCount());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -563,6 +575,34 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 
 		if (saturdayCount != null) {
 			setSaturdayCount(saturdayCount);
+		}
+
+		Integer dossierOnline3Count = (Integer)attributes.get(
+				"dossierOnline3Count");
+
+		if (dossierOnline3Count != null) {
+			setDossierOnline3Count(dossierOnline3Count);
+		}
+
+		Integer dossierOnline4Count = (Integer)attributes.get(
+				"dossierOnline4Count");
+
+		if (dossierOnline4Count != null) {
+			setDossierOnline4Count(dossierOnline4Count);
+		}
+
+		Integer receiveDossierSatCount = (Integer)attributes.get(
+				"receiveDossierSatCount");
+
+		if (receiveDossierSatCount != null) {
+			setReceiveDossierSatCount(receiveDossierSatCount);
+		}
+
+		Integer releaseDossierSatCount = (Integer)attributes.get(
+				"releaseDossierSatCount");
+
+		if (releaseDossierSatCount != null) {
+			setReleaseDossierSatCount(releaseDossierSatCount);
 		}
 	}
 
@@ -1204,6 +1244,46 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	}
 
 	@Override
+	public int getDossierOnline3Count() {
+		return _dossierOnline3Count;
+	}
+
+	@Override
+	public void setDossierOnline3Count(int dossierOnline3Count) {
+		_dossierOnline3Count = dossierOnline3Count;
+	}
+
+	@Override
+	public int getDossierOnline4Count() {
+		return _dossierOnline4Count;
+	}
+
+	@Override
+	public void setDossierOnline4Count(int dossierOnline4Count) {
+		_dossierOnline4Count = dossierOnline4Count;
+	}
+
+	@Override
+	public int getReceiveDossierSatCount() {
+		return _receiveDossierSatCount;
+	}
+
+	@Override
+	public void setReceiveDossierSatCount(int receiveDossierSatCount) {
+		_receiveDossierSatCount = receiveDossierSatCount;
+	}
+
+	@Override
+	public int getReleaseDossierSatCount() {
+		return _releaseDossierSatCount;
+	}
+
+	@Override
+	public void setReleaseDossierSatCount(int releaseDossierSatCount) {
+		_releaseDossierSatCount = releaseDossierSatCount;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				OpencpsDossierStatistic.class.getName()));
@@ -1286,6 +1366,10 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		opencpsDossierStatisticImpl.setViaPostalCount(getViaPostalCount());
 		opencpsDossierStatisticImpl.setNotViaPostalCount(getNotViaPostalCount());
 		opencpsDossierStatisticImpl.setSaturdayCount(getSaturdayCount());
+		opencpsDossierStatisticImpl.setDossierOnline3Count(getDossierOnline3Count());
+		opencpsDossierStatisticImpl.setDossierOnline4Count(getDossierOnline4Count());
+		opencpsDossierStatisticImpl.setReceiveDossierSatCount(getReceiveDossierSatCount());
+		opencpsDossierStatisticImpl.setReleaseDossierSatCount(getReleaseDossierSatCount());
 
 		opencpsDossierStatisticImpl.resetOriginalValues();
 
@@ -1543,12 +1627,20 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 
 		opencpsDossierStatisticCacheModel.saturdayCount = getSaturdayCount();
 
+		opencpsDossierStatisticCacheModel.dossierOnline3Count = getDossierOnline3Count();
+
+		opencpsDossierStatisticCacheModel.dossierOnline4Count = getDossierOnline4Count();
+
+		opencpsDossierStatisticCacheModel.receiveDossierSatCount = getReceiveDossierSatCount();
+
+		opencpsDossierStatisticCacheModel.releaseDossierSatCount = getReleaseDossierSatCount();
+
 		return opencpsDossierStatisticCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(93);
+		StringBundler sb = new StringBundler(101);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1642,6 +1734,14 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		sb.append(getNotViaPostalCount());
 		sb.append(", saturdayCount=");
 		sb.append(getSaturdayCount());
+		sb.append(", dossierOnline3Count=");
+		sb.append(getDossierOnline3Count());
+		sb.append(", dossierOnline4Count=");
+		sb.append(getDossierOnline4Count());
+		sb.append(", receiveDossierSatCount=");
+		sb.append(getReceiveDossierSatCount());
+		sb.append(", releaseDossierSatCount=");
+		sb.append(getReleaseDossierSatCount());
 		sb.append("}");
 
 		return sb.toString();
@@ -1649,7 +1749,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(142);
+		StringBundler sb = new StringBundler(154);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.statistic.model.OpencpsDossierStatistic");
@@ -1839,6 +1939,22 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			"<column><column-name>saturdayCount</column-name><column-value><![CDATA[");
 		sb.append(getSaturdayCount());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierOnline3Count</column-name><column-value><![CDATA[");
+		sb.append(getDossierOnline3Count());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierOnline4Count</column-name><column-value><![CDATA[");
+		sb.append(getDossierOnline4Count());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>receiveDossierSatCount</column-name><column-value><![CDATA[");
+		sb.append(getReceiveDossierSatCount());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>releaseDossierSatCount</column-name><column-value><![CDATA[");
+		sb.append(getReleaseDossierSatCount());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1912,6 +2028,10 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	private int _viaPostalCount;
 	private int _notViaPostalCount;
 	private int _saturdayCount;
+	private int _dossierOnline3Count;
+	private int _dossierOnline4Count;
+	private int _receiveDossierSatCount;
+	private int _releaseDossierSatCount;
 	private long _columnBitmask;
 	private OpencpsDossierStatistic _escapedModel;
 }

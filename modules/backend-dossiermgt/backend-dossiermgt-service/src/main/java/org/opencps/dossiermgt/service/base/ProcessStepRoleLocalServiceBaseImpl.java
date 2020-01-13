@@ -70,7 +70,6 @@ import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 import org.opencps.dossiermgt.service.persistence.DossierSyncPersistence;
 import org.opencps.dossiermgt.service.persistence.DossierTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
-import org.opencps.dossiermgt.service.persistence.DynamicReportPersistence;
 import org.opencps.dossiermgt.service.persistence.EFormPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
@@ -1300,44 +1299,6 @@ public abstract class ProcessStepRoleLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the dynamic report local service.
-	 *
-	 * @return the dynamic report local service
-	 */
-	public org.opencps.dossiermgt.service.DynamicReportLocalService getDynamicReportLocalService() {
-		return dynamicReportLocalService;
-	}
-
-	/**
-	 * Sets the dynamic report local service.
-	 *
-	 * @param dynamicReportLocalService the dynamic report local service
-	 */
-	public void setDynamicReportLocalService(
-		org.opencps.dossiermgt.service.DynamicReportLocalService dynamicReportLocalService) {
-		this.dynamicReportLocalService = dynamicReportLocalService;
-	}
-
-	/**
-	 * Returns the dynamic report persistence.
-	 *
-	 * @return the dynamic report persistence
-	 */
-	public DynamicReportPersistence getDynamicReportPersistence() {
-		return dynamicReportPersistence;
-	}
-
-	/**
-	 * Sets the dynamic report persistence.
-	 *
-	 * @param dynamicReportPersistence the dynamic report persistence
-	 */
-	public void setDynamicReportPersistence(
-		DynamicReportPersistence dynamicReportPersistence) {
-		this.dynamicReportPersistence = dynamicReportPersistence;
-	}
-
-	/**
 	 * Returns the e form local service.
 	 *
 	 * @return the e form local service
@@ -2528,10 +2489,6 @@ public abstract class ProcessStepRoleLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.DossierUserLocalService dossierUserLocalService;
 	@BeanReference(type = DossierUserPersistence.class)
 	protected DossierUserPersistence dossierUserPersistence;
-	@BeanReference(type = org.opencps.dossiermgt.service.DynamicReportLocalService.class)
-	protected org.opencps.dossiermgt.service.DynamicReportLocalService dynamicReportLocalService;
-	@BeanReference(type = DynamicReportPersistence.class)
-	protected DynamicReportPersistence dynamicReportPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.EFormLocalService.class)
 	protected org.opencps.dossiermgt.service.EFormLocalService eFormLocalService;
 	@BeanReference(type = EFormPersistence.class)

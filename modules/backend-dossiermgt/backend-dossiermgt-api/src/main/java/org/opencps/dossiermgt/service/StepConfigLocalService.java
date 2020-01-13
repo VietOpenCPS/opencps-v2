@@ -193,6 +193,8 @@ public interface StepConfigLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public StepConfig fetchStepConfigByUuidAndGroupId(String uuid, long groupId);
 
+	public List<StepConfig> findByG_SCS(long groupId, String[] stepCodeArr);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

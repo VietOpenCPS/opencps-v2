@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,9 +16,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.CacheControl;
@@ -44,7 +45,7 @@ import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.exception.NoSuchDossierTemplateException;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -88,8 +89,10 @@ public class OneGateControllerImpl implements OneGateController {
 					break;
 				}
 			}
+			long startTime = System.currentTimeMillis();
 			
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+			
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
 			if (Validator.isNotNull(public_) && !Boolean.parseBoolean(public_)) {
@@ -103,10 +106,17 @@ public class OneGateControllerImpl implements OneGateController {
 					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
 				}
 			}
-			
+			long endTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			Map<Long, List<ProcessOption>> mapProcessOptions = new HashMap<>();
-			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			startTime = System.currentTimeMillis();
+			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findByGroup(groupId);
+			endTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
+			long[] spArr = new long[lstOptions.size()];
+			int count = 0;
+			
 			for (ProcessOption po : lstOptions) {
 				if (mapProcessOptions.get(po.getServiceConfigId()) == null) {
 					List<ProcessOption> lstPos = new ArrayList<>();
@@ -117,11 +127,16 @@ public class OneGateControllerImpl implements OneGateController {
 					List<ProcessOption> lstPos = mapProcessOptions.get(po.getServiceConfigId());
 					lstPos.add(po);
 				}
+				spArr[count++] = po.getServiceProcessId();
 			}
+			
+			endTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
-			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+//			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.findBySPS(spArr);
 			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
 			for (ServiceProcessRole spr : lstPRoles) {
 				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
@@ -134,12 +149,14 @@ public class OneGateControllerImpl implements OneGateController {
 				
 				lstTempSprs.add(spr);
 			}
-			
+			endTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
 			Map<Long, DossierTemplate> mapTemplates = new HashMap<Long, DossierTemplate>();
 			for (DossierTemplate dt : lstTemplates) {
 				mapTemplates.put(dt.getDossierTemplateId(), dt);
 			}
+			endTime = System.currentTimeMillis();
 			for (ServiceConfig serviceConfig : serviceConfigs) {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
@@ -173,7 +190,6 @@ public class OneGateControllerImpl implements OneGateController {
 								long serviceProcessId = processOption.getServiceProcessId();
 //								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 								List<ServiceProcessRole> lstRoles = mapPRoles.get(serviceProcessId);
-																
 								boolean hasPermission = false;
 		//						_log.info("List role: " + lstRoles);
 								if (lstRoles != null && lstRoles.size() > 0) {
@@ -248,6 +264,7 @@ public class OneGateControllerImpl implements OneGateController {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+
 
 	}
 
@@ -433,6 +450,62 @@ public class OneGateControllerImpl implements OneGateController {
 //			}
 
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getGovAgencies(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+	
+		try {
+			List<ServiceConfig> lstConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+			Map<String, String> mapConfigs = new HashMap<String, String>();
+			Map<String, Set<Long>> mapSis = new HashMap<String, Set<Long>>();
+			
+			for (ServiceConfig sc : lstConfigs) {
+				mapConfigs.put(sc.getGovAgencyCode(), sc.getGovAgencyName());
+				Set<Long> sInfos = new HashSet<Long>();
+				if (mapSis.containsKey(sc.getGovAgencyCode())) {
+					sInfos = mapSis.get(sc.getGovAgencyCode());
+				}
+				else {
+					mapSis.put(sc.getGovAgencyCode(), sInfos);
+				}
+				if (!sInfos.contains(sc.getServiceInfoId())) {
+					sInfos.add(sc.getServiceInfoId());
+				}
+			}
+			Map<String, Integer> countConfigs = new HashMap<String, Integer>();
+			for (ServiceConfig sc : lstConfigs) {
+				if (mapSis.containsKey(sc.getGovAgencyCode())) {
+					countConfigs.put(sc.getGovAgencyCode(), mapSis.get(sc.getGovAgencyCode()).size());
+				}
+			}
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			int total = 0;
+			
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			for (String govAgencyCode : mapConfigs.keySet()) {
+				JSONObject govObj = JSONFactoryUtil.createJSONObject();
+				govObj.put(ServiceConfigTerm.GOVAGENCY_NAME, mapConfigs.get(govAgencyCode));
+				govObj.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+				if (countConfigs.containsKey(govAgencyCode)) {
+					govObj.put("count", countConfigs.get(govAgencyCode));
+				}
+				else {
+					govObj.put("count", 0);
+				}
+				total += govObj.getInt("count");
+				results.put(govObj);
+			}
+			result.put("total", total);
+			result.put("data", results);
+			
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

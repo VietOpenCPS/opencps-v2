@@ -56,9 +56,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkExsitSystem(
 		long groupId, int month, int year, String govAgency, String domain,
-		String system) {
+		String system, String groupGovAgencyCode) {
 		return _opencpsDossierStatisticLocalService.checkExsitSystem(groupId,
-			month, year, govAgency, domain, system);
+			month, year, govAgency, domain, system, groupGovAgencyCode);
 	}
 
 	@Override
@@ -109,7 +109,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount)
+		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
+		int dossierOnline4Count, int receiveDossierSatCount,
+		int releaseDossierSatCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.createOnlyStatistic(companyId,
@@ -121,7 +123,8 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
 			domainCode, domainName, reporting, onegateCount, outsideCount,
-			insideCount, viaPostalCount, saturdayCount);
+			insideCount, viaPostalCount, saturdayCount, dossierOnline3Count,
+			dossierOnline4Count, receiveDossierSatCount, releaseDossierSatCount);
 	}
 
 	/**
@@ -176,7 +179,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount)
+		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
+		int dossierOnline4Count, int receiveDossierSatCount,
+		int releaseDossierSatCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.createOrUpdateStatistic(companyId,
@@ -188,7 +193,40 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			pausingCount, ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
 			domainCode, domainName, reporting, onegateCount, outsideCount,
-			insideCount, viaPostalCount, saturdayCount);
+			insideCount, viaPostalCount, saturdayCount, dossierOnline3Count,
+			dossierOnline4Count, receiveDossierSatCount, releaseDossierSatCount);
+	}
+
+	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic createOrUpdateStatistic(
+		long companyId, long groupId, long userId, String userName, int month,
+		int year, String system, int totalCount, int deniedCount,
+		int cancelledCount, int processCount, int remainingCount,
+		int receivedCount, int onlineCount, int releaseCount, int betimesCount,
+		int ontimeCount, int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, String groupGovAgencyCode,
+		boolean reporting, int onegateCount, int outsideCount, int insideCount,
+		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
+		int dossierOnline4Count, int receiveDossierSatCount,
+		int releaseDossierSatCount)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _opencpsDossierStatisticLocalService.createOrUpdateStatistic(companyId,
+			groupId, userId, userName, month, year, system, totalCount,
+			deniedCount, cancelledCount, processCount, remainingCount,
+			receivedCount, onlineCount, releaseCount, betimesCount,
+			ontimeCount, overtimeCount, doneCount, releasingCount,
+			unresolvedCount, processingCount, undueCount, overdueCount,
+			pausingCount, ontimePercentage, overtimeInside, overtimeOutside,
+			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
+			domainCode, domainName, groupGovAgencyCode, reporting,
+			onegateCount, outsideCount, insideCount, viaPostalCount,
+			saturdayCount, dossierOnline3Count, dossierOnline4Count,
+			receiveDossierSatCount, releaseDossierSatCount);
 	}
 
 	/**
@@ -311,6 +349,14 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return _opencpsDossierStatisticLocalService.dynamicQueryCount(dynamicQuery,
 			projection);
+	}
+
+	@Override
+	public org.opencps.statistic.model.OpencpsDossierStatistic fetchByG_M_Y_G_D(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode) {
+		return _opencpsDossierStatisticLocalService.fetchByG_M_Y_G_D(groupId,
+			month, year, govAgencyCode, domainCode);
 	}
 
 	@Override
@@ -614,7 +660,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
 		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount)
+		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
+		int dossierOnline4Count, int receiveDossierSatCount,
+		int releaseDossierSatCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _opencpsDossierStatisticLocalService.updateOnlyStatistic(dossierStatistic,
@@ -626,7 +674,8 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			pausingCount, ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
 			domainCode, domainName, reporting, onegateCount, outsideCount,
-			insideCount, viaPostalCount, saturdayCount);
+			insideCount, viaPostalCount, saturdayCount, dossierOnline3Count,
+			dossierOnline4Count, receiveDossierSatCount, releaseDossierSatCount);
 	}
 
 	/**
@@ -652,6 +701,8 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, int viaPostalCount, int saturdayCount,
+		int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
 		int outsideCount, int insideCount)
@@ -665,8 +716,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 			unresolvedCount, processingCount, undueCount, overdueCount,
 			pausingCount, ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, viaPostalCount, saturdayCount,
-			govAgencyCode, govAgencyName, domainCode, domainName, reporting,
-			onegateCount, outsideCount, insideCount);
+			dossierOnline3Count, dossierOnline4Count, receiveDossierSatCount,
+			releaseDossierSatCount, govAgencyCode, govAgencyName, domainCode,
+			domainName, reporting, onegateCount, outsideCount, insideCount);
 	}
 
 	@Override

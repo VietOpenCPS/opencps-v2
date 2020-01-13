@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean class="org.opencps.synchronization.service.indexer.DictCollectionTempIndexer" id="org.opencps.synchronization.service.indexer.DictCollectionTempIndexer" />
-	<bean class="org.opencps.synchronization.service.indexer.DictGroupTempIndexer" id="org.opencps.synchronization.service.indexer.DictGroupTempIndexer" />
-	<bean class="org.opencps.synchronization.service.indexer.DictItemGroupTempIndexer" id="org.opencps.synchronization.service.indexer.DictItemGroupTempIndexer" />
-	<bean class="org.opencps.synchronization.service.indexer.DictItemTempIndexer" id="org.opencps.synchronization.service.indexer.DictItemTempIndexer" />	
-</beans>

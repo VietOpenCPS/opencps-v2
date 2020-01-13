@@ -45,7 +45,7 @@ public class DossierStatisticFinderServiceImpl implements DossierStatisticFinder
 		List<OpencpsDossierStatistic> dossierStatistics = OpencpsDossierStatisticLocalServiceUtil
 				.searchDossierStatisticSystem(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
 						dossierStatisticRequest.getYear(), dossierStatisticRequest.getDomain(),
-						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getSystem(), "",
+						dossierStatisticRequest.getGovAgencyCode(), dossierStatisticRequest.getSystem(), dossierStatisticRequest.getGroupAgencyCode(),
 						dossierStatisticRequest.getStart(), dossierStatisticRequest.getEnd());
 
 		return DossierStatisticConverter.getDossierStatisticResponse().convert(dossierStatistics);

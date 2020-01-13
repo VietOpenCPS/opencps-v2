@@ -372,6 +372,27 @@ public interface CommentModel extends BaseModel<Comment>, GroupedModel,
 	 */
 	public void setUpvotedUsers(String upvotedUsers);
 
+	/**
+	 * Returns the opinion of this comment.
+	 *
+	 * @return the opinion of this comment
+	 */
+	public boolean getOpinion();
+
+	/**
+	 * Returns <code>true</code> if this comment is opinion.
+	 *
+	 * @return <code>true</code> if this comment is opinion; <code>false</code> otherwise
+	 */
+	public boolean isOpinion();
+
+	/**
+	 * Sets whether this comment is opinion.
+	 *
+	 * @param opinion the opinion of this comment
+	 */
+	public void setOpinion(boolean opinion);
+
 	@Override
 	public boolean isNew();
 

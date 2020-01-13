@@ -603,6 +603,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		Date now = new Date();
 		// valdiate(serviceCode, serviceName, administrationCode, domainCode, groupId);
 		ServiceInfo serviceInfo = serviceInfoPersistence.fetchBySC_GI(serviceCode, groupId);
+		_log.debug("SERVICE CODE: " + serviceCode + ", " + serviceInfo);
 		if (serviceInfo != null) {
 			serviceInfo.setModifiedDate(now);
 			// Other field

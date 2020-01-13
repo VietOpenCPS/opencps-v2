@@ -42,11 +42,11 @@ import org.opencps.api.comment.model.CommentTopList;
 import org.opencps.api.controller.CommentManagement;
 import org.opencps.api.controller.util.CommentUtils;
 import org.opencps.api.error.model.ErrorMsg;
-import org.opencps.datamgt.constants.CommentTerm;
-import org.opencps.datamgt.model.Comment;
-import org.opencps.datamgt.service.CommentLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.feedback.constants.CommentTerm;
+import backend.feedback.model.Comment;
+import backend.feedback.service.CommentLocalServiceUtil;
 
 /**
  * @author trungnt

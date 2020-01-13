@@ -48,7 +48,7 @@ public class StatisticSumYearCalcular {
 	private OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyRestFacadeImpl();
 
 	/* Tính theo năm */
-	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem)
+	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
@@ -59,7 +59,7 @@ public class StatisticSumYearCalcular {
 		dossierStatisticRequest.setGroupId(groupId);
 		dossierStatisticRequest.setStart(QueryUtil.ALL_POS);
 		dossierStatisticRequest.setEnd(QueryUtil.ALL_POS);
-
+		StringBuilder groupAgencyCode = new StringBuilder();
 		/** #1 */
 		/* case domain = null && agency = null && system = null */
 		if (!isDomain && !isAgency && !isSystem) {
@@ -86,7 +86,7 @@ public class StatisticSumYearCalcular {
 								DossierStatisticData latestMonthStatisticData = source.get(0);
 
 								try {
-									getDetailData(companyId, groupId, 0, year, null, null, null, null, null, source,
+									getDetailData(companyId, groupId, 0, year, null, null, null, null, null, null, source,
 											latestMonthStatisticData);
 								} catch (SystemException e) {
 									_log.error(e);
@@ -134,7 +134,7 @@ public class StatisticSumYearCalcular {
 								DossierStatisticData latestMonthStatisticData = source.get(0);
 	
 								try {
-									getDetailData(companyId, groupId, 0, year, null, null, null, null, strSystem, source,
+									getDetailData(companyId, groupId, 0, year, null, null, null, null, strSystem, null, source,
 											latestMonthStatisticData);
 								} catch (SystemException e) {
 									_log.error(e);
@@ -213,7 +213,7 @@ public class StatisticSumYearCalcular {
 
 									try {
 										getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
-												data.getItemName(), null, source2, latestMonthStatisticData);
+												data.getItemName(), null, null, source2, latestMonthStatisticData);
 									} catch (SystemException e) {
 										_log.error(e);
 									} catch (PortalException e) {
@@ -266,7 +266,7 @@ public class StatisticSumYearCalcular {
 
 								try {
 									getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-											domainResponse.getItemName(), null, null, null, source,
+											domainResponse.getItemName(), null, null, null, null, source,
 											latestMonthStatisticData);
 								} catch (SystemException e) {
 									_log.error(e);
@@ -350,7 +350,7 @@ public class StatisticSumYearCalcular {
 
 										try {
 											getDetailData(companyId, groupId, 0, year, null, null, data.getItemCode(),
-													data.getItemName(), strSystem, source2, latestMonthStatisticData);
+													data.getItemName(), strSystem, null, source2, latestMonthStatisticData);
 										} catch (SystemException e) {
 											_log.error(e);
 										} catch (PortalException e) {
@@ -404,7 +404,7 @@ public class StatisticSumYearCalcular {
 
 										try {
 											getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
-													domainResponse.getItemName(), null, null, strSystem, source2,
+													domainResponse.getItemName(), null, null, strSystem, null, source2,
 													latestMonthStatisticData);
 										} catch (SystemException e) {
 											_log.error(e);
@@ -491,7 +491,7 @@ public class StatisticSumYearCalcular {
 											try {
 												getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
 														domainResponse.getItemName(), data.getItemCode(),
-														data.getItemName(), null, source2, latestMonthStatisticData);
+														data.getItemName(), null, null, source2, latestMonthStatisticData);
 											} catch (SystemException e) {
 												_log.error(e);
 											} catch (PortalException e) {
@@ -584,7 +584,7 @@ public class StatisticSumYearCalcular {
 												try {
 													getDetailData(companyId, groupId, 0, year, domainResponse.getItemCode(),
 															domainResponse.getItemName(), data.getItemCode(),
-															data.getItemName(), strSystem, source2, latestMonthStatisticData);
+															data.getItemName(), strSystem, null, source2, latestMonthStatisticData);
 												} catch (SystemException e) {
 													_log.error(e);
 												} catch (PortalException e) {
@@ -606,11 +606,49 @@ public class StatisticSumYearCalcular {
 
 		}
 
+		for (String gc : lstGroupGovs) {
+			try {
+				dossierStatisticRequest.setDomain(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setGroupAgencyCode(gc.toString());
+				
+				//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+
+				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+						.finderDossierStatistics(dossierStatisticRequest);
+				
+				if (dossierStatisticResponse != null) {
+					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+
+					dossierStatisticData.ifPresent(source -> {
+						if (source.size() > 0) {
+							
+							//LOG.info("***DATA****" + source.size());
+							DossierStatisticData latestMonthStatisticData = source.get(0);
+
+							try {
+								getDetailData(companyId, groupId, 0, year, null, null, null, null, null, gc.toString(), source,
+										latestMonthStatisticData);
+							} catch (SystemException e) {
+								_log.error(e);
+							} catch (PortalException e) {
+								_log.error(e);
+							}
+						}
+					});
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}					
 	}
 
 	/* Caculate all year */
 	public void filterSumAllYear(long companyId, long groupId, int month, boolean isDomain, boolean isAgency,
-			boolean isSystem) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+			boolean isSystem, List<String> lstGroupGovs) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
 				DossierStatisticConstants.STATISTIC_PROTOCOL);
@@ -651,7 +689,7 @@ public class StatisticSumYearCalcular {
 							DossierStatisticData latestMonthStatisticData = source.get(0);
 
 							try {
-								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, source,
+								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, null, source,
 										latestMonthStatisticData);
 							} catch (SystemException e) {
 								_log.error(e);
@@ -700,7 +738,7 @@ public class StatisticSumYearCalcular {
 								_log.info("latestMonthStatisticData: "+latestMonthStatisticData);
 
 								try {
-									getDetailData(companyId, groupId, 0, 0, null, null, null, null, strSystem, source,
+									getDetailData(companyId, groupId, 0, 0, null, null, null, null, strSystem, null, source,
 											latestMonthStatisticData);
 								} catch (SystemException e) {
 									_log.error(e);
@@ -779,7 +817,7 @@ public class StatisticSumYearCalcular {
 
 									try {
 										getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
-												data.getItemName(), null, source2, latestMonthStatisticData);
+												data.getItemName(), null, null, source2, latestMonthStatisticData);
 									} catch (SystemException e) {
 										_log.error(e);
 									} catch (PortalException e) {
@@ -832,7 +870,7 @@ public class StatisticSumYearCalcular {
 
 								try {
 									getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-											domainResponse.getItemName(), null, null, null, source,
+											domainResponse.getItemName(), null, null, null, null, source,
 											latestMonthStatisticData);
 								} catch (SystemException e) {
 									_log.error(e);
@@ -916,7 +954,7 @@ public class StatisticSumYearCalcular {
 
 										try {
 											getDetailData(companyId, groupId, 0, 0, null, null, data.getItemCode(),
-													data.getItemName(), strSystem, source2, latestMonthStatisticData);
+													data.getItemName(), strSystem, null, source2, latestMonthStatisticData);
 										} catch (SystemException e) {
 											_log.error(e);
 										} catch (PortalException e) {
@@ -970,7 +1008,7 @@ public class StatisticSumYearCalcular {
 
 										try {
 											getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
-													domainResponse.getItemName(), null, null, strSystem, source2,
+													domainResponse.getItemName(), null, null, strSystem, null, source2,
 													latestMonthStatisticData);
 										} catch (SystemException e) {
 											_log.error(e);
@@ -1057,7 +1095,7 @@ public class StatisticSumYearCalcular {
 											try {
 												getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
 														domainResponse.getItemName(), data.getItemCode(),
-														data.getItemName(), null, source2, latestMonthStatisticData);
+														data.getItemName(), null, null, source2, latestMonthStatisticData);
 											} catch (SystemException e) {
 												_log.error(e);
 											} catch (PortalException e) {
@@ -1151,7 +1189,7 @@ public class StatisticSumYearCalcular {
 												try {
 													getDetailData(companyId, groupId, 0, 0, domainResponse.getItemCode(),
 															domainResponse.getItemName(), data.getItemCode(),
-															data.getItemName(), strSystem, source2,
+															data.getItemName(), strSystem, null, source2,
 															latestMonthStatisticData);
 												} catch (SystemException e) {
 													_log.error(e);
@@ -1169,6 +1207,49 @@ public class StatisticSumYearCalcular {
 					}
 				});
 			}
+		}
+		
+		//Each group gov agency
+		for (String gc : lstGroupGovs) {
+			try {
+				dossierStatisticRequest.setDomain(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
+				dossierStatisticRequest.setGroupAgencyCode(gc);
+				
+				// DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+
+				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+						.finderDossierStatistics(dossierStatisticRequest);
+				
+//				_log.info("dossierStatisticResponse2222: "+dossierStatisticResponse);
+				//_log.info("dossierStatisticResponse111: "+JSONFactoryUtil.looseSerialize(dossierStatisticResponse));
+
+				if (dossierStatisticResponse != null) {
+					Optional<List<DossierStatisticData>> dossierStatisticData = Optional
+							.ofNullable(dossierStatisticResponse.getDossierStatisticData());
+
+					dossierStatisticData.ifPresent(source -> {
+						if (source.size() > 0) {
+
+							// LOG.info("***DATA****" + source.size());
+							DossierStatisticData latestMonthStatisticData = source.get(0);
+
+							try {
+								getDetailData(companyId, groupId, 0, 0, null, null, null, null, null, gc, source,
+										latestMonthStatisticData);
+							} catch (SystemException e) {
+								_log.error(e);
+							} catch (PortalException e) {
+								_log.error(e);
+							}
+						}
+					});
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+			}					
 		}
 	}
 
@@ -1221,7 +1302,7 @@ public class StatisticSumYearCalcular {
 	}
 
 	private void getDetailData(long companyId, long groupId, int month, int year, String domainCode, String domainName,
-			String govAgencyCode, String govAgencyName, String system, List<DossierStatisticData> source,
+			String govAgencyCode, String govAgencyName, String system, String groupAgencyCode, List<DossierStatisticData> source,
 			DossierStatisticData latest) throws SystemException, PortalException {
 		DossierStatisticData dossierStatisticData = new DossierStatisticData();
 
@@ -1250,7 +1331,11 @@ public class StatisticSumYearCalcular {
 		int onegateCount = 0;
 		int viaPostalCount = 0;
 		int saturdayCount = 0;
-
+		int dossierOnline3Count = 0;
+		int dossierOnline4Count = 0;
+		int receiveDossierSatCount = 0;
+		int releaseDossierSatCount = 0;
+		
 		if (month == 0 && year == 0) {
 			for (DossierStatisticData data : source) {
 
@@ -1275,6 +1360,10 @@ public class StatisticSumYearCalcular {
 				waitingCount = waitingCount + data.getWaitingCount();
 				viaPostalCount = viaPostalCount + data.getViaPostalCount();
 				saturdayCount = saturdayCount + data.getSaturdayCount();
+				dossierOnline3Count = dossierOnline3Count + data.getDossierOnline3Count();
+				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
+				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
+				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 			}
 		} else {
 			for (DossierStatisticData data : source) {
@@ -1294,6 +1383,10 @@ public class StatisticSumYearCalcular {
 				onegateCount = onegateCount + data.getOnegateCount();
 				viaPostalCount = viaPostalCount + data.getViaPostalCount();
 				saturdayCount = saturdayCount + data.getSaturdayCount();
+				dossierOnline3Count = dossierOnline3Count + data.getDossierOnline3Count();
+				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
+				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
+				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
@@ -1349,6 +1442,11 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setGroupId(groupId);
 		dossierStatisticData.setViaPostalCount(viaPostalCount);
 		dossierStatisticData.setSaturdayCount(saturdayCount);
+		dossierStatisticData.setDossierOnline3Count(dossierOnline3Count);
+		dossierStatisticData.setDossierOnline4Count(dossierOnline4Count);
+		dossierStatisticData.setReceiveDossierSatCount(receiveDossierSatCount);
+		dossierStatisticData.setReleaseDossierSatCount(releaseDossierSatCount);
+		dossierStatisticData.setGroupAgencyCode(groupAgencyCode);
 		
 		updateGovService.updateDossierStatistic(dossierStatisticData);
 	}

@@ -213,6 +213,11 @@ public class StepConfigLocalServiceUtil {
 		return getService().fetchStepConfigByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.StepConfig> findByG_SCS(
+		long groupId, String[] stepCodeArr) {
+		return getService().findByG_SCS(groupId, stepCodeArr);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

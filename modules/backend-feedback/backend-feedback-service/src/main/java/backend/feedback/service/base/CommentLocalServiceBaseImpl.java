@@ -128,10 +128,11 @@ public abstract class CommentLocalServiceBaseImpl extends BaseLocalServiceImpl
 	 *
 	 * @param comment the comment
 	 * @return the comment that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public Comment deleteComment(Comment comment) {
+	public Comment deleteComment(Comment comment) throws PortalException {
 		return commentPersistence.remove(comment);
 	}
 

@@ -19,8 +19,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -137,7 +140,12 @@ public class RestAuthFilter implements Filter {
 			        
 			        String email = account[0];
 			        String password = account[1];
-		        
+			        if (!email.contains(StringPool.AT)) {
+			        	User u = UserLocalServiceUtil.fetchUserByScreenName(CompanyThreadLocal.getCompanyId(), email);
+			        	if (u != null) {
+			        		email = u.getEmailAddress();
+			        	}
+			        }
 					long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(httpRequest, email, password, CompanyConstants.AUTH_TYPE_EA);
 				
 					authOK(servletRequest, servletResponse, filterChain, userId);

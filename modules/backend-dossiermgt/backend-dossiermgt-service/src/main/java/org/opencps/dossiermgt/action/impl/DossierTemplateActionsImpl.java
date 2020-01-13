@@ -257,4 +257,21 @@ public class DossierTemplateActionsImpl implements DossierTemplateActions {
 		return flag;
 	}
 
+	@Override
+	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
+			String templateNo, String description, String newFormScript, String formMeta, ServiceContext context)
+			throws PortalException {
+		return DossierTemplateLocalServiceUtil.updateDossierTemplate(groupId, dossierTemplateId, templateName,
+				templateNo, description, newFormScript, formMeta, context);
+	}
+
+	@Override
+	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
+			String description, String newFormScript, String formMeta, ServiceContext serviceContext)
+			throws PortalException {
+		DossierTemplateLocalServiceUtil.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript,
+				formMeta,
+				serviceContext);
+	}
+
 }

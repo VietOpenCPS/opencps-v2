@@ -38,8 +38,6 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.OpencpsDossierStatistic;
-import org.opencps.dossiermgt.model.OpencpsVotingStatistic;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
@@ -49,12 +47,12 @@ import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.InformDossierInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 
 import backend.utils.APIDateTimeUtils;
@@ -1471,61 +1469,35 @@ public class OpenCPSConverter {
 		return obj;
 	}
 	
-	public static JSONObject convertStatisticsToLGSPJSON(OpencpsDossierStatistic statistic) {
-		JSONObject obj = JSONFactoryUtil.createJSONObject();
-		obj.put("Month", statistic.getMonth());
-		obj.put("Year", statistic.getYear());
-		if (statistic.getMonth() == 0) {
-			obj.put("IsMonthStatistic", false);
+	public static InformDossierInputModel convertInformDossierToInputModel(Dossier dossier) {
+		InformDossierInputModel model = new InformDossierInputModel();
+		model.setReferenceUid(dossier.getReferenceUid());
+		model.setDossierNo(dossier.getDossierNo());
+		if (Validator.isNotNull(dossier.getReceiveDate())) {
+			model.setReceiveDate(dossier.getReceiveDate().getTime());
 		}
-		else {
-			obj.put("IsMonthStatistic", true);
+		if (Validator.isNotNull(dossier.getDueDate())) {
+			model.setDueDate(dossier.getDueDate().getTime());
 		}
-		obj.put("NewReception", statistic.getReceivedCount());
-		obj.put("PreExtisting", statistic.getRemainingCount());
-		obj.put("Total", statistic.getTotalCount());
-		obj.put("TotalSolved", statistic.getDoneCount());
-		obj.put("SolvedInTime", statistic.getOntimeCount());
-		obj.put("SolvedInTimePercent", statistic.getOntimePercentage());
-		obj.put("SolvedLatePercent", 1.0 * statistic.getOvertimeCount() / statistic.getReleaseCount());
-		obj.put("SolvedLate", statistic.getOverdueCount());
-		obj.put("TotalPending", statistic.getWaitingCount());
-		obj.put("Pending", statistic.getUndueCount());
-		obj.put("PendingLate", statistic.getOverdueCount());
-		obj.put("PendingLatePercent", 1.0 * statistic.getOverdueCount() / statistic.getProcessingCount());
-		obj.put("PendingPercent", 1.0 * statistic.getUndueCount() / statistic.getProcessingCount());
-		obj.put("Note", StringPool.BLANK);
-		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
-		obj.put("OrganizationInchargeName", StringPool.BLANK);
-		
-		return obj;
+		return model;
 	}
-
-	public static JSONObject convertVotingStatisticsToLGSPJSON(OpencpsVotingStatistic statistic) {
-		JSONObject obj = JSONFactoryUtil.createJSONObject();
-		obj.put("DateCreated", convertToUTCDate(new Date()));
-		obj.put("TotalVoted", statistic.getTotalVoted());
-		obj.put("PercentVeryGood", Double.valueOf(statistic.getPercentVeryGood()));
-		obj.put("PercentGood", Double.valueOf(statistic.getPercentGood()));
-		obj.put("PercentBad", Double.valueOf(statistic.getPercentBad()));
-		List<OpencpsVotingStatistic> lstVotings = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D(statistic.getGroupId(), statistic.getMonth(), statistic.getYear(), StringPool.BLANK, StringPool.BLANK);
-		JSONArray questions = JSONFactoryUtil.createJSONArray();
-		for (OpencpsVotingStatistic vt : lstVotings) {
-			if (Validator.isNotNull(vt.getVotingCode())) {
-				JSONObject question = JSONFactoryUtil.createJSONObject();
-				question.put("DocTypeCode", StringPool.BLANK);
-				question.put("Content", vt.getVotingSubject());
-				question.put("PercentVeryGood", Double.valueOf(vt.getPercentVeryGood()));
-				question.put("PercentGood", Double.valueOf(vt.getPercentGood()));
-				question.put("PercentBad", Double.valueOf(vt.getPercentBad()));
-				
-				questions.put(question);				
-			}
-		}
-		obj.put("Questions", questions);
-		obj.put("OrganizationInchargeIdlevel1", StringPool.BLANK);
-		obj.put("OrganizationInchargeName", StringPool.BLANK);
-		
-		return obj;
-	}	
+	
+	public static Map<String, Object> convertInformHttpParams(InformDossierInputModel model) {
+	    Map<String, Object> params = new HashMap<>();
+	    
+	    if (Validator.isNotNull(model.getReferenceUid())) {
+		    params.put(DossierTerm.REFERENCE_UID, model.getReferenceUid());	    	
+	    }
+	    if (Validator.isNotNull(model.getDossierNo())) {
+	    	params.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+	    }
+	    if (Validator.isNotNull(model.getReceiveDate())) {
+	    	params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate());
+	    }
+	    if (Validator.isNotNull(model.getDueDate())) {
+	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
+	    }
+	    return params;
+	}
+	
 }

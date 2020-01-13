@@ -79,7 +79,8 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 			{ "templateName", Types.VARCHAR },
 			{ "description", Types.VARCHAR },
 			{ "templateNo", Types.VARCHAR },
-			{ "newFormScript", Types.VARCHAR }
+			{ "newFormScript", Types.VARCHAR },
+			{ "formMeta", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,9 +97,10 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("templateNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("newFormScript", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("formMeta", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiertemplate (uuid_ VARCHAR(75) null,dossierTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateName STRING null,description TEXT null,templateNo VARCHAR(255) null,newFormScript TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiertemplate (uuid_ VARCHAR(75) null,dossierTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateName STRING null,description TEXT null,templateNo VARCHAR(255) null,newFormScript TEXT null,formMeta STRING null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiertemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierTemplate.dossierTemplateId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiertemplate.dossierTemplateId ASC";
@@ -172,6 +174,7 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 		attributes.put("description", getDescription());
 		attributes.put("templateNo", getTemplateNo());
 		attributes.put("newFormScript", getNewFormScript());
+		attributes.put("formMeta", getFormMeta());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -251,6 +254,12 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 
 		if (newFormScript != null) {
 			setNewFormScript(newFormScript);
+		}
+
+		String formMeta = (String)attributes.get("formMeta");
+
+		if (formMeta != null) {
+			setFormMeta(formMeta);
 		}
 	}
 
@@ -479,6 +488,21 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 	}
 
 	@Override
+	public String getFormMeta() {
+		if (_formMeta == null) {
+			return "";
+		}
+		else {
+			return _formMeta;
+		}
+	}
+
+	@Override
+	public void setFormMeta(String formMeta) {
+		_formMeta = formMeta;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DossierTemplate.class.getName()));
@@ -527,6 +551,7 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 		dossierTemplateImpl.setDescription(getDescription());
 		dossierTemplateImpl.setTemplateNo(getTemplateNo());
 		dossierTemplateImpl.setNewFormScript(getNewFormScript());
+		dossierTemplateImpl.setFormMeta(getFormMeta());
 
 		dossierTemplateImpl.resetOriginalValues();
 
@@ -686,12 +711,20 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 			dossierTemplateCacheModel.newFormScript = null;
 		}
 
+		dossierTemplateCacheModel.formMeta = getFormMeta();
+
+		String formMeta = dossierTemplateCacheModel.formMeta;
+
+		if ((formMeta != null) && (formMeta.length() == 0)) {
+			dossierTemplateCacheModel.formMeta = null;
+		}
+
 		return dossierTemplateCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -717,6 +750,8 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 		sb.append(getTemplateNo());
 		sb.append(", newFormScript=");
 		sb.append(getNewFormScript());
+		sb.append(", formMeta=");
+		sb.append(getFormMeta());
 		sb.append("}");
 
 		return sb.toString();
@@ -724,7 +759,7 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierTemplate");
@@ -778,6 +813,10 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 			"<column><column-name>newFormScript</column-name><column-value><![CDATA[");
 		sb.append(getNewFormScript());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>formMeta</column-name><column-value><![CDATA[");
+		sb.append(getFormMeta());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -808,6 +847,7 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 	private String _templateNo;
 	private String _originalTemplateNo;
 	private String _newFormScript;
+	private String _formMeta;
 	private long _columnBitmask;
 	private DossierTemplate _escapedModel;
 }

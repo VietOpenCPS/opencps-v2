@@ -23,16 +23,19 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.activation.DataHandler;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -50,9 +53,26 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
@@ -60,6 +80,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticModel;
@@ -88,7 +109,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.dto.VotingSearchModel;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
@@ -99,6 +119,8 @@ import org.opencps.statistic.rest.facade.OpencpsCallStatisticRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
+import org.opencps.statistic.rest.service.DossierStatisticManualFinderService;
+import org.opencps.statistic.rest.service.DossierStatisticManualFinderServiceImpl;
 import org.opencps.statistic.rest.service.PersonStatisticFinderService;
 import org.opencps.statistic.rest.service.PersonStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.service.VotingStatisticFinderService;
@@ -108,6 +130,7 @@ import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -135,6 +158,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private final static Logger LOG = LoggerFactory.getLogger(OpencpsStatisticRestApplication.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
+	private DossierStatisticManualFinderService dossierStatisticManualFinderService = new DossierStatisticManualFinderServiceImpl();
 
 	public static final String ALL_MONTH = "-1";
 
@@ -374,7 +398,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				if (reCalculate == 1) {
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					processUpdateDB(groupId, firstDay, lastDay, month, year, true);
+					processUpdateDB(groupId, firstDay, lastDay, month, year, true, new ArrayList<String>());
 				}
 
 				validInput(month, year, start, end);
@@ -394,6 +418,56 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setEnd(end);
 				dossierStatisticRequest.setMonth(month);
 				dossierStatisticRequest.setYear(year);
+				if (Validator.isNotNull(query.getGroupCode())) {
+					if (!Validator.isNull(query.getParentAgency())) {
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						
+						if (dg != null) {
+							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+							
+							List<DictItem> lstItems = new ArrayList<DictItem>();
+							for (DictItemGroup dig : lstDigs) {
+								DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+								if (di != null && query.getParentAgency() != null && di.getItemCode() != null && di.getItemCode().contentEquals(query.getParentAgency())) {
+									lstItems.add(di);									
+								}
+							}
+							StringBuilder groupAgencyCodeFilter = new StringBuilder();
+							for (DictItem di : lstItems) {
+								if (di.getLevel() == 0) {
+									if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
+										groupAgencyCodeFilter.append(StringPool.COMMA);
+									}
+									groupAgencyCodeFilter.append(di.getItemCode());
+								}
+							}
+							dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
+							dossierStatisticRequest.setSystem("total");
+						}						
+					}
+					else {
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+						
+						List<DictItem> lstItems = new ArrayList<DictItem>();
+						for (DictItemGroup dig : lstDigs) {
+							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+							lstItems.add(di);									
+						}
+						StringBuilder groupAgencyCodeFilter = new StringBuilder();
+						for (DictItem di : lstItems) {
+							if (di.getLevel() == 0) {
+								if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
+									groupAgencyCodeFilter.append(StringPool.COMMA);
+								}
+								groupAgencyCodeFilter.append(di.getItemCode());
+							}
+						}
+						dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
+						dossierStatisticRequest.setSystem("total");
+					}
+				}
+				
 				//
 				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
 						.finderDossierStatisticSystem(dossierStatisticRequest);
@@ -788,7 +862,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
-	private void processUpdateDB(long groupId, Date firstDay, Date lastDay, int month, int year, boolean reporting)
+	private void processUpdateDB(long groupId, Date firstDay, Date lastDay, int month, int year, boolean reporting, List<String> lstGroupGovs)
 			throws Exception {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
@@ -942,7 +1016,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 				Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 
-				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, firstDay, lastDay, reporting);
+				engineFetch.fecthStatisticData(groupId, statisticData, dossierDataList, firstDay, lastDay, reporting, new ArrayList<String>());
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 
@@ -970,7 +1044,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
-		statisticSumYearService.caculateSumYear(companyId, groupId, year);
+		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs);
 	}
 
 	@POST
@@ -1111,4 +1185,215 @@ public class OpencpsStatisticRestApplication extends Application {
 			return statistic.getTotalCount() + "";
 		}
 	}
+	
+	@POST
+	@Path("/import/manual")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response importManualStatistic(@HeaderParam("groupId") long groupId,
+		@Multipart("file") Attachment file) {
+		try {
+			DataHandler dataHandle = file.getDataHandler();
+			
+			InputStream excelFile = dataHandle.getInputStream();
+			String fileName = dataHandle.getName();
+			
+            Workbook workbook = null;
+            
+            if (fileName.endsWith("xls")) {
+                workbook = new HSSFWorkbook(excelFile);            	
+            }
+            else if (fileName.endsWith("xlsx")) {
+                workbook = new XSSFWorkbook(excelFile);
+            }
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            Map<Integer, List<OpencpsDossierStatisticManual>> mapStatistics = new HashMap<Integer, List<OpencpsDossierStatisticManual>>();
+            
+            OpencpsDossierStatisticManualLocalServiceUtil.removeAll();
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            
+            while (iterator.hasNext()) {
+                Row currentRow = iterator.next();
+                if (currentRow.getRowNum() == 0) continue;
+                Cell currentCell = currentRow.getCell(0);
+                Integer year = 0;
+                if (currentCell.getCellType() == CellType.NUMERIC) {
+                	year = (int)currentCell.getNumericCellValue();
+                }
+                int month = 0;
+                currentCell = currentRow.getCell(1);
+                if (currentCell.getCellType() == CellType.NUMERIC) {
+                	month = (int)currentCell.getNumericCellValue();
+                }
+                currentCell = currentRow.getCell(2);
+                String domainCode = "";
+                if (currentCell.getCellType() == CellType.STRING) {
+                	domainCode = currentCell.getStringCellValue();
+                }
+                currentCell = currentRow.getCell(3);
+                String domainName = "";
+                if (currentCell.getCellType() == CellType.STRING) {
+                	domainName = currentCell.getStringCellValue();
+                }
+                int receivedCount = 0;
+                int ontimeCount = 0;
+                int overdueCount = 0;
+                currentCell = currentRow.getCell(4);
+                CellValue cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	receivedCount = (int)cellValue.getNumberValue();
+                }
+                currentCell = currentRow.getCell(5);
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	ontimeCount = (int)cellValue.getNumberValue();
+                }
+                currentCell = currentRow.getCell(6);
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	overdueCount = (int)cellValue.getNumberValue();
+                }
+                currentCell = currentRow.getCell(7);
+                cellValue = evaluator.evaluate(currentCell);
+                int onlineCount = 0;
+                int releaseCount = 0;
+                
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	onlineCount = (int)cellValue.getNumberValue();
+                }
+                
+                currentCell = currentRow.getCell(8);
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	releaseCount = (int)cellValue.getNumberValue();
+                }
+                OpencpsDossierStatisticManual manual = OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, month, year, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", "", domainCode, domainName, false, 0, 0, 0);
+                List<OpencpsDossierStatisticManual> lstManual = new ArrayList<OpencpsDossierStatisticManual>();
+                if (mapStatistics.containsKey(year)) {
+                	lstManual = mapStatistics.get(year);
+                }
+                else {
+                	mapStatistics.put(year, lstManual);
+                }
+                lstManual.add(manual);
+            }
+
+            for (Integer keyYear : mapStatistics.keySet()) {
+            	List<OpencpsDossierStatisticManual> lstManuals = mapStatistics.get(keyYear);
+                int receivedCount = 0;
+                int ontimeCount = 0;
+                int overdueCount = 0;
+                int onlineCount = 0;
+                int releaseCount = 0;
+                for (OpencpsDossierStatisticManual manual : lstManuals) {
+                	receivedCount += manual.getReceivedCount();
+                	ontimeCount += manual.getOntimeCount();
+                	overdueCount += manual.getOverdueCount();
+                	onlineCount += manual.getOnlineCount();
+                	releaseCount += manual.getReleaseCount();
+                }
+                
+                OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, "", 0, keyYear, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", "", "", "", false, 0, 0, 0);
+            }
+    		return Response.status(200).entity("{ 'success': true }").build();
+		}
+		catch (Exception e) {
+			return Response.status(200).entity("{ 'success': false }").build();
+		}
+	}
+
+	@GET
+	@Path("/manual")
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response searchDossierStatisticManual(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierSearchModel query) {
+		CacheControl cc = new CacheControl();
+	    cc.setMaxAge(60);
+	    cc.setPrivate(true);
+	    
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String govAgencyCode = query.getAgency();
+		String domain = query.getDomain();
+		String system = query.getSystem();
+		if (Validator.isNull(system)) {
+			system = "0";
+		}
+		String groupAgencyCode = query.getGroupAgencyCode();
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
+		//boolean reporting = query.getReporting();
+		Integer reCalculate = query.getReCalculate();
+		if (reCalculate == null) {
+			reCalculate = 0;
+		}
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
+		}
+
+		if (!calculate) {
+		} else {
+			try {
+				if (reCalculate == 1) {
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					processUpdateDB(groupId, firstDay, lastDay, month, year, true, new ArrayList<String>());
+				}
+
+				validInput(month, year, start, end);
+				//
+				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+				dossierStatisticRequest.setDomain(domain);
+				if ("all".equals(govAgencyCode)) {
+					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+				}
+				dossierStatisticRequest.setSystem(system);
+				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+				//dossierStatisticRequest.setReporting(reporting);
+				dossierStatisticRequest.setGroupId(groupId);
+				dossierStatisticRequest.setStart(start);
+				dossierStatisticRequest.setEnd(end);
+				dossierStatisticRequest.setMonth(month);
+				dossierStatisticRequest.setYear(year);
+				dossierStatisticRequest.setSystem("1");
+				//
+				DossierStatisticResponse statisticResponse = dossierStatisticManualFinderService
+						.finderDossierStatisticSystem(dossierStatisticRequest);
+				if (statisticResponse != null) {
+					statisticResponse.setAgency(govAgencyCode);
+				}
+
+				ResponseBuilder builder = Response.ok(statisticResponse);
+			    builder.cacheControl(cc);
+			    return builder.build();
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		}
+
+		return null;
+	}	
 }

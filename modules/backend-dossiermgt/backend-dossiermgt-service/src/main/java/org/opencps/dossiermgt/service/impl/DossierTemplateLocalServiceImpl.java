@@ -427,7 +427,9 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		object.setDescription(objectData.getString("description"));
 		object.setTemplateNo(objectData.getString("templateNo"));
 		object.setNewFormScript(objectData.getString("newFormScript"));
-		
+		if (objectData.has(DossierTemplateTerm.FORM_META)) {
+			object.setFormMeta(objectData.getString(DossierTemplateTerm.FORM_META));
+		}
 		dossierTemplatePersistence.update(object);
 
 		return object;
@@ -436,6 +438,119 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 	public List<DossierTemplate> findByG(long groupId) {
 		return dossierTemplatePersistence.findByG(groupId);			
 	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierTemplate updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName,
+			String description, String newFormScript, String formMeta, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User userAction = userLocalService.getUser(userId);
+
+		DossierTemplate dossierTemplate = dossierTemplatePersistence.fetchByG_DT_TPLNO(groupId, templateNo);
+		if (dossierTemplate == null) {
+
+			long dossierTemplateId = counterLocalService.increment(DossierTemplate.class.getName());
+			dossierTemplate = dossierTemplatePersistence.create(dossierTemplateId);
+
+			dossierTemplate.setGroupId(groupId);
+			dossierTemplate.setCompanyId(serviceContext.getCompanyId());
+			dossierTemplate.setCreateDate(now);
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			dossierTemplate.setTemplateName(templateName);
+			dossierTemplate.setTemplateNo(templateNo);
+			dossierTemplate.setDescription(description);
+			dossierTemplate.setNewFormScript(newFormScript);
+			dossierTemplate.setFormMeta(formMeta);
+		} else {
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			if (Validator.isNotNull(templateName))
+				dossierTemplate.setTemplateName(templateName);
+			if (Validator.isNotNull(templateNo))
+				dossierTemplate.setTemplateNo(templateNo);
+			if (Validator.isNotNull(description))
+				dossierTemplate.setDescription(description);
+			if (Validator.isNotNull(newFormScript)) {
+				dossierTemplate.setNewFormScript(newFormScript);
+			}
+			if (Validator.isNotNull(formMeta)) {
+				dossierTemplate.setFormMeta(formMeta);
+			}
+		}
+
+		return dossierTemplatePersistence.update(dossierTemplate);
+	}
+	
+	@Indexable(type = IndexableType.REINDEX)
+	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
+			String templateNo, String description, String newFormScript, String formMeta, ServiceContext context) throws PortalException {
+
+		DossierTemplate dossierTemplate = null;
+
+		Date now = new Date();
+
+		User userAction = userLocalService.getUser(context.getUserId());
+		validateUpdate(groupId, dossierTemplateId, templateName, templateNo, description);
+
+		if (dossierTemplateId == 0) {
+
+			dossierTemplateId = counterLocalService.increment(DossierTemplate.class.getName());
+
+			dossierTemplate = dossierTemplatePersistence.create(dossierTemplateId);
+
+			dossierTemplate.setGroupId(groupId);
+			dossierTemplate.setCompanyId(context.getCompanyId());
+			dossierTemplate.setCreateDate(now);
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			dossierTemplate.setTemplateName(templateName);
+			dossierTemplate.setTemplateNo(templateNo);
+			dossierTemplate.setDescription(description);
+			dossierTemplate.setNewFormScript(newFormScript);
+			dossierTemplate.setFormMeta(formMeta);
+
+		} else {
+			dossierTemplate = dossierTemplatePersistence.fetchByPrimaryKey(dossierTemplateId);
+
+			dossierTemplate.setModifiedDate(now);
+			dossierTemplate.setUserId(userAction.getUserId());
+			dossierTemplate.setUserName(userAction.getFullName());
+
+			if (Validator.isNotNull(templateName))
+				dossierTemplate.setTemplateName(templateName);
+
+			List<DossierPart> parts = dossierPartPersistence.findByTP_NO(groupId, dossierTemplate.getTemplateNo());
+
+			for (DossierPart part : parts) {
+				part.setTemplateNo(templateNo);
+				dossierPartPersistence.update(part);
+			}
+
+			if (Validator.isNotNull(templateNo))
+				dossierTemplate.setTemplateNo(templateNo);
+
+			if (Validator.isNotNull(description))
+				dossierTemplate.setDescription(description);
+			if (Validator.isNotNull(newFormScript)) {
+				dossierTemplate.setNewFormScript(newFormScript);
+			}
+			if (Validator.isNotNull(formMeta)) {
+				dossierTemplate.setFormMeta(formMeta);
+			}
+		}
+
+		dossierTemplatePersistence.update(dossierTemplate);
+
+		return dossierTemplate;
+	}
+	
 	public static final String CLASS_NAME = DossierTemplate.class.getName();
 
 }

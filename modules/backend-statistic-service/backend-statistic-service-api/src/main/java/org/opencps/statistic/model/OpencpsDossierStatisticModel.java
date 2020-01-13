@@ -755,6 +755,62 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setSaturdayCount(int saturdayCount);
 
+	/**
+	 * Returns the dossier online3 count of this opencps dossier statistic.
+	 *
+	 * @return the dossier online3 count of this opencps dossier statistic
+	 */
+	public int getDossierOnline3Count();
+
+	/**
+	 * Sets the dossier online3 count of this opencps dossier statistic.
+	 *
+	 * @param dossierOnline3Count the dossier online3 count of this opencps dossier statistic
+	 */
+	public void setDossierOnline3Count(int dossierOnline3Count);
+
+	/**
+	 * Returns the dossier online4 count of this opencps dossier statistic.
+	 *
+	 * @return the dossier online4 count of this opencps dossier statistic
+	 */
+	public int getDossierOnline4Count();
+
+	/**
+	 * Sets the dossier online4 count of this opencps dossier statistic.
+	 *
+	 * @param dossierOnline4Count the dossier online4 count of this opencps dossier statistic
+	 */
+	public void setDossierOnline4Count(int dossierOnline4Count);
+
+	/**
+	 * Returns the receive dossier sat count of this opencps dossier statistic.
+	 *
+	 * @return the receive dossier sat count of this opencps dossier statistic
+	 */
+	public int getReceiveDossierSatCount();
+
+	/**
+	 * Sets the receive dossier sat count of this opencps dossier statistic.
+	 *
+	 * @param receiveDossierSatCount the receive dossier sat count of this opencps dossier statistic
+	 */
+	public void setReceiveDossierSatCount(int receiveDossierSatCount);
+
+	/**
+	 * Returns the release dossier sat count of this opencps dossier statistic.
+	 *
+	 * @return the release dossier sat count of this opencps dossier statistic
+	 */
+	public int getReleaseDossierSatCount();
+
+	/**
+	 * Sets the release dossier sat count of this opencps dossier statistic.
+	 *
+	 * @param releaseDossierSatCount the release dossier sat count of this opencps dossier statistic
+	 */
+	public void setReleaseDossierSatCount(int releaseDossierSatCount);
+
 	@Override
 	public boolean isNew();
 

@@ -195,4 +195,7 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 		return notificationQueuePersistence.findByF_LessThan_ExpireDate(date);
 	}
 
+	public NotificationQueue findByF_NT_CN_CPK_EMAIL(long groupId, String notificationType, String className, String classPK, String email) throws NoSuchNotificationQueueException {
+		return notificationQueuePersistence.findByF_NT_CN_CPK_EMAIL(groupId, notificationType, className, classPK, email);
+	}
 }

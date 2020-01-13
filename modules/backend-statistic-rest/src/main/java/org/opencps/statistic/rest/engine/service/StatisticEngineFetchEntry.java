@@ -47,8 +47,8 @@ public class StatisticEngineFetchEntry {
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getFinishDate());
 		int viaPostal = dossierData.getViaPostal();
-		if (viaPostal != 0)
-			_log.info("VIA POSTAL STATISTIC: " + viaPostal);
+//		if (viaPostal != 0)
+//			_log.info("VIA POSTAL STATISTIC: " + viaPostal);
 		if (viaPostal == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
 		}
@@ -63,6 +63,19 @@ public class StatisticEngineFetchEntry {
 		boolean isFinishSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
 		if (isReceivedSaturday && isFinishSaturday) {
 			statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
+		}
+		if (isReceivedSaturday) {
+			statisticData.setReceiveDossierSatCount(statisticData.getReceiveDossierSatCount() + 1);
+		}
+		if (isFinishSaturday) {
+			statisticData.setReleaseDossierSatCount(statisticData.getReleaseDossierSatCount() + 1);
+		}
+		int serviceLevel = dossierData.getServiceLevel();
+		if (LEVEL_3 == serviceLevel) {
+			statisticData.setDossierOnline3Count(statisticData.getDossierOnline3Count() + 1);
+		}
+		if (LEVEL_4 == serviceLevel) {
+			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
@@ -167,6 +180,9 @@ public class StatisticEngineFetchEntry {
 		}
 	}
 
+	private static final int LEVEL_3 = 3;
+	private static final int LEVEL_4 = 4;
+	
 	public void updateSumDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
 			Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
 //		int month = LocalDate.now().getMonthValue();
@@ -207,6 +223,19 @@ public class StatisticEngineFetchEntry {
 		boolean isFinishSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
 		if (isReceivedSaturday && isFinishSaturday) {
 			statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
+		}
+		if (isReceivedSaturday) {
+			statisticData.setReceiveDossierSatCount(statisticData.getReceiveDossierSatCount() + 1);
+		}
+		if (isFinishSaturday) {
+			statisticData.setReleaseDossierSatCount(statisticData.getReleaseDossierSatCount() + 1);
+		}
+		int serviceLevel = dossierData.getServiceLevel();
+		if (LEVEL_3 == serviceLevel) {
+			statisticData.setDossierOnline3Count(statisticData.getDossierOnline3Count() + 1);
+		}
+		if (LEVEL_4 == serviceLevel) {
+			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
 
 		if (dossierData.getDossierStatus().contentEquals("denied")) {

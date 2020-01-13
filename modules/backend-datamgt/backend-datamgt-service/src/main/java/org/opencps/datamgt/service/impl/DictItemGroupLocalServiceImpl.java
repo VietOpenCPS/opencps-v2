@@ -619,5 +619,45 @@ public class DictItemGroupLocalServiceImpl extends DictItemGroupLocalServiceBase
 		return object;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItemGroup updateDictItemGroupDB(long userId, long groupId, long dictGroupId, long dictItemId, String dictGroupName) throws NoSuchUserException {
+		Date now = new Date();
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		DictItemGroup dictItemGroup = dictItemGroupPersistence.fetchByF_dictItemId_dictGroupId(groupId, dictGroupId, dictItemId);
+		
+		if (dictItemGroup != null) {
+			dictItemGroup.setModifiedDate(now);
+
+			// Other fields
+			if (Validator.isNotNull(dictGroupName)) {
+				dictItemGroup.setDictGroupName(dictGroupName);
+			}
+			dictItemGroup.setDictGroupId(dictGroupId);
+			dictItemGroup.setDictItemId(dictItemId);
+		} else {
+			long dictItemGroupId = counterLocalService.increment(DictItemGroup.class.getName());
+
+			dictItemGroup = dictItemGroupPersistence.create(dictItemGroupId);
+
+			// Group instance
+			dictItemGroup.setGroupId(groupId);
+
+			// Audit fields
+			dictItemGroup.setCompanyId(user.getCompanyId());
+			dictItemGroup.setUserId(user.getUserId());
+			dictItemGroup.setUserName(user.getFullName());
+			dictItemGroup.setCreateDate(now);
+			dictItemGroup.setModifiedDate(now);
+
+			dictItemGroup.setDictGroupId(dictGroupId);
+			dictItemGroup.setDictItemId(dictItemId);
+			
+			// Other fields
+			dictItemGroup.setDictGroupName(dictGroupName);
+		}
+
+		return dictItemGroupPersistence.update(dictItemGroup);
+	}	
 	Log _log = LogFactoryUtil.getLog(DictItemGroupLocalServiceUtil.class);
 }

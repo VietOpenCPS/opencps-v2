@@ -80,6 +80,11 @@ public interface EmployeeInterface {
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, PortalException;
 
+	void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullname, String title, Integer gender,
+			String birthdate, String telNo, String email, Integer workingStatus, String jobTitle, String roles, String scope,
+			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
+			UnauthorizationException, DuplicateCategoryException, PortalException;
+
 	void updateEmployeeDB_QA(long userId, long groupId, String employeeNo, String fullname, String title, Integer gender,
 			String birthdate, String telNo, String email, Integer workingStatus, String jobTitle, String roles,
 			ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,

@@ -63,6 +63,7 @@
 		<property name="profile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="tmpPass" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="representativeEnterprise" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="verification" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="mappingClassName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="mappingClassPK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
@@ -95,6 +96,7 @@
 		<property name="fileSignId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="fileCertPath" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileSignPath" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="scope" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">
 		<id name="employeeJobPosId" type="long">
@@ -212,6 +214,8 @@
 		<property name="questionType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="phone" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="address" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ResourceRoleImpl" table="opencps_resourcerole">
 		<id name="resourceRoleId" type="long">

@@ -14,6 +14,7 @@ public class DossierSyncTerm {
 	
 	public static final int SYNCTYPE_REQUEST = 1;
 	public static final int SYNCTYPE_INFORM = 2;
+	public static final int SYNCTYPE_INFORM_DOSSIER = 3;
 	
 	public static final String SERVER_CONFIG_PROTOCOL_API = "API_SYNC";
 	public static final String SERVER_CONFIG_PROTOCOL_MESSAGE = "MESSAGE_SYNC";
@@ -24,5 +25,7 @@ public class DossierSyncTerm {
 	
 	public static final String PAYLOAD_SYNC_FILES = "dossierFiles";
 	public static final String PAYLOAD_SYNC_DOCUMENTS = "dossierDocuments";
+	public static final String PAYLOAD_SYNC_DOSSIER_PARTS = "dossierParts";
+	
 	public static final int MAX_RETRY = 10;
 }

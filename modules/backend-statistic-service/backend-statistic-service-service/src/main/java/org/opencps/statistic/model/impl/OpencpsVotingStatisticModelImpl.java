@@ -145,8 +145,9 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 	public static final long MONTH_COLUMN_BITMASK = 16L;
 	public static final long USERID_COLUMN_BITMASK = 32L;
 	public static final long UUID_COLUMN_BITMASK = 64L;
-	public static final long YEAR_COLUMN_BITMASK = 128L;
-	public static final long VOTINGSTATISTICID_COLUMN_BITMASK = 256L;
+	public static final long VOTINGCODE_COLUMN_BITMASK = 128L;
+	public static final long YEAR_COLUMN_BITMASK = 256L;
+	public static final long VOTINGSTATISTICID_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(StatisticService.backend.statistic.service.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.statistic.model.OpencpsVotingStatistic"));
 
@@ -657,7 +658,17 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 
 	@Override
 	public void setVotingCode(String votingCode) {
+		_columnBitmask |= VOTINGCODE_COLUMN_BITMASK;
+
+		if (_originalVotingCode == null) {
+			_originalVotingCode = _votingCode;
+		}
+
 		_votingCode = votingCode;
+	}
+
+	public String getOriginalVotingCode() {
+		return GetterUtil.getString(_originalVotingCode);
 	}
 
 	@Override
@@ -905,6 +916,8 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		opencpsVotingStatisticModelImpl._originalGovAgencyCode = opencpsVotingStatisticModelImpl._govAgencyCode;
 
 		opencpsVotingStatisticModelImpl._originalDomainCode = opencpsVotingStatisticModelImpl._domainCode;
+
+		opencpsVotingStatisticModelImpl._originalVotingCode = opencpsVotingStatisticModelImpl._votingCode;
 
 		opencpsVotingStatisticModelImpl._columnBitmask = 0;
 	}
@@ -1226,6 +1239,7 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 	private String _originalDomainCode;
 	private String _domainName;
 	private String _votingCode;
+	private String _originalVotingCode;
 	private String _votingSubject;
 	private int _totalVoted;
 	private int _veryGoodCount;

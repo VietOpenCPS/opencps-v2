@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.action.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -34,6 +35,11 @@ public class OpenCPSConfigUtil {
 
 	public static final String OPENCPS_ADMIN_PROXY_URL = "org.opencps.admin.proxy.ip";
 	public static final String DEFAULT_PROXY_URL = "http://127.0.0.1:8080";
+	
+	public static final String OPENCPS_DOSSIER_SECRET_LENGTH = "org.opencps.dossier.secret.length";
+	public static final int OPENCPS_DEFAULT_DOSSIER_SECRET_LENGTH = 8;
+	
+	public static final String OPENCPS_MAIL_TO_APPLICANT_FROM = "org.opencps.mailtoapplicant.from";
 	
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
@@ -131,6 +137,13 @@ public class OpenCPSConfigUtil {
 		String adminProxyUrl = PropsUtil.get(OPENCPS_ADMIN_PROXY_URL);
 		return Validator.isNotNull(adminProxyUrl) ? adminProxyUrl : DEFAULT_PROXY_URL;
 	}
-	
+	public static Integer getDefaultDossierSecretLength() {
+		String secretLength = PropsUtil.get(OPENCPS_DOSSIER_SECRET_LENGTH);
+		return Validator.isNotNull(secretLength) ? GetterUtil.getInteger(secretLength) : OPENCPS_DEFAULT_DOSSIER_SECRET_LENGTH;
+	}
+	public static String getMailToApplicantFrom() {
+		String mailToApplicantFrom = PropsUtil.get(OPENCPS_MAIL_TO_APPLICANT_FROM);
+		return Validator.isNotNull(mailToApplicantFrom) ? mailToApplicantFrom : StringPool.BLANK;
+	}
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSConfigUtil.class);
 }

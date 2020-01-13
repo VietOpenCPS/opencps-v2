@@ -6,15 +6,11 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="questionId" type="long" />
-		<field name="content" type="String">
-			<hint name="max-length">32767</hint>
-		</field>
+		<field name="content" type="String" />
 		<field name="publish" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.Applicant">
@@ -23,49 +19,30 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="applicantName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="applicantName" type="String" />
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
 		<field name="applicantIdDate" type="Date" />
-		<field name="address" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
+		<field name="address" type="String" />
 		<field name="cityCode" type="String" />
-		<field name="cityName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="cityName" type="String" />
 		<field name="districtCode" type="String" />
-		<field name="districtName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="districtName" type="String" />
 		<field name="wardCode" type="String" />
-		<field name="wardName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="contactName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="wardName" type="String" />
+		<field name="contactName" type="String" />
 		<field name="contactTelNo" type="String" />
-		<field name="contactEmail" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="contactEmail" type="String" />
 		<field name="mappingUserId" type="long" />
 		<field name="activationCode" type="String" />
-		<field name="lock_" type="boolean" />
-		<field name="profile" type="String">
-			<hint name="max-length">32767</hint>
-		</field>
+		<field name="lock_" type="Boolean" />
+		<field name="profile" type="String" />
 		<field name="tmpPass" type="String" />
-		<field name="representativeEnterprise" type="String">
-			<hint name="max-length">200</hint>
-		</field>
+		<field name="representativeEnterprise" type="String" />
+		<field name="verification" type="Integer" />
 		<field name="mappingClassName" type="String" />
 		<field name="mappingClassPK" type="String" />
 	</model>
@@ -75,25 +52,17 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="employeeNo" type="String" />
-		<field name="fullName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="title" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="fullName" type="String" />
+		<field name="title" type="String" />
 		<field name="gender" type="int" />
 		<field name="birthdate" type="Date" />
 		<field name="telNo" type="String" />
 		<field name="mobile" type="String" />
-		<field name="email" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="email" type="String" />
 		<field name="workingStatus" type="int" />
 		<field name="mappingUserId" type="long" />
 		<field name="mainJobPostId" type="long" />
@@ -102,12 +71,9 @@
 		<field name="leaveDate" type="Date" />
 		<field name="fileCertId" type="long" />
 		<field name="fileSignId" type="long" />
-		<field name="fileCertPath" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="fileSignPath" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="fileCertPath" type="String" />
+		<field name="fileSignPath" type="String" />
+		<field name="scope" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.EmployeeJobPos">
 		<field name="uuid" type="String" />
@@ -115,9 +81,7 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="employeeId" type="long" />
@@ -129,9 +93,7 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="secret" type="String" />
@@ -143,20 +105,12 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="jobPosCode" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="title" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="description" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
+		<field name="jobPosCode" type="String" />
+		<field name="title" type="String" />
+		<field name="description" type="String" />
 		<field name="mappingRoleId" type="long" />
 		<field name="leader" type="int" />
 	</model>
@@ -166,15 +120,11 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="jobPostId" type="long" />
-		<field name="checklistCat" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="checklistCat" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.OfficeSite">
 		<field name="uuid" type="String" />
@@ -182,37 +132,21 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="name" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="enName" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="govAgencyCode" type="String">
-			<hint name="max-length">100</hint>
-		</field>
-		<field name="address" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="address" type="String" />
 		<field name="telNo" type="String" />
 		<field name="faxNo" type="String" />
-		<field name="email" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="website" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="email" type="String" />
+		<field name="website" type="String" />
 		<field name="logoFileEntryId" type="long" />
 		<field name="siteGroupId" type="long" />
 		<field name="adminUserId" type="long" />
-		<field name="preferences" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
+		<field name="preferences" type="String" />
 		<field name="ceremonyDate" type="Date" />
 	</model>
 	<model name="org.opencps.usermgt.model.Preferences">
@@ -221,14 +155,10 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="preferences" type="String">
-			<hint name="max-length">65535</hint>
-		</field>
+		<field name="preferences" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.Question">
 		<field name="questionId" type="long" />
@@ -236,15 +166,9 @@
 		<field name="groupId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="fullname" type="String">
-			<hint name="max-length">512</hint>
-		</field>
-		<field name="email" type="String">
-			<hint name="max-length">255</hint>
-		</field>
-		<field name="content" type="String">
-			<hint name="max-length">32767</hint>
-		</field>
+		<field name="fullname" type="String" />
+		<field name="email" type="String" />
+		<field name="content" type="String" />
 		<field name="publish" type="int" />
 		<field name="domainCode" type="String" />
 		<field name="domainName" type="String" />
@@ -253,6 +177,8 @@
 		<field name="questionType" type="String" />
 		<field name="subDomainCode" type="String" />
 		<field name="subDomainName" type="String" />
+		<field name="phone" type="String" />
+		<field name="address" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />
@@ -290,19 +216,13 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="sessionId" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="sessionId" type="String" />
 		<field name="hits" type="int" />
 		<field name="logout" type="Date" />
-		<field name="ipAddress" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="ipAddress" type="String" />
 		<field name="online" type="boolean" />
 	</model>
 	<model name="org.opencps.usermgt.model.UserTrackPath">
@@ -311,9 +231,7 @@
 		<field name="companyId" type="long" />
 		<field name="modifiedDate" type="Date" />
 		<field name="userLoginId" type="long" />
-		<field name="path" type="String">
-			<hint name="max-length">512</hint>
-		</field>
+		<field name="path" type="String" />
 		<field name="pathDate" type="Date" />
 	</model>
 	<model name="org.opencps.usermgt.model.Visibility">
@@ -322,19 +240,13 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="className" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="className" type="String" />
 		<field name="classPK" type="String" />
 		<field name="visibility" type="int" />
-		<field name="security" type="String">
-			<hint name="max-length">500</hint>
-		</field>
+		<field name="security" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.WorkingUnit">
 		<field name="uuid" type="String" />
@@ -342,34 +254,20 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="name" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
-		<field name="enName" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
-		<field name="govAgencyCode" type="String">
-			<hint name="max-length">100</hint>
-		</field>
+		<field name="name" type="String" />
+		<field name="enName" type="String" />
+		<field name="govAgencyCode" type="String" />
 		<field name="parentWorkingUnitId" type="long" />
 		<field name="sibling" type="String" />
 		<field name="treeIndex" type="String" />
-		<field name="address" type="String">
-			<hint name="max-length">4000</hint>
-		</field>
+		<field name="address" type="String" />
 		<field name="telNo" type="String" />
 		<field name="faxNo" type="String" />
-		<field name="email" type="String">
-			<hint name="max-length">500</hint>
-		</field>
-		<field name="website" type="String">
-			<hint name="max-length">255</hint>
-		</field>
+		<field name="email" type="String" />
+		<field name="website" type="String" />
 		<field name="logoFileEntryId" type="long" />
 		<field name="level" type="int" />
 		<field name="ceremonyDate" type="Date" />

@@ -1010,8 +1010,13 @@ public class UserActions implements UserInterface {
 		User user = UserLocalServiceUtil.fetchUser(userId);
 
 		if (Validator.isNotNull(user)) {
-			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-
+			Employee employee = null;
+			try {
+				employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+			}
+			catch (Exception e) {
+				
+			}
 			result.put("className", User.class.getName());
 			result.put("classPK", user.getUserId());
 			result.put("userId", user.getUserId());
@@ -1130,6 +1135,7 @@ public class UserActions implements UserInterface {
 					result.put("userId", applicant.getMappingUserId());
 					result.put("userName", applicant.getApplicantName());
 					result.put("mappingUserId", applicant.getMappingUserId());
+					result.put("verification", applicant.getVerification());
 
 				}
 

@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="templateNo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="newFormScript" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="formMeta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -46,7 +47,8 @@ import javax.xml.bind.annotation.XmlType;
     "templateName",
     "description",
     "templateNo",
-    "newFormScript"
+    "newFormScript",
+    "formMeta"
 })
 public class DossierTemplateDataModel {
 
@@ -57,8 +59,17 @@ public class DossierTemplateDataModel {
     protected String description;
     protected String templateNo;
     protected String newFormScript;
+    protected String formMeta;
+    
+    public String getFormMeta() {
+		return formMeta;
+	}
 
-    /**
+	public void setFormMeta(String formMeta) {
+		this.formMeta = formMeta;
+	}
+
+	/**
      * Gets the value of the dossierTemplateId property.
      * 
      * @return

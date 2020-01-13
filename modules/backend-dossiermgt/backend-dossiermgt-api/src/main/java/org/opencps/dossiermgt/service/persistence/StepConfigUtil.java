@@ -977,6 +977,268 @@ public class StepConfigUtil {
 	}
 
 	/**
+	* Returns all the step configs where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @return the matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId, String stepCode) {
+		return getPersistence().findByG_SCS(groupId, stepCode);
+	}
+
+	/**
+	* Returns a range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @return the range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end) {
+		return getPersistence().findByG_SCS(groupId, stepCode, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator) {
+		return getPersistence()
+				   .findByG_SCS(groupId, stepCode, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId, String stepCode,
+		int start, int end, OrderByComparator<StepConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_SCS(groupId, stepCode, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching step config
+	* @throws NoSuchStepConfigException if a matching step config could not be found
+	*/
+	public static StepConfig findByG_SCS_First(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchStepConfigException {
+		return getPersistence()
+				   .findByG_SCS_First(groupId, stepCode, orderByComparator);
+	}
+
+	/**
+	* Returns the first step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching step config, or <code>null</code> if a matching step config could not be found
+	*/
+	public static StepConfig fetchByG_SCS_First(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_SCS_First(groupId, stepCode, orderByComparator);
+	}
+
+	/**
+	* Returns the last step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching step config
+	* @throws NoSuchStepConfigException if a matching step config could not be found
+	*/
+	public static StepConfig findByG_SCS_Last(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchStepConfigException {
+		return getPersistence()
+				   .findByG_SCS_Last(groupId, stepCode, orderByComparator);
+	}
+
+	/**
+	* Returns the last step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching step config, or <code>null</code> if a matching step config could not be found
+	*/
+	public static StepConfig fetchByG_SCS_Last(long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_SCS_Last(groupId, stepCode, orderByComparator);
+	}
+
+	/**
+	* Returns the step configs before and after the current step config in the ordered set where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param stepConfigId the primary key of the current step config
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next step config
+	* @throws NoSuchStepConfigException if a step config with the primary key could not be found
+	*/
+	public static StepConfig[] findByG_SCS_PrevAndNext(long stepConfigId,
+		long groupId, String stepCode,
+		OrderByComparator<StepConfig> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchStepConfigException {
+		return getPersistence()
+				   .findByG_SCS_PrevAndNext(stepConfigId, groupId, stepCode,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the step configs where groupId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCodes the step codes
+	* @return the matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId, String[] stepCodes) {
+		return getPersistence().findByG_SCS(groupId, stepCodes);
+	}
+
+	/**
+	* Returns a range of all the step configs where groupId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCodes the step codes
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @return the range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId,
+		String[] stepCodes, int start, int end) {
+		return getPersistence().findByG_SCS(groupId, stepCodes, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the step configs where groupId = &#63; and stepCode = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCodes the step codes
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId,
+		String[] stepCodes, int start, int end,
+		OrderByComparator<StepConfig> orderByComparator) {
+		return getPersistence()
+				   .findByG_SCS(groupId, stepCodes, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the step configs where groupId = &#63; and stepCode = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link StepConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @param start the lower bound of the range of step configs
+	* @param end the upper bound of the range of step configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching step configs
+	*/
+	public static List<StepConfig> findByG_SCS(long groupId,
+		String[] stepCodes, int start, int end,
+		OrderByComparator<StepConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_SCS(groupId, stepCodes, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the step configs where groupId = &#63; and stepCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	*/
+	public static void removeByG_SCS(long groupId, String stepCode) {
+		getPersistence().removeByG_SCS(groupId, stepCode);
+	}
+
+	/**
+	* Returns the number of step configs where groupId = &#63; and stepCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCode the step code
+	* @return the number of matching step configs
+	*/
+	public static int countByG_SCS(long groupId, String stepCode) {
+		return getPersistence().countByG_SCS(groupId, stepCode);
+	}
+
+	/**
+	* Returns the number of step configs where groupId = &#63; and stepCode = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param stepCodes the step codes
+	* @return the number of matching step configs
+	*/
+	public static int countByG_SCS(long groupId, String[] stepCodes) {
+		return getPersistence().countByG_SCS(groupId, stepCodes);
+	}
+
+	/**
 	* Caches the step config in the entity cache if it is enabled.
 	*
 	* @param stepConfig the step config

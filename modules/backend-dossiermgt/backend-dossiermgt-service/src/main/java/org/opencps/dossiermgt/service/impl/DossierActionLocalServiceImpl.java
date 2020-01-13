@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -599,21 +600,31 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			
 		}
 		Calendar c = Calendar.getInstance();
+		List<DossierAction> lstActions = new ArrayList<DossierAction>();
+		
 		if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
 			c.setTime(now);
 			c.add(Calendar.HOUR, -valueInt);
 			
-			return findOverdue(c.getTime());
+			lstActions = findOverdue(c.getTime());
 		}
 		else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
 			c.setTime(now);
 			c.add(Calendar.HOUR, -valueInt * DossierTerm.WORKING_HOUR_PER_DAY);
 			
-			return findOverdue(c.getTime());			
+			lstActions = findOverdue(c.getTime());			
 		}
 		else {
-			return dossierActionPersistence.findByDD(now, 0l);			
+			lstActions = dossierActionPersistence.findByDD(now, 0l);			
 		}
+		List<DossierAction> results = new ArrayList<DossierAction>();
+		for (DossierAction da : lstActions) {
+			if (now.before(da.getDueDate())) {
+				results.add(da);
+			}
+		}
+		
+		return results;
 	}
 	
 	@Indexable(type = IndexableType.REINDEX)

@@ -11,6 +11,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -129,4 +130,5 @@ public interface SignatureManagement {
 	public Response updateDossierFilesBySignatureDefault(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input) throws PortalException, Exception;
+
 }

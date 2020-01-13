@@ -165,7 +165,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
-
+		_log.debug("ADD APPLICANT");
 		if (applicantId == 0) {
 
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
@@ -175,6 +175,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 
 			applicant = applicantPersistence.create(applicantId);
+			_log.debug("ADD APPLICANT: " + applicant);
 
 			Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
 
@@ -263,6 +264,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setProfile(profile);
 			applicant.setActivationCode(activationCode);
 			applicant.setTmpPass(password);
+			applicant.setVerification(0);
 
 		} else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
@@ -496,8 +498,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
+		_log.debug("BEFORE UPDATE APPLICANT");
 		applicantPersistence.update(applicant);
-
+		_log.debug("AFTER UPDATE APPLICANT");
 		return applicant;
 	}
 	
@@ -691,8 +694,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
-
-		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
+		Indexer<Applicant> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
 		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
@@ -719,8 +723,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL, ApplicantTerm.CONTACTTELNO,
-						ApplicantTerm.ADDRESS);
+				query.addFields(
+					ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL,
+					ApplicantTerm.CONTACTTELNO, ApplicantTerm.ADDRESS, ApplicantTerm.APPLICANTNAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -762,8 +767,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		if (Validator.isNotNull(applicantName)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantName);
 
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
+			query.addFields(ApplicantTerm.APPLICANTNAME);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		booleanQuery.addRequiredTerm(
+			Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 	}
@@ -777,6 +789,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
+		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
@@ -802,8 +815,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
-				query.addFields(ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL, ApplicantTerm.CONTACTTELNO,
-						ApplicantTerm.ADDRESS);
+				query.addFields(
+					ApplicantTerm.CONTACTNAME, ApplicantTerm.CONTACTEMAIL,
+					ApplicantTerm.CONTACTTELNO, ApplicantTerm.ADDRESS, ApplicantTerm.APPLICANTNAME);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -843,6 +857,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 						key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(applicantName)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantName);
+
+			query.addFields(ApplicantTerm.APPLICANTNAME);
+
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 

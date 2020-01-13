@@ -31,7 +31,6 @@ public class StatisticActionsImpl implements StatisticActions {
 //			_log.info("statusCode: "+statusCode);
 			if (Validator.isNotNull(statusCode)) {
 				total = DossierLocalServiceUtil.countLucene(params, searchContext);
-//				_log.info("total: "+total);
 			}
 		} catch (Exception e) {
 			_log.debug(e);

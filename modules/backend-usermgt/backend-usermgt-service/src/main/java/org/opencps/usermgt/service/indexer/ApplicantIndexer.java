@@ -73,7 +73,9 @@ public class ApplicantIndexer extends BaseIndexer<Applicant> {
 		document.addTextSortable(ApplicantTerm.DISTRICTNAME, object.getDistrictName());
 		document.addTextSortable(ApplicantTerm.WARDCODE, object.getWardCode());
 		document.addTextSortable(ApplicantTerm.WARDNAME, object.getWardName());
-
+		document.addTextSortable(ApplicantTerm.PROFILE, object.getProfile());
+		document.addNumberSortable(ApplicantTerm.VERIFICATION, object.getVerification());
+		
 		try {
 			if (object.getMappingUserId() > 0) {
 				User user = UserLocalServiceUtil.getUser(object.getMappingUserId());

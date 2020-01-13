@@ -64,7 +64,7 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -104,6 +104,8 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 		sb.append(userHasUpvoted);
 		sb.append(", upvotedUsers=");
 		sb.append(upvotedUsers);
+		sb.append(", opinion=");
+		sb.append(opinion);
 		sb.append("}");
 
 		return sb.toString();
@@ -208,6 +210,8 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 			commentImpl.setUpvotedUsers(upvotedUsers);
 		}
 
+		commentImpl.setOpinion(opinion);
+
 		commentImpl.resetOriginalValues();
 
 		return commentImpl;
@@ -241,6 +245,8 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 		upvoteCount = objectInput.readInt();
 		userHasUpvoted = objectInput.readUTF();
 		upvotedUsers = objectInput.readUTF();
+
+		opinion = objectInput.readBoolean();
 	}
 
 	@Override
@@ -332,6 +338,8 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 		else {
 			objectOutput.writeUTF(upvotedUsers);
 		}
+
+		objectOutput.writeBoolean(opinion);
 	}
 
 	public String uuid;
@@ -353,4 +361,5 @@ public class CommentCacheModel implements CacheModel<Comment>, Externalizable {
 	public int upvoteCount;
 	public String userHasUpvoted;
 	public String upvotedUsers;
+	public boolean opinion;
 }

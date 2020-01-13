@@ -5,10 +5,8 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -17,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ActionConfigList.ActionConfig;
@@ -82,13 +81,11 @@ import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.action.impl.WorkTimeActions;
-import org.opencps.datamgt.model.FileAttach;
-import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
-import org.opencps.dossiermgt.action.DynamicReportActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.MenuConfigActions;
 import org.opencps.dossiermgt.action.PaymentConfigActions;
@@ -100,21 +97,18 @@ import org.opencps.dossiermgt.action.impl.ActionConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.impl.DocumentTypeActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
-import org.opencps.dossiermgt.action.impl.DynamicReportActionsImpl;
 import org.opencps.dossiermgt.action.impl.MenuConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.PaymentConfigActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.impl.StepConfigActionsImpl;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.EmployeeInterface;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.EmployeeActions;
 import org.opencps.usermgt.action.impl.JobposActions;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class ProcessUpdateDBUtils {
@@ -170,6 +164,7 @@ public class ProcessUpdateDBUtils {
 		try {
 			StepConfigActions actions = new StepConfigActionsImpl();
 			List<StepConfig> stepConfigList = stepList.getStepConfig();
+			_log.debug("STEP CONFIG SIZE: " + stepConfigList.size());
 			if (stepConfigList != null && stepConfigList.size() > 0) {
 				for (StepConfig stepConfig : stepConfigList) {
 					String stepCode = stepConfig.getStepCode();
@@ -180,8 +175,10 @@ public class ProcessUpdateDBUtils {
 					String menuGroup = stepConfig.getMenuGroup();
 					String menuStepName = stepConfig.getMenuStepName();
 					String buttonConfig = stepConfig.getButtonConfig();
+					_log.debug("STEP CONFIG DETAIL: " + stepConfig + ", " + actions);
 					if (Validator.isNotNull(stepCode)) {
 						// Check record exits DB
+						_log.debug("STEP CONFIG BEFORE UPDATE: " + stepCode);
 						actions.updateStepConfigDB(userId, groupId, stepCode, stepName, stepType, dossierStatus, dossierSubStatus,
 								menuGroup, menuStepName, buttonConfig);
 					}
@@ -523,6 +520,7 @@ public class ProcessUpdateDBUtils {
 				Integer workingStatus = 1;
 				String jobTitle;
 				String roles;
+				String scope;
 				for (Employee employee : employeeList) {
 					employeeNo = employee.getEmployeeNo();
 					fullname = employee.getFullname();
@@ -534,11 +532,12 @@ public class ProcessUpdateDBUtils {
 					workingStatus = employee.getWorkingStatus();
 					jobTitle = employee.getJobTitle();
 					roles = employee.getRoles();
+					scope = employee.getScope();
 					if (Validator.isNotNull(employeeNo)) {
 						_log.info("employeeNo: "+employeeNo);
 						// Check record exits DB
 						actionEmployee.updateEmployeeDB(userId, groupId, employeeNo, fullname, title, gender, birthdate,
-								telNo, email, workingStatus, jobTitle, roles, serviceContext);
+								telNo, email, workingStatus, jobTitle, roles, scope, serviceContext);
 					}
 				}
 			}
@@ -682,7 +681,6 @@ public class ProcessUpdateDBUtils {
 	public static boolean processUpdateDynamicReport(DynamicReportList reportList, String folderPath, long groupId,
 			long userId, ServiceContext serviceContext) {
 		try {
-			DynamicReportActions actions = new DynamicReportActionsImpl();
 			//Create table ActionConfig
 			List<DynamicReport> dynamicReportList = reportList.getDynamicReport();
 			if (dynamicReportList != null && dynamicReportList.size() > 0) {
@@ -700,7 +698,7 @@ public class ProcessUpdateDBUtils {
 
 					if (Validator.isNotNull(reportCode)) {
 						// Check record exits DB
-						actions.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
+						DynamicReportLocalServiceUtil.updateDynamicReportDB(userId, groupId, reportCode, reportName, sharing, filterConfig,
 								tableConfig, userConfig, reportType);
 					}
 				}
@@ -903,10 +901,11 @@ public class ProcessUpdateDBUtils {
 				String templateName = template.getTemplateName();
 				String description = template.getDescription();
 				String newFormScript = template.getNewFormScript();
+				String formMeta = template.getFormMeta();
 				
 				// Update serviceInfo
 				DossierTemplateActions actionTemp = new DossierTemplateActionsImpl();
-				actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript, serviceContext);
+				actionTemp.updateDossierTemplateDB(userId, groupId, templateNo, templateName, description, newFormScript, formMeta, serviceContext);
 				// Update fileName
 				Parts parts = template.getParts();
 				if (parts != null) {
@@ -1559,8 +1558,16 @@ public class ProcessUpdateDBUtils {
 						groupNameEN = dictGroup.getGroupNameEN();
 						groupDescription = dictGroup.getGroupDescription();
 						//
-						actionCollection.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName, groupNameEN,
+						org.opencps.datamgt.model.DictGroup dg = actionCollection.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName, groupNameEN,
 								groupDescription, serviceContext);
+						//Process dict item group
+						org.opencps.api.v21.model.Groups.DictGroup.Items items = dictGroup.getItems();
+						for (String itemRef : items.getItemRef()) {
+							org.opencps.datamgt.model.DictItem di = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemRef, dictCollectionId, groupId);
+							if (di != null) {
+								actionCollection.updateDictItemGroupDB(userId, groupId, dg.getDictGroupId(), di.getDictItemId(), groupName, serviceContext);															
+							}
+						}
 					}
 				}
 			}

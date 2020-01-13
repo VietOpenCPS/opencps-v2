@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.rest.utils;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -14,12 +13,8 @@ import javax.ws.rs.HttpMethod;
 
 import org.opencps.dossiermgt.lgsp.model.MResult;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
-import org.opencps.dossiermgt.model.OpencpsDossierStatistic;
-import org.opencps.dossiermgt.model.OpencpsVotingStatistic;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
-import org.opencps.dossiermgt.service.OpencpsDossierStatisticLocalServiceUtil;
-import org.opencps.dossiermgt.service.OpencpsVotingStatisticLocalServiceUtil;
 
 public class LGSPRestClient {
 	private Log _log = LogFactoryUtil.getLog(LGSPRestClient.class);
@@ -149,42 +144,5 @@ public class LGSPRestClient {
 		}
 		
 		return result;		
-	}
-	
-	public MResult updateStatisticsMonth(String token, long groupId, int month, int year) {
-		MResult result = new MResult();
-		InvokeREST callRest = new InvokeREST();
-
-		OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.fetchByG_M_Y_G_D(groupId, month, year, null, null);
-		if (statistic != null) {
-			JSONObject lgspObj = OpenCPSConverter.convertStatisticsToLGSPJSON(statistic);
-			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
-				consumerAdapter, STATISTICS_BASE_PATH + "/UpdateStatistic ", lgspObj.toJSONString());
-			if (resultObj != null && resultObj.has("status")) {
-				result.setStatus(resultObj.getInt("status"));
-				result.setMessage(resultObj.getString("message"));
-			}			
-		}
-		
-		return result;
-	}
-	
-	public MResult updateVotingStatisticsMonth(String token, long groupId, int month, int year) {
-		MResult result = new MResult();
-		InvokeREST callRest = new InvokeREST();
-
-		OpencpsVotingStatistic statistic = OpencpsVotingStatisticLocalServiceUtil.fetchByG_M_Y_G_D_VC(groupId, month, year, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
-		if (statistic != null) {
-			JSONObject lgspObj = OpenCPSConverter.convertVotingStatisticsToLGSPJSON(statistic);
-			_log.info("LGSP Voting: " + lgspObj.toJSONString());
-			JSONObject resultObj = callRest.callPostAPIRaw(token, HttpMethod.POST, "application/json",
-				consumerAdapter, VOTING_STATISTICS_BASE_PATH + "/UpdateVote", lgspObj.toJSONString());
-			if (resultObj != null && resultObj.has("status")) {
-				result.setStatus(resultObj.getInt("status"));
-				result.setMessage(resultObj.getString("message"));
-			}			
-		}
-		
-		return result;
-	}	
+	}		
 }

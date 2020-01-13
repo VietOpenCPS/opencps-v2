@@ -57,4 +57,9 @@ public class CacheActionsImpl implements CacheActions{
 		cache.put(key, value, ttl);
 	}
 
+	@Override
+	public void clearCache() throws PortalException {
+		MultiVMPoolUtil.clear();
+	}
+
 }

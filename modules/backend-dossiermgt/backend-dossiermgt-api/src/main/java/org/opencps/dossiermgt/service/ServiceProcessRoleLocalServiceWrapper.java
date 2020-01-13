@@ -193,6 +193,12 @@ public class ServiceProcessRoleLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findBySPS(
+		long[] serviceProcessArr) {
+		return _serviceProcessRoleLocalService.findBySPS(serviceProcessArr);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _serviceProcessRoleLocalService.getActionableDynamicQuery();
 	}

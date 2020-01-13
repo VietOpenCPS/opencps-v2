@@ -88,6 +88,10 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfig adminProcessDelete(Long id);
 
+	@ThreadLocalCachable
+	public int countByBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode) throws PortalException;
+
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId);
 
@@ -202,6 +206,10 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceConfig fetchServiceConfigByUuidAndGroupId(String uuid,
 		long groupId);
+
+	@ThreadLocalCachable
+	public ServiceConfig findByBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

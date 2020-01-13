@@ -122,6 +122,7 @@ import javax.xml.bind.annotation.XmlType;
     "documentDate",
     "systemId",
     "viapostal",
+    "undueTime",
     "toBacklogDate",
     "backlog",
     "assignedUserIdSearch"
@@ -256,6 +257,16 @@ public class DossierSearchModel {
     protected String systemId;
     @QueryParam(value = "viapostal")
     protected Integer viapostal;
+    @QueryParam(value = "undueTime")
+    protected String undueTime;
+    
+	public String getUndueTime() {
+		return undueTime;
+	}
+
+	public void setUndueTime(String undueTime) {
+		this.undueTime = undueTime;
+	}
     @QueryParam(value = "toBacklogDate")
     protected String toBacklogDate;
     @QueryParam(value = "backlog")

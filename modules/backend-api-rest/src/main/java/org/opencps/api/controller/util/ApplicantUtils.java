@@ -1,10 +1,12 @@
 package org.opencps.api.controller.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.MappingUser;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -16,6 +18,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class ApplicantUtils {
 
@@ -47,6 +50,7 @@ public class ApplicantUtils {
 		model.setContactName(applicant.getContactName());
 		model.setContactTelNo(applicant.getContactTelNo());
 		model.setApplicantProfile(applicant.getProfile());
+		model.setVerification(applicant.getVerification());
 		
 		long mappingUserId = applicant.getMappingUserId();
 		MappingUser mappingUser = processMappingUser(mappingUserId);
@@ -68,7 +72,7 @@ public class ApplicantUtils {
 //			mappingUser.setLocking(user.getLockout());
 //		}
 //		model.setMappingUser(mappingUser);
-
+		
 		return model;
 	}
 
@@ -90,7 +94,11 @@ public class ApplicantUtils {
 			model.setApplicantName(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTNAME)));
 			model.setApplicantIdType(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDTYPE)));
 			model.setApplicantIdNo(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDNO)));
-			model.setApplicantIdDate(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDDATE)));
+			if (doc.hasField(ApplicantTerm.APPLICANTIDDATE) && Validator.isNotNull(doc.get(ApplicantTerm.APPLICANTIDDATE))) {
+				Date applicantDate = APIDateTimeUtils.convertStringToDate(doc.get(ApplicantTerm.APPLICANTIDDATE), APIDateTimeUtils._LUCENE_PATTERN);
+				String applicantIdDateText = APIDateTimeUtils.convertDateToString(applicantDate, APIDateTimeUtils._NORMAL_DATE);
+				model.setApplicantIdDate(applicantIdDateText);
+			}
 			model.setAddress(GetterUtil.getString(doc.get(ApplicantTerm.ADDRESS)));
 			model.setCityCode(GetterUtil.getString(doc.get(ApplicantTerm.CITYCODE)));
 			model.setCityName(GetterUtil.getString(doc.get(ApplicantTerm.CITYNAME)));
@@ -101,13 +109,19 @@ public class ApplicantUtils {
 			model.setContactName(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTNAME)));
 			model.setContactTelNo(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTTELNO)));
 			model.setContactEmail(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTEMAIL)));
-
+			model.setApplicantProfile(doc.get(ApplicantTerm.PROFILE));
+			
 			long mappingUserId = GetterUtil.getLong(doc.get(ApplicantTerm.MAPPINGUSERID));
+			
 			MappingUser mappingUser = processMappingUser(mappingUserId);
 			if (mappingUser != null) {
 				model.setMappingUser(mappingUser);
 			}
-
+			
+			if (doc.hasField(ApplicantTerm.VERIFICATION)) {
+				model.setVerification(GetterUtil.getInteger(doc.get(ApplicantTerm.VERIFICATION)));
+			}
+			
 			data.add(model);
 		}
 

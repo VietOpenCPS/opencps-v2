@@ -10,6 +10,9 @@
 	<bean class="org.opencps.statistic.service.impl.OpencpsDossierStatisticLocalServiceImpl" id="org.opencps.statistic.service.OpencpsDossierStatisticLocalService" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticPersistenceImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticPersistence" parent="basePersistence" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticFinderImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder" parent="basePersistence" />
+	<bean class="org.opencps.statistic.service.impl.OpencpsDossierStatisticManualLocalServiceImpl" id="org.opencps.statistic.service.OpencpsDossierStatisticManualLocalService" />
+	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticManualPersistenceImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualPersistence" parent="basePersistence" />
+	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsDossierStatisticManualFinderImpl" id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticManualFinder" parent="basePersistence" />
 	<bean class="org.opencps.statistic.service.impl.OpencpsPersonStatisticLocalServiceImpl" id="org.opencps.statistic.service.OpencpsPersonStatisticLocalService" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsPersonStatisticPersistenceImpl" id="org.opencps.statistic.service.persistence.OpencpsPersonStatisticPersistence" parent="basePersistence" />
 	<bean class="org.opencps.statistic.service.persistence.impl.OpencpsPersonStatisticFinderImpl" id="org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder" parent="basePersistence" />

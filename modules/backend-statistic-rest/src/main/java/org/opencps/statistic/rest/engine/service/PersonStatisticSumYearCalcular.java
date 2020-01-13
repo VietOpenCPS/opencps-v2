@@ -13,10 +13,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
@@ -25,9 +23,6 @@ import org.opencps.statistic.rest.dto.PersonRequest;
 import org.opencps.statistic.rest.dto.PersonResponse;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResponse;
-import org.opencps.statistic.rest.dto.VotingResultRequest;
-import org.opencps.statistic.rest.dto.VotingResultResponse;
-import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.facade.OpencpsCallGovAgencyRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.PersonStatisticFinderService;
@@ -126,31 +121,33 @@ public class PersonStatisticSumYearCalcular {
 			/* statistic by all */
 
 			String[] employeeArr = getEmployee(groupId, year);
-			for (String employeeId : employeeArr) {
+			if (employeeArr != null) {
+				for (String employeeId : employeeArr) {
 
-				try {
-					personResultRequest.setVotingCode(DossierStatisticConstants.TOTAL);
-					personResultRequest.setEmployeeId(GetterUtil.getLong(employeeId));
-					personResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
-					
-					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+					try {
+						personResultRequest.setVotingCode(DossierStatisticConstants.TOTAL);
+						personResultRequest.setEmployeeId(GetterUtil.getLong(employeeId));
+						personResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
+						
+						//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-					PersonResponse personResponse = personStatisticFinderService
-							.finderPersonStatisticList(personResultRequest);
+						PersonResponse personResponse = personStatisticFinderService
+								.finderPersonStatisticList(personResultRequest);
 
-					if (personResponse != null) {
-						List<PersonStatisticData> personStatisticList = personResponse.getData();
-						if (personStatisticList != null && personStatisticList.size() > 0) {
-							PersonStatisticData personData = personStatisticList.get(0);
-							if (personData != null) {
-								updateDetailData(companyId, groupId, 0, year, null, null,
-										GetterUtil.getLong(employeeId), null, null, personStatisticList, personData);
+						if (personResponse != null) {
+							List<PersonStatisticData> personStatisticList = personResponse.getData();
+							if (personStatisticList != null && personStatisticList.size() > 0) {
+								PersonStatisticData personData = personStatisticList.get(0);
+								if (personData != null) {
+									updateDetailData(companyId, groupId, 0, year, null, null,
+											GetterUtil.getLong(employeeId), null, null, personStatisticList, personData);
+								}
 							}
 						}
+					} catch (Exception e) {
+						_log.error(e);
 					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
+				}				
 			}
 		}
 
@@ -160,37 +157,39 @@ public class PersonStatisticSumYearCalcular {
 
 			String[] employeeArr = getEmployee(groupId, year);
 			List<VotingResponse> votingList = getVotingCode(groupId, year);
-			for (String employeeId : employeeArr) {
-				personResultRequest.setEmployeeId(GetterUtil.getLong(employeeId));
-				if (votingList != null && votingList.size() > 0) {
-					for (VotingResponse voting : votingList) {
-						personResultRequest.setVotingCode(voting.getItemCode());
+			if (employeeArr != null) {
+				for (String employeeId : employeeArr) {
+					personResultRequest.setEmployeeId(GetterUtil.getLong(employeeId));
+					if (votingList != null && votingList.size() > 0) {
+						for (VotingResponse voting : votingList) {
+							personResultRequest.setVotingCode(voting.getItemCode());
 
-						try {
+							try {
 
-							personResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
+								personResultRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);
 
-							// DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
+								// DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-							PersonResponse personResponse = personStatisticFinderService
-									.finderPersonStatisticList(personResultRequest);
+								PersonResponse personResponse = personStatisticFinderService
+										.finderPersonStatisticList(personResultRequest);
 
-							if (personResponse != null) {
-								List<PersonStatisticData> personStatisticList = personResponse.getData();
-								if (personStatisticList != null && personStatisticList.size() > 0) {
-									PersonStatisticData personData = personStatisticList.get(0);
-									if (personData != null) {
-										updateDetailData(companyId, groupId, 0, year, voting.getItemCode(),
-												voting.getItemName(), GetterUtil.getLong(employeeId), null, null,
-												personStatisticList, personData);
+								if (personResponse != null) {
+									List<PersonStatisticData> personStatisticList = personResponse.getData();
+									if (personStatisticList != null && personStatisticList.size() > 0) {
+										PersonStatisticData personData = personStatisticList.get(0);
+										if (personData != null) {
+											updateDetailData(companyId, groupId, 0, year, voting.getItemCode(),
+													voting.getItemName(), GetterUtil.getLong(employeeId), null, null,
+													personStatisticList, personData);
+										}
 									}
 								}
+							} catch (Exception e) {
+								_log.error(e);
 							}
-						} catch (Exception e) {
-							_log.error(e);
 						}
 					}
-				}
+				}				
 			}
 		}
 

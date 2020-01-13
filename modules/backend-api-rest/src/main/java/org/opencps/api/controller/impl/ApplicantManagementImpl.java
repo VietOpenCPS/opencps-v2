@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -11,6 +12,11 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -58,12 +64,17 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -185,7 +196,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.APPLICANTIDTYPE, query.getType());
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
-
+			params.put(ApplicantTerm.APPLICANTNAME, query.getApplicantName());
+			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
@@ -267,12 +279,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
 			} else {
 				if (Validator.isNull(requestUser)) {
-					throw new NoSuchUserException();
+//					throw new NoSuchUserException();
 				} else {
 					// check userLogin is equal userRequest get detail
 					if (requestUser.getUserId() == user.getUserId()) {
@@ -280,8 +293,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					}
 				}
 			}
+			if (employee != null && requestUser == null) {
+				isAllowed = true;
+			}
 			
-
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String address = HtmlUtil.escape(input.getAddress());
 			String cityCode = HtmlUtil.escape(input.getCityCode());
@@ -877,6 +892,75 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				return Response.status(200).entity(employeeAccountModel).build();
 
 			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response resolveConflict(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Boolean reindex) {
+		BackendAuth auth = new BackendAuthImpl();
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create("modified_sortable", Sort.STRING_TYPE,
+					true) };
+
+			Hits hits = null;
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(serviceContext.getCompanyId());
+
+			try {
+
+				hits = ApplicantLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, searchContext);
+
+				List<Document> lstDocs = hits.toList();
+				Indexer<Applicant> indexer =
+						IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
+				for (Document document : lstDocs) {
+					long dossierId =
+						GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+					long companyId =
+						GetterUtil.getLong(document.get(Field.COMPANY_ID));
+					String uid = document.get(Field.UID);
+					if (reindex) {
+						indexer.delete(companyId, uid);
+					}
+					else {
+						Dossier oldDossier =
+							DossierLocalServiceUtil.fetchDossier(dossierId);
+						if (oldDossier == null) {
+							try {
+								indexer.delete(companyId, uid);
+							}
+							catch (SearchException e) {
+								_log.error(e);
+							}
+						}
+					}
+				}	
+				
+				List<Applicant> lstApps = ApplicantLocalServiceUtil.getApplicants(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				for (Applicant applicant : lstApps) {
+					indexer.reindex(applicant);
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+
+
+			return Response.status(200).entity("{}").build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

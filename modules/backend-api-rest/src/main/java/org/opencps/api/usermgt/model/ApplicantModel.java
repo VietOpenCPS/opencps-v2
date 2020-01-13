@@ -70,7 +70,8 @@ import javax.xml.bind.annotation.XmlType;
     "contactTelNo",
     "contactEmail",
     "mappingUser",
-    "applicantProfile"
+    "applicantProfile",
+    "verification"
 })
 
 @XmlRootElement(name = "ApplicantModel")
@@ -95,8 +96,17 @@ public class ApplicantModel {
     protected String contactEmail;
     protected MappingUser mappingUser;
     protected String applicantProfile;
+    protected int verification;
     
-    public String getApplicantProfile() {
+	public int getVerification() {
+		return verification;
+	}
+
+	public void setVerification(int verification) {
+		this.verification = verification;
+	}
+
+	public String getApplicantProfile() {
 		return applicantProfile;
 	}
 

@@ -73,6 +73,14 @@ public interface OneGateController {
 			@QueryParam("dossierTemplateNo") String dossierTemplateNo,
 			@QueryParam("dossierActionId") String dossierActionId);
 
+	@GET
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Path("/serviceconfigs/govagencies")
+	public Response getGovAgencies(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);
+	
 //	@GET
 //	@Path("/token")
 //	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

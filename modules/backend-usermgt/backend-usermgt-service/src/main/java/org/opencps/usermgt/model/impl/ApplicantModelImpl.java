@@ -96,6 +96,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			{ "profile", Types.VARCHAR },
 			{ "tmpPass", Types.VARCHAR },
 			{ "representativeEnterprise", Types.VARCHAR },
+			{ "verification", Types.INTEGER },
 			{ "mappingClassName", Types.VARCHAR },
 			{ "mappingClassPK", Types.VARCHAR }
 		};
@@ -130,11 +131,12 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		TABLE_COLUMNS_MAP.put("profile", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("tmpPass", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("representativeEnterprise", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("verification", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("mappingClassName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("mappingClassPK", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_applicant (uuid_ VARCHAR(75) null,applicantId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address STRING null,cityCode VARCHAR(75) null,cityName VARCHAR(500) null,districtCode VARCHAR(75) null,districtName VARCHAR(500) null,wardCode VARCHAR(75) null,wardName VARCHAR(500) null,contactName VARCHAR(500) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(500) null,mappingUserId LONG,activationCode VARCHAR(75) null,lock_ BOOLEAN,profile TEXT null,tmpPass VARCHAR(75) null,representativeEnterprise VARCHAR(200) null,mappingClassName VARCHAR(75) null,mappingClassPK VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_applicant (uuid_ VARCHAR(75) null,applicantId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,applicantName VARCHAR(75) null,applicantIdType VARCHAR(75) null,applicantIdNo VARCHAR(75) null,applicantIdDate DATE null,address VARCHAR(75) null,cityCode VARCHAR(75) null,cityName VARCHAR(75) null,districtCode VARCHAR(75) null,districtName VARCHAR(75) null,wardCode VARCHAR(75) null,wardName VARCHAR(75) null,contactName VARCHAR(75) null,contactTelNo VARCHAR(75) null,contactEmail VARCHAR(75) null,mappingUserId LONG,activationCode VARCHAR(75) null,lock_ BOOLEAN,profile VARCHAR(75) null,tmpPass VARCHAR(75) null,representativeEnterprise VARCHAR(75) null,verification INTEGER,mappingClassName VARCHAR(75) null,mappingClassPK VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_applicant";
 	public static final String ORDER_BY_JPQL = " ORDER BY applicant.applicantName ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_applicant.applicantName ASC";
@@ -225,10 +227,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		attributes.put("contactEmail", getContactEmail());
 		attributes.put("mappingUserId", getMappingUserId());
 		attributes.put("activationCode", getActivationCode());
-		attributes.put("lock_", isLock_());
+		attributes.put("lock_", getLock_());
 		attributes.put("profile", getProfile());
 		attributes.put("tmpPass", getTmpPass());
 		attributes.put("representativeEnterprise", getRepresentativeEnterprise());
+		attributes.put("verification", getVerification());
 		attributes.put("mappingClassName", getMappingClassName());
 		attributes.put("mappingClassPK", getMappingClassPK());
 
@@ -407,6 +410,12 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 		if (representativeEnterprise != null) {
 			setRepresentativeEnterprise(representativeEnterprise);
+		}
+
+		Integer verification = (Integer)attributes.get("verification");
+
+		if (verification != null) {
+			setVerification(verification);
 		}
 
 		String mappingClassName = (String)attributes.get("mappingClassName");
@@ -867,17 +876,12 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	}
 
 	@Override
-	public boolean getLock_() {
+	public Boolean getLock_() {
 		return _lock_;
 	}
 
 	@Override
-	public boolean isLock_() {
-		return _lock_;
-	}
-
-	@Override
-	public void setLock_(boolean lock_) {
+	public void setLock_(Boolean lock_) {
 		_lock_ = lock_;
 	}
 
@@ -924,6 +928,16 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	@Override
 	public void setRepresentativeEnterprise(String representativeEnterprise) {
 		_representativeEnterprise = representativeEnterprise;
+	}
+
+	@Override
+	public Integer getVerification() {
+		return _verification;
+	}
+
+	@Override
+	public void setVerification(Integer verification) {
+		_verification = verification;
 	}
 
 	@Override
@@ -1037,10 +1051,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		applicantImpl.setContactEmail(getContactEmail());
 		applicantImpl.setMappingUserId(getMappingUserId());
 		applicantImpl.setActivationCode(getActivationCode());
-		applicantImpl.setLock_(isLock_());
+		applicantImpl.setLock_(getLock_());
 		applicantImpl.setProfile(getProfile());
 		applicantImpl.setTmpPass(getTmpPass());
 		applicantImpl.setRepresentativeEnterprise(getRepresentativeEnterprise());
+		applicantImpl.setVerification(getVerification());
 		applicantImpl.setMappingClassName(getMappingClassName());
 		applicantImpl.setMappingClassPK(getMappingClassPK());
 
@@ -1303,7 +1318,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			applicantCacheModel.activationCode = null;
 		}
 
-		applicantCacheModel.lock_ = isLock_();
+		applicantCacheModel.lock_ = getLock_();
 
 		applicantCacheModel.profile = getProfile();
 
@@ -1330,6 +1345,8 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			applicantCacheModel.representativeEnterprise = null;
 		}
 
+		applicantCacheModel.verification = getVerification();
+
 		applicantCacheModel.mappingClassName = getMappingClassName();
 
 		String mappingClassName = applicantCacheModel.mappingClassName;
@@ -1351,7 +1368,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(61);
+		StringBundler sb = new StringBundler(63);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1402,13 +1419,15 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append(", activationCode=");
 		sb.append(getActivationCode());
 		sb.append(", lock_=");
-		sb.append(isLock_());
+		sb.append(getLock_());
 		sb.append(", profile=");
 		sb.append(getProfile());
 		sb.append(", tmpPass=");
 		sb.append(getTmpPass());
 		sb.append(", representativeEnterprise=");
 		sb.append(getRepresentativeEnterprise());
+		sb.append(", verification=");
+		sb.append(getVerification());
 		sb.append(", mappingClassName=");
 		sb.append(getMappingClassName());
 		sb.append(", mappingClassPK=");
@@ -1420,7 +1439,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(94);
+		StringBundler sb = new StringBundler(97);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Applicant");
@@ -1524,7 +1543,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lock_</column-name><column-value><![CDATA[");
-		sb.append(isLock_());
+		sb.append(getLock_());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>profile</column-name><column-value><![CDATA[");
@@ -1537,6 +1556,10 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append(
 			"<column><column-name>representativeEnterprise</column-name><column-value><![CDATA[");
 		sb.append(getRepresentativeEnterprise());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>verification</column-name><column-value><![CDATA[");
+		sb.append(getVerification());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>mappingClassName</column-name><column-value><![CDATA[");
@@ -1592,10 +1615,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	private long _originalMappingUserId;
 	private boolean _setOriginalMappingUserId;
 	private String _activationCode;
-	private boolean _lock_;
+	private Boolean _lock_;
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
+	private Integer _verification;
 	private String _mappingClassName;
 	private String _originalMappingClassName;
 	private String _mappingClassPK;

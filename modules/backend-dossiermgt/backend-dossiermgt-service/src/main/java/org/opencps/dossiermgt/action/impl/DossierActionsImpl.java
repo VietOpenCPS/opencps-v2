@@ -103,6 +103,8 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import backend.auth.api.exception.ErrorMsgModel;
@@ -726,7 +728,7 @@ public class DossierActionsImpl implements DossierActions {
 									lstStepRoles.add(psr);
 								}
 							}
-							lstUser.addAll(processRoleListUser(lstStepRoles, serviceProcessId));
+							lstUser.addAll(processRoleListUser(dossier, lstStepRoles, serviceProcessId));
 						}						
 					}
 					if (lstUser != null && !lstUser.isEmpty()) {
@@ -3305,10 +3307,16 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	}
 
 	// LamTV_Process role list user
-	private List<User> processRoleListUser(List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
+	private List<User> processRoleListUser(Dossier dossier, List<ProcessStepRole> processStepRoleList, long serviceProcessId) {
 		List<User> lstUser = null;
 		// Check roles
 		_log.debug("processStepRoleList: "+processStepRoleList);
+		Map<Long, Employee> mapEmps = new HashMap<Long, Employee>();
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG(dossier.getGroupId());
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+		}
+		
 		if (processStepRoleList != null && processStepRoleList.size() > 0) {
 			_log.debug("processStepRoleList.size(): "+processStepRoleList.size());
 			lstUser = new ArrayList<User>();
@@ -3320,12 +3328,17 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
 						if (!user.isLockout() && user.isActive()) {
-							HashMap<String, Object> moderator = new HashMap<>();
-							moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
-							user.setModelAttributes(moderator);
-							user.setModelAttributes(assigned);
+							if (mapEmps.containsKey(user.getUserId())) {
+								Employee e = mapEmps.get(user.getUserId());
+								if (checkGovDossierEmployee(dossier, e)) {
+									HashMap<String, Object> moderator = new HashMap<>();
+									moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
+									user.setModelAttributes(moderator);
+									user.setModelAttributes(assigned);
 
-							lstUser.add(user);
+									lstUser.add(user);
+								}
+							}
 						}
 					}
 				}
@@ -3357,26 +3370,43 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		return lstUser;
 	}
 
+	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
+		if (e != null && (Validator.isNull(e.getScope()) || (dossier.getGovAgencyCode().contentEquals(e.getScope())))) {
+			return true;
+		}		
+		
+		return false;
+	}
+
 	private List<User> processRoleAsStepListUser(Dossier dossier, String stepCode, long serviceProcessId, ProcessStep processStep, 
 			List<ProcessStepRole> processStepRoleList) {
 		List<User> lstUser = null;
 		// Check roles		
 		lstUser = new ArrayList<User>();
-
+		Map<Long, Employee> mapEmps = new HashMap<Long, Employee>();
+		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG(dossier.getGroupId());
+		for (Employee e : lstEmps) {
+			mapEmps.put(e.getMappingUserId(), e);
+		}
 //		List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 //				.findByP_S_ID(processStep.getProcessStepId());
 		for (ProcessStepRole role : processStepRoleList) {
 			List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 			for (User u : lstUsers) {
 				if (!u.isLockout() && u.isActive()) {
-					HashMap<String, Object> assigned = new HashMap<>();
-					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
-					HashMap<String, Object> moderator = new HashMap<>();
-					moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
-					u.setModelAttributes(moderator);
-					u.setModelAttributes(assigned);
+					if (mapEmps.containsKey(u.getUserId())) {
+						Employee e = mapEmps.get(u.getUserId());
+						if (checkGovDossierEmployee(dossier, e)) {
+							HashMap<String, Object> assigned = new HashMap<>();
+							assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
+							HashMap<String, Object> moderator = new HashMap<>();
+							moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
+							u.setModelAttributes(moderator);
+							u.setModelAttributes(assigned);
 
-					lstUser.add(u);
+							lstUser.add(u);							
+						}
+					}
 				}
 			}
 		}
@@ -3391,14 +3421,19 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 					for (User u : lstUsers) {
 						if (!u.isLockout() && u.isActive()) {
-							HashMap<String, Object> assigned = new HashMap<>();
-							assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
-							HashMap<String, Object> moderator = new HashMap<>();
-							moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
-							u.setModelAttributes(moderator);
-							u.setModelAttributes(assigned);
+							if (mapEmps.containsKey(u.getUserId())) {
+								Employee e = mapEmps.get(u.getUserId());
+								if (checkGovDossierEmployee(dossier, e)) {
+									HashMap<String, Object> assigned = new HashMap<>();
+									assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
+									HashMap<String, Object> moderator = new HashMap<>();
+									moderator.put(ProcessStepRoleTerm.MODERATOR, role.getModerator());
+									u.setModelAttributes(moderator);
+									u.setModelAttributes(assigned);
 
-							lstUser.add(u);
+									lstUser.add(u);
+								}
+							}
 						}
 					}
 				}
@@ -3635,7 +3670,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	private String checkPaymentMethod(int mt) {
 		String pmMethod = "";
 		if (mt == 1) {
-			pmMethod = "Chuyển khoản";//KeyPay
+			pmMethod = "KeyPay";//KeyPay
 		} else if (mt == 2) {
 			pmMethod = "Chuyển khoản";
 		} else if (mt == 3) {
@@ -3682,7 +3717,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							lstStepRoles.add(psr);
 						}
 					}
-					lstUser.addAll(processRoleListUser(lstStepRoles, ps.getServiceProcessId()));
+					lstUser.addAll(processRoleListUser(dossier, lstStepRoles, ps.getServiceProcessId()));
 				}						
 			}
 		}

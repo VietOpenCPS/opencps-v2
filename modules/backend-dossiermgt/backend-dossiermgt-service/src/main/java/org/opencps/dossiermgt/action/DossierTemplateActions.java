@@ -69,4 +69,10 @@ public interface DossierTemplateActions {
 
 	public boolean deleteAllDossierPart(long userId, long groupId, String templateNo, ServiceContext serviceContext);
 
+	public DossierTemplate updateDossierTemplate(long groupId, long dossierTemplateId, String templateName,
+			String templateNo, String description, String newFormScript, String formMeta, ServiceContext context) throws PortalException;
+	
+	public void updateDossierTemplateDB(long userId, long groupId, String templateNo, String templateName, String description,
+			String newFormScript, String formMeta,
+			ServiceContext serviceContext) throws PortalException;
 }

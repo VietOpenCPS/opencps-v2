@@ -134,7 +134,18 @@ public class UsersUserItem {
 
 	@JsonProperty("applicantProfile")
 	private String applicantProfile = null;
+
+	@JsonProperty("verification")
+	private String verification = null;
 	
+	public String getVerification() {
+		return verification;
+	}
+
+	public void setVerification(String verification) {
+		this.verification = verification;
+	}
+
 	public String getApplicantProfile() {
 		return applicantProfile;
 	}

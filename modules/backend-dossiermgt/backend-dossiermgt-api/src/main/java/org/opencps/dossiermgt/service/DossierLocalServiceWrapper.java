@@ -95,6 +95,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
+		return _dossierLocalService.countByG_UID_DS(groupId, userId,
+			dossierStatus);
+	}
+
+	@Override
 	public int countByGroupAndOriginDossierNo(long groupId,
 		String originDossierNo) {
 		return _dossierLocalService.countByGroupAndOriginDossierNo(groupId,
@@ -330,6 +336,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
 		long groupId, long groupDossierId) {
 		return _dossierLocalService.findByG_GDID(groupId, groupDossierId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_UID_DS(
+		long groupId, long userId, String dossierStatus) {
+		return _dossierLocalService.findByG_UID_DS(groupId, userId,
+			dossierStatus);
 	}
 
 	@Override

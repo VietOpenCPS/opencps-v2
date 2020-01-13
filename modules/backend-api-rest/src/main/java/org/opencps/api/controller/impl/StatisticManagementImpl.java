@@ -216,10 +216,21 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (isAdmin) {
 			}
 			else {
-				String permission = user.getUserId() + StringPool.UNDERLINE + "write";
-				params.put(DossierTerm.MAPPING_PERMISSION, permission);
+				//???
+				if (!ownerBoolean) {
+					String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+					params.put(DossierTerm.MAPPING_PERMISSION, permission);					
+				}
 			}
-
+			if (Validator.isNotNull(query.getAgency())) {
+				
+			}
+			else {
+				Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (e != null && !Validator.isNull(e.getScope())) {
+					params.put(DossierTerm.AGENCY, e.getScope());
+				}
+			}
 			String stepCode = query.getStep();
 //			_log.info("STEPCODE: "+stepCode);
 			if (Validator.isNotNull(stepCode)) {
@@ -445,11 +456,18 @@ public class StatisticManagementImpl implements StatisticManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			long userId = user.getUserId();
 			_log.debug("userId: " + userId);
-
+			
 			// Declare params
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.USER_ID, String.valueOf(userId));
+
+			//Count if employee scope
+			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if (e != null && !Validator.isNull(e.getScope())) {
+				params.put(DossierTerm.AGENCY, e.getScope());
+			}
+			
 			// boolean ownerBoolean = GetterUtil.getBoolean(query.getOwner());
 			// if (ownerBoolean) {
 			// params.put(DossierTerm.OWNER, String.valueOf(true));

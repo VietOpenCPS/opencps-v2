@@ -331,5 +331,15 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-					
+		
+	<xsd:element name="InformDossierInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="referenceUid" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="receiveDate" type="xsd:long" minOccurs="0" />
+				<xsd:element name="dueDate" type="xsd:long" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>					
 </xsd:schema>

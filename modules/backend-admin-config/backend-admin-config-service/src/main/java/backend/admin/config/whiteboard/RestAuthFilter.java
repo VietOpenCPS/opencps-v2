@@ -63,7 +63,6 @@ import org.osgi.service.component.annotations.Component;
 )
 public class RestAuthFilter implements Filter {
 	Log _log = LogFactoryUtil.getLog(RestAuthFilter.class);
-	
 	public final static String P_AUTH = "Token";
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";

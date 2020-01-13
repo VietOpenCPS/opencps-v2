@@ -78,6 +78,7 @@ public class CommentWrapper implements Comment, ModelWrapper<Comment> {
 		attributes.put("upvoteCount", getUpvoteCount());
 		attributes.put("userHasUpvoted", getUserHasUpvoted());
 		attributes.put("upvotedUsers", getUpvotedUsers());
+		attributes.put("opinion", isOpinion());
 
 		return attributes;
 	}
@@ -196,6 +197,12 @@ public class CommentWrapper implements Comment, ModelWrapper<Comment> {
 
 		if (upvotedUsers != null) {
 			setUpvotedUsers(upvotedUsers);
+		}
+
+		Boolean opinion = (Boolean)attributes.get("opinion");
+
+		if (opinion != null) {
+			setOpinion(opinion);
 		}
 	}
 
@@ -325,6 +332,16 @@ public class CommentWrapper implements Comment, ModelWrapper<Comment> {
 	}
 
 	/**
+	* Returns the opinion of this comment.
+	*
+	* @return the opinion of this comment
+	*/
+	@Override
+	public boolean getOpinion() {
+		return _comment.getOpinion();
+	}
+
+	/**
 	* Returns the parent of this comment.
 	*
 	* @return the parent of this comment
@@ -447,6 +464,16 @@ public class CommentWrapper implements Comment, ModelWrapper<Comment> {
 	@Override
 	public boolean isNew() {
 		return _comment.isNew();
+	}
+
+	/**
+	* Returns <code>true</code> if this comment is opinion.
+	*
+	* @return <code>true</code> if this comment is opinion; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isOpinion() {
+		return _comment.isOpinion();
 	}
 
 	@Override
@@ -588,6 +615,16 @@ public class CommentWrapper implements Comment, ModelWrapper<Comment> {
 	@Override
 	public void setNew(boolean n) {
 		_comment.setNew(n);
+	}
+
+	/**
+	* Sets whether this comment is opinion.
+	*
+	* @param opinion the opinion of this comment
+	*/
+	@Override
+	public void setOpinion(boolean opinion) {
+		_comment.setOpinion(opinion);
 	}
 
 	/**

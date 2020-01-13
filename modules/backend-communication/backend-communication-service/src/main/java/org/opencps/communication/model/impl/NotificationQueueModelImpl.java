@@ -124,10 +124,13 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(backend.communication.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.communication.model.NotificationQueue"),
 			true);
-	public static final long EXPIREDATE_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long NOTIFICATIONTYPE_COLUMN_BITMASK = 4L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
+	public static final long CLASSNAME_COLUMN_BITMASK = 1L;
+	public static final long CLASSPK_COLUMN_BITMASK = 2L;
+	public static final long EXPIREDATE_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long NOTIFICATIONTYPE_COLUMN_BITMASK = 16L;
+	public static final long TOEMAIL_COLUMN_BITMASK = 32L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.communication.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.communication.model.NotificationQueue"));
 
@@ -452,7 +455,17 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public void setClassName(String className) {
+		_columnBitmask |= CLASSNAME_COLUMN_BITMASK;
+
+		if (_originalClassName == null) {
+			_originalClassName = _className;
+		}
+
 		_className = className;
+	}
+
+	public String getOriginalClassName() {
+		return GetterUtil.getString(_originalClassName);
 	}
 
 	@Override
@@ -467,7 +480,17 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public void setClassPK(String classPK) {
+		_columnBitmask |= CLASSPK_COLUMN_BITMASK;
+
+		if (_originalClassPK == null) {
+			_originalClassPK = _classPK;
+		}
+
 		_classPK = classPK;
+	}
+
+	public String getOriginalClassPK() {
+		return GetterUtil.getString(_originalClassPK);
 	}
 
 	@Override
@@ -553,7 +576,17 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public void setToEmail(String toEmail) {
+		_columnBitmask |= TOEMAIL_COLUMN_BITMASK;
+
+		if (_originalToEmail == null) {
+			_originalToEmail = _toEmail;
+		}
+
 		_toEmail = toEmail;
+	}
+
+	public String getOriginalToEmail() {
+		return GetterUtil.getString(_originalToEmail);
 	}
 
 	@Override
@@ -718,6 +751,12 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		notificationQueueModelImpl._setModifiedDate = false;
 
 		notificationQueueModelImpl._originalNotificationType = notificationQueueModelImpl._notificationType;
+
+		notificationQueueModelImpl._originalClassName = notificationQueueModelImpl._className;
+
+		notificationQueueModelImpl._originalClassPK = notificationQueueModelImpl._classPK;
+
+		notificationQueueModelImpl._originalToEmail = notificationQueueModelImpl._toEmail;
 
 		notificationQueueModelImpl._originalExpireDate = notificationQueueModelImpl._expireDate;
 
@@ -997,12 +1036,15 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	private String _notificationType;
 	private String _originalNotificationType;
 	private String _className;
+	private String _originalClassName;
 	private String _classPK;
+	private String _originalClassPK;
 	private String _payload;
 	private String _fromUsername;
 	private String _toUsername;
 	private long _toUserId;
 	private String _toEmail;
+	private String _originalToEmail;
 	private String _toTelNo;
 	private Date _publicationDate;
 	private Date _expireDate;

@@ -76,6 +76,10 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="reportType"></finder-column>
 		</finder>
+		<finder return-type="DynamicReport" name="F_GID_CODE">
+			<finder-column name="groupId" />
+			<finder-column name="reportCode" />
+		</finder>
 		
 	</entity>
 	

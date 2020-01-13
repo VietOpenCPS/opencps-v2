@@ -87,7 +87,8 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			{ "pings", Types.VARCHAR },
 			{ "upvoteCount", Types.INTEGER },
 			{ "userHasUpvoted", Types.VARCHAR },
-			{ "upvotedUsers", Types.VARCHAR }
+			{ "upvotedUsers", Types.VARCHAR },
+			{ "opinion", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -111,9 +112,10 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		TABLE_COLUMNS_MAP.put("upvoteCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("userHasUpvoted", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("upvotedUsers", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("opinion", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_comment (uuid_ VARCHAR(75) null,commentId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,fullname VARCHAR(75) null,email VARCHAR(75) null,parent LONG,content VARCHAR(75) null,fileEntryId LONG,pings VARCHAR(75) null,upvoteCount INTEGER,userHasUpvoted VARCHAR(75) null,upvotedUsers VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_comment (uuid_ VARCHAR(75) null,commentId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,fullname VARCHAR(75) null,email VARCHAR(75) null,parent LONG,content VARCHAR(75) null,fileEntryId LONG,pings VARCHAR(75) null,upvoteCount INTEGER,userHasUpvoted VARCHAR(75) null,upvotedUsers VARCHAR(75) null,opinion BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_comment";
 	public static final String ORDER_BY_JPQL = " ORDER BY comment.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_comment.modifiedDate ASC";
@@ -129,10 +131,14 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(backend.feedback.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.backend.feedback.model.Comment"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+	public static final long CLASSNAME_COLUMN_BITMASK = 1L;
+	public static final long CLASSPK_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long OPINION_COLUMN_BITMASK = 16L;
+	public static final long USERID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.feedback.service.util.ServiceProps.get(
 				"lock.expiration.time.backend.feedback.model.Comment"));
 
@@ -192,6 +198,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		attributes.put("upvoteCount", getUpvoteCount());
 		attributes.put("userHasUpvoted", getUserHasUpvoted());
 		attributes.put("upvotedUsers", getUpvotedUsers());
+		attributes.put("opinion", isOpinion());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -314,6 +321,12 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		if (upvotedUsers != null) {
 			setUpvotedUsers(upvotedUsers);
 		}
+
+		Boolean opinion = (Boolean)attributes.get("opinion");
+
+		if (opinion != null) {
+			setOpinion(opinion);
+		}
 	}
 
 	@Override
@@ -400,6 +413,14 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 	@Override
 	public void setUserId(long userId) {
+		_columnBitmask |= USERID_COLUMN_BITMASK;
+
+		if (!_setOriginalUserId) {
+			_setOriginalUserId = true;
+
+			_originalUserId = _userId;
+		}
+
 		_userId = userId;
 	}
 
@@ -417,6 +438,10 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 	@Override
 	public void setUserUuid(String userUuid) {
+	}
+
+	public long getOriginalUserId() {
+		return _originalUserId;
 	}
 
 	@Override
@@ -474,7 +499,17 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 	@Override
 	public void setClassName(String className) {
+		_columnBitmask |= CLASSNAME_COLUMN_BITMASK;
+
+		if (_originalClassName == null) {
+			_originalClassName = _className;
+		}
+
 		_className = className;
+	}
+
+	public String getOriginalClassName() {
+		return GetterUtil.getString(_originalClassName);
 	}
 
 	@Override
@@ -489,7 +524,17 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 	@Override
 	public void setClassPK(String classPK) {
+		_columnBitmask |= CLASSPK_COLUMN_BITMASK;
+
+		if (_originalClassPK == null) {
+			_originalClassPK = _classPK;
+		}
+
 		_classPK = classPK;
+	}
+
+	public String getOriginalClassPK() {
+		return GetterUtil.getString(_originalClassPK);
 	}
 
 	@Override
@@ -613,6 +658,33 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 	}
 
 	@Override
+	public boolean getOpinion() {
+		return _opinion;
+	}
+
+	@Override
+	public boolean isOpinion() {
+		return _opinion;
+	}
+
+	@Override
+	public void setOpinion(boolean opinion) {
+		_columnBitmask |= OPINION_COLUMN_BITMASK;
+
+		if (!_setOriginalOpinion) {
+			_setOriginalOpinion = true;
+
+			_originalOpinion = _opinion;
+		}
+
+		_opinion = opinion;
+	}
+
+	public boolean getOriginalOpinion() {
+		return _originalOpinion;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Comment.class.getName()));
@@ -668,6 +740,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		commentImpl.setUpvoteCount(getUpvoteCount());
 		commentImpl.setUserHasUpvoted(getUserHasUpvoted());
 		commentImpl.setUpvotedUsers(getUpvotedUsers());
+		commentImpl.setOpinion(isOpinion());
 
 		commentImpl.resetOriginalValues();
 
@@ -738,7 +811,19 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 		commentModelImpl._setOriginalGroupId = false;
 
+		commentModelImpl._originalUserId = commentModelImpl._userId;
+
+		commentModelImpl._setOriginalUserId = false;
+
 		commentModelImpl._setModifiedDate = false;
+
+		commentModelImpl._originalClassName = commentModelImpl._className;
+
+		commentModelImpl._originalClassPK = commentModelImpl._classPK;
+
+		commentModelImpl._originalOpinion = commentModelImpl._opinion;
+
+		commentModelImpl._setOriginalOpinion = false;
 
 		commentModelImpl._columnBitmask = 0;
 	}
@@ -859,12 +944,14 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			commentCacheModel.upvotedUsers = null;
 		}
 
+		commentCacheModel.opinion = isOpinion();
+
 		return commentCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -904,6 +991,8 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		sb.append(getUserHasUpvoted());
 		sb.append(", upvotedUsers=");
 		sb.append(getUpvotedUsers());
+		sb.append(", opinion=");
+		sb.append(isOpinion());
 		sb.append("}");
 
 		return sb.toString();
@@ -911,7 +1000,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(61);
+		StringBundler sb = new StringBundler(64);
 
 		sb.append("<model><model-name>");
 		sb.append("backend.feedback.model.Comment");
@@ -993,6 +1082,10 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 			"<column><column-name>upvotedUsers</column-name><column-value><![CDATA[");
 		sb.append(getUpvotedUsers());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>opinion</column-name><column-value><![CDATA[");
+		sb.append(isOpinion());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1013,12 +1106,16 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;
 	private long _userId;
+	private long _originalUserId;
+	private boolean _setOriginalUserId;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _className;
+	private String _originalClassName;
 	private String _classPK;
+	private String _originalClassPK;
 	private String _fullname;
 	private String _email;
 	private long _parent;
@@ -1028,6 +1125,9 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 	private int _upvoteCount;
 	private String _userHasUpvoted;
 	private String _upvotedUsers;
+	private boolean _opinion;
+	private boolean _originalOpinion;
+	private boolean _setOriginalOpinion;
 	private long _columnBitmask;
 	private Comment _escapedModel;
 }

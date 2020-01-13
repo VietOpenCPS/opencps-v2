@@ -14,17 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.constants.EmployeeTerm;
-import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
-import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
-import org.opencps.usermgt.exception.NoSuchEmployeeException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
@@ -52,7 +41,11 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
+import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyFactoryUtil;
+import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -183,6 +176,94 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Employee addEmployee(
+		long userId, long groupId, String fullName, String employeeNo,
+		int gender, Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, String title,
+		String scope,
+		boolean isCreateUser, Date recruitDate, Date leaveDate,
+		ServiceContext serviceContext)
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
+		UnauthenticationException, UnauthorizationException,
+		NoSuchUserException, PortalException {
+		// authen
+
+		// BackendAuthImpl authImpl = new BackendAuthImpl();
+		//
+		// boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK,
+		// StringPool.BLANK);
+		//
+		// if (!isAuth) {
+		// throw new UnauthenticationException();
+		// }
+
+		// boolean hasPermission = authImpl.hasResource(serviceContext,
+		// ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+		// ActionKeys.UPDATE_EMPLOYEE);
+		//
+		// if (!hasPermission) {
+		// throw new UnauthorizationException();
+		// }
+
+		List<Employee> employeeCheck =
+			employeePersistence.findByF_employeeNo(groupId, employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			Validator.isNotNull(employeeNo)) {
+			throw new DuplicateEmployeeNoException();
+		}
+
+		employeeCheck = employeePersistence.findByF_email(groupId, email);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			Validator.isNotNull(email)) {
+			throw new DuplicateEmployeeEmailException();
+		}
+
+		Date now = new Date();
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		long employeeId =
+			counterLocalService.increment(Employee.class.getName());
+
+		Employee employee = employeePersistence.create(employeeId);
+
+		// Group instance
+		employee.setGroupId(groupId);
+
+		// Audit fields
+		employee.setUuid(serviceContext.getUuid());
+		employee.setCompanyId(user.getCompanyId());
+		employee.setUserId(user.getUserId());
+		employee.setUserName(user.getFullName());
+		employee.setCreateDate(serviceContext.getCreateDate(now));
+		employee.setModifiedDate(serviceContext.getCreateDate(now));
+
+		// Other fields
+		employee.setFullName(fullName);
+		employee.setEmployeeNo(employeeNo);
+		employee.setGender(gender);
+		employee.setBirthdate(birthDate);
+		employee.setTelNo(telNo);
+		employee.setMobile(mobile);
+		employee.setEmail(email);
+		employee.setWorkingStatus(workingStatus);
+		employee.setTitle(title);
+		employee.setScope(scope);
+		
+		employee.setMainJobPostId(mainJobPostId);
+
+		employee.setRecruitDate(recruitDate);
+		employee.setLeaveDate(leaveDate);
+
+		employee.setExpandoBridgeAttributes(serviceContext);
+
+		return employeePersistence.update(employee);
+
+	}
+	
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public Employee deleteEmployee(
@@ -335,6 +416,118 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Employee updateEmployee(
+		long userId, long employeeId, String fullName, String employeeNo,
+		int gender, Date birthDate, String telNo, String mobile, String email,
+		int workingStatus, long mainJobPostId, long photoFileEntryId,
+		long mappingUserId, String title, String scope, Date recruitDate, Date leaveDate,
+		ServiceContext serviceContext)
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
+		UnauthenticationException, UnauthorizationException,
+		NoSuchUserException, NotFoundException, PortalException {
+
+		// authen
+		// BackendAuthImpl authImpl = new BackendAuthImpl();
+		//
+		// boolean isAuth = authImpl.isAuth(serviceContext, StringPool.BLANK,
+		// StringPool.BLANK);
+		//
+		// if (!isAuth) {
+		// throw new UnauthenticationException();
+		// }
+
+		// boolean hasPermission = authImpl.hasResource(serviceContext,
+		// ModelNameKeys.WORKINGUNIT_MGT_CENTER,
+		// ActionKeys.UPDATE_EMPLOYEE);
+		//
+		// if (!hasPermission) {
+		// throw new UnauthorizationException();
+		// }
+
+		Date now = new Date();
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		Employee employee = employeePersistence.fetchByPrimaryKey(employeeId);
+
+		// if (!hasPermission && userId != employee.getMappingUserId()) {
+		// throw new UnauthorizationException();
+		// }
+
+		List<Employee> employeeCheck = employeePersistence.findByF_employeeNo(
+			employee.getGroupId(), employeeNo);
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			employeeCheck.get(0).getEmployeeId() != employeeId) {
+			throw new DuplicateEmployeeNoException();
+		}
+
+		// _log.info("employeeId:" + employeeId);
+		employeeCheck =
+			employeePersistence.findByF_email(employee.getGroupId(), email);
+		// _log.info(
+		// "employeeCheck:" + employeeCheck.size() + "| employeeCheckId: " +
+		// employeeCheck.get(0).getEmployeeId());
+		// _log.info("employeeCheck:" + employeeCheck.get(0));
+
+		if (Validator.isNotNull(employeeCheck) && employeeCheck.size() > 0 &&
+			employeeCheck.get(0).getEmployeeId() != employeeId) {
+			throw new DuplicateEmployeeEmailException();
+		}
+
+		// Audit fields
+		employee.setUserId(user.getUserId());
+		employee.setUserName(user.getFullName());
+		employee.setModifiedDate(serviceContext.getCreateDate(now));
+
+		// Other fields
+		employee.setFullName(fullName);
+		employee.setEmployeeNo(employeeNo);
+		employee.setGender(gender);
+		employee.setBirthdate(birthDate);
+		employee.setTelNo(telNo);
+		employee.setMobile(mobile);
+		employee.setEmail(email);
+		employee.setWorkingStatus(workingStatus);
+		employee.setMainJobPostId(mainJobPostId);
+		employee.setPhotoFileEntryId(photoFileEntryId);
+		employee.setMappingUserId(mappingUserId);
+		employee.setTitle(title);
+		employee.setScope(scope);
+		
+		employee.setRecruitDate(recruitDate);
+		employee.setLeaveDate(leaveDate);
+		// User newUser =
+		// UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
+		//
+		// JobPos mJobPos = JobPosLocalServiceUtil.fetchJobPos(mainJobPostId);
+		//
+		// List<Role> roleIds = new ArrayList<Role>();
+		// roleIds.add(RoleLocalServiceUtil.fetchRole(mJobPos.getMappingRoleId()));
+		//
+		// List<EmployeeJobPos> listEmJobPos =
+		// employeeJobPosPersistence.findByF_EmployeeId(employee.getEmployeeId());
+		//
+		// for (EmployeeJobPos EmployeeJobPos : listEmJobPos) {
+		// roleIds.add(RoleLocalServiceUtil
+		// .fetchRole(JobPosLocalServiceUtil.fetchJobPos(EmployeeJobPos.getJobPostId()).getMappingRoleId()));
+		// }
+		//
+		// RoleLocalServiceUtil.clearUserRoles(newUser.getUserId());
+		// RoleLocalServiceUtil.addUserRoles(newUser.getUserId(), roleIds);
+		//
+		// Indexer<User> indexer =
+		// IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+		//
+		// indexer.reindex(newUser);
+
+		employee.setExpandoBridgeAttributes(serviceContext);
+
+		return employeePersistence.update(employee);
+
+	}
+	
 	@ThreadLocalCachable
 	public Employee fetchByF_mappingUserId(long groupId, long mappingUserId) {
 
@@ -1009,11 +1202,17 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		// }
 		// }
 		// _log.info("user: "+JSONFactoryUtil.looseSerialize(user));
-
+		if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+			userLocalService.deleteGroupUser(object.getGroupId(), object.getMappingUserId());
+		}
+		else if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+			userLocalService.addGroupUser(object.getGroupId(), object.getMappingUserId());
+		}
 		return employeePersistence.update(object);
 
 	}
 
+	
 	public List<Employee> findByG_EMPID(long groupId, long[] employeeIds) {
 
 		return employeePersistence.findByG_EMPID(groupId, employeeIds);

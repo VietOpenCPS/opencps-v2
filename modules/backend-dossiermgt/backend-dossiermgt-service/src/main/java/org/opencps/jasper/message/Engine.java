@@ -237,9 +237,11 @@ public class Engine implements MessageListener {
 						break;
 					}
 				}
-				
-    			ServiceContext serviceContext = new ServiceContext();
+
+				ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
+    			_log.info("jasper export dossier document: " + dossierDocument );
+    			
     			serviceContext.setUserId(dossierDocument.getUserId());
     
     			long fileEntryId = 0;

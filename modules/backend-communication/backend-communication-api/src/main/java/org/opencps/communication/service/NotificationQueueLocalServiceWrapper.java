@@ -251,6 +251,15 @@ public class NotificationQueueLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.communication.model.NotificationQueue findByF_NT_CN_CPK_EMAIL(
+		long groupId, String notificationType, String className,
+		String classPK, String email)
+		throws org.opencps.communication.exception.NoSuchNotificationQueueException {
+		return _notificationQueueLocalService.findByF_NT_CN_CPK_EMAIL(groupId,
+			notificationType, className, classPK, email);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _notificationQueueLocalService.getActionableDynamicQuery();
 	}

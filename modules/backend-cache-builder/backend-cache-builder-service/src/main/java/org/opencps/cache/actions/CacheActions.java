@@ -12,4 +12,6 @@ public interface CacheActions {
 	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) throws PortalException;
 
 	public void clearCache(String cacheName) throws PortalException;
+	
+	public void clearCache() throws PortalException;
 }

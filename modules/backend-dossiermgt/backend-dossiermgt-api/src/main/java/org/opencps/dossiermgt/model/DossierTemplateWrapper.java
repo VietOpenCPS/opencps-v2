@@ -72,6 +72,7 @@ public class DossierTemplateWrapper implements DossierTemplate,
 		attributes.put("description", getDescription());
 		attributes.put("templateNo", getTemplateNo());
 		attributes.put("newFormScript", getNewFormScript());
+		attributes.put("formMeta", getFormMeta());
 
 		return attributes;
 	}
@@ -149,6 +150,12 @@ public class DossierTemplateWrapper implements DossierTemplate,
 		if (newFormScript != null) {
 			setNewFormScript(newFormScript);
 		}
+
+		String formMeta = (String)attributes.get("formMeta");
+
+		if (formMeta != null) {
+			setFormMeta(formMeta);
+		}
 	}
 
 	@Override
@@ -204,6 +211,16 @@ public class DossierTemplateWrapper implements DossierTemplate,
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _dossierTemplate.getExpandoBridge();
+	}
+
+	/**
+	* Returns the form meta of this dossier template.
+	*
+	* @return the form meta of this dossier template
+	*/
+	@Override
+	public String getFormMeta() {
+		return _dossierTemplate.getFormMeta();
 	}
 
 	/**
@@ -395,6 +412,16 @@ public class DossierTemplateWrapper implements DossierTemplate,
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
 		_dossierTemplate.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets the form meta of this dossier template.
+	*
+	* @param formMeta the form meta of this dossier template
+	*/
+	@Override
+	public void setFormMeta(String formMeta) {
+		_dossierTemplate.setFormMeta(formMeta);
 	}
 
 	/**

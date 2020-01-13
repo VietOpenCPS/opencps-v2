@@ -1,4 +1,3 @@
-
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
@@ -50,6 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -143,6 +143,7 @@ import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessSequence;
@@ -166,6 +167,7 @@ import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -236,6 +238,13 @@ public class DossierManagementImpl implements DossierManagement {
 			if ("all".equals(agency)) {
 				agency = StringPool.BLANK;
 			}
+			if (Validator.isNull(agency)) {
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null && Validator.isNotNull(employee.getScope())) {
+					agency = employee.getScope();
+				}
+			}
+			
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
 			if (Validator.isNotNull(serviceCode)) {
@@ -434,7 +443,39 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.DAY, query.getDay());
-			params.put(DossierTerm.STEP, step);
+			if (Validator.isNotNull(step) && step.contains("x")) {
+				String stepCode = query.getStep();
+//				_log.info("STEPCODE: "+stepCode);
+				if (Validator.isNotNull(stepCode)) {
+					String[] stepArr = stepCode.split(StringPool.COMMA);
+					if (stepArr != null && stepArr.length > 0) {
+						List<StepConfig> lstSteps = StepConfigLocalServiceUtil.findByG_SCS(groupId, stepArr);
+						StringBuilder stepBuilder = new StringBuilder();
+						for (StepConfig sc : lstSteps) {
+							if (sc.getStepCode().contains("x")) {
+								for (int i = 0; i <= 9; i++) {
+									String stepCodeRep = sc.getStepCode().replace("x", i + "");
+									if (!"".contentEquals(stepBuilder.toString())) {
+										stepBuilder.append(",");
+									}
+									stepBuilder.append(stepCodeRep);
+								}
+							}
+							else {
+								if (!"".contentEquals(stepBuilder.toString())) {
+									stepBuilder.append(",");
+								}
+								stepBuilder.append(sc.getStepCode());								
+							}
+						}
+						params.put(DossierTerm.STEP, stepBuilder.toString());	
+					}
+				} else {
+				}
+			}
+			else {
+				params.put(DossierTerm.STEP, step);				
+			}
 			params.put(DossierTerm.OWNER, owner);
 			params.put(
 				DossierTerm.APPLICANT_FOLLOW_ID_NO,
@@ -488,6 +529,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
+			//Undue time
+			params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
+			
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
 			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
@@ -752,6 +796,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			String agency = query.getAgency();
+			
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
 			if (Validator.isNotNull(serviceCode)) {
@@ -766,6 +811,14 @@ public class DossierManagementImpl implements DossierManagement {
 			// If user is citizen then default owner true
 			if (isCitizen) {
 				owner = String.valueOf(true);
+			}
+			else {
+				if (Validator.isNull(agency)) {
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					if (employee != null && Validator.isNotNull(employee.getScope())) {
+						agency = employee.getScope();
+					}					
+				}
 			}
 			if (Boolean.valueOf(query.getSpecialKey())) {
 				owner = String.valueOf(false);
@@ -1227,6 +1280,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// true, input.getApplicantNote(),
 			// Integer.valueOf(input.getOriginality()), serviceContext);
 			//
+			_log.debug("UPDATE DOSSIER: " + input.getCityCode());
+			
 			Dossier dossier = actions.initUpdateDossierFull(
 				groupId, id, input.getApplicantName(),
 				input.getApplicantIdType(), input.getApplicantIdNo(),
@@ -7093,7 +7148,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response putMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String data) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -7103,46 +7158,91 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			if (dossier != null) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
-				Enumeration<String> keyIt = request.getParameterNames();
-				
-				while (keyIt.hasMoreElements()) {
-					String key = keyIt.nextElement();			
-					String[] keys = key.split("\\.");
-					JSONObject tempObj = obj;
-					int index = 0;
-					for (int i = 0; i < keys.length; i++) {
-						if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
-							tempObj = tempObj.getJSONObject(keys[i]);
-						}
-						else {
-							index = i;
-							break;
-						}
-					}
-					if (keys.length == 1) {
-						obj.put(key, request.getParameter(key));																		
-					}
-					else {
-						if (index == keys.length - 1) {
-							tempObj.put(keys[index], request.getParameter(key));							
-						}
-						else {
-							JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
-							mergeObj.put(keys[keys.length - 1], request.getParameter(key));
-							for (int i = keys.length - 2; i > index; i--) {
-								JSONObject indexObj = JSONFactoryUtil.createJSONObject();
-								indexObj.put(keys[i], mergeObj);
-								mergeObj = indexObj;
+				if (Validator.isNull(data)) {
+					Enumeration<String> keyIt = request.getParameterNames();
+					
+					while (keyIt.hasMoreElements()) {
+						String key = keyIt.nextElement();			
+						String[] keys = key.split("\\.");
+						JSONObject tempObj = obj;
+						int index = 0;
+						for (int i = 0; i < keys.length; i++) {
+							if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+								tempObj = tempObj.getJSONObject(keys[i]);
 							}
-							tempObj.put(keys[index], mergeObj);
+							else {
+								index = i;
+								break;
+							}
+						}
+						if (keys.length == 1) {
+							obj.put(key, request.getParameter(key));																		
+						}
+						else {
+							if (index == keys.length - 1) {
+								tempObj.put(keys[index], request.getParameter(key));							
+							}
+							else {
+								JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+								mergeObj.put(keys[keys.length - 1], request.getParameter(key));
+								for (int i = keys.length - 2; i > index; i--) {
+									JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+									indexObj.put(keys[i], mergeObj);
+									mergeObj = indexObj;
+								}
+								tempObj.put(keys[index], mergeObj);
+							}
 						}
 					}
+					
+					dossier.setMetaData(obj.toJSONString());
+					DossierLocalServiceUtil.updateDossier(dossier);
+					
+					return Response.status(200).entity("{ 'ok': true }").build();					
 				}
-				
-				dossier.setMetaData(obj.toJSONString());
-				DossierLocalServiceUtil.updateDossier(dossier);
-				
-				return Response.status(200).entity("{ 'ok': true }").build();
+				else {
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
+					Iterator<String> keyIt = dataObj.keys();
+					
+					while (keyIt.hasNext()) {
+						String key = keyIt.next();			
+						String[] keys = key.split("\\.");
+						JSONObject tempObj = obj;
+						int index = 0;
+						for (int i = 0; i < keys.length; i++) {
+							if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+								tempObj = tempObj.getJSONObject(keys[i]);
+							}
+							else {
+								index = i;
+								break;
+							}
+						}
+						if (keys.length == 1) {
+							obj.put(key, dataObj.get(key));																		
+						}
+						else {
+							if (index == keys.length - 1) {
+								tempObj.put(keys[index], dataObj.get(key));							
+							}
+							else {
+								JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+								mergeObj.put(keys[keys.length - 1], dataObj.get(key));
+								for (int i = keys.length - 2; i > index; i--) {
+									JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+									indexObj.put(keys[i], mergeObj);
+									mergeObj = indexObj;
+								}
+								tempObj.put(keys[index], mergeObj);
+							}
+						}
+					}
+					
+					dossier.setMetaData(obj.toJSONString());
+					DossierLocalServiceUtil.updateDossier(dossier);
+					
+					return Response.status(200).entity("{ 'ok': true }").build();					
+				}
 			}
 			else {
 				return Response.status(200).entity("{ 'ok': false }").build();				
@@ -7155,4 +7255,54 @@ public class DossierManagementImpl implements DossierManagement {
 				"Do not have permission").build();
 		}
 	}
+	
+	@Override
+	public Response updateInformDossier(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext, String id,
+		DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		DossierPermission dossierPermission = new DossierPermission();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			dossierPermission.hasCreateDossier(
+				groupId, user.getUserId(), input.getServiceCode(),
+				input.getGovAgencyCode(), input.getDossierTemplateNo());
+
+			Dossier oldDossier = DossierUtils.getDossier(id, groupId);
+			if (oldDossier != null) {
+				if (Validator.isNotNull(input.getDossierNo())) {
+					oldDossier.setDossierNo(input.getDossierNo());
+				}
+				if (Validator.isNotNull(input.getReceiveDate())) {
+					oldDossier.setReceiveDate(new Date(GetterUtil.getLong(input.getReceiveDate())));
+				}
+				if (Validator.isNotNull(input.getDueDate())) {
+					oldDossier.setDueDate(new Date(GetterUtil.getLong(input.getDueDate())));
+				}
+				
+				oldDossier = DossierLocalServiceUtil.updateDossier(oldDossier);
+				DossierDetailModel result =
+						DossierUtils.mappingForGetDetail(oldDossier, user.getUserId());
+
+				return Response.status(200).entity(result).build();
+			}
+			else {
+				DossierDetailModel result =
+						new DossierDetailModel();
+
+				return Response.status(200).entity(result).build();				
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}	
 }

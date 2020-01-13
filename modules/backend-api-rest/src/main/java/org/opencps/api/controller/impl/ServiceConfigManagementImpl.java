@@ -489,6 +489,30 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		JSONArray arrGovAgency = JSONFactoryUtil.createJSONArray();
 
+		Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
+		List<ServiceInfo> lstServiceInfos =	ServiceInfoLocalServiceUtil.findByGroup(groupId);
+		for (ServiceInfo si : lstServiceInfos) {
+			mapServiceInfos.put(si.getServiceInfoId(), si);
+		}
+		List<ServiceConfig> lstTempConfigs = new ArrayList<ServiceConfig>();
+		try {
+			lstTempConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+		}
+		catch (Exception e) {
+			
+		}
+		Map<String, List<ServiceConfig>> mapGovs = new HashMap<String, List<ServiceConfig>>();
+		for (ServiceConfig sc : lstTempConfigs) {
+			List<ServiceConfig> lstGovConfigs = new ArrayList<ServiceConfig>();
+			if (mapGovs.containsKey(sc.getGovAgencyCode())) {
+				lstGovConfigs = mapGovs.get(sc.getGovAgencyCode());
+			}
+			else {
+				mapGovs.put(sc.getGovAgencyCode(), lstGovConfigs);
+			}
+			
+			lstGovConfigs.add(sc);
+		}
 		try {
 			if (itemGovList != null && itemGovList.size() > 0) {
 				Collections.sort(itemGovList, DictItemCompareModel.SiblingComparator);
@@ -501,13 +525,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	//				long countGov = ServiceConfigLocalServiceUtil.countLucene(paramsGovAgent, searchContext);
 	
 				JSONObject govElm = JSONFactoryUtil.createJSONObject();
-				List<ServiceConfig> lstGovs = ServiceConfigLocalServiceUtil.searchByGovAgency(query.getKeyword(), govItem.getItemCode(), groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-				Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
-				List<ServiceInfo> lstServiceInfos =	ServiceInfoLocalServiceUtil.findByGroup(groupId);
-				for (ServiceInfo si : lstServiceInfos) {
-					mapServiceInfos.put(si.getServiceInfoId(), si);
-				}
-				long countGov = lstGovs.size();
+//				List<ServiceConfig> lstGovs = ServiceConfigLocalServiceUtil.searchByGovAgency(query.getKeyword(), govItem.getItemCode(), groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<ServiceConfig> lstGovs = mapGovs.get(govItem.getItemCode());
+				
+				long countGov = lstGovs != null ? lstGovs.size() : 0;
 				
 				if (countGov != 0) {
 	

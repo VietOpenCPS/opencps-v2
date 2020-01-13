@@ -21,6 +21,7 @@
 		<field name="upvoteCount" type="int" />
 		<field name="userHasUpvoted" type="String" />
 		<field name="upvotedUsers" type="String" />
+		<field name="opinion" type="boolean" />
 	</model>
 	<model name="backend.feedback.model.Evaluation">
 		<field name="uuid" type="String" />

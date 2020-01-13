@@ -14,9 +14,9 @@
 
 package org.opencps.statistic.service.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -61,8 +61,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency);
 	}
 
-	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system) {
-		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system);
+	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system, String groupGovAgencyCode) {
+		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system, groupGovAgencyCode);
 	}
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
@@ -172,7 +172,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int overtimeCount, int doneCount, int releasingCount, int unresolvedCount, int processingCount,
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, int viaPostalCount,
-			int saturdayCount, String govAgencyCode, String govAgencyName,
+			int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = null;
@@ -221,6 +221,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setInsideCount(insideCount);
 			dossierStatistic.setViaPostalCount(viaPostalCount);
 			dossierStatistic.setSaturdayCount(saturdayCount);
+			dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
 		} else {
 			dossierStatistic = opencpsDossierStatisticPersistence.findByPrimaryKey(dossierStatisticId);
 			dossierStatistic.setModifiedDate(now);
@@ -259,7 +263,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setDomainName(domainName);
 			dossierStatistic.setViaPostalCount(viaPostalCount);
 			dossierStatistic.setSaturdayCount(saturdayCount);
-			
+			dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);			
 		}
 
 		int ontimePercent = 100;
@@ -368,7 +375,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
-				month, year, govAgencyCode, domainCode, system);
+				month, year, govAgencyCode, domainCode, system, StringPool.BLANK);
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;
@@ -475,9 +482,9 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int overtimeOutside, int interoperatingCount, int waitingCount, 
 			String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int insideCount, int viaPostalCount, int saturdayCount) throws PortalException, SystemException {
+			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
-				month, year, govAgencyCode, domainCode, system);
+				month, year, govAgencyCode, domainCode, system, StringPool.BLANK);
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;
@@ -527,6 +534,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setInsideCount(insideCount);
 			dossierStatistic.setViaPostalCount(viaPostalCount);
 			dossierStatistic.setSaturdayCount(saturdayCount);
+			dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);			
 		} else {
 			if (!dossierStatistic.isReporting()) {
 				dossierStatistic.setModifiedDate(now);
@@ -567,6 +578,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				dossierStatistic.setReporting(reporting);
 				dossierStatistic.setViaPostalCount(viaPostalCount);
 				dossierStatistic.setSaturdayCount(saturdayCount);
+				dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+				dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+				dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+				dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);				
 			}
 		}
 
@@ -609,7 +624,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 					payload.getOntimePercentage(), payload.getOvertimeInside(), payload.getOvertimeOutside(),
 					payload.getInteroperatingCount(), payload.getWaitingCount(), payload.getGovAgencyCode(),
 					payload.getGovAgencyName(), payload.getDomainCode(), payload.getDomainName(), payload.isReporting(),
-					payload.getOnegateCount(), payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount());
+					payload.getOnegateCount(), payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount());
 		}
 	}
 
@@ -681,7 +696,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int insideCount, int viaPostalCount, int saturdayCount) throws PortalException, SystemException {
+			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
 		Date now = new Date();
 		long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 		OpencpsDossierStatistic dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
@@ -726,6 +741,11 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		dossierStatistic.setInsideCount(insideCount);
 		dossierStatistic.setViaPostalCount(viaPostalCount);
 		dossierStatistic.setSaturdayCount(saturdayCount);
+
+		dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+		dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+		dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+		dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
 
 		int ontimePercent = 100;
 		if (releaseCount > 0) {
@@ -803,7 +823,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int insideCount, int viaPostalCount, int saturdayCount) throws PortalException, SystemException {
+			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
 		Date now = new Date();
 		dossierStatistic.setCreateDate(now);
 		dossierStatistic.setModifiedDate(now);
@@ -847,6 +867,11 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		dossierStatistic.setViaPostalCount(viaPostalCount);
 		dossierStatistic.setSaturdayCount(saturdayCount);
 
+		dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+		dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+		dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+		dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
+
 		int ontimePercent = 100;
 		if (releaseCount > 0) {
 			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
@@ -859,6 +884,133 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	
 	public List<OpencpsDossierStatistic> findByG(long groupId) {
 		return opencpsDossierStatisticPersistence.findByG(groupId);
+	}
+	
+	public OpencpsDossierStatistic fetchByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode, String domainCode) {
+		return opencpsDossierStatisticPersistence.fetchByG_M_Y_G_D(groupId, month, year, govAgencyCode, domainCode);
+	}
+	
+	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId, long groupId, long userId,
+			String userName, int month, int year, String system, int totalCount, int deniedCount, int cancelledCount, int processCount,
+			int remainingCount, int receivedCount, int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+			int overtimeCount, int doneCount, int releasingCount, int unresolvedCount, int processingCount,
+			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
+			int overtimeOutside, int interoperatingCount, int waitingCount, 
+			String govAgencyCode, String govAgencyName,
+			String domainCode, String domainName, String groupGovAgencyCode, boolean reporting, int onegateCount, int outsideCount,
+			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
+		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
+				month, year, govAgencyCode, domainCode, system, groupGovAgencyCode);
+
+		Date now = new Date();
+		long dossierStatisticId = 0l;
+		// _log.debug(dossierStatisticId);
+		if (dossierStatistic == null) {
+			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
+			dossierStatistic.setCreateDate(now);
+			dossierStatistic.setModifiedDate(now);
+			dossierStatistic.setCompanyId(companyId);
+			dossierStatistic.setGroupId(groupId);
+			dossierStatistic.setUserId(userId);
+			dossierStatistic.setUserName(userName);
+			dossierStatistic.setMonth(month);
+			dossierStatistic.setYear(year);
+			dossierStatistic.setSystem(system);
+			dossierStatistic.setTotalCount(totalCount);
+			dossierStatistic.setDeniedCount(deniedCount);
+			dossierStatistic.setCancelledCount(cancelledCount);
+			dossierStatistic.setProcessCount(processCount);
+			dossierStatistic.setRemainingCount(remainingCount);
+			dossierStatistic.setReceivedCount(receivedCount);
+			dossierStatistic.setOnlineCount(onlineCount);
+			dossierStatistic.setReleaseCount(releaseCount);
+			dossierStatistic.setBetimesCount(betimesCount);
+			dossierStatistic.setOntimeCount(ontimeCount);
+			dossierStatistic.setOvertimeCount(overtimeCount);
+			dossierStatistic.setDoneCount(doneCount);
+			dossierStatistic.setReleasingCount(releasingCount);
+			dossierStatistic.setUnresolvedCount(unresolvedCount);
+			dossierStatistic.setProcessingCount(processingCount);
+			dossierStatistic.setUndueCount(undueCount);
+			dossierStatistic.setOverdueCount(overdueCount);
+			dossierStatistic.setPausingCount(pausingCount);
+			dossierStatistic.setOntimePercentage(ontimePercentage);
+			dossierStatistic.setOvertimeInside(overtimeInside);
+			dossierStatistic.setOvertimeOutside(overtimeOutside);
+			dossierStatistic.setInteroperatingCount(interoperatingCount);
+			dossierStatistic.setWaitingCount(waitingCount);
+			dossierStatistic.setGovAgencyCode(govAgencyCode);
+			dossierStatistic.setGovAgencyName(govAgencyName);
+			dossierStatistic.setDomainCode(domainCode);
+			dossierStatistic.setDomainName(domainName);
+			dossierStatistic.setReporting(reporting);
+			dossierStatistic.setOnegateCount(onegateCount);
+			dossierStatistic.setOutsideCount(outsideCount);
+			dossierStatistic.setInsideCount(insideCount);
+			dossierStatistic.setViaPostalCount(viaPostalCount);
+			dossierStatistic.setSaturdayCount(saturdayCount);
+			dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
+			dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
+		} else {
+			if (!dossierStatistic.isReporting()) {
+				dossierStatistic.setModifiedDate(now);
+				dossierStatistic.setMonth(month);
+				dossierStatistic.setYear(year);
+				dossierStatistic.setSystem(system);
+				dossierStatistic.setTotalCount(totalCount);
+				dossierStatistic.setDeniedCount(deniedCount);
+				dossierStatistic.setCancelledCount(cancelledCount);
+				dossierStatistic.setProcessCount(processCount);
+				dossierStatistic.setRemainingCount(remainingCount);
+				dossierStatistic.setReceivedCount(receivedCount);
+				dossierStatistic.setOnlineCount(onlineCount);
+				dossierStatistic.setReleaseCount(releaseCount);
+				dossierStatistic.setBetimesCount(betimesCount);
+				dossierStatistic.setOntimeCount(ontimeCount);
+				dossierStatistic.setOvertimeCount(overtimeCount);
+				dossierStatistic.setDoneCount(doneCount);
+				dossierStatistic.setReleasingCount(releasingCount);
+				dossierStatistic.setUnresolvedCount(unresolvedCount);
+				dossierStatistic.setProcessingCount(processingCount);
+				dossierStatistic.setUndueCount(undueCount);
+				dossierStatistic.setOverdueCount(overdueCount);
+				dossierStatistic.setPausingCount(pausingCount);
+				dossierStatistic.setOntimePercentage(ontimePercentage);
+				dossierStatistic.setOvertimeInside(overtimeInside);
+				dossierStatistic.setOvertimeOutside(overtimeOutside);
+				dossierStatistic.setInteroperatingCount(interoperatingCount);
+				dossierStatistic.setWaitingCount(waitingCount);
+				dossierStatistic.setOnegateCount(onegateCount);
+				dossierStatistic.setOutsideCount(outsideCount);
+				dossierStatistic.setInsideCount(insideCount);
+				
+				dossierStatistic.setGovAgencyCode(govAgencyCode);
+				dossierStatistic.setGovAgencyName(govAgencyName);
+				dossierStatistic.setDomainCode(domainCode);
+				dossierStatistic.setDomainName(domainName);
+				dossierStatistic.setReporting(reporting);
+				dossierStatistic.setViaPostalCount(viaPostalCount);
+				dossierStatistic.setSaturdayCount(saturdayCount);
+				dossierStatistic.setDossierOnline3Count(dossierOnline3Count);
+				dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
+				dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
+				dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
+				dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
+			}
+		}
+
+		int ontimePercent = 100;
+		if (releaseCount > 0) {
+			ontimePercent = (betimesCount + ontimeCount) * 100 / releaseCount;
+		}
+
+		dossierStatistic.setOntimePercentage(ontimePercent);
+		dossierStatistic = opencpsDossierStatisticPersistence.update(dossierStatistic);
+		return dossierStatistic;
 	}
 	
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);

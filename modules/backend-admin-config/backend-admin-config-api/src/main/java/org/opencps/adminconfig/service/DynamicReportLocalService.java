@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -176,6 +177,9 @@ public interface DynamicReportLocalService extends BaseLocalService,
 	public DynamicReport fetchByCode(long groupId, String reportCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DynamicReport fetchByG_CODE(long groupId, String reportCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicReport fetchDynamicReport(long dynamicReportId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -244,4 +248,10 @@ public interface DynamicReportLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public DynamicReport updateDynamicReport(DynamicReport dynamicReport);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DynamicReport updateDynamicReportDB(long userId, long groupId,
+		String reportCode, String reportName, int sharing, String filterConfig,
+		String tableConfig, String userConfig, String reportType)
+		throws NoSuchUserException;
 }

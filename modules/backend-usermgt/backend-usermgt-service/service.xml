@@ -137,6 +137,8 @@
 		<column name="fileCertPath" type="String" />
 		<column name="fileSignPath" type="String" />
 		
+		<column name="scope" type="String" />
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />
@@ -547,10 +549,11 @@
 		<column name="contactEmail" type="String" />
 		<column name="mappingUserId" type="long" />
 		<column name="activationCode" type="String" />
-		<column name="lock_" type="boolean" />
+		<column name="lock_" type="Boolean" />
 		<column name="profile" type="String" />
 		<column name="tmpPass" type="String" />
 		<column name="representativeEnterprise" type="String" />
+		<column name="verification" type="Integer" />
         <column name="mappingClassName" type="String"></column>
         <column name="mappingClassPK" type="String"></column>
 
@@ -682,7 +685,9 @@
 		<column name="questionType" type="String" />
 		<column name="subDomainCode" type="String" />
 		<column name="subDomainName" type="String" />
-
+		<column name="phone" type="String"></column>
+		<column name="address" type="String"></column>
+		
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />

@@ -236,12 +236,13 @@
 		<column name="description" type="String" />
 		<column name="templateNo" type="String" />
 		<column name="newFormScript" type="String" />
+		<column name="formMeta" type="String" />
 
 		<!-- Order -->
 
 		<!-- Finder methods -->
 
-		<finder return-type="DossierTemplate" name="G_DT_NAME">
+		<finder return-type="DossierTemplate" name="G_DT_NAME" db-index="false">
 			<finder-column name="groupId" />
 			<finder-column name="templateName" />
 		</finder>
@@ -447,6 +448,10 @@
 		<finder return-type="ProcessOption" name="SP_DT">
 			<finder-column name="serviceProcessId" />
 			<finder-column name="dossierTemplateId" />
+		</finder>
+
+		<finder return-type="Collection" name="G">
+			<finder-column name="groupId" />
 		</finder>
 	</entity>
 
@@ -743,6 +748,11 @@
         	<finder-column name="groupId"></finder-column>
             <finder-column name="groupDossierId"></finder-column>
         </finder>
+        <finder name="G_UID_DS" return-type="Collection">
+        	<finder-column name="groupId"></finder-column>
+            <finder-column name="userId"></finder-column>
+            <finder-column name="dossierStatus"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -895,7 +905,7 @@
 			<finder-column name="removed" />
 			<finder-column name="original" />
 		</finder>
-		<finder return-type="DossierFile" name="G_DID_PART_NAME">
+		<finder return-type="DossierFile" name="G_DID_PART_NAME" db-index="false">
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 			<finder-column name="dossierPartNo" />
@@ -1148,7 +1158,7 @@
 			<finder-column name="processNo" />
 		</finder>
 
-		<finder return-type="ServiceProcess" name="G_ID_PNAME">
+		<finder return-type="ServiceProcess" name="G_ID_PNAME" db-index="false">
 			<finder-column name="groupId" />
 			<finder-column name="processName" />
 		</finder>
@@ -1183,7 +1193,9 @@
 		<finder return-type="ServiceProcessRole" name="F_CODE">
 			<finder-column name="roleCode" />
 		</finder>
-
+		<finder return-type="Collection" name="SPS">
+			<finder-column name="serviceProcessId" arrayable-operator="OR" comparator="="/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="ProcessStep" remote-service="false"
@@ -2301,6 +2313,10 @@
 			<finder-column name="dossierStatus" />
 			<finder-column name="dossierSubStatus" />
 		</finder>
+        <finder name="G_SCS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="stepCode" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 		
 	</entity>
 	
@@ -2567,35 +2583,6 @@
 		<finder return-type="Collection" name="ST_LT_MD">	
 			<finder-column name="status" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="modifiedDate" comparator="&lt;="/>		
-		</finder>
-	</entity>
-
-	<entity name="DynamicReport" table="opencps_dynamicreport"
-		local-service="true" remote-service="false" uuid="true">
-
-		<!-- PK fields -->
-		<column name="dynamicReportId" primary="true" type="long" />
-
-		<!-- Audit fields -->
-		<column name="companyId" type="long" />
-		<column name="groupId" type="long" />
-		<column name="userId" type="long" />
-		<column name="userName" type="String" />
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="reportCode" type="String" />
-		<column name="reportName" type="String" />
-		<column name="sharing" type="int" />
-		<column name="filterConfig" type="String" />
-		<column name="tableConfig" type="String" />
-		<column name="userConfig" type="String" />
-		<column name="reportType" type="String" />
-
-		<finder return-type="DynamicReport" name="F_GID_CODE">
-			<finder-column name="groupId" />
-			<finder-column name="reportCode" />
 		</finder>
 	</entity>
 		

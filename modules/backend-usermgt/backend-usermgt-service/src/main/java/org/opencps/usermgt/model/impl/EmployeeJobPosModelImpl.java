@@ -97,7 +97,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		TABLE_COLUMNS_MAP.put("workingUnitId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee_jobpos";
 	public static final String ORDER_BY_JPQL = " ORDER BY employeeJobPos.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee_jobpos.createDate ASC";

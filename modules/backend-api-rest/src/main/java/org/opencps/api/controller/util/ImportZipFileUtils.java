@@ -121,6 +121,7 @@ public class ImportZipFileUtils {
 				//_log.error(e1);
 			}
 		}
+		_log.debug("EXTRACT FILE DONE");
 	}
 
 	public static String compress(String str) throws IOException {

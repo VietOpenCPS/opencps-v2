@@ -186,6 +186,11 @@ public class ServiceProcessRoleLocalServiceUtil {
 		return getService().findByS_P_ID(serviceProcessId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findBySPS(
+		long[] serviceProcessArr) {
+		return getService().findBySPS(serviceProcessArr);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

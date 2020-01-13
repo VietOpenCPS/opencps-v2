@@ -78,10 +78,12 @@ import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
@@ -145,7 +147,22 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			//_log.info("jsonData.hit: "+jsonData.get("data"));
-				
+			List<Document> lstDocs = new ArrayList<Document>();
+			_log.info("SEARCH SERVICE: " + query.getAgency());
+			if (Validator.isNotNull(query.getAgency())) {
+				int total = 0;
+				for (Document doc : (List<Document>) jsonData.get("data")) {
+					long serviceInfoId = (GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+					int countService = ServiceConfigLocalServiceUtil.countByBySIAndGAC(groupId, serviceInfoId, query.getAgency());
+					if (countService > 0) {
+						total++;
+						lstDocs.add(doc);
+					}
+				}		
+				jsonData.put("total", total);
+				jsonData.put("data", lstDocs);
+			}
+			
 			results.setTotal(jsonData.getInt("total"));
 			results.getData()
 				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));

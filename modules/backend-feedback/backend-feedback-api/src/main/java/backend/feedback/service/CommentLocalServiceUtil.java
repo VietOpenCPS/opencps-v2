@@ -58,13 +58,13 @@ public class CommentLocalServiceUtil {
 		long groupId, String className, String classPK, String fullname,
 		String email, long parent, String content, long fileSize,
 		java.io.InputStream inputStream, String fileName, String fileType,
-		int upvoteCount, String pings,
+		int upvoteCount, String pings, boolean opinion,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 		return getService()
 				   .addComment(userId, groupId, className, classPK, fullname,
 			email, parent, content, fileSize, inputStream, fileName, fileType,
-			upvoteCount, pings, serviceContext);
+			upvoteCount, pings, opinion, serviceContext);
 	}
 
 	public static backend.feedback.model.Comment adminProcessData(
@@ -99,9 +99,11 @@ public class CommentLocalServiceUtil {
 	*
 	* @param comment the comment
 	* @return the comment that was removed
+	* @throws PortalException
 	*/
 	public static backend.feedback.model.Comment deleteComment(
-		backend.feedback.model.Comment comment) {
+		backend.feedback.model.Comment comment)
+		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteComment(comment);
 	}
 
@@ -115,19 +117,6 @@ public class CommentLocalServiceUtil {
 	public static backend.feedback.model.Comment deleteComment(long commentId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteComment(commentId);
-	}
-
-	/**
-	* @param dictCollectionId
-	* @param serviceContext
-	* @return
-	* @throws PortalException
-	* @throws Exception
-	*/
-	public static backend.feedback.model.Comment deleteComment(long commentId,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteComment(commentId, serviceContext);
 	}
 
 	/**
@@ -217,6 +206,14 @@ public class CommentLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static backend.feedback.model.Comment fetchByF_groupId_userId_className_classPK_opinion(
+		long groupId, long userId, String className, String classPK,
+		boolean opinion) {
+		return getService()
+				   .fetchByF_groupId_userId_className_classPK_opinion(groupId,
+			userId, className, classPK, opinion);
+	}
+
 	public static backend.feedback.model.Comment fetchComment(long commentId) {
 		return getService().fetchComment(commentId);
 	}
@@ -231,6 +228,24 @@ public class CommentLocalServiceUtil {
 	public static backend.feedback.model.Comment fetchCommentByUuidAndGroupId(
 		String uuid, long groupId) {
 		return getService().fetchCommentByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static java.util.List<backend.feedback.model.Comment> findByF_groupId(
+		long groupId, int start, int end) {
+		return getService().findByF_groupId(groupId, start, end);
+	}
+
+	public static java.util.List<backend.feedback.model.Comment> findByF_groupId_className_classPK(
+		long groupId, String className, String classPK) {
+		return getService()
+				   .findByF_groupId_className_classPK(groupId, className,
+			classPK);
+	}
+
+	public static backend.feedback.model.Comment findByPrimaryKey(
+		long commentId)
+		throws backend.feedback.exception.NoSuchCommentException {
+		return getService().findByPrimaryKey(commentId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
@@ -367,7 +382,8 @@ public class CommentLocalServiceUtil {
 		long commentId, String className, String classPK, String fullname,
 		String email, long parent, String content, String pings,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		throws com.liferay.portal.kernel.exception.NoSuchUserException,
+			backend.auth.api.exception.NotFoundException {
 		return getService()
 				   .updateComment(userId, commentId, className, classPK,
 			fullname, email, parent, content, pings, serviceContext);
@@ -375,7 +391,8 @@ public class CommentLocalServiceUtil {
 
 	public static backend.feedback.model.Comment updateComment(long commentId,
 		String className, String classPK, String email, int upvoteCount,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws backend.auth.api.exception.NotFoundException {
 		return getService()
 				   .updateComment(commentId, className, classPK, email,
 			upvoteCount, serviceContext);

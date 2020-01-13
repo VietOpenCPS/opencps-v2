@@ -270,6 +270,21 @@ public interface DossierTemplateModel extends BaseModel<DossierTemplate>,
 	 */
 	public void setNewFormScript(String newFormScript);
 
+	/**
+	 * Returns the form meta of this dossier template.
+	 *
+	 * @return the form meta of this dossier template
+	 */
+	@AutoEscape
+	public String getFormMeta();
+
+	/**
+	 * Sets the form meta of this dossier template.
+	 *
+	 * @param formMeta the form meta of this dossier template
+	 */
+	public void setFormMeta(String formMeta);
+
 	@Override
 	public boolean isNew();
 

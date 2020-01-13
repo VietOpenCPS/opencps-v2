@@ -408,6 +408,18 @@ public class DossierTemplateLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DossierTemplate updateDossierTemplate(
+		long groupId, long dossierTemplateId, String templateName,
+		String templateNo, String description, String newFormScript,
+		String formMeta,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierTemplateLocalService.updateDossierTemplate(groupId,
+			dossierTemplateId, templateName, templateNo, description,
+			newFormScript, formMeta, context);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierTemplate updateDossierTemplateDB(
 		long userId, long groupId, String templateNo, String templateName,
 		String description, String newFormScript,
@@ -416,6 +428,17 @@ public class DossierTemplateLocalServiceWrapper
 		return _dossierTemplateLocalService.updateDossierTemplateDB(userId,
 			groupId, templateNo, templateName, description, newFormScript,
 			serviceContext);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.DossierTemplate updateDossierTemplateDB(
+		long userId, long groupId, String templateNo, String templateName,
+		String description, String newFormScript, String formMeta,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierTemplateLocalService.updateDossierTemplateDB(userId,
+			groupId, templateNo, templateName, description, newFormScript,
+			formMeta, serviceContext);
 	}
 
 	@Override

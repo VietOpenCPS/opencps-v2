@@ -49,6 +49,8 @@ public class QuestionSoap implements Serializable {
 		soapModel.setQuestionType(model.getQuestionType());
 		soapModel.setSubDomainCode(model.getSubDomainCode());
 		soapModel.setSubDomainName(model.getSubDomainName());
+		soapModel.setPhone(model.getPhone());
+		soapModel.setAddress(model.getAddress());
 
 		return soapModel;
 	}
@@ -229,6 +231,22 @@ public class QuestionSoap implements Serializable {
 		_subDomainName = subDomainName;
 	}
 
+	public String getPhone() {
+		return _phone;
+	}
+
+	public void setPhone(String phone) {
+		_phone = phone;
+	}
+
+	public String getAddress() {
+		return _address;
+	}
+
+	public void setAddress(String address) {
+		_address = address;
+	}
+
 	private long _questionId;
 	private long _companyId;
 	private long _groupId;
@@ -245,4 +263,6 @@ public class QuestionSoap implements Serializable {
 	private String _questionType;
 	private String _subDomainCode;
 	private String _subDomainName;
+	private String _phone;
+	private String _address;
 }

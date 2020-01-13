@@ -396,4 +396,9 @@ public interface DictItemGroupLocalService extends BaseLocalService,
 		long dictItemId, ServiceContext serviceContext)
 		throws UnauthenticationException, UnauthorizationException,
 			NotFoundException, NoSuchUserException, DuplicateCategoryException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItemGroup updateDictItemGroupDB(long userId, long groupId,
+		long dictGroupId, long dictItemId, String dictGroupName)
+		throws NoSuchUserException;
 }

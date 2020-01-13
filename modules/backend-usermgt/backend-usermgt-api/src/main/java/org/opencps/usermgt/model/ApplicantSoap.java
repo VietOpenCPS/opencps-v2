@@ -57,10 +57,11 @@ public class ApplicantSoap implements Serializable {
 		soapModel.setContactEmail(model.getContactEmail());
 		soapModel.setMappingUserId(model.getMappingUserId());
 		soapModel.setActivationCode(model.getActivationCode());
-		soapModel.setLock_(model.isLock_());
+		soapModel.setLock_(model.getLock_());
 		soapModel.setProfile(model.getProfile());
 		soapModel.setTmpPass(model.getTmpPass());
 		soapModel.setRepresentativeEnterprise(model.getRepresentativeEnterprise());
+		soapModel.setVerification(model.getVerification());
 		soapModel.setMappingClassName(model.getMappingClassName());
 		soapModel.setMappingClassPK(model.getMappingClassPK());
 
@@ -307,15 +308,11 @@ public class ApplicantSoap implements Serializable {
 		_activationCode = activationCode;
 	}
 
-	public boolean getLock_() {
+	public Boolean getLock_() {
 		return _lock_;
 	}
 
-	public boolean isLock_() {
-		return _lock_;
-	}
-
-	public void setLock_(boolean lock_) {
+	public void setLock_(Boolean lock_) {
 		_lock_ = lock_;
 	}
 
@@ -341,6 +338,14 @@ public class ApplicantSoap implements Serializable {
 
 	public void setRepresentativeEnterprise(String representativeEnterprise) {
 		_representativeEnterprise = representativeEnterprise;
+	}
+
+	public Integer getVerification() {
+		return _verification;
+	}
+
+	public void setVerification(Integer verification) {
+		_verification = verification;
 	}
 
 	public String getMappingClassName() {
@@ -383,10 +388,11 @@ public class ApplicantSoap implements Serializable {
 	private String _contactEmail;
 	private long _mappingUserId;
 	private String _activationCode;
-	private boolean _lock_;
+	private Boolean _lock_;
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
+	private Integer _verification;
 	private String _mappingClassName;
 	private String _mappingClassPK;
 }

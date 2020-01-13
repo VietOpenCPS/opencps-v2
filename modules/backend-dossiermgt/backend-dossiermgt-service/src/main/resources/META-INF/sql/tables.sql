@@ -274,7 +274,7 @@ create table opencps_dossieraction (
 	syncActionCode VARCHAR(100) null,
 	pending BOOLEAN,
 	rollbackable BOOLEAN,
-	stepCode VARCHAR(500) null,
+	stepCode VARCHAR(255) null,
 	stepName VARCHAR(500) null,
 	sequenceNo VARCHAR(255) null,
 	dueDate DATE null,
@@ -361,7 +361,7 @@ create table opencps_dossierfile (
 	formScript TEXT null,
 	formReport TEXT null,
 	formSchema TEXT null,
-	deliverableCode VARCHAR(500) null
+	deliverableCode VARCHAR(255) null
 );
 
 create table opencps_dossierlog (
@@ -406,7 +406,7 @@ create table opencps_dossierpart (
 	createDate DATE null,
 	modifiedDate DATE null,
 	templateNo VARCHAR(75) null,
-	partNo VARCHAR(500) null,
+	partNo VARCHAR(255) null,
 	partName VARCHAR(500) null,
 	partTip TEXT null,
 	partType INTEGER,
@@ -415,7 +415,7 @@ create table opencps_dossierpart (
 	formReport TEXT null,
 	sampleData TEXT null,
 	required BOOLEAN,
-	fileTemplateNo VARCHAR(500) null,
+	fileTemplateNo VARCHAR(255) null,
 	eSign BOOLEAN,
 	deliverableType VARCHAR(500) null,
 	deliverableAction INTEGER,
@@ -527,7 +527,8 @@ create table opencps_dossiertemplate (
 	templateName STRING null,
 	description TEXT null,
 	templateNo VARCHAR(255) null,
-	newFormScript TEXT null
+	newFormScript TEXT null,
+	formMeta STRING null
 );
 
 create table opencps_dossieruser (
@@ -538,24 +539,6 @@ create table opencps_dossieruser (
 	visited BOOLEAN,
 	roleId LONG,
 	primary key (dossierId, userId)
-);
-
-create table opencps_dynamicreport (
-	uuid_ VARCHAR(75) null,
-	dynamicReportId LONG not null primary key,
-	companyId LONG,
-	groupId LONG,
-	userId LONG,
-	userName VARCHAR(75) null,
-	createDate DATE null,
-	modifiedDate DATE null,
-	reportCode VARCHAR(75) null,
-	reportName VARCHAR(75) null,
-	sharing INTEGER,
-	filterConfig VARCHAR(75) null,
-	tableConfig VARCHAR(75) null,
-	userConfig VARCHAR(75) null,
-	reportType VARCHAR(75) null
 );
 
 create table opencps_eform (
@@ -691,12 +674,12 @@ create table opencps_processaction (
 	createDate DATE null,
 	modifiedDate DATE null,
 	serviceProcessId LONG,
-	preStepCode STRING null,
-	postStepCode STRING null,
-	autoEvent STRING null,
+	preStepCode VARCHAR(255) null,
+	postStepCode VARCHAR(255) null,
+	autoEvent VARCHAR(255) null,
 	preCondition STRING null,
 	actionCode VARCHAR(255) null,
-	actionName VARCHAR(500) null,
+	actionName VARCHAR(255) null,
 	allowAssignUser INTEGER,
 	assignUserId LONG,
 	requestPayment INTEGER,
