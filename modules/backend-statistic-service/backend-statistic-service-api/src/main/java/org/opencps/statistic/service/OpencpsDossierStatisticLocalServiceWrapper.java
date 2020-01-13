@@ -56,9 +56,9 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkExsitSystem(
 		long groupId, int month, int year, String govAgency, String domain,
-		String system) {
+		String system, String groupGovAgencyCode) {
 		return _opencpsDossierStatisticLocalService.checkExsitSystem(groupId,
-			month, year, govAgency, domain, system);
+			month, year, govAgency, domain, system, groupGovAgencyCode);
 	}
 
 	@Override

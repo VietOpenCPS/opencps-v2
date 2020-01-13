@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 		"toSubmitDate", "online", "domain", "domainName", "applicantName", "applicantIdNo", "serviceName",
 		"fromReleaseDate", "toReleaseDate", "originality", "fromFinishDate", "toFinishDate", "fromReceiveNotDoneDate",
 		"toReceiveNotDoneDate", "fromStatisticDate", "toStatisticDate", "origin", "originDossierId", "time",
-		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCollectionCode", "groupParentAgency"})
+		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency"})
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
 
@@ -119,22 +119,22 @@ public class DossierSearchModel {
 	protected Integer reCalculate;
 	@QueryParam(value = "system")
 	protected String system;
-	@QueryParam(value = "groupCollectionCode")
-	protected String groupCollectionCode;
-	@QueryParam(value = "groupParentAgency")
-	protected String groupParentAgency;
+	@QueryParam(value = "groupCode")
+	protected String groupCode;
+	@QueryParam(value = "parentAgency")
+	protected String parentAgency;
 	
-	public String getGroupCollectionCode() {
-		return groupCollectionCode;
+	public String getGroupCode() {
+		return groupCode;
 	}
-	public void setGroupCollectionCode(String groupCollectionCode) {
-		this.groupCollectionCode = groupCollectionCode;
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
 	}
-	public String getGroupParentAgency() {
-		return groupParentAgency;
+	public String getParentAgency() {
+		return parentAgency;
 	}
-	public void setGroupParentAgency(String groupParentAgency) {
-		this.groupParentAgency = groupParentAgency;
+	public void setParentAgency(String parentAgency) {
+		this.parentAgency = parentAgency;
 	}
 	public String getKeyword() {
 		return keyword;

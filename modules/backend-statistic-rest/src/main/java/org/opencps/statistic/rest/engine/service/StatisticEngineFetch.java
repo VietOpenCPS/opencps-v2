@@ -221,7 +221,7 @@ public class StatisticEngineFetch {
 						engineFetchEntry.updateDossierStatisticData(dataType9, dossierData, fromStatisticDate, toStatisticDate,
 								reporting);
 						dataType9 = processOnTimePercent(dataType9);
-			
+						
 						statisticData.put(type9, dataType9);											
 					}
 				}

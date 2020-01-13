@@ -9,15 +9,15 @@ public class ConstantUtils {
 
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
-	public static final String SOURCE_DICTS = "/dicts";
+	public static final String SOURCE_DICTS = "dicts";
 	public static final String SOURCE_FILES = "/files";
 	public static final String SOURCE_REPORTS = "/reports";
 	public static final String SOURCE_FORMS = "/forms";
 	public static final String SOURCE_FILE_REPORTS = "/fileReports";
 	public static final String SOURCE_FILE_FORMS = "/fileForms";
-	public static final String SOURCE_SERVICES = "/services";
-	public static final String SOURCE_TEMPLATES = "/templates";
-	public static final String SOURCE_PROCESSES = "/processes";
+	public static final String SOURCE_SERVICES = "services";
+	public static final String SOURCE_TEMPLATES = "templates";
+	public static final String SOURCE_PROCESSES = "processes";
 	public static final String SOURCE_VALIDATE = "services, processes, processes, dicts";
 	//
 	public static final String PREFIX_ACTIONCONFIG = "ACTION_";

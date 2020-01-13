@@ -61,10 +61,10 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic checkExsitSystem(
 		long groupId, int month, int year, String govAgency, String domain,
-		String system) {
+		String system, String groupGovAgencyCode) {
 		return getService()
 				   .checkExsitSystem(groupId, month, year, govAgency, domain,
-			system);
+			system, groupGovAgencyCode);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic checkNotDuplicate(

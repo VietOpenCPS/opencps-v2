@@ -491,6 +491,15 @@ public class DictItemGroupLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.datamgt.model.DictItemGroup updateDictItemGroupDB(
+		long userId, long groupId, long dictGroupId, long dictItemId,
+		String dictGroupName)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return _dictItemGroupLocalService.updateDictItemGroupDB(userId,
+			groupId, dictGroupId, dictItemId, dictGroupName);
+	}
+
+	@Override
 	public DictItemGroupLocalService getWrappedService() {
 		return _dictItemGroupLocalService;
 	}

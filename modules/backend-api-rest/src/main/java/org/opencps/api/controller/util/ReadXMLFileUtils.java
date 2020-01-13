@@ -5,12 +5,7 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.RoleConstants;
-import com.liferay.portal.kernel.model.RoleModel;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -51,6 +46,7 @@ import org.opencps.api.v21.model.StepConfigList;
 import org.opencps.api.v21.model.UserManagement;
 import org.opencps.api.v21.model.UserManagement.Roles;
 import org.opencps.api.v21.model.UserManagement.Users;
+import org.opencps.api.v21.model.WorkingTimeList;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
@@ -75,8 +71,6 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
-import org.opencps.api.v21.model.WorkingTimeList;
-import org.opencps.api.v21.model.WorkingTimeList.WorkingTime;
 
 public class ReadXMLFileUtils {
 
@@ -177,8 +171,8 @@ public class ReadXMLFileUtils {
 		_log.info("folderParentPath: "+folderParentPath);
 		String strFile = StringPool.BLANK;
 		if (Validator.isNotNull(folderPath)) {
-			int index = folderPath.lastIndexOf(StringPool.FORWARD_SLASH);
-			String subFolder = folderPath.substring(index);
+			int index = folderPath.lastIndexOf(File.separator);
+			String subFolder = folderPath.substring(index + 1);
 			_log.info("subFolder: "+subFolder);
 			if (Validator.isNotNull(subFolder)) {
 				switch (subFolder) {
@@ -207,6 +201,7 @@ public class ReadXMLFileUtils {
 
 		StringBuilder sbParentFile = new StringBuilder();
 		boolean flag = false;
+		
 		if (Validator.isNotNull(fileName)) {
 			switch (fileName) {
 			case ConstantUtils.XML_ACTION_CONFIG:
@@ -799,7 +794,6 @@ public class ReadXMLFileUtils {
 
 	//Process validate xml
 	public static String validateXML(File xmlFile, boolean flagList) {
-
 		if (flagList) {
 			File[] files = xmlFile.listFiles();
 			if (files != null && files.length > 0) {
@@ -807,7 +801,7 @@ public class ReadXMLFileUtils {
 				for (File fileEntry : files) {
 					if (fileEntry.isDirectory()) {
 						String folderPath = fileEntry.getPath();
-						int index = folderPath.lastIndexOf(StringPool.FORWARD_SLASH);
+						int index = folderPath.lastIndexOf(File.separator);
 						String subFolder = folderPath.substring(index + 1);
 						if (ConstantUtils.SOURCE_VALIDATE.contains(subFolder)) {
 							File[] fileChid = fileEntry.listFiles();
@@ -845,6 +839,7 @@ public class ReadXMLFileUtils {
 								DocumentBuilder parser = builderFactory.newDocumentBuilder();
 								parser.parse(fileEntry);
 							} catch (Exception e) {
+								e.printStackTrace();
 								_log.debug(e);
 								//_log.error(e);
 								sb.append(fileName);

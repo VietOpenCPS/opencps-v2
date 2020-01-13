@@ -81,6 +81,7 @@ import org.opencps.datamgt.action.WorkTimeInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.action.impl.HolidayActions;
 import org.opencps.datamgt.action.impl.WorkTimeActions;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.ActionConfigActions;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.DocumentTypeActions;
@@ -1557,8 +1558,16 @@ public class ProcessUpdateDBUtils {
 						groupNameEN = dictGroup.getGroupNameEN();
 						groupDescription = dictGroup.getGroupDescription();
 						//
-						actionCollection.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName, groupNameEN,
+						org.opencps.datamgt.model.DictGroup dg = actionCollection.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName, groupNameEN,
 								groupDescription, serviceContext);
+						//Process dict item group
+						org.opencps.api.v21.model.Groups.DictGroup.Items items = dictGroup.getItems();
+						for (String itemRef : items.getItemRef()) {
+							org.opencps.datamgt.model.DictItem di = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemRef, dictCollectionId, groupId);
+							if (di != null) {
+								actionCollection.updateDictItemGroupDB(userId, groupId, dg.getDictGroupId(), di.getDictItemId(), groupName, serviceContext);															
+							}
+						}
 					}
 				}
 			}

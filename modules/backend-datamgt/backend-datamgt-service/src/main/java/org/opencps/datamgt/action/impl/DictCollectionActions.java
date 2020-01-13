@@ -1272,10 +1272,10 @@ public class DictCollectionActions implements DictcollectionInterface {
 	}
 
 	@Override
-	public void updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
+	public DictGroup updateDictGroupDB(long userId, long groupId, long dictCollectionId, String groupCode, String groupName,
 			String groupNameEN, String groupDescription, ServiceContext serviceContext) throws NoSuchUserException {
 
-		DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
+		return DictGroupLocalServiceUtil.updateDictGroupDB(userId, groupId, dictCollectionId, groupCode, groupName,
 				groupNameEN, groupDescription, serviceContext);
 	}
 
@@ -1365,5 +1365,12 @@ public class DictCollectionActions implements DictcollectionInterface {
 		}
 
 		return result;
+	}
+
+	@Override
+	public void updateDictItemGroupDB(long userId, long groupId, long dictGroupId, long dictItemId, String dictGroupName,
+			ServiceContext serviceContext) throws NoSuchUserException {
+		DictItemGroupLocalServiceUtil.updateDictItemGroupDB(userId, groupId, dictGroupId, dictItemId, dictGroupName);
+		
 	}
 }

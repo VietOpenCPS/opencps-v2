@@ -121,7 +121,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 	@SuppressWarnings("unchecked")
 	public OpencpsDossierStatistic checkContainsSystem(long groupId, int month, int year, String domain,
-			String govAgency, String system) {
+			String govAgency, String system, String groupGovAgency) {
 		Session session = null;
 
 		try {
@@ -141,8 +141,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			if (Validator.isNull(system)) {
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM, CONDITION_SYSTEM_REPLACE);
 			}
-			
-			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
+			if (Validator.isNull(groupGovAgency)) {
+				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);				
+			}
 
 			//LOG.info(sql);
 
@@ -173,6 +174,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			/* add govAgency parameter */
 			if (Validator.isNotNull(govAgency)) {
 				qPos.add(govAgency);
+			}
+			
+			/* add groupAgencyCode */
+			if (Validator.isNotNull(groupGovAgency)) {
+				qPos.add(groupGovAgency);
 			}
 
 			/* add reporting */

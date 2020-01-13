@@ -1345,7 +1345,7 @@
 							<xsd:element name="items" >
 								<xsd:complexType>
 									<xsd:sequence >
-										<xsd:element name="ItemRef">
+										<xsd:element name="ItemRef" minOccurs="0" maxOccurs="unbounded">
 											<xsd:simpleType>
 												<xsd:restriction base="xsd:string">
 													<xsd:maxLength value="255"></xsd:maxLength>

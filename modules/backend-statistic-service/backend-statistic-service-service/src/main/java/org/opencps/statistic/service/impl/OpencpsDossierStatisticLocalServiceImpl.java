@@ -14,6 +14,7 @@
 
 package org.opencps.statistic.service.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -60,8 +61,8 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		return opencpsDossierStatisticFinder.checkContains(groupId, month, year, domain, govAgency);
 	}
 
-	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system) {
-		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system);
+	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system, String groupGovAgencyCode) {
+		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system, groupGovAgencyCode);
 	}
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
@@ -374,7 +375,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
-				month, year, govAgencyCode, domainCode, system);
+				month, year, govAgencyCode, domainCode, system, StringPool.BLANK);
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;
@@ -483,7 +484,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
-				month, year, govAgencyCode, domainCode, system);
+				month, year, govAgencyCode, domainCode, system, StringPool.BLANK);
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;
@@ -899,7 +900,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String domainCode, String domainName, String groupGovAgencyCode, boolean reporting, int onegateCount, int outsideCount,
 			int insideCount, int viaPostalCount, int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount) throws PortalException, SystemException {
 		OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
-				month, year, govAgencyCode, domainCode, system);
+				month, year, govAgencyCode, domainCode, system, groupGovAgencyCode);
 
 		Date now = new Date();
 		long dossierStatisticId = 0l;

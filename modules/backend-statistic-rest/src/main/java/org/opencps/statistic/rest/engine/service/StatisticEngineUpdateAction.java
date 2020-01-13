@@ -69,7 +69,7 @@ public class StatisticEngineUpdateAction {
 //		}
 
 		byte pausingCount = 0;
-
+	
 		try {
 			return OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(payload.getCompanyId(),
 					payload.getGroupId(), -1L, "ADM", payload.getMonth(), payload.getYear(), payload.getSystem(),

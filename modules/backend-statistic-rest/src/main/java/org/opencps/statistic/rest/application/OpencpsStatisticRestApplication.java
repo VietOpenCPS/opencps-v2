@@ -67,9 +67,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -416,11 +418,20 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setEnd(end);
 				dossierStatisticRequest.setMonth(month);
 				dossierStatisticRequest.setYear(year);
-				if (Validator.isNotNull(query.getGroupCollectionCode())) {
-					if (Validator.isNull(query.getGroupParentAgency())) {
-						DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(query.getGroupCollectionCode(), groupId);
-						if (dc != null) {
-							List<DictItem> lstItems = DictItemLocalServiceUtil.findByF_dictCollectionId(dc.getDictCollectionId());
+				if (Validator.isNotNull(query.getGroupCode())) {
+					if (!Validator.isNull(query.getParentAgency())) {
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						
+						if (dg != null) {
+							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+							
+							List<DictItem> lstItems = new ArrayList<DictItem>();
+							for (DictItemGroup dig : lstDigs) {
+								DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+								if (di != null && query.getParentAgency() != null && di.getItemCode() != null && di.getItemCode().contentEquals(query.getParentAgency())) {
+									lstItems.add(di);									
+								}
+							}
 							StringBuilder groupAgencyCodeFilter = new StringBuilder();
 							for (DictItem di : lstItems) {
 								if (di.getLevel() == 0) {
@@ -435,24 +446,25 @@ public class OpencpsStatisticRestApplication extends Application {
 						}						
 					}
 					else {
-						DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(query.getGroupCollectionCode(), groupId);
-						if (dc != null) {
-							DictItem parentItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(query.getGroupParentAgency(), dc.getDictCollectionId(), groupId);
-							
-							List<DictItem> lstItems = (parentItem == null) ? DictItemLocalServiceUtil.findByF_dictCollectionId(dc.getDictCollectionId()) : DictItemLocalServiceUtil.findByF_dictCollectionId_parentItemId(dc.getDictCollectionId(), parentItem.getDictItemId());
-							
-							StringBuilder groupAgencyCodeFilter = new StringBuilder();
-							for (DictItem di : lstItems) {
-								if (di.getLevel() == 0) {
-									if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
-										groupAgencyCodeFilter.append(StringPool.COMMA);
-									}
-									groupAgencyCodeFilter.append(di.getItemCode());
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+						
+						List<DictItem> lstItems = new ArrayList<DictItem>();
+						for (DictItemGroup dig : lstDigs) {
+							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+							lstItems.add(di);									
+						}
+						StringBuilder groupAgencyCodeFilter = new StringBuilder();
+						for (DictItem di : lstItems) {
+							if (di.getLevel() == 0) {
+								if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
+									groupAgencyCodeFilter.append(StringPool.COMMA);
 								}
+								groupAgencyCodeFilter.append(di.getItemCode());
 							}
-							dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
-							dossierStatisticRequest.setSystem("total");
-						}												
+						}
+						dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
+						dossierStatisticRequest.setSystem("total");
 					}
 				}
 				

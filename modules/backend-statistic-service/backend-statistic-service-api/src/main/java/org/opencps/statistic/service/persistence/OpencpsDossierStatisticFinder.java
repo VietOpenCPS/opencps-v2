@@ -27,7 +27,7 @@ public interface OpencpsDossierStatisticFinder {
 
 	public org.opencps.statistic.model.OpencpsDossierStatistic checkContainsSystem(
 		long groupId, int month, int year, String domain, String govAgency,
-		String system);
+		String system, String groupGovAgency);
 
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchDossierStatistic(
 		long groupId, int year, String domain, String govAgency,

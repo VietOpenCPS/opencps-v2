@@ -81,7 +81,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int year, String govAgency, String domain);
 
 	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month,
-		int year, String govAgency, String domain, String system);
+		int year, String govAgency, String domain, String system,
+		String groupGovAgencyCode);
 
 	public OpencpsDossierStatistic checkNotDuplicate(long groupId,
 		String govAgencyCode, int month, int year, String domainCode);

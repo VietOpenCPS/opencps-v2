@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -152,4 +153,28 @@ public interface DefaultSignatureManagement {
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, @BeanParam DigitalSignatureInputModel input) throws PortalException, Exception;
 
+	@PUT
+	@Path("/vgca/{id}/dossierFiles")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Digital Signature")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = ""),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response vgcaDossierFilesBySignature(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext, 
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id, @FormParam("fileEntries") String fileEntries, @FormParam("dossierFiles") String dossierFiles,
+			@FormParam(value = "actionCode") String actionCode,
+			@FormParam(value = "actionUser") String actionUser,
+			@FormParam(value = "actionNote") String actionNote,
+			@FormParam(value = "assignUserId") String assignUserId,
+			@FormParam(value = "subUsers") String subUsers,
+			@FormParam(value = "postStepCode") String postStepCode,
+			@FormParam(value = "payload") String payload,
+			@FormParam(value = "payment") String payment,
+			@FormParam(value = "assignUsers") String assignUsers,
+			@FormParam(value = "userNote") String userNote) throws PortalException, Exception;
+	
 }

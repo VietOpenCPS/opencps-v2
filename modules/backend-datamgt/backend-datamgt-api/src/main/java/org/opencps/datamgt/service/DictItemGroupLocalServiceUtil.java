@@ -460,6 +460,15 @@ public class DictItemGroupLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static org.opencps.datamgt.model.DictItemGroup updateDictItemGroupDB(
+		long userId, long groupId, long dictGroupId, long dictItemId,
+		String dictGroupName)
+		throws com.liferay.portal.kernel.exception.NoSuchUserException {
+		return getService()
+				   .updateDictItemGroupDB(userId, groupId, dictGroupId,
+			dictItemId, dictGroupName);
+	}
+
 	public static DictItemGroupLocalService getService() {
 		return _serviceTracker.getService();
 	}
