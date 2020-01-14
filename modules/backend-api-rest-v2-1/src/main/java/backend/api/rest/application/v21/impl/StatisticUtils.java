@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.opencps.rest.application.model.DossierStatisticModel;
 
+import backend.api.rest.application.utils.ConstantTerm;
+
 public class StatisticUtils {
 
 	static Log _log = LogFactoryUtil.getLog(StatisticUtils.class);
@@ -22,11 +24,11 @@ public class StatisticUtils {
 			for (int i = 0; i < statistics.length(); i++) {
 				JSONObject statistic = statistics.getJSONObject(i);
 				DossierStatisticModel ett = new DossierStatisticModel();
-				ett.setTotalCount(statistic.getLong("totalCount"));
-				ett.setDossierStatus(statistic.getString("dossierStatus"));
-				ett.setDossierSubStatus(statistic.getString("dossierSubStatus"));
-				ett.setStepCode(statistic.getString("stepCode"));
-				ett.setStepName(statistic.getString("stepName"));
+				ett.setTotalCount(statistic.getLong(ConstantTerm.JSON_TOTAL_COUNT));
+				ett.setDossierStatus(statistic.getString(ConstantTerm.JSON_DOSSIER_STATUS));
+				ett.setDossierSubStatus(statistic.getString(ConstantTerm.JSON_DOSSIER_SUB_STATUS));
+				ett.setStepCode(statistic.getString(ConstantTerm.JSON_STEP_CODE));
+				ett.setStepName(statistic.getString(ConstantTerm.JSON_STEP_NAME));
 				results.add(ett);
 			}
 		}

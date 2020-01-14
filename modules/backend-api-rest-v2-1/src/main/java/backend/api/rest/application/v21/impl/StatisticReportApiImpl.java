@@ -1,5 +1,6 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -28,9 +29,13 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.rest.application.api.StatisticReportApi;
+
+import backend.api.rest.application.utils.ConstantTerm;
 
 public class StatisticReportApiImpl implements StatisticReportApi {
 
@@ -66,11 +71,11 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 		DocumentType docType = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, code);
 		String documentScript;
-		String reportType = "pdf";
+		String reportType = ConstantTerm.PDF_TYPE;
 		try {
 			JSONObject bodyObj = JSONFactoryUtil.createJSONObject(body);
-			if (bodyObj.has("reportType")) {
-				reportType = bodyObj.getString("reportType");
+			if (bodyObj.has(ConstantTerm.JSON_REPORT_TYPE)) {
+				reportType = bodyObj.getString(ConstantTerm.JSON_REPORT_TYPE);
 			}
 		} catch (JSONException e) {
 			_log.debug(e);
@@ -82,16 +87,16 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 			documentScript = docType.getDocumentScript();
 
 			Message message = new Message();
-			message.put("formReport", documentScript);
-			message.put("reportType", reportType);
+			message.put(ConstantTerm.JSON_FORM_REPORT, documentScript);
+			message.put(ConstantTerm.JSON_REPORT_TYPE, reportType);
 
 			JSONObject resultObject = doGetFormData(code, body, siteName);
 			
-			message.put("formData", resultObject);
+			message.put(ConstantTerm.JSON_FORM_DATA, resultObject);
 			
 			try {
 				String previewResponse = (String) MessageBusUtil
-						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+						.sendSynchronousMessage(ConstantTerm.JASPER_ENGINE_PREVIEW_DESTINATION, message, 10000);
 
 				if (Validator.isNotNull(previewResponse)) {
 					file = new File(previewResponse);
@@ -99,29 +104,29 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
 					String rootFileName = docType.getDocumentName();
 					try {
-						rootFileName = URLEncoder.encode(docType.getDocumentName(), "UTF-8");
+						rootFileName = URLEncoder.encode(docType.getDocumentName(), ConstantTerm.UTF_8);
 					}
 					catch (Exception e) {
 						_log.debug(e);
 					}
 					if ("excel".equals(reportType)) {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".xls\"");
-//						responseBuilder.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
-						responseBuilder.header("Content-Type", "application/vnd.ms-excel");	
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.EXTENSION_XLS));
+//						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_EXCEL_CONTENT_TYPE));	
 //						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
 					else if ("word".equals(reportType)) {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".doc\"");
-						responseBuilder.header("Content-Type", "application/msword");	
-//						responseBuilder.header("Content-Type", "application/octet-stream");
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.EXTENSION_DOC));
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_WORD_CONTENT_TYPE));	
+//						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/octet-stream");
 //						responseBuilder.header("Content-Transfer-Encoding", "binary");
 					}
 					else {
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + rootFileName + ".pdf\"");
-						responseBuilder.header("Content-Type", "application/pdf");						
+						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
+								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.EXTENSION_PDF));
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_PDF_CONTENT_TYPE));						
 					}
 					return responseBuilder.build();
 				}
@@ -142,34 +147,34 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		switch (code) {
-		case "REPORT_01":
+		case ConstantTerm.REPORT_01:
 			result = getFormDataReport01(body, siteName);
 			break;
-		case "REPORT_02":
+		case ConstantTerm.REPORT_02:
 			result = getFormDataReportTongHop(body, siteName);
 			break;
-		case "REPORT_03":
+		case ConstantTerm.REPORT_03:
 			result = getFormDataReportDetail(body, siteName);
 			break;
-		case "REPORT_04":
+		case ConstantTerm.REPORT_04:
 			result = getFormDataReportTongHop(body, siteName);
 			break;
-		case "REPORT_05":
+		case ConstantTerm.REPORT_05:
 			result = getFormDataReportDetail(body, siteName);
 			break;
-		case "REPORT_06":
+		case ConstantTerm.REPORT_06:
 			result = getFormDataReportTongHop(body, siteName);
 			break;
-		case "REPORT_07":
+		case ConstantTerm.REPORT_07:
 			// result = getFormDataReport07(body);
 			break;
-		case "REPORT_08":
+		case ConstantTerm.REPORT_08:
 			// result = getFormDataReport08(body);
 			break;
-		case "REPORT_09":
+		case ConstantTerm.REPORT_09:
 			result = getFormDataReportDetail(body, siteName);
 			break;
-		case "REPORT_10":
+		case ConstantTerm.REPORT_10:
 			result = getFormDataReportDetail(body, siteName);
 			break;
 		default:
@@ -192,15 +197,15 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		try {
 			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
 
-			result.put("year", resultBody.getInt("year"));
-			result.put("month", resultBody.getInt("month"));
-			result.put("govAgencyName", siteName);
+			result.put(ConstantTerm.JSON_YEAR, resultBody.getInt(ConstantTerm.JSON_YEAR));
+			result.put(ConstantTerm.JSON_MONTH, resultBody.getInt(ConstantTerm.JSON_MONTH));
+			result.put(ConstantTerm.JSON_GOV_AGENCY_NAME, siteName);
 
-			result.put("fromDate", resultBody.getString("fromDate"));
-			result.put("toDate", resultBody.getString("toDate"));
-			result.put("actionUser", "");
+			result.put(ConstantTerm.JSON_FROMDATE, resultBody.getString(ConstantTerm.JSON_FROMDATE));
+			result.put(ConstantTerm.JSON_TODATE, resultBody.getString(ConstantTerm.JSON_TODATE));
+			result.put(ConstantTerm.JSON_ACTION_USER, StringPool.BLANK);
 
-			JSONArray dossierData = resultBody.getJSONArray("data");
+			JSONArray dossierData = resultBody.getJSONArray(ConstantUtils.DATA);
 			JSONObject currentObject = null;
 
 			JSONObject domainRaw = JSONFactoryUtil.createJSONObject();
@@ -211,29 +216,29 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 				JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
 
-				domainRawItem.put("domainName", currentObject.getString("domainName"));
-				domainRawItem.put("services", JSONFactoryUtil.createJSONArray());
+				domainRawItem.put(ConstantTerm.JSON_DOMAIN_NAME, currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME));
+				domainRawItem.put(ConstantTerm.JSON_SERVICES, JSONFactoryUtil.createJSONArray());
 
-				if (Validator.isNull(domainRaw.getJSONObject(currentObject.getString("domainName")))) {
-					domainRaw.put(currentObject.getString("domainName"), domainRawItem);
+				if (Validator.isNull(domainRaw.getJSONObject(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME)))) {
+					domainRaw.put(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME), domainRawItem);
 				}
 
-				if (Validator.isNotNull(dossierRaw.getJSONObject(currentObject.getString("serviceCode")))) {
-					if (dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getString("serviceCode")
-							.equalsIgnoreCase(currentObject.getString("serviceCode"))) {
-						dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers")
+				if (Validator.isNotNull(dossierRaw.getJSONObject(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE)))) {
+					if (dossierRaw.getJSONObject(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE)).getString(ConstantTerm.JSON_SERVICE_CODE)
+							.equalsIgnoreCase(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE))) {
+						dossierRaw.getJSONObject(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE)).getJSONArray(ConstantTerm.JSON_DOSSIERS)
 								.put(currentObject);
 					}
 				} else {
 					JSONObject dossierRawItem = JSONFactoryUtil.createJSONObject();
 
-					dossierRawItem.put("serviceCode", currentObject.getString("serviceCode"));
-					dossierRawItem.put("serviceName", currentObject.getString("serviceName"));
-					dossierRawItem.put("domainName", currentObject.getString("domainName"));
-					dossierRawItem.put("dossiers", JSONFactoryUtil.createJSONArray());
+					dossierRawItem.put(ConstantTerm.JSON_SERVICE_CODE, currentObject.getString(ConstantTerm.JSON_SERVICE_CODE));
+					dossierRawItem.put(ConstantTerm.JSON_SERVICE_NAME, currentObject.getString(ConstantTerm.JSON_SERVICE_NAME));
+					dossierRawItem.put(ConstantTerm.JSON_DOMAIN_NAME, currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME));
+					dossierRawItem.put(ConstantTerm.JSON_DOSSIERS, JSONFactoryUtil.createJSONArray());
 
-					dossierRaw.put(currentObject.getString("serviceCode"), dossierRawItem);
-					dossierRaw.getJSONObject(currentObject.getString("serviceCode")).getJSONArray("dossiers")
+					dossierRaw.put(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE), dossierRawItem);
+					dossierRaw.getJSONObject(currentObject.getString(ConstantTerm.JSON_SERVICE_CODE)).getJSONArray(ConstantTerm.JSON_DOSSIERS)
 							.put(currentObject);
 				}
 
@@ -247,10 +252,10 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 				JSONObject keyObject = dossierRaw.getJSONObject(key);
 				if (Validator.isNotNull(keyObject)) {
-					if (Validator.isNotNull(domainRaw.getString(keyObject.getString("domainName")))
-							&& domainRaw.getJSONObject(keyObject.getString("domainName")).getString("domainName")
-									.equalsIgnoreCase(keyObject.getString("domainName"))) {
-						domainRaw.getJSONObject(keyObject.getString("domainName")).getJSONArray("services")
+					if (Validator.isNotNull(domainRaw.getString(keyObject.getString(ConstantTerm.JSON_DOMAIN_NAME)))
+							&& domainRaw.getJSONObject(keyObject.getString(ConstantTerm.JSON_DOMAIN_NAME)).getString(ConstantTerm.JSON_DOMAIN_NAME)
+									.equalsIgnoreCase(keyObject.getString(ConstantTerm.JSON_DOMAIN_NAME))) {
+						domainRaw.getJSONObject(keyObject.getString(ConstantTerm.JSON_DOMAIN_NAME)).getJSONArray(ConstantTerm.JSON_SERVICES)
 								.put(keyObject);
 					}
 				}
@@ -271,8 +276,8 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 					JSONObject domainRawItem = JSONFactoryUtil.createJSONObject();
 
-					domainRawItem.put("domainName", key);
-					domainRawItem.put("services", keyObject.getJSONArray("services"));
+					domainRawItem.put(ConstantTerm.JSON_DOMAIN_NAME, key);
+					domainRawItem.put(ConstantTerm.JSON_SERVICES, keyObject.getJSONArray(ConstantTerm.JSON_SERVICES));
 
 					domains.put(domainRawItem);
 				}
@@ -293,113 +298,113 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 		try {
 			JSONObject resultBody = JSONFactoryUtil.createJSONObject(body);
 			//
-			int year = resultBody.getInt("year");
-			int month = resultBody.getInt("month");
-			String fromStatisticDate = resultBody.getString("fromStatisticDate");
-			String toStatisticDate = resultBody.getString("toStatisticDate");
+			int year = resultBody.getInt(ConstantTerm.JSON_YEAR);
+			int month = resultBody.getInt(ConstantTerm.JSON_MONTH);
+			String fromStatisticDate = resultBody.getString(ConstantTerm.JSON_FROMSTATISTICDATE);
+			String toStatisticDate = resultBody.getString(ConstantTerm.JSON_TOSTATISTICDATE);
 			if (year > 0 || month > 0) {
-				result.put("year", year);
-				result.put("month", month);
+				result.put(ConstantTerm.JSON_YEAR, year);
+				result.put(ConstantTerm.JSON_MONTH, month);
 			} else if (Validator.isNotNull(fromStatisticDate) || Validator.isNotNull(toStatisticDate)){
-				result.put("fromStatisticDate", fromStatisticDate);
-				result.put("toStatisticDate", toStatisticDate);
+				result.put(ConstantTerm.JSON_FROMSTATISTICDATE, fromStatisticDate);
+				result.put(ConstantTerm.JSON_TOSTATISTICDATE, toStatisticDate);
 			}
 
-			result.put("govAgencyName", siteName);
+			result.put(ConstantTerm.JSON_GOV_AGENCY_NAME, siteName);
 			//Process statistic all agency
-			int flagAgency = resultBody.getInt("flagAgency");
-			result.put("flagAgency", flagAgency);
-			JSONArray statistics = resultBody.getJSONArray("data");
+			int flagAgency = resultBody.getInt(ConstantTerm.JSON_FLAG_AGENCY);
+			result.put(ConstantTerm.JSON_FLAG_AGENCY, flagAgency);
+			JSONArray statistics = resultBody.getJSONArray(ConstantUtils.DATA);
 			JSONArray statisticsData = JSONFactoryUtil.createJSONArray();
 			
 			if (statistics.length() > 0) {
-				result.put("nodata", 1);
+				result.put(ConstantTerm.JSON_NODATA, 1);
 			}
 
 			JSONObject currentObject = null;
 			if (flagAgency > 0) {
 				for (int i = 0; i < statistics.length(); i++) {
 					currentObject = statistics.getJSONObject(i);
-					if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNull(currentObject.getString("govAgencyName"))) {
-						result.put("total_3", currentObject.getInt("totalCount"));
-						result.put("total_4", currentObject.getInt("deniedCount"));
-						result.put("total_5", currentObject.getInt("cancelledCount"));
-						result.put("total_6", currentObject.getInt("processCount"));
-						result.put("total_7", currentObject.getInt("remainingCount"));
-						result.put("total_8", currentObject.getInt("receivedCount"));
-						result.put("total_9", currentObject.getInt("onegateCount"));
-						result.put("total_10", currentObject.getInt("onlineCount"));
-						result.put("total_11", currentObject.getInt("releaseCount"));
-						result.put("total_12", currentObject.getInt("betimesCount"));
-						result.put("total_13", currentObject.getInt("ontimeCount"));
-						result.put("total_14", currentObject.getInt("overtimeCount"));
-						result.put("total_15", currentObject.getInt("overtimeInside"));
-						result.put("total_16", currentObject.getInt("overtimeOutside"));
-						result.put("total_17", currentObject.getInt("doneCount"));
-						result.put("total_18", currentObject.getInt("releasingCount"));
-						result.put("total_19", currentObject.getInt("unresolvedCount"));
-						result.put("total_20", currentObject.getInt("processingCount"));
-						result.put("total_21", currentObject.getInt("undueCount"));
-						result.put("total_22", currentObject.getInt("overdueCount"));
-						result.put("total_23", currentObject.getInt("outsideCount"));
-						result.put("total_24", currentObject.getInt("waitingCount"));
-						result.put("total_25", currentObject.getInt("ontimePercentage"));
+					if (Validator.isNull(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME)) && Validator.isNull(currentObject.getString(ConstantTerm.JSON_GOV_AGENCY_NAME))) {
+						result.put(ConstantTerm.JSON_TOTAL_3, currentObject.getInt(ConstantTerm.JSON_TOTAL_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_4, currentObject.getInt(ConstantTerm.JSON_DENIED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_5, currentObject.getInt(ConstantTerm.JSON_CANCELLED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_6, currentObject.getInt(ConstantTerm.JSON_PROCESS_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_7, currentObject.getInt(ConstantTerm.JSON_REMAINING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_8, currentObject.getInt(ConstantTerm.JSON_RECEIVED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_9, currentObject.getInt(ConstantTerm.JSON_ONEGATE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_10, currentObject.getInt(ConstantTerm.JSON_ONLINE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_11, currentObject.getInt(ConstantTerm.JSON_RELEASE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_12, currentObject.getInt(ConstantTerm.JSON_BETIMES_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_13, currentObject.getInt(ConstantTerm.JSON_ONTIME_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_14, currentObject.getInt(ConstantTerm.JSON_OVERTIME_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_15, currentObject.getInt(ConstantTerm.JSON_OVERTIME_INSIDE));
+						result.put(ConstantTerm.JSON_TOTAL_16, currentObject.getInt(ConstantTerm.JSON_OVERTIME_OUTSIDE));
+						result.put(ConstantTerm.JSON_TOTAL_17, currentObject.getInt(ConstantTerm.JSON_DONE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_18, currentObject.getInt(ConstantTerm.JSON_RELEASING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_19, currentObject.getInt(ConstantTerm.JSON_UNRESOLVED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_20, currentObject.getInt(ConstantTerm.JSON_PROCESSING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_21, currentObject.getInt(ConstantTerm.JSON_UNDUE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_22, currentObject.getInt(ConstantTerm.JSON_OVERDUE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_23, currentObject.getInt(ConstantTerm.JSON_OUTSIDE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_24, currentObject.getInt(ConstantTerm.JSON_WAITING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_25, currentObject.getInt(ConstantTerm.JSON_ONTIME_PERCENTAGE));
 		
-					} else if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+					} else if (Validator.isNull(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME)) && Validator.isNotNull(currentObject.getString(ConstantTerm.JSON_GOV_AGENCY_NAME))) {
 						statisticsData.put(currentObject);
 					}
 				}
 			} else {
 				for (int i = 0; i < statistics.length(); i++) {
 					currentObject = statistics.getJSONObject(i);
-					if (Validator.isNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
-//						result.put("total_3", currentObject.getInt("totalCount"));
-//						result.put("total_4", currentObject.getInt("deniedCount"));
-//						result.put("total_5", currentObject.getInt("cancelledCount"));
-//						result.put("total_6", currentObject.getInt("processCount"));
-//						result.put("total_7", currentObject.getInt("remainingCount"));
-//						result.put("total_8", currentObject.getInt("receivedCount"));
-//						result.put("total_9", currentObject.getInt("onegateCount"));
-//						result.put("total_10", currentObject.getInt("onlineCount"));
-//						result.put("total_11", currentObject.getInt("releaseCount"));
-//						result.put("total_12", currentObject.getInt("betimesCount"));
-//						result.put("total_13", currentObject.getInt("ontimeCount"));
-//						result.put("total_14", currentObject.getInt("overtimeCount"));
-//						result.put("total_15", currentObject.getInt("overtimeInside"));
-//						result.put("total_16", currentObject.getInt("overtimeOutside"));
-//						result.put("total_17", currentObject.getInt("ontimePercentage"));
-//						result.put("total_18", currentObject.getInt("doneCount"));
-//						result.put("total_19", currentObject.getInt("releasingCount"));
-//						result.put("total_20", currentObject.getInt("unresolvedCount"));
-//						result.put("total_21", currentObject.getInt("processingCount"));
-//						result.put("total_22", currentObject.getInt("undueCount"));
-//						result.put("total_23", currentObject.getInt("overdueCount"));
-//						result.put("total_24", currentObject.getInt("waitingCount"));
-						result.put("total_3", currentObject.getInt("totalCount"));
-						result.put("total_4", currentObject.getInt("deniedCount"));
-						result.put("total_5", currentObject.getInt("cancelledCount"));
-						result.put("total_6", currentObject.getInt("processCount"));
-						result.put("total_7", currentObject.getInt("remainingCount"));
-						result.put("total_8", currentObject.getInt("receivedCount"));
-						result.put("total_9", currentObject.getInt("onegateCount"));
-						result.put("total_10", currentObject.getInt("onlineCount"));
-						result.put("total_11", currentObject.getInt("releaseCount"));
-						result.put("total_12", currentObject.getInt("betimesCount"));
-						result.put("total_13", currentObject.getInt("ontimeCount"));
-						result.put("total_14", currentObject.getInt("overtimeCount"));
-						result.put("total_15", currentObject.getInt("overtimeInside"));
-						result.put("total_16", currentObject.getInt("overtimeOutside"));
-						result.put("total_17", currentObject.getInt("doneCount"));
-						result.put("total_18", currentObject.getInt("releasingCount"));
-						result.put("total_19", currentObject.getInt("unresolvedCount"));
-						result.put("total_20", currentObject.getInt("processingCount"));
-						result.put("total_21", currentObject.getInt("undueCount"));
-						result.put("total_22", currentObject.getInt("overdueCount"));
-						result.put("total_23", currentObject.getInt("outsideCount"));
-						result.put("total_24", currentObject.getInt("waitingCount"));
-						result.put("total_25", currentObject.getInt("ontimePercentage"));
+					if (Validator.isNull(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME)) && Validator.isNotNull(currentObject.getString(ConstantTerm.JSON_GOV_AGENCY_NAME))) {
+//						result.put(ConstantTerm.JSON_TOTAL_3, currentObject.getInt(ConstantTerm.JSON_TOTAL_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_4, currentObject.getInt(ConstantTerm.JSON_DENIED_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_5, currentObject.getInt(ConstantTerm.JSON_CANCELLED_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_6, currentObject.getInt(ConstantTerm.JSON_PROCESS_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_7, currentObject.getInt(ConstantTerm.JSON_REMAINING_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_8, currentObject.getInt(ConstantTerm.JSON_RECEIVED_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_9, currentObject.getInt(ConstantTerm.JSON_ONEGATE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_10, currentObject.getInt(ConstantTerm.JSON_ONLINE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_11, currentObject.getInt(ConstantTerm.JSON_RELEASE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_12, currentObject.getInt(ConstantTerm.JSON_BETIMES_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_13, currentObject.getInt(ConstantTerm.JSON_ONTIME_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_14, currentObject.getInt(ConstantTerm.JSON_OVERTIME_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_15, currentObject.getInt(ConstantTerm.JSON_OVERTIME_INSIDE));
+//						result.put(ConstantTerm.JSON_TOTAL_16, currentObject.getInt(ConstantTerm.JSON_OVERTIME_OUTSIDE));
+//						result.put(ConstantTerm.JSON_TOTAL_17, currentObject.getInt(ConstantTerm.JSON_ONTIME_PERCENTAGE));
+//						result.put(ConstantTerm.JSON_TOTAL_18, currentObject.getInt(ConstantTerm.JSON_DONE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_19, currentObject.getInt(ConstantTerm.JSON_RELEASING_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_20, currentObject.getInt(ConstantTerm.JSON_UNRESOLVED_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_21, currentObject.getInt(ConstantTerm.JSON_PROCESSING_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_22, currentObject.getInt(ConstantTerm.JSON_UNDUE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_23, currentObject.getInt(ConstantTerm.JSON_OVERDUE_COUNT));
+//						result.put(ConstantTerm.JSON_TOTAL_24, currentObject.getInt(ConstantTerm.JSON_WAITING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_3, currentObject.getInt(ConstantTerm.JSON_TOTAL_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_4, currentObject.getInt(ConstantTerm.JSON_DENIED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_5, currentObject.getInt(ConstantTerm.JSON_CANCELLED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_6, currentObject.getInt(ConstantTerm.JSON_PROCESS_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_7, currentObject.getInt(ConstantTerm.JSON_REMAINING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_8, currentObject.getInt(ConstantTerm.JSON_RECEIVED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_9, currentObject.getInt(ConstantTerm.JSON_ONEGATE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_10, currentObject.getInt(ConstantTerm.JSON_ONLINE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_11, currentObject.getInt(ConstantTerm.JSON_RELEASE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_12, currentObject.getInt(ConstantTerm.JSON_BETIMES_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_13, currentObject.getInt(ConstantTerm.JSON_ONTIME_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_14, currentObject.getInt(ConstantTerm.JSON_OVERTIME_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_15, currentObject.getInt(ConstantTerm.JSON_OVERTIME_INSIDE));
+						result.put(ConstantTerm.JSON_TOTAL_16, currentObject.getInt(ConstantTerm.JSON_OVERTIME_OUTSIDE));
+						result.put(ConstantTerm.JSON_TOTAL_17, currentObject.getInt(ConstantTerm.JSON_DONE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_18, currentObject.getInt(ConstantTerm.JSON_RELEASING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_19, currentObject.getInt(ConstantTerm.JSON_UNRESOLVED_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_20, currentObject.getInt(ConstantTerm.JSON_PROCESSING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_21, currentObject.getInt(ConstantTerm.JSON_UNDUE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_22, currentObject.getInt(ConstantTerm.JSON_OVERDUE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_23, currentObject.getInt(ConstantTerm.JSON_OUTSIDE_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_24, currentObject.getInt(ConstantTerm.JSON_WAITING_COUNT));
+						result.put(ConstantTerm.JSON_TOTAL_25, currentObject.getInt(ConstantTerm.JSON_ONTIME_PERCENTAGE));
 		
-					} else if (Validator.isNotNull(currentObject.getString("domainName")) && Validator.isNotNull(currentObject.getString("govAgencyName"))) {
+					} else if (Validator.isNotNull(currentObject.getString(ConstantTerm.JSON_DOMAIN_NAME)) && Validator.isNotNull(currentObject.getString(ConstantTerm.JSON_GOV_AGENCY_NAME))) {
 						statisticsData.put(currentObject);
 					}
 				}

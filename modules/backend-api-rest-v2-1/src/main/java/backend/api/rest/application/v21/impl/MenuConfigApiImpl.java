@@ -1,5 +1,7 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.portal.kernel.configuration.Configuration;
+import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -8,6 +10,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import javax.naming.AuthenticationException;
@@ -149,18 +152,6 @@ public class MenuConfigApiImpl implements MenuConfigApi {
 		MenuConfigItemResult body;
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
-//		try {
-//			
-//			JSONObject query = JSONFactoryUtil.createJSONObject(" { \"sort\" : [ { \"order_Number_sortable\" : \"asc\" }, \"_score\" ], \"from\" : 0, \"size\" : 10000, \"query\": { \"query_string\": { \"query\" : \"(entryClassName:(org.opencps.dossiermgt.model.MenuConfig or org.opencps.dossiermgt.model.StepConfig) AND groupId:"+groupId+")\" }}}");
-//			
-//			JSONObject data = ElasticQueryWrapUtil.query(query.toJSONString(), MenuConfig.class.getName(), company.getCompanyId());
-//			
-//			body = parsing.getModel(data);
-//			
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-
 		body = parsing.getModel(groupId, user);
 		
 		return body;
