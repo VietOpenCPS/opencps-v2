@@ -411,7 +411,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
 				}
 				dossierStatisticRequest.setSystem(system);
-				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
+//				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
 				//dossierStatisticRequest.setReporting(reporting);
 				dossierStatisticRequest.setGroupId(groupId);
 				dossierStatisticRequest.setStart(start);
@@ -419,41 +419,42 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setMonth(month);
 				dossierStatisticRequest.setYear(year);
 				if (Validator.isNotNull(query.getGroupCode())) {
-					if (!Validator.isNull(query.getParentAgency())) {
-						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+					DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+					List<DictItem> lstItems = new ArrayList<DictItem>();
+					
+					if (dg != null) {
+						List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
 						
-						if (dg != null) {
-							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
-							
-							List<DictItem> lstItems = new ArrayList<DictItem>();
-							for (DictItemGroup dig : lstDigs) {
-								DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-								if (di != null && query.getParentAgency() != null && di.getItemCode() != null && di.getItemCode().contentEquals(query.getParentAgency())) {
+						for (DictItemGroup dig : lstDigs) {
+							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+							DictItem parentDi = DictItemLocalServiceUtil.fetchDictItem(di.getParentItemId());
+							System.out.println("DICT ITEM: " + di + ", parent: " + parentDi + ", " + query.getParentAgency());
+							if (!Validator.isNull(query.getParentAgency())) {
+								if (di != null && query.getParentAgency() != null && parentDi != null && parentDi.getItemCode().contentEquals(query.getParentAgency())) {
 									lstItems.add(di);									
 								}
 							}
+							else {
+								lstItems.add(di);
+							}
+						}
+					}
+					
+					if (!Validator.isNull(query.getParentAgency())) {
+						if (dg != null) {
 							StringBuilder groupAgencyCodeFilter = new StringBuilder();
 							for (DictItem di : lstItems) {
-								if (di.getLevel() == 0) {
-									if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
-										groupAgencyCodeFilter.append(StringPool.COMMA);
-									}
-									groupAgencyCodeFilter.append(di.getItemCode());
+								if (!"".contentEquals(groupAgencyCodeFilter.toString())) {
+									groupAgencyCodeFilter.append(StringPool.COMMA);
 								}
+								groupAgencyCodeFilter.append(di.getItemCode());
 							}
 							dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
 							dossierStatisticRequest.setSystem("total");
+							System.out.println("GROUP CODE AGENCY FILTER: " + groupAgencyCodeFilter);
 						}						
 					}
 					else {
-						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
-						List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
-						
-						List<DictItem> lstItems = new ArrayList<DictItem>();
-						for (DictItemGroup dig : lstDigs) {
-							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-							lstItems.add(di);									
-						}
 						StringBuilder groupAgencyCodeFilter = new StringBuilder();
 						for (DictItem di : lstItems) {
 							if (di.getLevel() == 0) {
@@ -467,10 +468,69 @@ public class OpencpsStatisticRestApplication extends Application {
 						dossierStatisticRequest.setSystem("total");
 					}
 				}
-				
 				//
 				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
 						.finderDossierStatisticSystem(dossierStatisticRequest);
+				System.out.println("SEARCH GROUP CODE: " + query.getGroupCode());
+				if (Validator.isNotNull(query.getGroupCode())) {
+					if (Validator.isNull(query.getParentAgency())) {
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						
+						System.out.println("SEARCH DICT GROUP: " + dg);
+						if (dg != null) {
+							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+							
+							List<DictItem> lstItems = new ArrayList<DictItem>();
+							for (DictItemGroup dig : lstDigs) {
+								DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+								lstItems.add(di);									
+							}
+							dossierStatisticRequest.setGroupAgencyCode(StringPool.BLANK);
+							dossierStatisticRequest.setSystem("total");
+							for (DictItem di : lstItems) {
+								dossierStatisticRequest.setGovAgencyCode(di.getItemCode());
+								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
+								DossierStatisticResponse statisticResponseTemp = dossierStatisticFinderService
+										.finderDossierStatisticSystem(dossierStatisticRequest);
+								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
+								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
+									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
+								}
+							}
+							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
+						}
+					}
+					else {
+						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
+						
+						System.out.println("SEARCH DICT GROUP: " + dg);
+						if (dg != null) {
+							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
+							
+							List<DictItem> lstItems = new ArrayList<DictItem>();
+							for (DictItemGroup dig : lstDigs) {
+								DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+								DictItem parentDi = DictItemLocalServiceUtil.fetchDictItem(di.getParentItemId());
+								if (parentDi != null && query.getParentAgency().contentEquals(parentDi.getItemCode())) {
+									lstItems.add(di);																		
+								}
+							}
+							dossierStatisticRequest.setGroupAgencyCode(StringPool.BLANK);
+							dossierStatisticRequest.setSystem("total");
+							for (DictItem di : lstItems) {
+								dossierStatisticRequest.setGovAgencyCode(di.getItemCode());
+								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
+								DossierStatisticResponse statisticResponseTemp = dossierStatisticFinderService
+										.finderDossierStatisticSystem(dossierStatisticRequest);
+								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
+								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
+									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
+								}
+							}
+							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
+						}						
+					}
+				}
 				if (statisticResponse != null) {
 					statisticResponse.setAgency(govAgencyCode);
 				}

@@ -18,7 +18,8 @@ public class PersonStatisticConverter {
 		return (source) -> {
 
 			PersonResponse personResponse = new PersonResponse();
-
+			if (source == null) return personResponse;
+			
 			personResponse.setTotal(source.size());
 
 			List<PersonStatisticData> personStatisticList = new ArrayList<>();
