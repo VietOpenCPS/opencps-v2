@@ -3,6 +3,8 @@ package org.opencps.statistic.rest.engine.service;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -202,7 +204,9 @@ public class StatisticEngineFetch {
 
 				// all site, all domain, all system, each group gov
 				for (String groupGovAgency : lstGroupGovs) {
-					if (groupGovAgency.contains(dossierData.getGovAgencyCode())) {
+					List<String> lstGovs = Arrays.asList(groupGovAgency.split(StringPool.COMMA));
+					
+					if (lstGovs.contains(dossierData.getGovAgencyCode())) {
 						String type9 = "all@all@all@" + groupGovAgency + "@" + groupId;
 						
 						DossierStatisticData dataType9 = new DossierStatisticData();
