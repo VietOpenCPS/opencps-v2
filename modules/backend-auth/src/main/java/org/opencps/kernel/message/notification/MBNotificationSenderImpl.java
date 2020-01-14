@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.OutputStream;
@@ -18,6 +19,10 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
+import org.opencps.auth.api.keys.Constants;
+import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.kernel.message.MBMessageEntry;
 import org.osgi.service.component.annotations.Component;
 
@@ -36,14 +41,14 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		ServiceContext... serviceContext) {
 
 		JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
-		payloadJSON.put("userId", messageEntry.getUserId());
-		payloadJSON.put("title", messageEntry.getEmailSubject());
-		payloadJSON.put("senderName", messageEntry.getFromName());
-		payloadJSON.put("notificationText", messageEntry.getTextMessage());
-		payloadJSON.put("userUrl", messageEntry.getUserUrl());
-		payloadJSON.put("guestUrl", messageEntry.getGuestUrl());
-		payloadJSON.put("data", messageEntry.getData());
-		payloadJSON.put("notifyMessage", messageEntry.getNotifyMessage());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_USER_ID, messageEntry.getUserId());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_TITLE, messageEntry.getEmailSubject());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_SENDER_NAME, messageEntry.getFromName());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_NOTIFICATION_TEXT, messageEntry.getTextMessage());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_USER_URL, messageEntry.getUserUrl());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_GUEST_URL, messageEntry.getGuestUrl());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_DATA, messageEntry.getData());
+		payloadJSON.put(ModelNameKeys.MB_SENDER_PAYLOAD_NOTIFY_MESSAGE, messageEntry.getNotifyMessage());
 
 		List<Long> toUserList = messageEntry.getToUserIds();
 		if (toUserList != null && toUserList.size() > 0) {
@@ -104,27 +109,27 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 			if (Validator.isNotNull(zaloUid)) {
 
 				String targetURL =
-					"https://openapi.zalo.me/v2.0/oa/message?access_token=" +
+					ModelNameKeys.MB_SENDER_SEND_ZALO_POST_URL +
 						zaloAccessToken;
 
-				JSONObject payloadJSON = JSONFactoryUtil.createJSONObject(
-					"{\"recipient\":{\"user_id\":\"1893010867233038754\"}, \"message\":{\"text\":\"1893010867233038754\"}}");
+				// "{\"recipient\":{\"user_id\":\"X\"}, \"message\":{\"text\":\"X\"}}"
+				JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
 				JSONObject recipient = JSONFactoryUtil.createJSONObject();
 				JSONObject message = JSONFactoryUtil.createJSONObject();
 
-				recipient.put("user_id", zaloUid);
+				recipient.put(ModelNameKeys.MB_SENDER_SEND_ZALO_USER_ID, zaloUid);
 
-				message.put("text", textMessage);
+				message.put(ModelNameKeys.MB_SENDER_SEND_ZALO_TEXT, textMessage);
 
-				payloadJSON.put("recipient", recipient);
+				payloadJSON.put(ModelNameKeys.MB_SENDER_SEND_ZALO_RECIPIENT, recipient);
 
-				payloadJSON.put("message", message);
+				payloadJSON.put(ModelNameKeys.MB_SENDER_SEND_ZALO_MESSAGE, message);
 
 				postMessZalo(targetURL, payloadJSON.toJSONString());
 			}
 
 		}
-		catch (JSONException e) {
+		catch (Exception e) {
 			_log.error(e);
 		}
 
@@ -133,13 +138,12 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 	private void postMessZalo(String url, String param) {
 
 		try {
-			String charset = "UTF-8";
 			URLConnection connection = new URL(url).openConnection();
 			connection.setDoOutput(true); // Triggers POST.
-			connection.setRequestProperty("Content-Type", "application/json;");
+			connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
 			OutputStream output = connection.getOutputStream();
-			output.write(param.getBytes(charset));
+			output.write(param.getBytes(Constants.HTTP_CHARSET));
 
 			connection.getInputStream();
 			_log.info("Send zalo message success");

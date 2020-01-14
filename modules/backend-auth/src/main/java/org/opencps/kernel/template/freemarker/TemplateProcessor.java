@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.kernel.template.MessageDataModel;
 
 import freemarker.template.Configuration;
@@ -53,7 +54,7 @@ public class TemplateProcessor {
 					}
 					catch (IOException e) {
 						_log.debug(e);
-						//_log.error(e);
+						// _log.error(e);
 					}
 				}
 			}
@@ -75,7 +76,7 @@ public class TemplateProcessor {
 			try {
 				out = new StringWriter();
 				Map<String, Object> root = new HashMap<String, Object>();
-				root.put("model", dataModel);
+				root.put(ModelNameKeys.TEMPLATE_PROCESSOR_MODEL_KEY, dataModel);
 				getTemplate().process(root, out);
 				result = out.getBuffer().toString();
 			}
@@ -90,7 +91,7 @@ public class TemplateProcessor {
 					}
 					catch (IOException e) {
 						_log.debug(e);
-						//_log.error(e);
+						// _log.error(e);
 					}
 				}
 			}
@@ -112,7 +113,7 @@ public class TemplateProcessor {
 			try {
 				out = new StringWriter();
 				Map<String, Object> root = new HashMap<String, Object>();
-				root.put("model", dataModel);
+				root.put(ModelNameKeys.TEMPLATE_PROCESSOR_MODEL_KEY, dataModel);
 				getTemplate().process(root, out);
 				result = out.getBuffer().toString();
 			}
@@ -127,7 +128,7 @@ public class TemplateProcessor {
 					}
 					catch (IOException e) {
 						_log.debug(e);
-						//_log.error(e);
+						// _log.error(e);
 					}
 				}
 			}
@@ -146,11 +147,12 @@ public class TemplateProcessor {
 			try {
 
 				TemplateConfiguration templateConfiguration =
-					new TemplateConfiguration();        
+					new TemplateConfiguration();
 
 				template = new Template(
-					"tmp_" + System.currentTimeMillis(), ftlTemplate,
-					templateConfiguration.getConfiguration());
+					ModelNameKeys.TEMPLATE_PROCESSOR_NAME_PRE_KEY +
+						System.currentTimeMillis(),
+					ftlTemplate, templateConfiguration.getConfiguration());
 			}
 			catch (Exception e) {
 				_log.error(e);
