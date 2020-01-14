@@ -34,4 +34,5 @@ Export-Package: \
 	javax.validation.constraints,\
 	vn.gov.ngsp.DKDN.GTVT.*,\
 	com.google.gson.*,\
-	org.mariadb.jdbc.*
+	org.mariadb.jdbc.*,\
+	org.apache.commons.text.similarity.*

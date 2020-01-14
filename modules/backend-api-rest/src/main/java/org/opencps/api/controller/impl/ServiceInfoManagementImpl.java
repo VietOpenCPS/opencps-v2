@@ -4,6 +4,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -143,24 +144,29 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
-			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
-				groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			JSONObject jsonData = (Validator.isNotNull(query.getAgency())) ? actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
+				groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext) : actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
+						groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			//_log.info("jsonData.hit: "+jsonData.get("data"));
 			List<Document> lstDocs = new ArrayList<Document>();
-			_log.info("SEARCH SERVICE: " + query.getAgency());
 			if (Validator.isNotNull(query.getAgency())) {
 				int total = 0;
 				for (Document doc : (List<Document>) jsonData.get("data")) {
 					long serviceInfoId = (GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
-					int countService = ServiceConfigLocalServiceUtil.countByBySIAndGAC(groupId, serviceInfoId, query.getAgency());
+					int countService = ServiceConfigLocalServiceUtil.countBySIAndGAC(groupId, serviceInfoId, query.getAgency());
 					if (countService > 0) {
 						total++;
 						lstDocs.add(doc);
 					}
 				}		
 				jsonData.put("total", total);
-				jsonData.put("data", lstDocs);
+				if (query.getEnd() < lstDocs.size()) {
+					jsonData.put("data", lstDocs.subList(query.getStart(), query.getEnd()));					
+				}
+				else {
+					jsonData.put("data", lstDocs.subList(query.getStart(), lstDocs.size()));					
+				}
 			}
 			
 			results.setTotal(jsonData.getInt("total"));

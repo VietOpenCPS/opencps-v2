@@ -88,12 +88,11 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfig adminProcessDelete(Long id);
 
-	@ThreadLocalCachable
-	public int countByBySIAndGAC(long groupId, long serviceInfoId,
-		String govAgencyCode) throws PortalException;
-
 	public long countByGovAgency(String keyword, String govAgencyCode,
 		long groupId);
+
+	public int countBySIAndGAC(long groupId, long serviceInfoId,
+		String govAgencyCode) throws PortalException;
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
