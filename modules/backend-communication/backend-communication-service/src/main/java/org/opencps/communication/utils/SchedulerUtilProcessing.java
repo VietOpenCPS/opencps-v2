@@ -23,6 +23,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 public class SchedulerUtilProcessing {
 
+	private static String SETTING_NOTIFICATION = "settingNotification";
+	private static String SETTING_TYPE = "settingType";
+	private static String EMAIL = "email";
+	
 	public static void notificationByType(String[] notificationTypeList) {
 
 		List<NotificationQueue> listQueue = NotificationQueueLocalServiceUtil.getNotificationQueues(QueryUtil.ALL_POS,
@@ -64,14 +68,14 @@ public class SchedulerUtilProcessing {
 							JSONObject settingNotificationObject = JSONFactoryUtil
 									.createJSONObject(preferences.getPreferences());
 
-							JSONArray jsonArray = settingNotificationObject.getJSONArray("settingNotification");
+							JSONArray jsonArray = settingNotificationObject.getJSONArray(SETTING_NOTIFICATION);
 
 							for (int i = 0; i < jsonArray.length(); i++) {
 
 								JSONObject currenObj = jsonArray.getJSONObject(i);
 
-								if (notificationtemplate.getNotificationType().equals(currenObj.get("settingType"))) {
-									if (!currenObj.getBoolean("email")) {
+								if (notificationtemplate.getNotificationType().equals(currenObj.get(SETTING_TYPE))) {
+									if (!currenObj.getBoolean(EMAIL)) {
 										sendMail = false;
 									}
 								}

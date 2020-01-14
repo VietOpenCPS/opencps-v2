@@ -64,7 +64,6 @@ public class FaqManagementImpl implements FaqManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
 		QuestionInputModel input, String jCaptchaResponse) {
-
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 			ImageCaptchaService instance =

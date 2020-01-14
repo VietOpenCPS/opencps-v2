@@ -22,8 +22,6 @@ public class CommentTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -47,6 +45,8 @@ public class CommentTerm {
 	public static final String FILE_ENTRY_ID = "fileEntryId";
 	
 	public static final String UPVOTE_COUNT = "upvoteCount";
+	
+	public static final String USER_HAS_UPVOTE = "userHasUpvoted";
 	
 	public static final String USER_HAS_UPVOTED = "upvotedUsers";
 	
@@ -90,6 +90,14 @@ public class CommentTerm {
 	public static final String USER_HAS_UPVOTED_SORTABLE = "upvotedUsers_sortable";
 	
 	public static final String CREATED_BY_CURRENT_USER_SORTABLE = "createdByCurrentUser_sortable";
+
+	public static final String UPVOTED_USERS = "upvotedUsers";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long commentId;
 	private long companyId;

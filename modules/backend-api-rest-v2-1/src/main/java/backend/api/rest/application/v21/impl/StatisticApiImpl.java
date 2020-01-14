@@ -29,6 +29,7 @@ import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.rest.application.api.DossierStatisticApi;
 import org.opencps.rest.application.model.DossierStatisticResultModel;
 
+import backend.api.rest.application.utils.ConstantTerm;
 import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
 
 public class StatisticApiImpl implements DossierStatisticApi{
@@ -57,7 +58,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 //			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			int stepType = 0;
 
@@ -80,11 +81,11 @@ public class StatisticApiImpl implements DossierStatisticApi{
 					long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
 							null, serviceContext);
 					JSONObject statistic = JSONFactoryUtil.createJSONObject();
-					statistic.put("stepCode", step.getStepCode());
-					statistic.put("stepName", step.getStepName());
-					statistic.put("dossierStatus", step.getDossierStatus());
-					statistic.put("dossierSubStatus", step.getDossierSubStatus());
-					statistic.put("totalCount", count);
+					statistic.put(ConstantTerm.JSON_STEP_CODE, step.getStepCode());
+					statistic.put(ConstantTerm.JSON_STEP_NAME, step.getStepName());
+					statistic.put(ConstantTerm.JSON_DOSSIER_STATUS, step.getDossierStatus());
+					statistic.put(ConstantTerm.JSON_DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+					statistic.put(ConstantTerm.JSON_TOTAL_COUNT, count);
 					total += count;
 					statistics.put(statistic);
 				}
@@ -92,7 +93,7 @@ public class StatisticApiImpl implements DossierStatisticApi{
 
 //			ReadFileJSONUtils.readFileJSON("Statistic");
 			ClassLoader classLoader = getClass().getClassLoader();
-			String test = IOUtils.toString(classLoader.getResourceAsStream("test.json"));
+			String test = IOUtils.toString(classLoader.getResourceAsStream(ConstantTerm.TEST_JSON));
 			
 			JSONArray tt1 = JSONFactoryUtil.createJSONArray(test);
 			StringBuilder sb1 = new StringBuilder();

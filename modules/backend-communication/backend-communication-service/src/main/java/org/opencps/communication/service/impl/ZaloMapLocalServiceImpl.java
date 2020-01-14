@@ -26,12 +26,19 @@ import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.List;
+
+import org.opencps.communication.model.ZaloMap;
+import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
 
 public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 	/*
@@ -160,33 +167,33 @@ public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 
 		ZaloMap object = null;
 
-		if (objectData.getLong("zaloMapId") > 0) {
-
-			object = zaloMapPersistence.fetchByPrimaryKey(objectData.getLong("zaloMapId"));
-
-			object.setModifiedDate(new Date());
-
-		} else {
-
-			long id = CounterLocalServiceUtil.increment(ZaloMap.class.getName());
-
-			object = zaloMapPersistence.create(id);
-
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
-			object.setCreateDate(new Date());
-
-		}
-
-		object.setUserId(objectData.getLong("userId"));
-
-		object.setIsFollowed(objectData.getInt("isFollowed"));
-		object.setZaloOAId(objectData.getString("zaloOAId"));
-		object.setPayload(objectData.getString("payload"));
-		object.setTelNo(objectData.getString("telNo"));
-		object.setUId(objectData.getString("uId"));
-
-		zaloMapPersistence.update(object);
+//		if (objectData.getLong("zaloMapId") > 0) {
+//
+//			object = zaloMapPersistence.fetchByPrimaryKey(objectData.getLong("zaloMapId"));
+//
+//			object.setModifiedDate(new Date());
+//
+//		} else {
+//
+//			long id = CounterLocalServiceUtil.increment(ZaloMap.class.getName());
+//
+//			object = zaloMapPersistence.create(id);
+//
+//			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+//			object.setCompanyId(objectData.getLong("companyId"));
+//			object.setCreateDate(new Date());
+//
+//		}
+//
+//		object.setUserId(objectData.getLong("userId"));
+//
+//		object.setIsFollowed(objectData.getInt("isFollowed"));
+//		object.setZaloOAId(objectData.getString("zaloOAId"));
+//		object.setPayload(objectData.getString("payload"));
+//		object.setTelNo(objectData.getString("telNo"));
+//		object.setUId(objectData.getString("uId"));
+//
+//		zaloMapPersistence.update(object);
 
 		return object;
 	}

@@ -30,6 +30,8 @@ import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.FileAttachInterface;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
@@ -56,11 +58,11 @@ public class FileAttachActions implements FileAttachInterface {
 
 			hits = FileAttachLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = FileAttachLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);
@@ -84,21 +86,21 @@ public class FileAttachActions implements FileAttachInterface {
 			JSONArray versions = JSONFactoryUtil.createJSONArray();
 			List<DLFileVersion> fileVersions = DLFileVersionLocalServiceUtil
 					.getFileVersions(fileAttach.getFileEntryId(), WorkflowConstants.STATUS_APPROVED);
-			result.put("total", fileVersions.size());
+			result.put(DataMGTConstants.TOTAL, fileVersions.size());
 
 			for (DLFileVersion dlFileVersion : fileVersions) {
 				JSONObject version = JSONFactoryUtil.createJSONObject();
-				version.put("fileEntryId", dlFileVersion.getFileEntryId());
-				version.put("createdDate",
+				version.put(FileAttachTerm.FILE_ENTRY_ID, dlFileVersion.getFileEntryId());
+				version.put(FileAttachTerm.CREATED_DATE,
 						DateTimeUtils.convertDateToString(dlFileVersion.getCreateDate(), DateTimeUtils._TIMESTAMP));
-				version.put("userId", dlFileVersion.getUserId());
-				version.put("userName", dlFileVersion.getUserName());
-				version.put("version", dlFileVersion.getVersion());
+				version.put(FileAttachTerm.USER_ID, dlFileVersion.getUserId());
+				version.put(FileAttachTerm.USER_NAME, dlFileVersion.getUserName());
+				version.put(FileAttachTerm.VERSION, dlFileVersion.getVersion());
 				versions.put(version);
 			}
 
-			result.put("versions", versions);
-			result.put("fileName", fileAttach.getFileName());
+			result.put(FileAttachTerm.VERSIONS, versions);
+			result.put(FileAttachTerm.FILE_NAME, fileAttach.getFileName());
 		}
 
 		return result;

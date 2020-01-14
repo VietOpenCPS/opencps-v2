@@ -60,10 +60,10 @@ public class NotificationTemplateIndexer extends BaseIndexer<Notificationtemplat
 		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_TEXT_MESSAGE, true);
 		addSearchTerm(searchQuery, searchContext, NotificationTemplateTerm.NOTIFICATION_SEND_SMS, true);
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(NotificationTemplateTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(NotificationTemplateTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);

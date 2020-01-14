@@ -12,6 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -43,13 +46,13 @@ public class UserMgtUtils {
 		Role roleDefault = null;
 
 		try {
-			roleDefault = RoleLocalServiceUtil.getRole(companyId, ServiceProps.APPLICANT_ROLE_NAME);
+			roleDefault = RoleLocalServiceUtil.getRole(companyId, ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 		} catch (Exception e) {
 			_log.error(e);
 			roleDefault = RoleLocalServiceUtil.createRole(CounterLocalServiceUtil.increment(Role.class.getName()));
 
-			roleDefault.setName(ServiceProps.APPLICANT_ROLE_NAME);
+			roleDefault.setName(ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 		}
 
 		return roleDefault;

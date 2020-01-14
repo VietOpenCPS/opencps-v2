@@ -1,13 +1,5 @@
 package org.opencps.usermgt.action.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.usermgt.action.ResourceRoleInterface;
-import org.opencps.usermgt.constants.ResourceRoleTerm;
-import org.opencps.usermgt.model.ResourceRole;
-import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -26,6 +18,16 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.action.ResourceRoleInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -86,27 +88,27 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 					document.addTextSortable(ResourceRoleTerm.ROLE_ID, String.valueOf(role.getRoleId()));
 					document.addTextSortable(ResourceRoleTerm.ROLE_NAME, role.getName());
-					document.addTextSortable("selected", selected);
+					document.addTextSortable(ResourceRoleTerm.SELECTED, selected);
 
 					list.add(document);
 
 				}
 
-				result.put("data", list);
+				result.put(ApplicantTerm.DATA, list);
 
 				long total = list.size();
 
-				result.put("total", total);
+				result.put(ApplicantTerm.TOTAL, total);
 
 			} else {
 
 				hits = ResourceRoleLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-				result.put("data", hits.toList());
+				result.put(ApplicantTerm.DATA, hits.toList());
 
 				long total = ResourceRoleLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-				result.put("total", total);
+				result.put(ApplicantTerm.TOTAL, total);
 
 			}
 
@@ -147,7 +149,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				JSONObject role = jRoles.getJSONObject(n);
 				
 				resourceRole = ResourceRoleLocalServiceUtil.fetchByF_className_classPK_roleId(groupId, className,
-						classPK, role.getLong("roleId"));
+						classPK, role.getLong(ResourceRoleTerm.ROLE_ID));
 
 				if (Validator.isNotNull(resourceRole)) {
 
@@ -156,7 +158,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				} else {
 
 					ResourceRoleLocalServiceUtil.addResourceRole(userId, groupId, className, classPK,
-							role.getLong("roleId"), serviceContext);
+							role.getLong(ResourceRoleTerm.ROLE_ID), serviceContext);
 
 				}
 

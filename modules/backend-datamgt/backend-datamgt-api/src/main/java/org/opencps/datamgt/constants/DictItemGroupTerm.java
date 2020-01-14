@@ -26,8 +26,6 @@ public class DictItemGroupTerm {
 	
 	public static final String COMPANY_ID = "companyId";
 	
-	public static final String GROUP_ID = "groupId";
-	
 	public static final String USER_ID = "userId";
 	
 	public static final String USER_NAME = "userName";
@@ -82,6 +80,12 @@ public class DictItemGroupTerm {
 	public static final String ITEM_DESCRIPTION_SORTABLE = "itemDescription_sortable";
 	
 	public static final String SELECTED_SORTABLE = "selected_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public DictItemGroupTerm() {
 

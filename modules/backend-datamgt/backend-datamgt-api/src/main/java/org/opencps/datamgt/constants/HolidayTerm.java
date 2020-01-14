@@ -22,8 +22,6 @@ public class HolidayTerm {
 
 	public static final String COMPANY_ID = "companyId";
 
-	public static final String GROUP_ID = "groupId";
-
 	public static final String USER_ID = "userId";
 
 	public static final String USER_NAME = "userName";
@@ -54,6 +52,14 @@ public class HolidayTerm {
 	public static final String HOLIDAY_DATE_SORTABLE = "holidayDate_sortable";
 
 	public static final String DESCRIPTION_SORTABLE = "description_sortable";
+	
+	public static final String YEAR = "year";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long holidayId;
 	private long companyId;

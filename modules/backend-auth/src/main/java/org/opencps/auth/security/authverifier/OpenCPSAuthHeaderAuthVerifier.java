@@ -31,6 +31,7 @@ implements AuthVerifier {
 //	private static final String AUTHORIZATION_HEADER = "Authorization";
 //	private static final String TOKEN_HEADER = "X-CSRF-Token";
 	private static final String TOKEN_HEADER = "Token";
+	private static final String REQ_BASIC_AUTH = "basic_auth";
 	
 	@Override
 	protected String[] doLogin(
@@ -89,11 +90,11 @@ implements AuthVerifier {
 			else {
 
 				boolean forcedBasicAuth = MapUtil.getBoolean(
-					accessControlContext.getSettings(), "basic_auth");
+					accessControlContext.getSettings(), REQ_BASIC_AUTH);
 
 				if (!forcedBasicAuth) {
 					forcedBasicAuth = GetterUtil.getBoolean(
-						properties.getProperty("basic_auth"));
+						properties.getProperty(REQ_BASIC_AUTH));
 				}
 
 				if (forcedBasicAuth) {

@@ -1,3 +1,4 @@
+
 package org.opencps.usermgt.constants;
 
 public class CommonTerm {
@@ -22,4 +23,9 @@ public class CommonTerm {
 	public static final String LAST_NAME = "lastName";
 
 	public static final String STR_ZERO = "0";
+	
+	public static final String ROLE_NAME = "roleName";
+	public static final String LOGIN_ACTION_USER_ID = "USER_ID";
+	public static final String LOGIN_ACTION_X_FORWARDED_FOR = "X-FORWARDED-FOR";
+	public static final String LOGIN_ACTION_CURRENT_COMPLETE_URL = "CURRENT_COMPLETE_URL";
 }

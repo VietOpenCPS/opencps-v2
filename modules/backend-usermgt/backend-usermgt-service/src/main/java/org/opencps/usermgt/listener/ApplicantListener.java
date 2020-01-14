@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.model.Applicant;
@@ -118,14 +120,14 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 					JSONObject object = JSONFactoryUtil.createJSONObject();
 					
 		//			String guestBaseUrl = PropValues.PORTAL_DOMAIN + "/web/cong-dich-vu-cong";
-					String guestBaseUrl = "http://103.21.148.29/web/bo-van-hoa";
+					String guestBaseUrl = ConfigProps.get(ConfigConstants.APPLICANT_LISTENER_BASE_URL);
 					
 					object.put(ApplicantListenerMessageKeys.ACTIVATION_CODE, model.getActivationCode());
-					object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl+"/register#/xac-thuc-tai-khoan?active_user_id="+ model.getApplicantId());
+					object.put(ApplicantListenerMessageKeys.ACTIVATION_LINK, guestBaseUrl + ConfigProps.get(ConfigConstants.APPLICANT_LISTENER_ACTIVATION_LINK) + model.getApplicantId());
 					object.put(ApplicantListenerMessageKeys.USER_NAME, model.getApplicantName());
 					//object.put(ApplicantListenerMessageKeys.HOME_PAGE_URL, "http://v2.opencps.vn");
-					object.put("toName", model.getApplicantName());
-					object.put("toAddress", model.getContactEmail());
+					object.put(ApplicantListenerMessageKeys.TO_NAME, model.getApplicantName());
+					object.put(ApplicantListenerMessageKeys.TO_ADDRESS, model.getContactEmail());
 		//			
 		//			String payload1 = ApplicantListenerUtils.getPayload(NotificationType.APPLICANT_01, object, model.getGroupId()).toString();
 		//			_log.info("payloadTest1: "+payload1);
@@ -133,7 +135,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 					try {
 						//_log.info("START PAYLOAD: ");
 						payload.put(
-							"Applicant", JSONFactoryUtil.createJSONObject(
+							ApplicantListenerMessageKeys.APPLICANT, JSONFactoryUtil.createJSONObject(
 								JSONFactoryUtil.looseSerialize(model)));
 					}
 					catch (JSONException parse) {

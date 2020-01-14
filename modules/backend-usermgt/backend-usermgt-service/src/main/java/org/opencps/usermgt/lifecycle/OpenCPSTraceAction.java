@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.usermgt.action.util.UserMgtConfigUtil;
+import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.UserTrackPathLocalServiceUtil;
@@ -25,9 +26,9 @@ public class OpenCPSTraceAction extends Action {
 	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
 //        System.out.println("### Start Post Trace Action ######################");
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
-			Long userId = request.getAttribute("USER_ID") != null ? (Long) request.getAttribute("USER_ID") : 0;
+			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
 
-			String completeUrl = (String) request.getAttribute("CURRENT_COMPLETE_URL");
+			String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
 			String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 			try {

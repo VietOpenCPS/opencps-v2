@@ -10,6 +10,9 @@ import java.net.URL;
 
 import javax.ws.rs.HttpMethod;
 
+import backend.api.rest.application.utils.ConstantTerm;
+import backend.api.rest.application.utils.ReadFilePropertiesUtils;
+
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,8 +20,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 public class ElasticQueryWrapUtil {
-	private static final String ELASTIC_SERVER_API_URL = "http://localhost:9200/liferay-20116/LiferayDocumentType/_search";
-	private static final String MULTIPLE_ELASTIC_SERVER_API_URL = "http://localhost:9200/liferay-20116/LiferayDocumentType/_msearch";
+	private static final String ELASTIC_SERVER_API_URL = ReadFilePropertiesUtils.get(ConstantTerm.ES_API_URL);
+	private static final String MULTIPLE_ELASTIC_SERVER_API_URL = ReadFilePropertiesUtils.get(ConstantTerm.MULTIPLE_ES_API_URL);
 	private static Log _log = LogFactoryUtil.getLog(ElasticQueryWrapUtil.class);
 	
 	public static JSONObject query(String q, String className, long conpanyId) {
@@ -71,8 +74,8 @@ public class ElasticQueryWrapUtil {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
 			conn.setRequestMethod(HttpMethod.GET);
-			conn.setRequestProperty("Accept", "Content-Type: application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantTerm.HTTP_HEADERS_ACCEPT, ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_JSON_CONTENT_TYPE));
+			conn.setRequestProperty(ConstantTerm.HTTP_HEADERS_CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_JSON_CONTENT_TYPE));
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
@@ -153,8 +156,8 @@ public class ElasticQueryWrapUtil {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
 			conn.setRequestMethod(HttpMethod.GET);
-			conn.setRequestProperty("Accept", "Content-Type: application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantTerm.HTTP_HEADERS_ACCEPT, ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_JSON_CONTENT_TYPE));
+			conn.setRequestProperty(ConstantTerm.HTTP_HEADERS_CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_JSON_CONTENT_TYPE));
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 	        OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());

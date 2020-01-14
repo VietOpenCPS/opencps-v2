@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.opencps.communication.bussiness.BaseNotificationTemplateBusiness;
 import org.opencps.communication.constants.NotificationMGTConstants;
+import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 
@@ -83,13 +84,13 @@ public class NotificationTemplateBusinessImpl
 			Hits hits = NotificationtemplateLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(SendSMSTerm.DATA, hits.toList());
 
 			long total =
 				NotificationtemplateLocalServiceUtil.countLuceneSearchEngine(
 					params, searchContext);
 
-			result.put("total", total);
+			result.put(SendSMSTerm.TOTAL, total);
 
 			if (NotificationtemplateLocalServiceUtil.initTemplate(groupId)) {
 
@@ -139,9 +140,9 @@ public class NotificationTemplateBusinessImpl
 		Map<String, String> initTemplates =
 			NotificationMGTConstants.getNotificationTempMap();
 
-		result.put("data", initTemplates);
+		result.put(SendSMSTerm.DATA, initTemplates);
 
-		result.put("total", initTemplates.size());
+		result.put(SendSMSTerm.TOTAL, initTemplates.size());
 
 		return result;
 	}

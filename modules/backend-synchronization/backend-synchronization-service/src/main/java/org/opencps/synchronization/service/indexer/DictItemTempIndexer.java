@@ -30,6 +30,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import backend.synchronization.service.util.ConfigConstants;
+import backend.synchronization.service.util.ConfigProps;
+
 @Component(
     immediate = true,
     service = BaseIndexer.class
@@ -65,7 +68,7 @@ public class DictItemTempIndexer extends BaseIndexer<DictItemTemp> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(dictItem.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictItem.getUserName()));
 
-		document.addNumberSortable(DictItemTempTerm.GROUP_ID, dictItem.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, dictItem.getGroupId());
 		document.addNumberSortable(DictItemTempTerm.DICT_ITEM_ID, dictItem.getDictItemId());
 		document.addNumberSortable(DictItemTempTerm.DICT_COLLECTION_ID, dictItem.getDictCollectionId());
 		document.addTextSortable(DictItemTempTerm.ITEM_CODE, dictItem.getItemCode());
@@ -104,7 +107,7 @@ public class DictItemTempIndexer extends BaseIndexer<DictItemTemp> {
 			}
 			
 		}  else {
-			parentCode = "0";
+			parentCode = ConfigProps.get(ConfigConstants.PARENT_ITEM_CODE_DEFAULT);
 		}
 		
 		document.addTextSortable(DictItemTempTerm.PARENT_ITEM_CODE, parentCode);

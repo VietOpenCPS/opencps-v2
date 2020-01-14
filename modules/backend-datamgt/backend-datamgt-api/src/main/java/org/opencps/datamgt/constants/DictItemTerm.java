@@ -26,8 +26,6 @@ public class DictItemTerm {
 	
 	public static final String COMPANY_ID = "companyId";
 	
-	public static final String GROUP_ID = "groupId";
-	
 	public static final String USER_ID = "userId";
 	
 	public static final String USER_NAME = "userName";
@@ -70,6 +68,14 @@ public class DictItemTerm {
 	
 	public static final String IS_GLOBAL = "isGlobal";
 	
+	public static final String _TABLE_NAME = "opencps_dictItem";
+	
+	public static final String ORDER_ASC = " ASC";
+
+	public static final String ORDER_DESC = " DESC";
+	
+	public static final String VALUE_CLASS = "class";
+
 	//sortable
 	public static final String DICT_ITEM_ID_SORTABLE = "dictItemId_sortable";
 	
@@ -112,6 +118,12 @@ public class DictItemTerm {
 	public static final String LEVEL_SORTABLE = "level_sortable";
 	
 	public static final String META_DATA_SORTABLE = "metaData_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public DictItemTerm() {
 

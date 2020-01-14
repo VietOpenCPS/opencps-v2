@@ -26,6 +26,7 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.synchronization.constants.DictCollectionTempTerm;
+import org.opencps.synchronization.constants.DictGroupTempTerm;
 import org.opencps.synchronization.constants.DictItemTempTerm;
 import org.opencps.synchronization.exception.NoSuchDictCollectionTempException;
 import org.opencps.synchronization.model.DictCollectionTemp;
@@ -63,6 +64,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import aQute.bnd.annotation.ProviderType;
+import backend.synchronization.service.util.ConfigConstants;
+import backend.synchronization.service.util.ConfigProps;
 
 /**
  * The implementation of the dict collection temp local service.
@@ -316,7 +319,7 @@ public class DictCollectionTempLocalServiceImpl
 	 */
 	public DictCollectionTemp fetchByF_dictCollectionCode(String collectionCode, long groupId) {
 		
-		if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(collectionCode)) {
+		if (ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(collectionCode)) {
 			groupId = 0;
 		}
 
@@ -367,8 +370,8 @@ public class DictCollectionTempLocalServiceImpl
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTempTerm.GROUP_ID);
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
 
@@ -376,7 +379,7 @@ public class DictCollectionTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictCollectionTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollectionTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -429,8 +432,8 @@ public class DictCollectionTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTempTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -467,8 +470,8 @@ public class DictCollectionTempLocalServiceImpl
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params,
 			SearchContext searchContext) throws ParseException, SearchException {
 
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(DictCollectionTempTerm.GROUP_ID);
+		String keywords = (String) params.get(DictGroupTempTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String userId = (String) params.get(DictCollectionTempTerm.USER_ID);
 		String collectionCode = (String) params.get(DictCollectionTempTerm.COLLECTION_CODE);
 
@@ -476,7 +479,7 @@ public class DictCollectionTempLocalServiceImpl
 
 		searchContext.addFullQueryEntryClassName(DictCollectionTemp.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictCollectionTemp.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictGroupTempTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -526,8 +529,8 @@ public class DictCollectionTempLocalServiceImpl
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);

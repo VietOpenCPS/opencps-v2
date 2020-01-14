@@ -41,9 +41,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
 import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
 import org.opencps.usermgt.model.Employee;
@@ -61,7 +65,7 @@ import backend.utils.FileUploadUtils;
 
 public class EmployeeActions implements EmployeeInterface {
 
-	private static final Locale locale = new Locale("vi", "VN");
+	private static final Locale locale = new Locale(ConfigProps.get(ConfigConstants.EMP_ACTION_LOCALE), ConfigProps.get(ConfigConstants.EMP_ACTION_LOCALE_UPP));
 	private static Log _log = LogFactoryUtil.getLog(EmployeeActions.class);
 
 	@Override
@@ -80,12 +84,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -381,12 +385,12 @@ public class EmployeeActions implements EmployeeInterface {
 			hits = EmployeeJobPosLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = EmployeeJobPosLocalServiceUtil.countLuceneSearchEngine(
 				params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		}
 		catch (ParseException e) {
@@ -508,16 +512,16 @@ public class EmployeeActions implements EmployeeInterface {
 					long[] organizationIds = new long[] {};
 					long[] groupIds = {
 						groupId,
-						20143
+						Long.parseLong(ConfigProps.get(ConfigConstants.EMP_ACTION_CREATE_NEW_EMP_GROUPID))
 					};
 
 					//String passWord = PwdGenerator.getPassword();
 					// changePassWord
-					String secretKey1 = PwdGenerator.getPassword(2 , new String[] { "0123456789" });
-					String secretKey2 = PwdGenerator.getPassword(2 , new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
-					String secretKey3 = PwdGenerator.getPassword(2 , new String[] { "abcdefghijklmnopqrstuvwxyz" });
-					String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
-					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+					String secretKey1 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_1) });
+					String secretKey2 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_2) });
+					String secretKey3 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_3) });
+					String secretKey4 = PwdGenerator.getPassword(1 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_4) });
+					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_2), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_4) });
 					String passWord = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 					
 					//_log.info("passWord:"+passWord);
@@ -659,12 +663,12 @@ public class EmployeeActions implements EmployeeInterface {
 			payLoad.put(CommonTerm.USER_EMAIL, user.getEmailAddress());
 			payLoad.put(
 					CommonTerm.USER_STATUS,
-					LanguageUtil.get(locale, "user-status-" + user.getStatus()));
+					LanguageUtil.get(locale, ConfigProps.get(ConfigConstants.EMP_ACTION_LOCK_EMP_USER_STATUS) + user.getStatus()));
 
 			NotificationQueueLocalServiceUtil.addNotificationQueue(
 				user.getUserId(), groupId, Constants.USER_02,
 				User.class.getName(), String.valueOf(user.getUserId()),
-				payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+				payLoad.toJSONString(), ConfigProps.get(ConfigConstants.EMP_ACTION_LOCK_EMP_USER_SEND_BY), user.getFullName(),
 				employee.getMappingUserId(), employee.getEmail(),
 				employee.getTelNo(), new Date(), null, serviceContext);
 
@@ -744,22 +748,22 @@ public class EmployeeActions implements EmployeeInterface {
 
 			indexer.reindex(user);
 
-			jsonObject.put("screenName", user.getScreenName());
-			jsonObject.put("email", user.getEmailAddress());
-			jsonObject.put("exist", true);
+			jsonObject.put(EmployeeTerm.EMP_ACTION_LOCK_SCREENNAME, user.getScreenName());
+			jsonObject.put(EmployeeTerm.EMP_ACTION_LOCK_EMAIL, user.getEmailAddress());
+			jsonObject.put(EmployeeTerm.EMP_ACTION_LOCK_EXIST, Boolean.TRUE);
 
 			JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-			payLoad.put("USERNAME", user.getScreenName());
-			payLoad.put("USEREMAIL", user.getEmailAddress());
+			payLoad.put(EmployeeTerm.EMP_ACTION_LOCK_USERNAME, user.getScreenName());
+			payLoad.put(EmployeeTerm.EMP_ACTION_LOCK_USEREMAIL, user.getEmailAddress());
 			payLoad.put(
-				"USERSTATUS",
-				LanguageUtil.get(locale, "user-status-" + user.getStatus()));
+				EmployeeTerm.EMP_ACTION_LOCK_USERSTATUS,
+				LanguageUtil.get(locale, ConfigProps.get(ConfigConstants.EMP_ACTION_LOCK_EMP_USER_STATUS) + user.getStatus()));
 
 			NotificationQueueLocalServiceUtil.addNotificationQueue(
 				user.getUserId(), employee.getGroupId(), Constants.USER_02,
 				User.class.getName(), String.valueOf(user.getUserId()),
-				payLoad.toJSONString(), "SYSTEM", user.getFullName(),
+				payLoad.toJSONString(), ConfigProps.get(ConfigConstants.EMP_ACTION_LOCK_EMP_USER_SEND_BY), user.getFullName(),
 				employee.getMappingUserId(), employee.getEmail(),
 				employee.getTelNo(), new Date(), null, serviceContext);
 
@@ -1091,11 +1095,6 @@ public class EmployeeActions implements EmployeeInterface {
 									userId, groupId, employee.getEmployeeId(), jobPosId, 0, serviceContext);
 						}
 					}
-					if (i == 0) {
-						JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, jobCode);
-						employee.setMainJobPostId(job.getJobPosId());
-						EmployeeLocalServiceUtil.updateEmployee(employee);
-					}
 				}
 			}
 		} else {
@@ -1138,16 +1137,16 @@ public class EmployeeActions implements EmployeeInterface {
 			} else {
 				long[] userGroupIds = {};
 				List<Long> roleIds = new ArrayList<>();
-				Role role = RoleLocalServiceUtil.fetchRole(companyId, "employee");
+				Role role = RoleLocalServiceUtil.fetchRole(companyId, ConfigProps.get(ConfigConstants.EMP_ACTION_CREATE_NEW_EMP_ROLE));
 				if (Validator.isNotNull(role)) {
 					roleIds.add(role.getRoleId());
 				}
 				long[] resultRoles = roleIds.stream().mapToLong(l -> l).toArray();
 				long[] organizationIds = new long[] {};
-				long[] groupIds = { groupId, 20143 };
+				long[] groupIds = { groupId, Long.parseLong(ConfigProps.get(ConfigConstants.EMP_ACTION_CREATE_NEW_EMP_GROUPID)) };
 
 				// String passWord = PwdGenerator.getPassword();
-				String secret = "dvcdt@2019";
+				String secret = ConfigProps.get(ConfigConstants.EMP_ACTION_CREATE_NEW_EMP_SECRET);
 
 				String fullName = employee.getFullName();
 				String[] fml = new String[3];
@@ -1194,9 +1193,9 @@ public class EmployeeActions implements EmployeeInterface {
 
 					JSONObject payLoad = JSONFactoryUtil.createJSONObject();
 
-					payLoad.put("USERNAME", newUser.getScreenName());
-					payLoad.put("USEREMAIL", newUser.getEmailAddress());
-					payLoad.put("PASSWORD", secret);
+					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_USERNAME, newUser.getScreenName());
+					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_USEREMAIL, newUser.getEmailAddress());
+					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_PASSWORD, secret);
 
 					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
 							User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),
@@ -1204,11 +1203,25 @@ public class EmployeeActions implements EmployeeInterface {
 							employee.getEmail(), employee.getTelNo(), new Date(), null, serviceContext);
 				}
 			}
+			// JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			//_log.info("Employee Update: " + employee);
+
+			// jsonObject.put("screenName", newUser.getScreenName());
+			// jsonObject.put(ConstantUtils.VALUE_EMAIL, newUser.getEmailAddress());
+			// jsonObject.put("exist", false);
+			// jsonObject.put("duplicate", Boolean.FALSE.toString());
 
 		} catch (Exception e) {
 			_log.debug(e);
+			//_log.error(e);
+			// jsonObject.put("screenName", StringPool.BLANK);
+			// jsonObject.put(ConstantUtils.VALUE_EMAIL, StringPool.BLANK);
+			// jsonObject.put("exist", Boolean.TRUE);
+			// jsonObject.put("duplicate", Boolean.TRUE.toString());
 		}
 
 		return employee;
 	}
+
 }

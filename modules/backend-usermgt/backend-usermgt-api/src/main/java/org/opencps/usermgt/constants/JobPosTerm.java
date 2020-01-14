@@ -1,3 +1,4 @@
+
 package org.opencps.usermgt.constants;
 
 import java.util.Date;
@@ -30,7 +31,7 @@ public class JobPosTerm {
 	public static final String LEADER = "leader";
 
 	public static final String MAPPING_ROLE_ID = "mappingRoleId";
-	
+
 	public static final String JOBPOS_CODE = "jobPosCode";
 
 	// sortable
@@ -57,6 +58,13 @@ public class JobPosTerm {
 	public static final String MAPPING_ROLE_ID_SORTABLE = "mappingRoleId_sortable";
 
 	public static final String JOBPOS_CODE_SORTABLE = "jobPosCode_sortable";
+
+	public static final String JOBPOS_ACTION_ID = "actionId";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	private long jobPosId;
 
@@ -117,6 +125,7 @@ public class JobPosTerm {
 	}
 
 	public void setUserName(String userName) {
+
 		this.userName = userName;
 	}
 
