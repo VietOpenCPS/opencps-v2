@@ -439,22 +439,22 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							try {
 								urlGet = jsonConfig.getString("url");
 								if (urlGet.contains("{eFormNo}")) {
-									urlGet = urlGet.replace("{eFormNo}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(eFormNo), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{eFormNo}", Validator.isNotNull(eFormNo) ? URLEncoder.encode(String.valueOf(eFormNo), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{maCha}")) {
-									urlGet = urlGet.replace("{maCha}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(maCha), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{maCha}", Validator.isNotNull(maCha) ? URLEncoder.encode(String.valueOf(maCha), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{nameDM}")) {
-									urlGet = urlGet.replace("{nameDM}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(nameDM), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{nameDM}", Validator.isNotNull(nameDM) ? URLEncoder.encode(String.valueOf(nameDM), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{parentId}")) {
-									urlGet = urlGet.replace("{parentId}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(parentId), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{parentId}", Validator.isNotNull(parentId) ? URLEncoder.encode(String.valueOf(parentId), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{govAgencyName}")) {
-									urlGet = urlGet.replace("{govAgencyName}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{govAgencyName}", Validator.isNotNull(govAgencyName) ? URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{employeeName}")) {
-									urlGet = urlGet.replace("{employeeName}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(employeeName), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{employeeName}", Validator.isNotNull(employeeName) ? URLEncoder.encode(String.valueOf(employeeName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{ma_ng_ky}")) {
 									urlGet = urlGet.replace("{ma_ng_ky}", maNgKy);
@@ -479,13 +479,13 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 									urlGet = urlGet.replace("{soHoChieu}", Validator.isNotNull(soHoChieu) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{hoTen}")) {
-									urlGet = urlGet.replace("{hoTen}", Validator.isNotNull(hoTen) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{hoTen}", Validator.isNotNull(hoTen) ? URLEncoder.encode(String.valueOf(hoTen), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{ngaySinh}")) {
-									urlGet = urlGet.replace("{ngaySinh}", Validator.isNotNull(ngaySinh) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{ngaySinh}", Validator.isNotNull(ngaySinh) ? URLEncoder.encode(String.valueOf(ngaySinh), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{noiSinh}")) {
-									urlGet = urlGet.replace("{noiSinh}", Validator.isNotNull(noiSinh) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+									urlGet = urlGet.replace("{noiSinh}", Validator.isNotNull(noiSinh) ? URLEncoder.encode(String.valueOf(noiSinh), "UTF-8") : StringPool.BLANK);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
