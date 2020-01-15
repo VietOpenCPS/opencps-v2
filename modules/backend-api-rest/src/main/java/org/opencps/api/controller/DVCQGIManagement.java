@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -61,5 +62,22 @@ public interface DVCQGIManagement {
 	public Response getSharingData(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, String body);
+	
+	@POST
+	@Path("/mappingserviceinfo")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doMappingServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("serviceCode") String serviceCode, @FormParam("serviceCodeDVCQG") String serviceCodeDVCQG);
+	
+	
+	@DELETE
+	@Path("/removemappingserviceinfo")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doRemoveMappingServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("serviceCode") String serviceCode);
 
 }
