@@ -62,6 +62,16 @@ public class ServiceInfoMappingLocalServiceUtil {
 		return getService().addServiceInfoMapping(serviceInfoMapping);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new service info mapping with the primary key. Does not add the service info mapping to the database.
 	*

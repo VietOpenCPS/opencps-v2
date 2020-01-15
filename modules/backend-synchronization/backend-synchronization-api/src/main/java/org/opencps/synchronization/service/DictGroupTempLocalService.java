@@ -337,7 +337,7 @@ public interface DictGroupTempLocalService extends BaseLocalService,
 	/**
 	* @author binhth
 	* @param params
-	
+
 	<pre>
 	<ol>
 	<li> keywords </li>

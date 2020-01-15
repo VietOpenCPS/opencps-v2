@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -73,6 +74,10 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceInfoMapping addServiceInfoMapping(
 		ServiceInfoMapping serviceInfoMapping);
+
+	public ServiceInfoMapping adminProcessData(JSONObject objectData);
+
+	public ServiceInfoMapping adminProcessDelete(Long id);
 
 	/**
 	* Creates a new service info mapping with the primary key. Does not add the service info mapping to the database.
