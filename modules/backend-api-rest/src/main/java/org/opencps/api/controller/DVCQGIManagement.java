@@ -72,6 +72,15 @@ public interface DVCQGIManagement {
 			@Context ServiceContext serviceContext, @FormParam("serviceCode") String serviceCode, @FormParam("serviceCodeDVCQG") String serviceCodeDVCQG);
 	
 	
+	@POST
+	@Path("/syncserviceinfo")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("serviceCodes") String serviceCodes);
+	
+	
 	@DELETE
 	@Path("/removemappingserviceinfo")
 	@Consumes({ MediaType.APPLICATION_JSON })

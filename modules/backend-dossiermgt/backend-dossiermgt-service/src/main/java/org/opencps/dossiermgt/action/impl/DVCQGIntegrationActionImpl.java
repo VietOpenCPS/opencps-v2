@@ -16,9 +16,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,13 +30,18 @@ import java.util.List;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
+import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierStatusMapping;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 
 /**
@@ -912,5 +919,272 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String serviceCode) {
 
 		return ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(groupId, serviceCode);
+	}
+
+	@Override
+	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(serviceCodes)) {
+			try {
+				ServerConfig serverConfig = serverConfigs.get(0);
+				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String accessToken = getAccessToken(config);
+				String[] arrayServiceCode = StringUtil.split(serviceCodes);
+
+				JSONObject body = JSONFactoryUtil.createJSONObject();
+
+				body.put("service", "LayThuTuc");
+
+				for (String serviceCode : arrayServiceCode) {
+					ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
+							.fetchDVCQGServiceCode(groupId, serviceCode);
+					ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+					if (serviceInfoMapping != null && Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG())
+							&& serviceInfo != null) {
+
+						body.put("maTTHC", serviceInfoMapping.getServiceCodeDVCQG());
+
+						JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
+
+						if (serviceInfoDVCQG != null && serviceInfoDVCQG.has("result")) {
+							JSONArray results = serviceInfoDVCQG.getJSONArray("result");
+							if (results.length() > 0) {
+								JSONObject _tmp = results.getJSONObject(0);
+								StringBuffer sb = null;
+								//TENTTHC
+								String tentthc = _tmp.getString("TENTTHC");
+								serviceInfo.setServiceName(tentthc);
+								//TRINHTUTHUCHIEN
+								sb = new StringBuffer();
+								if (_tmp.has("TRINHTUTHUCHIEN")) {
+									JSONArray trinhtuthuchien_arr = _tmp.getJSONArray("TRINHTUTHUCHIEN");
+									if (trinhtuthuchien_arr != null) {
+										for (int i = 0; i < trinhtuthuchien_arr.length(); i++) {
+											JSONObject trinhtuthuchien_obj = trinhtuthuchien_arr.getJSONObject(i);
+											String truonghop = trinhtuthuchien_obj.getString("TRUONGHOP");
+											sb.append(truonghop + "\n");
+											JSONArray trinhtu_arr = trinhtuthuchien_obj.getJSONArray("TRINHTU");
+											if (trinhtu_arr != null) {
+												for (int j = 0; j < trinhtu_arr.length(); j++) {
+													String tentrinhtu = trinhtu_arr.getJSONObject(j)
+															.getString("TENTRINHTU");
+													sb.append(tentrinhtu + "\n");
+												}
+											}
+										}
+
+									}
+								}
+								serviceInfo.setProcessText(sb.toString());
+
+								//CACHTHUCTHUCHIEN
+								sb = new StringBuffer();
+								String durationText = StringPool.BLANK;
+								String feeText = StringPool.BLANK;
+								if (_tmp.has("CACHTHUCTHUCHIEN")) {
+									JSONArray cachthucthuchien_arr = _tmp.getJSONArray("CACHTHUCTHUCHIEN");
+									if (cachthucthuchien_arr != null) {
+										for (int i = 0; i < cachthucthuchien_arr.length(); i++) {
+											JSONObject cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(i);
+											int kenh = cachthucthuchien_obj.getInt("KENH");
+											String nhankenh = "Trực tiếp";
+											if (kenh == 2) {
+												nhankenh = "Trực tuyến";
+											} else if (kenh == 3) {
+												nhankenh = "Nộp qua bưu chính công ích";
+											}
+											sb.append(nhankenh + ":\n");
+
+											JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
+
+											if (thoigian_arr != null) {
+												for (int j = 0; j < thoigian_arr.length(); j++) {
+													JSONObject thoigian_obj = thoigian_arr.getJSONObject(j);
+													int thoigiangiaiquyet = thoigian_obj.getInt("THOIGIANGIAIQUYET");
+													String donvitinh = thoigian_obj.getString("DONVITINH");
+													String mota = thoigian_obj.getString("MOTA");
+													sb.append("- Thời gian giải quyết: " + thoigiangiaiquyet + " "
+															+ donvitinh + (Validator.isNotNull(mota) ? "(" + mota + ")"
+																	: StringPool.BLANK)
+															+ "\n");
+													durationText += nhankenh + ":" + "- Thời gian giải quyết: "
+															+ thoigiangiaiquyet + " " + donvitinh + "\n";
+													JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
+													if (philephi_arr != null) {
+														String maphilephi = philephi_arr.getJSONObject(0)
+																.getString("MAPHILEPHI");
+														double sotien = philephi_arr.getJSONObject(0)
+																.getDouble("SOTIEN");
+														String donvi = philephi_arr.getJSONObject(0).getString("DONVI");
+														String lephimota = philephi_arr.getJSONObject(0)
+																.getString("MOTA");
+														feeText += nhankenh + ":" + maphilephi + ", " + sotien + " "
+																+ donvi
+																+ (Validator.isNotNull(lephimota)
+																		? "(" + lephimota + ")"
+																		: StringPool.BLANK)
+																+ "\n";
+													}
+												}
+											}
+										}
+									}
+								}
+								serviceInfo.setMethodText(sb.toString());
+								//durationText
+								serviceInfo.setDurationText(durationText);
+								//feeText
+								serviceInfo.setFeeText(feeText);
+
+								//YEUCAU
+								String yeucau = StringPool.BLANK;
+								if (_tmp.has("YEUCAU")) {
+									yeucau = _tmp.getString("YEUCAU");
+								}
+								serviceInfo.setConditionText(yeucau);
+
+								//MOTADOITUONGTHUCHIEN
+								String motadoituongthuchien = StringPool.BLANK;
+								if (_tmp.has("MOTADOITUONGTHUCHIEN")) {
+									motadoituongthuchien = _tmp.getString("MOTADOITUONGTHUCHIEN");
+								}
+								serviceInfo.setApplicantText(motadoituongthuchien);
+
+								//KETQUATHUCHIEN
+								sb = new StringBuffer();
+								if (_tmp.has("KETQUATHUCHIEN")) {
+									JSONArray ketquathuchien_arr = _tmp.getJSONArray("KETQUATHUCHIEN");
+									if (ketquathuchien_arr != null) {
+										for (int i = 0; i < ketquathuchien_arr.length(); i++) {
+											JSONObject ketquathuchien_obj = ketquathuchien_arr.getJSONObject(i);
+											String maketqua = ketquathuchien_obj.getString("MAKETQUA");
+											String tenketqua = ketquathuchien_obj.getString("TENKETQUA");
+											sb.append("- Mã kết quả:" + maketqua + "\n");
+											sb.append("- Kết quả:" + tenketqua + "\n");
+										}
+
+									}
+
+								}
+								serviceInfo.setResultText(sb.toString());
+
+								//CANCUPHAPLY
+								sb = new StringBuffer();
+								if (_tmp.has("CANCUPHAPLY")) {
+									JSONArray cancuphaply_arr = _tmp.getJSONArray("CANCUPHAPLY");
+									if (cancuphaply_arr != null) {
+										for (int i = 0; i < cancuphaply_arr.length(); i++) {
+											JSONObject cancuphaply_obj = cancuphaply_arr.getJSONObject(i);
+											String sovanban = cancuphaply_obj.getString("SOVANBAN");
+											String tenvanban = cancuphaply_obj.getString("TENVANBAN");
+											sb.append("- Số văn bản: " + sovanban + "\n");
+											sb.append("- Tên văn bản: " + tenvanban + "\n");
+										}
+
+									}
+
+								}
+								serviceInfo.setRegularText(sb.toString());
+
+								//TRANGTHAI
+								boolean public_ = true;
+								if (_tmp.has("TRANGTHAI")) {
+									int trangthai = _tmp.getInt("TRANGTHAI");
+									if (trangthai != 1) {
+										public_ = false;
+									}
+								}
+								serviceInfo.setPublic_(public_);
+
+								//COQUANTHUCHIEN
+								sb = new StringBuffer();
+								if (_tmp.has("COQUANTHUCHIEN")) {
+									JSONArray coquanthuchien_arr = _tmp.getJSONArray("COQUANTHUCHIEN");
+									if (coquanthuchien_arr != null) {
+										for (int i = 0; i < coquanthuchien_arr.length(); i++) {
+											JSONObject coquanthuchien_obj = coquanthuchien_arr.getJSONObject(i);
+											String tendonvi = coquanthuchien_obj.getString("TENDONVI");
+											String madonvi = coquanthuchien_obj.getString("MADONVI");
+											sb.append("- Tên đơn vị: " + tendonvi + "\n");
+											sb.append("- Mã đơn vị: " + madonvi + "\n");
+										}
+									}
+								}
+
+								serviceInfo.setGovAgencyText(sb.toString());
+
+								//THANHPHANHOSO
+								List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
+										.getByServiceInfoId(serviceInfo.getServiceInfoId());
+								if (serviceFileTemplates != null) {
+									for (ServiceFileTemplate serviceFileTemplate : serviceFileTemplates) {
+										ServiceFileTemplateLocalServiceUtil.removeServiceFileTemplate(
+												serviceInfo.getServiceInfoId(),
+												serviceFileTemplate.getFileTemplateNo());
+									}
+								}
+
+								if (_tmp.has("THANHPHANHOSO")) {
+									JSONArray thanhphanhoso_arr = _tmp.getJSONArray("THANHPHANHOSO");
+									ServiceInfoActions actions = new ServiceInfoActionsImpl();
+									if (thanhphanhoso_arr != null) {
+										for (int i = 0; i < thanhphanhoso_arr.length(); i++) {
+											JSONObject thanhphanhoso_obj = thanhphanhoso_arr.getJSONObject(i);
+											JSONArray giayto_arr = thanhphanhoso_obj.getJSONArray("GIAYTO");
+											if (giayto_arr != null) {
+												for (int j = 0; j < giayto_arr.length(); j++) {
+													JSONObject giayto_obj = giayto_arr.getJSONObject(j);
+													String magiayto = giayto_obj.getString("MAGIAYTO");
+													String tenmaudon = giayto_obj.getString("TENMAUDON");
+													String link = giayto_obj.getString("URL");
+													String tengiayto = giayto_obj.getString("TENGIAYTO");
+
+													if (Validator.isNotNull(link) && Validator.isNotNull(magiayto)) {
+														InputStream in = null;
+														URLConnection connection = null;
+														try {
+															URL url = new URL(link);
+															connection = url.openConnection();
+															in = connection.getInputStream();
+															String mimeType = URLConnection
+																	.guessContentTypeFromStream(in);
+															actions.addServiceFileTemplate(user.getUserId(), groupId,
+																	serviceInfo.getServiceInfoId(), magiayto, tengiayto,
+																	tenmaudon, in, mimeType,
+																	connection.getContentLength(), serviceContext);
+
+														} catch (Exception e) {
+															_log.error(e);
+														} finally {
+															if (in != null) {
+																in.close();
+															}
+														}
+
+													}
+
+												}
+											}
+										}
+									}
+								}
+								result.put(serviceCode, true);
+							} else {
+								result.put(serviceCode, false);
+							}
+
+						} else {
+							result.put(serviceCode, false);
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+
+			}
+		}
+
+		return result;
 	}
 }

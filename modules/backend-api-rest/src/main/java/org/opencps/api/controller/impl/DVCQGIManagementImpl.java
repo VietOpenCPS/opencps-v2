@@ -123,4 +123,18 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(500).entity("error").build();
 		}
 	}
+
+	@Override
+	public Response doSyncServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCodes) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			JSONObject result = actionImpl.syncServiceInfo(user, groupId, serviceContext, serviceCodes);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
+		}
+	}
 }
