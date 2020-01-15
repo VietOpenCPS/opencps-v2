@@ -5,7 +5,6 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -42,17 +41,10 @@ public class CacheActionsImpl implements CacheActions{
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 
 		return cache.get(key);
-		//if (data != null) {
-		//	return data;
-		//} else {
-			//addToCache(cacheName, key, "HAHAHAHAHAHAH", (int)Time.MINUTE * 15);
-		//	return data;
-		//}
 	}
 
 	@Override
 	public void addToCache(String cacheName, Serializable key, Serializable value, int ttl) {
-		//System.out.println("Liferay Cache: Adding to cache. CacheName = " + cacheName + ", Key = " + key + ", TTL : " + ttl);
 		PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 		cache.put(key, value, ttl);
 	}
