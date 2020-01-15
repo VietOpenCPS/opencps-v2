@@ -55,41 +55,41 @@ public class VNPostNGSPServlet extends HttpServlet {
 		super.init();
 	}
 
-	@Override
-	protected void doGet(
-		HttpServletRequest request, HttpServletResponse response)
-		throws IOException, ServletException {
-
-		if (_log.isInfoEnabled()) {
-			_log.info("VNPostNGSPServlet doGet");
-		} else {
-			System.out.println("VNPostNGSPServlet doGet sys");
-		}
-
-		try {
-			Enumeration<String> enumeration = request.getParameterNames();
-			Map<String, Object> modelMap = new HashMap<>();
-			while (enumeration.hasMoreElements()) {
-				String parameterName = enumeration.nextElement();
-				modelMap.put(
-					parameterName, request.getParameter(parameterName));
-				_log.info(
-					parameterName +
-						"=" +
-						request.getParameter(parameterName));
-			}
-			String tokenUrl = request.getParameter("tokenUrl");
-			String consumer_key = request.getParameter("consumer_key");
-			String secret_key = request.getParameter("secret_key");
-			System.out.println(tokenUrl + consumer_key + secret_key);
-			getToken(tokenUrl, consumer_key, secret_key);
-		}
-		catch (Exception e) {
-			_log.error(e);
-		}
-
-		_writeSampleHTML(response);
-	}
+//	@Override
+//	protected void doGet(
+//		HttpServletRequest request, HttpServletResponse response)
+//		throws IOException, ServletException {
+//
+//		if (_log.isInfoEnabled()) {
+//			_log.info("VNPostNGSPServlet doGet");
+//		} else {
+//			System.out.println("VNPostNGSPServlet doGet sys");
+//		}
+//
+//		try {
+//			Enumeration<String> enumeration = request.getParameterNames();
+//			Map<String, Object> modelMap = new HashMap<>();
+//			while (enumeration.hasMoreElements()) {
+//				String parameterName = enumeration.nextElement();
+//				modelMap.put(
+//					parameterName, request.getParameter(parameterName));
+//				_log.info(
+//					parameterName +
+//						"=" +
+//						request.getParameter(parameterName));
+//			}
+//			String tokenUrl = request.getParameter("tokenUrl");
+//			String consumer_key = request.getParameter("consumer_key");
+//			String secret_key = request.getParameter("secret_key");
+//			System.out.println(tokenUrl + consumer_key + secret_key);
+//			getToken(tokenUrl, consumer_key, secret_key);
+//		}
+//		catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		_writeSampleHTML(response);
+//	}
 
 	@Override
 	protected void doPost(
@@ -111,14 +111,14 @@ public class VNPostNGSPServlet extends HttpServlet {
 
 	}
 	
-	public static void getToken(String tokenUrl, String consumer_key, String secret_key) throws Exception {
-
-		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
-
-		System.out.println("Access token:" + token.getAccessToken());
-		System.out.println("Token type:" + token.getTokenType());
-		System.out.println("Expires in: " + token.getExpiresIn() + " ms");
-	}
+//	public static void getToken(String tokenUrl, String consumer_key, String secret_key) throws Exception {
+//
+//		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
+//
+//		System.out.println("Access token:" + token.getAccessToken());
+//		System.out.println("Token type:" + token.getTokenType());
+//		System.out.println("Expires in: " + token.getExpiresIn() + " ms");
+//	}
 
 	/**
 	 * Dummy contents

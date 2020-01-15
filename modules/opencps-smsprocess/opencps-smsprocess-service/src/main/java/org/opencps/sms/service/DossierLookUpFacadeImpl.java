@@ -3,18 +3,17 @@ package org.opencps.sms.service;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 
-import org.opencps.sms.service.application.SMSGateway;
 import org.opencps.sms.service.dto.DossierRequest;
 import org.opencps.sms.service.dto.DossierResponse;
 import org.opencps.sms.service.util.Constants;
 import org.opencps.sms.service.util.DossierServiceProps;
 import org.opencps.sms.service.util.ServerConfigContants;
-import org.opencps.sms.service.util.ServiceProps;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
@@ -42,10 +41,10 @@ public class DossierLookUpFacadeImpl extends OpencpsRestFacade<DossierRequest, D
 
         MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 
-        urlQueryParams.add("start", Integer.toString(payload.getStart()));
-        urlQueryParams.add("end", Integer.toString(payload.getEnd()));
-        urlQueryParams.add("dossierNo", payload.getDossierNo());
-        urlQueryParams.add("applicantIdNo", payload.getApplicantIdNo());
+        urlQueryParams.add(Constants.DOSSIER_LOOKUP_KEY_START, Integer.toString(payload.getStart()));
+        urlQueryParams.add(Constants.DOSSIER_LOOKUP_KEY_END, Integer.toString(payload.getEnd()));
+        urlQueryParams.add(Constants.DOSSIER_LOOKUP_KEY_DOSSIER_NO, payload.getDossierNo());
+        urlQueryParams.add(Constants.DOSSIER_LOOKUP_KEY_APPLICANT_ID_NO, payload.getApplicantIdNo());
 
         String endPoint = DossierServiceProps.get(Constants.OPENCPS_REST_ENDPOINT_DOSSIER);
         _log.info("=======SMS DOSSIER ENDPOINT=====" + endPoint);
@@ -62,7 +61,7 @@ public class DossierLookUpFacadeImpl extends OpencpsRestFacade<DossierRequest, D
 	            httpHeaders, DossierServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
 	            DossierServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
 		}
-        httpHeaders.add(Constants.GROUP_ID, DossierServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
+        httpHeaders.add(Field.GROUP_ID, DossierServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
         
         return (DossierResponse) this.executeGenericRestCall(
             url, HttpMethod.GET, httpHeaders, payload, DossierResponse.class).getBody();
