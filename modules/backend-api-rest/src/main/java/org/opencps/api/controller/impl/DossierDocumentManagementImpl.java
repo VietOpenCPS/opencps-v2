@@ -47,6 +47,7 @@ import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
@@ -54,6 +55,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -84,6 +86,8 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				if (dossierActionId != 0) {
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
+					
 					//String payload = StringPool.BLANK;
 					if (dAction != null) {
 						String payload = dAction.getPayload();
@@ -92,7 +96,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						}
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
-					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
+					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData, sp);
 					org.opencps.usermgt.model.Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 					if (employee != null) {
 						jsonData.put("userName", employee.getFullName());
