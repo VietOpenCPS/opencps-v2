@@ -434,7 +434,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.MONTH, month);
 			}
 			params.put(DossierTerm.DAY, query.getDay());
-			if (step.contains("x")) {
+			if (step != null && step.contains("x")) {
 				String stepCode = query.getStep();
 //				_log.info("STEPCODE: "+stepCode);
 				if (Validator.isNotNull(stepCode)) {
