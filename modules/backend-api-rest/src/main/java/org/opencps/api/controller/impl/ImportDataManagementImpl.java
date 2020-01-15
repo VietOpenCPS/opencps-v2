@@ -2,7 +2,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -56,8 +55,6 @@ import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
@@ -899,18 +896,6 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 						itemDescription, sibling, input.getLevel(), metaData,
 						serviceContext);
 
-					try {
-						List<ServerConfig> lstServers =
-							ServerConfigLocalServiceUtil.getServerConfigs(
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-						// DictItem item =
-						// dictItemDataUtil.getDictItemByItemCode(code,
-						// input.getItemCode(), groupId,
-						// serviceContext);
-					}
-					catch (Exception e) {
-						_log.error(e);
-					}
 					importNum++;
 				}
 				catch (Exception e) {

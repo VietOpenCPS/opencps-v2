@@ -64,6 +64,7 @@ import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -270,8 +271,6 @@ public class DataManagementImpl implements DataManagement {
 			if (modifiedDateTime == 0 || (modifiedDateTime != 0 && oldCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0)) {
 				DictCollection dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 						serviceContext);
-				if (dictCollection != null) {
-				}
 
 				return Response.status(200).entity(dictCollection != null ? dictCollection.getDataForm() : StringPool.BLANK).build();				
 			}
@@ -612,7 +611,6 @@ public class DataManagementImpl implements DataManagement {
 					parentItemCode, itemCode, itemName, itemNameEN,
 					itemDescription, sibling, input.getLevel(), metaData,
 					serviceContext);
-
 			// return json object after update
 			dictItemModel = DataManagementUtils.mapperDictItemModel(dictItem, dictItemDataUtil, user.getUserId(),
 					company.getCompanyId(), groupId, serviceContext);
@@ -724,8 +722,6 @@ public class DataManagementImpl implements DataManagement {
 				return Response.status(404).entity(error).build();
 
 			} else {
-				DictItem item = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
-
 				DictItemLocalServiceUtil.deleteDictItem(groupId, itemCode, serviceContext);
 				return Response.status(200).build();
 
@@ -834,14 +830,7 @@ public class DataManagementImpl implements DataManagement {
 			
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, metaData);
-			
-			DictItem parentEtt = null;
-			try {
-				parentEtt = DictItemLocalServiceUtil.fetchDictItem(ett.getParentItemId());
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			
+						
 			if (Validator.isNull(ett)) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -912,6 +901,7 @@ public class DataManagementImpl implements DataManagement {
 
 				}
 				else {
+					throw new DuplicateCategoryException();
 				}
 			} else {
 				//Update DictItem
